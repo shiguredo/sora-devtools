@@ -5586,9 +5586,9 @@ sora-e2ee@^2020.2.0:
   resolved "https://registry.yarnpkg.com/sora-e2ee/-/sora-e2ee-2020.2.0.tgz#332ec78f1bce0b3cf843edfe0bf460ce1deba168"
   integrity sha512-beP2iXJphHxyTQ1ngYg4b+KlOH4RHhWdWxixsR57KXD9ZHggNhlDSCw0ydw5RtkDL8rbrxM043Qgcq3XVgeLDQ==
 
-"sora-js-sdk@git+ssh://git@github.com/shiguredo/sora-js-sdk.git#develop":
+sora-js-sdk@shiguredo/sora-js-sdk#develop:
   version "2020.1.5"
-  resolved "git+ssh://git@github.com/shiguredo/sora-js-sdk.git#8f15c1f3a3f0596b00ce2fcd11062323127fa9d2"
+  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/8f15c1f3a3f0596b00ce2fcd11062323127fa9d2"
   dependencies:
     sora-e2ee "^2020.2.0"
 
