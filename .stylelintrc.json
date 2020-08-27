@@ -1,0 +1,12 @@
+{
+  "syntax": "css",
+
+  "extends": "stylelint-config-standard",
+
+  "rules": {
+    "color-hex-length": null,
+    "at-rule-no-unknown": null,
+    "indentation": 2,
+    "no-descending-specificity": null
+  }
+}
