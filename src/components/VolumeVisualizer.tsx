@@ -36,7 +36,6 @@ type VolumeVisualizerProps = {
   stream: MediaStream;
   height: number;
 };
-
 const VolumeVisualizer: React.FC<VolumeVisualizerProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

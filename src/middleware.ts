@@ -1,4 +1,5 @@
 import { getDefaultMiddleware } from "@reduxjs/toolkit";
+import { logger } from "redux-logger";
 
 const middleware = [
   ...getDefaultMiddleware({
@@ -16,5 +17,9 @@ const middleware = [
     },
   }),
 ];
+
+if (process.env.NODE_ENV === "development") {
+  middleware.push(logger);
+}
 
 export default middleware;

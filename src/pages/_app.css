@@ -6,6 +6,37 @@ label {
   margin-bottom: 0;
 }
 
+input[type="range"] {
+  cursor: pointer;
+  outline: none;
+  height: 8px;
+  border-radius: 10px;
+  border: solid 1px #BBBBBB;
+  background: #E5E5E5;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: #0375FF;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+}
+
+input[type="range"]:active::-moz-range-thumb {
+  background: #015DC8;
+}
+
+input[type="range"]::-moz-range-progress {
+  background: #0375FF;
+  height: 7px;
+  border-radius: 3.5px 0 0 3.5px;
+}
+
+input[type="range"]:active::-moz-range-progress {
+  background: #015DC8;
+}
+
 .nav-tabs .nav-link {
   color: #FFFFFF;
 }
@@ -95,6 +126,7 @@ label {
   top: 0;
   left: 0;
   align-items: center;
+  white-space: nowrap;
 }
 
 .video-status p {

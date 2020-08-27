@@ -13,6 +13,48 @@ import {
   VIDEO_CODEC_TYPES,
 } from "@/constants";
 
+// HTMLCanvasElement interface に captureStream を追加
+interface CustomHTMLCanvasElement extends HTMLCanvasElement {
+  captureStream(fps?: number): MediaStream;
+}
+
+// MediaTrackConstraints interface に echoCancellationType を追加
+interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
+  echoCancellationType?: "system" | "browser";
+}
+
+// MediaDevices interface に getDisplayMedia を追加
+export interface SoraDemoMediaDevices extends MediaDevices {
+  getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
+}
+
+// 各 page で有効にするパラメーターを指定するための Type
+export type EnabledParameters = {
+  audio?: boolean;
+  audioBitRate?: boolean;
+  audioCodecType?: boolean;
+  audioInput?: boolean;
+  audioOutput?: boolean;
+  autoGainControl?: boolean;
+  channelId?: boolean;
+  cpuOveruseDetection?: boolean;
+  echoCancellation?: boolean;
+  echoCancellationType?: boolean;
+  fake?: boolean;
+  frameRate?: boolean;
+  getDisplayMedia?: boolean;
+  noiseSuppression?: boolean;
+  resolution?: boolean;
+  simulcastQuality?: boolean;
+  spotlight?: boolean;
+  spotlightNumber?: boolean;
+  video?: boolean;
+  videoBitRate?: boolean;
+  videoCodecType?: boolean;
+  videoInput?: boolean;
+};
+
+// UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
   const date = new Date(time);
   const year = date.getFullYear();
@@ -25,6 +67,7 @@ export function formatUnixtime(time: number): string {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
+// OS の Clipboard にテキストを書き込む
 export function copy2clipboard(text: string): Promise<void> {
   if (navigator.clipboard) {
     return navigator.clipboard.writeText(text);
@@ -45,49 +88,60 @@ export function copy2clipboard(text: string): Promise<void> {
   return Promise.resolve();
 }
 
+// AudioCodecType の Type Guard
 export function isAudioCodecType(audioCodecType: string): audioCodecType is typeof AUDIO_CODEC_TYPES[number] {
   return (AUDIO_CODEC_TYPES as readonly string[]).indexOf(audioCodecType) >= 0;
 }
 
+// AudioBitRate の Type Guard
 export function isAudioBitRate(audioBitRate: string): audioBitRate is typeof AUDIO_BIT_RATES[number] {
   return (AUDIO_BIT_RATES as readonly string[]).indexOf(audioBitRate) >= 0;
 }
 
+// VideoCodecType の Type Guard
 export function isVideoCodecType(videoCodecType: string): videoCodecType is typeof VIDEO_CODEC_TYPES[number] {
   return (VIDEO_CODEC_TYPES as readonly string[]).indexOf(videoCodecType) >= 0;
 }
 
+// VideoBitRate の Type Guard
 export function isVideoBitRate(videoBitRate: string): videoBitRate is typeof VIDEO_BIT_RATES[number] {
   return (VIDEO_BIT_RATES as readonly string[]).indexOf(videoBitRate) >= 0;
 }
 
+// Resolution の Type Guard
 export function isResolution(resolution: string): resolution is typeof RESOLUTIONS[number] {
   return (RESOLUTIONS as readonly string[]).indexOf(resolution) >= 0;
 }
 
+// FrameRate の Type Guard
 export function isFrameRate(frameRate: string): frameRate is typeof FRAME_RATES[number] {
   return (FRAME_RATES as readonly string[]).indexOf(frameRate) >= 0;
 }
 
+// EchoCancellationType の Type Guard
 export function isEchoCancellationType(
   echoCancellationType: string
 ): echoCancellationType is typeof ECHO_CANCELLATION_TYPES[number] {
   return (ECHO_CANCELLATION_TYPES as readonly string[]).indexOf(echoCancellationType) >= 0;
 }
 
+// SpotlightNumber の Type Guard
 export function isSpotlightNumber(spotlightNumber: string): spotlightNumber is typeof SPOTLIGHT_NUMBERS[number] {
   return (SPOTLIGHT_NUMBERS as readonly string[]).indexOf(spotlightNumber) >= 0;
 }
 
+// Spotlight の Type Guard
 export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[number] {
   return (SPOTLIGHTS as readonly string[]).indexOf(spotlight) >= 0;
 }
 
+// SimulcastQuality の Type Guard
 export function isSimulcastQuality(simulcastQuality: string): simulcastQuality is typeof SIMULCAST_QUARITY[number] {
   return (SIMULCAST_QUARITY as readonly string[]).indexOf(simulcastQuality) >= 0;
 }
 
-export type QueryStringParams = {
+// クエリ文字列から取得する parameter の Type
+export type QueryStringParameters = {
   audio: boolean;
   audioBitRate: typeof AUDIO_BIT_RATES[number];
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];
@@ -115,116 +169,126 @@ export type QueryStringParams = {
   videoInput: string;
 };
 
-export function parseQueryString(): Partial<QueryStringParams> {
-  const params = queryString.parse(location.search, { parseBooleans: true });
-  const queryStringParams: Partial<QueryStringParams> = {};
-  if (typeof params.audio === "boolean") {
-    queryStringParams.audio = params.audio;
+// クエリ文字列パーサー
+export function parseQueryString(): Partial<QueryStringParameters> {
+  const {
+    audio,
+    audioBitRate,
+    audioCodecType,
+    audioInput,
+    audioOutput,
+    autoGainControl,
+    channelId,
+    cpuOveruseDetection,
+    debug,
+    echoCancellation,
+    echoCancellationType,
+    fake,
+    fakeVolume,
+    frameRate,
+    getDisplayMedia,
+    noiseSuppression,
+    mute,
+    spotlight,
+    spotlightNumber,
+    simulcastQuality,
+    resolution,
+    video,
+    videoBitRate,
+    videoCodecType,
+    videoInput,
+  } = queryString.parse(location.search, { parseBooleans: true });
+  const queryStringParameters: Partial<QueryStringParameters> = {};
+  if (typeof audio === "boolean") {
+    queryStringParameters.audio = audio;
   }
-  if (typeof params.audioBitRate === "string" && isAudioBitRate(params.audioBitRate)) {
-    queryStringParams.audioBitRate = params.audioBitRate;
+  if (typeof audioBitRate === "string" && isAudioBitRate(audioBitRate)) {
+    queryStringParameters.audioBitRate = audioBitRate;
   }
-  if (typeof params.audioCodecType === "string" && isAudioCodecType(params.audioCodecType)) {
-    queryStringParams.audioCodecType = params.audioCodecType;
+  if (typeof audioCodecType === "string" && isAudioCodecType(audioCodecType)) {
+    queryStringParameters.audioCodecType = audioCodecType;
   }
-  if (typeof params.autoGainControl === "boolean") {
-    queryStringParams.autoGainControl = params.autoGainControl;
+  if (typeof autoGainControl === "boolean") {
+    queryStringParameters.autoGainControl = autoGainControl;
   }
-  if (params.channelId) {
-    queryStringParams.channelId = String(params.channelId);
+  if (channelId) {
+    queryStringParameters.channelId = String(channelId);
   }
-  if (typeof params.cpuOveruseDetection === "boolean") {
-    queryStringParams.cpuOveruseDetection = params.cpuOveruseDetection;
+  if (typeof cpuOveruseDetection === "boolean") {
+    queryStringParameters.cpuOveruseDetection = cpuOveruseDetection;
   }
-  if (typeof params.debug === "boolean") {
-    queryStringParams.debug = params.debug;
+  if (typeof debug === "boolean") {
+    queryStringParameters.debug = debug;
   }
-  if (typeof params.echoCancellation === "boolean") {
-    queryStringParams.echoCancellation = params.echoCancellation;
+  if (typeof echoCancellation === "boolean") {
+    queryStringParameters.echoCancellation = echoCancellation;
   }
-  if (typeof params.echoCancellationType === "string" && isEchoCancellationType(params.echoCancellationType)) {
-    queryStringParams.echoCancellationType = params.echoCancellationType;
+  if (typeof echoCancellationType === "string" && isEchoCancellationType(echoCancellationType)) {
+    queryStringParameters.echoCancellationType = echoCancellationType;
   }
-  if (params.noiseSuppression && typeof params.noiseSuppression === "boolean") {
-    queryStringParams.noiseSuppression = params.noiseSuppression;
+  if (noiseSuppression && typeof noiseSuppression === "boolean") {
+    queryStringParameters.noiseSuppression = noiseSuppression;
   }
-  if (typeof params.fake === "boolean") {
-    queryStringParams.fake = params.fake;
+  if (typeof fake === "boolean") {
+    queryStringParameters.fake = fake;
   }
-  if (params.fakeVolume) {
-    queryStringParams.fakeVolume = String(params.fakeVolume);
+  if (fakeVolume) {
+    queryStringParameters.fakeVolume = String(fakeVolume);
   }
-  if (params.frameRate && typeof params.frameRate === "string" && isFrameRate(params.frameRate)) {
-    queryStringParams.frameRate = params.frameRate;
+  if (frameRate && typeof frameRate === "string" && isFrameRate(frameRate)) {
+    queryStringParameters.frameRate = frameRate;
   }
-  if (params.getDisplayMedia && typeof params.getDisplayMedia === "boolean") {
-    queryStringParams.getDisplayMedia = params.getDisplayMedia;
+  if (getDisplayMedia && typeof getDisplayMedia === "boolean") {
+    queryStringParameters.getDisplayMedia = getDisplayMedia;
   }
-  if (
-    params.simulcastQuality &&
-    typeof params.simulcastQuality === "string" &&
-    isSimulcastQuality(params.simulcastQuality)
-  ) {
-    queryStringParams.simulcastQuality = params.simulcastQuality;
+  if (simulcastQuality && typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
+    queryStringParameters.simulcastQuality = simulcastQuality;
   }
-  if (params.spotlight && typeof params.spotlight === "string" && isSpotlight(params.spotlight)) {
-    queryStringParams.spotlight = params.spotlight;
+  if (spotlight && typeof spotlight === "string" && isSpotlight(spotlight)) {
+    queryStringParameters.spotlight = spotlight;
   }
-  if (
-    params.spotlightNumber &&
-    typeof params.spotlightNumber === "string" &&
-    isSpotlightNumber(params.spotlightNumber)
-  ) {
-    queryStringParams.spotlightNumber = params.spotlightNumber;
+  if (spotlightNumber && typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
+    queryStringParameters.spotlightNumber = spotlightNumber;
   }
-  if (params.resolution && typeof params.resolution === "string" && isResolution(params.resolution)) {
-    queryStringParams.resolution = params.resolution;
+  if (resolution && typeof resolution === "string" && isResolution(resolution)) {
+    queryStringParameters.resolution = resolution;
   }
-  if (params.video && typeof params.video === "boolean") {
-    queryStringParams.video = params.video;
+  if (typeof video === "boolean") {
+    queryStringParameters.video = video;
   }
-  if (params.videoBitRate && typeof params.videoBitRate === "string" && isVideoBitRate(params.videoBitRate)) {
-    queryStringParams.videoBitRate = params.videoBitRate;
+  if (videoBitRate && typeof videoBitRate === "string" && isVideoBitRate(videoBitRate)) {
+    queryStringParameters.videoBitRate = videoBitRate;
   }
-  if (params.videoCodecType && typeof params.videoCodecType === "string" && isVideoCodecType(params.videoCodecType)) {
-    queryStringParams.videoCodecType = params.videoCodecType;
+  if (videoCodecType && typeof videoCodecType === "string" && isVideoCodecType(videoCodecType)) {
+    queryStringParameters.videoCodecType = videoCodecType;
   }
-  if (params.audioInput) {
-    queryStringParams.audioInput = String(params.audioInput);
+  if (audioInput) {
+    queryStringParameters.audioInput = String(audioInput);
   }
-  if (params.videoInput) {
-    queryStringParams.videoInput = String(params.videoInput);
+  if (videoInput) {
+    queryStringParameters.videoInput = String(videoInput);
   }
-  if (params.audioOutput) {
-    queryStringParams.audioOutput = String(params.audioOutput);
+  if (audioOutput) {
+    queryStringParameters.audioOutput = String(audioOutput);
   }
-  if (typeof params.mute === "boolean") {
-    queryStringParams.mute = params.mute;
+  if (typeof mute === "boolean") {
+    queryStringParameters.mute = mute;
   }
-  return queryStringParams;
+  return queryStringParameters;
 }
 
+// Sora のシグナリングURLを生成
 export function createSignalingURL(): string {
-  if (process.env.NODE_ENV === "development") {
-    return "ws://localhost:5000/signaling";
+  if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
+    return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL;
   }
-  const protocol = window.location.protocol;
-  let wsProtocol = "ws://";
-  if (protocol == "https:") {
-    wsProtocol = "wss://";
-  }
-  let port = window.location.port;
-  if (port) {
-    port = ":" + port;
-  }
+  const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+  const port = window.location.port ? `:${window.location.port}` : "";
   return wsProtocol + window.location.hostname + port + "/signaling";
 }
 
-type ResolutionSize = {
-  width: number;
-  height: number;
-};
-function getVideoSizeByResolution(resolution: string): ResolutionSize {
+// 解像度に対応する width と height を返す
+function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
     case "QQVGA":
       return { width: 160, height: 120 };
@@ -253,17 +317,17 @@ function getVideoSizeByResolution(resolution: string): ResolutionSize {
   }
 }
 
-interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
-  echoCancellationType?: "system" | "browser";
-}
-function createAudioConstraints(
-  audio: boolean | undefined,
-  autoGainControl: boolean | undefined,
-  noiseSuppression: boolean | undefined,
-  echoCancellation: boolean | undefined,
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number] | undefined,
-  audioInput: string | undefined
-): boolean | MediaTrackConstraints {
+// getUserMedia の audio constraints を生成
+type CreateAudioConstraintsParameters = {
+  audio: boolean;
+  autoGainControl: boolean;
+  noiseSuppression: boolean;
+  echoCancellation: boolean;
+  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
+  audioInput: string;
+};
+export function createAudioConstraints(parameters: CreateAudioConstraintsParameters): boolean | MediaTrackConstraints {
+  const { audio, autoGainControl, noiseSuppression, echoCancellation, echoCancellationType, audioInput } = parameters;
   if (!audio) {
     return false;
   }
@@ -280,12 +344,15 @@ function createAudioConstraints(
   return audioConstraints;
 }
 
-function createVideoConstraints(
-  video: boolean | undefined,
-  frameRate: string | undefined,
-  resolution: string | undefined,
-  videoInput: string | undefined
-): boolean | MediaTrackConstraints {
+// getUserMedia の video constraints を生成
+type CreateVideoConstraintsParameters = {
+  video: boolean;
+  frameRate: string;
+  resolution: string;
+  videoInput: string;
+};
+export function createVideoConstraints(parameters: CreateVideoConstraintsParameters): boolean | MediaTrackConstraints {
+  const { video, frameRate, resolution, videoInput } = parameters;
   if (!video) {
     return false;
   }
@@ -309,80 +376,43 @@ function createVideoConstraints(
   return videoConstraints;
 }
 
-type CreateGetUserMediaConstraintsParams = {
-  audio?: boolean;
-  autoGainControl?: boolean;
-  noiseSuppression?: boolean;
-  echoCancellation?: boolean;
-  echoCancellationType?: typeof ECHO_CANCELLATION_TYPES[number];
-  video?: boolean;
-  frameRate?: string;
-  resolution?: string;
-  audioInput?: string;
-  videoInput?: string;
+// getUserMedia にわたす constraints を生成
+// type CreateGetUserMediaConstraintsParameters = {
+//   audio?: boolean;
+//   autoGainControl?: boolean;
+//   noiseSuppression?: boolean;
+//   echoCancellation?: boolean;
+//   echoCancellationType?: typeof ECHO_CANCELLATION_TYPES[number];
+//   video?: boolean;
+//   frameRate?: string;
+//   resolution?: string;
+//   audioInput?: string;
+//   videoInput?: string;
+// };
+// export function createGetUserMediaConstraints(
+//   parameters: CreateGetUserMediaConstraintsParameters
+// ): MediaStreamConstraints {
+//   return {
+//     audio: createAudioConstraints(
+//       parameters.audio,
+//       parameters.autoGainControl,
+//       parameters.noiseSuppression,
+//       parameters.echoCancellation,
+//       parameters.echoCancellationType,
+//       parameters.audioInput
+//     ),
+//     video: createVideoConstraints(parameters.video, parameters.frameRate, parameters.resolution, parameters.videoInput),
+//   };
+// }
+
+// Fake 用の constraints を生成
+type CreateFakeMediaConstraintsParameters = {
+  audio: boolean;
+  video: boolean;
+  frameRate: string;
+  resolution: string;
+  volume: string;
 };
-export function createGetUserMediaConstraints(params: CreateGetUserMediaConstraintsParams): MediaStreamConstraints {
-  return {
-    audio: createAudioConstraints(
-      params.audio,
-      params.autoGainControl,
-      params.noiseSuppression,
-      params.echoCancellation,
-      params.echoCancellationType,
-      params.audioInput
-    ),
-    video: createVideoConstraints(params.video, params.frameRate, params.resolution, params.videoInput),
-  };
-}
-
-export interface SoraDemoMediaDevices extends MediaDevices {
-  getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
-}
-
-export type SoraLogMessage = {
-  timestamp: number;
-  title: string;
-  description: string;
-};
-
-export type DebugType = "log" | "notify" | "stats";
-
-export type SoraNotifyMessage = {
-  type: string;
-  event_type: string;
-  timestamp: number;
-  [x: string]: unknown;
-};
-
-export type EnabledParameters = {
-  enabledAudio?: boolean;
-  enabledAudioBitRate?: boolean;
-  enabledAudioCodecType?: boolean;
-  enabledAudioInput?: boolean;
-  enabledAudioOutput?: boolean;
-  enabledAutoGainControl?: boolean;
-  enabledChannelId?: boolean;
-  enabledCpuOveruseDetection?: boolean;
-  enabledEchoCancellation?: boolean;
-  enabledEchoCancellationType?: boolean;
-  enabledFake?: boolean;
-  enabledFrameRate?: boolean;
-  enabledGetDisplayMedia?: boolean;
-  enabledNoiseSuppression?: boolean;
-  enabledResolution?: boolean;
-  enabledSimulcastQuality?: boolean;
-  enabledSpotlight?: boolean;
-  enabledSpotlightNumber?: boolean;
-  enabledVideo?: boolean;
-  enabledVideoBitRate?: boolean;
-  enabledVideoCodecType?: boolean;
-  enabledVideoInput?: boolean;
-};
-
-export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
-  captureStream(fps?: number): MediaStream;
-}
-
 type FakeMediaStreamConstraints = {
   audio: boolean;
   video: boolean;
@@ -392,14 +422,38 @@ type FakeMediaStreamConstraints = {
   fontSize: number;
   volume: number;
 };
+export function createFakeMediaConstraints(
+  parameters: CreateFakeMediaConstraintsParameters
+): FakeMediaStreamConstraints {
+  // fake の default frameRate は 30 fps
+  const frameRate = parseInt(parameters.frameRate, 10) || 30;
+  // width, height の default はそれぞれ 240 / 160
+  const resolutionSize = getVideoSizeByResolution(parameters.resolution);
+  const width = resolutionSize.width || 240;
+  const height = resolutionSize.height || 160;
+  const fontSize = Math.floor(width / 5);
+  return {
+    audio: parameters.audio,
+    video: parameters.video,
+    frameRate: frameRate,
+    width: width,
+    height: height,
+    fontSize: fontSize,
+    volume: parseFloat(parameters.volume),
+  };
+}
+
+// Fake 用の MediaStream を生成
 export function createFakeMediaStream(
-  params: FakeMediaStreamConstraints
+  parameters: FakeMediaStreamConstraints
 ): { canvas: CustomHTMLCanvasElement; stream: MediaStream; gainNode: GainNode } {
   const stream = new MediaStream();
   const canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
-  canvas.width = params.width;
-  canvas.height = params.height;
-  const cancasStream = canvas.captureStream(params.frameRate);
+  // Firefox では getContext を呼ばないと captureStream が失敗する
+  canvas.getContext("2d");
+  canvas.width = parameters.width;
+  canvas.height = parameters.height;
+  const cancasStream = canvas.captureStream(parameters.frameRate);
   const videoTracks = cancasStream.getTracks();
   stream.addTrack(videoTracks[0]);
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -414,22 +468,12 @@ export function createFakeMediaStream(
   gainNode.connect(mediaStreamDestination);
   const audioTracks = mediaStreamDestination.stream.getTracks();
   stream.addTrack(audioTracks[0]);
-  gainNode.gain.setValueAtTime(params.volume, 0);
+  gainNode.gain.setValueAtTime(parameters.volume, 0);
   return { canvas, stream, gainNode };
 }
 
-function calcTextX(canvasWidth: number, textLength: number, fontSize: number): number {
-  const x = canvasWidth / 2 - fontSize / 2;
-  const margin = (fontSize / 4) * (textLength - 1);
-  return x - margin;
-}
-
-function calcTextY(canvasHeight: number, fontSize: number): number {
-  const y = canvasHeight / 2 + fontSize / 2.5;
-  return y;
-}
-
-export function drawCanvas(
+// Fake mediastream を生成するための canvas に書き込みをする
+export function drawFakeCanvas(
   canvas: CustomHTMLCanvasElement | null,
   colorCode: number,
   fontSize: number,
@@ -444,34 +488,12 @@ export function drawCanvas(
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = "#" + ("0".repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6);
   context.font = `${fontSize}px Arial`;
-  context.fillText(text, calcTextX(canvas.width, text.length, fontSize), calcTextY(canvas.height, fontSize));
+  const x = canvas.width / 2 - fontSize / 2;
+  const margin = (fontSize / 4) * (text.length - 1);
+  const y = canvas.height / 2 + fontSize / 2.5;
+  context.fillText(text, x - margin, y);
 }
 
-type CreateFakeMediaConstraintsParams = {
-  audio: boolean;
-  video: boolean;
-  frameRate: string;
-  resolution: string;
-  volume: string;
-};
-export function createFakeMediaConstraints(params: CreateFakeMediaConstraintsParams): FakeMediaStreamConstraints {
-  // fake の default frameRate は 30 fps
-  const frameRate = parseInt(params.frameRate, 10) || 30;
-  // width, height の default はそれぞれ 240 / 160
-  let { width, height } = getVideoSizeByResolution(params.resolution);
-  width = width || 240;
-  height = height || 160;
-  const fontSize = Math.floor(width / 5);
-  return {
-    audio: params.audio,
-    video: params.video,
-    frameRate: frameRate,
-    width: width,
-    height: height,
-    fontSize: fontSize,
-    volume: parseFloat(params.volume),
-  };
-}
 // 新/旧 spotlight の互換性を保つための parser
 export function parseSpotlight(spotlight: string): boolean | number | undefined {
   if (spotlight === "true") return true;

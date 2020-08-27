@@ -1,14 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import Alert from "@/components/Alert";
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
-import Forms from "@/components/Forms";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import LocalVideo from "@/components/LocalVideo";
-import RemoteVideos from "@/components/RemoteVideos";
 import {
   disconnectSora,
   setInitialParameter,
@@ -19,26 +15,26 @@ import {
 } from "@/slice";
 
 const ENABLED_PARAMETERS = {
-  enabledAudio: true,
-  enabledAudioBitRate: true,
-  enabledAudioCodecType: true,
-  enabledAudioInput: true,
-  enabledAudioOutput: true,
-  enabledAutoGainControl: true,
-  enabledChannelId: true,
-  enabledCpuOveruseDetection: true,
-  enabledEchoCancellation: true,
-  enabledEchoCancellationType: true,
-  enabledFake: true,
-  enabledFrameRate: true,
-  enabledGetDisplayMedia: true,
-  enabledNoiseSuppression: true,
-  enabledResolution: true,
-  enabledSimulcastQuality: true,
-  enabledVideo: true,
-  enabledVideoBitRate: true,
-  enabledVideoCodecType: true,
-  enabledVideoInput: true,
+  audio: true,
+  audioBitRate: true,
+  audioCodecType: true,
+  audioInput: true,
+  audioOutput: true,
+  autoGainControl: true,
+  channelId: true,
+  cpuOveruseDetection: true,
+  echoCancellation: true,
+  echoCancellationType: true,
+  fake: true,
+  frameRate: true,
+  getDisplayMedia: true,
+  noiseSuppression: true,
+  resolution: true,
+  simulcastQuality: true,
+  video: true,
+  videoBitRate: true,
+  videoCodecType: true,
+  videoInput: true,
 };
 
 const MultiSimulcastSendrecv: React.FC = () => {
@@ -47,7 +43,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
     dispatch(setVideoCodecType("VP8"));
     dispatch(setVideoBitRate("3000"));
     dispatch(setResolution("HD"));
-    dispatch(setInitialParameter(ENABLED_PARAMETERS));
+    dispatch(setInitialParameter());
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -57,16 +53,16 @@ const MultiSimulcastSendrecv: React.FC = () => {
   return (
     <>
       <Head title={"multi simulcast sendrecv"} />
-      <Header pageName="multi simulcast sendrecv" />
+      <Header pageName="multi simulcast sendrecv" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo>
-              <Alert />
-              <Forms connectType="sendrecv" connectOptionMultistream={true} connectOptionSimulcast={true} />
-              <LocalVideo />
-              <RemoteVideos />
-            </ColDemo>
+            <ColDemo
+              connectType="sendrecv"
+              multistream={true}
+              simulcast={true}
+              enabledParameters={ENABLED_PARAMETERS}
+            />
             <ColDebug />
           </div>
         </div>

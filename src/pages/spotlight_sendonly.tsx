@@ -1,42 +1,51 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import Alert from "@/components/Alert";
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
-import Forms from "@/components/Forms";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import LocalVideo from "@/components/LocalVideo";
-import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
+import {
+  disconnectSora,
+  setInitialParameter,
+  setMediaDevices,
+  setResolution,
+  setSpotlight,
+  setVideoBitRate,
+  setVideoCodecType,
+} from "@/slice";
 
 const ENABLED_PARAMETERS = {
-  enabledAudio: true,
-  enabledAudioBitRate: true,
-  enabledAudioCodecType: true,
-  enabledAudioInput: true,
-  enabledAudioOutput: true,
-  enabledAutoGainControl: true,
-  enabledChannelId: true,
-  enabledCpuOveruseDetection: true,
-  enabledEchoCancellation: true,
-  enabledEchoCancellationType: true,
-  enabledFake: true,
-  enabledFrameRate: true,
-  enabledGetDisplayMedia: true,
-  enabledNoiseSuppression: true,
-  enabledResolution: true,
-  enabledSpotlight: true,
-  enabledVideo: true,
-  enabledVideoBitRate: true,
-  enabledVideoCodecType: true,
-  enabledVideoInput: true,
+  audio: true,
+  audioBitRate: true,
+  audioCodecType: true,
+  audioInput: true,
+  audioOutput: true,
+  autoGainControl: true,
+  channelId: true,
+  cpuOveruseDetection: true,
+  echoCancellation: true,
+  echoCancellationType: true,
+  fake: true,
+  frameRate: true,
+  getDisplayMedia: true,
+  noiseSuppression: true,
+  resolution: true,
+  video: true,
+  videoBitRate: true,
+  videoCodecType: true,
+  videoInput: true,
+  spotlightNumber: true,
 };
 
 const SpotlightSendonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter(ENABLED_PARAMETERS));
+    dispatch(setResolution("HD"));
+    dispatch(setSpotlight("true"));
+    dispatch(setVideoCodecType("VP8"));
+    dispatch(setVideoBitRate("3000"));
+    dispatch(setInitialParameter());
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -46,15 +55,17 @@ const SpotlightSendonly: React.FC = () => {
   return (
     <>
       <Head title={"spotlight sendonly"} />
-      <Header pageName="spotlight sendonly" />
+      <Header pageName="spotlight sendonly" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo>
-              <Alert />
-              <Forms connectType="sendonly" connectOptionMultistream={true} connectOptionSpotlight={true} />
-              <LocalVideo />
-            </ColDemo>
+            <ColDemo
+              connectType="sendonly"
+              multistream={true}
+              spotlight={true}
+              simulcast={true}
+              enabledParameters={ENABLED_PARAMETERS}
+            />
             <ColDebug />
           </div>
         </div>

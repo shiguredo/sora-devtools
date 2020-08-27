@@ -1,11 +1,7 @@
 async function post<T>(version: string, path: string, params: Record<string, unknown>): Promise<T> {
-  let apiPort = "3000";
-  let apiPath = "";
   const protocol = window.location.protocol;
-  if (protocol == "https:") {
-    apiPort = "443";
-    apiPath = "api";
-  }
+  const apiPort = protocol == "https:" ? "443" : "3000";
+  const apiPath = protocol == "https:" ? "api" : "";
   const target = `Sora_${version}.${path}`;
   const url = `${protocol}//${window.location.hostname}:${apiPort}/${apiPath}`;
   const response = await fetch(url, {

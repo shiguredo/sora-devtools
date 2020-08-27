@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import ButtonCamera from "@/components/Button/Camera";
+import ButtonMic from "@/components/Button/Mic";
 import IconCamera from "@/components/IconCamera";
 import IconMic from "@/components/IconMic";
 import { setFakeVolume, SoraDemoState } from "@/slice";
 
-import ButtonCamera from "./ButtonCamera";
-import ButtonMic from "./ButtonMic";
 import VolumeVisualizer from "./VolumeVisualizer";
 
 const VolumeRange: React.FC = () => {
@@ -18,6 +18,7 @@ const VolumeRange: React.FC = () => {
   return (
     <div>
       <input
+        id="fakeVolume"
         className="fake-volume-range"
         type="range"
         min="0"
@@ -79,8 +80,10 @@ const LocalVideo: React.FC = () => {
             <ButtonCamera />
           </div>
         )}
-        <VideoElementMemo stream={localMediaStream} setHeight={setHeight} />
-        {localMediaStream !== null && <VolumeVisualizer stream={localMediaStream} height={height} />}
+        <div className="d-flex">
+          <VideoElementMemo stream={localMediaStream} setHeight={setHeight} />
+          {localMediaStream !== null && <VolumeVisualizer stream={localMediaStream} height={height} />}
+        </div>
         {fake && <VolumeRange />}
       </div>
     </div>

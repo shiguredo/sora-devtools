@@ -1,30 +1,27 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import Alert from "@/components/Alert";
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
-import Forms from "@/components/Forms";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import RemoteVideos from "@/components/RemoteVideos";
 import { disconnectSora, setInitialParameter, setMediaDevices, setVideoCodecType } from "@/slice";
 
 const ENABLED_PARAMETERS = {
-  enabledAudio: true,
-  enabledAudioCodecType: true,
-  enabledAudioOutput: true,
-  enabledChannelId: true,
-  enabledSimulcastQuality: true,
-  enabledVideo: true,
-  enabledVideoCodecType: true,
+  audio: true,
+  audioCodecType: true,
+  audioOutput: true,
+  channelId: true,
+  simulcastQuality: true,
+  video: true,
+  videoCodecType: true,
 };
 
 const SimulcastRecvonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setVideoCodecType("VP8"));
-    dispatch(setInitialParameter(ENABLED_PARAMETERS));
+    dispatch(setInitialParameter());
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -34,15 +31,11 @@ const SimulcastRecvonly: React.FC = () => {
   return (
     <>
       <Head title={"simulcast recvonly"} />
-      <Header pageName="simulcast recvonly" />
+      <Header pageName="simulcast recvonly" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo>
-              <Alert />
-              <Forms connectType="recvonly" connectOptionSimulcast={true} />
-              <RemoteVideos />
-            </ColDemo>
+            <ColDemo connectType="recvonly" simulcast={true} enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

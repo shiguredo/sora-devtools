@@ -22,10 +22,12 @@ const LogDescription: React.FC<LogDescriptionProps> = (props) => {
   return (
     <>
       {Object.keys(description).map((key) => {
-        let message = description[key];
-        if (typeof description[key] !== "string") {
-          message = JSON.stringify(description[key], null, 2);
-        }
+        const message = ((m) => {
+          if (typeof m === "string") {
+            return m;
+          }
+          return JSON.stringify(m, null, 2);
+        })(description[key]);
         return (
           <div key={key} className="debug-message">
             <div className="pl-0 col-sm-3">{key}:</div>

@@ -36,18 +36,18 @@ const Index: React.FC = () => {
             <Link pageName="multi_sendrecv" />
             <Link pageName="multi_sendonly" />
             <Link pageName="multi_recvonly" />
-            <Link pageName="spotlight_sendrecv" />
-            <Link pageName="spotlight_sendonly" />
-            <Link pageName="spotlight_recvonly" />
+            <Link pageName="spotlight_legacy_sendrecv" />
+            <Link pageName="spotlight_legacy_sendonly" />
+            <Link pageName="spotlight_legacy_recvonly" />
             <Link pageName="simulcast_sendonly" />
             <Link pageName="simulcast_recvonly" />
             <Link pageName="multi_simulcast_sendrecv" />
             <Link pageName="multi_simulcast_sendonly" />
             <Link pageName="multi_simulcast_recvonly" />
             <hr />
-            <Link pageName="new_spotlight_sendrecv" />
-            <Link pageName="new_spotlight_sendonly" />
-            <Link pageName="new_spotlight_recvonly" />
+            <Link pageName="spotlight_sendrecv" />
+            <Link pageName="spotlight_sendonly" />
+            <Link pageName="spotlight_recvonly" />
           </ul>
         </div>
       </div>

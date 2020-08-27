@@ -37,23 +37,33 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
   return <VideoElement {...props} />;
 });
 
-const RemoteVideos: React.FC = () => {
+type RemoteVideoProps = {
+  stream: MediaStream;
+};
+const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { immutable, mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
+  const { mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
+  return (
+    <div className="col-auto">
+      <p className="mb-1">
+        {props.stream.id}
+        {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
+      </p>
+      <div className="d-flex align-items-start">
+        <VideoElementMemo stream={props.stream} setHeight={setHeight} mute={mute} />
+        <VolumeVisualizer stream={props.stream} height={height} />
+      </div>
+    </div>
+  );
+};
+
+const RemoteVideos: React.FC = () => {
+  const { immutable } = useSelector((state: SoraDemoState) => state);
   const { remoteMediaStreams } = immutable;
   return (
     <div className="row mt-2">
       {remoteMediaStreams.map((mediaStream) => {
-        return (
-          <div key={mediaStream.id} className="col-auto">
-            <p className="mb-1">
-              {mediaStream.id}
-              {mediaStream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[mediaStream.id]}]` : ""}
-            </p>
-            <VideoElementMemo stream={mediaStream} setHeight={setHeight} mute={mute} />
-            <VolumeVisualizer stream={mediaStream} height={height} />
-          </div>
-        );
+        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />;
       })}
     </div>
   );

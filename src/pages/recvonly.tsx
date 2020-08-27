@@ -1,28 +1,25 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import Alert from "@/components/Alert";
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
-import Forms from "@/components/Forms";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import RemoteVideos from "@/components/RemoteVideos";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
 
 const ENABLED_PARAMETERS = {
-  enabledAudio: true,
-  enabledAudioCodecType: true,
-  enabledAudioOutput: true,
-  enabledChannelId: true,
-  enabledVideo: true,
-  enabledVideoCodecType: true,
+  audio: true,
+  audioCodecType: true,
+  audioOutput: true,
+  channelId: true,
+  video: true,
+  videoCodecType: true,
 };
 
 const Recvonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter(ENABLED_PARAMETERS));
+    dispatch(setInitialParameter());
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -32,15 +29,11 @@ const Recvonly: React.FC = () => {
   return (
     <>
       <Head title={"recvonly"} />
-      <Header pageName="recvonly" />
+      <Header pageName="recvonly" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo>
-              <Alert />
-              <Forms connectType="recvonly" />
-              <RemoteVideos />
-            </ColDemo>
+            <ColDemo connectType="recvonly" enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>
