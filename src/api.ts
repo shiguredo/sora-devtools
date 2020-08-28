@@ -1,3 +1,5 @@
+import { SimulcastQuality } from "sora-js-sdk";
+
 async function post<T>(version: string, path: string, params: Record<string, unknown>): Promise<T> {
   const protocol = window.location.protocol;
   const apiPort = protocol == "https:" ? "443" : "3000";
@@ -29,4 +31,21 @@ export function startRec(channelId: string): void {
 export function stopRec(channelId: string): void {
   const params = { channel_id: channelId };
   post("20161101", "StopRecording", params);
+}
+
+export function changeSimulcastQuality(
+  channelId: string,
+  connectionId: string,
+  quality: SimulcastQuality,
+  streamId?: string
+): void {
+  const params: { channel_id: string; connection_id: string; stream_id?: string; quality: SimulcastQuality } = {
+    channel_id: channelId,
+    connection_id: connectionId,
+    quality: quality,
+  };
+  if (streamId) {
+    params["stream_id"] = streamId;
+  }
+  post("20180820", "ChangeSimulcastQuality", params);
 }

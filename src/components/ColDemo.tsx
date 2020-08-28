@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import Alert from "@/components/Alert";
+import ButtonChangeSimulcastQuality from "@/components/Button/ChangeSimulcastQuality";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
 import ButtonStartRecording from "@/components/Button/StartRecording";
@@ -85,6 +86,13 @@ const ColDemo: React.FC<Props> = (props) => {
         <ButtonDisconnect />
         <ButtonStartRecording />
         <ButtonStopRecording />
+        {props.simulcast ? (
+          <>
+            <ButtonChangeSimulcastQuality quality={"low"} />
+            <ButtonChangeSimulcastQuality quality={"middle"} />
+            <ButtonChangeSimulcastQuality quality={"high"} />
+          </>
+        ) : null}
       </div>
       {props.connectType === "sendonly" || props.connectType === "sendrecv" ? <LocalVideo /> : null}
       {props.connectType === "recvonly" || props.connectType === "sendrecv" ? <RemoteVideos /> : null}
