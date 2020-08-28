@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
+import ChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
 import { SoraDemoState } from "@/slice";
 
 import VolumeVisualizer from "./VolumeVisualizer";
@@ -45,10 +46,15 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const { mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
   return (
     <div className="col-auto">
-      <p className="mb-1">
-        {props.stream.id}
-        {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
-      </p>
+      <div className="video-status">
+        <p>{props.stream.id}</p>
+        <p className="mx-1">
+          {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
+        </p>
+        <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
+        <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
+        <ChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+      </div>
       <div className="d-flex align-items-start">
         <VideoElementMemo stream={props.stream} setHeight={setHeight} mute={mute} />
         <VolumeVisualizer stream={props.stream} height={height} />

@@ -21,7 +21,7 @@ const ChangeSimulcastQuality: React.FC<Props> = (props) => {
         className="btn btn-secondary"
         type="button"
         name={`changeSimulcastQualityTo${props.quality.charAt(0).toUpperCase() + props.quality.slice(1)}`}
-        defaultValue={`SimulcastQuality to ${props.quality}`}
+        defaultValue={`${props.quality} quality`}
         onClick={onClick}
       />
     </div>
