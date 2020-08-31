@@ -9,11 +9,9 @@ import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
 
 const ENABLED_PARAMETERS = {
   audio: true,
-  audioCodecType: true,
   audioOutput: true,
   channelId: true,
   video: true,
-  videoCodecType: true,
 };
 
 const MultiRecvonly: React.FC = () => {
