@@ -86,7 +86,7 @@ const ColDemo: React.FC<Props> = (props) => {
         <ButtonDisconnect />
         <ButtonStartRecording />
         <ButtonStopRecording />
-        {props.simulcast ? (
+        {props.simulcast && props.connectType !== "sendonly" ? (
           <>
             <ButtonChangeSimulcastQuality quality={"low"} />
             <ButtonChangeSimulcastQuality quality={"middle"} />
