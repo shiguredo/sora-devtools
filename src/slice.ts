@@ -359,132 +359,11 @@ async function createMediaStream(state: SoraDemoState): Promise<[MediaStream, Ga
   return [mediaStream, null];
 }
 
-type SendonlyOption = {
-  multistream?: boolean;
-  spotlight?: boolean;
-  simulcast?: boolean;
-};
-export const sendonlyConnectSora = (options?: SendonlyOption) => async (
+function setSoraCallbacks(
   dispatch: Dispatch,
-  getState: () => SoraDemoState
-): Promise<void> => {
-  const state = getState();
-  if (state.immutable.sora) {
-    await state.immutable.sora.disconnect();
-  }
-  const [mediaStream, gainNode] = await createMediaStream(state).catch((error) => {
-    dispatch(slice.actions.setErrorMessage(error.toString()));
-    throw error;
-  });
-  const signalingURL = createSignalingURL();
-  const connection = Sora.connection(signalingURL, state.debug);
-  const connectionOptions: ConnectionOptions = {
-    audio: state.audio,
-    audioCodecType: state.audioCodecType || undefined,
-    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
-    video: state.video,
-    videoCodecType: state.videoCodecType || undefined,
-    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: options?.multistream === true ? true : false,
-    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
-    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true ? true : false,
-  };
-  const sora = connection.sendonly(state.channelId, null, connectionOptions);
-  if (!state.cpuOveruseDetection) {
-    sora.constraints = {
-      optional: [{ googCpuOveruseDetection: false }],
-    };
-  }
-  sora.on("log", (title: string, description: boolean | number | string | Record<string, unknown>) => {
-    dispatch(
-      slice.actions.setLogMessages({
-        title: title,
-        description: JSON.stringify(description, null, 2),
-        timestamp: new Date().getTime(),
-      })
-    );
-  });
-  sora.on("notify", (message: SoraNotifyMessage) => {
-    if (
-      message.event_type === "spotlight.changed" &&
-      typeof message.spotlight_id === "string" &&
-      typeof message.connection_id === "string"
-    ) {
-      dispatch(
-        slice.actions.setSpotlighConnectionIds({
-          spotlightId: message.spotlight_id,
-          connectionId: message.connection_id,
-        })
-      );
-    }
-    message.timestamp = new Date().getTime();
-    dispatch(slice.actions.setNotifyMessages(message));
-  });
-  sora.on("disconnect", () => {
-    const { fakeContents, immutable } = getState();
-    const { localMediaStream, remoteMediaStreams } = immutable;
-
-    if (localMediaStream) {
-      localMediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    }
-    remoteMediaStreams.forEach((mediaStream) => {
-      mediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    });
-    if (fakeContents.worker) {
-      fakeContents.worker.postMessage(JSON.stringify({ type: "stop" }));
-    }
-    dispatch(slice.actions.setSora(null));
-    dispatch(slice.actions.setLocalMediaStream(null));
-    dispatch(slice.actions.removeAllRemoteMediaStreams());
-  });
-  try {
-    await sora.connect(mediaStream);
-  } catch (error) {
-    mediaStream.getTracks().forEach((track) => {
-      track.stop();
-    });
-    dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
-    throw error;
-  }
-  dispatch(slice.actions.setSora(sora));
-  dispatch(slice.actions.setLocalMediaStream(mediaStream));
-  dispatch(slice.actions.setFakeContentsGainNode(gainNode));
-};
-
-type RecvonlyOption = {
-  multistream?: boolean;
-  spotlight?: boolean;
-  simulcast?: boolean;
-};
-export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
-  dispatch: Dispatch,
-  getState: () => SoraDemoState
-): Promise<void> => {
-  const state = getState();
-  if (state.immutable.sora) {
-    await state.immutable.sora.disconnect();
-  }
-  const signalingURL = createSignalingURL();
-  const connection = Sora.connection(signalingURL, state.debug);
-  const connectionOptions: ConnectionOptions = {
-    audio: state.audio,
-    audioCodecType: state.audioCodecType || undefined,
-    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
-    video: state.video,
-    videoCodecType: state.videoCodecType || undefined,
-    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: options?.multistream === true ? true : false,
-    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
-    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true ? true : false,
-    simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
-  };
-  const sora = connection.recvonly(state.channelId, null, connectionOptions);
+  getState: () => SoraDemoState,
+  sora: ConnectionPublisher | ConnectionSubscriber
+): void {
   sora.on("log", (title: string, description: boolean | number | string | Record<string, unknown>) => {
     dispatch(
       slice.actions.setLogMessages({
@@ -550,6 +429,90 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     dispatch(slice.actions.setLocalMediaStream(null));
     dispatch(slice.actions.removeAllRemoteMediaStreams());
   });
+}
+
+type SendonlyOption = {
+  multistream?: boolean;
+  spotlight?: boolean;
+  simulcast?: boolean;
+};
+export const sendonlyConnectSora = (options?: SendonlyOption) => async (
+  dispatch: Dispatch,
+  getState: () => SoraDemoState
+): Promise<void> => {
+  const state = getState();
+  if (state.immutable.sora) {
+    await state.immutable.sora.disconnect();
+  }
+  const [mediaStream, gainNode] = await createMediaStream(state).catch((error) => {
+    dispatch(slice.actions.setErrorMessage(error.toString()));
+    throw error;
+  });
+  const signalingURL = createSignalingURL();
+  const connection = Sora.connection(signalingURL, state.debug);
+  const connectionOptions: ConnectionOptions = {
+    audio: state.audio,
+    audioCodecType: state.audioCodecType || undefined,
+    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
+    video: state.video,
+    videoCodecType: state.videoCodecType || undefined,
+    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
+    multistream: options?.multistream === true ? true : false,
+    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
+    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
+    simulcast: options?.simulcast === true ? true : false,
+  };
+  const sora = connection.sendonly(state.channelId, null, connectionOptions);
+  if (!state.cpuOveruseDetection) {
+    sora.constraints = {
+      optional: [{ googCpuOveruseDetection: false }],
+    };
+  }
+  setSoraCallbacks(dispatch, getState, sora);
+  try {
+    await sora.connect(mediaStream);
+  } catch (error) {
+    mediaStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+    dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
+    throw error;
+  }
+  dispatch(slice.actions.setSora(sora));
+  dispatch(slice.actions.setLocalMediaStream(mediaStream));
+  dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+};
+
+type RecvonlyOption = {
+  multistream?: boolean;
+  spotlight?: boolean;
+  simulcast?: boolean;
+};
+export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
+  dispatch: Dispatch,
+  getState: () => SoraDemoState
+): Promise<void> => {
+  const state = getState();
+  if (state.immutable.sora) {
+    await state.immutable.sora.disconnect();
+  }
+  const signalingURL = createSignalingURL();
+  const connection = Sora.connection(signalingURL, state.debug);
+  const connectionOptions: ConnectionOptions = {
+    audio: state.audio,
+    audioCodecType: state.audioCodecType || undefined,
+    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
+    video: state.video,
+    videoCodecType: state.videoCodecType || undefined,
+    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
+    multistream: options?.multistream === true ? true : false,
+    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
+    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
+    simulcast: options?.simulcast === true ? true : false,
+    simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
+  };
+  const sora = connection.recvonly(state.channelId, null, connectionOptions);
+  setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect();
   } catch (error) {
@@ -596,71 +559,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       optional: [{ googCpuOveruseDetection: false }],
     };
   }
-  sora.on("log", (title: string, description: boolean | number | string | Record<string, unknown>) => {
-    dispatch(
-      slice.actions.setLogMessages({
-        title: title,
-        description: JSON.stringify(description, null, 2),
-        timestamp: new Date().getTime(),
-      })
-    );
-  });
-  sora.on("notify", (message: SoraNotifyMessage) => {
-    if (
-      message.event_type === "spotlight.changed" &&
-      typeof message.spotlight_id === "string" &&
-      typeof message.connection_id === "string"
-    ) {
-      dispatch(
-        slice.actions.setSpotlighConnectionIds({
-          spotlightId: message.spotlight_id,
-          connectionId: message.connection_id,
-        })
-      );
-    }
-    message.timestamp = new Date().getTime();
-    dispatch(slice.actions.setNotifyMessages(message));
-  });
-  sora.on("track", (event: RTCTrackEvent) => {
-    const { immutable } = getState();
-    const mediaStream = immutable.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
-    if (!mediaStream) {
-      dispatch(slice.actions.setRemoteMediaStream(event.streams[0]));
-    }
-  });
-  sora.on("removetrack", (event: MediaStreamTrackEvent) => {
-    const { immutable } = getState();
-    const mediaStream = immutable.remoteMediaStreams.find((stream) => {
-      if (event && event.target) {
-        return stream.id === (event.target as MediaStream).id;
-      }
-      return false;
-    });
-    if (mediaStream) {
-      dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id));
-    }
-  });
-  sora.on("disconnect", () => {
-    const { fakeContents, immutable } = getState();
-    const { localMediaStream, remoteMediaStreams } = immutable;
-
-    if (localMediaStream) {
-      localMediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    }
-    remoteMediaStreams.forEach((mediaStream) => {
-      mediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    });
-    if (fakeContents.worker) {
-      fakeContents.worker.postMessage(JSON.stringify({ type: "stop" }));
-    }
-    dispatch(slice.actions.setSora(null));
-    dispatch(slice.actions.setLocalMediaStream(null));
-    dispatch(slice.actions.removeAllRemoteMediaStreams());
-  });
+  setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect(mediaStream);
   } catch (error) {
@@ -675,28 +574,11 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
 };
 
-export const disconnectSora = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-  const { fakeContents, immutable } = getState();
-  const { sora, localMediaStream, remoteMediaStreams } = immutable;
-  if (sora) {
-    await sora.disconnect();
+export const disconnectSora = () => async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  const { immutable } = getState();
+  if (immutable.sora) {
+    await immutable.sora.disconnect();
   }
-  if (localMediaStream) {
-    localMediaStream.getTracks().forEach((track) => {
-      track.stop();
-    });
-  }
-  remoteMediaStreams.forEach((mediaStream) => {
-    mediaStream.getTracks().forEach((track) => {
-      track.stop();
-    });
-  });
-  if (fakeContents.worker) {
-    fakeContents.worker.postMessage(JSON.stringify({ type: "stop" }));
-  }
-  dispatch(slice.actions.setSora(null));
-  dispatch(slice.actions.setLocalMediaStream(null));
-  dispatch(slice.actions.removeAllRemoteMediaStreams());
 };
 
 export const setMediaDevices = () => async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
