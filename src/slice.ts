@@ -588,6 +588,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
     spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
     simulcast: options?.simulcast === true ? true : false,
+    simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
   };
   const sora = connection.sendrecv(state.channelId, null, connectionOptions);
   if (!state.cpuOveruseDetection) {
