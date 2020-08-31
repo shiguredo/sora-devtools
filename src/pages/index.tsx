@@ -30,24 +30,29 @@ const Index: React.FC = () => {
       </header>
       <div className="container">
         <div className="row">
-          <ul className="list-url mt-1">
+          <ul className="list-url">
+            <li className="separator">片方向</li>
             <Link pageName="sendonly" />
             <Link pageName="recvonly" />
+            <li className="separator">双方向</li>
             <Link pageName="multi_sendrecv" />
             <Link pageName="multi_sendonly" />
             <Link pageName="multi_recvonly" />
-            <Link pageName="spotlight_legacy_sendrecv" />
-            <Link pageName="spotlight_legacy_sendonly" />
-            <Link pageName="spotlight_legacy_recvonly" />
+            <li className="separator">サイマルキャスト</li>
             <Link pageName="simulcast_sendonly" />
             <Link pageName="simulcast_recvonly" />
+            <li className="separator">双方向サイマルキャスト</li>
             <Link pageName="multi_simulcast_sendrecv" />
             <Link pageName="multi_simulcast_sendonly" />
             <Link pageName="multi_simulcast_recvonly" />
-            <hr />
+            <li className="separator">スポットライト</li>
             <Link pageName="spotlight_sendrecv" />
             <Link pageName="spotlight_sendonly" />
             <Link pageName="spotlight_recvonly" />
+            <li className="separator">スポットライトレガシー</li>
+            <Link pageName="spotlight_legacy_sendrecv" />
+            <Link pageName="spotlight_legacy_sendonly" />
+            <Link pageName="spotlight_legacy_recvonly" />
           </ul>
         </div>
       </div>

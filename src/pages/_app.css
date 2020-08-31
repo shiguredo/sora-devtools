@@ -60,6 +60,17 @@ input[type="range"]:active::-moz-range-progress {
 
 .list-url {
   font-size: 1.125rem;
+  padding-left: 1rem;
+}
+
+.list-url li {
+  margin-left: 1.5rem;
+}
+
+.list-url .separator {
+  list-style: none;
+  margin-left: 0;
+  margin-top: 1rem;
 }
 
 .col-demo {
