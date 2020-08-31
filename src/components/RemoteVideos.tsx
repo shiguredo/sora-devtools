@@ -40,6 +40,7 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
 
 type RemoteVideoProps = {
   stream: MediaStream;
+  simulcast: boolean;
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
@@ -51,9 +52,13 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         <p className="mx-1">
           {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
         </p>
-        <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
-        <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
-        <ChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+        {props.simulcast ? (
+          <>
+            <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
+            <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
+            <ChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+          </>
+        ) : null}
       </div>
       <div className="d-flex align-items-start">
         <VideoElementMemo stream={props.stream} setHeight={setHeight} mute={mute} />
@@ -63,13 +68,16 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   );
 };
 
-const RemoteVideos: React.FC = () => {
+type RemoteVideosProps = {
+  simulcast: boolean;
+};
+const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
   const { immutable } = useSelector((state: SoraDemoState) => state);
   const { remoteMediaStreams } = immutable;
   return (
     <div className="row mt-2">
       {remoteMediaStreams.map((mediaStream) => {
-        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />;
+        return <RemoteVideo key={mediaStream.id} stream={mediaStream} simulcast={props.simulcast} />;
       })}
     </div>
   );

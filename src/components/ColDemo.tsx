@@ -95,7 +95,9 @@ const ColDemo: React.FC<Props> = (props) => {
         ) : null}
       </div>
       {props.connectType === "sendonly" || props.connectType === "sendrecv" ? <LocalVideo /> : null}
-      {props.connectType === "recvonly" || props.connectType === "sendrecv" ? <RemoteVideos /> : null}
+      {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
+        <RemoteVideos simulcast={props.simulcast ? true : false} />
+      ) : null}
     </div>
   );
 };
