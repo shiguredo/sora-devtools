@@ -445,6 +445,9 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   try {
     await sora.connect(mediaStream);
   } catch (error) {
+    mediaStream.getTracks().forEach((track) => {
+      track.stop();
+    });
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
@@ -660,6 +663,9 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   try {
     await sora.connect(mediaStream);
   } catch (error) {
+    mediaStream.getTracks().forEach((track) => {
+      track.stop();
+    });
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
