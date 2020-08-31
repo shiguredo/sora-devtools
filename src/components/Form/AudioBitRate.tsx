@@ -17,7 +17,7 @@ const AudioBitRate: React.FC = () => {
       <label className="mr-1" htmlFor="audioBitRate">
         audioBitRate:
       </label>
-      <select id="audioBitRate" className="custom-select" name="audioBitRate" value={audioBitRate} onChange={onChange}>
+      <select id="audioBitRate" name="audioBitRate" className="custom-select" value={audioBitRate} onChange={onChange}>
         <option value="">未指定</option>
         <option value="8">8</option>
         <option value="16">16</option>

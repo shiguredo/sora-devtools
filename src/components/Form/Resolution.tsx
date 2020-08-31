@@ -17,7 +17,7 @@ const Resolution: React.FC = () => {
       <label className="mr-1" htmlFor="resolution">
         resolution:
       </label>
-      <select id="resolution" className="custom-select" name="resolution" value={resolution} onChange={onChange}>
+      <select id="resolution" name="resolution" className="custom-select" value={resolution} onChange={onChange}>
         <option value="">未指定</option>
         <option value="UHD 4096x2160">UHD 4096x2160</option>
         <option value="UHD 3840x2160">UHD 3840x2160</option>

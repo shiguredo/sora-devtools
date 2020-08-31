@@ -16,9 +16,9 @@ const ChannelId: React.FC = () => {
       </label>
       <input
         id="channelId"
-        type="text"
-        className="form-control"
         name="channelId"
+        className="form-control"
+        type="text"
         placeholder="ChannelIdを指定"
         value={channelId}
         onChange={onChange}

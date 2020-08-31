@@ -19,8 +19,8 @@ const AudioCodecType: React.FC = () => {
       </label>
       <select
         id="audioCodecType"
-        className="custom-select"
         name="audioCodecType"
+        className="custom-select"
         value={audioCodecType}
         onChange={onChange}
       >

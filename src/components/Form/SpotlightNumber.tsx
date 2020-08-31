@@ -20,8 +20,8 @@ const SpotlightNumber: React.FC = () => {
       </label>
       <select
         id="spotlightNumber"
-        className="custom-select"
         name="spotlightNumber"
+        className="custom-select"
         value={spotlightNumber}
         onChange={onChange}
       >

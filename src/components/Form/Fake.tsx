@@ -12,7 +12,7 @@ const Fake: React.FC = () => {
   return (
     <div className="col-auto form-inline flex-nowrap mb-1">
       <div className="form-check">
-        <input id="fake" className="form-check-input" type="checkbox" checked={fake} onChange={onChange} />
+        <input id="fake" name="fake" className="form-check-input" type="checkbox" checked={fake} onChange={onChange} />
         <label className="form-check-label" htmlFor="fake">
           fake
         </label>

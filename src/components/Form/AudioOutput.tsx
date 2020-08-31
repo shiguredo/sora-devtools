@@ -16,8 +16,8 @@ const AudioOutput: React.FC = () => {
       </label>
       <select
         id="audioOutput"
-        className="custom-select"
         name="audioOutput"
+        className="custom-select"
         value={audioOutput}
         onChange={onChange}
         disabled={audioOutputDevices.length === 0}

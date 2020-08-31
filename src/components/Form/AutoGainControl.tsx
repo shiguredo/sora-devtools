@@ -14,6 +14,7 @@ const AutoGainControl: React.FC = () => {
       <div className="form-check">
         <input
           id="autoGainControl"
+          name="autoGainControl"
           className="form-check-input"
           type="checkbox"
           checked={autoGainControl}

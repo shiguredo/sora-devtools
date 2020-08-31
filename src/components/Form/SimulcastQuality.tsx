@@ -19,8 +19,8 @@ const SimulcastQuality: React.FC = () => {
       </label>
       <select
         id="simulcastQuality"
-        className="custom-select"
         name="simulcastQuality"
+        className="custom-select"
         value={simulcastQuality}
         onChange={onChange}
       >

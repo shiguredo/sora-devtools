@@ -17,7 +17,7 @@ const FrameRate: React.FC = () => {
       <label className="mr-1" htmlFor="frameRate">
         frameRate:
       </label>
-      <select id="frameRate" className="custom-select" name="frameRate" value={frameRate} onChange={onChange}>
+      <select id="frameRate" name="frameRate" className="custom-select" value={frameRate} onChange={onChange}>
         <option value="">未指定</option>
         <option value="60">60</option>
         <option value="30">30</option>

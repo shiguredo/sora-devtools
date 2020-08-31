@@ -14,6 +14,7 @@ const CpuOveruseDetection: React.FC = () => {
       <div className="form-check">
         <input
           id="cpuOveruseDetection"
+          name="cpuOveruseDetection"
           className="form-check-input"
           type="checkbox"
           checked={cpuOveruseDetection}

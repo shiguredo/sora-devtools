@@ -17,7 +17,7 @@ const Spotlight: React.FC = () => {
       <label className="mr-1" htmlFor="spotlight">
         spotlight:
       </label>
-      <select id="spotlight" className="custom-select" name="spotlight" value={spotlight} onChange={onChange}>
+      <select id="spotlight" name="spotlight" className="custom-select" value={spotlight} onChange={onChange}>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>

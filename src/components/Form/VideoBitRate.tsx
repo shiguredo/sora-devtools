@@ -17,7 +17,7 @@ const VideoBitRate: React.FC = () => {
       <label className="mr-1" htmlFor="videoBitRate">
         videoBitRate:
       </label>
-      <select id="videoBitRate" className="custom-select" name="videoBitRate" value={videoBitRate} onChange={onChange}>
+      <select id="videoBitRate" name="videoBitRate" className="custom-select" value={videoBitRate} onChange={onChange}>
         <option value="">未指定</option>
         <option value="100">100</option>
         <option value="300">300</option>

@@ -14,9 +14,9 @@ const Video: React.FC = () => {
       <div className="form-check">
         <input
           id="video"
+          name="video"
           className="form-check-input"
           type="checkbox"
-          name="video"
           checked={video}
           onChange={onChange}
         />

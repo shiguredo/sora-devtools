@@ -17,8 +17,8 @@ const VideoInput: React.FC = () => {
       </label>
       <select
         id="videoInput"
-        className="custom-select"
         name="videoInput"
+        className="custom-select"
         value={videoInput}
         onChange={onChange}
         disabled={videoInputDevices.length === 0}

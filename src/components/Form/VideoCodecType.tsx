@@ -19,8 +19,8 @@ const VideoCodecType: React.FC = () => {
       </label>
       <select
         id="videoCodecType"
-        className="custom-select"
         name="videoCodecType"
+        className="custom-select"
         value={videoCodecType}
         onChange={onChange}
       >

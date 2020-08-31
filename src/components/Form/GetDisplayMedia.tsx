@@ -14,9 +14,9 @@ const GetDisplayMedia: React.FC = () => {
       <div className="form-check">
         <input
           id="getDisplayMedia"
+          name="getDisplayMedia"
           className="form-check-input"
           type="checkbox"
-          name="getDisplayMedia"
           checked={getDisplayMedia}
           onChange={onChange}
         />
