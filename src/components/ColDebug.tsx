@@ -1,15 +1,34 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { Tab, Tabs } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 
-import DebugPane from "@/components/Debug/Pane";
-import { SoraDemoState } from "@/slice";
+import DebugLogMessages from "@/components/Debug/LogMessages";
+import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
+import DebugStats from "@/components/Debug/Stats";
+import { setDebugType, SoraDemoState } from "@/slice";
 
 const ColDebug: React.FC = () => {
-  const { debug } = useSelector((state: SoraDemoState) => state);
+  const { debug, debugType } = useSelector((state: SoraDemoState) => state);
+  const dispatch = useDispatch();
   if (!debug) return null;
+  const onSelect = (key: string | null): void => {
+    if (key === "log" || key === "notify" || key === "stats") {
+      dispatch(setDebugType(key));
+    }
+  };
   return (
     <div className="col-debug col-6">
-      <DebugPane />
+      <Tabs id="debug-tab" defaultActiveKey={debugType} onSelect={onSelect}>
+        <Tab eventKey="log" title="Log">
+          <DebugLogMessages />
+        </Tab>
+        <Tab eventKey="notify" title="Notfiy">
+          <DebugNotifyMessages />
+        </Tab>
+        <Tab eventKey="stats" title="Stats">
+          <DebugStats />
+        </Tab>
+      </Tabs>
     </div>
   );
 };
