@@ -1,7 +1,5 @@
 name: main
 
-# publish までは一時退避
-
 on:
   push:
     branches:
