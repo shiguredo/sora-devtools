@@ -481,6 +481,7 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+  dispatch(slice.actions.setErrorMessage(null));
 };
 
 type RecvonlyOption = {
@@ -520,6 +521,7 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     throw error;
   }
   dispatch(slice.actions.setSora(sora));
+  dispatch(slice.actions.setErrorMessage(null));
 };
 
 type SendrecvOption = {
@@ -572,6 +574,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+  dispatch(slice.actions.setErrorMessage(null));
 };
 
 export const disconnectSora = () => async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
