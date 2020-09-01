@@ -381,35 +381,6 @@ export function createVideoConstraints(parameters: CreateVideoConstraintsParamet
   return videoConstraints;
 }
 
-// getUserMedia にわたす constraints を生成
-// type CreateGetUserMediaConstraintsParameters = {
-//   audio?: boolean;
-//   autoGainControl?: boolean;
-//   noiseSuppression?: boolean;
-//   echoCancellation?: boolean;
-//   echoCancellationType?: typeof ECHO_CANCELLATION_TYPES[number];
-//   video?: boolean;
-//   frameRate?: string;
-//   resolution?: string;
-//   audioInput?: string;
-//   videoInput?: string;
-// };
-// export function createGetUserMediaConstraints(
-//   parameters: CreateGetUserMediaConstraintsParameters
-// ): MediaStreamConstraints {
-//   return {
-//     audio: createAudioConstraints(
-//       parameters.audio,
-//       parameters.autoGainControl,
-//       parameters.noiseSuppression,
-//       parameters.echoCancellation,
-//       parameters.echoCancellationType,
-//       parameters.audioInput
-//     ),
-//     video: createVideoConstraints(parameters.video, parameters.frameRate, parameters.resolution, parameters.videoInput),
-//   };
-// }
-
 // Fake 用の constraints を生成
 type CreateFakeMediaConstraintsParameters = {
   audio: boolean;
