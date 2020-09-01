@@ -6,7 +6,7 @@ import ButtonMic from "@/components/Button/Mic";
 import IconCamera from "@/components/IconCamera";
 import IconMic from "@/components/IconMic";
 import { setFakeVolume, SoraDemoState } from "@/slice";
-import { CustomHTMLVideoElement } from "@/utils";
+import { ConnectType, CustomHTMLVideoElement } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
@@ -69,31 +69,49 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
   return <VideoElement {...props} />;
 });
 
-const LocalVideo: React.FC = () => {
+const StatusAudioVideo: React.FC = () => {
+  const { enabledMic, enabledCamera } = useSelector((state: SoraDemoState) => state);
+  return (
+    <>
+      <p id="audio-video-status" className="mx-1">
+        <IconMic mute={!enabledMic} /> / <IconCamera mute={!enabledCamera} />
+      </p>
+      <ButtonMic />
+      <ButtonCamera />
+    </>
+  );
+};
+
+type SelfConnectionProps = {
+  connectType: ConnectType;
+};
+const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { enabledMic, enabledCamera, immutable, fake, audioOutput } = useSelector((state: SoraDemoState) => state);
+  const { immutable, fake, audioOutput } = useSelector((state: SoraDemoState) => state);
   const { sora, localMediaStream } = immutable;
   return (
     <div className="row mt-2">
       <div className="col-auto">
-        {localMediaStream !== null && (
-          <div className="video-status">
-            <p id="client-id">{sora && sora.clientId}</p>
-            <p id="audio-video-status" className="mx-1">
-              <IconMic mute={!enabledMic} /> / <IconCamera mute={!enabledCamera} />
-            </p>
-            <ButtonMic />
-            <ButtonCamera />
-          </div>
-        )}
-        <div className="d-flex">
-          <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
-          {localMediaStream !== null && <VolumeVisualizer stream={localMediaStream} height={height} />}
+        <div className="video-status">
+          {sora !== null && (
+            <>
+              <p id="client-id">self: {sora.clientId}</p>
+              {props.connectType !== "recvonly" && <StatusAudioVideo />}
+            </>
+          )}
         </div>
-        {fake && <VolumeRange />}
+        {props.connectType !== "recvonly" && (
+          <>
+            <div className="d-flex">
+              <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
+              {localMediaStream !== null && <VolumeVisualizer stream={localMediaStream} height={height} />}
+            </div>
+            {fake && <VolumeRange />}
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-export default LocalVideo;
+export default SelfConnection;

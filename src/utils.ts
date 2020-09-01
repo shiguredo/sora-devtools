@@ -23,6 +23,8 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
+export type ConnectType = "sendonly" | "sendrecv" | "recvonly";
+
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
   setSinkId(audioId: string): void;

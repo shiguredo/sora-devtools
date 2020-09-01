@@ -29,13 +29,13 @@ import FormVideo from "@/components/Form/Video";
 import FormVideoBitRate from "@/components/Form/VideoBitRate";
 import FormVideoCodecType from "@/components/Form/VideoCodecType";
 import FormVideoInput from "@/components/Form/VideoInput";
-import LocalVideo from "@/components/LocalVideo";
 import RemoteVideos from "@/components/RemoteVideos";
+import SelfConnection from "@/components/SelfConnection";
 import { SoraDemoState } from "@/slice";
-import { EnabledParameters } from "@/utils";
+import { ConnectType, EnabledParameters } from "@/utils";
 
 type Props = {
-  connectType: "sendonly" | "sendrecv" | "recvonly";
+  connectType: ConnectType;
   multistream?: boolean;
   simulcast?: boolean;
   spotlight?: boolean;
@@ -94,7 +94,7 @@ const ColDemo: React.FC<Props> = (props) => {
           </>
         ) : null}
       </div>
-      {props.connectType === "sendonly" || props.connectType === "sendrecv" ? <LocalVideo /> : null}
+      <SelfConnection connectType={props.connectType} />
       {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
         <RemoteVideos simulcast={props.simulcast ? true : false} />
       ) : null}
