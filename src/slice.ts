@@ -303,7 +303,7 @@ const slice = createSlice({
     setNotifyMessages: (state, action: PayloadAction<SoraNotifyMessage>) => {
       state.notifyMessages.push(action.payload);
     },
-    setSpotlighConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
+    setSpotlightConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
       const spotlightConnectionIds = Object.assign(state.spotlightConnectionIds, {
         [action.payload.spotlightId]: action.payload.connectionId,
       });
@@ -380,7 +380,7 @@ function setSoraCallbacks(
       typeof message.connection_id === "string"
     ) {
       dispatch(
-        slice.actions.setSpotlighConnectionIds({
+        slice.actions.setSpotlightConnectionIds({
           spotlightId: message.spotlight_id,
           connectionId: message.connection_id,
         })
