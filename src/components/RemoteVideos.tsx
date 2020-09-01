@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import ChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
 import { SoraDemoState } from "@/slice";
+import { CustomHTMLVideoElement } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
@@ -10,20 +11,22 @@ type VideoElementProps = {
   stream: MediaStream;
   setHeight: Dispatch<SetStateAction<number>>;
   mute: boolean;
+  audioOutput: string;
 };
 const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const { stream, setHeight, mute, audioOutput } = props;
+  const videoRef = useRef<CustomHTMLVideoElement>(null);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        props.setHeight(entry.contentRect.height);
+        setHeight(entry.contentRect.height);
       }
     });
     if (videoRef.current) {
-      if (props.mute) {
+      if (mute) {
         videoRef.current.muted = true;
       }
-      videoRef.current.srcObject = props.stream;
+      videoRef.current.srcObject = stream;
       resizeObserver.observe(videoRef.current);
     }
     return () => {
@@ -31,6 +34,9 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
+    videoRef.current.setSinkId(audioOutput);
+  }
   return <video autoPlay playsInline controls ref={videoRef} />;
 };
 
@@ -44,7 +50,7 @@ type RemoteVideoProps = {
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
+  const { audioOutput, mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -61,7 +67,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         ) : null}
       </div>
       <div className="d-flex align-items-start">
-        <VideoElementMemo stream={props.stream} setHeight={setHeight} mute={mute} />
+        <VideoElementMemo stream={props.stream} setHeight={setHeight} mute={mute} audioOutput={audioOutput} />
         <VolumeVisualizer stream={props.stream} height={height} />
       </div>
     </div>

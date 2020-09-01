@@ -6,6 +6,7 @@ import ButtonMic from "@/components/Button/Mic";
 import IconCamera from "@/components/IconCamera";
 import IconMic from "@/components/IconMic";
 import { setFakeVolume, SoraDemoState } from "@/slice";
+import { CustomHTMLVideoElement } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
@@ -33,14 +34,16 @@ const VolumeRange: React.FC = () => {
 
 type VideoElementProps = {
   stream: MediaStream | null;
+  audioOutput: string;
   setHeight: Dispatch<SetStateAction<number>>;
 };
 const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const { stream, audioOutput, setHeight } = props;
+  const videoRef = useRef<CustomHTMLVideoElement>(null);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        props.setHeight(entry.contentRect.height);
+        setHeight(entry.contentRect.height);
       }
     });
     if (videoRef.current) {
@@ -53,9 +56,12 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
   }, []);
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = props.stream;
+      videoRef.current.srcObject = stream;
     }
-  }, [props.stream]);
+  }, [stream]);
+  if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
+    videoRef.current.setSinkId(audioOutput);
+  }
   return <video id="local-video" autoPlay playsInline controls muted ref={videoRef} />;
 };
 
@@ -65,7 +71,7 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
 
 const LocalVideo: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
-  const { enabledMic, enabledCamera, immutable, fake } = useSelector((state: SoraDemoState) => state);
+  const { enabledMic, enabledCamera, immutable, fake, audioOutput } = useSelector((state: SoraDemoState) => state);
   const { sora, localMediaStream } = immutable;
   return (
     <div className="row mt-2">
@@ -81,7 +87,7 @@ const LocalVideo: React.FC = () => {
           </div>
         )}
         <div className="d-flex">
-          <VideoElementMemo stream={localMediaStream} setHeight={setHeight} />
+          <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
           {localMediaStream !== null && <VolumeVisualizer stream={localMediaStream} height={height} />}
         </div>
         {fake && <VolumeRange />}

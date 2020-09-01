@@ -23,6 +23,11 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
+// HTMLVideoElement interface に setSinkId を追加
+export interface CustomHTMLVideoElement extends HTMLVideoElement {
+  setSinkId(audioId: string): void;
+}
+
 // MediaDevices interface に getDisplayMedia を追加
 export interface SoraDemoMediaDevices extends MediaDevices {
   getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
