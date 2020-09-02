@@ -42,22 +42,24 @@ const LogDescription: React.FC<LogDescriptionProps> = (props) => {
 };
 
 type CollapseLogProps = {
-  title: string;
-  description: string;
+  message: {
+    title: string;
+    description: string;
+  };
   timestamp: number;
 };
 const CollapseLog: React.FC<CollapseLogProps> = (props) => {
-  const { title, description, timestamp } = props;
+  const { message, timestamp } = props;
   const [show, setShow] = useState(false);
-  const ariaControls = title + timestamp;
+  const ariaControls = message.title + timestamp;
   return (
     <div>
       <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-        <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(timestamp)}] {title}
+        <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(timestamp)}] {message.title}
       </a>
       <Collapse in={show}>
         <div className="ml-4">
-          <LogDescription description={description} />
+          <LogDescription description={message.description} />
         </div>
       </Collapse>
     </div>
@@ -69,7 +71,7 @@ const LogMessages: React.FC = () => {
   return (
     <>
       {logMessages.map((log) => {
-        return <CollapseLog key={log.title + log.timestamp} {...log} />;
+        return <CollapseLog key={log.message.title + log.timestamp} {...log} />;
       })}
     </>
   );

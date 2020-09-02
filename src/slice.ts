@@ -27,9 +27,13 @@ import {
 } from "@/utils";
 
 type SoraLogMessage = {
-  timestamp: number;
   title: string;
   description: string;
+};
+
+type LogMessage = {
+  timestamp: number;
+  message: SoraLogMessage;
 };
 
 type DebugType = "log" | "notify" | "stats";
@@ -37,8 +41,12 @@ type DebugType = "log" | "notify" | "stats";
 type SoraNotifyMessage = {
   type: string;
   event_type: string;
-  timestamp: number;
   [x: string]: unknown;
+};
+
+type NotifyMessage = {
+  timestamp: number;
+  message: SoraNotifyMessage;
 };
 
 export type SoraDemoState = {
@@ -73,10 +81,10 @@ export type SoraDemoState = {
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
   };
-  logMessages: SoraLogMessage[];
+  logMessages: LogMessage[];
   mute: boolean;
   noiseSuppression: boolean;
-  notifyMessages: SoraNotifyMessage[];
+  notifyMessages: NotifyMessage[];
   resolution: typeof RESOLUTIONS[number];
   simulcastQuality: typeof SIMULCAST_QUARITY[number];
   spotlightConnectionIds: {
@@ -297,10 +305,10 @@ const slice = createSlice({
     setDebugType: (state, action: PayloadAction<DebugType>) => {
       state.debugType = action.payload;
     },
-    setLogMessages: (state, action: PayloadAction<SoraLogMessage>) => {
+    setLogMessages: (state, action: PayloadAction<LogMessage>) => {
       state.logMessages.push(action.payload);
     },
-    setNotifyMessages: (state, action: PayloadAction<SoraNotifyMessage>) => {
+    setNotifyMessages: (state, action: PayloadAction<NotifyMessage>) => {
       state.notifyMessages.push(action.payload);
     },
     setSpotlightConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
@@ -367,9 +375,11 @@ function setSoraCallbacks(
   sora.on("log", (title: string, description: boolean | number | string | Record<string, unknown>) => {
     dispatch(
       slice.actions.setLogMessages({
-        title: title,
-        description: JSON.stringify(description, null, 2),
         timestamp: new Date().getTime(),
+        message: {
+          title: title,
+          description: JSON.stringify(description, null, 2),
+        },
       })
     );
   });
@@ -386,8 +396,12 @@ function setSoraCallbacks(
         })
       );
     }
-    message.timestamp = new Date().getTime();
-    dispatch(slice.actions.setNotifyMessages(message));
+    dispatch(
+      slice.actions.setNotifyMessages({
+        timestamp: new Date().getTime(),
+        message: message,
+      })
+    );
   });
   sora.on("track", (event: RTCTrackEvent) => {
     const { immutable } = getState();
