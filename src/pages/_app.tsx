@@ -2,12 +2,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./_app.css";
 
 import { AppProps } from "next/app";
+import { ReactElement } from "react";
 import { Provider } from "react-redux";
 
 import store from "../store";
 
-// eslint-disable-next-line
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
     <Provider store={store}>
       <Component {...pageProps} />
