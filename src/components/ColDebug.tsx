@@ -10,7 +10,9 @@ import { setDebugType, SoraDemoState } from "@/slice";
 const ColDebug: React.FC = () => {
   const { debug, debugType } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
-  if (!debug) return null;
+  if (!debug) {
+    return null;
+  }
   const onSelect = (key: string | null): void => {
     if (key === "log" || key === "notify" || key === "stats") {
       dispatch(setDebugType(key));

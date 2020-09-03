@@ -49,6 +49,7 @@
       "args": "all",
       "argsIgnorePattern": "^_"
     }],
-    "simple-import-sort/sort": "error"
+    "simple-import-sort/sort": "error",
+    "curly": "error"
   }
 }

@@ -457,9 +457,13 @@ export function drawFakeCanvas(
   fontSize: number,
   text: string
 ): void {
-  if (canvas === null) return;
+  if (canvas === null) {
+    return;
+  }
   const context = canvas.getContext("2d");
-  if (!context) return;
+  if (!context) {
+    return;
+  }
   context.globalCompositeOperation = "source-over";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = "#" + ("0".repeat(6) + colorCode.toString(16)).slice(-6);
@@ -474,9 +478,15 @@ export function drawFakeCanvas(
 
 // 新/旧 spotlight の互換性を保つための parser
 export function parseSpotlight(spotlight: string): boolean | number | undefined {
-  if (spotlight === "true") return true;
-  if (!spotlight) return undefined;
+  if (spotlight === "true") {
+    return true;
+  }
+  if (!spotlight) {
+    return undefined;
+  }
   const numberSpotlight = parseInt(spotlight, 10);
-  if (isNaN(numberSpotlight)) return undefined;
+  if (isNaN(numberSpotlight)) {
+    return undefined;
+  }
   return numberSpotlight;
 }

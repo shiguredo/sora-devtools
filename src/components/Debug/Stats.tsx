@@ -52,7 +52,9 @@ const DebugGetStats: React.FC = () => {
     };
   }, []);
   useEffect(() => {
-    if (immutable.sora === null) return;
+    if (immutable.sora === null) {
+      return;
+    }
     const createStats = async (): Promise<Stats[]> => {
       const newStatsReport: Stats[] = [];
       if (immutable.sora && immutable.sora.pc && immutable.sora.pc.iceConnectionState !== "closed") {

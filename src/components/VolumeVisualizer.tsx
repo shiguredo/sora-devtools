@@ -60,9 +60,13 @@ const VolumeVisualizer: React.FC<VolumeVisualizerProps> = (props) => {
       // dataArray の最低値が 128 のため、最小値を 0 にする
       const currentVolume = Math.max.apply(null, array) - 128;
       const canvas = canvasRef.current;
-      if (canvas === null) return;
+      if (canvas === null) {
+        return;
+      }
       const ctx = canvas.getContext("2d");
-      if (ctx === null) return;
+      if (ctx === null) {
+        return;
+      }
       ctx.clearRect(0, 0, CANVAS_WIDTH, canvas.height);
       ctx.save();
       // 背景のバーをレンダリングする

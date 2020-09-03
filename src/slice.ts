@@ -335,7 +335,9 @@ async function createMediaStream(state: SoraDemoState): Promise<[MediaStream, Ga
     const { canvas, stream, gainNode } = createFakeMediaStream(constraints);
     state.fakeContents.worker.onmessage = (event) => {
       const json = JSON.parse(event.data);
-      if (json.type !== "update") return;
+      if (json.type !== "update") {
+        return;
+      }
       drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, json.counter.toString());
     };
     state.fakeContents.worker.postMessage(JSON.stringify({ type: "start", interval: 1000 / constraints.frameRate }));
