@@ -55,7 +55,7 @@ input[type="range"]:active::-moz-range-progress {
 }
 
 .bg-sora {
-  background-color: #0071BC!important;
+  background-color: #0071BC !important;
 }
 
 .list-url {
@@ -105,13 +105,13 @@ input[type="range"]:active::-moz-range-progress {
 
 .debug-title {
   cursor: pointer;
-  color: #FFFFFF !important ;
+  color: #FFFFFF !important;
 }
 
 .debug-message {
   display: flex;
   flex-wrap: nowrap;
-  color: #FFFFFF !important ;
+  color: #FFFFFF !important;
 }
 
 .debug-message pre {
