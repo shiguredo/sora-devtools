@@ -42,9 +42,9 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
   const videoRef = useRef<CustomHTMLVideoElement>(null);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
+      entries.forEach((entry) => {
         setHeight(entry.contentRect.height);
-      }
+      });
     });
     if (videoRef.current) {
       resizeObserver.observe(videoRef.current);
