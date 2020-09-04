@@ -47,12 +47,7 @@ const SpotlightLegacySendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo
-              connectType="sendonly"
-              multistream={true}
-              spotlight={true}
-              enabledParameters={ENABLED_PARAMETERS}
-            />
+            <ColDemo connectType="sendonly" multistream spotlight enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

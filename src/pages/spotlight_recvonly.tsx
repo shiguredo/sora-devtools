@@ -46,13 +46,7 @@ const SpotlightRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo
-              connectType="recvonly"
-              multistream={true}
-              spotlight={true}
-              simulcast={true}
-              enabledParameters={ENABLED_PARAMETERS}
-            />
+            <ColDemo connectType="recvonly" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

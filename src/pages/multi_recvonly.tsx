@@ -31,7 +31,7 @@ const MultiRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" multistream={true} enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo connectType="recvonly" multistream enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

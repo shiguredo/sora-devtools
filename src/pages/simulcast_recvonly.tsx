@@ -35,7 +35,7 @@ const SimulcastRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" simulcast={true} enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo connectType="recvonly" simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

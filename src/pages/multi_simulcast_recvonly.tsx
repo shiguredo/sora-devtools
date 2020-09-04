@@ -35,12 +35,7 @@ const MultiSimulcastRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo
-              connectType="recvonly"
-              multistream={true}
-              simulcast={true}
-              enabledParameters={ENABLED_PARAMETERS}
-            />
+            <ColDemo connectType="recvonly" multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

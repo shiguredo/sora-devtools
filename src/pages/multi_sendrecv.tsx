@@ -46,7 +46,7 @@ const MultiSendrecv: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendrecv" multistream={true} enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo connectType="sendrecv" multistream enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

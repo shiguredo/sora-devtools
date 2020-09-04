@@ -50,6 +50,7 @@
       "argsIgnorePattern": "^_"
     }],
     "simple-import-sort/sort": "error",
-    "curly": "error"
+    "curly": "error",
+    "react/jsx-boolean-value": "warn"
   }
 }

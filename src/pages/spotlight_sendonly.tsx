@@ -59,13 +59,7 @@ const SpotlightSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo
-              connectType="sendonly"
-              multistream={true}
-              spotlight={true}
-              simulcast={true}
-              enabledParameters={ENABLED_PARAMETERS}
-            />
+            <ColDemo connectType="sendonly" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

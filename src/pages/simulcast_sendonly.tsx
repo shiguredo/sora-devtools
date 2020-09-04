@@ -56,7 +56,7 @@ const SimulcastSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" simulcast={true} enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo connectType="sendonly" simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

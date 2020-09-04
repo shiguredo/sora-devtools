@@ -46,7 +46,7 @@ const MultiSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" multistream={true} enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo connectType="sendonly" multistream enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

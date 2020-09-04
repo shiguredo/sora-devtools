@@ -57,12 +57,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo
-              connectType="sendrecv"
-              multistream={true}
-              simulcast={true}
-              enabledParameters={ENABLED_PARAMETERS}
-            />
+            <ColDemo connectType="sendrecv" multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>
