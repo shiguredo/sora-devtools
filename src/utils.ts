@@ -44,7 +44,6 @@ export type EnabledParameters = {
   audioOutput?: boolean;
   autoGainControl?: boolean;
   channelId?: boolean;
-  cpuOveruseDetection?: boolean;
   echoCancellation?: boolean;
   echoCancellationType?: boolean;
   fake?: boolean;
@@ -156,7 +155,6 @@ export type QueryStringParameters = {
   audioOutput: string;
   autoGainControl: boolean;
   channelId: string;
-  cpuOveruseDetection: boolean;
   debug: boolean;
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
@@ -164,6 +162,7 @@ export type QueryStringParameters = {
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
   getDisplayMedia: boolean;
+  googCpuOveruseDetection: boolean;
   noiseSuppression: boolean;
   mute: boolean;
   spotlight: typeof SPOTLIGHTS[number];
@@ -186,7 +185,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioOutput,
     autoGainControl,
     channelId,
-    cpuOveruseDetection,
     debug,
     echoCancellation,
     echoCancellationType,
@@ -194,6 +192,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     fakeVolume,
     frameRate,
     getDisplayMedia,
+    googCpuOveruseDetection,
     noiseSuppression,
     mute,
     spotlight,
@@ -221,8 +220,8 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (channelId) {
     queryStringParameters.channelId = String(channelId);
   }
-  if (typeof cpuOveruseDetection === "boolean") {
-    queryStringParameters.cpuOveruseDetection = cpuOveruseDetection;
+  if (typeof googCpuOveruseDetection === "boolean") {
+    queryStringParameters.googCpuOveruseDetection = googCpuOveruseDetection;
   }
   if (typeof debug === "boolean") {
     queryStringParameters.debug = debug;

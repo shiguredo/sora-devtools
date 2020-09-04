@@ -14,7 +14,6 @@ import FormAudioInput from "@/components/Form/AudioInput";
 import FormAudioOutput from "@/components/Form/AudioOutput";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
-import FormCpuOveruseDetection from "@/components/Form/CpuOveruseDetection";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
 import FormFake from "@/components/Form/Fake";
@@ -48,7 +47,6 @@ const ColDemo: React.FC<Props> = (props) => {
       <Alert />
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
-        {props.enabledParameters.cpuOveruseDetection ? <FormCpuOveruseDetection /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.fake ? <FormFake /> : null}

@@ -33,9 +33,6 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.channelId) {
       parameters.push(`channelId=${state.channelId}`);
     }
-    if (props.enabledParameters.cpuOveruseDetection) {
-      parameters.push(`cpuOveruseDetection=${state.cpuOveruseDetection}`);
-    }
     if (props.enabledParameters.echoCancellation) {
       parameters.push(`echoCancellation=${state.echoCancellation}`);
     }

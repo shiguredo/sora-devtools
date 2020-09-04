@@ -22,7 +22,6 @@ const ENABLED_PARAMETERS = {
   audioOutput: true,
   autoGainControl: true,
   channelId: true,
-  cpuOveruseDetection: true,
   echoCancellation: true,
   echoCancellationType: true,
   fake: true,

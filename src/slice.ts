@@ -59,7 +59,7 @@ export type SoraDemoState = {
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: boolean;
   channelId: string;
-  cpuOveruseDetection: boolean;
+  googCpuOveruseDetection: boolean | null;
   debug: boolean;
   debugType: DebugType;
   echoCancellation: boolean;
@@ -109,7 +109,7 @@ const initialState: SoraDemoState = {
   audioOutputDevices: [],
   autoGainControl: true,
   channelId: "sora",
-  cpuOveruseDetection: false,
+  googCpuOveruseDetection: null,
   debug: false,
   debugType: "log",
   echoCancellation: true,
@@ -172,8 +172,8 @@ const slice = createSlice({
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload;
     },
-    setCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
-      state.cpuOveruseDetection = action.payload;
+    setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
+      state.googCpuOveruseDetection = action.payload;
     },
     setEchoCancellation: (state, action: PayloadAction<boolean>) => {
       state.echoCancellation = action.payload;
@@ -479,9 +479,9 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     simulcast: options?.simulcast === true ? true : false,
   };
   const sora = connection.sendonly(state.channelId, null, connectionOptions);
-  if (!state.cpuOveruseDetection) {
+  if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
-      optional: [{ googCpuOveruseDetection: false }],
+      optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
     };
   }
   setSoraCallbacks(dispatch, getState, sora);
@@ -572,9 +572,9 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
   };
   const sora = connection.sendrecv(state.channelId, null, connectionOptions);
-  if (!state.cpuOveruseDetection) {
+  if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
-      optional: [{ googCpuOveruseDetection: false }],
+      optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
     };
   }
   setSoraCallbacks(dispatch, getState, sora);
@@ -663,7 +663,6 @@ export const setInitialParameter = () => async (dispatch: Dispatch, _: () => Sor
     audioOutput,
     autoGainControl,
     channelId,
-    cpuOveruseDetection,
     debug,
     echoCancellation,
     echoCancellationType,
@@ -671,6 +670,7 @@ export const setInitialParameter = () => async (dispatch: Dispatch, _: () => Sor
     fakeVolume,
     frameRate,
     getDisplayMedia,
+    googCpuOveruseDetection,
     noiseSuppression,
     mute,
     spotlight,
@@ -703,8 +703,8 @@ export const setInitialParameter = () => async (dispatch: Dispatch, _: () => Sor
   if (channelId !== undefined) {
     dispatch(slice.actions.setChannelId(channelId));
   }
-  if (cpuOveruseDetection !== undefined) {
-    dispatch(slice.actions.setCpuOveruseDetection(cpuOveruseDetection));
+  if (googCpuOveruseDetection !== undefined) {
+    dispatch(slice.actions.setGoogCpuOveruseDetection(googCpuOveruseDetection));
   }
   if (echoCancellation !== undefined) {
     dispatch(slice.actions.setEchoCancellation(echoCancellation));
@@ -769,7 +769,6 @@ export const {
   setAudioOutput,
   setAutoGainControl,
   setChannelId,
-  setCpuOveruseDetection,
   setDebug,
   setDebugType,
   setEchoCancellation,
