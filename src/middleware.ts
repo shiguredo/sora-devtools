@@ -18,7 +18,7 @@ const middleware = [
   }),
 ];
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NEXT_PUBLIC_REDUX_LOGGER === "true") {
   middleware.push(logger);
 }
 
