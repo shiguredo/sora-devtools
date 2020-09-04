@@ -93,22 +93,22 @@ const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
     <div className="row mt-2">
       <div className="col-auto">
         <div className="video-status">
-          {sora !== null && (
+          {sora !== null ? (
             <>
               <p id="client-id">self: {sora.clientId}</p>
-              {props.connectType !== "recvonly" && <StatusAudioVideo />}
+              {props.connectType !== "recvonly" ? <StatusAudioVideo /> : null}
             </>
-          )}
+          ) : null}
         </div>
-        {props.connectType !== "recvonly" && (
+        {props.connectType !== "recvonly" ? (
           <>
             <div className="d-flex">
               <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
-              {localMediaStream !== null && <VolumeVisualizer stream={localMediaStream} height={height} />}
+              {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
             </div>
-            {fake && <VolumeRange />}
+            {fake ? <VolumeRange /> : null}
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
