@@ -1,16 +1,16 @@
-import Head from "next/head";
+import NextHead from "next/head";
 import React from "react";
 
 type Props = {
   title: string;
 };
 
-const CustomHead: React.FC<Props> = (props) => {
+const Head: React.FC<Props> = (props) => {
   return (
-    <Head>
+    <NextHead>
       <title>Sora DEMO {props.title}</title>
-    </Head>
+    </NextHead>
   );
 };
 
-export default CustomHead;
+export default Head;
