@@ -23,6 +23,7 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
+// Sora demo の接続種類
 export type ConnectType = "sendonly" | "sendrecv" | "recvonly";
 
 // HTMLVideoElement interface に setSinkId を追加
@@ -59,6 +60,31 @@ export type EnabledParameters = {
   videoCodecType?: boolean;
   videoInput?: boolean;
 };
+
+// Debug log message の Type
+export type LogMessage = {
+  timestamp: number;
+  message: {
+    title: string;
+    description: string;
+  };
+};
+
+// Sora on notify callback の引数 Type
+export type SoraNotifyMessage = {
+  type: string;
+  event_type: string;
+  [x: string]: unknown;
+};
+
+// Debug notify message の Type
+export type NotifyMessage = {
+  timestamp: number;
+  message: SoraNotifyMessage;
+};
+
+// Debug 表示タブ選択状態用の Type
+export type DebugType = "log" | "notify" | "stats";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {

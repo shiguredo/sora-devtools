@@ -20,34 +20,15 @@ import {
   createFakeMediaStream,
   createSignalingURL,
   createVideoConstraints,
+  DebugType,
   drawFakeCanvas,
+  LogMessage,
+  NotifyMessage,
   parseQueryString,
   parseSpotlight,
   SoraDemoMediaDevices,
+  SoraNotifyMessage,
 } from "@/utils";
-
-type SoraLogMessage = {
-  title: string;
-  description: string;
-};
-
-type LogMessage = {
-  timestamp: number;
-  message: SoraLogMessage;
-};
-
-type DebugType = "log" | "notify" | "stats";
-
-type SoraNotifyMessage = {
-  type: string;
-  event_type: string;
-  [x: string]: unknown;
-};
-
-type NotifyMessage = {
-  timestamp: number;
-  message: SoraNotifyMessage;
-};
 
 export type SoraDemoState = {
   audio: boolean;
@@ -201,7 +182,9 @@ const slice = createSlice({
       state.fakeContents.gainNode = action.payload;
     },
     setInitialFakeContents: (state) => {
+      // Fake canvas の背景色で使う color code を生成
       state.fakeContents.colorCode = Math.floor(Math.random() * 0xffffff);
+      // Fake canvas を表示しているブラウザタブがバックグラウンドへ移動しても canvas のレンダリングを続けるために worker を生成
       const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
       state.fakeContents.worker = new Worker(url);
     },
@@ -312,6 +295,7 @@ const slice = createSlice({
       state.notifyMessages.push(action.payload);
     },
     setSpotlightConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
+      // Spotlight 有効時に streamID(spotligId) と映像の配信者ID(connectionId) のマッピングを保存
       const spotlightConnectionIds = Object.assign(state.spotlightConnectionIds, {
         [action.payload.spotlightId]: action.payload.connectionId,
       });
@@ -320,6 +304,8 @@ const slice = createSlice({
   },
 });
 
+// State に応じて MediaStream インスタンスを生成する
+// Fake の場合には volume control 用の GainNode も同時に生成する
 async function createMediaStream(state: SoraDemoState): Promise<[MediaStream, GainNode | null]> {
   if (state.getDisplayMedia) {
     return [await (navigator.mediaDevices as SoraDemoMediaDevices).getDisplayMedia({ video: true }), null];
@@ -369,6 +355,7 @@ async function createMediaStream(state: SoraDemoState): Promise<[MediaStream, Ga
   return [mediaStream, null];
 }
 
+// Sora connection オブジェクトに callback をセットする
 function setSoraCallbacks(
   dispatch: Dispatch,
   getState: () => SoraDemoState,
@@ -391,6 +378,7 @@ function setSoraCallbacks(
       typeof message.spotlight_id === "string" &&
       typeof message.connection_id === "string"
     ) {
+      // Spotlight 有効時に stream と映像の配信者の connection_id のマッピングが送られてくるため表示用に保存
       dispatch(
         slice.actions.setSpotlightConnectionIds({
           spotlightId: message.spotlight_id,
@@ -447,6 +435,7 @@ function setSoraCallbacks(
   });
 }
 
+// Sora との配信のみ接続
 type SendonlyOption = {
   multistream?: boolean;
   spotlight?: boolean;
@@ -500,6 +489,7 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   dispatch(slice.actions.setErrorMessage(null));
 };
 
+// Sora との視聴のみ接続
 type RecvonlyOption = {
   multistream?: boolean;
   spotlight?: boolean;
@@ -540,6 +530,7 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
   dispatch(slice.actions.setErrorMessage(null));
 };
 
+// Sora との配信/視聴接続
 type SendrecvOption = {
   spotlight?: boolean;
   simulcast?: boolean;
@@ -593,6 +584,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   dispatch(slice.actions.setErrorMessage(null));
 };
 
+// Sora との切断処理
 export const disconnectSora = () => async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
   const { immutable } = getState();
   if (immutable.sora) {
@@ -600,6 +592,7 @@ export const disconnectSora = () => async (_: Dispatch, getState: () => SoraDemo
   }
 };
 
+// デバイス一覧を取得
 export const setMediaDevices = () => async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
   const deviceInfos = await navigator.mediaDevices.enumerateDevices();
   const audioInputDevices: MediaDeviceInfo[] = [];
@@ -622,6 +615,7 @@ export const setMediaDevices = () => async (dispatch: Dispatch, _getState: () =>
   dispatch(slice.actions.setAudioOutputDevices(audioOutputDevices));
 };
 
+// デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新
 export const updateMediaStream = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
   const state = getState();
   if (!state.immutable.sora) {
@@ -654,6 +648,7 @@ export const updateMediaStream = () => async (dispatch: Dispatch, getState: () =
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
 };
 
+// component レンダリング後に画面初期状態を更新
 export const setInitialParameter = () => async (dispatch: Dispatch, _: () => SoraDemoState): Promise<void> => {
   const {
     audio,
