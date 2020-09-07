@@ -320,13 +320,13 @@ async function createMediaStream(state: SoraDemoState): Promise<[MediaStream, Ga
     });
     const { canvas, stream, gainNode } = createFakeMediaStream(constraints);
     state.fakeContents.worker.onmessage = (event) => {
-      const json = JSON.parse(event.data);
+      const json = event.data;
       if (json.type !== "update") {
         return;
       }
       drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, json.counter.toString());
     };
-    state.fakeContents.worker.postMessage(JSON.stringify({ type: "start", interval: 1000 / constraints.frameRate }));
+    state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
     return [stream, gainNode];
   }
   const mediaStream = new MediaStream();
@@ -427,7 +427,7 @@ function setSoraCallbacks(
       });
     });
     if (fakeContents.worker) {
-      fakeContents.worker.postMessage(JSON.stringify({ type: "stop" }));
+      fakeContents.worker.postMessage({ type: "stop" });
     }
     dispatch(slice.actions.setSora(null));
     dispatch(slice.actions.setLocalMediaStream(null));
