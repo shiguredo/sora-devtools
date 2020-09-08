@@ -46,6 +46,7 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
 
 type RemoteVideoProps = {
   stream: MediaStream;
+  multistream: boolean;
   simulcast: boolean;
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
@@ -58,7 +59,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         <p className="mx-1">
           {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
         </p>
-        {props.simulcast ? (
+        {props.multistream && props.simulcast ? (
           <>
             <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
             <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
@@ -75,6 +76,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
 };
 
 type RemoteVideosProps = {
+  multistream: boolean;
   simulcast: boolean;
 };
 const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
@@ -83,7 +85,14 @@ const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
   return (
     <div className="row mt-2">
       {remoteMediaStreams.map((mediaStream) => {
-        return <RemoteVideo key={mediaStream.id} stream={mediaStream} simulcast={props.simulcast} />;
+        return (
+          <RemoteVideo
+            key={mediaStream.id}
+            stream={mediaStream}
+            multistream={props.multistream}
+            simulcast={props.simulcast}
+          />
+        );
       })}
     </div>
   );

@@ -94,7 +94,7 @@ const ColDemo: React.FC<Props> = (props) => {
       </div>
       <SelfConnection connectType={props.connectType} />
       {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
-        <RemoteVideos simulcast={props.simulcast ? true : false} />
+        <RemoteVideos multistream={props.multistream === true} simulcast={props.simulcast === true} />
       ) : null}
     </div>
   );
