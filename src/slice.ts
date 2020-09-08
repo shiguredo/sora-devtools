@@ -406,7 +406,6 @@ function setSoraCallbacks(
       if (event && event.target) {
         return stream.id === (event.target as MediaStream).id;
       }
-      return false;
     });
     if (mediaStream) {
       dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id));
