@@ -403,7 +403,7 @@ function setSoraCallbacks(
   sora.on("removetrack", (event: MediaStreamTrackEvent) => {
     const { immutable } = getState();
     const mediaStream = immutable.remoteMediaStreams.find((stream) => {
-      if (event && event.target) {
+      if (event?.target) {
         return stream.id === (event.target as MediaStream).id;
       }
     });
