@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "re
 import { useSelector } from "react-redux";
 
 import ChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
+import ResetSimulcastQualityByStreamId from "@/components/Button/ResetSimulcastQualityByStreamId";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement } from "@/utils";
 
@@ -48,6 +49,7 @@ type RemoteVideoProps = {
   stream: MediaStream;
   multistream: boolean;
   simulcast: boolean;
+  spotlight: boolean;
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
@@ -64,6 +66,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
             <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
             <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
             <ChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+            {props.spotlight ? <ResetSimulcastQualityByStreamId streamId={props.stream.id} /> : null}
           </>
         ) : null}
       </div>
@@ -78,6 +81,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
 type RemoteVideosProps = {
   multistream: boolean;
   simulcast: boolean;
+  spotlight: boolean;
 };
 const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
   const { immutable } = useSelector((state: SoraDemoState) => state);
@@ -91,6 +95,7 @@ const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
             stream={mediaStream}
             multistream={props.multistream}
             simulcast={props.simulcast}
+            spotlight={props.spotlight}
           />
         );
       })}
