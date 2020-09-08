@@ -29,8 +29,8 @@ const SpotlightLegacyRecvonly: React.FC = () => {
   }, []);
   return (
     <>
-      <Head title={"spotlight recvonly"} />
-      <Header pageName="spotlight recvonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Head title={"spotlight legacy recvonly"} />
+      <Header pageName="spotlight legacy recvonly" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">

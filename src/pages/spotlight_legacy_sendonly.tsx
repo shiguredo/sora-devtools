@@ -41,8 +41,8 @@ const SpotlightLegacySendonly: React.FC = () => {
   }, []);
   return (
     <>
-      <Head title={"spotlight sendonly"} />
-      <Header pageName="spotlight sendonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Head title={"spotlight legacy sendonly"} />
+      <Header pageName="spotlight legacy sendonly" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">

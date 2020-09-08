@@ -41,8 +41,8 @@ const SpotlightLegacySendrecv: React.FC = () => {
   }, []);
   return (
     <>
-      <Head title={"spotlight sendrecv"} />
-      <Header pageName="spotlight sendrecv" enabledParameters={ENABLED_PARAMETERS} />
+      <Head title={"spotlight legacy sendrecv"} />
+      <Header pageName="spotlight legacy sendrecv" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">
