@@ -462,10 +462,10 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     video: state.video,
     videoCodecType: state.videoCodecType || undefined,
     videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: options?.multistream === true ? true : false,
+    multistream: options?.multistream === true,
     spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
     spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true ? true : false,
+    simulcast: options?.simulcast === true,
   };
   const sora = connection.sendonly(state.channelId, null, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
@@ -512,10 +512,10 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     video: state.video,
     videoCodecType: state.videoCodecType || undefined,
     videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: options?.multistream === true ? true : false,
+    multistream: options?.multistream === true,
     spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
     spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true ? true : false,
+    simulcast: options?.simulcast === true,
     simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
   };
   const sora = connection.recvonly(state.channelId, null, connectionOptions);
@@ -559,7 +559,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     multistream: true,
     spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
     spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true ? true : false,
+    simulcast: options?.simulcast === true,
     simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
   };
   const sora = connection.sendrecv(state.channelId, null, connectionOptions);
