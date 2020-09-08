@@ -17,11 +17,9 @@ import {
 
 const ENABLED_PARAMETERS = {
   audio: true,
-  audioCodecType: true,
   audioOutput: true,
   channelId: true,
   video: true,
-  videoCodecType: true,
   spotlightNumber: true,
 };
 

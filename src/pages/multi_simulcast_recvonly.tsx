@@ -9,12 +9,10 @@ import { disconnectSora, setInitialParameter, setMediaDevices, setVideoCodecType
 
 const ENABLED_PARAMETERS = {
   audio: true,
-  audioCodecType: true,
   audioOutput: true,
   channelId: true,
   simulcastQuality: true,
   video: true,
-  videoCodecType: true,
 };
 
 const MultiSimulcastRecvonly: React.FC = () => {
