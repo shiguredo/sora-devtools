@@ -49,9 +49,9 @@ export const SIMULCAST_QUARITY = ["", "low", "middle", "high"] as const;
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
-  const json = event.data;
-  if (json.type === "start") {
-    const interval = json.interval;
+  const data = event.data;
+  if (data.type === "start") {
+    const interval = data.interval;
     self.counter = 0;
     const intervalId = setInterval(() => {
       const message = { type: "update", counter: self.counter };
@@ -59,7 +59,7 @@ self.onmessage = (event) => {
       self.counter++;
     }, interval);
     self.intervalId = intervalId;
-  } else if (json.type === "stop") {
+  } else if (data.type === "stop") {
     if (self.intervalId) {
       clearInterval(self.intervalId);
     }
