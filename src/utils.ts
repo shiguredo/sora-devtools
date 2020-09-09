@@ -502,16 +502,13 @@ export function drawFakeCanvas(
 }
 
 // 新/旧 spotlight の互換性を保つための parser
-export function parseSpotlight(spotlight: string): boolean | number | undefined {
+export function parseSpotlight(spotlight: string): boolean | number {
   if (spotlight === "true") {
     return true;
   }
-  if (!spotlight) {
-    return undefined;
-  }
   const numberSpotlight = parseInt(spotlight, 10);
   if (isNaN(numberSpotlight)) {
-    return undefined;
+    return false;
   }
   return numberSpotlight;
 }

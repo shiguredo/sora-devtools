@@ -434,6 +434,64 @@ function setSoraCallbacks(
   });
 }
 
+// Sora の connectOptions を生成する
+function createConnectOptions(
+  pickedState: Pick<
+    SoraDemoState,
+    | "audio"
+    | "audioBitRate"
+    | "audioCodecType"
+    | "simulcastQuality"
+    | "spotlight"
+    | "spotlightNumber"
+    | "video"
+    | "videoBitRate"
+    | "videoCodecType"
+  >,
+  multistream: boolean,
+  spotlight: boolean,
+  simulcast: boolean
+): ConnectionOptions {
+  const connectionOptions: ConnectionOptions = {
+    audio: pickedState.audio,
+    video: pickedState.video,
+  };
+  if (pickedState.audioCodecType) {
+    connectionOptions.audioCodecType = pickedState.audioCodecType;
+  }
+  const parsedAudioBitRate = parseInt(pickedState.audioBitRate, 10);
+  if (parsedAudioBitRate) {
+    connectionOptions.audioBitRate = parsedAudioBitRate;
+  }
+  if (pickedState.videoCodecType) {
+    connectionOptions.videoCodecType = pickedState.videoCodecType;
+  }
+  const parsedVideoBitRate = parseInt(pickedState.videoBitRate, 10);
+  if (parsedVideoBitRate) {
+    connectionOptions.videoBitRate = parsedVideoBitRate;
+  }
+  if (multistream) {
+    connectionOptions.multistream = true;
+  }
+  // 新/旧 spotlight 互換性のため parsedSpotlight は boolean | number になる
+  // parsedSpotlight が number の場合は旧 spotlight 扱いになる
+  // parsedSpotlight が true の場合は新 spotlight 扱いになるので spotlightNumber をセットする
+  const parsedSpotlight = parseSpotlight(pickedState.spotlight);
+  if (spotlight && parsedSpotlight) {
+    connectionOptions.spotlight = parsedSpotlight;
+    if (parsedSpotlight === true) {
+      connectionOptions.spotlightNumber = parseInt(pickedState.spotlightNumber);
+    }
+  }
+  if (simulcast) {
+    connectionOptions.simulcast = true;
+    if (pickedState.simulcastQuality) {
+      connectionOptions.simulcastQuality = pickedState.simulcastQuality;
+    }
+  }
+  return connectionOptions;
+}
+
 // Sora との配信のみ接続
 type SendonlyOption = {
   multistream?: boolean;
@@ -454,18 +512,22 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   });
   const signalingURL = createSignalingURL();
   const connection = Sora.connection(signalingURL, state.debug);
-  const connectionOptions: ConnectionOptions = {
-    audio: state.audio,
-    audioCodecType: state.audioCodecType || undefined,
-    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
-    video: state.video,
-    videoCodecType: state.videoCodecType || undefined,
-    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: options?.multistream === true,
-    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
-    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true,
-  };
+  const connectionOptions = createConnectOptions(
+    {
+      audio: state.audio,
+      audioBitRate: state.audioBitRate,
+      audioCodecType: state.audioCodecType,
+      simulcastQuality: "",
+      spotlight: state.spotlight,
+      spotlightNumber: state.spotlightNumber,
+      video: state.video,
+      videoBitRate: state.videoBitRate,
+      videoCodecType: state.videoCodecType,
+    },
+    options?.multistream === true,
+    options?.spotlight === true,
+    options?.simulcast === true
+  );
   const sora = connection.sendonly(state.channelId, null, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
@@ -504,19 +566,22 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
   }
   const signalingURL = createSignalingURL();
   const connection = Sora.connection(signalingURL, state.debug);
-  const connectionOptions: ConnectionOptions = {
-    audio: state.audio,
-    audioCodecType: state.audioCodecType || undefined,
-    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
-    video: state.video,
-    videoCodecType: state.videoCodecType || undefined,
-    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: options?.multistream === true,
-    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
-    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true,
-    simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
-  };
+  const connectionOptions = createConnectOptions(
+    {
+      audio: state.audio,
+      audioBitRate: state.audioBitRate,
+      audioCodecType: state.audioCodecType,
+      simulcastQuality: state.simulcastQuality,
+      spotlight: state.spotlight,
+      spotlightNumber: state.spotlightNumber,
+      video: state.video,
+      videoBitRate: state.videoBitRate,
+      videoCodecType: state.videoCodecType,
+    },
+    options?.multistream === true,
+    options?.spotlight === true,
+    options?.simulcast === true
+  );
   const sora = connection.recvonly(state.channelId, null, connectionOptions);
   setSoraCallbacks(dispatch, getState, sora);
   try {
@@ -548,19 +613,22 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   });
   const signalingURL = createSignalingURL();
   const connection = Sora.connection(signalingURL, state.debug);
-  const connectionOptions: ConnectionOptions = {
-    audio: state.audio,
-    audioCodecType: state.audioCodecType || undefined,
-    audioBitRate: parseInt(state.audioBitRate, 10) || undefined,
-    video: state.video,
-    videoCodecType: state.videoCodecType || undefined,
-    videoBitRate: parseInt(state.videoBitRate, 10) || undefined,
-    multistream: true,
-    spotlight: options?.spotlight ? parseSpotlight(state.spotlight) : undefined,
-    spotlightNumber: options?.spotlight ? parseInt(state.spotlightNumber) : undefined,
-    simulcast: options?.simulcast === true,
-    simulcastQuality: options?.simulcast === true && state.simulcastQuality !== "" ? state.simulcastQuality : undefined,
-  };
+  const connectionOptions = createConnectOptions(
+    {
+      audio: state.audio,
+      audioBitRate: state.audioBitRate,
+      audioCodecType: state.audioCodecType,
+      simulcastQuality: state.simulcastQuality,
+      spotlight: state.spotlight,
+      spotlightNumber: state.spotlightNumber,
+      video: state.video,
+      videoBitRate: state.videoBitRate,
+      videoCodecType: state.videoCodecType,
+    },
+    true,
+    options?.spotlight === true,
+    options?.simulcast === true
+  );
   const sora = connection.sendrecv(state.channelId, null, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
