@@ -32,7 +32,13 @@ const ENABLED_PARAMETERS = {
 const SpotlightLegacySendrecv: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(
+      setInitialParameter({
+        audioCodecType: "OPUS",
+        videoCodecType: "VP9",
+        videoBitRate: "500",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

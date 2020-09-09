@@ -31,7 +31,13 @@ const ENABLED_PARAMETERS = {
 const Sendonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(
+      setInitialParameter({
+        audioCodecType: "OPUS",
+        videoCodecType: "VP9",
+        videoBitRate: "500",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

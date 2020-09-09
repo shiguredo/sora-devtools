@@ -20,7 +20,12 @@ const ENABLED_PARAMETERS = {
 const SpotlightLegacyRecvonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(
+      setInitialParameter({
+        audioCodecType: "OPUS",
+        videoCodecType: "VP9",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

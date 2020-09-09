@@ -1,4 +1,4 @@
-import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
+import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import Sora, { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber } from "sora-js-sdk";
 
 import {
@@ -83,7 +83,7 @@ export type SoraDemoState = {
 const initialState: SoraDemoState = {
   audio: true,
   audioBitRate: "",
-  audioCodecType: "OPUS",
+  audioCodecType: "",
   audioInput: "",
   audioInputDevices: [],
   audioOutput: "",
@@ -117,13 +117,13 @@ const initialState: SoraDemoState = {
   noiseSuppression: true,
   notifyMessages: [],
   resolution: "",
-  simulcastQuality: "low",
+  simulcastQuality: "",
   spotlight: "2",
-  spotlightNumber: "3",
+  spotlightNumber: "",
   spotlightConnectionIds: {},
   video: true,
-  videoBitRate: "500",
-  videoCodecType: "VP9",
+  videoBitRate: "",
+  videoCodecType: "",
   videoInput: "",
   videoInputDevices: [],
 };
@@ -132,6 +132,9 @@ const slice = createSlice({
   name: "soraDemo",
   initialState,
   reducers: {
+    resetState: (state) => {
+      Object.assign(state, initialState);
+    },
     setAudio: (state, action: PayloadAction<boolean>) => {
       state.audio = action.payload;
     },
@@ -479,8 +482,9 @@ function createConnectOptions(
   const parsedSpotlight = parseSpotlight(pickedState.spotlight);
   if (spotlight && parsedSpotlight) {
     connectionOptions.spotlight = parsedSpotlight;
-    if (parsedSpotlight === true) {
-      connectionOptions.spotlightNumber = parseInt(pickedState.spotlightNumber);
+    const parsedSpotlightNumber = parseInt(pickedState.spotlightNumber);
+    if (parsedSpotlight === true && parsedSpotlightNumber) {
+      connectionOptions.spotlightNumber = parsedSpotlightNumber;
     }
   }
   if (simulcast) {
@@ -715,109 +719,180 @@ export const updateMediaStream = () => async (dispatch: Dispatch, getState: () =
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
 };
 
+// QueryString の値とページから渡されたパラメーターを適切に action に渡すためのメソッド
+function setInitialState<T>(
+  dispatch: Dispatch,
+  action: ActionCreatorWithPayload<T, string>,
+  pageValue: T | undefined,
+  queryStringValue: T | undefined
+): void {
+  if (pageValue !== undefined) {
+    dispatch(action(pageValue));
+  }
+  if (queryStringValue !== undefined) {
+    dispatch(action(queryStringValue));
+  }
+}
 // component レンダリング後に画面初期状態を更新
-export const setInitialParameter = () => async (dispatch: Dispatch, _: () => SoraDemoState): Promise<void> => {
-  const {
-    audio,
-    audioBitRate,
-    audioCodecType,
-    audioInput,
-    audioOutput,
-    autoGainControl,
-    channelId,
-    debug,
-    echoCancellation,
-    echoCancellationType,
-    fake,
-    fakeVolume,
-    frameRate,
-    getDisplayMedia,
-    googCpuOveruseDetection,
-    noiseSuppression,
-    mute,
-    spotlight,
-    spotlightNumber,
-    simulcastQuality,
-    resolution,
-    video,
-    videoBitRate,
-    videoCodecType,
-    videoInput,
-  } = parseQueryString();
-  if (audio !== undefined) {
-    dispatch(slice.actions.setAudio(audio));
-  }
-  if (audioBitRate !== undefined) {
-    dispatch(slice.actions.setAudioBitRate(audioBitRate));
-  }
-  if (audioCodecType !== undefined) {
-    dispatch(slice.actions.setAudioCodecType(audioCodecType));
-  }
-  if (audioInput !== undefined) {
-    dispatch(slice.actions.setAudioInput(audioInput));
-  }
-  if (audioOutput !== undefined) {
-    dispatch(slice.actions.setAudioOutput(audioOutput));
-  }
-  if (autoGainControl !== undefined) {
-    dispatch(slice.actions.setAutoGainControl(autoGainControl));
-  }
-  if (channelId !== undefined) {
-    dispatch(slice.actions.setChannelId(channelId));
-  }
-  if (googCpuOveruseDetection !== undefined) {
-    dispatch(slice.actions.setGoogCpuOveruseDetection(googCpuOveruseDetection));
-  }
-  if (echoCancellation !== undefined) {
-    dispatch(slice.actions.setEchoCancellation(echoCancellation));
-  }
-  if (echoCancellationType !== undefined) {
-    dispatch(slice.actions.setEchoCancellationType(echoCancellationType));
-  }
-  if (getDisplayMedia !== undefined) {
-    dispatch(slice.actions.setGetDisplayMedia(getDisplayMedia));
-  }
-  if (fake !== undefined) {
-    dispatch(slice.actions.setFake(fake));
-  }
-  if (fakeVolume !== undefined) {
-    dispatch(slice.actions.setFakeVolume(fakeVolume));
-  }
-  if (frameRate !== undefined) {
-    dispatch(slice.actions.setFrameRate(frameRate));
-  }
-  if (noiseSuppression !== undefined) {
-    dispatch(slice.actions.setNoiseSuppression(noiseSuppression));
-  }
-  if (resolution !== undefined) {
-    dispatch(slice.actions.setResolution(resolution));
-  }
-  if (simulcastQuality !== undefined) {
-    dispatch(slice.actions.setSimulcastQuality(simulcastQuality));
-  }
-  if (spotlight !== undefined) {
-    dispatch(slice.actions.setSpotlight(spotlight));
-  }
-  if (spotlightNumber !== undefined) {
-    dispatch(slice.actions.setSpotlightNumber(spotlightNumber));
-  }
-  if (video !== undefined) {
-    dispatch(slice.actions.setVideo(video));
-  }
-  if (videoBitRate !== undefined) {
-    dispatch(slice.actions.setVideoBitRate(videoBitRate));
-  }
-  if (videoCodecType !== undefined) {
-    dispatch(slice.actions.setVideoCodecType(videoCodecType));
-  }
-  if (videoInput !== undefined) {
-    dispatch(slice.actions.setVideoInput(videoInput));
-  }
-  if (debug !== undefined) {
-    dispatch(slice.actions.setDebug(debug));
-  }
-  if (mute !== undefined) {
-    dispatch(slice.actions.setMute(mute));
+export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState>) => async (
+  dispatch: Dispatch,
+  _: () => SoraDemoState
+): Promise<void> => {
+  dispatch(slice.actions.resetState());
+  const queryStringParameters = parseQueryString();
+  setInitialState<SoraDemoState["audio"]>(
+    dispatch,
+    slice.actions.setAudio,
+    pageInitialParameters.audio,
+    queryStringParameters.audio
+  );
+  setInitialState<SoraDemoState["audioBitRate"]>(
+    dispatch,
+    slice.actions.setAudioBitRate,
+    pageInitialParameters.audioBitRate,
+    queryStringParameters.audioBitRate
+  );
+  setInitialState<SoraDemoState["audioCodecType"]>(
+    dispatch,
+    slice.actions.setAudioCodecType,
+    pageInitialParameters.audioCodecType,
+    queryStringParameters.audioCodecType
+  );
+  setInitialState<SoraDemoState["audioInput"]>(
+    dispatch,
+    slice.actions.setAudioInput,
+    pageInitialParameters.audioInput,
+    queryStringParameters.audioInput
+  );
+  setInitialState<SoraDemoState["audioOutput"]>(
+    dispatch,
+    slice.actions.setAudioOutput,
+    pageInitialParameters.audioOutput,
+    queryStringParameters.audioOutput
+  );
+  setInitialState<SoraDemoState["autoGainControl"]>(
+    dispatch,
+    slice.actions.setAutoGainControl,
+    pageInitialParameters.autoGainControl,
+    queryStringParameters.autoGainControl
+  );
+  setInitialState<SoraDemoState["channelId"]>(
+    dispatch,
+    slice.actions.setChannelId,
+    pageInitialParameters.channelId,
+    queryStringParameters.channelId
+  );
+  setInitialState<SoraDemoState["channelId"]>(
+    dispatch,
+    slice.actions.setChannelId,
+    pageInitialParameters.channelId,
+    queryStringParameters.channelId
+  );
+  setInitialState<SoraDemoState["echoCancellation"]>(
+    dispatch,
+    slice.actions.setEchoCancellation,
+    pageInitialParameters.echoCancellation,
+    queryStringParameters.echoCancellation
+  );
+  setInitialState<SoraDemoState["echoCancellationType"]>(
+    dispatch,
+    slice.actions.setEchoCancellationType,
+    pageInitialParameters.echoCancellationType,
+    queryStringParameters.echoCancellationType
+  );
+  setInitialState<SoraDemoState["getDisplayMedia"]>(
+    dispatch,
+    slice.actions.setGetDisplayMedia,
+    pageInitialParameters.getDisplayMedia,
+    queryStringParameters.getDisplayMedia
+  );
+  setInitialState<SoraDemoState["fake"]>(
+    dispatch,
+    slice.actions.setFake,
+    pageInitialParameters.fake,
+    queryStringParameters.fake
+  );
+  setInitialState<SoraDemoState["fakeVolume"]>(
+    dispatch,
+    slice.actions.setFakeVolume,
+    pageInitialParameters.fakeVolume,
+    queryStringParameters.fakeVolume
+  );
+  setInitialState<SoraDemoState["frameRate"]>(
+    dispatch,
+    slice.actions.setFrameRate,
+    pageInitialParameters.frameRate,
+    queryStringParameters.frameRate
+  );
+  setInitialState<SoraDemoState["noiseSuppression"]>(
+    dispatch,
+    slice.actions.setNoiseSuppression,
+    pageInitialParameters.noiseSuppression,
+    queryStringParameters.noiseSuppression
+  );
+  setInitialState<SoraDemoState["resolution"]>(
+    dispatch,
+    slice.actions.setResolution,
+    pageInitialParameters.resolution,
+    queryStringParameters.resolution
+  );
+  setInitialState<SoraDemoState["simulcastQuality"]>(
+    dispatch,
+    slice.actions.setSimulcastQuality,
+    pageInitialParameters.simulcastQuality,
+    queryStringParameters.simulcastQuality
+  );
+  setInitialState<SoraDemoState["spotlight"]>(
+    dispatch,
+    slice.actions.setSpotlight,
+    pageInitialParameters.spotlight,
+    queryStringParameters.spotlight
+  );
+  setInitialState<SoraDemoState["spotlightNumber"]>(
+    dispatch,
+    slice.actions.setSpotlightNumber,
+    pageInitialParameters.spotlightNumber,
+    queryStringParameters.spotlightNumber
+  );
+  setInitialState<SoraDemoState["video"]>(
+    dispatch,
+    slice.actions.setVideo,
+    pageInitialParameters.video,
+    queryStringParameters.video
+  );
+  setInitialState<SoraDemoState["videoBitRate"]>(
+    dispatch,
+    slice.actions.setVideoBitRate,
+    pageInitialParameters.videoBitRate,
+    queryStringParameters.videoBitRate
+  );
+  setInitialState<SoraDemoState["videoCodecType"]>(
+    dispatch,
+    slice.actions.setVideoCodecType,
+    pageInitialParameters.videoCodecType,
+    queryStringParameters.videoCodecType
+  );
+  setInitialState<SoraDemoState["videoInput"]>(
+    dispatch,
+    slice.actions.setVideoInput,
+    pageInitialParameters.videoInput,
+    queryStringParameters.videoInput
+  );
+  setInitialState<SoraDemoState["debug"]>(
+    dispatch,
+    slice.actions.setDebug,
+    pageInitialParameters.debug,
+    queryStringParameters.debug
+  );
+  setInitialState<SoraDemoState["mute"]>(
+    dispatch,
+    slice.actions.setMute,
+    pageInitialParameters.mute,
+    queryStringParameters.mute
+  );
+  // googCpuOveruseDetection は query string からのみ受け付ける
+  if (queryStringParameters.googCpuOveruseDetection !== undefined) {
+    dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
   dispatch(slice.actions.setInitialFakeContents());
   dispatch(slice.actions.setErrorMessage(null));

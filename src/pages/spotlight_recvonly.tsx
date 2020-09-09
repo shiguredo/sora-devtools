@@ -5,15 +5,7 @@ import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import {
-  disconnectSora,
-  setInitialParameter,
-  setMediaDevices,
-  setResolution,
-  setSpotlight,
-  setVideoBitRate,
-  setVideoCodecType,
-} from "@/slice";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
 
 const ENABLED_PARAMETERS = {
   audio: true,
@@ -26,11 +18,7 @@ const ENABLED_PARAMETERS = {
 const SpotlightRecvonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setResolution("HD"));
-    dispatch(setSpotlight("true"));
-    dispatch(setVideoCodecType("VP8"));
-    dispatch(setVideoBitRate("3000"));
-    dispatch(setInitialParameter());
+    dispatch(setInitialParameter({ spotlight: "true" }));
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
