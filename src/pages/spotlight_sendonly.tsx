@@ -36,7 +36,7 @@ const SpotlightSendonly: React.FC = () => {
       setInitialParameter({
         audioCodecType: "OPUS",
         videoCodecType: "VP8",
-        videoBitRate: "3000",
+        videoBitRate: "500",
         resolution: "VGA",
         spotlight: "true",
       })
