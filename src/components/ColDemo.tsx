@@ -50,6 +50,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
+        {props.enabledParameters.getDisplayMedia ? <FormGetDisplayMedia /> : null}
         {props.enabledParameters.fake ? <FormFake /> : null}
       </div>
       <div className="form-row align-items-center">
@@ -58,7 +59,6 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
         {props.enabledParameters.resolution ? <FormResolution /> : null}
         {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
-        {props.enabledParameters.getDisplayMedia ? <FormGetDisplayMedia /> : null}
         {props.enabledParameters.simulcastQuality ? <FormSimulcastQuality /> : null}
       </div>
       <div className="form-row align-items-center">
