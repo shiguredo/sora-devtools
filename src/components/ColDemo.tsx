@@ -5,6 +5,7 @@ import Alert from "@/components/Alert";
 import ButtonChangeSimulcastQuality from "@/components/Button/ChangeSimulcastQuality";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
+import ButtonResetSimulcastQuality from "@/components/Button/ResetSimulcastQuality";
 import ButtonStartRecording from "@/components/Button/StartRecording";
 import ButtonStopRecording from "@/components/Button/StopRecording";
 import FormAudio from "@/components/Form/Audio";
@@ -49,6 +50,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
+        {props.enabledParameters.getDisplayMedia ? <FormGetDisplayMedia /> : null}
         {props.enabledParameters.fake ? <FormFake /> : null}
       </div>
       <div className="form-row align-items-center">
@@ -57,7 +59,6 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
         {props.enabledParameters.resolution ? <FormResolution /> : null}
         {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
-        {props.enabledParameters.getDisplayMedia ? <FormGetDisplayMedia /> : null}
         {props.enabledParameters.simulcastQuality ? <FormSimulcastQuality /> : null}
       </div>
       <div className="form-row align-items-center">
@@ -89,12 +90,17 @@ const ColDemo: React.FC<Props> = (props) => {
             <ButtonChangeSimulcastQuality quality={"low"} />
             <ButtonChangeSimulcastQuality quality={"middle"} />
             <ButtonChangeSimulcastQuality quality={"high"} />
+            {props.spotlight ? <ButtonResetSimulcastQuality /> : null}
           </>
         ) : null}
       </div>
       <SelfConnection connectType={props.connectType} />
       {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
-        <RemoteVideos simulcast={props.simulcast ? true : false} />
+        <RemoteVideos
+          multistream={props.multistream === true}
+          simulcast={props.simulcast === true}
+          spotlight={props.spotlight === true}
+        />
       ) : null}
     </div>
   );

@@ -5,14 +5,7 @@ import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import {
-  disconnectSora,
-  setInitialParameter,
-  setMediaDevices,
-  setResolution,
-  setVideoBitRate,
-  setVideoCodecType,
-} from "@/slice";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
 
 const ENABLED_PARAMETERS = {
   audio: true,
@@ -38,10 +31,14 @@ const ENABLED_PARAMETERS = {
 const MultiSimulcastSendonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setVideoCodecType("VP8"));
-    dispatch(setVideoBitRate("3000"));
-    dispatch(setResolution("HD"));
-    dispatch(setInitialParameter());
+    dispatch(
+      setInitialParameter({
+        audioCodecType: "OPUS",
+        videoCodecType: "VP8",
+        videoBitRate: "3000",
+        resolution: "HD",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

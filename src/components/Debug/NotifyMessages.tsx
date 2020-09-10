@@ -3,17 +3,10 @@ import { Collapse } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/slice";
-import { formatUnixtime } from "@/utils";
+import { formatUnixtime, NotifyMessage } from "@/utils";
 
 type CollapseNotifyProps = {
-  notify: {
-    timestamp: number;
-    message: {
-      type: string;
-      event_type: string;
-      [x: string]: unknown;
-    };
-  };
+  notify: NotifyMessage;
 };
 const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
   const { notify } = props;

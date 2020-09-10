@@ -3,7 +3,7 @@ import { Collapse } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/slice";
-import { formatUnixtime } from "@/utils";
+import { formatUnixtime, LogMessage } from "@/utils";
 
 type LogDescriptionProps = {
   description: string;
@@ -41,14 +41,7 @@ const LogDescription: React.FC<LogDescriptionProps> = (props) => {
   );
 };
 
-type CollapseLogProps = {
-  message: {
-    title: string;
-    description: string;
-  };
-  timestamp: number;
-};
-const CollapseLog: React.FC<CollapseLogProps> = (props) => {
+const CollapseLog: React.FC<LogMessage> = (props) => {
   const { message, timestamp } = props;
   const [show, setShow] = useState(false);
   const ariaControls = message.title + timestamp;

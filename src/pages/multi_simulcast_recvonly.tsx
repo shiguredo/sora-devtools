@@ -5,23 +5,24 @@ import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
-import { disconnectSora, setInitialParameter, setMediaDevices, setVideoCodecType } from "@/slice";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
 
 const ENABLED_PARAMETERS = {
   audio: true,
-  audioCodecType: true,
   audioOutput: true,
   channelId: true,
   simulcastQuality: true,
   video: true,
-  videoCodecType: true,
 };
 
 const MultiSimulcastRecvonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setVideoCodecType("VP8"));
-    dispatch(setInitialParameter());
+    dispatch(
+      setInitialParameter({
+        simulcastQuality: "low",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

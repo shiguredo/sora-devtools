@@ -17,7 +17,7 @@ const ENABLED_PARAMETERS = {
 const MultiRecvonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(setInitialParameter({}));
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

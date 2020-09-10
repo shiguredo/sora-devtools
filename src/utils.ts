@@ -23,6 +23,7 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
+// Sora demo の接続種類
 export type ConnectType = "sendonly" | "sendrecv" | "recvonly";
 
 // HTMLVideoElement interface に setSinkId を追加
@@ -59,6 +60,31 @@ export type EnabledParameters = {
   videoCodecType?: boolean;
   videoInput?: boolean;
 };
+
+// Debug log message の Type
+export type LogMessage = {
+  timestamp: number;
+  message: {
+    title: string;
+    description: string;
+  };
+};
+
+// Sora on notify callback の引数 Type
+export type SoraNotifyMessage = {
+  type: string;
+  event_type: string;
+  [x: string]: unknown;
+};
+
+// Debug notify message の Type
+export type NotifyMessage = {
+  timestamp: number;
+  message: SoraNotifyMessage;
+};
+
+// Debug 表示タブ選択状態用の Type
+export type DebugType = "log" | "notify" | "stats";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -476,16 +502,13 @@ export function drawFakeCanvas(
 }
 
 // 新/旧 spotlight の互換性を保つための parser
-export function parseSpotlight(spotlight: string): boolean | number | undefined {
+export function parseSpotlight(spotlight: string): boolean | number {
   if (spotlight === "true") {
     return true;
   }
-  if (!spotlight) {
-    return undefined;
-  }
   const numberSpotlight = parseInt(spotlight, 10);
   if (isNaN(numberSpotlight)) {
-    return undefined;
+    return false;
   }
   return numberSpotlight;
 }

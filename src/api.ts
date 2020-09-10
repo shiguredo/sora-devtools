@@ -49,3 +49,14 @@ export function changeSimulcastQuality(
   }
   post("20180820", "ChangeSimulcastQuality", params);
 }
+
+export function resetSimulcastQuality(channelId: string, connectionId: string, streamId?: string): void {
+  const params: { channel_id: string; connection_id: string; stream_id?: string } = {
+    channel_id: channelId,
+    connection_id: connectionId,
+  };
+  if (streamId) {
+    params["stream_id"] = streamId;
+  }
+  post("20200807", "ResetSpotlightQuality", params);
+}

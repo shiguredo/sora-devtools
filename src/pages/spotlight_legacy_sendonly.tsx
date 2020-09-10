@@ -32,7 +32,13 @@ const ENABLED_PARAMETERS = {
 const SpotlightLegacySendonly: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(
+      setInitialParameter({
+        audioCodecType: "OPUS",
+        videoCodecType: "VP9",
+        videoBitRate: "500",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -41,8 +47,8 @@ const SpotlightLegacySendonly: React.FC = () => {
   }, []);
   return (
     <>
-      <Head title={"spotlight sendonly"} />
-      <Header pageName="spotlight sendonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Head title={"spotlight legacy sendonly"} />
+      <Header pageName="spotlight legacy sendonly" enabledParameters={ENABLED_PARAMETERS} />
       <main role="main">
         <div className="container">
           <div className="row">

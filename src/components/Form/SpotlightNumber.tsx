@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SPOTLIGHT_NUMBERS } from "@/constants";
 import { setSpotlightNumber, SoraDemoState } from "@/slice";
 import { isSpotlightNumber } from "@/utils";
 
@@ -25,13 +24,15 @@ const SpotlightNumber: React.FC = () => {
         value={spotlightNumber}
         onChange={onChange}
       >
-        {SPOTLIGHT_NUMBERS.map((spotlightNumber) => {
-          return (
-            <option key={spotlightNumber} value={spotlightNumber}>
-              {spotlightNumber}
-            </option>
-          );
-        })}
+        <option value="">未指定</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
       </select>
     </div>
   );
