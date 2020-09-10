@@ -22,7 +22,16 @@ const DownloadReport: React.FC = () => {
       });
     }
     const report = {
-      log: logMessages,
+      log: logMessages.map((logMessage) => {
+        // Redux non-serializable value 対応で log を string にして保存してあるため parse する
+        return {
+          timestamp: logMessage.timestamp,
+          message: {
+            title: logMessage.message.title,
+            description: JSON.parse(logMessage.message.description),
+          },
+        };
+      }),
       notify: notifyMessages,
       stats: statsReport,
     };
@@ -30,7 +39,8 @@ const DownloadReport: React.FC = () => {
     const blob = new Blob([data], { type: "text/plain" });
     window.URL = window.URL || window.webkitURL;
     if (anchorRef.current) {
-      anchorRef.current.download = "report.json";
+      const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
+      anchorRef.current.download = `sora-demo-report-${datetimeString}.json`;
       anchorRef.current.href = window.URL.createObjectURL(blob);
       anchorRef.current.click();
     }
