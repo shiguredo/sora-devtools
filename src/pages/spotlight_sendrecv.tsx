@@ -37,7 +37,7 @@ const SpotlightSendrecv: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: "VP8",
         videoBitRate: "3000",
-        resolution: "HD",
+        resolution: "VGA",
         spotlight: "true",
       })
     );
