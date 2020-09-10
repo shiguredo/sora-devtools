@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
 import ButtonCopyURL from "@/components/Button/CopyURL";
+import ButtonDownloadReport from "@/components/Button/DownloadReport";
 import { setDebug, SoraDemoState } from "@/slice";
 import { EnabledParameters } from "@/utils";
 
@@ -50,6 +51,7 @@ const Header: React.FC<Props> = (props) => {
             <Navbar.Text className="mr-3">
               <Debug />
             </Navbar.Text>
+            <ButtonDownloadReport />
             <ButtonCopyURL enabledParameters={props.enabledParameters} />
           </Nav>
         </Navbar.Collapse>

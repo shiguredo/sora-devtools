@@ -79,7 +79,13 @@ const CopyURL: React.FC<Props> = (props) => {
     copy2clipboard(`${location.origin}${location.pathname}?${parameters.join("&")}`);
   };
   return (
-    <input className="btn btn-light btn-sm" type="button" name="copyUrl" defaultValue="copy URL" onClick={onClick} />
+    <input
+      className="btn btn-light btn-sm ml-1"
+      type="button"
+      name="copyUrl"
+      defaultValue="copy URL"
+      onClick={onClick}
+    />
   );
 };
 
