@@ -39,14 +39,11 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.echoCancellationType) {
       parameters.push(`echoCancellationType=${state.echoCancellationType}`);
     }
-    if (props.enabledParameters.fake) {
-      parameters.push(`fake=${state.fake}`);
-    }
     if (props.enabledParameters.frameRate) {
       parameters.push(`frameRate=${state.frameRate}`);
     }
-    if (props.enabledParameters.getDisplayMedia) {
-      parameters.push(`getDisplayMedia=${state.getDisplayMedia}`);
+    if (props.enabledParameters.mediaType) {
+      parameters.push(`mediaType=${state.mediaType}`);
     }
     if (props.enabledParameters.noiseSuppression) {
       parameters.push(`noiseSuppression=${state.noiseSuppression}`);

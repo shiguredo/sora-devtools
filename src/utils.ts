@@ -5,6 +5,7 @@ import {
   AUDIO_CODEC_TYPES,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
+  MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_QUARITY,
   SPOTLIGHT_NUMBERS,
@@ -47,9 +48,8 @@ export type EnabledParameters = {
   channelId?: boolean;
   echoCancellation?: boolean;
   echoCancellationType?: boolean;
-  fake?: boolean;
   frameRate?: boolean;
-  getDisplayMedia?: boolean;
+  mediaType?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
   simulcastQuality?: boolean;
@@ -172,6 +172,11 @@ export function isSimulcastQuality(simulcastQuality: string): simulcastQuality i
   return (SIMULCAST_QUARITY as readonly string[]).indexOf(simulcastQuality) >= 0;
 }
 
+// MediaType の Type Guard
+export function isMediaType(mediaType: string): mediaType is typeof MEDIA_TYPES[number] {
+  return (MEDIA_TYPES as readonly string[]).indexOf(mediaType) >= 0;
+}
+
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = {
   audio: boolean;
@@ -184,11 +189,10 @@ export type QueryStringParameters = {
   debug: boolean;
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
-  fake: boolean;
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
-  getDisplayMedia: boolean;
   googCpuOveruseDetection: boolean;
+  mediaType: typeof MEDIA_TYPES[number];
   noiseSuppression: boolean;
   mute: boolean;
   spotlight: typeof SPOTLIGHTS[number];
@@ -214,11 +218,10 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     debug,
     echoCancellation,
     echoCancellationType,
-    fake,
     fakeVolume,
     frameRate,
-    getDisplayMedia,
     googCpuOveruseDetection,
+    mediaType,
     noiseSuppression,
     mute,
     spotlight,
@@ -261,17 +264,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (noiseSuppression && typeof noiseSuppression === "boolean") {
     queryStringParameters.noiseSuppression = noiseSuppression;
   }
-  if (typeof fake === "boolean") {
-    queryStringParameters.fake = fake;
-  }
   if (fakeVolume) {
     queryStringParameters.fakeVolume = String(fakeVolume);
   }
   if (frameRate && typeof frameRate === "string" && isFrameRate(frameRate)) {
     queryStringParameters.frameRate = frameRate;
   }
-  if (getDisplayMedia && typeof getDisplayMedia === "boolean") {
-    queryStringParameters.getDisplayMedia = getDisplayMedia;
+  if (typeof mediaType === "string" && isMediaType(mediaType)) {
+    queryStringParameters.mediaType = mediaType;
   }
   if (simulcastQuality && typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
     queryStringParameters.simulcastQuality = simulcastQuality;

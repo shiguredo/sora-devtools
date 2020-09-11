@@ -6,6 +6,7 @@ import {
   AUDIO_CODEC_TYPES,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
+  MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_QUARITY,
   SPOTLIGHT_NUMBERS,
@@ -48,7 +49,6 @@ export type SoraDemoState = {
   enabledCamera: boolean;
   enabledMic: boolean;
   errorMessage: string | null;
-  fake: boolean;
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -56,13 +56,13 @@ export type SoraDemoState = {
   };
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
-  getDisplayMedia: boolean;
   immutable: {
     sora: ConnectionPublisher | ConnectionSubscriber | null;
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
   };
   logMessages: LogMessage[];
+  mediaType: typeof MEDIA_TYPES[number];
   mute: boolean;
   noiseSuppression: boolean;
   notifyMessages: NotifyMessage[];
@@ -98,7 +98,7 @@ const initialState: SoraDemoState = {
   enabledCamera: false,
   enabledMic: false,
   errorMessage: null,
-  fake: false,
+  // fake: false,
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -106,13 +106,14 @@ const initialState: SoraDemoState = {
     gainNode: null,
   },
   frameRate: "",
-  getDisplayMedia: false,
+  // getDisplayMedia: false,
   immutable: {
     sora: null,
     localMediaStream: null,
     remoteMediaStreams: [],
   },
   logMessages: [],
+  mediaType: "getUserMedia",
   mute: false,
   noiseSuppression: true,
   notifyMessages: [],
@@ -165,9 +166,6 @@ const slice = createSlice({
     setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
       state.echoCancellationType = action.payload;
     },
-    setFake: (state, action: PayloadAction<boolean>) => {
-      state.fake = action.payload;
-    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
@@ -200,8 +198,8 @@ const slice = createSlice({
     setNoiseSuppression: (state, action: PayloadAction<boolean>) => {
       state.noiseSuppression = action.payload;
     },
-    setGetDisplayMedia: (state, action: PayloadAction<boolean>) => {
-      state.getDisplayMedia = action.payload;
+    setMediaType: (state, action: PayloadAction<typeof MEDIA_TYPES[number]>) => {
+      state.mediaType = action.payload;
     },
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
@@ -310,10 +308,10 @@ const slice = createSlice({
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
 async function createMediaStream(state: SoraDemoState): Promise<[MediaStream, GainNode | null]> {
-  if (state.getDisplayMedia) {
+  if (state.mediaType === "getDisplayMedia") {
     return [await (navigator.mediaDevices as SoraDemoMediaDevices).getDisplayMedia({ video: true }), null];
   }
-  if (state.fake && state.fakeContents.worker) {
+  if (state.mediaType === "fakeMedia" && state.fakeContents.worker) {
     const constraints = createFakeMediaConstraints({
       audio: state.audio,
       video: state.video,
@@ -800,17 +798,11 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.echoCancellationType,
     queryStringParameters.echoCancellationType
   );
-  setInitialState<SoraDemoState["getDisplayMedia"]>(
+  setInitialState<SoraDemoState["mediaType"]>(
     dispatch,
-    slice.actions.setGetDisplayMedia,
-    pageInitialParameters.getDisplayMedia,
-    queryStringParameters.getDisplayMedia
-  );
-  setInitialState<SoraDemoState["fake"]>(
-    dispatch,
-    slice.actions.setFake,
-    pageInitialParameters.fake,
-    queryStringParameters.fake
+    slice.actions.setMediaType,
+    pageInitialParameters.mediaType,
+    queryStringParameters.mediaType
   );
   setInitialState<SoraDemoState["fakeVolume"]>(
     dispatch,
@@ -911,12 +903,11 @@ export const {
   setEchoCancellation,
   setEchoCancellationType,
   setErrorMessage,
-  setFake,
   setFakeVolume,
   setFrameRate,
-  setGetDisplayMedia,
   setLocalMediaStream,
   setLogMessages,
+  setMediaType,
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,

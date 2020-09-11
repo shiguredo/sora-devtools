@@ -87,7 +87,7 @@ type SelfConnectionProps = {
 };
 const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { immutable, fake, audioOutput } = useSelector((state: SoraDemoState) => state);
+  const { immutable, mediaType, audioOutput } = useSelector((state: SoraDemoState) => state);
   const { sora, localMediaStream } = immutable;
   return (
     <div className="row mt-2">
@@ -106,7 +106,7 @@ const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
               <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
               {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
             </div>
-            {fake ? <VolumeRange /> : null}
+            {mediaType === "fakeMedia" ? <VolumeRange /> : null}
           </>
         ) : null}
       </div>
