@@ -38,7 +38,7 @@ const Index: React.FC = () => {
             <Link pageName="multi_sendrecv" />
             <Link pageName="multi_sendonly" />
             <Link pageName="multi_recvonly" />
-            <li className="separator">サイマルキャスト</li>
+            <li className="separator">片方向サイマルキャスト</li>
             <Link pageName="simulcast_sendonly" />
             <Link pageName="simulcast_recvonly" />
             <li className="separator">双方向サイマルキャスト</li>
