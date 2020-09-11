@@ -261,7 +261,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof echoCancellationType === "string" && isEchoCancellationType(echoCancellationType)) {
     queryStringParameters.echoCancellationType = echoCancellationType;
   }
-  if (noiseSuppression && typeof noiseSuppression === "boolean") {
+  if (typeof noiseSuppression === "boolean") {
     queryStringParameters.noiseSuppression = noiseSuppression;
   }
   if (fakeVolume) {
@@ -291,7 +291,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (videoBitRate && typeof videoBitRate === "string" && isVideoBitRate(videoBitRate)) {
     queryStringParameters.videoBitRate = videoBitRate;
   }
-  if (videoCodecType && typeof videoCodecType === "string" && isVideoCodecType(videoCodecType)) {
+  if (typeof videoCodecType === "string" && isVideoCodecType(videoCodecType)) {
     queryStringParameters.videoCodecType = videoCodecType;
   }
   if (audioInput) {
