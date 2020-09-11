@@ -267,28 +267,28 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (fakeVolume) {
     queryStringParameters.fakeVolume = String(fakeVolume);
   }
-  if (frameRate && typeof frameRate === "string" && isFrameRate(frameRate)) {
+  if (typeof frameRate === "string" && isFrameRate(frameRate)) {
     queryStringParameters.frameRate = frameRate;
   }
   if (typeof mediaType === "string" && isMediaType(mediaType)) {
     queryStringParameters.mediaType = mediaType;
   }
-  if (simulcastQuality && typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
+  if (typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
     queryStringParameters.simulcastQuality = simulcastQuality;
   }
-  if (spotlight && typeof spotlight === "string" && isSpotlight(spotlight)) {
+  if (typeof spotlight === "string" && isSpotlight(spotlight)) {
     queryStringParameters.spotlight = spotlight;
   }
-  if (spotlightNumber && typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
+  if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
     queryStringParameters.spotlightNumber = spotlightNumber;
   }
-  if (resolution && typeof resolution === "string" && isResolution(resolution)) {
+  if (typeof resolution === "string" && isResolution(resolution)) {
     queryStringParameters.resolution = resolution;
   }
   if (typeof video === "boolean") {
     queryStringParameters.video = video;
   }
-  if (videoBitRate && typeof videoBitRate === "string" && isVideoBitRate(videoBitRate)) {
+  if (typeof videoBitRate === "string" && isVideoBitRate(videoBitRate)) {
     queryStringParameters.videoBitRate = videoBitRate;
   }
   if (typeof videoCodecType === "string" && isVideoCodecType(videoCodecType)) {
