@@ -17,22 +17,48 @@ In other languages, we won't be able to deal with them. Thank you for your under
 これは WebRTC SFU Sora に組み込まれている WebRTC Sora JS SDK を利用したデモ機能です。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
-また何か問題あった場合の切り分けのための調査にも利用できるよう、デバッグ機能を搭載しています。
+また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
 
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/42e0a1742a828b62a31cd3e6a72438a0.png)](https://gyazo.com/42e0a1742a828b62a31cd3e6a72438a0)
+[![Image from Gyazo](https://i.gyazo.com/433fb2be3b46d4f59f59e94ef0096945.png)](https://gyazo.com/433fb2be3b46d4f59f59e94ef0096945)
 
 ## 利用技術
 
-- Sora JS SDK
+- Sora JavaScript SDK
     - [shiguredo/sora\-js\-sdk: WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - TypeScript
     - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
 - React
-    - [React – ユーザインターフェース構築のための JavaScript ライブラリ](https://ja.reactjs.org/)
+    - [React – A JavaScript library for building user interfaces](https://reactjs.org/)
 - Redux
     - [Redux \- A predictable state container for JavaScript apps\. \| Redux](https://redux.js.org/)
+- Next.js
+    - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
+- Redux Toolkit
+    - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
+- Bootstrap
+    - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
+
+## 特徴
+
+### レポート機能
+
+現在のクライアントのログ、通知、統計などをファイル化してダウンロードできます。
+
+### デバッグ機能
+
+デバッグを有効にすると、ログ、通知、統計のタブが有効になります。
+
+### コピー URL 機能
+
+現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。
+
+例えば multi_sendrecv で設定を弄らなかった場合は以下のような値になります。
+
+```
+https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=OPUS&audioInput=&audioOutput=&autoGainControl=true&channelId=sora&echoCancellation=true&echoCancellationType=&frameRate=&mediaType=getUserMedia&noiseSuppression=true&resolution=&video=true&videoBitRate=1000&videoCodecType=VP9&videoInput=&debug=true
+```
 
 ## 用語集
 
@@ -60,6 +86,8 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 - Apple Safari
 - Microsoft Edge
 
+ただし一部の機能は特定のブラウザでのみ動作します。
+
 ### 片方向
 
 音声と映像を配信したり視聴する仕組みです。
@@ -80,9 +108,9 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 - 双方向受信のみ
     - multi_recvonly.html
 
-### サイマルキャスト
+### 片方向サイマルキャスト
 
-音声と映像を配信したり視聴する仕組みです。
+音声と映像を片方向で配信したり視聴する仕組みです。
 
 配信側は複数の画質を同時に配信し、視聴側は画質を選択して視聴します。
 
@@ -133,16 +161,6 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
     - spotlight_legacy_sendonly.html
 - スポットライトレガシー受信のみ
     - spotlight_legacy_recvonly.html
-
-## バージョン番号について
-
-```
-YYYY.RELEASE[.FIX]
-```
-
-- YYYY は年
-- RELEASE はその年にリリースした回数
-- FIX はオプションでバグフィックス対応のみのアップデートに利用
 
 ## ライセンス
 
