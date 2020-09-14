@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "re
 import { useSelector } from "react-redux";
 
 import ChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
-import ResetSimulcastQualityByStreamId from "@/components/Button/ResetSimulcastQualityByStreamId";
+import ResetSpotlightQualityByStreamId from "@/components/Button/ResetSpotlightQualityByStreamId";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement } from "@/utils";
 
@@ -66,7 +66,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
             <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
             <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
             <ChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
-            {props.spotlight ? <ResetSimulcastQualityByStreamId streamId={props.stream.id} /> : null}
+            {props.spotlight ? <ResetSpotlightQualityByStreamId streamId={props.stream.id} /> : null}
           </>
         ) : null}
       </div>
