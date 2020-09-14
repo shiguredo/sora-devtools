@@ -87,8 +87,8 @@ type SelfConnectionProps = {
 };
 const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { immutable, mediaType, audioOutput } = useSelector((state: SoraDemoState) => state);
-  const { sora, localMediaStream } = immutable;
+  const { soraContents, mediaType, audioOutput } = useSelector((state: SoraDemoState) => state);
+  const { sora, localMediaStream } = soraContents;
   return (
     <div className="row mt-2">
       <div className="col-auto">

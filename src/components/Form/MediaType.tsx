@@ -5,8 +5,8 @@ import { setMediaType, SoraDemoState } from "@/slice";
 import { isMediaType } from "@/utils";
 
 const GetDisplayMedia: React.FC = () => {
-  const { immutable, mediaType } = useSelector((state: SoraDemoState) => state);
-  const disabled = immutable.sora !== null;
+  const { soraContents, mediaType } = useSelector((state: SoraDemoState) => state);
+  const disabled = soraContents.sora !== null;
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (isMediaType(event.target.value)) {

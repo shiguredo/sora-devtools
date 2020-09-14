@@ -10,10 +10,10 @@ const middleware = [
         "soraDemo/setRemoteMediaStream",
         "soraDemo/setFakeContentsGainNode",
       ],
-      ignoredPaths: ["immutable", "fakeContents"],
+      ignoredPaths: ["soraContents", "fakeContents"],
     },
     immutableCheck: {
-      ignoredPaths: ["immutable", "fakeContents"],
+      ignoredPaths: ["soraContents", "fakeContents"],
     },
   }),
 ];

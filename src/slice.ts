@@ -56,7 +56,7 @@ export type SoraDemoState = {
   };
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
-  immutable: {
+  soraContents: {
     sora: ConnectionPublisher | ConnectionSubscriber | null;
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
@@ -107,7 +107,7 @@ const initialState: SoraDemoState = {
   },
   frameRate: "",
   // getDisplayMedia: false,
-  immutable: {
+  soraContents: {
     sora: null,
     localMediaStream: null,
     remoteMediaStreams: [],
@@ -228,15 +228,15 @@ const slice = createSlice({
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       // `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      state.immutable.sora = <any>action.payload;
+      state.soraContents.sora = <any>action.payload;
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
-      if (state.immutable.localMediaStream) {
-        state.immutable.localMediaStream.getTracks().forEach((track) => {
+      if (state.soraContents.localMediaStream) {
+        state.soraContents.localMediaStream.getTracks().forEach((track) => {
           track.stop();
         });
       }
-      state.immutable.localMediaStream = action.payload;
+      state.soraContents.localMediaStream = action.payload;
       if (action.payload) {
         state.enabledMic = action.payload.getAudioTracks().some((track) => track.enabled);
         state.enabledCamera = action.payload.getVideoTracks().some((track) => track.enabled);
@@ -246,27 +246,27 @@ const slice = createSlice({
       }
     },
     setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
-      state.immutable.remoteMediaStreams.push(action.payload);
+      state.soraContents.remoteMediaStreams.push(action.payload);
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.immutable.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
-      state.immutable.remoteMediaStreams = remoteMediaStreams;
+      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
+      state.soraContents.remoteMediaStreams = remoteMediaStreams;
     },
     removeAllRemoteMediaStreams: (state) => {
-      state.immutable.remoteMediaStreams = [];
+      state.soraContents.remoteMediaStreams = [];
     },
     toggleEnabledMic: (state) => {
       state.enabledMic = !state.enabledMic;
-      if (state.immutable.localMediaStream) {
-        state.immutable.localMediaStream.getAudioTracks().forEach((track) => {
+      if (state.soraContents.localMediaStream) {
+        state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
           track.enabled = state.enabledMic;
         });
       }
     },
     toggleEnabledCamera: (state) => {
       state.enabledCamera = !state.enabledCamera;
-      if (state.immutable.localMediaStream) {
-        state.immutable.localMediaStream.getVideoTracks().forEach((track) => {
+      if (state.soraContents.localMediaStream) {
+        state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
           track.enabled = state.enabledCamera;
         });
       }
@@ -395,15 +395,15 @@ function setSoraCallbacks(
     );
   });
   sora.on("track", (event: RTCTrackEvent) => {
-    const { immutable } = getState();
-    const mediaStream = immutable.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
+    const { soraContents } = getState();
+    const mediaStream = soraContents.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
     if (!mediaStream) {
       dispatch(slice.actions.setRemoteMediaStream(event.streams[0]));
     }
   });
   sora.on("removetrack", (event: MediaStreamTrackEvent) => {
-    const { immutable } = getState();
-    const mediaStream = immutable.remoteMediaStreams.find((stream) => {
+    const { soraContents } = getState();
+    const mediaStream = soraContents.remoteMediaStreams.find((stream) => {
       if (event?.target) {
         return stream.id === (event.target as MediaStream).id;
       }
@@ -413,8 +413,8 @@ function setSoraCallbacks(
     }
   });
   sora.on("disconnect", () => {
-    const { fakeContents, immutable } = getState();
-    const { localMediaStream, remoteMediaStreams } = immutable;
+    const { fakeContents, soraContents } = getState();
+    const { localMediaStream, remoteMediaStreams } = soraContents;
 
     if (localMediaStream) {
       localMediaStream.getTracks().forEach((track) => {
@@ -505,8 +505,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   getState: () => SoraDemoState
 ): Promise<void> => {
   const state = getState();
-  if (state.immutable.sora) {
-    await state.immutable.sora.disconnect();
+  if (state.soraContents.sora) {
+    await state.soraContents.sora.disconnect();
   }
   const [mediaStream, gainNode] = await createMediaStream(state).catch((error) => {
     dispatch(slice.actions.setErrorMessage(error.toString()));
@@ -563,8 +563,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
   getState: () => SoraDemoState
 ): Promise<void> => {
   const state = getState();
-  if (state.immutable.sora) {
-    await state.immutable.sora.disconnect();
+  if (state.soraContents.sora) {
+    await state.soraContents.sora.disconnect();
   }
   const signalingURL = createSignalingURL();
   const connection = Sora.connection(signalingURL, state.debug);
@@ -606,8 +606,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   getState: () => SoraDemoState
 ): Promise<void> => {
   const state = getState();
-  if (state.immutable.sora) {
-    await state.immutable.sora.disconnect();
+  if (state.soraContents.sora) {
+    await state.soraContents.sora.disconnect();
   }
   const [mediaStream, gainNode] = await createMediaStream(state).catch((error) => {
     dispatch(slice.actions.setErrorMessage(error.toString()));
@@ -655,9 +655,9 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
 
 // Sora との切断処理
 export const disconnectSora = () => async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-  const { immutable } = getState();
-  if (immutable.sora) {
-    await immutable.sora.disconnect();
+  const { soraContents } = getState();
+  if (soraContents.sora) {
+    await soraContents.sora.disconnect();
   }
 };
 
@@ -687,11 +687,11 @@ export const setMediaDevices = () => async (dispatch: Dispatch, _getState: () =>
 // デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新
 export const updateMediaStream = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
   const state = getState();
-  if (!state.immutable.sora) {
+  if (!state.soraContents.sora) {
     return;
   }
-  if (state.immutable.localMediaStream) {
-    state.immutable.localMediaStream.getTracks().forEach((track) => {
+  if (state.soraContents.localMediaStream) {
+    state.soraContents.localMediaStream.getTracks().forEach((track) => {
       track.stop();
     });
   }
@@ -700,10 +700,10 @@ export const updateMediaStream = () => async (dispatch: Dispatch, getState: () =
     throw error;
   });
   mediaStream.getTracks().forEach((track) => {
-    if (!state.immutable.sora || !state.immutable.sora.pc) {
+    if (!state.soraContents.sora || !state.soraContents.sora.pc) {
       return;
     }
-    const sender = state.immutable.sora.pc.getSenders().find((s) => {
+    const sender = state.soraContents.sora.pc.getSenders().find((s) => {
       if (!s.track) {
         return false;
       }

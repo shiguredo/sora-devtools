@@ -5,10 +5,10 @@ import { resetSimulcastQuality } from "@/api";
 import { SoraDemoState } from "@/slice";
 
 const ResetSimulcastQuality: React.FC = () => {
-  const { immutable, channelId } = useSelector((state: SoraDemoState) => state);
+  const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const onClick = (): void => {
-    if (immutable.sora?.connectionId) {
-      resetSimulcastQuality(channelId, immutable.sora.connectionId);
+    if (soraContents.sora?.connectionId) {
+      resetSimulcastQuality(channelId, soraContents.sora.connectionId);
     }
   };
   return (

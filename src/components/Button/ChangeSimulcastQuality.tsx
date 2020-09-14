@@ -9,10 +9,10 @@ type Props = {
   quality: SimulcastQuality;
 };
 const ChangeSimulcastQuality: React.FC<Props> = (props) => {
-  const { immutable, channelId } = useSelector((state: SoraDemoState) => state);
+  const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const onClick = (): void => {
-    if (immutable.sora?.connectionId) {
-      changeSimulcastQuality(channelId, immutable.sora.connectionId, props.quality);
+    if (soraContents.sora?.connectionId) {
+      changeSimulcastQuality(channelId, soraContents.sora.connectionId, props.quality);
     }
   };
   return (

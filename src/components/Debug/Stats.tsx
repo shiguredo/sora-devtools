@@ -43,7 +43,7 @@ const DebugGetStats: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timer | null>(null);
   const initialStatsReport: Stats[] = [];
   const [statsReport, setStatsReport] = useState(initialStatsReport);
-  const { immutable } = useSelector((state: SoraDemoState) => state);
+  const { soraContents } = useSelector((state: SoraDemoState) => state);
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -52,7 +52,7 @@ const DebugGetStats: React.FC = () => {
     };
   }, []);
   useEffect(() => {
-    if (immutable.sora === null) {
+    if (soraContents.sora === null) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -63,8 +63,8 @@ const DebugGetStats: React.FC = () => {
     }
     const createStats = async (): Promise<Stats[]> => {
       const newStatsReport: Stats[] = [];
-      if (immutable.sora && immutable.sora.pc && immutable.sora.pc.iceConnectionState !== "closed") {
-        const report = await immutable.sora.pc.getStats();
+      if (soraContents.sora && soraContents.sora.pc && soraContents.sora.pc.iceConnectionState !== "closed") {
+        const report = await soraContents.sora.pc.getStats();
         report.forEach((s) => {
           newStatsReport.push(s);
         });
@@ -75,12 +75,12 @@ const DebugGetStats: React.FC = () => {
       setStatsReport(stats);
     });
     intervalRef.current = setInterval(async () => {
-      if (immutable.sora && immutable.sora.pc && immutable.sora.pc.iceConnectionState !== "closed") {
+      if (soraContents.sora && soraContents.sora.pc && soraContents.sora.pc.iceConnectionState !== "closed") {
         const stats = await createStats();
         setStatsReport(stats);
       }
     }, 3000);
-  }, [immutable.sora]);
+  }, [soraContents.sora]);
   return (
     <>
       {statsReport.map((stats) => {

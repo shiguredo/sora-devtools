@@ -84,8 +84,8 @@ type RemoteVideosProps = {
   spotlight: boolean;
 };
 const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
-  const { immutable } = useSelector((state: SoraDemoState) => state);
-  const { remoteMediaStreams } = immutable;
+  const { soraContents } = useSelector((state: SoraDemoState) => state);
+  const { remoteMediaStreams } = soraContents;
   return (
     <div className="row mt-2">
       {remoteMediaStreams.map((mediaStream) => {
