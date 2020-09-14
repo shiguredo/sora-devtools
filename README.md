@@ -26,7 +26,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 ## 利用技術
 
 - Sora JavaScript SDK
-    - [shiguredo/sora\-js\-sdk: WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
+    - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - TypeScript
     - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
 - React
@@ -41,6 +41,13 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
     - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
 
 ## 特徴
+
+### フェイクメディア機能
+
+getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
+この機能を使うことでカメラやマイクがなくても検証が可能です。
+
+[![Image from Gyazo](https://i.gyazo.com/f0d8c457809565ebd527eeca0b761a53.png)](https://gyazo.com/f0d8c457809565ebd527eeca0b761a53)
 
 ### レポート機能
 
