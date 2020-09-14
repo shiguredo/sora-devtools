@@ -35,7 +35,6 @@ type Props = {
   enabledParameters: EnabledParameters;
   pageName: string;
 };
-
 const Header: React.FC<Props> = (props) => {
   return (
     <header>
@@ -51,7 +50,7 @@ const Header: React.FC<Props> = (props) => {
             <Navbar.Text className="mr-3">
               <Debug />
             </Navbar.Text>
-            <ButtonDownloadReport />
+            <ButtonDownloadReport pageName={props.pageName} />
             <ButtonCopyURL enabledParameters={props.enabledParameters} />
           </Nav>
         </Navbar.Collapse>

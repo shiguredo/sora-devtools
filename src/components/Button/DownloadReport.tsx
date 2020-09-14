@@ -9,10 +9,13 @@ type Stats = {
   [x: string]: string;
 };
 
-const DownloadReport: React.FC = () => {
+type Props = {
+  pageName: string;
+};
+const DownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
-  const { soraContents, logMessages, notifyMessages } = useSelector((state: SoraDemoState) => state);
-  const { sora } = soraContents;
+  const state = useSelector((state: SoraDemoState) => state);
+  const { sora } = state.soraContents;
   const onClick = async (): Promise<void> => {
     const statsReport: Stats[] = [];
     if (sora && sora.pc && sora.pc.iceConnectionState !== "closed") {
@@ -21,8 +24,40 @@ const DownloadReport: React.FC = () => {
         statsReport.push(s);
       });
     }
+    const parametersReport = {
+      audio: state.audio,
+      audioBitRate: state.audioBitRate,
+      audioCodecType: state.audioCodecType,
+      audioInput: state.audioInput,
+      audioInputDevices: state.audioInputDevices,
+      audioOutput: state.audioOutput,
+      audioOutputDevices: state.audioOutputDevices,
+      autoGainControl: state.autoGainControl,
+      channelId: state.channelId,
+      debug: state.debug,
+      googCpuOveruseDetection: state.googCpuOveruseDetection,
+      echoCancellation: state.echoCancellation,
+      echoCancellationType: state.echoCancellationType,
+      enabledCamera: state.enabledCamera,
+      enabledMic: state.enabledMic,
+      errorMessage: state.errorMessage,
+      frameRate: state.frameRate,
+      mediaType: state.mediaType,
+      noiseSuppression: state.noiseSuppression,
+      resolution: state.resolution,
+      simulcastQuality: state.simulcastQuality,
+      spotlight: state.spotlight,
+      spotlightNumber: state.spotlightNumber,
+      video: state.video,
+      videoBitRate: state.videoBitRate,
+      videoCodecType: state.videoCodecType,
+      videoInput: state.videoInput,
+      videoInputDevices: state.videoInputDevices,
+    };
     const report = {
-      log: logMessages.map((logMessage) => {
+      pageName: props.pageName,
+      parameters: parametersReport,
+      log: state.logMessages.map((logMessage) => {
         // Redux non-serializable value 対応で log を string にして保存してあるため parse する
         return {
           timestamp: logMessage.timestamp,
@@ -32,7 +67,7 @@ const DownloadReport: React.FC = () => {
           },
         };
       }),
-      notify: notifyMessages,
+      notify: state.notifyMessages,
       stats: statsReport,
     };
     const data = JSON.stringify(report);
