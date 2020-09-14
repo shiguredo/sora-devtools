@@ -6,8 +6,9 @@ import ColDemo from "@/components/ColDemo";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
+import { EnabledParameters } from "@/utils";
 
-const ENABLED_PARAMETERS = {
+const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
   audioBitRate: true,
   audioCodecType: true,
@@ -17,9 +18,8 @@ const ENABLED_PARAMETERS = {
   channelId: true,
   echoCancellation: true,
   echoCancellationType: true,
-  fake: true,
   frameRate: true,
-  getDisplayMedia: true,
+  mediaType: true,
   noiseSuppression: true,
   resolution: true,
   video: true,

@@ -17,9 +17,8 @@ import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
-import FormFake from "@/components/Form/Fake";
 import FormFrameRate from "@/components/Form/FrameRate";
-import FormGetDisplayMedia from "@/components/Form/GetDisplayMedia";
+import FormMediaType from "@/components/Form/MediaType";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
 import FormSimulcastQuality from "@/components/Form/SimulcastQuality";
@@ -50,8 +49,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
-        {props.enabledParameters.getDisplayMedia ? <FormGetDisplayMedia /> : null}
-        {props.enabledParameters.fake ? <FormFake /> : null}
+        {props.enabledParameters.mediaType ? <FormMediaType /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.video ? <FormVideo /> : null}
