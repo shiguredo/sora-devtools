@@ -11,8 +11,8 @@ type Stats = {
 
 const DownloadReport: React.FC = () => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
-  const { immutable, logMessages, notifyMessages } = useSelector((state: SoraDemoState) => state);
-  const { sora } = immutable;
+  const { soraContents, logMessages, notifyMessages } = useSelector((state: SoraDemoState) => state);
+  const { sora } = soraContents;
   const onClick = async (): Promise<void> => {
     const statsReport: Stats[] = [];
     if (sora && sora.pc && sora.pc.iceConnectionState !== "closed") {

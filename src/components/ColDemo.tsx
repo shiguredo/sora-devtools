@@ -5,7 +5,8 @@ import Alert from "@/components/Alert";
 import ButtonChangeSimulcastQuality from "@/components/Button/ChangeSimulcastQuality";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
-import ButtonResetSimulcastQuality from "@/components/Button/ResetSimulcastQuality";
+import ButtonRequestSpotlightQuality from "@/components/Button/RequestSpotlightQuality";
+import ButtonResetSpotlightQuality from "@/components/Button/ResetSpotlightQuality";
 import ButtonStartRecording from "@/components/Button/StartRecording";
 import ButtonStopRecording from "@/components/Button/StopRecording";
 import FormAudio from "@/components/Form/Audio";
@@ -83,12 +84,19 @@ const ColDemo: React.FC<Props> = (props) => {
         <ButtonDisconnect />
         <ButtonStartRecording />
         <ButtonStopRecording />
-        {props.simulcast && props.connectType !== "sendonly" ? (
+        {!props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
             <ButtonChangeSimulcastQuality quality={"low"} />
             <ButtonChangeSimulcastQuality quality={"middle"} />
             <ButtonChangeSimulcastQuality quality={"high"} />
-            {props.spotlight ? <ButtonResetSimulcastQuality /> : null}
+          </>
+        ) : null}
+        {props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
+          <>
+            <ButtonRequestSpotlightQuality quality={"low"} />
+            <ButtonRequestSpotlightQuality quality={"middle"} />
+            <ButtonRequestSpotlightQuality quality={"high"} />
+            <ButtonResetSpotlightQuality />
           </>
         ) : null}
       </div>

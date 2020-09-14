@@ -1,17 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { resetSimulcastQuality } from "@/api";
+import { resetSpotlightQuality } from "@/api";
 import { SoraDemoState } from "@/slice";
 
 type Props = {
   streamId: string;
 };
-const ResetSimulcastQualityByStreamId: React.FC<Props> = (props) => {
-  const { immutable, channelId } = useSelector((state: SoraDemoState) => state);
+const ResetSpotlightQualityByStreamId: React.FC<Props> = (props) => {
+  const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const onClick = (): void => {
-    if (immutable.sora?.connectionId) {
-      resetSimulcastQuality(channelId, immutable.sora.connectionId, props.streamId);
+    if (soraContents.sora?.connectionId) {
+      resetSpotlightQuality(channelId, soraContents.sora.connectionId, props.streamId);
     }
   };
   return (
@@ -25,4 +25,4 @@ const ResetSimulcastQualityByStreamId: React.FC<Props> = (props) => {
   );
 };
 
-export default ResetSimulcastQualityByStreamId;
+export default ResetSpotlightQualityByStreamId;
