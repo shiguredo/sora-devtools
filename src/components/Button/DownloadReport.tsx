@@ -55,6 +55,7 @@ const DownloadReport: React.FC<Props> = (props) => {
       videoInputDevices: state.videoInputDevices,
     };
     const report = {
+      userAgent: navigator.userAgent,
       pageName: props.pageName,
       parameters: parametersReport,
       log: state.logMessages.map((logMessage) => {
