@@ -1,8 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
-import ChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
-import ResetSpotlightQualityByStreamId from "@/components/Button/ResetSpotlightQualityByStreamId";
+import ButtonChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
+import ButtonRequestSpotlightQualityByStreamId from "@/components/Button/RequestSpotlightQualityByStreamId";
+import ButtonResetSpotlightQualityByStreamId from "@/components/Button/ResetSpotlightQualityByStreamId";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement } from "@/utils";
 
@@ -61,12 +62,19 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         <p className="mx-1">
           {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
         </p>
-        {props.multistream && props.simulcast ? (
+        {!props.spotlight && props.multistream && props.simulcast ? (
           <>
-            <ChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
-            <ChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
-            <ChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
-            {props.spotlight ? <ResetSpotlightQualityByStreamId streamId={props.stream.id} /> : null}
+            <ButtonChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
+            <ButtonChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
+            <ButtonChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+          </>
+        ) : null}
+        {props.spotlight && props.multistream && props.simulcast ? (
+          <>
+            <ButtonRequestSpotlightQualityByStreamId quality={"low"} streamId={props.stream.id} />
+            <ButtonRequestSpotlightQualityByStreamId quality={"middle"} streamId={props.stream.id} />
+            <ButtonRequestSpotlightQualityByStreamId quality={"high"} streamId={props.stream.id} />
+            <ButtonResetSpotlightQualityByStreamId streamId={props.stream.id} />
           </>
         ) : null}
       </div>
