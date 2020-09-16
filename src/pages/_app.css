@@ -1,0 +1,145 @@
+body {
+  padding-top: 56px;
+}
+
+label {
+  margin-bottom: 0;
+}
+
+input[type="range"] {
+  cursor: pointer;
+  outline: none;
+  height: 8px;
+  border-radius: 10px;
+  border: solid 1px #BBBBBB;
+  background: #E5E5E5;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: #0375FF;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+}
+
+input[type="range"]:active::-moz-range-thumb {
+  background: #015DC8;
+}
+
+input[type="range"]::-moz-range-progress {
+  background: #0375FF;
+  height: 7px;
+  border-radius: 3.5px 0 0 3.5px;
+}
+
+input[type="range"]:active::-moz-range-progress {
+  background: #015DC8;
+}
+
+.nav-tabs .nav-link {
+  color: #FFFFFF;
+}
+
+.nav-tabs .nav-link.active {
+  color: #FFFFFF;
+  background-color: #575757;
+}
+
+.navbar-dark .navbar-text {
+  color: #FFFFFF;
+}
+
+.container {
+  max-width: none;
+}
+
+.bg-sora {
+  background-color: #0071BC !important;
+}
+
+.list-url {
+  font-size: 1.125rem;
+  padding-left: 1rem;
+}
+
+.list-url li {
+  margin-left: 1.5rem;
+}
+
+.list-url .separator {
+  list-style: none;
+  margin-left: 0;
+  margin-top: 1rem;
+}
+
+.col-demo {
+  padding-top: 5px;
+}
+
+.col-debug {
+  padding: 10px;
+  background-color: #3C4043EE;
+  min-height: calc(100vh - 56px);
+}
+
+.arrow-bottom {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 2px 6px;
+  border-bottom: 2px solid #FFFFFF;
+  border-right: 2px solid #FFFFFF;
+  transform: rotate(45deg);
+}
+
+.arrow-right {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0px 6px;
+  border-top: 2px solid #FFFFFF;
+  border-right: 2px solid #FFFFFF;
+  transform: rotate(45deg);
+}
+
+.debug-title {
+  cursor: pointer;
+  color: #FFFFFF !important;
+}
+
+.debug-message {
+  display: flex;
+  flex-wrap: nowrap;
+  color: #FFFFFF !important;
+}
+
+.debug-message pre {
+ font-size: 100%;
+ color: #FFFFFF;
+ margin: 0;
+}
+
+#debug:checked ~ .custom-control-label::before {
+  background-color: #FF0066;
+}
+
+.fake-volume-range {
+  width: 240px;
+}
+
+.volume-visualizer {
+  background-color: #eeeeee;
+}
+
+.video-status {
+  display: flex;
+  top: 0;
+  left: 0;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.video-status p {
+  margin: 0;
+}
