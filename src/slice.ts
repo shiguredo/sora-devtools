@@ -60,6 +60,7 @@ export type SoraDemoState = {
     sora: ConnectionPublisher | ConnectionSubscriber | null;
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
+    statsReport: RTCStats[];
   };
   logMessages: LogMessage[];
   mediaType: typeof MEDIA_TYPES[number];
@@ -111,6 +112,7 @@ const initialState: SoraDemoState = {
     sora: null,
     localMediaStream: null,
     remoteMediaStreams: [],
+    statsReport: [],
   },
   logMessages: [],
   mediaType: "getUserMedia",
@@ -247,6 +249,9 @@ const slice = createSlice({
     },
     setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
       state.soraContents.remoteMediaStreams.push(action.payload);
+    },
+    setStatsReport: (state, action: PayloadAction<RTCStats[]>) => {
+      state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
       const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
@@ -509,6 +514,18 @@ function createConnectOptions(
   return connectionOptions;
 }
 
+// statsReport を更新
+async function setStatsReport(dispatch: Dispatch, sora: ConnectionPublisher | ConnectionSubscriber): Promise<void> {
+  if (sora.pc && sora.pc?.iceConnectionState !== "closed") {
+    const stats = await sora.pc.getStats();
+    const statsReport: RTCStats[] = [];
+    stats.forEach((s) => {
+      statsReport.push(s);
+    });
+    dispatch(slice.actions.setStatsReport(statsReport));
+  }
+}
+
 // Sora との配信のみ接続
 type SendonlyOption = {
   multistream?: boolean;
@@ -562,6 +579,15 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
+  await setStatsReport(dispatch, sora);
+  const timerId = setInterval(async () => {
+    const { soraContents } = getState();
+    if (soraContents.sora) {
+      await setStatsReport(dispatch, soraContents.sora);
+    } else {
+      clearInterval(timerId);
+    }
+  }, 1000);
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
@@ -609,6 +635,15 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
+  await setStatsReport(dispatch, sora);
+  const timerId = setInterval(async () => {
+    const { soraContents } = getState();
+    if (soraContents.sora) {
+      await setStatsReport(dispatch, soraContents.sora);
+    } else {
+      clearInterval(timerId);
+    }
+  }, 1000);
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setErrorMessage(null));
 };
@@ -665,6 +700,15 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
+  await setStatsReport(dispatch, sora);
+  const timerId = setInterval(async () => {
+    const { soraContents } = getState();
+    if (soraContents.sora) {
+      await setStatsReport(dispatch, soraContents.sora);
+    } else {
+      clearInterval(timerId);
+    }
+  }, 1000);
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
