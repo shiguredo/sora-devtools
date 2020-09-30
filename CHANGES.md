@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.2.0
 - [UPDATE] sora-js-sdk のバージョンを 2020.3.0 に更新
     - Safari の Simulcast 対応
     - @yuitowest
