@@ -10,7 +10,9 @@
     - バグ修正
 
 ## develop
-- [UPDATE] PeerConnection getStats のレポートを componet 内から Redux state へ移動する
+- [UPDATE] PeerConnection getStats のレポートを componet 内から Redux state へ移動
+    - @yuitowest
+- [ADD]] Debug カラムに push message を表示するタブを追加
     - @yuitowest
 
 ## 2020.1.0
