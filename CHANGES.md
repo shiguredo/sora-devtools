@@ -10,6 +10,9 @@
     - バグ修正
 
 ## develop
+- [UPDATE] sora-js-sdk のバージョンを 2020.3.0 に更新
+    - Safari の Simulcast 対応
+    - @yuitowest
 - [ADD] Form から metadata を指定できる機能を追加
     - @yuitowest
 - [UPDATE] PeerConnection getStats のレポートを componet 内から Redux state へ移動
