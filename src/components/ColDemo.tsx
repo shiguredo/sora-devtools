@@ -18,8 +18,10 @@ import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
+import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
 import FormFrameRate from "@/components/Form/FrameRate";
 import FormMediaType from "@/components/Form/MediaType";
+import FormMetadata from "@/components/Form/Metadata";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
 import FormSimulcastQuality from "@/components/Form/SimulcastQuality";
@@ -42,15 +44,19 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 const ColDemo: React.FC<Props> = (props) => {
-  const { debug } = useSelector((state: SoraDemoState) => state);
+  const { debug, enabledMetadata } = useSelector((state: SoraDemoState) => state);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <Alert />
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
+        {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.mediaType ? <FormMediaType /> : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.metadata && enabledMetadata ? <FormMetadata /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.video ? <FormVideo /> : null}

@@ -25,10 +25,13 @@ import {
   drawFakeCanvas,
   LogMessage,
   NotifyMessage,
+  parseMetadata,
   parseQueryString,
   parseSpotlight,
+  PushMessage,
   SoraDemoMediaDevices,
   SoraNotifyMessage,
+  SoraPushMessage,
 } from "@/utils";
 
 export type SoraDemoState = {
@@ -47,6 +50,7 @@ export type SoraDemoState = {
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   enabledCamera: boolean;
+  enabledMetadata: boolean;
   enabledMic: boolean;
   errorMessage: string | null;
   fakeContents: {
@@ -60,12 +64,15 @@ export type SoraDemoState = {
     sora: ConnectionPublisher | ConnectionSubscriber | null;
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
+    statsReport: RTCStats[];
   };
   logMessages: LogMessage[];
   mediaType: typeof MEDIA_TYPES[number];
+  metadata: string;
   mute: boolean;
   noiseSuppression: boolean;
   notifyMessages: NotifyMessage[];
+  pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
   simulcastQuality: typeof SIMULCAST_QUARITY[number];
   spotlightConnectionIds: {
@@ -96,6 +103,7 @@ const initialState: SoraDemoState = {
   echoCancellation: true,
   echoCancellationType: "",
   enabledCamera: false,
+  enabledMetadata: false,
   enabledMic: false,
   errorMessage: null,
   // fake: false,
@@ -111,12 +119,15 @@ const initialState: SoraDemoState = {
     sora: null,
     localMediaStream: null,
     remoteMediaStreams: [],
+    statsReport: [],
   },
   logMessages: [],
   mediaType: "getUserMedia",
+  metadata: "",
   mute: false,
   noiseSuppression: true,
   notifyMessages: [],
+  pushMessages: [],
   resolution: "",
   simulcastQuality: "",
   spotlight: "2",
@@ -166,6 +177,9 @@ const slice = createSlice({
     setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
       state.echoCancellationType = action.payload;
     },
+    setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
+      state.enabledMetadata = action.payload;
+    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
@@ -200,6 +214,9 @@ const slice = createSlice({
     },
     setMediaType: (state, action: PayloadAction<typeof MEDIA_TYPES[number]>) => {
       state.mediaType = action.payload;
+    },
+    setMetadata: (state, action: PayloadAction<string>) => {
+      state.metadata = action.payload;
     },
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
@@ -247,6 +264,9 @@ const slice = createSlice({
     },
     setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
       state.soraContents.remoteMediaStreams.push(action.payload);
+    },
+    setStatsReport: (state, action: PayloadAction<RTCStats[]>) => {
+      state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
       const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
@@ -300,6 +320,9 @@ const slice = createSlice({
     },
     setNotifyMessages: (state, action: PayloadAction<NotifyMessage>) => {
       state.notifyMessages.push(action.payload);
+    },
+    setPushMessages: (state, action: PayloadAction<PushMessage>) => {
+      state.pushMessages.push(action.payload);
     },
     setSpotlightConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
       // Spotlight 有効時に streamID(spotligId) と映像の配信者ID(connectionId) のマッピングを保存
@@ -409,6 +432,14 @@ function setSoraCallbacks(
       })
     );
   });
+  sora.on("push", (message: SoraPushMessage) => {
+    dispatch(
+      slice.actions.setPushMessages({
+        timestamp: new Date().getTime(),
+        message: message,
+      })
+    );
+  });
   sora.on("track", (event: RTCTrackEvent) => {
     const { soraContents } = getState();
     const mediaStream = soraContents.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
@@ -509,6 +540,18 @@ function createConnectOptions(
   return connectionOptions;
 }
 
+// statsReport を更新
+async function setStatsReport(dispatch: Dispatch, sora: ConnectionPublisher | ConnectionSubscriber): Promise<void> {
+  if (sora.pc && sora.pc?.iceConnectionState !== "closed") {
+    const stats = await sora.pc.getStats();
+    const statsReport: RTCStats[] = [];
+    stats.forEach((s) => {
+      statsReport.push(s);
+    });
+    dispatch(slice.actions.setStatsReport(statsReport));
+  }
+}
+
 // Sora との配信のみ接続
 type SendonlyOption = {
   multistream?: boolean;
@@ -546,7 +589,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const sora = connection.sendonly(state.channelId, null, connectionOptions);
+  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+  const sora = connection.sendonly(state.channelId, metadata, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -562,6 +606,15 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
+  await setStatsReport(dispatch, sora);
+  const timerId = setInterval(async () => {
+    const { soraContents } = getState();
+    if (soraContents.sora) {
+      await setStatsReport(dispatch, soraContents.sora);
+    } else {
+      clearInterval(timerId);
+    }
+  }, 1000);
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
@@ -601,7 +654,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const sora = connection.recvonly(state.channelId, null, connectionOptions);
+  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+  const sora = connection.recvonly(state.channelId, metadata, connectionOptions);
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect();
@@ -609,6 +663,15 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
+  await setStatsReport(dispatch, sora);
+  const timerId = setInterval(async () => {
+    const { soraContents } = getState();
+    if (soraContents.sora) {
+      await setStatsReport(dispatch, soraContents.sora);
+    } else {
+      clearInterval(timerId);
+    }
+  }, 1000);
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setErrorMessage(null));
 };
@@ -649,7 +712,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const sora = connection.sendrecv(state.channelId, null, connectionOptions);
+  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+  const sora = connection.sendrecv(state.channelId, metadata, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -665,6 +729,15 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
     throw error;
   }
+  await setStatsReport(dispatch, sora);
+  const timerId = setInterval(async () => {
+    const { soraContents } = getState();
+    if (soraContents.sora) {
+      await setStatsReport(dispatch, soraContents.sora);
+    } else {
+      clearInterval(timerId);
+    }
+  }, 1000);
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
@@ -904,6 +977,16 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
+  // metadata が存在した場合は enabledMetadat と metadat 両方をセットする
+  if (queryStringParameters.metadata !== undefined) {
+    dispatch(slice.actions.setEnabledMetadata(true));
+    setInitialState<SoraDemoState["metadata"]>(
+      dispatch,
+      slice.actions.setMetadata,
+      pageInitialParameters.metadata,
+      queryStringParameters.metadata
+    );
+  }
   dispatch(slice.actions.setInitialFakeContents());
   dispatch(slice.actions.setErrorMessage(null));
 };
@@ -920,12 +1003,14 @@ export const {
   setDebugType,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledMetadata,
   setErrorMessage,
   setFakeVolume,
   setFrameRate,
   setLocalMediaStream,
   setLogMessages,
   setMediaType,
+  setMetadata,
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
