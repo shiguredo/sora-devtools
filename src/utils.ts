@@ -50,6 +50,7 @@ export type EnabledParameters = {
   echoCancellationType?: boolean;
   frameRate?: boolean;
   mediaType?: boolean;
+  metadata?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
   simulcastQuality?: boolean;

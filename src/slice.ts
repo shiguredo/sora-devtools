@@ -49,6 +49,7 @@ export type SoraDemoState = {
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   enabledCamera: boolean;
+  enabledMetadata: boolean;
   enabledMic: boolean;
   errorMessage: string | null;
   fakeContents: {
@@ -66,6 +67,7 @@ export type SoraDemoState = {
   };
   logMessages: LogMessage[];
   mediaType: typeof MEDIA_TYPES[number];
+  metadata: string;
   mute: boolean;
   noiseSuppression: boolean;
   notifyMessages: NotifyMessage[];
@@ -100,6 +102,7 @@ const initialState: SoraDemoState = {
   echoCancellation: true,
   echoCancellationType: "",
   enabledCamera: false,
+  enabledMetadata: false,
   enabledMic: false,
   errorMessage: null,
   // fake: false,
@@ -119,6 +122,7 @@ const initialState: SoraDemoState = {
   },
   logMessages: [],
   mediaType: "getUserMedia",
+  metadata: "",
   mute: false,
   noiseSuppression: true,
   notifyMessages: [],
@@ -172,6 +176,9 @@ const slice = createSlice({
     setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
       state.echoCancellationType = action.payload;
     },
+    setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
+      state.enabledMetadata = action.payload;
+    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
@@ -206,6 +213,9 @@ const slice = createSlice({
     },
     setMediaType: (state, action: PayloadAction<typeof MEDIA_TYPES[number]>) => {
       state.mediaType = action.payload;
+    },
+    setMetadata: (state, action: PayloadAction<string>) => {
+      state.metadata = action.payload;
     },
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
@@ -979,12 +989,14 @@ export const {
   setDebugType,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledMetadata,
   setErrorMessage,
   setFakeVolume,
   setFrameRate,
   setLocalMediaStream,
   setLogMessages,
   setMediaType,
+  setMetadata,
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
