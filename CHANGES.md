@@ -10,9 +10,12 @@
     - バグ修正
 
 ## develop
-- [UPDATE] PeerConnection getStats のレポートを componet 内から Redux state へ移動
+- [ADD] Form から metadata を指定できる機能を追加
     - @yuitowest
-- [ADD]] Debug カラムに push message を表示するタブを追加
+- [UPDATE] PeerConnection getStats のレポートを componet 内から Redux state へ移動
+    - Download Report から出力される json に最後に取得した PeerConnection getStats のレポートを記載
+    - @yuitowest
+- [ADD] Debug カラムに push message を表示するタブを追加
     - @yuitowest
 
 ## 2020.1.0
