@@ -83,8 +83,22 @@ export type NotifyMessage = {
   message: SoraNotifyMessage;
 };
 
+// Sora on push callback の引数 Type
+export type SoraPushMessage = {
+  type: "push";
+  data: {
+    [x: string]: unknown;
+  };
+};
+
+// Debug push message の Type
+export type PushMessage = {
+  timestamp: number;
+  message: SoraPushMessage;
+};
+
 // Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "stats";
+export type DebugType = "log" | "notify" | "push" | "stats";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
