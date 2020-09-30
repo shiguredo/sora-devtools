@@ -21,7 +21,7 @@ const EnabledMetadata: React.FC = () => {
           onChange={onChange}
         />
         <label className="form-check-label mr-1" htmlFor="metadata-check">
-          metadta:
+          metadata
         </label>
       </div>
     </div>
