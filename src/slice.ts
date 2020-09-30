@@ -27,8 +27,10 @@ import {
   NotifyMessage,
   parseQueryString,
   parseSpotlight,
+  PushMessage,
   SoraDemoMediaDevices,
   SoraNotifyMessage,
+  SoraPushMessage,
 } from "@/utils";
 
 export type SoraDemoState = {
@@ -67,6 +69,7 @@ export type SoraDemoState = {
   mute: boolean;
   noiseSuppression: boolean;
   notifyMessages: NotifyMessage[];
+  pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
   simulcastQuality: typeof SIMULCAST_QUARITY[number];
   spotlightConnectionIds: {
@@ -119,6 +122,7 @@ const initialState: SoraDemoState = {
   mute: false,
   noiseSuppression: true,
   notifyMessages: [],
+  pushMessages: [],
   resolution: "",
   simulcastQuality: "",
   spotlight: "2",
@@ -306,6 +310,9 @@ const slice = createSlice({
     setNotifyMessages: (state, action: PayloadAction<NotifyMessage>) => {
       state.notifyMessages.push(action.payload);
     },
+    setPushMessages: (state, action: PayloadAction<PushMessage>) => {
+      state.pushMessages.push(action.payload);
+    },
     setSpotlightConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
       // Spotlight 有効時に streamID(spotligId) と映像の配信者ID(connectionId) のマッピングを保存
       const spotlightConnectionIds = Object.assign(state.spotlightConnectionIds, {
@@ -409,6 +416,14 @@ function setSoraCallbacks(
     }
     dispatch(
       slice.actions.setNotifyMessages({
+        timestamp: new Date().getTime(),
+        message: message,
+      })
+    );
+  });
+  sora.on("push", (message: SoraPushMessage) => {
+    dispatch(
+      slice.actions.setPushMessages({
         timestamp: new Date().getTime(),
         message: message,
       })
