@@ -13,6 +13,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioCodecType: true,
   audioOutput: true,
   channelId: true,
+  metadata: true,
   spotlight: true,
   video: true,
   videoCodecType: true,

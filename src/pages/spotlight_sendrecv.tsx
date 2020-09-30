@@ -20,6 +20,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   echoCancellationType: true,
   frameRate: true,
   mediaType: true,
+  metadata: true,
   noiseSuppression: true,
   resolution: true,
   video: true,
