@@ -977,6 +977,16 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
+  // metadata が存在した場合は enabledMetadat と metadat 両方をセットする
+  if (queryStringParameters.metadata !== undefined) {
+    dispatch(slice.actions.setEnabledMetadata(true));
+    setInitialState<SoraDemoState["metadata"]>(
+      dispatch,
+      slice.actions.setMetadata,
+      pageInitialParameters.metadata,
+      queryStringParameters.metadata
+    );
+  }
   dispatch(slice.actions.setInitialFakeContents());
   dispatch(slice.actions.setErrorMessage(null));
 };

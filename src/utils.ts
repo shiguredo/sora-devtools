@@ -218,6 +218,7 @@ export type QueryStringParameters = {
   frameRate: typeof FRAME_RATES[number];
   googCpuOveruseDetection: boolean;
   mediaType: typeof MEDIA_TYPES[number];
+  metadata: string;
   noiseSuppression: boolean;
   mute: boolean;
   spotlight: typeof SPOTLIGHTS[number];
@@ -247,6 +248,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     frameRate,
     googCpuOveruseDetection,
     mediaType,
+    metadata,
     noiseSuppression,
     mute,
     spotlight,
@@ -297,6 +299,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof mediaType === "string" && isMediaType(mediaType)) {
     queryStringParameters.mediaType = mediaType;
+  }
+  if (metadata) {
+    queryStringParameters.metadata = String(metadata);
   }
   if (typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
     queryStringParameters.simulcastQuality = simulcastQuality;
