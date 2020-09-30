@@ -1,16 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Collapse } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/slice";
 
-type Stats = {
-  id: string;
-  type: string;
-  [x: string]: string;
-};
+interface RTCStatsWithIndexSignature extends RTCStats {
+  [x: string]: string | number;
+}
 
-const CollapseStats: React.FC<{ stats: Stats }> = (props) => {
+const CollapseStats: React.FC<{ stats: RTCStatsWithIndexSignature }> = (props) => {
   const [show, setShow] = useState(false);
   const { stats } = props;
   return (
@@ -40,51 +38,11 @@ const CollapseStats: React.FC<{ stats: Stats }> = (props) => {
 };
 
 const DebugGetStats: React.FC = () => {
-  const intervalRef = useRef<NodeJS.Timer | null>(null);
-  const initialStatsReport: Stats[] = [];
-  const [statsReport, setStatsReport] = useState(initialStatsReport);
-  const { soraContents } = useSelector((state: SoraDemoState) => state);
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
-  useEffect(() => {
-    if (soraContents.sora === null) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      return;
-    }
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    const createStats = async (): Promise<Stats[]> => {
-      const newStatsReport: Stats[] = [];
-      if (soraContents.sora && soraContents.sora.pc && soraContents.sora.pc.iceConnectionState !== "closed") {
-        const report = await soraContents.sora.pc.getStats();
-        report.forEach((s) => {
-          newStatsReport.push(s);
-        });
-      }
-      return newStatsReport;
-    };
-    createStats().then((stats) => {
-      setStatsReport(stats);
-    });
-    intervalRef.current = setInterval(async () => {
-      if (soraContents.sora && soraContents.sora.pc && soraContents.sora.pc.iceConnectionState !== "closed") {
-        const stats = await createStats();
-        setStatsReport(stats);
-      }
-    }, 3000);
-  }, [soraContents.sora]);
+  const { statsReport } = useSelector((state: SoraDemoState) => state.soraContents);
   return (
     <>
       {statsReport.map((stats) => {
-        return <CollapseStats key={stats.id} stats={stats} />;
+        return <CollapseStats key={stats.id} stats={stats as RTCStatsWithIndexSignature} />;
       })}
     </>
   );

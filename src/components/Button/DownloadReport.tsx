@@ -3,27 +3,14 @@ import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/slice";
 
-type Stats = {
-  id: string;
-  type: string;
-  [x: string]: string;
-};
-
 type Props = {
   pageName: string;
 };
 const DownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const state = useSelector((state: SoraDemoState) => state);
-  const { sora } = state.soraContents;
+  const { statsReport } = state.soraContents;
   const onClick = async (): Promise<void> => {
-    const statsReport: Stats[] = [];
-    if (sora && sora.pc && sora.pc.iceConnectionState !== "closed") {
-      const stats = await sora.pc.getStats();
-      stats.forEach((s) => {
-        statsReport.push(s);
-      });
-    }
     const parametersReport = {
       audio: state.audio,
       audioBitRate: state.audioBitRate,
