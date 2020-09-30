@@ -25,6 +25,7 @@ import {
   drawFakeCanvas,
   LogMessage,
   NotifyMessage,
+  parseMetadata,
   parseQueryString,
   parseSpotlight,
   PushMessage,
@@ -49,6 +50,7 @@ export type SoraDemoState = {
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   enabledCamera: boolean;
+  enabledMetadata: boolean;
   enabledMic: boolean;
   errorMessage: string | null;
   fakeContents: {
@@ -66,6 +68,7 @@ export type SoraDemoState = {
   };
   logMessages: LogMessage[];
   mediaType: typeof MEDIA_TYPES[number];
+  metadata: string;
   mute: boolean;
   noiseSuppression: boolean;
   notifyMessages: NotifyMessage[];
@@ -100,6 +103,7 @@ const initialState: SoraDemoState = {
   echoCancellation: true,
   echoCancellationType: "",
   enabledCamera: false,
+  enabledMetadata: false,
   enabledMic: false,
   errorMessage: null,
   // fake: false,
@@ -119,6 +123,7 @@ const initialState: SoraDemoState = {
   },
   logMessages: [],
   mediaType: "getUserMedia",
+  metadata: "",
   mute: false,
   noiseSuppression: true,
   notifyMessages: [],
@@ -172,6 +177,9 @@ const slice = createSlice({
     setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
       state.echoCancellationType = action.payload;
     },
+    setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
+      state.enabledMetadata = action.payload;
+    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
@@ -206,6 +214,9 @@ const slice = createSlice({
     },
     setMediaType: (state, action: PayloadAction<typeof MEDIA_TYPES[number]>) => {
       state.mediaType = action.payload;
+    },
+    setMetadata: (state, action: PayloadAction<string>) => {
+      state.metadata = action.payload;
     },
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
@@ -578,7 +589,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const sora = connection.sendonly(state.channelId, null, connectionOptions);
+  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+  const sora = connection.sendonly(state.channelId, metadata, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -642,7 +654,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const sora = connection.recvonly(state.channelId, null, connectionOptions);
+  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+  const sora = connection.recvonly(state.channelId, metadata, connectionOptions);
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect();
@@ -699,7 +712,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const sora = connection.sendrecv(state.channelId, null, connectionOptions);
+  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+  const sora = connection.sendrecv(state.channelId, metadata, connectionOptions);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -963,6 +977,16 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
+  // metadata が存在した場合は enabledMetadat と metadat 両方をセットする
+  if (queryStringParameters.metadata !== undefined) {
+    dispatch(slice.actions.setEnabledMetadata(true));
+    setInitialState<SoraDemoState["metadata"]>(
+      dispatch,
+      slice.actions.setMetadata,
+      pageInitialParameters.metadata,
+      queryStringParameters.metadata
+    );
+  }
   dispatch(slice.actions.setInitialFakeContents());
   dispatch(slice.actions.setErrorMessage(null));
 };
@@ -979,12 +1003,14 @@ export const {
   setDebugType,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledMetadata,
   setErrorMessage,
   setFakeVolume,
   setFrameRate,
   setLocalMediaStream,
   setLogMessages,
   setMediaType,
+  setMetadata,
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,

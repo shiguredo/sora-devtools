@@ -24,6 +24,16 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
+type Json =
+  | null
+  | boolean
+  | number
+  | string
+  | Json[]
+  | {
+      [prop: string]: Json | undefined;
+    };
+
 // Sora demo の接続種類
 export type ConnectType = "sendonly" | "sendrecv" | "recvonly";
 
@@ -50,6 +60,7 @@ export type EnabledParameters = {
   echoCancellationType?: boolean;
   frameRate?: boolean;
   mediaType?: boolean;
+  metadata?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
   simulcastQuality?: boolean;
@@ -207,6 +218,7 @@ export type QueryStringParameters = {
   frameRate: typeof FRAME_RATES[number];
   googCpuOveruseDetection: boolean;
   mediaType: typeof MEDIA_TYPES[number];
+  metadata: string;
   noiseSuppression: boolean;
   mute: boolean;
   spotlight: typeof SPOTLIGHTS[number];
@@ -236,6 +248,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     frameRate,
     googCpuOveruseDetection,
     mediaType,
+    metadata,
     noiseSuppression,
     mute,
     spotlight,
@@ -286,6 +299,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof mediaType === "string" && isMediaType(mediaType)) {
     queryStringParameters.mediaType = mediaType;
+  }
+  if (metadata) {
+    queryStringParameters.metadata = String(metadata);
   }
   if (typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
     queryStringParameters.simulcastQuality = simulcastQuality;
@@ -525,4 +541,16 @@ export function parseSpotlight(spotlight: string): boolean | number {
     return false;
   }
   return numberSpotlight;
+}
+
+export function parseMetadata(enabledMetadata: boolean, metadata: string): Json {
+  if (!enabledMetadata) {
+    return null;
+  }
+  try {
+    return JSON.parse(metadata);
+  } catch (_e) {
+    // JSON parse に失敗しても何もしない
+  }
+  return metadata;
 }

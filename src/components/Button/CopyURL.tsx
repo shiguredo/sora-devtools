@@ -45,6 +45,9 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.mediaType) {
       parameters.push(`mediaType=${state.mediaType}`);
     }
+    if (props.enabledParameters.metadata && state.enabledMetadata) {
+      parameters.push(`metadata=${state.metadata}`);
+    }
     if (props.enabledParameters.noiseSuppression) {
       parameters.push(`noiseSuppression=${state.noiseSuppression}`);
     }
