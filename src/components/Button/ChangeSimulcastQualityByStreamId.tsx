@@ -1,9 +1,9 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SimulcastQuality } from "sora-js-sdk";
 
 import { changeSimulcastQuality } from "@/api";
-import { SoraDemoState } from "@/slice";
+import { setErrorMessage, SoraDemoState } from "@/slice";
 
 type Props = {
   quality: SimulcastQuality;
@@ -11,9 +11,15 @@ type Props = {
 };
 const ChangeSimulcastQualityByStreamId: React.FC<Props> = (props) => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
-  const onClick = (): void => {
-    if (soraContents.sora?.connectionId) {
-      changeSimulcastQuality(channelId, soraContents.sora.connectionId, props.quality, props.streamId);
+  const dispatch = useDispatch();
+  const onClick = async (): Promise<void> => {
+    if (!soraContents.sora?.connectionId) {
+      return;
+    }
+    try {
+      await changeSimulcastQuality(channelId, soraContents.sora.connectionId, props.quality, props.streamId);
+    } catch (error) {
+      dispatch(setErrorMessage(error.message));
     }
   };
   return (

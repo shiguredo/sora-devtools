@@ -1,14 +1,20 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { resetSpotlightQuality } from "@/api";
-import { SoraDemoState } from "@/slice";
+import { setErrorMessage, SoraDemoState } from "@/slice";
 
 const ResetSpotlightQuality: React.FC = () => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
-  const onClick = (): void => {
-    if (soraContents.sora?.connectionId) {
-      resetSpotlightQuality(channelId, soraContents.sora.connectionId);
+  const dispatch = useDispatch();
+  const onClick = async (): Promise<void> => {
+    if (!soraContents.sora?.connectionId) {
+      return;
+    }
+    try {
+      await resetSpotlightQuality(channelId, soraContents.sora.connectionId);
+    } catch (error) {
+      dispatch(setErrorMessage(error.message));
     }
   };
   return (

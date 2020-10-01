@@ -1,13 +1,18 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { stopRec } from "@/api";
-import { SoraDemoState } from "@/slice";
+import { setErrorMessage, SoraDemoState } from "@/slice";
 
 const StopRecording: React.FC = () => {
   const { channelId } = useSelector((state: SoraDemoState) => state);
-  const onClick = (): void => {
-    stopRec(channelId);
+  const dispatch = useDispatch();
+  const onClick = async (): Promise<void> => {
+    try {
+      await stopRec(channelId);
+    } catch (error) {
+      dispatch(setErrorMessage(error.message));
+    }
   };
   return (
     <div className="col-auto mb-1">
