@@ -1,6 +1,6 @@
 import { SimulcastQuality } from "sora-js-sdk";
 
-async function post<T>(version: string, path: string, params: Record<string, unknown>): Promise<T> {
+async function post(version: string, path: string, params: Record<string, unknown>): Promise<Record<string, unknown>> {
   const protocol = window.location.protocol;
   const apiPort = protocol == "https:" ? "443" : "3000";
   const apiPath = protocol == "https:" ? "api" : "";
@@ -16,21 +16,27 @@ async function post<T>(version: string, path: string, params: Record<string, unk
     },
     mode: "cors",
   });
-  if (response.status !== 200) {
-    const error = new Error(response.statusText);
+  const responseJson = await response.json();
+  if (!response.ok) {
+    console.log(response);
+    let errorMessage = `POST ${url} ${response.status} (${response.statusText}) target:${target}`;
+    if (responseJson.error_type) {
+      errorMessage += ` error_type: ${responseJson.error_type}`;
+    }
+    const error = new Error(errorMessage);
     throw error;
   }
-  return response.json();
+  return responseJson;
 }
 
-export function startRec(channelId: string): void {
+export function startRec(channelId: string): Promise<unknown> {
   const params = { channel_id: channelId, expire_time: 3600 };
-  post("20161101", "StartRecording", params);
+  return post("20161101", "StartRecording", params);
 }
 
-export function stopRec(channelId: string): void {
+export function stopRec(channelId: string): Promise<unknown> {
   const params = { channel_id: channelId };
-  post("20161101", "StopRecording", params);
+  return post("20161101", "StopRecording", params);
 }
 
 export function changeSimulcastQuality(
@@ -38,7 +44,7 @@ export function changeSimulcastQuality(
   connectionId: string,
   quality: SimulcastQuality,
   streamId?: string
-): void {
+): Promise<unknown> {
   const params: { channel_id: string; connection_id: string; stream_id?: string; quality: SimulcastQuality } = {
     channel_id: channelId,
     connection_id: connectionId,
@@ -47,7 +53,7 @@ export function changeSimulcastQuality(
   if (streamId) {
     params["stream_id"] = streamId;
   }
-  post("20180820", "ChangeSimulcastQuality", params);
+  return post("20180820", "ChangeSimulcastQuality", params);
 }
 
 export function requestSpotlightQuality(
@@ -55,7 +61,7 @@ export function requestSpotlightQuality(
   connectionId: string,
   quality: SimulcastQuality,
   streamId?: string
-): void {
+): Promise<unknown> {
   const params: { channel_id: string; connection_id: string; stream_id?: string; quality: SimulcastQuality } = {
     channel_id: channelId,
     connection_id: connectionId,
@@ -64,10 +70,10 @@ export function requestSpotlightQuality(
   if (streamId) {
     params["stream_id"] = streamId;
   }
-  post("20200807", "RequestSpotlightQuality", params);
+  return post("20200807", "RequestSpotlightQuality", params);
 }
 
-export function resetSpotlightQuality(channelId: string, connectionId: string, streamId?: string): void {
+export function resetSpotlightQuality(channelId: string, connectionId: string, streamId?: string): Promise<unknown> {
   const params: { channel_id: string; connection_id: string; stream_id?: string } = {
     channel_id: channelId,
     connection_id: connectionId,
@@ -75,5 +81,5 @@ export function resetSpotlightQuality(channelId: string, connectionId: string, s
   if (streamId) {
     params["stream_id"] = streamId;
   }
-  post("20200807", "ResetSpotlightQuality", params);
+  return post("20200807", "ResetSpotlightQuality", params);
 }
