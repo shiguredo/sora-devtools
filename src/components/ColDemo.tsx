@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import Alert from "@/components/Alert";
+import AlertMessages from "@/components/AlertMessages";
 import ButtonChangeSimulcastQuality from "@/components/Button/ChangeSimulcastQuality";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
@@ -47,7 +47,7 @@ const ColDemo: React.FC<Props> = (props) => {
   const { debug, enabledMetadata } = useSelector((state: SoraDemoState) => state);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
-      <Alert />
+      <AlertMessages />
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}

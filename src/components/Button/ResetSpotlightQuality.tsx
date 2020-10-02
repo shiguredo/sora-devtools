@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { resetSpotlightQuality } from "@/api";
-import { setErrorMessage, SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
 
 const ResetSpotlightQuality: React.FC = () => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
@@ -12,9 +12,10 @@ const ResetSpotlightQuality: React.FC = () => {
       return;
     }
     try {
-      await resetSpotlightQuality(channelId, soraContents.sora.connectionId);
+      const response = await resetSpotlightQuality(channelId, soraContents.sora.connectionId);
+      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setErrorMessage(error.message));
+      dispatch(setAPIErrorAlertMessage(error.message));
     }
   };
   return (

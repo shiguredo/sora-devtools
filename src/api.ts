@@ -18,7 +18,6 @@ async function post(version: string, path: string, params: Record<string, unknow
   });
   const responseJson = await response.json();
   if (!response.ok) {
-    console.log(response);
     let errorMessage = `POST ${url} ${response.status} (${response.statusText}) target:${target}`;
     if (responseJson.error_type) {
       errorMessage += ` error_type: ${responseJson.error_type}`;

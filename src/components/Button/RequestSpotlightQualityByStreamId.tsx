@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SimulcastQuality } from "sora-js-sdk";
 
 import { requestSpotlightQuality } from "@/api";
-import { setErrorMessage, SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
 
 type Props = {
   quality: SimulcastQuality;
@@ -17,9 +17,15 @@ const RequestSimulcastQualityByStreamId: React.FC<Props> = (props) => {
       return;
     }
     try {
-      requestSpotlightQuality(channelId, soraContents.sora.connectionId, props.quality, props.streamId);
+      const response = requestSpotlightQuality(
+        channelId,
+        soraContents.sora.connectionId,
+        props.quality,
+        props.streamId
+      );
+      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setErrorMessage(error.message));
+      dispatch(setAPIErrorAlertMessage(error.message));
     }
   };
   return (
