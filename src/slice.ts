@@ -106,7 +106,6 @@ const initialState: SoraDemoState = {
   enabledMetadata: false,
   enabledMic: false,
   errorMessage: null,
-  // fake: false,
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -114,7 +113,6 @@ const initialState: SoraDemoState = {
     gainNode: null,
   },
   frameRate: "",
-  // getDisplayMedia: false,
   soraContents: {
     sora: null,
     localMediaStream: null,
