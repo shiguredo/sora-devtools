@@ -108,6 +108,14 @@ export type PushMessage = {
   message: SoraPushMessage;
 };
 
+// 画面表示する message の Type
+export type AlertMessage = {
+  timestamp: number;
+  type: "error" | "info";
+  title: string;
+  message: string;
+};
+
 // Debug 表示タブ選択状態用の Type
 export type DebugType = "log" | "notify" | "push" | "stats";
 

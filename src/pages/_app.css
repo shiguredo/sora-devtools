@@ -143,3 +143,16 @@ input[type="range"]:active::-moz-range-progress {
 .video-status p {
   margin: 0;
 }
+
+.alert-messages {
+  position: absolute;
+  top: 0;
+  right: 1px;
+  z-index: 1;
+}
+
+.toast {
+  flex-basis: 450px;
+  width: 450px;
+  max-width: 450px;
+}

@@ -1,13 +1,19 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { startRec } from "@/api";
-import { SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
 
 const StartRecording: React.FC = () => {
   const { channelId } = useSelector((state: SoraDemoState) => state);
-  const onClick = (): void => {
-    startRec(channelId);
+  const dispatch = useDispatch();
+  const onClick = async (): Promise<void> => {
+    try {
+      const response = await startRec(channelId);
+      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
+    } catch (error) {
+      dispatch(setAPIErrorAlertMessage(error.message));
+    }
   };
   return (
     <div className="col-auto mb-1">
