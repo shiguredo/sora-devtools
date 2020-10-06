@@ -9,6 +9,12 @@
 - FIX
     - バグ修正
 
+## develop
+- [UPDATE] Toasts 表示の追加
+    - API の成功/失敗をトーストを使って表示
+    - 全体のエラーハンドリング時の出力先をトーストに変更
+    - @yuitowest
+
 ## 2020.2.0
 - [UPDATE] sora-js-sdk のバージョンを 2020.3.0 に更新
     - Safari の Simulcast 対応
