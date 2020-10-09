@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.3.0
 - [UPDATE] package を更新
     - next: 9.5.3 -> 9.5.4
     - query-string: 6.13.4 -> 6.13.5
