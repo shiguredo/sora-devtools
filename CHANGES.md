@@ -10,6 +10,11 @@
     - バグ修正
 
 ## develop
+- [UPDATE] package を更新
+    - next: 9.5.3 -> 9.5.4
+    - query-string: 6.13.4 -> 6.13.5
+    - @yuitowest
+
 - [UPDATE] Toasts 表示の追加
     - API の成功/失敗をトーストを使って表示
     - 全体のエラーハンドリング時の出力先をトーストに変更
