@@ -16,6 +16,7 @@ import {
   WORKER_SCRIPT,
 } from "@/constants";
 import {
+  AlertMessage,
   createAudioConstraints,
   createFakeMediaConstraints,
   createFakeMediaStream,
@@ -35,6 +36,7 @@ import {
 } from "@/utils";
 
 export type SoraDemoState = {
+  alertMessages: AlertMessage[];
   audio: boolean;
   audioBitRate: typeof AUDIO_BIT_RATES[number];
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];
@@ -52,7 +54,6 @@ export type SoraDemoState = {
   enabledCamera: boolean;
   enabledMetadata: boolean;
   enabledMic: boolean;
-  errorMessage: string | null;
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -88,6 +89,7 @@ export type SoraDemoState = {
 };
 
 const initialState: SoraDemoState = {
+  alertMessages: [],
   audio: true,
   audioBitRate: "",
   audioCodecType: "",
@@ -105,8 +107,6 @@ const initialState: SoraDemoState = {
   enabledCamera: false,
   enabledMetadata: false,
   enabledMic: false,
-  errorMessage: null,
-  // fake: false,
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -114,7 +114,6 @@ const initialState: SoraDemoState = {
     gainNode: null,
   },
   frameRate: "",
-  // getDisplayMedia: false,
   soraContents: {
     sora: null,
     localMediaStream: null,
@@ -300,8 +299,47 @@ const slice = createSlice({
     setAudioOutputDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
       state.audioOutputDevices = action.payload;
     },
-    setErrorMessage: (state, action: PayloadAction<string | null>) => {
-      state.errorMessage = action.payload;
+    setSoraInfoAlertMessage: (state, action: PayloadAction<string>) => {
+      const alertMessage: AlertMessage = {
+        title: "Sora info",
+        type: "info",
+        message: action.payload,
+        timestamp: new Date().getTime(),
+      };
+      setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
+    },
+    setSoraErrorAlertMessage: (state, action: PayloadAction<string>) => {
+      const alertMessage: AlertMessage = {
+        title: "Sora error",
+        type: "error",
+        message: action.payload,
+        timestamp: new Date().getTime(),
+      };
+      setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
+    },
+    setAPIInfoAlertMessage: (state, action: PayloadAction<string>) => {
+      const alertMessage: AlertMessage = {
+        title: "API info",
+        type: "info",
+        message: action.payload,
+        timestamp: new Date().getTime(),
+      };
+      setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
+    },
+    setAPIErrorAlertMessage: (state, action: PayloadAction<string>) => {
+      const alertMessage: AlertMessage = {
+        title: "API error",
+        type: "error",
+        message: action.payload,
+        timestamp: new Date().getTime(),
+      };
+      setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
+    },
+    deleteAlertMessage: (state, action: PayloadAction<number>) => {
+      const filterdAlertMessages = state.alertMessages.filter(
+        (alertMessage) => alertMessage.timestamp !== action.payload
+      );
+      state.alertMessages = filterdAlertMessages;
     },
     setDebug: (state, action: PayloadAction<boolean>) => {
       state.debug = action.payload;
@@ -333,6 +371,30 @@ const slice = createSlice({
     },
   },
 });
+
+function setAlertMessagesAndLogMessages(
+  alertMessages: SoraDemoState["alertMessages"],
+  logMessages: SoraDemoState["logMessages"],
+  alertMessage: AlertMessage
+): void {
+  if (5 <= alertMessages.length) {
+    for (let i = 0; i <= alertMessages.length - 5; i++) {
+      alertMessages.pop();
+    }
+  }
+  alertMessages.unshift(alertMessage);
+  logMessages.push({
+    timestamp: alertMessage.timestamp,
+    message: {
+      title: `ALERT MESSAGE ${alertMessage.title}`,
+      description: JSON.stringify({
+        title: alertMessage.title,
+        type: alertMessage.type,
+        message: alertMessage.message,
+      }),
+    },
+  });
+}
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
@@ -478,6 +540,7 @@ function setSoraCallbacks(
     dispatch(slice.actions.setSora(null));
     dispatch(slice.actions.setLocalMediaStream(null));
     dispatch(slice.actions.removeAllRemoteMediaStreams());
+    dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
   });
 }
 
@@ -567,7 +630,7 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     await state.soraContents.sora.disconnect();
   }
   const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-    dispatch(slice.actions.setErrorMessage(error.toString()));
+    dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
     throw error;
   });
   const signalingURL = createSignalingURL();
@@ -599,11 +662,12 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect(mediaStream);
+    dispatch(slice.actions.setSoraInfoAlertMessage("Successed to connect Sora."));
   } catch (error) {
     mediaStream.getTracks().forEach((track) => {
       track.stop();
     });
-    dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
+    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${JSON.stringify(error)}`));
     throw error;
   }
   await setStatsReport(dispatch, sora);
@@ -618,7 +682,6 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
-  dispatch(slice.actions.setErrorMessage(null));
 };
 
 // Sora との視聴のみ接続
@@ -659,8 +722,9 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect();
+    dispatch(slice.actions.setSoraInfoAlertMessage("Successed to connect Sora."));
   } catch (error) {
-    dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
+    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${JSON.stringify(error)}`));
     throw error;
   }
   await setStatsReport(dispatch, sora);
@@ -673,7 +737,6 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     }
   }, 1000);
   dispatch(slice.actions.setSora(sora));
-  dispatch(slice.actions.setErrorMessage(null));
 };
 
 // Sora との配信/視聴接続
@@ -690,7 +753,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     await state.soraContents.sora.disconnect();
   }
   const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-    dispatch(slice.actions.setErrorMessage(error.toString()));
+    dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
     throw error;
   });
   const signalingURL = createSignalingURL();
@@ -722,11 +785,12 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect(mediaStream);
+    dispatch(slice.actions.setSoraInfoAlertMessage("Successed to connect Sora."));
   } catch (error) {
     mediaStream.getTracks().forEach((track) => {
       track.stop();
     });
-    dispatch(slice.actions.setErrorMessage("Failed to connect Sora"));
+    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${JSON.stringify(error)}`));
     throw error;
   }
   await setStatsReport(dispatch, sora);
@@ -741,7 +805,6 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
   dispatch(slice.actions.setSora(sora));
   dispatch(slice.actions.setLocalMediaStream(mediaStream));
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
-  dispatch(slice.actions.setErrorMessage(null));
 };
 
 // Sora との切断処理
@@ -787,7 +850,7 @@ export const updateMediaStream = () => async (dispatch: Dispatch, getState: () =
     });
   }
   const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-    dispatch(slice.actions.setErrorMessage(error.toString()));
+    dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
     throw error;
   });
   mediaStream.getTracks().forEach((track) => {
@@ -988,10 +1051,12 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     );
   }
   dispatch(slice.actions.setInitialFakeContents());
-  dispatch(slice.actions.setErrorMessage(null));
 };
 
 export const {
+  deleteAlertMessage,
+  setAPIErrorAlertMessage,
+  setAPIInfoAlertMessage,
   setAudio,
   setAudioBitRate,
   setAudioCodecType,
@@ -1004,7 +1069,6 @@ export const {
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledMetadata,
-  setErrorMessage,
   setFakeVolume,
   setFrameRate,
   setLocalMediaStream,
@@ -1015,9 +1079,11 @@ export const {
   setNotifyMessages,
   setResolution,
   setSimulcastQuality,
+  setSora,
+  setSoraErrorAlertMessage,
+  setSoraInfoAlertMessage,
   setSpotlight,
   setSpotlightNumber,
-  setSora,
   setVideo,
   setVideoBitRate,
   setVideoCodecType,

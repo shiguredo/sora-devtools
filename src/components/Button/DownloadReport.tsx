@@ -27,7 +27,6 @@ const DownloadReport: React.FC<Props> = (props) => {
       echoCancellationType: state.echoCancellationType,
       enabledCamera: state.enabledCamera,
       enabledMic: state.enabledMic,
-      errorMessage: state.errorMessage,
       frameRate: state.frameRate,
       mediaType: state.mediaType,
       noiseSuppression: state.noiseSuppression,
