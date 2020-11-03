@@ -201,7 +201,7 @@ export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[n
 }
 
 // SimulcastQuality の Type Guard
-export function isSimulcastQuality(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
+export function isSimulcastRid(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
   return (SIMULCAST_RID as readonly string[]).indexOf(simulcastRid) >= 0;
 }
 
@@ -311,7 +311,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (metadata) {
     queryStringParameters.metadata = String(metadata);
   }
-  if (typeof simulcastRid === "string" && isSimulcastQuality(simulcastRid)) {
+  if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;
   }
   if (typeof spotlight === "string" && isSpotlight(spotlight)) {

@@ -1078,7 +1078,7 @@ export const {
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
-  setSimulcastRId,
+  setSimulcastRid,
   setSora,
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,
