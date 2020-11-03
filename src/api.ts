@@ -44,7 +44,7 @@ export function requestRtpStream(
   rid: SimulcastRid,
   sendConnectionId?: string
 ): Promise<unknown> {
-  const params: { channel_id: string; recvConnectionId: string; sendConnectionId?: string; rid: SimulcastRid } = {
+  const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string; rid: SimulcastRid } = {
     channel_id: channelId,
     recv_connection_id: recvConnectionId,
     rid: rid,
@@ -55,13 +55,13 @@ export function requestRtpStream(
   return post("20201005", "RequestRtpStream", params);
 }
 
-export function resetRtpStream(channelId: string, connectionId: string, streamId?: string): Promise<unknown> {
-  const params: { channel_id: string; connection_id: string; stream_id?: string } = {
+export function resetRtpStream(channelId: string, connectionId: string, sendConnectionId?: string): Promise<unknown> {
+  const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
     channel_id: channelId,
-    connection_id: connectionId,
+    recv_connection_id: connectionId,
   };
-  if (streamId) {
-    params["stream_id"] = streamId;
+  if (sendConnectionId) {
+    params["send_connection_id"] = sendConnectionId;
   }
   return post("20201005", "ResetRtpStream", params);
 }
