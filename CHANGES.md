@@ -11,8 +11,7 @@
 
 ## develop
 
-- [UPDATE] package を更新
-    - next: 9.5.4 -> 10.0.0
+- [UPDATE] next を 10.0.0 に更新
     - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2020.3.0 に更新
     - @voluntas
