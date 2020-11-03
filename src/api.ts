@@ -1,4 +1,4 @@
-import { SimulcastQuality } from "sora-js-sdk";
+import { SimulcastRid } from "sora-js-sdk";
 
 async function post(version: string, path: string, params: Record<string, unknown>): Promise<Record<string, unknown>> {
   const protocol = window.location.protocol;
@@ -38,41 +38,24 @@ export function stopRec(channelId: string): Promise<unknown> {
   return post("20161101", "StopRecording", params);
 }
 
-export function changeSimulcastQuality(
+export function requestRtpStream(
   channelId: string,
-  connectionId: string,
-  quality: SimulcastQuality,
-  streamId?: string
+  recvConnectionId: string,
+  rid: SimulcastRid,
+  sendConnectionId?: string
 ): Promise<unknown> {
-  const params: { channel_id: string; connection_id: string; stream_id?: string; quality: SimulcastQuality } = {
+  const params: { channel_id: string; recvConnectionId: string; sendConnectionId?: string; rid: SimulcastRid } = {
     channel_id: channelId,
-    connection_id: connectionId,
-    quality: quality,
+    recv_connection_id: recvConnectionId,
+    rid: rid,
   };
-  if (streamId) {
-    params["stream_id"] = streamId;
+  if (sendConnectionId) {
+    params["send_connection_id"] = sendConnectionId;
   }
-  return post("20180820", "ChangeSimulcastQuality", params);
+  return post("20201005", "RequestRtpStream", params);
 }
 
-export function requestSpotlightQuality(
-  channelId: string,
-  connectionId: string,
-  quality: SimulcastQuality,
-  streamId?: string
-): Promise<unknown> {
-  const params: { channel_id: string; connection_id: string; stream_id?: string; quality: SimulcastQuality } = {
-    channel_id: channelId,
-    connection_id: connectionId,
-    quality: quality,
-  };
-  if (streamId) {
-    params["stream_id"] = streamId;
-  }
-  return post("20200807", "RequestSpotlightQuality", params);
-}
-
-export function resetSpotlightQuality(channelId: string, connectionId: string, streamId?: string): Promise<unknown> {
+export function resetRtpStream(channelId: string, connectionId: string, streamId?: string): Promise<unknown> {
   const params: { channel_id: string; connection_id: string; stream_id?: string } = {
     channel_id: channelId,
     connection_id: connectionId,
@@ -80,5 +63,5 @@ export function resetSpotlightQuality(channelId: string, connectionId: string, s
   if (streamId) {
     params["stream_id"] = streamId;
   }
-  return post("20200807", "ResetSpotlightQuality", params);
+  return post("20201005", "ResetRtpStream", params);
 }
