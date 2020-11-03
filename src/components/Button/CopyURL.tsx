@@ -54,8 +54,8 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.resolution) {
       parameters.push(`resolution=${state.resolution}`);
     }
-    if (props.enabledParameters.simulcastQuality) {
-      parameters.push(`simulcastQuality=${state.simulcastQuality}`);
+    if (props.enabledParameters.simulcastRid) {
+      parameters.push(`simulcastRid=${state.simulcastRid}`);
     }
     if (props.enabledParameters.spotlight) {
       parameters.push(`spotlight=${state.spotlight}`);

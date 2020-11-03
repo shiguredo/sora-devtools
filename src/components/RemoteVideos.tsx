@@ -64,16 +64,16 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         </p>
         {!props.spotlight && props.multistream && props.simulcast ? (
           <>
-            <ButtonChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
-            <ButtonChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
-            <ButtonChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+            <ButtonChangeSimulcastQualityByStreamId quality="r0" streamId={props.stream.id} />
+            <ButtonChangeSimulcastQualityByStreamId quality="r1" streamId={props.stream.id} />
+            <ButtonChangeSimulcastQualityByStreamId quality="r2" streamId={props.stream.id} />
           </>
         ) : null}
         {props.spotlight && props.multistream && props.simulcast ? (
           <>
-            <ButtonRequestSpotlightQualityByStreamId quality={"low"} streamId={props.stream.id} />
-            <ButtonRequestSpotlightQualityByStreamId quality={"middle"} streamId={props.stream.id} />
-            <ButtonRequestSpotlightQualityByStreamId quality={"high"} streamId={props.stream.id} />
+            <ButtonRequestSpotlightQualityByStreamId quality={"r0"} streamId={props.stream.id} />
+            <ButtonRequestSpotlightQualityByStreamId quality={"r1"} streamId={props.stream.id} />
+            <ButtonRequestSpotlightQualityByStreamId quality={"r2"} streamId={props.stream.id} />
             <ButtonResetSpotlightQualityByStreamId streamId={props.stream.id} />
           </>
         ) : null}

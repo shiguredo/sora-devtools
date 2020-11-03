@@ -7,7 +7,7 @@ import {
   FRAME_RATES,
   MEDIA_TYPES,
   RESOLUTIONS,
-  SIMULCAST_QUARITY,
+  SIMULCAST_RID,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -63,7 +63,7 @@ export type EnabledParameters = {
   metadata?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
-  simulcastQuality?: boolean;
+  simulcastRid?: boolean;
   spotlight?: boolean;
   spotlightNumber?: boolean;
   video?: boolean;
@@ -201,8 +201,8 @@ export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[n
 }
 
 // SimulcastQuality の Type Guard
-export function isSimulcastQuality(simulcastQuality: string): simulcastQuality is typeof SIMULCAST_QUARITY[number] {
-  return (SIMULCAST_QUARITY as readonly string[]).indexOf(simulcastQuality) >= 0;
+export function isSimulcastQuality(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
+  return (SIMULCAST_RID as readonly string[]).indexOf(simulcastRid) >= 0;
 }
 
 // MediaType の Type Guard
@@ -231,7 +231,7 @@ export type QueryStringParameters = {
   mute: boolean;
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  simulcastQuality: typeof SIMULCAST_QUARITY[number];
+  simulcastRid: typeof SIMULCAST_RID[number];
   resolution: typeof RESOLUTIONS[number];
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
@@ -261,7 +261,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mute,
     spotlight,
     spotlightNumber,
-    simulcastQuality,
+    simulcastRid,
     resolution,
     video,
     videoBitRate,
@@ -311,8 +311,8 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (metadata) {
     queryStringParameters.metadata = String(metadata);
   }
-  if (typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
-    queryStringParameters.simulcastQuality = simulcastQuality;
+  if (typeof simulcastRid === "string" && isSimulcastQuality(simulcastRid)) {
+    queryStringParameters.simulcastRid = simulcastRid;
   }
   if (typeof spotlight === "string" && isSpotlight(spotlight)) {
     queryStringParameters.spotlight = spotlight;

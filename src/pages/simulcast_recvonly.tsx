@@ -14,7 +14,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   channelId: true,
   metadata: true,
-  simulcastQuality: true,
+  simulcastRid: true,
   video: true,
   videoCodecType: true,
 };
@@ -26,7 +26,7 @@ const SimulcastRecvonly: React.FC = () => {
       setInitialParameter({
         audioCodecType: "OPUS",
         videoCodecType: "VP8",
-        simulcastQuality: "low",
+        simulcastRid: "r0",
       })
     );
     dispatch(setMediaDevices());

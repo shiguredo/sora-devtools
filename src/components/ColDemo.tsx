@@ -64,7 +64,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
         {props.enabledParameters.resolution ? <FormResolution /> : null}
         {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
-        {props.enabledParameters.simulcastQuality ? <FormSimulcastQuality /> : null}
+        {props.enabledParameters.simulcastRid ? <FormSimulcastQuality /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.audio ? <FormAudio /> : null}
@@ -92,16 +92,16 @@ const ColDemo: React.FC<Props> = (props) => {
         <ButtonStopRecording />
         {!props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonChangeSimulcastQuality quality={"low"} />
-            <ButtonChangeSimulcastQuality quality={"middle"} />
-            <ButtonChangeSimulcastQuality quality={"high"} />
+            <ButtonChangeSimulcastQuality quality={"r0"} />
+            <ButtonChangeSimulcastQuality quality={"r1"} />
+            <ButtonChangeSimulcastQuality quality={"r2"} />
           </>
         ) : null}
         {props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonRequestSpotlightQuality quality={"low"} />
-            <ButtonRequestSpotlightQuality quality={"middle"} />
-            <ButtonRequestSpotlightQuality quality={"high"} />
+            <ButtonRequestSpotlightQuality quality={"r0"} />
+            <ButtonRequestSpotlightQuality quality={"r1"} />
+            <ButtonRequestSpotlightQuality quality={"r2"} />
             <ButtonResetSpotlightQuality />
           </>
         ) : null}

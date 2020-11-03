@@ -8,7 +8,7 @@ import {
   FRAME_RATES,
   MEDIA_TYPES,
   RESOLUTIONS,
-  SIMULCAST_QUARITY,
+  SIMULCAST_RID,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -75,7 +75,7 @@ export type SoraDemoState = {
   notifyMessages: NotifyMessage[];
   pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
-  simulcastQuality: typeof SIMULCAST_QUARITY[number];
+  simulcastRid: typeof SIMULCAST_RID[number];
   spotlightConnectionIds: {
     [key: string]: string;
   };
@@ -128,7 +128,7 @@ const initialState: SoraDemoState = {
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
-  simulcastQuality: "",
+  simulcastRid: "",
   spotlight: "2",
   spotlightNumber: "",
   spotlightConnectionIds: {},
@@ -220,8 +220,8 @@ const slice = createSlice({
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
     },
-    setSimulcastQuality: (state, action: PayloadAction<typeof SIMULCAST_QUARITY[number]>) => {
-      state.simulcastQuality = action.payload;
+    setSimulcastRid: (state, action: PayloadAction<typeof SIMULCAST_RID[number]>) => {
+      state.simulcastRid = action.payload;
     },
     setSpotlight: (state, action: PayloadAction<typeof SPOTLIGHTS[number]>) => {
       state.spotlight = action.payload;
@@ -551,7 +551,7 @@ function createConnectOptions(
     | "audio"
     | "audioBitRate"
     | "audioCodecType"
-    | "simulcastQuality"
+    | "simulcastRid"
     | "spotlight"
     | "spotlightNumber"
     | "video"
@@ -596,8 +596,8 @@ function createConnectOptions(
   }
   if (simulcast) {
     connectionOptions.simulcast = true;
-    if (pickedState.simulcastQuality) {
-      connectionOptions.simulcastQuality = pickedState.simulcastQuality;
+    if (pickedState.simulcastRid) {
+      connectionOptions.simulcastRid = pickedState.simulcastRid;
     }
   }
   return connectionOptions;
@@ -641,7 +641,7 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
-      simulcastQuality: "",
+      simulcastRid: "",
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -706,7 +706,7 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
-      simulcastQuality: state.simulcastQuality,
+      simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -764,7 +764,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
-      simulcastQuality: state.simulcastQuality,
+      simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -982,11 +982,11 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.resolution,
     queryStringParameters.resolution
   );
-  setInitialState<SoraDemoState["simulcastQuality"]>(
+  setInitialState<SoraDemoState["simulcastRid"]>(
     dispatch,
-    slice.actions.setSimulcastQuality,
-    pageInitialParameters.simulcastQuality,
-    queryStringParameters.simulcastQuality
+    slice.actions.setSimulcastRid,
+    pageInitialParameters.simulcastRid,
+    queryStringParameters.simulcastRid
   );
   setInitialState<SoraDemoState["spotlight"]>(
     dispatch,
@@ -1078,7 +1078,7 @@ export const {
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
-  setSimulcastQuality,
+  setSimulcastRId,
   setSora,
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,
