@@ -1,15 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setSimulcastQuality, SoraDemoState } from "@/slice";
-import { isSimulcastQuality } from "@/utils";
+import { setSimulcastRid, SoraDemoState } from "@/slice";
+import { isSimulcastRid } from "@/utils";
 
-const SimulcastQuality: React.FC = () => {
+const SimulcastRid: React.FC = () => {
   const { simulcastRid } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (isSimulcastQuality(event.target.value)) {
-      dispatch(setSimulcastQuality(event.target.value));
+    if (isSimulcastRid(event.target.value)) {
+      dispatch(setSimulcastRid(event.target.value));
     }
   };
   return (
@@ -25,12 +25,12 @@ const SimulcastQuality: React.FC = () => {
         onChange={onChange}
       >
         <option value="">未指定</option>
-        <option value="r0">low</option>
-        <option value="r1">middle</option>
-        <option value="r2">high</option>
+        <option value="r0">r0</option>
+        <option value="r1">r1</option>
+        <option value="r2">r2</option>
       </select>
     </div>
   );
 };
 
-export default SimulcastQuality;
+export default SimulcastRid;

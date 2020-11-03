@@ -1,28 +1,21 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SimulcastQuality } from "sora-js-sdk";
 
-import { requestSpotlightQuality } from "@/api";
+import { resetRtpStream } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
 
 type Props = {
-  quality: SimulcastQuality;
-  streamId: string;
+  sendConnectionId: string;
 };
-const RequestSimulcastQualityByStreamId: React.FC<Props> = (props) => {
+const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
-  const onClick = (): void => {
+  const onClick = async (): Promise<void> => {
     if (!soraContents.sora?.connectionId) {
       return;
     }
     try {
-      const response = requestSpotlightQuality(
-        channelId,
-        soraContents.sora.connectionId,
-        props.quality,
-        props.streamId
-      );
+      const response = await resetRtpStream(channelId, soraContents.sora.connectionId, props.sendConnectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       dispatch(setAPIErrorAlertMessage(error.message));
@@ -32,11 +25,11 @@ const RequestSimulcastQualityByStreamId: React.FC<Props> = (props) => {
     <input
       className="btn btn-secondary btn-sm mb-1 mx-1"
       type="button"
-      name={`RequestSimulcastQualityTo${props.quality.charAt(0).toUpperCase() + props.quality.slice(1)}`}
-      defaultValue={`${props.quality} quality`}
+      name="resetRtpStream"
+      defaultValue="reset rid"
       onClick={onClick}
     />
   );
 };
 
-export default RequestSimulcastQualityByStreamId;
+export default ResetRtpStreamBySendConnectionId;
