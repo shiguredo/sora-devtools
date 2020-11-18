@@ -5622,10 +5622,10 @@ sora-e2ee@^2020.3.0:
   resolved "https://registry.yarnpkg.com/sora-e2ee/-/sora-e2ee-2020.3.0.tgz#0dd2e952e2c98044dbeeb7ba97a1cf36b1b571d5"
   integrity sha512-DEKkG3MH05D5t4iUvp230JzV9sc3CT/OzzHMN7FyyQ6aRt59wc2+9TLO3BY2f3RPXTDJMyLbM+ca8X8oroXq0A==
 
-sora-js-sdk@^2020.4.0:
-  version "2020.4.0"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.4.0.tgz#9e608dcbe40b6c56173891b8739ee511d30c569c"
-  integrity sha512-QOXUA97xyIrdyYSIFhkdenDzVaDXy1zfefPWgMr2OlXX/iz9+TLkQ3xoeQ/8Egs90btdYrUC74wiAgeJ4PQaCQ==
+sora-js-sdk@^2020.4.1:
+  version "2020.4.1"
+  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.4.1.tgz#bed9b0d81bbbe907447b78c523953d281b9d87e8"
+  integrity sha512-itCxlhjS4oV0f4RMwpTaF5V4/0WK58qsyxqQsuqKebhdonU/DP8pKtgUTjvwh32iXnPc/Wfowe1wQapzHVxULw==
   dependencies:
     sora-e2ee "^2020.3.0"
 
