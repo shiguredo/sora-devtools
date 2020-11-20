@@ -11,6 +11,11 @@
 
 ## develop
 
+- [CHANGE] simulcast quality を simulcast rid に変更する
+    - changeSimulcastQuality, resetSpotlightQuality API を requestRtpStream, resetRtpStream API に変更する
+    - simulcastQuality を simulcastRid に変更する
+    - low / middle / high を r0 /r1 / r2 に変更する
+    - @voluntas
 - [UPDATE] package を更新
     - bootstrap: 4.5.2 -> 4.5.3
     - query-string: 6.13.5 -> 6.13.7
