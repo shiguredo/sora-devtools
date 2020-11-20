@@ -17,13 +17,7 @@ const SimulcastRid: React.FC = () => {
       <label className="mr-1" htmlFor="simulcastRid">
         simulcastRid:
       </label>
-      <select
-        id="simulcastRid"
-        name="simulcastRid"
-        className="custom-select"
-        value={simulcastRid}
-        onChange={onChange}
-      >
+      <select id="simulcastRid" name="simulcastRid" className="custom-select" value={simulcastRid} onChange={onChange}>
         <option value="">未指定</option>
         <option value="r0">r0</option>
         <option value="r1">r1</option>
