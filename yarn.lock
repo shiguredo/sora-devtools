@@ -4421,17 +4421,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-sora-e2ee@^2020.3.0:
-  version "2020.3.0"
-  resolved "https://registry.yarnpkg.com/sora-e2ee/-/sora-e2ee-2020.3.0.tgz#0dd2e952e2c98044dbeeb7ba97a1cf36b1b571d5"
-  integrity sha512-DEKkG3MH05D5t4iUvp230JzV9sc3CT/OzzHMN7FyyQ6aRt59wc2+9TLO3BY2f3RPXTDJMyLbM+ca8X8oroXq0A==
-
-sora-js-sdk@^2020.4.1:
-  version "2020.4.1"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.4.1.tgz#bed9b0d81bbbe907447b78c523953d281b9d87e8"
-  integrity sha512-itCxlhjS4oV0f4RMwpTaF5V4/0WK58qsyxqQsuqKebhdonU/DP8pKtgUTjvwh32iXnPc/Wfowe1wQapzHVxULw==
-  dependencies:
-    sora-e2ee "^2020.3.0"
+sora-js-sdk@^2020.5.0-canary.4:
+  version "2020.5.0-canary.4"
+  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.5.0-canary.4.tgz#489ef46b6bdf28c289ceba4448fffb1eaf68b4a6"
+  integrity sha512-5v3AaVUORCbWX0lkIaTjaGvTv0dXE5VbyfcYxs1X72LopFX2LcRwMsGwssjL17FWRn+cFCSqp/E3E0OwdlfJnA==
 
 source-list-map@^2.0.0:
   version "2.0.1"

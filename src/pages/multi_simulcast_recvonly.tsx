@@ -13,7 +13,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   channelId: true,
   metadata: true,
-  simulcastQuality: true,
+  simulcastRid: true,
   video: true,
 };
 
@@ -22,7 +22,7 @@ const MultiSimulcastRecvonly: React.FC = () => {
   useEffect(() => {
     dispatch(
       setInitialParameter({
-        simulcastQuality: "low",
+        simulcastRid: "r0",
       })
     );
     dispatch(setMediaDevices());

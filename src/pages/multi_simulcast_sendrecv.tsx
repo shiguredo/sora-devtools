@@ -23,7 +23,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   metadata: true,
   noiseSuppression: true,
   resolution: true,
-  simulcastQuality: true,
+  simulcastRid: true,
   video: true,
   videoBitRate: true,
   videoCodecType: true,
@@ -39,7 +39,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
         videoCodecType: "VP8",
         videoBitRate: "3000",
         resolution: "HD",
-        simulcastQuality: "low",
+        simulcastRid: "r0",
       })
     );
     dispatch(setMediaDevices());

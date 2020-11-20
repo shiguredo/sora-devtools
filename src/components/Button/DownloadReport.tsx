@@ -31,7 +31,7 @@ const DownloadReport: React.FC<Props> = (props) => {
       mediaType: state.mediaType,
       noiseSuppression: state.noiseSuppression,
       resolution: state.resolution,
-      simulcastQuality: state.simulcastQuality,
+      simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,

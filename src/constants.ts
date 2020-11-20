@@ -47,7 +47,7 @@ export const SPOTLIGHTS = ["1", "2", "3", "4", "5", "6", "7", "8", "true"] as co
 
 export const SPOTLIGHT_NUMBERS = ["", "1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
-export const SIMULCAST_QUARITY = ["", "low", "middle", "high"] as const;
+export const SIMULCAST_RID = ["", "r0", "r1", "r2"] as const;
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {

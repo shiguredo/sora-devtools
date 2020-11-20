@@ -2,11 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import AlertMessages from "@/components/AlertMessages";
-import ButtonChangeSimulcastQuality from "@/components/Button/ChangeSimulcastQuality";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
-import ButtonRequestSpotlightQuality from "@/components/Button/RequestSpotlightQuality";
-import ButtonResetSpotlightQuality from "@/components/Button/ResetSpotlightQuality";
+import ButtonRequestRtpStream from "@/components/Button/RequestRtpStream";
+import ButtonResetRtpStream from "@/components/Button/ResetRtpStream";
 import ButtonStartRecording from "@/components/Button/StartRecording";
 import ButtonStopRecording from "@/components/Button/StopRecording";
 import FormAudio from "@/components/Form/Audio";
@@ -24,7 +23,7 @@ import FormMediaType from "@/components/Form/MediaType";
 import FormMetadata from "@/components/Form/Metadata";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
-import FormSimulcastQuality from "@/components/Form/SimulcastQuality";
+import FormSimulcastRid from "@/components/Form/SimulcastRid";
 import FormSpotlight from "@/components/Form/Spotlight";
 import FormSpotlightNumber from "@/components/Form/SpotlightNumber";
 import FormVideo from "@/components/Form/Video";
@@ -64,7 +63,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
         {props.enabledParameters.resolution ? <FormResolution /> : null}
         {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
-        {props.enabledParameters.simulcastQuality ? <FormSimulcastQuality /> : null}
+        {props.enabledParameters.simulcastRid ? <FormSimulcastRid /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.audio ? <FormAudio /> : null}
@@ -92,17 +91,17 @@ const ColDemo: React.FC<Props> = (props) => {
         <ButtonStopRecording />
         {!props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonChangeSimulcastQuality quality={"low"} />
-            <ButtonChangeSimulcastQuality quality={"middle"} />
-            <ButtonChangeSimulcastQuality quality={"high"} />
+            <ButtonRequestRtpStream rid={"r0"} />
+            <ButtonRequestRtpStream rid={"r1"} />
+            <ButtonRequestRtpStream rid={"r2"} />
           </>
         ) : null}
         {props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonRequestSpotlightQuality quality={"low"} />
-            <ButtonRequestSpotlightQuality quality={"middle"} />
-            <ButtonRequestSpotlightQuality quality={"high"} />
-            <ButtonResetSpotlightQuality />
+            <ButtonRequestRtpStream rid={"r0"} />
+            <ButtonRequestRtpStream rid={"r1"} />
+            <ButtonRequestRtpStream rid={"r2"} />
+            <ButtonResetRtpStream />
           </>
         ) : null}
       </div>

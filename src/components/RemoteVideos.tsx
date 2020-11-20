@@ -1,9 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
-import ButtonChangeSimulcastQualityByStreamId from "@/components/Button/ChangeSimulcastQualityByStreamId";
-import ButtonRequestSpotlightQualityByStreamId from "@/components/Button/RequestSpotlightQualityByStreamId";
-import ButtonResetSpotlightQualityByStreamId from "@/components/Button/ResetSpotlightQualityByStreamId";
+import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
+import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement } from "@/utils";
 
@@ -64,17 +63,17 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         </p>
         {!props.spotlight && props.multistream && props.simulcast ? (
           <>
-            <ButtonChangeSimulcastQualityByStreamId quality="low" streamId={props.stream.id} />
-            <ButtonChangeSimulcastQualityByStreamId quality="middle" streamId={props.stream.id} />
-            <ButtonChangeSimulcastQualityByStreamId quality="high" streamId={props.stream.id} />
+            <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
+            <ButtonRequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
+            <ButtonRequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
           </>
         ) : null}
         {props.spotlight && props.multistream && props.simulcast ? (
           <>
-            <ButtonRequestSpotlightQualityByStreamId quality={"low"} streamId={props.stream.id} />
-            <ButtonRequestSpotlightQualityByStreamId quality={"middle"} streamId={props.stream.id} />
-            <ButtonRequestSpotlightQualityByStreamId quality={"high"} streamId={props.stream.id} />
-            <ButtonResetSpotlightQualityByStreamId streamId={props.stream.id} />
+            <ButtonRequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
+            <ButtonRequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
+            <ButtonRequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
+            <ButtonResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
           </>
         ) : null}
       </div>
