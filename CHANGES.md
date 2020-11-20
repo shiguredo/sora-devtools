@@ -11,11 +11,20 @@
 
 ## develop
 
+- [UPDATE] package を更新
+    - bootstrap: 4.5.2 -> 4.5.3
+    - query-string: 6.13.5 -> 6.13.7
+    - react: 16.13.1 -> 17.0.1
+    - react-bootstrap: 1.3.0 -> 1.4.0
+    - react-dom: 16.13.1 -> 17.0.1
+    - react-redux: 7.2.1 -> 7.2.2
+    - next: 10.0.0 -> 10.0.2
+    - typescript: 4.0.3 -> 4.1.2
+    - @yuitowest
 - [UPDATE] next を 10.0.0 に更新
     - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2020.3.0 に更新
     - @voluntas
-
 
 ## 2020.3.0
 
