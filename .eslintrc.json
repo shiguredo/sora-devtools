@@ -46,7 +46,8 @@
       "args": "all",
       "argsIgnorePattern": "^_"
     }],
-    "simple-import-sort/sort": "error",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "curly": "error",
     "react/jsx-boolean-value": "warn"
   }
