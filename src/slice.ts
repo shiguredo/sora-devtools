@@ -173,16 +173,6 @@ const slice = createSlice({
       state.googCpuOveruseDetection = action.payload;
     },
     setE2EE: (state, action: PayloadAction<boolean>) => {
-      if (action.payload && !process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        const alertMessage: AlertMessage = {
-          title: "E2EE error",
-          type: "error",
-          message: "Invalid value NEXT_PUBLIC_E2EE_WASM_URL in env file.",
-          timestamp: new Date().getTime(),
-        };
-        setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
-        return;
-      }
       state.e2ee = action.payload;
     },
     setEchoCancellation: (state, action: PayloadAction<boolean>) => {
@@ -893,6 +883,24 @@ export const updateMediaStream = () => async (dispatch: Dispatch, getState: () =
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
 };
 
+export const setE2EE = (e2ee: boolean) => async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
+  if (e2ee) {
+    const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
+    // wasm url が存在する場合は e2ee の初期化処理をする
+    if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+    try {
+      await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+    } catch(e) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+  }
+  dispatch(slice.actions.setE2EE(e2ee));
+};
+
 // QueryString の値とページから渡されたパラメーターを適切に action に渡すためのメソッド
 function setInitialState<T>(
   dispatch: Dispatch,
@@ -1079,11 +1087,6 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     );
   }
   dispatch(slice.actions.setInitialFakeContents());
-
-  // wasm url が存在する場合は e2ee の初期化処理をする
-  if (process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-    Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
-  }
 };
 
 export const {
@@ -1099,7 +1102,6 @@ export const {
   setChannelId,
   setDebug,
   setDebugType,
-  setE2EE,
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledMetadata,
