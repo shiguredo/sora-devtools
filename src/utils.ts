@@ -56,6 +56,7 @@ export type EnabledParameters = {
   audioOutput?: boolean;
   autoGainControl?: boolean;
   channelId?: boolean;
+  e2ee?: boolean;
   echoCancellation?: boolean;
   echoCancellationType?: boolean;
   frameRate?: boolean;
@@ -220,6 +221,7 @@ export type QueryStringParameters = {
   autoGainControl: boolean;
   channelId: string;
   debug: boolean;
+  e2ee: boolean;
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   fakeVolume: string;
@@ -250,6 +252,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     autoGainControl,
     channelId,
     debug,
+    e2ee,
     echoCancellation,
     echoCancellationType,
     fakeVolume,
@@ -289,6 +292,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof debug === "boolean") {
     queryStringParameters.debug = debug;
+  }
+  if (typeof e2ee === "boolean") {
+    queryStringParameters.e2ee = e2ee;
   }
   if (typeof echoCancellation === "boolean") {
     queryStringParameters.echoCancellation = echoCancellation;

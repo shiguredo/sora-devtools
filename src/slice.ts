@@ -51,6 +51,7 @@ export type SoraDemoState = {
   debugType: DebugType;
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
+  e2ee: boolean;
   enabledCamera: boolean;
   enabledMetadata: boolean;
   enabledMic: boolean;
@@ -102,6 +103,7 @@ const initialState: SoraDemoState = {
   googCpuOveruseDetection: null,
   debug: false,
   debugType: "log",
+  e2ee: false,
   echoCancellation: true,
   echoCancellationType: "",
   enabledCamera: false,
@@ -169,6 +171,19 @@ const slice = createSlice({
     },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
+    },
+    setE2EE: (state, action: PayloadAction<boolean>) => {
+      if (action.payload && !process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
+        const alertMessage: AlertMessage = {
+          title: "E2EE error",
+          type: "error",
+          message: "Invalid value NEXT_PUBLIC_E2EE_WASM_URL in env file.",
+          timestamp: new Date().getTime(),
+        };
+        setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
+        return;
+      }
+      state.e2ee = action.payload;
     },
     setEchoCancellation: (state, action: PayloadAction<boolean>) => {
       state.echoCancellation = action.payload;
@@ -551,6 +566,7 @@ function createConnectOptions(
     | "audio"
     | "audioBitRate"
     | "audioCodecType"
+    | "e2ee"
     | "simulcastRid"
     | "spotlight"
     | "spotlightNumber"
@@ -582,6 +598,9 @@ function createConnectOptions(
   }
   if (multistream) {
     connectionOptions.multistream = true;
+  }
+  if (pickedState.e2ee) {
+    connectionOptions.e2ee = true;
   }
   // 新/旧 spotlight 互換性のため parsedSpotlight は boolean | number になる
   // parsedSpotlight が number の場合は旧 spotlight 扱いになる
@@ -641,6 +660,7 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
+      e2ee: state.e2ee,
       simulcastRid: "",
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
@@ -706,6 +726,7 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
+      e2ee: state.e2ee,
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
@@ -764,6 +785,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
+      e2ee: state.e2ee,
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
@@ -940,6 +962,12 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.channelId,
     queryStringParameters.channelId
   );
+  setInitialState<SoraDemoState["e2ee"]>(
+    dispatch,
+    slice.actions.setE2EE,
+    pageInitialParameters.e2ee,
+    queryStringParameters.e2ee
+  );
   setInitialState<SoraDemoState["echoCancellation"]>(
     dispatch,
     slice.actions.setEchoCancellation,
@@ -1051,6 +1079,11 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     );
   }
   dispatch(slice.actions.setInitialFakeContents());
+
+  // wasm url が存在する場合は e2ee の初期化処理をする
+  if (process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
+    Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+  }
 };
 
 export const {
@@ -1066,6 +1099,7 @@ export const {
   setChannelId,
   setDebug,
   setDebugType,
+  setE2EE,
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledMetadata,

@@ -33,6 +33,9 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.channelId) {
       parameters.push(`channelId=${state.channelId}`);
     }
+    if (props.enabledParameters.e2ee) {
+      parameters.push(`e2ee=${state.e2ee}`);
+    }
     if (props.enabledParameters.echoCancellation) {
       parameters.push(`echoCancellation=${state.echoCancellation}`);
     }
