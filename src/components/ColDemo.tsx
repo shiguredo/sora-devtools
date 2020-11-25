@@ -15,6 +15,7 @@ import FormAudioInput from "@/components/Form/AudioInput";
 import FormAudioOutput from "@/components/Form/AudioOutput";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
+import FormE2EE from "@/components/Form/E2EE";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
@@ -53,6 +54,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.mediaType ? <FormMediaType /> : null}
+        {props.enabledParameters.e2ee ? <FormE2EE /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.metadata && enabledMetadata ? <FormMetadata /> : null}
