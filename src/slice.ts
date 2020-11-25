@@ -55,6 +55,7 @@ export type SoraDemoState = {
   enabledCamera: boolean;
   enabledMetadata: boolean;
   enabledMic: boolean;
+  enabledSignalingNotifyMetadata: boolean;
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -76,6 +77,7 @@ export type SoraDemoState = {
   notifyMessages: NotifyMessage[];
   pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
+  signalingNotifyMetadata: string;
   simulcastRid: typeof SIMULCAST_RID[number];
   spotlightConnectionIds: {
     [key: string]: string;
@@ -109,6 +111,7 @@ const initialState: SoraDemoState = {
   enabledCamera: false,
   enabledMetadata: false,
   enabledMic: false,
+  enabledSignalingNotifyMetadata: false,
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -130,6 +133,7 @@ const initialState: SoraDemoState = {
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
+  signalingNotifyMetadata: "",
   simulcastRid: "",
   spotlight: "2",
   spotlightNumber: "",
@@ -184,6 +188,9 @@ const slice = createSlice({
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
     },
+    setEnabledSignalingNotifyMetadata: (state, action: PayloadAction<boolean>) => {
+      state.enabledSignalingNotifyMetadata = action.payload;
+    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
@@ -224,6 +231,9 @@ const slice = createSlice({
     },
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
+    },
+    setSignalingNotifyMetadata: (state, action: PayloadAction<string>) => {
+      state.signalingNotifyMetadata = action.payload;
     },
     setSimulcastRid: (state, action: PayloadAction<typeof SIMULCAST_RID[number]>) => {
       state.simulcastRid = action.payload;
@@ -557,6 +567,8 @@ function createConnectOptions(
     | "audioBitRate"
     | "audioCodecType"
     | "e2ee"
+    | "enabledSignalingNotifyMetadata"
+    | "signalingNotifyMetadata"
     | "simulcastRid"
     | "spotlight"
     | "spotlightNumber"
@@ -609,6 +621,9 @@ function createConnectOptions(
       connectionOptions.simulcastRid = pickedState.simulcastRid;
     }
   }
+  if (pickedState.enabledSignalingNotifyMetadata) {
+    connectionOptions.signalingNotifyMetadata = parseMetadata(true, pickedState.signalingNotifyMetadata);
+  }
   return connectionOptions;
 }
 
@@ -651,6 +666,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
       e2ee: state.e2ee,
+      enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      signalingNotifyMetadata: state.signalingNotifyMetadata,
       simulcastRid: "",
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
@@ -717,6 +734,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
       e2ee: state.e2ee,
+      enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      signalingNotifyMetadata: state.signalingNotifyMetadata,
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
@@ -776,6 +795,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
       e2ee: state.e2ee,
+      enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      signalingNotifyMetadata: state.signalingNotifyMetadata,
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
@@ -1076,7 +1097,7 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
-  // metadata が存在した場合は enabledMetadat と metadat 両方をセットする
+  // metadata が存在した場合は enabledMetadata と metadata 両方をセットする
   if (queryStringParameters.metadata !== undefined) {
     dispatch(slice.actions.setEnabledMetadata(true));
     setInitialState<SoraDemoState["metadata"]>(
@@ -1084,6 +1105,16 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
       slice.actions.setMetadata,
       pageInitialParameters.metadata,
       queryStringParameters.metadata
+    );
+  }
+  // signalingNotifyMetadata が存在した場合は enabledSignalingNotifyMetadata と signalingNotifyMetadata 両方をセットする
+  if (queryStringParameters.signalingNotifyMetadata !== undefined) {
+    dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true));
+    setInitialState<SoraDemoState["signalingNotifyMetadata"]>(
+      dispatch,
+      slice.actions.setSignalingNotifyMetadata,
+      pageInitialParameters.signalingNotifyMetadata,
+      queryStringParameters.signalingNotifyMetadata
     );
   }
   dispatch(slice.actions.setInitialFakeContents());
@@ -1105,6 +1136,7 @@ export const {
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledMetadata,
+  setEnabledSignalingNotifyMetadata,
   setFakeVolume,
   setFrameRate,
   setLocalMediaStream,
@@ -1114,6 +1146,7 @@ export const {
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
+  setSignalingNotifyMetadata,
   setSimulcastRid,
   setSora,
   setSoraErrorAlertMessage,

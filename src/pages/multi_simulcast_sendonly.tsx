@@ -24,6 +24,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   metadata: true,
   noiseSuppression: true,
   resolution: true,
+  signalingNotifyMetadata: true,
   video: true,
   videoBitRate: true,
   videoCodecType: true,

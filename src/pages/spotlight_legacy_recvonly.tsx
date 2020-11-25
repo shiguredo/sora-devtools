@@ -15,6 +15,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   channelId: true,
   e2ee: true,
   metadata: true,
+  signalingNotifyMetadata: true,
   spotlight: true,
   video: true,
   videoCodecType: true,
