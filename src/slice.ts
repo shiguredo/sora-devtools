@@ -893,7 +893,7 @@ export const setE2EE = (e2ee: boolean) => async (dispatch: Dispatch, _getState: 
     }
     try {
       await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
-    } catch(e) {
+    } catch (e) {
       dispatch(slice.actions.setSoraErrorAlertMessage(message));
       return;
     }
