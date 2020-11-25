@@ -64,6 +64,7 @@ export type EnabledParameters = {
   metadata?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
+  signalingNotifyMetadata?: boolean;
   simulcastRid?: boolean;
   spotlight?: boolean;
   spotlightNumber?: boolean;
@@ -231,6 +232,7 @@ export type QueryStringParameters = {
   metadata: string;
   noiseSuppression: boolean;
   mute: boolean;
+  signalingNotifyMetadata: string;
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
   simulcastRid: typeof SIMULCAST_RID[number];
@@ -262,6 +264,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     metadata,
     noiseSuppression,
     mute,
+    signalingNotifyMetadata,
     spotlight,
     spotlightNumber,
     simulcastRid,
@@ -316,6 +319,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (metadata) {
     queryStringParameters.metadata = String(metadata);
+  }
+  if (signalingNotifyMetadata) {
+    queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
   }
   if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;

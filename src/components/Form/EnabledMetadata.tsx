@@ -13,14 +13,14 @@ const EnabledMetadata: React.FC = () => {
     <div className="col-auto form-inline flex-nowrap mb-1">
       <div className="form-check">
         <input
-          id="enabled-metadata"
-          name="enabled-metadata"
+          id="enabledMetadata"
+          name="enabledMetadata"
           className="form-check-input"
           type="checkbox"
           checked={enabledMetadata}
           onChange={onChange}
         />
-        <label className="form-check-label mr-1" htmlFor="metadata-check">
+        <label className="form-check-label mr-1" htmlFor="enabledMetadata">
           metadata
         </label>
       </div>

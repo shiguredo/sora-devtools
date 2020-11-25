@@ -22,6 +22,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   frameRate: true,
   mediaType: true,
   metadata: true,
+  signalingNotifyMetadata: true,
   noiseSuppression: true,
   resolution: true,
   video: true,

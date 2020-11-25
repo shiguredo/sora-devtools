@@ -19,11 +19,13 @@ import FormE2EE from "@/components/Form/E2EE";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
+import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
 import FormFrameRate from "@/components/Form/FrameRate";
 import FormMediaType from "@/components/Form/MediaType";
 import FormMetadata from "@/components/Form/Metadata";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
+import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
 import FormSimulcastRid from "@/components/Form/SimulcastRid";
 import FormSpotlight from "@/components/Form/Spotlight";
 import FormSpotlightNumber from "@/components/Form/SpotlightNumber";
@@ -44,13 +46,14 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 const ColDemo: React.FC<Props> = (props) => {
-  const { debug, enabledMetadata } = useSelector((state: SoraDemoState) => state);
+  const { debug, enabledMetadata, enabledSignalingNotifyMetadata } = useSelector((state: SoraDemoState) => state);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}
+        {props.enabledParameters.signalingNotifyMetadata ? <FormEnabledSignalingNotifyMetadata /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.mediaType ? <FormMediaType /> : null}
@@ -58,6 +61,11 @@ const ColDemo: React.FC<Props> = (props) => {
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.metadata && enabledMetadata ? <FormMetadata /> : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.signalingNotifyMetadata && enabledSignalingNotifyMetadata ? (
+          <FormSignalingNotifyMetadata />
+        ) : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.video ? <FormVideo /> : null}

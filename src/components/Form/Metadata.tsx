@@ -10,7 +10,7 @@ const Metadata: React.FC = () => {
     dispatch(setMetadata(event.target.value));
   };
   return (
-    <div className="col-6 form-inline flex-nowrap mb-1">
+    <div className="col-10 form-inline flex-nowrap mb-1">
       <label className="mr-1" htmlFor="channelId">
         metadata:
       </label>
