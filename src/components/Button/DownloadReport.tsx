@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
 import { useSelector } from "react-redux";
+import Sora from "sora-js-sdk";
 
 import { SoraDemoState } from "@/slice";
+
+import { version } from "../../../package.json";
 
 type Props = {
   pageName: string;
@@ -43,6 +46,8 @@ const DownloadReport: React.FC<Props> = (props) => {
     const report = {
       userAgent: navigator.userAgent,
       pageName: props.pageName,
+      "sora-demo": version,
+      "sora-js-sdk": Sora.version(),
       parameters: parametersReport,
       log: state.logMessages.map((logMessage) => {
         // Redux non-serializable value 対応で log を string にして保存してあるため parse する
