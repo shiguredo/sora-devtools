@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Collapse } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
+import ButtonCopyLog from "@/components/Button/CopyLog";
 import { SoraDemoState } from "@/slice";
 import { formatUnixtime, LogMessage } from "@/utils";
 
@@ -47,9 +48,12 @@ const CollapseLog: React.FC<LogMessage> = (props) => {
   const ariaControls = message.title + timestamp;
   return (
     <div>
-      <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-        <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(timestamp)}] {message.title}
-      </a>
+      <div className="d-flex align-items-center my-1">
+        <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
+          <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(timestamp)}] {message.title}
+        </a>
+        <ButtonCopyLog text={message.description} />
+      </div>
       <Collapse in={show}>
         <div className="ml-4">
           <LogDescription description={message.description} />
