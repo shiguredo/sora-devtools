@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] log コピーボタンを追加する
+    - @yuitowest
 - [ADD] signaling_notify_metadata を form から指定できるようにする
     - @yuitowest
 - [UPDATE] ダウンロードレポートに sora-demo のバージョンと sora-js-sdk のバージョンを入れる
