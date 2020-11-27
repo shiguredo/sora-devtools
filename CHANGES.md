@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] connection id コピーボタンを追加する
+    - @yuitowest
 - [ADD] log コピーボタンを追加する
     - @yuitowest
 - [ADD] signaling_notify_metadata を form から指定できるようにする
