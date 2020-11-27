@@ -1,22 +1,20 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { toggleEnabledCamera } from "@/slice";
+import IconCamera from "@/components/IconCamera";
+import { SoraDemoState, toggleEnabledCamera } from "@/slice";
 
 const Camera: React.FC = () => {
+  const { enabledCamera } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
-  const onClick = (event: React.MouseEvent<HTMLInputElement>): void => {
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     dispatch(toggleEnabledCamera());
     event.currentTarget.blur();
   };
   return (
-    <input
-      className="btn btn-secondary btn-sm mb-1 mx-1"
-      type="button"
-      name="camera"
-      defaultValue="camera on/off"
-      onClick={onClick}
-    />
+    <button className="btn btn-secondary btn-sm mb-1 mx-1" onClick={onClick}>
+      <IconCamera mute={!enabledCamera} /> camera on/off
+    </button>
   );
 };
 
