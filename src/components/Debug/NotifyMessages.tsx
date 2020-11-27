@@ -17,7 +17,8 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
     <div className="border border-light rounded my-2">
       <div className="d-flex justify-content-between align-items-center">
         <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-          <i className={show ? "arrow-bottom" : "arrow-right"} /> <span className="text-white-50 mr-1">[{formatUnixtime(notify.timestamp)}]</span>
+          <i className={show ? "arrow-bottom" : "arrow-right"} />{" "}
+          <span className="text-white-50 mr-1">[{formatUnixtime(notify.timestamp)}]</span>
           {notify.message.type} {notify.message.event_type}
         </a>
         <div className="border-left">
