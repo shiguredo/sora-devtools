@@ -43,7 +43,7 @@ input[type="range"]:active::-moz-range-progress {
 
 .nav-tabs .nav-link.active {
   color: #ffffff;
-  background-color: #575757;
+  background-color: #343a40;
 }
 
 .navbar-dark .navbar-text {
@@ -79,7 +79,7 @@ input[type="range"]:active::-moz-range-progress {
 
 .col-debug {
   padding: 10px;
-  background-color: #343a40;
+  background-color: #222222;
   min-height: calc(100vh - 56px);
 }
 
