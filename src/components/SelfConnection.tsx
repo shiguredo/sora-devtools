@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import ButtonCamera from "@/components/Button/Camera";
 import ButtonMic from "@/components/Button/Mic";
-import IconCamera from "@/components/IconCamera";
-import IconMic from "@/components/IconMic";
+import ConnectionId from "@/components/ConnectionId";
 import { setFakeVolume, SoraDemoState } from "@/slice";
 import { ConnectType, CustomHTMLVideoElement } from "@/utils";
 
@@ -70,15 +69,11 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
 });
 
 const StatusAudioVideo: React.FC = () => {
-  const { enabledMic, enabledCamera } = useSelector((state: SoraDemoState) => state);
   return (
-    <>
-      <p id="audio-video-status" className="mx-1">
-        <IconMic mute={!enabledMic} /> / <IconCamera mute={!enabledCamera} />
-      </p>
+    <div className="ml-3">
       <ButtonMic />
       <ButtonCamera />
-    </>
+    </div>
   );
 };
 
@@ -92,10 +87,10 @@ const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   return (
     <div className="row mt-2">
       <div className="col-auto">
-        <div className="video-status">
-          {sora !== null ? (
+        <div className="video-status mb-1">
+          {sora !== null && sora.connectionId ? (
             <>
-              <p id="client-id">self: {sora.clientId}</p>
+              <ConnectionId connectionId={sora.connectionId} />
               {props.connectType !== "recvonly" ? <StatusAudioVideo /> : null}
             </>
           ) : null}
