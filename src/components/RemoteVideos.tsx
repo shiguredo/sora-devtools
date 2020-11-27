@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
+import ConnectionId from "@/components/ConnectionId";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement } from "@/utils";
 
@@ -56,8 +57,8 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const { audioOutput, mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
   return (
     <div className="col-auto">
-      <div className="video-status">
-        <p>{props.stream.id}</p>
+      <div className="video-status mb-1">
+        <ConnectionId connectionId={props.stream.id} />
         <p className="mx-1">
           {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
         </p>
