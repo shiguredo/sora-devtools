@@ -2,8 +2,8 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "re
 import { useDispatch, useSelector } from "react-redux";
 
 import ButtonCamera from "@/components/Button/Camera";
-import ButtonCopyConnectionId from "@/components/Button/CopyConnectionId";
 import ButtonMic from "@/components/Button/Mic";
+import ConnectionId from "@/components/ConnectionId";
 import { setFakeVolume, SoraDemoState } from "@/slice";
 import { ConnectType, CustomHTMLVideoElement } from "@/utils";
 
@@ -70,10 +70,10 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
 
 const StatusAudioVideo: React.FC = () => {
   return (
-    <>
+    <div className="ml-3">
       <ButtonMic />
       <ButtonCamera />
-    </>
+    </div>
   );
 };
 
@@ -87,12 +87,10 @@ const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   return (
     <div className="row mt-2">
       <div className="col-auto">
-        <div className="video-status">
-          {sora !== null ? (
+        <div className="video-status mb-1">
+          {sora !== null && sora.connectionId ? (
             <>
-              <p id="connectionId">
-                {sora.connectionId} <ButtonCopyConnectionId text={sora.connectionId} />
-              </p>
+              <ConnectionId connectionId={sora.connectionId} />
               {props.connectType !== "recvonly" ? <StatusAudioVideo /> : null}
             </>
           ) : null}
