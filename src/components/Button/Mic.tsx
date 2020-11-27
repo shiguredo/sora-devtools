@@ -12,7 +12,7 @@ const Mic: React.FC = () => {
     event.currentTarget.blur();
   };
   return (
-    <button className="btn btn-secondary btn-sm mb-1 mx-1" onClick={onClick}>
+    <button className="btn btn-secondary btn-sm mx-1" onClick={onClick}>
       <IconMic mute={!enabledMic} /> mic on/off
     </button>
   );
