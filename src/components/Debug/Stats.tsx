@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Collapse } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
+import ButtonCopyLog from "@/components/Button/CopyLog";
 import { SoraDemoState } from "@/slice";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
@@ -12,12 +13,17 @@ const CollapseStats: React.FC<{ stats: RTCStatsWithIndexSignature }> = (props) =
   const [show, setShow] = useState(false);
   const { stats } = props;
   return (
-    <div>
-      <a className="debug-title" onClick={() => setShow(!show)} aria-controls={stats.id} aria-expanded={show}>
-        <i className={show ? "arrow-bottom" : "arrow-right"} /> {stats.id}({stats.type})
-      </a>
+    <div className="border border-light rounded my-2">
+      <div className="d-flex justify-content-between align-items-center">
+        <a className="debug-title" onClick={() => setShow(!show)} aria-controls={stats.id} aria-expanded={show}>
+          <i className={show ? "arrow-bottom" : "arrow-right"} /> {stats.id}({stats.type})
+        </a>
+        <div className="border-left">
+          <ButtonCopyLog text={JSON.stringify(stats, null, 2)} />
+        </div>
+      </div>
       <Collapse in={show}>
-        <div className="ml-4">
+        <div className="border-top pl-4 py-1">
           {Object.keys(stats).map((key) => {
             if (key === "id" || key === "type") {
               return;
