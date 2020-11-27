@@ -16,8 +16,8 @@
     "start": "next -p 3333",
     "build": "next build",
     "dist": "yarn cleanup && next build && next export -o ./dist",
-    "lint": "eslint --ext .ts ./src && prettier --check ./src && npx tsc --noemit",
-    "fmt": "prettier --write ./src",
+    "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && npx tsc --noemit",
+    "fmt": "prettier --write ./src && eslint --fix --ext .ts,tsx ./src",
     "cleanup": "rimraf ./.next ./dist/*"
   },
   "devDependencies": {
