@@ -31,8 +31,8 @@ const LogDescription: React.FC<LogDescriptionProps> = (props) => {
         })(description[key]);
         return (
           <div key={key} className="debug-message">
-            <div className="pl-0 col-sm-3">{key}:</div>
-            <div className="col-sm-9">
+            <div className="pl-0 col-sm-4">{key}:</div>
+            <div className="col-sm-8">
               <pre>{message}</pre>
             </div>
           </div>
@@ -47,15 +47,18 @@ const CollapseLog: React.FC<LogMessage> = (props) => {
   const [show, setShow] = useState(false);
   const ariaControls = message.title + timestamp;
   return (
-    <div>
-      <div className="d-flex align-items-center my-1">
+    <div className="border border-light rounded my-2">
+      <div className="d-flex justify-content-between align-items-center">
         <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-          <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(timestamp)}] {message.title}
+          <i className={show ? "arrow-bottom" : "arrow-right"} />{" "}
+          <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> {message.title}
         </a>
-        <ButtonCopyLog text={message.description} />
+        <div className="border-left">
+          <ButtonCopyLog text={message.description} />
+        </div>
       </div>
       <Collapse in={show}>
-        <div className="ml-4">
+        <div className="border-top pl-4 py-1">
           <LogDescription description={message.description} />
         </div>
       </Collapse>

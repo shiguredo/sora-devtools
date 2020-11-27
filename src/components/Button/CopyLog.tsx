@@ -7,11 +7,12 @@ type Props = {
   text: string;
 };
 const CopyLog: React.FC<Props> = (props) => {
-  const onClick = (): void => {
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     copy2clipboard(props.text);
+    event.currentTarget.blur();
   };
   return (
-    <button className="btn btn-sm btn-outline-none pt-0 text-white" onClick={onClick}>
+    <button className="btn btn-sm btn-dark" onClick={onClick}>
       <IconClipboard />
     </button>
   );
