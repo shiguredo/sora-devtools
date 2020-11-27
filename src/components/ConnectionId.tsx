@@ -5,7 +5,7 @@ import { copy2clipboard } from "@/utils";
 
 type Props = {
   connectionId: string;
-}
+};
 const ConnectionId: React.FC<Props> = (props) => {
   const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     copy2clipboard(props.connectionId);
