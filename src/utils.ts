@@ -577,9 +577,9 @@ export function parseSpotlight(spotlight: string): boolean | number {
   return numberSpotlight;
 }
 
-export function parseMetadata(enabledMetadata: boolean, metadata: string): Json {
+export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
   if (!enabledMetadata) {
-    return null;
+    return undefined;
   }
   try {
     return JSON.parse(metadata);
