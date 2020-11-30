@@ -1,4 +1,4 @@
-# WebRTC SFU Sora デモ機能
+# WebRTC SFU Sora デモアプリ
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-demo.svg)](https://github.com/shiguredo/sora-demo)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -14,7 +14,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 概要
 
-これは WebRTC SFU Sora に組み込まれている WebRTC Sora JS SDK を利用したデモ機能です。
+これは WebRTC SFU Sora にデモ機能として組み込まれているデモアプリです。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
