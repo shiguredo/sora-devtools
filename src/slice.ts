@@ -685,8 +685,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-  const sora = connection.sendonly(state.channelId, metadata, connectionOptions);
+  const sora = connection.sendonly(state.channelId, null, connectionOptions);
+  sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -753,8 +753,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-  const sora = connection.recvonly(state.channelId, metadata, connectionOptions);
+  const sora = connection.recvonly(state.channelId, null, connectionOptions);
+  sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect();
@@ -814,8 +814,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-  const sora = connection.sendrecv(state.channelId, metadata, connectionOptions);
+  const sora = connection.sendrecv(state.channelId, null, connectionOptions);
+  sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
