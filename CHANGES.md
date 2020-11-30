@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] 映像枠の width/height 固定機能を spotlight page に追加する
+    - @yuitowest
 - [ADD] connection id コピーボタンを追加する
     - @yuitowest
 - [ADD] log コピーボタンを追加する
