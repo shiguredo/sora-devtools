@@ -5,7 +5,7 @@ import ButtonCamera from "@/components/Button/Camera";
 import ButtonMic from "@/components/Button/Mic";
 import ConnectionId from "@/components/ConnectionId";
 import { setFakeVolume, SoraDemoState } from "@/slice";
-import { ConnectType, CustomHTMLVideoElement } from "@/utils";
+import { ConnectType, CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
@@ -32,13 +32,15 @@ const VolumeRange: React.FC = () => {
 };
 
 type VideoElementProps = {
+  displayResolution: SoraDemoState["displayResolution"];
   stream: MediaStream | null;
   audioOutput: string;
   setHeight: Dispatch<SetStateAction<number>>;
 };
 const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const { stream, audioOutput, setHeight } = props;
+  const { displayResolution, stream, audioOutput, setHeight } = props;
   const videoRef = useRef<CustomHTMLVideoElement>(null);
+  const videoSize = getVideoSizeByResolution(displayResolution);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       entries.forEach((entry) => {
@@ -61,7 +63,18 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
     videoRef.current.setSinkId(audioOutput);
   }
-  return <video id="local-video" autoPlay playsInline controls muted ref={videoRef} />;
+  return (
+    <video
+      id="local-video"
+      autoPlay
+      playsInline
+      controls
+      muted
+      ref={videoRef}
+      width={0 < videoSize.width ? videoSize.width : undefined}
+      height={0 < videoSize.height ? videoSize.height : undefined}
+    />
+  );
 };
 
 const VideoElementMemo = React.memo((props: VideoElementProps) => {
@@ -82,7 +95,7 @@ type SelfConnectionProps = {
 };
 const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { soraContents, mediaType, audioOutput } = useSelector((state: SoraDemoState) => state);
+  const { soraContents, mediaType, audioOutput, displayResolution } = useSelector((state: SoraDemoState) => state);
   const { sora, localMediaStream } = soraContents;
   return (
     <div className="row mt-2">
@@ -98,7 +111,12 @@ const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
         {props.connectType !== "recvonly" ? (
           <>
             <div className="d-flex">
-              <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
+              <VideoElementMemo
+                stream={localMediaStream}
+                setHeight={setHeight}
+                audioOutput={audioOutput}
+                displayResolution={displayResolution}
+              />
               {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
             </div>
             {mediaType === "fakeMedia" ? <VolumeRange /> : null}

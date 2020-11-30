@@ -4,6 +4,7 @@ import Sora, { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber } fr
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
   MEDIA_TYPES,
@@ -49,6 +50,7 @@ export type SoraDemoState = {
   googCpuOveruseDetection: boolean | null;
   debug: boolean;
   debugType: DebugType;
+  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
@@ -105,6 +107,7 @@ const initialState: SoraDemoState = {
   googCpuOveruseDetection: null,
   debug: false,
   debugType: "log",
+  displayResolution: "",
   e2ee: false,
   echoCancellation: true,
   echoCancellationType: "",
@@ -175,6 +178,9 @@ const slice = createSlice({
     },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
+    },
+    setDisplayResolution: (state, action: PayloadAction<typeof DISPLAY_RESOLUTIONS[number]>) => {
+      state.displayResolution = action.payload;
     },
     setE2EE: (state, action: PayloadAction<boolean>) => {
       state.e2ee = action.payload;
@@ -991,6 +997,12 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.channelId,
     queryStringParameters.channelId
   );
+  setInitialState<SoraDemoState["displayResolution"]>(
+    dispatch,
+    slice.actions.setDisplayResolution,
+    pageInitialParameters.displayResolution,
+    queryStringParameters.displayResolution
+  );
   setInitialState<SoraDemoState["e2ee"]>(
     dispatch,
     slice.actions.setE2EE,
@@ -1133,6 +1145,7 @@ export const {
   setChannelId,
   setDebug,
   setDebugType,
+  setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledMetadata,
