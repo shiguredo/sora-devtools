@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] metadata checkbox にチェックがない場合は sora metadata に undefined を渡すように修正する
+    - @yuitowest
 - [ADD] 映像枠の width/height 固定機能を spotlight page に追加する
     - @yuitowest
 - [ADD] connection id コピーボタンを追加する
