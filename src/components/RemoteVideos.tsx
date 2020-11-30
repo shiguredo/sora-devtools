@@ -5,7 +5,7 @@ import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/Reques
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
 import ConnectionId from "@/components/ConnectionId";
 import { SoraDemoState } from "@/slice";
-import { CustomHTMLVideoElement } from "@/utils";
+import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
@@ -14,10 +14,12 @@ type VideoElementProps = {
   setHeight: Dispatch<SetStateAction<number>>;
   mute: boolean;
   audioOutput: string;
+  displayResolution: SoraDemoState["displayResolution"];
 };
 const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const { stream, setHeight, mute, audioOutput } = props;
+  const { stream, setHeight, mute, audioOutput, displayResolution } = props;
   const videoRef = useRef<CustomHTMLVideoElement>(null);
+  const videoSize = getVideoSizeByResolution(displayResolution);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -39,7 +41,16 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
     videoRef.current.setSinkId(audioOutput);
   }
-  return <video autoPlay playsInline controls ref={videoRef} />;
+  return (
+    <video
+      autoPlay
+      playsInline
+      controls
+      ref={videoRef}
+      width={0 < videoSize.width ? videoSize.width : undefined}
+      height={0 < videoSize.height ? videoSize.height : undefined}
+    />
+  );
 };
 
 const VideoElementMemo = React.memo((props: VideoElementProps) => {
@@ -54,14 +65,19 @@ type RemoteVideoProps = {
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { audioOutput, mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
+  const { audioOutput, displayResolution, mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
   return (
     <div className="col-auto">
       <div className="video-status mb-1">
-        <ConnectionId connectionId={props.stream.id} />
-        <p className="mx-1">
-          {props.stream.id in spotlightConnectionIds ? ` [${spotlightConnectionIds[props.stream.id]}]` : ""}
-        </p>
+        {/** spotlight legacy の場合とそれ以外で表示方法を変える **/}
+        {props.stream.id in spotlightConnectionIds ? (
+          <>
+            <ConnectionId connectionId={spotlightConnectionIds[props.stream.id]} />
+            <p className="mx-1">[{props.stream.id}]</p>
+          </>
+        ) : (
+          <ConnectionId connectionId={props.stream.id} />
+        )}
         {!props.spotlight && props.multistream && props.simulcast ? (
           <>
             <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
@@ -79,7 +95,13 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         ) : null}
       </div>
       <div className="d-flex align-items-start">
-        <VideoElementMemo stream={props.stream} setHeight={setHeight} mute={mute} audioOutput={audioOutput} />
+        <VideoElementMemo
+          stream={props.stream}
+          setHeight={setHeight}
+          mute={mute}
+          audioOutput={audioOutput}
+          displayResolution={displayResolution}
+        />
         <VolumeVisualizer stream={props.stream} height={height} />
       </div>
     </div>

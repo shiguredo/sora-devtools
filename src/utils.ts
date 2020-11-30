@@ -3,6 +3,7 @@ import queryString from "query-string";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
   MEDIA_TYPES,
@@ -56,6 +57,7 @@ export type EnabledParameters = {
   audioOutput?: boolean;
   autoGainControl?: boolean;
   channelId?: boolean;
+  displayResolution?: boolean;
   e2ee?: boolean;
   echoCancellation?: boolean;
   echoCancellationType?: boolean;
@@ -180,6 +182,13 @@ export function isResolution(resolution: string): resolution is typeof RESOLUTIO
   return (RESOLUTIONS as readonly string[]).indexOf(resolution) >= 0;
 }
 
+// DisplayResolution の Type Guard
+export function isDisplayResolution(
+  displayResolution: string
+): displayResolution is typeof DISPLAY_RESOLUTIONS[number] {
+  return (DISPLAY_RESOLUTIONS as readonly string[]).indexOf(displayResolution) >= 0;
+}
+
 // FrameRate の Type Guard
 export function isFrameRate(frameRate: string): frameRate is typeof FRAME_RATES[number] {
   return (FRAME_RATES as readonly string[]).indexOf(frameRate) >= 0;
@@ -222,6 +231,7 @@ export type QueryStringParameters = {
   autoGainControl: boolean;
   channelId: string;
   debug: boolean;
+  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   e2ee: boolean;
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
@@ -254,6 +264,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     autoGainControl,
     channelId,
     debug,
+    displayResolution,
     e2ee,
     echoCancellation,
     echoCancellationType,
@@ -295,6 +306,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof debug === "boolean") {
     queryStringParameters.debug = debug;
+  }
+  if (typeof displayResolution === "string" && isDisplayResolution(displayResolution)) {
+    queryStringParameters.displayResolution = displayResolution;
   }
   if (typeof e2ee === "boolean") {
     queryStringParameters.e2ee = e2ee;
@@ -370,7 +384,7 @@ export function createSignalingURL(): string {
 }
 
 // 解像度に対応する width と height を返す
-function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
+export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
     case "QQVGA":
       return { width: 160, height: 120 };

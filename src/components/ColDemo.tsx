@@ -15,6 +15,7 @@ import FormAudioInput from "@/components/Form/AudioInput";
 import FormAudioOutput from "@/components/Form/AudioOutput";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
+import FormDisplayResolution from "@/components/Form/DisplayResolution";
 import FormE2EE from "@/components/Form/E2EE";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
@@ -88,6 +89,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.audioInput ? <FormAudioInput /> : null}
         {props.enabledParameters.videoInput ? <FormVideoInput /> : null}
         {props.enabledParameters.audioOutput ? <FormAudioOutput /> : null}
+        {props.enabledParameters.displayResolution ? <FormDisplayResolution /> : null}
       </div>
       <div className="form-row align-items-center">
         <ButtonConnect

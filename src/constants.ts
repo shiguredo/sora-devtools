@@ -37,6 +37,8 @@ export const RESOLUTIONS = [
   "QQVGA",
 ] as const;
 
+export const DISPLAY_RESOLUTIONS = ["", "VGA", "QVGA"] as const;
+
 export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10"] as const;
 
 export const ECHO_CANCELLATION_TYPES = ["", "browser", "system"] as const;
