@@ -47,6 +47,7 @@ export type SoraDemoState = {
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: boolean;
   channelId: string;
+  clientId: string;
   googCpuOveruseDetection: boolean | null;
   debug: boolean;
   debugType: DebugType;
@@ -55,6 +56,7 @@ export type SoraDemoState = {
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
   enabledCamera: boolean;
+  enabledClientId: boolean;
   enabledMetadata: boolean;
   enabledMic: boolean;
   enabledSignalingNotifyMetadata: boolean;
@@ -103,6 +105,7 @@ const initialState: SoraDemoState = {
   audioOutput: "",
   audioOutputDevices: [],
   autoGainControl: true,
+  clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
   debug: false,
@@ -112,6 +115,7 @@ const initialState: SoraDemoState = {
   echoCancellation: true,
   echoCancellationType: "",
   enabledCamera: false,
+  enabledClientId: false,
   enabledMetadata: false,
   enabledMic: false,
   enabledSignalingNotifyMetadata: false,
@@ -173,6 +177,9 @@ const slice = createSlice({
     setAutoGainControl: (state, action: PayloadAction<boolean>) => {
       state.autoGainControl = action.payload;
     },
+    setClientId: (state, action: PayloadAction<string>) => {
+      state.clientId = action.payload;
+    },
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload;
     },
@@ -190,6 +197,9 @@ const slice = createSlice({
     },
     setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
       state.echoCancellationType = action.payload;
+    },
+    setEnabledClientId: (state, action: PayloadAction<boolean>) => {
+      state.enabledClientId = action.payload;
     },
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
@@ -572,6 +582,8 @@ function createConnectOptions(
     | "audio"
     | "audioBitRate"
     | "audioCodecType"
+    | "clientId"
+    | "enabledClientId"
     | "e2ee"
     | "enabledSignalingNotifyMetadata"
     | "signalingNotifyMetadata"
@@ -630,6 +642,9 @@ function createConnectOptions(
   if (pickedState.enabledSignalingNotifyMetadata) {
     connectionOptions.signalingNotifyMetadata = parseMetadata(true, pickedState.signalingNotifyMetadata);
   }
+  if (pickedState.enabledClientId) {
+    connectionOptions.clientId = pickedState.clientId;
+  }
   return connectionOptions;
 }
 
@@ -671,6 +686,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
+      clientId: state.clientId,
+      enabledClientId: state.enabledClientId,
       e2ee: state.e2ee,
       enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
       signalingNotifyMetadata: state.signalingNotifyMetadata,
@@ -739,6 +756,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
+      clientId: state.clientId,
+      enabledClientId: state.enabledClientId,
       e2ee: state.e2ee,
       enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
       signalingNotifyMetadata: state.signalingNotifyMetadata,
@@ -800,6 +819,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
+      clientId: state.clientId,
+      enabledClientId: state.enabledClientId,
       e2ee: state.e2ee,
       enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
       signalingNotifyMetadata: state.signalingNotifyMetadata,
@@ -1142,12 +1163,14 @@ export const {
   setAudioInput,
   setAudioOutput,
   setAutoGainControl,
+  setClientId,
   setChannelId,
   setDebug,
   setDebugType,
   setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledClientId,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setFakeVolume,

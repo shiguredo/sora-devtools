@@ -15,10 +15,12 @@ import FormAudioInput from "@/components/Form/AudioInput";
 import FormAudioOutput from "@/components/Form/AudioOutput";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
+import FormClientId from "@/components/Form/ClientId";
 import FormDisplayResolution from "@/components/Form/DisplayResolution";
 import FormE2EE from "@/components/Form/E2EE";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
+import FormEnabledClientId from "@/components/Form/EnabledClientId";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
 import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
 import FormFrameRate from "@/components/Form/FrameRate";
@@ -47,18 +49,24 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 const ColDemo: React.FC<Props> = (props) => {
-  const { debug, enabledMetadata, enabledSignalingNotifyMetadata } = useSelector((state: SoraDemoState) => state);
+  const { debug, enabledClientId, enabledMetadata, enabledSignalingNotifyMetadata } = useSelector(
+    (state: SoraDemoState) => state
+  );
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
+        {props.enabledParameters.clientId ? <FormEnabledClientId /> : null}
         {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}
         {props.enabledParameters.signalingNotifyMetadata ? <FormEnabledSignalingNotifyMetadata /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.mediaType ? <FormMediaType /> : null}
         {props.enabledParameters.e2ee ? <FormE2EE /> : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.clientId && enabledClientId ? <FormClientId /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.metadata && enabledMetadata ? <FormMetadata /> : null}

@@ -56,6 +56,7 @@ export type EnabledParameters = {
   audioInput?: boolean;
   audioOutput?: boolean;
   autoGainControl?: boolean;
+  clientId?: boolean;
   channelId?: boolean;
   displayResolution?: boolean;
   e2ee?: boolean;
@@ -229,6 +230,7 @@ export type QueryStringParameters = {
   audioInput: string;
   audioOutput: string;
   autoGainControl: boolean;
+  clientId: string;
   channelId: string;
   debug: boolean;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
