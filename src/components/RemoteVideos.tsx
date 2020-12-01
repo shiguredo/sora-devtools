@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
-import ConnectionId from "@/components/ConnectionId";
+import ConnectionStatusBar from "@/components/ConnectionStatusBar";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
@@ -71,12 +71,13 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
       <div className="video-status mb-1">
         {/** spotlight legacy の場合とそれ以外で表示方法を変える **/}
         {props.stream.id in spotlightConnectionIds ? (
-          <>
-            <ConnectionId connectionId={spotlightConnectionIds[props.stream.id]} />
-            <p className="mx-1">[{props.stream.id}]</p>
-          </>
+          <ConnectionStatusBar
+            connectionId={spotlightConnectionIds[props.stream.id]}
+            clientId={null}
+            spotlightId={props.stream.id}
+          />
         ) : (
-          <ConnectionId connectionId={props.stream.id} />
+          <ConnectionStatusBar connectionId={spotlightConnectionIds[props.stream.id]} />
         )}
         {!props.spotlight && props.multistream && props.simulcast ? (
           <>
