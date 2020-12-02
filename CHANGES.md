@@ -11,7 +11,11 @@
 
 ## develop
 
+- [UPDATE] sora-js-sdk のバージョンを 2020.5.0-canary.6 に更新する
+    - @yuitowest
 - [ADD] client_id を form から指定できるようにする
+    - @yuitowest
+- [UPDATE] sora-js-sdk のバージョンを 2020.5.0-canary.5 に更新する
     - @yuitowest
 - [ADD] metadata checkbox にチェックがない場合は sora metadata に undefined を渡すように修正する
     - @yuitowest
