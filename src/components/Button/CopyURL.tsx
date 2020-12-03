@@ -33,6 +33,9 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.channelId) {
       parameters.push(`channelId=${state.channelId}`);
     }
+    if (props.enabledParameters.clientId && state.enabledClientId) {
+      parameters.push(`clientId=${state.clientId}`);
+    }
     if (props.enabledParameters.displayResolution) {
       parameters.push(`displayResolution=${state.displayResolution}`);
     }

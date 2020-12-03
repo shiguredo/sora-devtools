@@ -1012,12 +1012,6 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.channelId,
     queryStringParameters.channelId
   );
-  setInitialState<SoraDemoState["channelId"]>(
-    dispatch,
-    slice.actions.setChannelId,
-    pageInitialParameters.channelId,
-    queryStringParameters.channelId
-  );
   setInitialState<SoraDemoState["displayResolution"]>(
     dispatch,
     slice.actions.setDisplayResolution,
@@ -1129,6 +1123,17 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   // googCpuOveruseDetection は query string からのみ受け付ける
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
+  }
+  // clientId が存在した場合は enabledClientId と clientId 両方をセットする
+  console.log(queryStringParameters);
+  if (queryStringParameters.clientId !== undefined) {
+    dispatch(slice.actions.setEnabledClientId(true));
+    setInitialState<SoraDemoState["clientId"]>(
+      dispatch,
+      slice.actions.setClientId,
+      pageInitialParameters.clientId,
+      queryStringParameters.clientId
+    );
   }
   // metadata が存在した場合は enabledMetadata と metadata 両方をセットする
   if (queryStringParameters.metadata !== undefined) {

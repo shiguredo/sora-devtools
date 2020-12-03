@@ -265,6 +265,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioOutput,
     autoGainControl,
     channelId,
+    clientId,
     debug,
     displayResolution,
     e2ee,
@@ -300,8 +301,11 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof autoGainControl === "boolean") {
     queryStringParameters.autoGainControl = autoGainControl;
   }
-  if (channelId) {
+  if (channelId !== undefined) {
     queryStringParameters.channelId = String(channelId);
+  }
+  if (clientId !== undefined) {
+    queryStringParameters.clientId = String(clientId);
   }
   if (typeof googCpuOveruseDetection === "boolean") {
     queryStringParameters.googCpuOveruseDetection = googCpuOveruseDetection;
