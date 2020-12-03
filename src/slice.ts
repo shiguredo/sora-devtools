@@ -1125,7 +1125,6 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
   // clientId が存在した場合は enabledClientId と clientId 両方をセットする
-  console.log(queryStringParameters);
   if (queryStringParameters.clientId !== undefined) {
     dispatch(slice.actions.setEnabledClientId(true));
     setInitialState<SoraDemoState["clientId"]>(
