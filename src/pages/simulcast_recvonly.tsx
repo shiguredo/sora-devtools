@@ -13,6 +13,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioCodecType: true,
   audioOutput: true,
   channelId: true,
+  clientId: true,
   e2ee: true,
   metadata: true,
   signalingNotifyMetadata: true,

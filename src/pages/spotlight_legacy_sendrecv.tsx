@@ -16,6 +16,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   autoGainControl: true,
   channelId: true,
+  clientId: true,
   e2ee: true,
   echoCancellation: true,
   echoCancellationType: true,
