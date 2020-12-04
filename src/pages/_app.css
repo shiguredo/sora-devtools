@@ -1,5 +1,5 @@
 body {
-  padding-top: 54px;
+  padding-top: 56px;
   padding-bottom: 41px;
 }
 
@@ -81,6 +81,7 @@ footer .btn {
 
 .col-demo {
   padding-top: 10px;
+  overflow-x: auto;
 }
 
 .col-debug {
