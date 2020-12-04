@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
             <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light m-1">
               GitHub: shiguredo/sora-demo: {version}
             </a>
-            <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light m-1">
+            <a href="https://github.com/shiguredo/sora-js-sdk" className="btn btn-outline-light m-1">
               GitHub: shiguredo/sora-js-sdk: {Sora.version()}
             </a>
           </Navbar.Collapse>
