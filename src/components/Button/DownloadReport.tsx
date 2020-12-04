@@ -4,8 +4,6 @@ import Sora from "sora-js-sdk";
 
 import { SoraDemoState } from "@/slice";
 
-import { version } from "../../../package.json";
-
 type Props = {
   pageName: string;
 };
@@ -46,7 +44,7 @@ const DownloadReport: React.FC<Props> = (props) => {
     const report = {
       userAgent: navigator.userAgent,
       pageName: props.pageName,
-      "sora-demo": version,
+      "sora-demo": state.version,
       "sora-js-sdk": Sora.version(),
       parameters: parametersReport,
       log: state.logMessages.map((logMessage) => {

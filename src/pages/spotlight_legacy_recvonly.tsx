@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
+import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
@@ -49,6 +50,7 @@ const SpotlightLegacyRecvonly: React.FC = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

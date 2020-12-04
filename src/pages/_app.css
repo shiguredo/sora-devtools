@@ -1,5 +1,5 @@
 body {
-  padding-top: 56px;
+  padding: 54px 0;
 }
 
 label {
@@ -74,7 +74,7 @@ input[type="range"]:active::-moz-range-progress {
 }
 
 .col-demo {
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .col-debug {

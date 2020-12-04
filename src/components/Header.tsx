@@ -1,7 +1,6 @@
 import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Sora from "sora-js-sdk";
 
 import ButtonCopyURL from "@/components/Button/CopyURL";
 import ButtonDownloadReport from "@/components/Button/DownloadReport";
@@ -46,7 +45,6 @@ const Header: React.FC<Props> = (props) => {
             <Navbar.Text>{props.pageName}</Navbar.Text>
           </Nav>
           <Nav>
-            <Navbar.Text className="mr-3">sora-js-sdk version: {Sora.version()}</Navbar.Text>
             <Navbar.Text className="mr-3">
               <Debug />
             </Navbar.Text>
