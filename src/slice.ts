@@ -36,6 +36,8 @@ import {
   SoraPushMessage,
 } from "@/utils";
 
+import { version as SORA_DEMO_VERSION } from "../package.json";
+
 export type SoraDemoState = {
   alertMessages: AlertMessage[];
   audio: boolean;
@@ -93,6 +95,7 @@ export type SoraDemoState = {
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
   videoInput: string;
   videoInputDevices: MediaDeviceInfo[];
+  version: string;
 };
 
 const initialState: SoraDemoState = {
@@ -150,6 +153,7 @@ const initialState: SoraDemoState = {
   videoCodecType: "",
   videoInput: "",
   videoInputDevices: [],
+  version: SORA_DEMO_VERSION,
 };
 
 const slice = createSlice({
