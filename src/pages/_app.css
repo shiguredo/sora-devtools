@@ -1,5 +1,6 @@
 body {
-  padding: 54px 0;
+  padding-top: 54px;
+  padding-bottom: 41px;
 }
 
 label {
@@ -35,6 +36,11 @@ input[type="range"]::-moz-range-progress {
 
 input[type="range"]:active::-moz-range-progress {
   background: #015dc8;
+}
+
+footer .btn {
+ font-size: 0.875rem;
+ padding: 5px;
 }
 
 .nav-tabs .nav-link {
@@ -80,7 +86,7 @@ input[type="range"]:active::-moz-range-progress {
 .col-debug {
   padding: 10px;
   background-color: #222222;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 56px - 41px);
 }
 
 .arrow-bottom {

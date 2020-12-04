@@ -13,13 +13,12 @@ const Footer: React.FC = () => {
         <Nav className="mr-auto" />
         <Nav>
           <Navbar.Collapse id="navbar-collapse">
-            <Navbar.Text className="mr-3">sora-demo: {version}</Navbar.Text>
-            <Navbar.Text className="mr-3">sora-js-sdk: {Sora.version()}</Navbar.Text>
-            <Navbar.Text className="mx-1">
-              <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light">
-                GitHub: shiguredo/sora-demo
-              </a>
-            </Navbar.Text>
+            <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light m-1">
+              GitHub: shiguredo/sora-demo: {version}
+            </a>
+            <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light m-1">
+              GitHub: shiguredo/sora-js-sdk: {Sora.version()}
+            </a>
           </Navbar.Collapse>
         </Nav>
       </Navbar>
