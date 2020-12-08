@@ -970,7 +970,7 @@ function setInitialState<T>(
 // component レンダリング後に画面初期状態を更新
 export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState>) => async (
   dispatch: Dispatch,
-  _: () => SoraDemoState
+  getState: () => SoraDemoState
 ): Promise<void> => {
   dispatch(slice.actions.resetState());
   const queryStringParameters = parseQueryString();
@@ -1159,6 +1159,22 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     );
   }
   dispatch(slice.actions.setInitialFakeContents());
+  // e2ee が有効な場合は e2ee 初期化処理をする
+  const { e2ee } = getState();
+  if (e2ee) {
+    const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
+    // wasm url が存在する場合は e2ee の初期化処理をする
+    if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+    try {
+      await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+    } catch (e) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+  }
 };
 
 export const {
