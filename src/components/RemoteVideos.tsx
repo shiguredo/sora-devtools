@@ -77,7 +77,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
             spotlightId={props.stream.id}
           />
         ) : (
-          <ConnectionStatusBar connectionId={spotlightConnectionIds[props.stream.id]} />
+          <ConnectionStatusBar connectionId={props.stream.id} />
         )}
         {!props.spotlight && props.multistream && props.simulcast ? (
           <>
