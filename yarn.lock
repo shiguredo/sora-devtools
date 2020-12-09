@@ -4421,10 +4421,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-sora-js-sdk@^2020.6.0-canary.1:
-  version "2020.6.0-canary.1"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.6.0-canary.1.tgz#7487796546e764fc8acaf975c12377d6d7cab3fe"
-  integrity sha512-/rET0WzYwwkQIPVibpt84S8JYjew3bEg1Zz2NZbz8i5EOi14JK7KGt5IMJvWQ/1OYDpXW41/d8n8kBoJz4kRbg==
+sora-js-sdk@^2020.6.0-canary.2:
+  version "2020.6.0-canary.2"
+  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.6.0-canary.2.tgz#afcef52e01a849e993d91a7d6e34d65c72b45a65"
+  integrity sha512-sI3tl/ohgK4JNeYyBMXP5qWl0GGGkCvi1eRPIC/lanWTkBvVjxzVXdT8UTIGZGwuFpERFPlfGc3EDY9XUy9f5w==
 
 source-list-map@^2.0.0:
   version "2.0.1"

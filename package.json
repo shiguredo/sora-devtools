@@ -1,6 +1,6 @@
 {
   "name": "sora-demo",
-  "version": "2020.4.0-canary.11",
+  "version": "2020.4.0-canary.12",
   "description": "WebRTC SFU Sora Demo",
   "repository": {
     "type": "git",
@@ -46,6 +46,6 @@
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "redux-logger": "^3.0.6",
-    "sora-js-sdk": "^2020.6.0-canary.1"
+    "sora-js-sdk": "^2020.6.0-canary.2"
   }
 }
