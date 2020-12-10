@@ -11,11 +11,11 @@
 
 ## develop
 
-- [UPDATE] sora-js-sdk のバージョンを 2020.5.0-canary.6 に更新する
+- [UPDATE] sora-js-sdk のバージョンを 2020.6.0 に更新する
+    - @yuitowest
+- [ADD] 各ページに footer を追加する
     - @yuitowest
 - [ADD] client_id を form から指定できるようにする
-    - @yuitowest
-- [UPDATE] sora-js-sdk のバージョンを 2020.5.0-canary.5 に更新する
     - @yuitowest
 - [ADD] metadata checkbox にチェックがない場合は sora metadata に undefined を渡すように修正する
     - @yuitowest
@@ -32,8 +32,6 @@
 - [CHANGE] .env.local.example を .env.example に変更する
     - @yuitowest
 - [ADD] e2ee フラグを追加する
-    - @yuitowest
-- [UPDATE] sora-js-sdk のバージョンを 2020.5.0-canary.4 に更新する
     - @yuitowest
 - [CHANGE] simulcast quality を simulcast rid に変更する
     - changeSimulcastQuality, resetSpotlightQuality API を requestRtpStream, resetRtpStream API に変更する
