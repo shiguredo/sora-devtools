@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.4.0
 
 - [UPDATE] sora-js-sdk のバージョンを 2020.6.0 に更新する
     - @yuitowest
