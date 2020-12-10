@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
+import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
@@ -16,11 +17,14 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   autoGainControl: true,
   channelId: true,
+  clientId: true,
+  e2ee: true,
   echoCancellation: true,
   echoCancellationType: true,
   frameRate: true,
   mediaType: true,
   metadata: true,
+  signalingNotifyMetadata: true,
   noiseSuppression: true,
   resolution: true,
   video: true,
@@ -58,6 +62,7 @@ const SimulcastSendonly: React.FC = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

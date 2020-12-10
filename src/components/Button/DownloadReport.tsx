@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { useSelector } from "react-redux";
+import Sora from "sora-js-sdk";
 
 import { SoraDemoState } from "@/slice";
 
@@ -31,7 +32,7 @@ const DownloadReport: React.FC<Props> = (props) => {
       mediaType: state.mediaType,
       noiseSuppression: state.noiseSuppression,
       resolution: state.resolution,
-      simulcastQuality: state.simulcastQuality,
+      simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -43,6 +44,8 @@ const DownloadReport: React.FC<Props> = (props) => {
     const report = {
       userAgent: navigator.userAgent,
       pageName: props.pageName,
+      "sora-demo": state.version,
+      "sora-js-sdk": Sora.version(),
       parameters: parametersReport,
       log: state.logMessages.map((logMessage) => {
         // Redux non-serializable value 対応で log を string にして保存してあるため parse する

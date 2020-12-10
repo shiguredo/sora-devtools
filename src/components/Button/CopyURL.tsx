@@ -33,6 +33,15 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.channelId) {
       parameters.push(`channelId=${state.channelId}`);
     }
+    if (props.enabledParameters.clientId && state.enabledClientId) {
+      parameters.push(`clientId=${state.clientId}`);
+    }
+    if (props.enabledParameters.displayResolution) {
+      parameters.push(`displayResolution=${state.displayResolution}`);
+    }
+    if (props.enabledParameters.e2ee) {
+      parameters.push(`e2ee=${state.e2ee}`);
+    }
     if (props.enabledParameters.echoCancellation) {
       parameters.push(`echoCancellation=${state.echoCancellation}`);
     }
@@ -54,8 +63,8 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.resolution) {
       parameters.push(`resolution=${state.resolution}`);
     }
-    if (props.enabledParameters.simulcastQuality) {
-      parameters.push(`simulcastQuality=${state.simulcastQuality}`);
+    if (props.enabledParameters.simulcastRid) {
+      parameters.push(`simulcastRid=${state.simulcastRid}`);
     }
     if (props.enabledParameters.spotlight) {
       parameters.push(`spotlight=${state.spotlight}`);

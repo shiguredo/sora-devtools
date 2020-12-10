@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
+import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
@@ -16,6 +17,8 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   autoGainControl: true,
   channelId: true,
+  clientId: true,
+  e2ee: true,
   echoCancellation: true,
   echoCancellationType: true,
   frameRate: true,
@@ -23,7 +26,8 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   metadata: true,
   noiseSuppression: true,
   resolution: true,
-  simulcastQuality: true,
+  signalingNotifyMetadata: true,
+  simulcastRid: true,
   video: true,
   videoBitRate: true,
   videoCodecType: true,
@@ -39,7 +43,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
         videoCodecType: "VP8",
         videoBitRate: "3000",
         resolution: "HD",
-        simulcastQuality: "low",
+        simulcastRid: "r0",
       })
     );
     dispatch(setMediaDevices());
@@ -60,6 +64,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

@@ -4,11 +4,12 @@ import Sora, { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber } fr
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
   MEDIA_TYPES,
   RESOLUTIONS,
-  SIMULCAST_QUARITY,
+  SIMULCAST_RID,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -35,6 +36,8 @@ import {
   SoraPushMessage,
 } from "@/utils";
 
+import { version as SORA_DEMO_VERSION } from "../package.json";
+
 export type SoraDemoState = {
   alertMessages: AlertMessage[];
   audio: boolean;
@@ -46,14 +49,19 @@ export type SoraDemoState = {
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: boolean;
   channelId: string;
+  clientId: string;
   googCpuOveruseDetection: boolean | null;
   debug: boolean;
   debugType: DebugType;
+  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
+  e2ee: boolean;
   enabledCamera: boolean;
+  enabledClientId: boolean;
   enabledMetadata: boolean;
   enabledMic: boolean;
+  enabledSignalingNotifyMetadata: boolean;
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -75,7 +83,8 @@ export type SoraDemoState = {
   notifyMessages: NotifyMessage[];
   pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
-  simulcastQuality: typeof SIMULCAST_QUARITY[number];
+  signalingNotifyMetadata: string;
+  simulcastRid: typeof SIMULCAST_RID[number];
   spotlightConnectionIds: {
     [key: string]: string;
   };
@@ -86,6 +95,7 @@ export type SoraDemoState = {
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
   videoInput: string;
   videoInputDevices: MediaDeviceInfo[];
+  version: string;
 };
 
 const initialState: SoraDemoState = {
@@ -98,15 +108,20 @@ const initialState: SoraDemoState = {
   audioOutput: "",
   audioOutputDevices: [],
   autoGainControl: true,
+  clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
   debug: false,
   debugType: "log",
+  displayResolution: "",
+  e2ee: false,
   echoCancellation: true,
   echoCancellationType: "",
   enabledCamera: false,
+  enabledClientId: false,
   enabledMetadata: false,
   enabledMic: false,
+  enabledSignalingNotifyMetadata: false,
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -128,7 +143,8 @@ const initialState: SoraDemoState = {
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
-  simulcastQuality: "",
+  signalingNotifyMetadata: "",
+  simulcastRid: "",
   spotlight: "2",
   spotlightNumber: "",
   spotlightConnectionIds: {},
@@ -137,6 +153,7 @@ const initialState: SoraDemoState = {
   videoCodecType: "",
   videoInput: "",
   videoInputDevices: [],
+  version: SORA_DEMO_VERSION,
 };
 
 const slice = createSlice({
@@ -164,11 +181,20 @@ const slice = createSlice({
     setAutoGainControl: (state, action: PayloadAction<boolean>) => {
       state.autoGainControl = action.payload;
     },
+    setClientId: (state, action: PayloadAction<string>) => {
+      state.clientId = action.payload;
+    },
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload;
     },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
+    },
+    setDisplayResolution: (state, action: PayloadAction<typeof DISPLAY_RESOLUTIONS[number]>) => {
+      state.displayResolution = action.payload;
+    },
+    setE2EE: (state, action: PayloadAction<boolean>) => {
+      state.e2ee = action.payload;
     },
     setEchoCancellation: (state, action: PayloadAction<boolean>) => {
       state.echoCancellation = action.payload;
@@ -176,8 +202,14 @@ const slice = createSlice({
     setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
       state.echoCancellationType = action.payload;
     },
+    setEnabledClientId: (state, action: PayloadAction<boolean>) => {
+      state.enabledClientId = action.payload;
+    },
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
+    },
+    setEnabledSignalingNotifyMetadata: (state, action: PayloadAction<boolean>) => {
+      state.enabledSignalingNotifyMetadata = action.payload;
     },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
@@ -220,8 +252,11 @@ const slice = createSlice({
     setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
       state.resolution = action.payload;
     },
-    setSimulcastQuality: (state, action: PayloadAction<typeof SIMULCAST_QUARITY[number]>) => {
-      state.simulcastQuality = action.payload;
+    setSignalingNotifyMetadata: (state, action: PayloadAction<string>) => {
+      state.signalingNotifyMetadata = action.payload;
+    },
+    setSimulcastRid: (state, action: PayloadAction<typeof SIMULCAST_RID[number]>) => {
+      state.simulcastRid = action.payload;
     },
     setSpotlight: (state, action: PayloadAction<typeof SPOTLIGHTS[number]>) => {
       state.spotlight = action.payload;
@@ -551,7 +586,12 @@ function createConnectOptions(
     | "audio"
     | "audioBitRate"
     | "audioCodecType"
-    | "simulcastQuality"
+    | "clientId"
+    | "enabledClientId"
+    | "e2ee"
+    | "enabledSignalingNotifyMetadata"
+    | "signalingNotifyMetadata"
+    | "simulcastRid"
     | "spotlight"
     | "spotlightNumber"
     | "video"
@@ -583,6 +623,9 @@ function createConnectOptions(
   if (multistream) {
     connectionOptions.multistream = true;
   }
+  if (pickedState.e2ee) {
+    connectionOptions.e2ee = true;
+  }
   // 新/旧 spotlight 互換性のため parsedSpotlight は boolean | number になる
   // parsedSpotlight が number の場合は旧 spotlight 扱いになる
   // parsedSpotlight が true の場合は新 spotlight 扱いになるので spotlightNumber をセットする
@@ -596,9 +639,15 @@ function createConnectOptions(
   }
   if (simulcast) {
     connectionOptions.simulcast = true;
-    if (pickedState.simulcastQuality) {
-      connectionOptions.simulcastQuality = pickedState.simulcastQuality;
+    if (pickedState.simulcastRid) {
+      connectionOptions.simulcastRid = pickedState.simulcastRid;
     }
+  }
+  if (pickedState.enabledSignalingNotifyMetadata) {
+    connectionOptions.signalingNotifyMetadata = parseMetadata(true, pickedState.signalingNotifyMetadata);
+  }
+  if (pickedState.enabledClientId) {
+    connectionOptions.clientId = pickedState.clientId;
   }
   return connectionOptions;
 }
@@ -641,7 +690,12 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
-      simulcastQuality: "",
+      clientId: state.clientId,
+      enabledClientId: state.enabledClientId,
+      e2ee: state.e2ee,
+      enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      signalingNotifyMetadata: state.signalingNotifyMetadata,
+      simulcastRid: "",
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -652,8 +706,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-  const sora = connection.sendonly(state.channelId, metadata, connectionOptions);
+  const sora = connection.sendonly(state.channelId, null, connectionOptions);
+  sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -706,7 +760,12 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
-      simulcastQuality: state.simulcastQuality,
+      clientId: state.clientId,
+      enabledClientId: state.enabledClientId,
+      e2ee: state.e2ee,
+      enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      signalingNotifyMetadata: state.signalingNotifyMetadata,
+      simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -717,8 +776,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-  const sora = connection.recvonly(state.channelId, metadata, connectionOptions);
+  const sora = connection.recvonly(state.channelId, null, connectionOptions);
+  sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
   setSoraCallbacks(dispatch, getState, sora);
   try {
     await sora.connect();
@@ -764,7 +823,12 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       audio: state.audio,
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
-      simulcastQuality: state.simulcastQuality,
+      clientId: state.clientId,
+      enabledClientId: state.enabledClientId,
+      e2ee: state.e2ee,
+      enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      signalingNotifyMetadata: state.signalingNotifyMetadata,
+      simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
@@ -775,8 +839,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     options?.spotlight === true,
     options?.simulcast === true
   );
-  const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-  const sora = connection.sendrecv(state.channelId, metadata, connectionOptions);
+  const sora = connection.sendrecv(state.channelId, null, connectionOptions);
+  sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
   if (typeof state.googCpuOveruseDetection === "boolean") {
     sora.constraints = {
       optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
@@ -871,6 +935,24 @@ export const updateMediaStream = () => async (dispatch: Dispatch, getState: () =
   dispatch(slice.actions.setFakeContentsGainNode(gainNode));
 };
 
+export const setE2EE = (e2ee: boolean) => async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
+  if (e2ee) {
+    const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
+    // wasm url が存在する場合は e2ee の初期化処理をする
+    if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+    try {
+      await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+    } catch (e) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+  }
+  dispatch(slice.actions.setE2EE(e2ee));
+};
+
 // QueryString の値とページから渡されたパラメーターを適切に action に渡すためのメソッド
 function setInitialState<T>(
   dispatch: Dispatch,
@@ -888,7 +970,7 @@ function setInitialState<T>(
 // component レンダリング後に画面初期状態を更新
 export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState>) => async (
   dispatch: Dispatch,
-  _: () => SoraDemoState
+  getState: () => SoraDemoState
 ): Promise<void> => {
   dispatch(slice.actions.resetState());
   const queryStringParameters = parseQueryString();
@@ -934,11 +1016,17 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.channelId,
     queryStringParameters.channelId
   );
-  setInitialState<SoraDemoState["channelId"]>(
+  setInitialState<SoraDemoState["displayResolution"]>(
     dispatch,
-    slice.actions.setChannelId,
-    pageInitialParameters.channelId,
-    queryStringParameters.channelId
+    slice.actions.setDisplayResolution,
+    pageInitialParameters.displayResolution,
+    queryStringParameters.displayResolution
+  );
+  setInitialState<SoraDemoState["e2ee"]>(
+    dispatch,
+    slice.actions.setE2EE,
+    pageInitialParameters.e2ee,
+    queryStringParameters.e2ee
   );
   setInitialState<SoraDemoState["echoCancellation"]>(
     dispatch,
@@ -982,11 +1070,11 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.resolution,
     queryStringParameters.resolution
   );
-  setInitialState<SoraDemoState["simulcastQuality"]>(
+  setInitialState<SoraDemoState["simulcastRid"]>(
     dispatch,
-    slice.actions.setSimulcastQuality,
-    pageInitialParameters.simulcastQuality,
-    queryStringParameters.simulcastQuality
+    slice.actions.setSimulcastRid,
+    pageInitialParameters.simulcastRid,
+    queryStringParameters.simulcastRid
   );
   setInitialState<SoraDemoState["spotlight"]>(
     dispatch,
@@ -1040,7 +1128,17 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
   }
-  // metadata が存在した場合は enabledMetadat と metadat 両方をセットする
+  // clientId が存在した場合は enabledClientId と clientId 両方をセットする
+  if (queryStringParameters.clientId !== undefined) {
+    dispatch(slice.actions.setEnabledClientId(true));
+    setInitialState<SoraDemoState["clientId"]>(
+      dispatch,
+      slice.actions.setClientId,
+      pageInitialParameters.clientId,
+      queryStringParameters.clientId
+    );
+  }
+  // metadata が存在した場合は enabledMetadata と metadata 両方をセットする
   if (queryStringParameters.metadata !== undefined) {
     dispatch(slice.actions.setEnabledMetadata(true));
     setInitialState<SoraDemoState["metadata"]>(
@@ -1050,7 +1148,33 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
       queryStringParameters.metadata
     );
   }
+  // signalingNotifyMetadata が存在した場合は enabledSignalingNotifyMetadata と signalingNotifyMetadata 両方をセットする
+  if (queryStringParameters.signalingNotifyMetadata !== undefined) {
+    dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true));
+    setInitialState<SoraDemoState["signalingNotifyMetadata"]>(
+      dispatch,
+      slice.actions.setSignalingNotifyMetadata,
+      pageInitialParameters.signalingNotifyMetadata,
+      queryStringParameters.signalingNotifyMetadata
+    );
+  }
   dispatch(slice.actions.setInitialFakeContents());
+  // e2ee が有効な場合は e2ee 初期化処理をする
+  const { e2ee } = getState();
+  if (e2ee) {
+    const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
+    // wasm url が存在する場合は e2ee の初期化処理をする
+    if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+    try {
+      await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+    } catch (e) {
+      dispatch(slice.actions.setSoraErrorAlertMessage(message));
+      return;
+    }
+  }
 };
 
 export const {
@@ -1063,12 +1187,16 @@ export const {
   setAudioInput,
   setAudioOutput,
   setAutoGainControl,
+  setClientId,
   setChannelId,
   setDebug,
   setDebugType,
+  setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledClientId,
   setEnabledMetadata,
+  setEnabledSignalingNotifyMetadata,
   setFakeVolume,
   setFrameRate,
   setLocalMediaStream,
@@ -1078,7 +1206,8 @@ export const {
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
-  setSimulcastQuality,
+  setSignalingNotifyMetadata,
+  setSimulcastRid,
   setSora,
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,

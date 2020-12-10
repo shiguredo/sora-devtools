@@ -2,11 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import AlertMessages from "@/components/AlertMessages";
-import ButtonChangeSimulcastQuality from "@/components/Button/ChangeSimulcastQuality";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
-import ButtonRequestSpotlightQuality from "@/components/Button/RequestSpotlightQuality";
-import ButtonResetSpotlightQuality from "@/components/Button/ResetSpotlightQuality";
+import ButtonRequestRtpStream from "@/components/Button/RequestRtpStream";
+import ButtonResetRtpStream from "@/components/Button/ResetRtpStream";
 import ButtonStartRecording from "@/components/Button/StartRecording";
 import ButtonStopRecording from "@/components/Button/StopRecording";
 import FormAudio from "@/components/Form/Audio";
@@ -16,15 +15,21 @@ import FormAudioInput from "@/components/Form/AudioInput";
 import FormAudioOutput from "@/components/Form/AudioOutput";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
+import FormClientId from "@/components/Form/ClientId";
+import FormDisplayResolution from "@/components/Form/DisplayResolution";
+import FormE2EE from "@/components/Form/E2EE";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
+import FormEnabledClientId from "@/components/Form/EnabledClientId";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
+import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
 import FormFrameRate from "@/components/Form/FrameRate";
 import FormMediaType from "@/components/Form/MediaType";
 import FormMetadata from "@/components/Form/Metadata";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
-import FormSimulcastQuality from "@/components/Form/SimulcastQuality";
+import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
+import FormSimulcastRid from "@/components/Form/SimulcastRid";
 import FormSpotlight from "@/components/Form/Spotlight";
 import FormSpotlightNumber from "@/components/Form/SpotlightNumber";
 import FormVideo from "@/components/Form/Video";
@@ -44,19 +49,32 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 const ColDemo: React.FC<Props> = (props) => {
-  const { debug, enabledMetadata } = useSelector((state: SoraDemoState) => state);
+  const { debug, enabledClientId, enabledMetadata, enabledSignalingNotifyMetadata } = useSelector(
+    (state: SoraDemoState) => state
+  );
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
+        {props.enabledParameters.clientId ? <FormEnabledClientId /> : null}
         {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}
+        {props.enabledParameters.signalingNotifyMetadata ? <FormEnabledSignalingNotifyMetadata /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.mediaType ? <FormMediaType /> : null}
+        {props.enabledParameters.e2ee ? <FormE2EE /> : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.clientId && enabledClientId ? <FormClientId /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.metadata && enabledMetadata ? <FormMetadata /> : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.signalingNotifyMetadata && enabledSignalingNotifyMetadata ? (
+          <FormSignalingNotifyMetadata />
+        ) : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.video ? <FormVideo /> : null}
@@ -64,7 +82,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
         {props.enabledParameters.resolution ? <FormResolution /> : null}
         {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
-        {props.enabledParameters.simulcastQuality ? <FormSimulcastQuality /> : null}
+        {props.enabledParameters.simulcastRid ? <FormSimulcastRid /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.audio ? <FormAudio /> : null}
@@ -79,6 +97,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.audioInput ? <FormAudioInput /> : null}
         {props.enabledParameters.videoInput ? <FormVideoInput /> : null}
         {props.enabledParameters.audioOutput ? <FormAudioOutput /> : null}
+        {props.enabledParameters.displayResolution ? <FormDisplayResolution /> : null}
       </div>
       <div className="form-row align-items-center">
         <ButtonConnect
@@ -92,17 +111,17 @@ const ColDemo: React.FC<Props> = (props) => {
         <ButtonStopRecording />
         {!props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonChangeSimulcastQuality quality={"low"} />
-            <ButtonChangeSimulcastQuality quality={"middle"} />
-            <ButtonChangeSimulcastQuality quality={"high"} />
+            <ButtonRequestRtpStream rid={"r0"} />
+            <ButtonRequestRtpStream rid={"r1"} />
+            <ButtonRequestRtpStream rid={"r2"} />
           </>
         ) : null}
         {props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonRequestSpotlightQuality quality={"low"} />
-            <ButtonRequestSpotlightQuality quality={"middle"} />
-            <ButtonRequestSpotlightQuality quality={"high"} />
-            <ButtonResetSpotlightQuality />
+            <ButtonRequestRtpStream rid={"r0"} />
+            <ButtonRequestRtpStream rid={"r1"} />
+            <ButtonRequestRtpStream rid={"r2"} />
+            <ButtonResetRtpStream />
           </>
         ) : null}
       </div>

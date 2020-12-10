@@ -1,5 +1,6 @@
 body {
   padding-top: 56px;
+  padding-bottom: 41px;
 }
 
 label {
@@ -11,12 +12,12 @@ input[type="range"] {
   outline: none;
   height: 8px;
   border-radius: 10px;
-  border: solid 1px #BBBBBB;
-  background: #E5E5E5;
+  border: solid 1px #bbbbbb;
+  background: #e5e5e5;
 }
 
 input[type="range"]::-moz-range-thumb {
-  background: #0375FF;
+  background: #0375ff;
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -24,30 +25,35 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]:active::-moz-range-thumb {
-  background: #015DC8;
+  background: #015dc8;
 }
 
 input[type="range"]::-moz-range-progress {
-  background: #0375FF;
+  background: #0375ff;
   height: 7px;
   border-radius: 3.5px 0 0 3.5px;
 }
 
 input[type="range"]:active::-moz-range-progress {
-  background: #015DC8;
+  background: #015dc8;
+}
+
+footer .btn {
+ font-size: 0.875rem;
+ padding: 5px;
 }
 
 .nav-tabs .nav-link {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .nav-tabs .nav-link.active {
-  color: #FFFFFF;
-  background-color: #575757;
+  color: #ffffff;
+  background-color: #343a40;
 }
 
 .navbar-dark .navbar-text {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .container {
@@ -55,7 +61,7 @@ input[type="range"]:active::-moz-range-progress {
 }
 
 .bg-sora {
-  background-color: #0071BC !important;
+  background-color: #0071bc !important;
 }
 
 .list-url {
@@ -74,13 +80,14 @@ input[type="range"]:active::-moz-range-progress {
 }
 
 .col-demo {
-  padding-top: 5px;
+  padding-top: 10px;
+  overflow-x: auto;
 }
 
 .col-debug {
   padding: 10px;
-  background-color: #3C4043EE;
-  min-height: calc(100vh - 56px);
+  background-color: #222222;
+  min-height: calc(100vh - 56px - 41px);
 }
 
 .arrow-bottom {
@@ -88,8 +95,8 @@ input[type="range"]:active::-moz-range-progress {
   width: 10px;
   height: 10px;
   margin: 2px 6px;
-  border-bottom: 2px solid #FFFFFF;
-  border-right: 2px solid #FFFFFF;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
   transform: rotate(45deg);
 }
 
@@ -98,30 +105,30 @@ input[type="range"]:active::-moz-range-progress {
   width: 10px;
   height: 10px;
   margin: 0px 6px;
-  border-top: 2px solid #FFFFFF;
-  border-right: 2px solid #FFFFFF;
+  border-top: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
   transform: rotate(45deg);
 }
 
 .debug-title {
   cursor: pointer;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 .debug-message {
   display: flex;
   flex-wrap: nowrap;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 .debug-message pre {
- font-size: 100%;
- color: #FFFFFF;
- margin: 0;
+  font-size: 100%;
+  color: #ffffff;
+  margin: 0;
 }
 
 #debug:checked ~ .custom-control-label::before {
-  background-color: #FF0066;
+  background-color: #ff0066;
 }
 
 .fake-volume-range {

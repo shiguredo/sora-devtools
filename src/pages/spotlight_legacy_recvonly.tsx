@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import ColDebug from "@/components/ColDebug";
 import ColDemo from "@/components/ColDemo";
+import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
@@ -13,7 +14,10 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioCodecType: true,
   audioOutput: true,
   channelId: true,
+  clientId: true,
+  e2ee: true,
   metadata: true,
+  signalingNotifyMetadata: true,
   spotlight: true,
   video: true,
   videoCodecType: true,
@@ -46,6 +50,7 @@ const SpotlightLegacyRecvonly: React.FC = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

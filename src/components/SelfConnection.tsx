@@ -1,12 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import ButtonCamera from "@/components/Button/Camera";
-import ButtonMic from "@/components/Button/Mic";
-import IconCamera from "@/components/IconCamera";
-import IconMic from "@/components/IconMic";
+import ConnectionStatusBar from "@/components/ConnectionStatusBar";
 import { setFakeVolume, SoraDemoState } from "@/slice";
-import { ConnectType, CustomHTMLVideoElement } from "@/utils";
+import { ConnectType, CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
@@ -33,13 +30,15 @@ const VolumeRange: React.FC = () => {
 };
 
 type VideoElementProps = {
+  displayResolution: SoraDemoState["displayResolution"];
   stream: MediaStream | null;
   audioOutput: string;
   setHeight: Dispatch<SetStateAction<number>>;
 };
 const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const { stream, audioOutput, setHeight } = props;
+  const { displayResolution, stream, audioOutput, setHeight } = props;
   const videoRef = useRef<CustomHTMLVideoElement>(null);
+  const videoSize = getVideoSizeByResolution(displayResolution);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       entries.forEach((entry) => {
@@ -62,48 +61,52 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
     videoRef.current.setSinkId(audioOutput);
   }
-  return <video id="local-video" autoPlay playsInline controls muted ref={videoRef} />;
+  return (
+    <video
+      id="local-video"
+      autoPlay
+      playsInline
+      controls
+      muted
+      ref={videoRef}
+      width={0 < videoSize.width ? videoSize.width : undefined}
+      height={0 < videoSize.height ? videoSize.height : undefined}
+    />
+  );
 };
 
 const VideoElementMemo = React.memo((props: VideoElementProps) => {
   return <VideoElement {...props} />;
 });
 
-const StatusAudioVideo: React.FC = () => {
-  const { enabledMic, enabledCamera } = useSelector((state: SoraDemoState) => state);
-  return (
-    <>
-      <p id="audio-video-status" className="mx-1">
-        <IconMic mute={!enabledMic} /> / <IconCamera mute={!enabledCamera} />
-      </p>
-      <ButtonMic />
-      <ButtonCamera />
-    </>
-  );
-};
-
 type SelfConnectionProps = {
   connectType: ConnectType;
 };
 const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { soraContents, mediaType, audioOutput } = useSelector((state: SoraDemoState) => state);
+  const { soraContents, mediaType, audioOutput, displayResolution } = useSelector((state: SoraDemoState) => state);
   const { sora, localMediaStream } = soraContents;
   return (
     <div className="row mt-2">
       <div className="col-auto">
-        <div className="video-status">
+        <div className="video-status mb-1">
           {sora !== null ? (
-            <>
-              <p id="client-id">self: {sora.clientId}</p>
-              {props.connectType !== "recvonly" ? <StatusAudioVideo /> : null}
-            </>
+            <ConnectionStatusBar
+              connectionId={sora.connectionId}
+              clientId={sora.clientId}
+              showMediaButton={props.connectType !== "recvonly"}
+            />
           ) : null}
         </div>
         {props.connectType !== "recvonly" ? (
           <>
             <div className="d-flex">
-              <VideoElementMemo stream={localMediaStream} setHeight={setHeight} audioOutput={audioOutput} />
+              <VideoElementMemo
+                stream={localMediaStream}
+                setHeight={setHeight}
+                audioOutput={audioOutput}
+                displayResolution={displayResolution}
+              />
               {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
             </div>
             {mediaType === "fakeMedia" ? <VolumeRange /> : null}

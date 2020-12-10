@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Collapse } from "react-bootstrap";
+import React from "react";
 import { useSelector } from "react-redux";
 
+import Message from "@/components/Debug/Message";
 import { SoraDemoState } from "@/slice";
-import { formatUnixtime, PushMessage } from "@/utils";
+import { PushMessage } from "@/utils";
 
 type CollapsePushProps = {
   push: PushMessage;
@@ -11,22 +11,7 @@ type CollapsePushProps = {
 };
 const CollapsePush: React.FC<CollapsePushProps> = (props) => {
   const { push } = props;
-  const [show, setShow] = useState(false);
-  const ariaControls = push.message.type + push.timestamp;
-  return (
-    <div>
-      <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-        <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(push.timestamp)}] {push.message.type}
-      </a>
-      <Collapse in={show}>
-        <div className="debug-message">
-          <div className="col-sm-12">
-            <pre>{JSON.stringify(push.message, null, 2)}</pre>
-          </div>
-        </div>
-      </Collapse>
-    </div>
-  );
+  return <Message title={push.message.type} timestamp={push.timestamp} description={push.message} />;
 };
 
 const PushMessages: React.FC = () => {

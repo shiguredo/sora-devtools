@@ -3,11 +3,12 @@ import queryString from "query-string";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
   MEDIA_TYPES,
   RESOLUTIONS,
-  SIMULCAST_QUARITY,
+  SIMULCAST_RID,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -55,7 +56,10 @@ export type EnabledParameters = {
   audioInput?: boolean;
   audioOutput?: boolean;
   autoGainControl?: boolean;
+  clientId?: boolean;
   channelId?: boolean;
+  displayResolution?: boolean;
+  e2ee?: boolean;
   echoCancellation?: boolean;
   echoCancellationType?: boolean;
   frameRate?: boolean;
@@ -63,7 +67,8 @@ export type EnabledParameters = {
   metadata?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
-  simulcastQuality?: boolean;
+  signalingNotifyMetadata?: boolean;
+  simulcastRid?: boolean;
   spotlight?: boolean;
   spotlightNumber?: boolean;
   video?: boolean;
@@ -178,6 +183,13 @@ export function isResolution(resolution: string): resolution is typeof RESOLUTIO
   return (RESOLUTIONS as readonly string[]).indexOf(resolution) >= 0;
 }
 
+// DisplayResolution の Type Guard
+export function isDisplayResolution(
+  displayResolution: string
+): displayResolution is typeof DISPLAY_RESOLUTIONS[number] {
+  return (DISPLAY_RESOLUTIONS as readonly string[]).indexOf(displayResolution) >= 0;
+}
+
 // FrameRate の Type Guard
 export function isFrameRate(frameRate: string): frameRate is typeof FRAME_RATES[number] {
   return (FRAME_RATES as readonly string[]).indexOf(frameRate) >= 0;
@@ -201,8 +213,8 @@ export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[n
 }
 
 // SimulcastQuality の Type Guard
-export function isSimulcastQuality(simulcastQuality: string): simulcastQuality is typeof SIMULCAST_QUARITY[number] {
-  return (SIMULCAST_QUARITY as readonly string[]).indexOf(simulcastQuality) >= 0;
+export function isSimulcastRid(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
+  return (SIMULCAST_RID as readonly string[]).indexOf(simulcastRid) >= 0;
 }
 
 // MediaType の Type Guard
@@ -218,8 +230,11 @@ export type QueryStringParameters = {
   audioInput: string;
   audioOutput: string;
   autoGainControl: boolean;
+  clientId: string;
   channelId: string;
   debug: boolean;
+  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
+  e2ee: boolean;
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   fakeVolume: string;
@@ -229,9 +244,10 @@ export type QueryStringParameters = {
   metadata: string;
   noiseSuppression: boolean;
   mute: boolean;
+  signalingNotifyMetadata: string;
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  simulcastQuality: typeof SIMULCAST_QUARITY[number];
+  simulcastRid: typeof SIMULCAST_RID[number];
   resolution: typeof RESOLUTIONS[number];
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
@@ -249,7 +265,10 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioOutput,
     autoGainControl,
     channelId,
+    clientId,
     debug,
+    displayResolution,
+    e2ee,
     echoCancellation,
     echoCancellationType,
     fakeVolume,
@@ -259,9 +278,10 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     metadata,
     noiseSuppression,
     mute,
+    signalingNotifyMetadata,
     spotlight,
     spotlightNumber,
-    simulcastQuality,
+    simulcastRid,
     resolution,
     video,
     videoBitRate,
@@ -281,14 +301,23 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof autoGainControl === "boolean") {
     queryStringParameters.autoGainControl = autoGainControl;
   }
-  if (channelId) {
+  if (channelId !== undefined) {
     queryStringParameters.channelId = String(channelId);
+  }
+  if (clientId !== undefined) {
+    queryStringParameters.clientId = String(clientId);
   }
   if (typeof googCpuOveruseDetection === "boolean") {
     queryStringParameters.googCpuOveruseDetection = googCpuOveruseDetection;
   }
   if (typeof debug === "boolean") {
     queryStringParameters.debug = debug;
+  }
+  if (typeof displayResolution === "string" && isDisplayResolution(displayResolution)) {
+    queryStringParameters.displayResolution = displayResolution;
+  }
+  if (typeof e2ee === "boolean") {
+    queryStringParameters.e2ee = e2ee;
   }
   if (typeof echoCancellation === "boolean") {
     queryStringParameters.echoCancellation = echoCancellation;
@@ -311,8 +340,11 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (metadata) {
     queryStringParameters.metadata = String(metadata);
   }
-  if (typeof simulcastQuality === "string" && isSimulcastQuality(simulcastQuality)) {
-    queryStringParameters.simulcastQuality = simulcastQuality;
+  if (signalingNotifyMetadata) {
+    queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
+  }
+  if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
+    queryStringParameters.simulcastRid = simulcastRid;
   }
   if (typeof spotlight === "string" && isSpotlight(spotlight)) {
     queryStringParameters.spotlight = spotlight;
@@ -358,7 +390,7 @@ export function createSignalingURL(): string {
 }
 
 // 解像度に対応する width と height を返す
-function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
+export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
     case "QQVGA":
       return { width: 160, height: 120 };
@@ -551,9 +583,9 @@ export function parseSpotlight(spotlight: string): boolean | number {
   return numberSpotlight;
 }
 
-export function parseMetadata(enabledMetadata: boolean, metadata: string): Json {
+export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
   if (!enabledMetadata) {
-    return null;
+    return undefined;
   }
   try {
     return JSON.parse(metadata);

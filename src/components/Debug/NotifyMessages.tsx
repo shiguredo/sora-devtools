@@ -1,32 +1,16 @@
-import React, { useState } from "react";
-import { Collapse } from "react-bootstrap";
+import React from "react";
 import { useSelector } from "react-redux";
 
+import Message from "@/components/Debug/Message";
 import { SoraDemoState } from "@/slice";
-import { formatUnixtime, NotifyMessage } from "@/utils";
+import { NotifyMessage } from "@/utils";
 
 type CollapseNotifyProps = {
   notify: NotifyMessage;
 };
 const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
   const { notify } = props;
-  const [show, setShow] = useState(false);
-  const ariaControls = notify.message.type + notify.timestamp;
-  return (
-    <div>
-      <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-        <i className={show ? "arrow-bottom" : "arrow-right"} /> [{formatUnixtime(notify.timestamp)}]{" "}
-        {notify.message.type} {notify.message.event_type}
-      </a>
-      <Collapse in={show}>
-        <div className="debug-message">
-          <div className="col-sm-12">
-            <pre>{JSON.stringify(notify.message, null, 2)}</pre>
-          </div>
-        </div>
-      </Collapse>
-    </div>
-  );
+  return <Message title={notify.message.event_type} timestamp={notify.timestamp} description={notify.message} />;
 };
 
 const NotifyMessages: React.FC = () => {
