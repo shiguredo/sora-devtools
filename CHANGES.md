@@ -9,6 +9,13 @@
 - FIX
     - バグ修正
 
+## 2020.5.0
+
+- [UPDATE] E2EE wasm URL 読み込み処理を修正する
+    - NEXT_PUBLIC_E2EE_WASM_URL に URL を設定する
+    - E2EE checkbox に wasm 読み込み時表示される Spinner を追加する
+    - @yuitowest
+
 ## 2020.4.0
 
 - [UPDATE] sora-js-sdk のバージョンを 2020.6.0 に更新する
