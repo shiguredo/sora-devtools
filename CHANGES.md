@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.5.0
 
 - [UPDATE] E2EE wasm URL 読み込み処理を修正する
     - NEXT_PUBLIC_E2EE_WASM_URL に URL を設定する
