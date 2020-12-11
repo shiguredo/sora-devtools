@@ -26,7 +26,9 @@ const E2EE: React.FC = () => {
         <label className="form-check-label" htmlFor="e2ee">
           e2ee
         </label>
-        {displaySpinner ? <Spinner className="spinner-status" variant="primary" animation="border" role="status" /> : null}
+        {displaySpinner ? (
+          <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
+        ) : null}
       </div>
     </div>
   );

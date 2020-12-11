@@ -39,8 +39,8 @@ input[type="range"]:active::-moz-range-progress {
 }
 
 footer .btn {
- font-size: 0.875rem;
- padding: 5px;
+  font-size: 0.875rem;
+  padding: 5px;
 }
 
 .nav-tabs .nav-link {
