@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## develop
+
+- [FIX] Sora connect 時のエラーメッセージが "{}" になる場合があるので対応する
+    - @yuitowest
+
 ## 2020.5.0
 
 - [UPDATE] E2EE wasm URL 読み込み処理を修正する

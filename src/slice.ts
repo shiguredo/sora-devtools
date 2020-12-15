@@ -721,7 +721,7 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
     mediaStream.getTracks().forEach((track) => {
       track.stop();
     });
-    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${JSON.stringify(error)}`));
+    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
     throw error;
   }
   await setStatsReport(dispatch, sora);
@@ -783,7 +783,7 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
     await sora.connect();
     dispatch(slice.actions.setSoraInfoAlertMessage("Successed to connect Sora."));
   } catch (error) {
-    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${JSON.stringify(error)}`));
+    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
     throw error;
   }
   await setStatsReport(dispatch, sora);
@@ -854,7 +854,7 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
     mediaStream.getTracks().forEach((track) => {
       track.stop();
     });
-    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${JSON.stringify(error)}`));
+    dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
     throw error;
   }
   await setStatsReport(dispatch, sora);
