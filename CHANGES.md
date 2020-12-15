@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2020.6.0
 
 - [FIX] Sora connect 時のエラーメッセージが "{}" になる場合があるので対応する
     - @yuitowest
