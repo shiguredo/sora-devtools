@@ -49,9 +49,10 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 const ColDemo: React.FC<Props> = (props) => {
-  const { debug, enabledClientId, enabledMetadata, enabledSignalingNotifyMetadata } = useSelector(
-    (state: SoraDemoState) => state
-  );
+  const debug = useSelector((state: SoraDemoState) => state.debug);
+  const enabledClientId = useSelector((state: SoraDemoState) => state.enabledClientId);
+  const enabledMetadata = useSelector((state: SoraDemoState) => state.enabledMetadata);
+  const enabledSignalingNotifyMetadata = useSelector((state: SoraDemoState) => state.enabledSignalingNotifyMetadata);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />

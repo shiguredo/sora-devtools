@@ -27,10 +27,6 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
       }
     });
     if (videoRef.current) {
-      if (mute) {
-        videoRef.current.muted = true;
-      }
-      videoRef.current.srcObject = stream;
       resizeObserver.observe(videoRef.current);
     }
     return () => {
@@ -38,6 +34,15 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (videoRef.current) {
+      if (mute) {
+        videoRef.current.muted = true;
+      }
+      videoRef.current.srcObject = stream;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stream]);
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
     videoRef.current.setSinkId(audioOutput);
   }
@@ -120,8 +125,7 @@ type RemoteVideosProps = {
   spotlight: boolean;
 };
 const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
-  const { soraContents } = useSelector((state: SoraDemoState) => state);
-  const { remoteMediaStreams } = soraContents;
+  const remoteMediaStreams = useSelector((state: SoraDemoState) => state.soraContents.remoteMediaStreams);
   return (
     <div className="row mt-2">
       {remoteMediaStreams.map((mediaStream) => {

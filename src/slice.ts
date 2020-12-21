@@ -71,6 +71,8 @@ export type SoraDemoState = {
   frameRate: typeof FRAME_RATES[number];
   soraContents: {
     sora: ConnectionPublisher | ConnectionSubscriber | null;
+    connectionId: string | null;
+    clientId: string | null;
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
     statsReport: RTCStats[];
@@ -132,6 +134,8 @@ const initialState: SoraDemoState = {
   frameRate: "",
   soraContents: {
     sora: null,
+    connectionId: null,
+    clientId: null,
     localMediaStream: null,
     remoteMediaStreams: [],
     statsReport: [],
@@ -282,6 +286,13 @@ const slice = createSlice({
       // `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       state.soraContents.sora = <any>action.payload;
+      if (state.soraContents.sora) {
+        state.soraContents.connectionId = state.soraContents.sora.connectionId;
+        state.soraContents.clientId = state.soraContents.sora.clientId;
+      } else {
+        state.soraContents.connectionId = null;
+        state.soraContents.clientId = null;
+      }
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
@@ -305,7 +316,15 @@ const slice = createSlice({
       state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
+      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => {
+        if (stream.id !== action.payload) {
+          stream.getTracks().forEach((track) => {
+            track.stop();
+          });
+          return true;
+        }
+        return false;
+      });
       state.soraContents.remoteMediaStreams = remoteMediaStreams;
     },
     removeAllRemoteMediaStreams: (state) => {
