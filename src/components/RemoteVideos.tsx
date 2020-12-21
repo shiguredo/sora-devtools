@@ -65,7 +65,12 @@ type RemoteVideoProps = {
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const { audioOutput, displayResolution, mute, spotlightConnectionIds } = useSelector((state: SoraDemoState) => state);
+  const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
+  const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
+  const mute = useSelector((state: SoraDemoState) => state.mute);
+  const spotlightConnectionIds = useSelector((state: SoraDemoState) => state.spotlightConnectionIds);
+  const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
+  const focused = props.stream.id && focusedSpotlightConnectionIds.includes(props.stream.id);
   return (
     <div className="col-auto">
       <div className="video-status mb-1">
@@ -95,7 +100,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
           </>
         ) : null}
       </div>
-      <div className="d-flex align-items-start">
+      <div className={"d-flex align-items-start" + (focused ? " spotlight-focused" : "")}>
         <VideoElementMemo
           stream={props.stream}
           setHeight={setHeight}

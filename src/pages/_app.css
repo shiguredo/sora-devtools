@@ -169,3 +169,8 @@ footer .btn {
   height: 1rem;
   margin-left: 0.25rem;
 }
+
+.spotlight-focused {
+  border: 5px solid var(--primary);
+  border-radius: 5px;
+}

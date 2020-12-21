@@ -88,6 +88,7 @@ export type SoraDemoState = {
   spotlightConnectionIds: {
     [key: string]: string;
   };
+  focusedSpotlightConnectionIds: string[];
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
   video: boolean;
@@ -148,6 +149,7 @@ const initialState: SoraDemoState = {
   spotlight: "2",
   spotlightNumber: "",
   spotlightConnectionIds: {},
+  focusedSpotlightConnectionIds: [],
   video: true,
   videoBitRate: "",
   videoCodecType: "",
@@ -404,6 +406,17 @@ const slice = createSlice({
       });
       state.spotlightConnectionIds = spotlightConnectionIds;
     },
+    setFocusedSpotlightConnectionIds: (state, action: PayloadAction<string>) => {
+      state.focusedSpotlightConnectionIds.push(action.payload);
+      state.focusedSpotlightConnectionIds = Array.from(new Set(state.focusedSpotlightConnectionIds));
+    },
+    deleteFocusedSpotlightConnectionIds: (state, action: PayloadAction<string>) => {
+      const index = state.focusedSpotlightConnectionIds.indexOf(action.payload);
+      console.log("delete", index);
+      if (index <= 0) {
+        state.focusedSpotlightConnectionIds.splice(index, 1);
+      }
+    },
   },
 });
 
@@ -514,13 +527,19 @@ function setSoraCallbacks(
       typeof message.spotlight_id === "string" &&
       typeof message.connection_id === "string"
     ) {
-      // Spotlight 有効時に stream と映像の配信者の connection_id のマッピングが送られてくるため表示用に保存
+      // Spotlight legacy 有効時に stream と映像の配信者の connection_id のマッピングが送られてくるため表示用に保存
       dispatch(
         slice.actions.setSpotlightConnectionIds({
           spotlightId: message.spotlight_id,
           connectionId: message.connection_id,
         })
       );
+    }
+    if (message.event_type === "spotlight.focused" && typeof message.connection_id === "string") {
+      dispatch(slice.actions.setFocusedSpotlightConnectionIds(message.connection_id));
+    }
+    if (message.event_type === "spotlight.unfocused" && typeof message.connection_id === "string") {
+      dispatch(slice.actions.deleteFocusedSpotlightConnectionIds(message.connection_id));
     }
     dispatch(
       slice.actions.setNotifyMessages({
