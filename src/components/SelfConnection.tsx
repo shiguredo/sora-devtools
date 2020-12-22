@@ -79,39 +79,50 @@ const VideoElementMemo = React.memo((props: VideoElementProps) => {
   return <VideoElement {...props} />;
 });
 
+const VideoBox: React.FC = () => {
+  const [height, setHeight] = useState<number>(0);
+  const mediaType = useSelector((state: SoraDemoState) => state.mediaType);
+  const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
+  const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
+  const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
+  const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
+  const localMediaStream = useSelector((state: SoraDemoState) => state.soraContents.localMediaStream);
+  const focused = connectionId && focusedSpotlightConnectionIds.includes(connectionId);
+  return (
+    <>
+      <div className={"d-flex" + (focused ? " spotlight-focused" : "")}>
+        <VideoElementMemo
+          stream={localMediaStream}
+          setHeight={setHeight}
+          audioOutput={audioOutput}
+          displayResolution={displayResolution}
+        />
+        {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
+      </div>
+      {mediaType === "fakeMedia" ? <VolumeRange /> : null}
+    </>
+  );
+};
+
 type SelfConnectionProps = {
   connectType: ConnectType;
 };
 const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
-  const [height, setHeight] = useState<number>(0);
-  const { soraContents, mediaType, audioOutput, displayResolution } = useSelector((state: SoraDemoState) => state);
-  const { sora, localMediaStream } = soraContents;
+  const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
+  const clientId = useSelector((state: SoraDemoState) => state.soraContents.clientId);
   return (
     <div className="row mt-2">
       <div className="col-auto">
         <div className="video-status mb-1">
-          {sora !== null ? (
+          {connectionId !== null || clientId !== null ? (
             <ConnectionStatusBar
-              connectionId={sora.connectionId}
-              clientId={sora.clientId}
+              connectionId={connectionId}
+              clientId={clientId}
               showMediaButton={props.connectType !== "recvonly"}
             />
           ) : null}
         </div>
-        {props.connectType !== "recvonly" ? (
-          <>
-            <div className="d-flex">
-              <VideoElementMemo
-                stream={localMediaStream}
-                setHeight={setHeight}
-                audioOutput={audioOutput}
-                displayResolution={displayResolution}
-              />
-              {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
-            </div>
-            {mediaType === "fakeMedia" ? <VolumeRange /> : null}
-          </>
-        ) : null}
+        {props.connectType !== "recvonly" ? <VideoBox /> : null}
       </div>
     </div>
   );
