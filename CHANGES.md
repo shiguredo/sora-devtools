@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## develop
+
+- [UPDATE] spotlight focused / spotlight unfocused 時に映像枠を表示する
+    - @yuitowest
+
 ## 2020.6.0
 
 - [FIX] Sora connect 時のエラーメッセージが "{}" になる場合があるので対応する
