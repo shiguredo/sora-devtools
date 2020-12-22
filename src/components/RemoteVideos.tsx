@@ -69,6 +69,10 @@ type RemoteVideoProps = {
   spotlight: boolean;
 };
 const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
+  useEffect(() => {
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [height, setHeight] = useState<number>(0);
   const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
   const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);

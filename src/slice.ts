@@ -316,15 +316,7 @@ const slice = createSlice({
       state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => {
-        if (stream.id !== action.payload) {
-          stream.getTracks().forEach((track) => {
-            track.stop();
-          });
-          return true;
-        }
-        return false;
-      });
+      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => (stream.id !== action.payload));
       state.soraContents.remoteMediaStreams = remoteMediaStreams;
     },
     removeAllRemoteMediaStreams: (state) => {
