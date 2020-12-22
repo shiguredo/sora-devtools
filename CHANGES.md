@@ -14,6 +14,11 @@
 - [UPDATE] spotlight focused / spotlight unfocused 時に映像枠を表示する
     - @yuitowest
 
+## 2020.6.1
+
+- [FIX] sora-js-sdk のバージョンを 2020.6.1 に更新する
+    - @yuitowest
+
 ## 2020.6.0
 
 - [FIX] Sora connect 時のエラーメッセージが "{}" になる場合があるので対応する
