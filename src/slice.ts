@@ -316,7 +316,7 @@ const slice = createSlice({
       state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => (stream.id !== action.payload));
+      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
       state.soraContents.remoteMediaStreams = remoteMediaStreams;
     },
     removeAllRemoteMediaStreams: (state) => {
