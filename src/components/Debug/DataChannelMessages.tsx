@@ -12,7 +12,7 @@ type CollapsePushProps = {
 const CollapseMessage: React.FC<CollapsePushProps> = (props) => {
   const { timestamp, id, label, type, data } = props.message;
   const title = `[${id}][${label}][${type}]`;
-  return <Message title={title} timestamp={timestamp} description={data === null ? "" : data} />;
+  return <Message title={title} timestamp={timestamp} description={data === null || data === undefined ? "" : data} />;
 };
 
 const PushMessages: React.FC = () => {

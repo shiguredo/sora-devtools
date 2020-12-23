@@ -127,10 +127,10 @@ export type PushMessage = {
 // Debug data channel message の Type
 export type DataChannelMessage = {
   timestamp: number;
-  id: number;
+  id: number | null;
   label: string;
   type: string;
-  data: {
+  data?: {
     [x: string]: unknown;
   } | null;
 };

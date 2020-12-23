@@ -626,7 +626,7 @@ function setSoraCallbacks(
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
   });
-  sora.on("datachannel", (id: number, label: string, type: string, data: { [x: string]: unknown } | null) => {
+  sora.on("datachannel", (id: number | null, label: string, type: string, data?: { [x: string]: unknown } | null) => {
     dispatch(
       slice.actions.setDataChannelMessage({
         timestamp: new Date().getTime(),
