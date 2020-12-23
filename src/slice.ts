@@ -24,6 +24,7 @@ import {
   createFakeMediaStream,
   createSignalingURL,
   createVideoConstraints,
+  DataChannelMessage,
   DebugType,
   drawFakeCanvas,
   Json,
@@ -53,6 +54,7 @@ export type SoraDemoState = {
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
+  dataChannelMessages: DataChannelMessage[];
   debug: boolean;
   debugType: DebugType;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
@@ -122,6 +124,7 @@ const initialState: SoraDemoState = {
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
+  dataChannelMessages: [],
   debug: false,
   debugType: "log",
   displayResolution: "",
@@ -204,6 +207,9 @@ const slice = createSlice({
     },
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload;
+    },
+    setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
+      state.dataChannelMessages.push(action.payload);
     },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
@@ -619,6 +625,17 @@ function setSoraCallbacks(
     dispatch(slice.actions.setLocalMediaStream(null));
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
+  });
+  sora.on("datachannel", (id: number, label: string, type: string, data: { [x: string]: unknown } | null) => {
+    dispatch(
+      slice.actions.setDataChannelMessage({
+        timestamp: new Date().getTime(),
+        id: id,
+        label: label,
+        type: type,
+        data: data,
+      })
+    );
   });
 }
 

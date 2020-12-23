@@ -2,6 +2,7 @@ import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
+import DebugDataChannelMessages from "@/components/Debug/DataChannelMessages";
 import DebugLogMessages from "@/components/Debug/LogMessages";
 import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
 import DebugPushMessages from "@/components/Debug/PushMessages";
@@ -15,7 +16,7 @@ const ColDebug: React.FC = () => {
     return null;
   }
   const onSelect = (key: string | null): void => {
-    if (key === "log" || key === "notify" || key === "push" || key === "stats") {
+    if (key === "log" || key === "notify" || key === "push" || key === "stats" || key === "datachannel") {
       dispatch(setDebugType(key));
     }
   };
@@ -33,6 +34,9 @@ const ColDebug: React.FC = () => {
         </Tab>
         <Tab eventKey="stats" title="Stats">
           <DebugStats />
+        </Tab>
+        <Tab eventKey="datachannel" title="DataChannel">
+          <DebugDataChannelMessages />
         </Tab>
       </Tabs>
     </div>

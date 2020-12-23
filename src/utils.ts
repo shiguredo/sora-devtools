@@ -124,6 +124,17 @@ export type PushMessage = {
   message: SoraPushMessage;
 };
 
+// Debug data channel message の Type
+export type DataChannelMessage = {
+  timestamp: number;
+  id: number;
+  label: string;
+  type: string;
+  data: {
+    [x: string]: unknown;
+  } | null;
+};
+
 // 画面表示する message の Type
 export type AlertMessage = {
   timestamp: number;
@@ -133,7 +144,7 @@ export type AlertMessage = {
 };
 
 // Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "push" | "stats";
+export type DebugType = "log" | "notify" | "push" | "stats" | "datachannel";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
