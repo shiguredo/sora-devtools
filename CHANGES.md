@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] Debug で表示されるログの文字列をダブルクォートで囲むようにする
+    - @yuitowest
 - [UPDATE] spotlight focused / spotlight unfocused 時に映像枠を表示する
     - @yuitowest
 
