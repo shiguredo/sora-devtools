@@ -44,10 +44,11 @@ type Props = {
   timestamp: number | null;
   title: string;
   description: string | number | Record<string, unknown>;
+  defaultShow?: boolean;
 };
 const Message: React.FC<Props> = (props) => {
-  const { description, title, timestamp } = props;
-  const [show, setShow] = useState(false);
+  const { defaultShow, description, title, timestamp } = props;
+  const [show, setShow] = useState(defaultShow === undefined ? false: defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
   return (
     <div className="border border-light rounded my-2 bg-dark">
