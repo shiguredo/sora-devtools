@@ -22,6 +22,9 @@ const Description: React.FC<DescriptionProps> = (props) => {
     <>
       {Object.keys(description).map((key) => {
         const message = ((m) => {
+          if (key === "sdp") {
+            return m as string;
+          }
           if (typeof m === "string") {
             return JSON.stringify(m);
           }
