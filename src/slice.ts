@@ -25,6 +25,7 @@ import {
   createVideoConstraints,
   DebugType,
   drawFakeCanvas,
+  Json,
   LogMessage,
   NotifyMessage,
   parseMetadata,
@@ -322,21 +323,11 @@ const slice = createSlice({
     removeAllRemoteMediaStreams: (state) => {
       state.soraContents.remoteMediaStreams = [];
     },
-    toggleEnabledMic: (state) => {
-      state.enabledMic = !state.enabledMic;
-      if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
-          track.enabled = state.enabledMic;
-        });
-      }
+    setEnabledMic: (state, action: PayloadAction<boolean>) => {
+      state.enabledMic = action.payload;
     },
-    toggleEnabledCamera: (state) => {
-      state.enabledCamera = !state.enabledCamera;
-      if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
-          track.enabled = state.enabledCamera;
-        });
-      }
+    setEnabledCamera: (state, action: PayloadAction<boolean>) => {
+      state.enabledCamera = action.payload;
     },
     setAudioInputDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
       state.audioInputDevices = action.payload;
@@ -524,7 +515,7 @@ function setSoraCallbacks(
   getState: () => SoraDemoState,
   sora: ConnectionPublisher | ConnectionSubscriber
 ): void {
-  sora.on("log", (title: string, description: boolean | number | string | Record<string, unknown>) => {
+  sora.on("log", (title: string, description: Json) => {
     dispatch(
       slice.actions.setLogMessages({
         title: title,
@@ -1207,6 +1198,34 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   }
 };
 
+export const toggleEnabledMic = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  const { enabledMic, soraContents } = getState();
+  if (enabledMic) {
+    if (soraContents.localMediaStream) {
+      Sora.helpers.stopAudioMediaDevice(soraContents.localMediaStream);
+    }
+  } else {
+    if (soraContents.localMediaStream && soraContents.sora?.pc) {
+      await Sora.helpers.startAudioMediaDevice(soraContents.localMediaStream, soraContents.sora.pc);
+    }
+  }
+  dispatch(slice.actions.setEnabledMic(!enabledMic));
+};
+
+export const toggleEnabledCamera = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  const { enabledCamera, soraContents } = getState();
+  if (enabledCamera) {
+    if (soraContents.localMediaStream) {
+      Sora.helpers.stopVideoMediaDevice(soraContents.localMediaStream);
+    }
+  } else {
+    if (soraContents.localMediaStream && soraContents.sora?.pc) {
+      await Sora.helpers.startVideoMediaDevice(soraContents.localMediaStream, soraContents.sora.pc);
+    }
+  }
+  dispatch(slice.actions.setEnabledCamera(!enabledCamera));
+};
+
 export const {
   deleteAlertMessage,
   setAPIErrorAlertMessage,
@@ -1247,8 +1266,6 @@ export const {
   setVideoBitRate,
   setVideoCodecType,
   setVideoInput,
-  toggleEnabledCamera,
-  toggleEnabledMic,
 } = slice.actions;
 
 export default slice.reducer;

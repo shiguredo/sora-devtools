@@ -25,7 +25,7 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
-type Json =
+export type Json =
   | null
   | boolean
   | number
@@ -88,7 +88,7 @@ export type LogMessage = {
 
 // Sora on notify callback の引数 Type
 export type SoraNotifyMessage = {
-  type: string;
+  type: "notify";
   event_type: string;
   [x: string]: unknown;
 };
