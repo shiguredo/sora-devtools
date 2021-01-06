@@ -15,6 +15,8 @@
     - @yuitowest
 - [UPDATE] spotlight focused / spotlight unfocused 時に映像枠を表示する
     - @yuitowest
+- [UPDATE] camera/mic の on/off を Sora helpers を使うように修正する
+    - @yuitowest
 
 ## 2020.6.1
 
