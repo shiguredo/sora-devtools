@@ -1199,28 +1199,51 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
 };
 
 export const toggleEnabledMic = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-  const { enabledMic, soraContents } = getState();
+  const {
+    audio,
+    audioInput,
+    autoGainControl,
+    enabledMic,
+    echoCancellation,
+    echoCancellationType,
+    noiseSuppression,
+    soraContents,
+  } = getState();
   if (enabledMic) {
     if (soraContents.localMediaStream) {
       Sora.helpers.stopAudioMediaDevice(soraContents.localMediaStream);
     }
   } else {
     if (soraContents.localMediaStream && soraContents.sora?.pc) {
-      await Sora.helpers.startAudioMediaDevice(soraContents.localMediaStream, soraContents.sora.pc);
+      const audioConstraints = createAudioConstraints({
+        audio: audio,
+        autoGainControl: autoGainControl,
+        noiseSuppression: noiseSuppression,
+        echoCancellation: echoCancellation,
+        echoCancellationType: echoCancellationType,
+        audioInput: audioInput,
+      });
+      await Sora.helpers.startAudioMediaDevice(soraContents.localMediaStream, soraContents.sora.pc, audioConstraints);
     }
   }
   dispatch(slice.actions.setEnabledMic(!enabledMic));
 };
 
 export const toggleEnabledCamera = () => async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-  const { enabledCamera, soraContents } = getState();
+  const { enabledCamera, frameRate, resolution, soraContents, video, videoInput } = getState();
   if (enabledCamera) {
     if (soraContents.localMediaStream) {
       Sora.helpers.stopVideoMediaDevice(soraContents.localMediaStream);
     }
   } else {
     if (soraContents.localMediaStream && soraContents.sora?.pc) {
-      await Sora.helpers.startVideoMediaDevice(soraContents.localMediaStream, soraContents.sora.pc);
+      const videoConstraints = createVideoConstraints({
+        video: video,
+        frameRate: frameRate,
+        resolution: resolution,
+        videoInput: videoInput,
+      });
+      await Sora.helpers.startVideoMediaDevice(soraContents.localMediaStream, soraContents.sora.pc, videoConstraints);
     }
   }
   dispatch(slice.actions.setEnabledCamera(!enabledCamera));
