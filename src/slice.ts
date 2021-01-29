@@ -91,7 +91,9 @@ export type SoraDemoState = {
   spotlightConnectionIds: {
     [key: string]: string;
   };
-  focusedSpotlightConnectionIds: string[];
+  focusedSpotlightConnectionIds: {
+    [key: string]: boolean;
+  };
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
   video: boolean;
@@ -154,7 +156,7 @@ const initialState: SoraDemoState = {
   spotlight: "2",
   spotlightNumber: "",
   spotlightConnectionIds: {},
-  focusedSpotlightConnectionIds: [],
+  focusedSpotlightConnectionIds: {},
   video: true,
   videoBitRate: "",
   videoCodecType: "",
@@ -408,16 +410,14 @@ const slice = createSlice({
       });
       state.spotlightConnectionIds = spotlightConnectionIds;
     },
-    setFocusedSpotlightConnectionIds: (state, action: PayloadAction<string>) => {
-      state.focusedSpotlightConnectionIds.push(action.payload);
-      state.focusedSpotlightConnectionIds = Array.from(new Set(state.focusedSpotlightConnectionIds));
+    setFocusedSpotlightConnectionId: (state, action: PayloadAction<string>) => {
+      state.focusedSpotlightConnectionIds[action.payload] = true;
     },
-    deleteFocusedSpotlightConnectionIds: (state, action: PayloadAction<string>) => {
-      const index = state.focusedSpotlightConnectionIds.indexOf(action.payload);
-      console.log("delete", index);
-      if (index <= 0) {
-        state.focusedSpotlightConnectionIds.splice(index, 1);
-      }
+    setUnFocusedSpotlightConnectionId: (state, action: PayloadAction<string>) => {
+      state.focusedSpotlightConnectionIds[action.payload] = false;
+    },
+    deleteFocusedSpotlightConnectionId: (state, action: PayloadAction<string>) => {
+      delete state.focusedSpotlightConnectionIds[action.payload];
     },
   },
 });
@@ -538,10 +538,13 @@ function setSoraCallbacks(
       );
     }
     if (message.event_type === "spotlight.focused" && typeof message.connection_id === "string") {
-      dispatch(slice.actions.setFocusedSpotlightConnectionIds(message.connection_id));
+      dispatch(slice.actions.setFocusedSpotlightConnectionId(message.connection_id));
     }
     if (message.event_type === "spotlight.unfocused" && typeof message.connection_id === "string") {
-      dispatch(slice.actions.deleteFocusedSpotlightConnectionIds(message.connection_id));
+      dispatch(slice.actions.setUnFocusedSpotlightConnectionId(message.connection_id));
+    }
+    if (message.event_type === "connection.destroyed" && typeof message.connection_id === "string") {
+      dispatch(slice.actions.deleteFocusedSpotlightConnectionId(message.connection_id));
     }
     dispatch(
       slice.actions.setNotifyMessages({

@@ -87,7 +87,7 @@ const VideoBox: React.FC = () => {
   const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
   const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
   const localMediaStream = useSelector((state: SoraDemoState) => state.soraContents.localMediaStream);
-  const focused = connectionId && focusedSpotlightConnectionIds.includes(connectionId);
+  const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
   return (
     <>
       <div className={"d-flex" + (focused ? " spotlight-focused" : "")}>
