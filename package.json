@@ -46,6 +46,6 @@
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "redux-logger": "^3.0.6",
-    "sora-js-sdk": "^2020.6.1"
+    "sora-js-sdk": "^2020.6.2"
   }
 }

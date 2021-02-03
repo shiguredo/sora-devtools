@@ -4421,10 +4421,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-sora-js-sdk@^2020.6.1:
-  version "2020.6.1"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.6.1.tgz#5d3f78b5ea0214fb32303ce597379a9743e1f21c"
-  integrity sha512-hDtGQM8HG6rsY242XNadA3TDw01LxYfs3yEdGh+khDBmB2H00DgtlVU3Pu1iWIdJNRd3DSnhXZuj4usgiqZdJQ==
+sora-js-sdk@^2020.6.2:
+  version "2020.6.2"
+  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2020.6.2.tgz#ec8411bc5c8deb1f45e77e52014b004d4eaf4bc7"
+  integrity sha512-NrOmyMLouC5GpYJDbyGRDFu7jRmhOkYiJ9VWN4R3ZjGsSv/ctlXxHZvi4rDEaVvibZXyAQBgiA4Q3dXUBxn79Q==
 
 source-list-map@^2.0.0:
   version "2.0.1"
