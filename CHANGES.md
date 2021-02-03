@@ -16,6 +16,10 @@
 - [UPDATE] spotlight focused / spotlight unfocused 時に映像枠を表示する
     - @yuitowest
 - [UPDATE] camera/mic の on/off を Sora helpers を使うように修正する
+
+## 2020.6.2
+
+- [FIX] sora-js-sdk のバージョンを 2020.6.2 に更新する
     - @yuitowest
 
 ## 2020.6.1
