@@ -176,7 +176,8 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```
-Copyright 2020, Shiguredo Inc.
+Copyright 2017-2021, Yuki Ito (Original Author)
+Copyright 2020-2021, Shiguredo Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
