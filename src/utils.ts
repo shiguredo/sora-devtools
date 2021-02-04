@@ -595,7 +595,9 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
   return metadata;
 }
 
-export function getDefaultVideoCodecType(initialValue: typeof VIDEO_CODEC_TYPES[number]): typeof VIDEO_CODEC_TYPES[number] {
+export function getDefaultVideoCodecType(
+  initialValue: typeof VIDEO_CODEC_TYPES[number]
+): typeof VIDEO_CODEC_TYPES[number] {
   if (!RTCRtpSender.getCapabilities) {
     return initialValue;
   }
