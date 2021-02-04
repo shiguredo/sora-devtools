@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters } from "@/utils";
+import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -26,6 +26,7 @@ const MultiSimulcastRecvonly: React.FC = () => {
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        videoCodecType: getDefaultVideoCodecType("VP9"),
         simulcastRid: "r0",
       })
     );
