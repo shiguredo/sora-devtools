@@ -618,6 +618,9 @@ export function getDefaultVideoCodecType(
   if (codecs.includes("video/H264")) {
     return "H264";
   }
+  if (codecs.includes("video/AV1X")) {
+    return "AV1";
+  }
   if (codecs.includes("video/H265")) {
     return "H265";
   }
