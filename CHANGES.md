@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] AV1 を有効にする
+    - @yuitowest
 - [UPDATE] videoCodecType の初期値をブラウザに応じて変更するように修正する
     - @yuitowest
 - [UPDATE] Debug で表示されるログの文字列をダブルクォートで囲むようにする
