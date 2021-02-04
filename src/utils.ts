@@ -594,3 +594,30 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
   }
   return metadata;
 }
+
+export function getDefaultVideoCodecType(initialValue: typeof VIDEO_CODEC_TYPES[number]): typeof VIDEO_CODEC_TYPES[number] {
+  if (!RTCRtpSender.getCapabilities) {
+    return initialValue;
+  }
+  const capabilities = RTCRtpSender.getCapabilities("video");
+  if (!capabilities || !capabilities.codecs) {
+    return initialValue;
+  }
+  const codecs = capabilities.codecs.map((c) => c.mimeType);
+  if (codecs.includes(initialValue)) {
+    return initialValue;
+  }
+  if (codecs.includes("video/VP9")) {
+    return "VP9";
+  }
+  if (codecs.includes("video/VP8")) {
+    return "VP8";
+  }
+  if (codecs.includes("video/H264")) {
+    return "H264";
+  }
+  if (codecs.includes("video/H265")) {
+    return "H265";
+  }
+  return initialValue;
+}

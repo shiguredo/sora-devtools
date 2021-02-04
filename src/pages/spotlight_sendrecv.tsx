@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters } from "@/utils";
+import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -41,7 +41,7 @@ const SpotlightSendrecv: React.FC = () => {
     dispatch(
       setInitialParameter({
         audioCodecType: "OPUS",
-        videoCodecType: "VP8",
+        videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "500",
         resolution: "VGA",
         spotlight: "true",
