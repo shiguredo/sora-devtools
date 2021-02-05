@@ -1016,18 +1016,32 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.audioCodecType,
     queryStringParameters.audioCodecType
   );
-  setInitialState<SoraDemoState["audioInput"]>(
-    dispatch,
-    slice.actions.setAudioInput,
-    pageInitialParameters.audioInput,
-    queryStringParameters.audioInput
-  );
-  setInitialState<SoraDemoState["audioOutput"]>(
-    dispatch,
-    slice.actions.setAudioOutput,
-    pageInitialParameters.audioOutput,
-    queryStringParameters.audioOutput
-  );
+  // 存在しない Device の場合はセットしない
+  const deviceInfos = await navigator.mediaDevices.enumerateDevices();
+  if (deviceInfos.find((d) => d.kind ==="audioinput" && d.deviceId === queryStringParameters.audioInput) !== undefined) {
+    setInitialState<SoraDemoState["audioInput"]>(
+      dispatch,
+      slice.actions.setAudioInput,
+      pageInitialParameters.audioInput,
+      queryStringParameters.audioInput
+    );
+  }
+  if (deviceInfos.find((d) => d.kind ==="audiooutput" && d.deviceId === queryStringParameters.audioOutput) !== undefined) {
+    setInitialState<SoraDemoState["audioOutput"]>(
+      dispatch,
+      slice.actions.setAudioOutput,
+      pageInitialParameters.audioOutput,
+      queryStringParameters.audioOutput
+    );
+  }
+  if (deviceInfos.find((d) => d.kind ==="videoinput" && d.deviceId === queryStringParameters.videoInput) !== undefined) {
+    setInitialState<SoraDemoState["videoInput"]>(
+      dispatch,
+      slice.actions.setVideoInput,
+      pageInitialParameters.videoInput,
+      queryStringParameters.videoInput
+    );
+  }
   setInitialState<SoraDemoState["autoGainControl"]>(
     dispatch,
     slice.actions.setAutoGainControl,
@@ -1129,12 +1143,6 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     slice.actions.setVideoCodecType,
     pageInitialParameters.videoCodecType,
     queryStringParameters.videoCodecType
-  );
-  setInitialState<SoraDemoState["videoInput"]>(
-    dispatch,
-    slice.actions.setVideoInput,
-    pageInitialParameters.videoInput,
-    queryStringParameters.videoInput
   );
   setInitialState<SoraDemoState["debug"]>(
     dispatch,
