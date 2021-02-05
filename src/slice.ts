@@ -1018,7 +1018,9 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
   );
   // 存在しない Device の場合はセットしない
   const deviceInfos = await navigator.mediaDevices.enumerateDevices();
-  if (deviceInfos.find((d) => d.kind ==="audioinput" && d.deviceId === queryStringParameters.audioInput) !== undefined) {
+  if (
+    deviceInfos.find((d) => d.kind === "audioinput" && d.deviceId === queryStringParameters.audioInput) !== undefined
+  ) {
     setInitialState<SoraDemoState["audioInput"]>(
       dispatch,
       slice.actions.setAudioInput,
@@ -1026,7 +1028,9 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
       queryStringParameters.audioInput
     );
   }
-  if (deviceInfos.find((d) => d.kind ==="audiooutput" && d.deviceId === queryStringParameters.audioOutput) !== undefined) {
+  if (
+    deviceInfos.find((d) => d.kind === "audiooutput" && d.deviceId === queryStringParameters.audioOutput) !== undefined
+  ) {
     setInitialState<SoraDemoState["audioOutput"]>(
       dispatch,
       slice.actions.setAudioOutput,
@@ -1034,7 +1038,9 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
       queryStringParameters.audioOutput
     );
   }
-  if (deviceInfos.find((d) => d.kind ==="videoinput" && d.deviceId === queryStringParameters.videoInput) !== undefined) {
+  if (
+    deviceInfos.find((d) => d.kind === "videoinput" && d.deviceId === queryStringParameters.videoInput) !== undefined
+  ) {
     setInitialState<SoraDemoState["videoInput"]>(
       dispatch,
       slice.actions.setVideoInput,
