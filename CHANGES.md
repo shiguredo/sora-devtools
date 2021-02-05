@@ -11,6 +11,8 @@
 
 ## develop
 
+- [FIX] 存在しないデバイスIDをURLパラメーターから渡した場合にgetUserMediaが失敗する問題を修正する
+    - @yuitowest
 - [UPDATE] AV1 を有効にする
     - @yuitowest
 - [UPDATE] videoCodecType の初期値をブラウザに応じて変更するように修正する
