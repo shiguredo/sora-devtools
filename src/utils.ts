@@ -605,23 +605,23 @@ export function getDefaultVideoCodecType(
   if (!capabilities || !capabilities.codecs) {
     return initialValue;
   }
-  const codecs = capabilities.codecs.map((c) => c.mimeType);
+  const codecs = capabilities.codecs.map((c) => c.mimeType.replace("video/", ""));
   if (codecs.includes(initialValue)) {
     return initialValue;
   }
-  if (codecs.includes("video/VP9")) {
+  if (codecs.includes("VP9")) {
     return "VP9";
   }
-  if (codecs.includes("video/VP8")) {
+  if (codecs.includes("VP8")) {
     return "VP8";
   }
-  if (codecs.includes("video/H264")) {
+  if (codecs.includes("H264")) {
     return "H264";
   }
-  if (codecs.includes("video/AV1X")) {
+  if (codecs.includes("AV1X")) {
     return "AV1";
   }
-  if (codecs.includes("video/H265")) {
+  if (codecs.includes("H265")) {
     return "H265";
   }
   return initialValue;
