@@ -86,6 +86,7 @@ export type SoraDemoState = {
   notifyMessages: NotifyMessage[];
   pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
+  showStats: boolean;
   signalingNotifyMetadata: string;
   simulcastRid: typeof SIMULCAST_RID[number];
   spotlightConnectionIds: {
@@ -151,6 +152,7 @@ const initialState: SoraDemoState = {
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
+  showStats: false,
   signalingNotifyMetadata: "",
   simulcastRid: "",
   spotlight: "2",
@@ -418,6 +420,9 @@ const slice = createSlice({
     },
     deleteFocusedSpotlightConnectionId: (state, action: PayloadAction<string>) => {
       delete state.focusedSpotlightConnectionIds[action.payload];
+    },
+    setShowStats: (state, action: PayloadAction<boolean>) => {
+      state.showStats = action.payload;
     },
   },
 });
@@ -1113,6 +1118,12 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     slice.actions.setResolution,
     pageInitialParameters.resolution,
     queryStringParameters.resolution
+  );
+  setInitialState<SoraDemoState["showStats"]>(
+    dispatch,
+    slice.actions.setShowStats,
+    pageInitialParameters.showStats,
+    queryStringParameters.showStats
   );
   setInitialState<SoraDemoState["simulcastRid"]>(
     dispatch,

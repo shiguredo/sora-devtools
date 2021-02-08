@@ -9,6 +9,69 @@ import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 import VolumeVisualizer from "./VolumeVisualizer";
 
+interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
+  jitterBufferDelay: number;
+  jitterBufferEmittedCount: number;
+}
+
+function mediaStreamStatsReportFilter(
+  statsReport: RTCStats[],
+  mediaStream: MediaStream | null
+): RTCMediaStreamTrackStats[] {
+  if (mediaStream === null) {
+    return [];
+  }
+  const trackIds = mediaStream.getTracks().map((t) => {
+    return t.id;
+  });
+  return statsReport.filter((stats) => {
+    if (!stats.id.match(/^RTCMediaStreamTrack/)) {
+      return false;
+    }
+    if ("trackIdentifier" in stats) {
+      const mediaStreamStats = stats as RTCMediaStreamTrackStats;
+      return mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier);
+    }
+    return false;
+  });
+}
+
+const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
+  const showStats = useSelector((state: SoraDemoState) => state.showStats);
+  const statsReport = useSelector((state: SoraDemoState) => state.soraContents.statsReport);
+  if (!showStats) {
+    return null;
+  }
+  const stats = mediaStreamStatsReportFilter(statsReport, props.stream);
+  return (
+    <>
+      {stats.map((s) => {
+        return (
+          <div key={s.id}>
+            <ul className="mediastream-stats-report">
+              {Object.entries(s).map(([key, value]) => {
+                return (
+                  <li key={key}>
+                    <strong>{key}:</strong> {value}
+                  </li>
+                );
+              })}
+              <li>
+                <strong>[jitterBufferDelay/jitterBufferEmittedCount_in_ms]</strong>{" "}
+                {Math.floor(
+                  ((s as ExpansionRTCMediaStreamTrackStats).jitterBufferDelay /
+                    (s as ExpansionRTCMediaStreamTrackStats).jitterBufferEmittedCount) *
+                    1000
+                )}
+              </li>
+            </ul>
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
 type VideoElementProps = {
   stream: MediaStream;
   setHeight: Dispatch<SetStateAction<number>>;
@@ -130,15 +193,18 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
           </>
         ) : null}
       </div>
-      <div className={"d-flex align-items-start" + (focused ? " spotlight-focused" : "")}>
-        <VideoElementMemo
-          stream={props.stream}
-          setHeight={setHeight}
-          mute={mute}
-          audioOutput={audioOutput}
-          displayResolution={displayResolution}
-        />
-        <VolumeVisualizer stream={props.stream} height={height} />
+      <div className={"d-flex flex-wrap align-items-start overflow-hidden" + (focused ? " spotlight-focused" : "")}>
+        <div className="d-flex flex-nowrap align-items-start">
+          <VideoElementMemo
+            stream={props.stream}
+            setHeight={setHeight}
+            mute={mute}
+            audioOutput={audioOutput}
+            displayResolution={displayResolution}
+          />
+          <VolumeVisualizer stream={props.stream} height={height} />
+        </div>
+        <MediaStreamStatsReport stream={props.stream} />
       </div>
     </div>
   );

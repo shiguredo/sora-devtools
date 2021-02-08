@@ -244,6 +244,7 @@ export type QueryStringParameters = {
   metadata: string;
   noiseSuppression: boolean;
   mute: boolean;
+  showStats: boolean;
   signalingNotifyMetadata: string;
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
@@ -278,6 +279,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     metadata,
     noiseSuppression,
     mute,
+    showStats,
     signalingNotifyMetadata,
     spotlight,
     spotlightNumber,
@@ -339,6 +341,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (metadata) {
     queryStringParameters.metadata = String(metadata);
+  }
+  if (typeof showStats === "boolean") {
+    queryStringParameters.showStats = showStats;
   }
   if (signalingNotifyMetadata) {
     queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);

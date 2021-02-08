@@ -174,3 +174,8 @@ footer .btn {
   border: 5px solid var(--primary);
   border-radius: 5px;
 }
+
+.mediastream-stats-report {
+  list-style-type: none;
+  padding: 1rem;
+}
