@@ -179,3 +179,25 @@ footer .btn {
   list-style-type: none;
   padding: 1rem;
 }
+
+.normal-jitter-buffer {
+  border-width: 2px;
+  border-color: var(--green);
+}
+
+.warning-jitter-buffer {
+  border-width: 2px;
+  border-color: var(--orange);
+}
+
+.danger-jitter-buffer {
+  border-width: 2px;
+  border-color: var(--red);
+}
+
+.critical-jitter-buffer {
+  border-width: 2px;
+  border-color: var(--red);
+  background-color: var(--red);
+  color: var(--light);
+}
