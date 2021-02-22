@@ -7,6 +7,7 @@ import ConnectionStatusBar from "@/components/ConnectionStatusBar";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
+import JitterButter from "./JitterBuffer";
 import VolumeVisualizer from "./VolumeVisualizer";
 
 interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
@@ -39,13 +40,28 @@ function mediaStreamStatsReportFilter(
 const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   const showStats = useSelector((state: SoraDemoState) => state.showStats);
   const statsReport = useSelector((state: SoraDemoState) => state.soraContents.statsReport);
+  const prevStatsReport = useSelector((state: SoraDemoState) => state.soraContents.prevStatsReport);
   if (!showStats) {
     return null;
   }
-  const stats = mediaStreamStatsReportFilter(statsReport, props.stream);
+  const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
+    statsReport,
+    props.stream
+  ) as ExpansionRTCMediaStreamTrackStats[];
+  const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
+    prevStatsReport,
+    props.stream
+  ) as ExpansionRTCMediaStreamTrackStats[];
   return (
     <>
-      {stats.map((s) => {
+      {currentMediaStreamTrackStatsReport.map((s) => {
+        let jitterBufferDelay = 0;
+        let jitterBufferEmittedCount = 0;
+        const prevStats = prevMediaStreamTrackStatsReport.find((p) => s.id === p.id);
+        if (prevStats) {
+          jitterBufferDelay = s.jitterBufferDelay - prevStats.jitterBufferDelay;
+          jitterBufferEmittedCount = s.jitterBufferEmittedCount - prevStats.jitterBufferEmittedCount;
+        }
         return (
           <div key={s.id}>
             <ul className="mediastream-stats-report">
@@ -58,11 +74,7 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
               })}
               <li>
                 <strong>[jitterBufferDelay/jitterBufferEmittedCount_in_ms]</strong>{" "}
-                {Math.floor(
-                  ((s as ExpansionRTCMediaStreamTrackStats).jitterBufferDelay /
-                    (s as ExpansionRTCMediaStreamTrackStats).jitterBufferEmittedCount) *
-                    1000
-                )}
+                {Math.floor((jitterBufferDelay / jitterBufferEmittedCount) * 1000)}
               </li>
             </ul>
           </div>
@@ -177,6 +189,8 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         ) : (
           <ConnectionStatusBar connectionId={props.stream.id} />
         )}
+        <JitterButter type="audio" stream={props.stream} />
+        <JitterButter type="video" stream={props.stream} />
         {!props.spotlight && props.multistream && props.simulcast ? (
           <>
             <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
