@@ -48,6 +48,14 @@ export interface SoraDemoMediaDevices extends MediaDevices {
   getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
 }
 
+// RTCMediaStreamTrackStats に jitterBuffer 関連を追加
+export interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
+  jitterBufferDelay: number;
+  jitterBufferEmittedCount: number;
+  prevJitterBufferDelay: number;
+  prevJitterBufferEmittedCount: number;
+}
+
 // 各 page で有効にするパラメーターを指定するための Type
 export type EnabledParameters = {
   audio?: boolean;

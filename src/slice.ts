@@ -76,6 +76,7 @@ export type SoraDemoState = {
     clientId: string | null;
     localMediaStream: MediaStream | null;
     remoteMediaStreams: MediaStream[];
+    prevStatsReport: RTCStats[];
     statsReport: RTCStats[];
   };
   logMessages: LogMessage[];
@@ -142,6 +143,7 @@ const initialState: SoraDemoState = {
     clientId: null,
     localMediaStream: null,
     remoteMediaStreams: [],
+    prevStatsReport: [],
     statsReport: [],
   },
   logMessages: [],
@@ -318,6 +320,7 @@ const slice = createSlice({
       state.soraContents.remoteMediaStreams.push(action.payload);
     },
     setStatsReport: (state, action: PayloadAction<RTCStats[]>) => {
+      state.soraContents.prevStatsReport = state.soraContents.statsReport;
       state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
