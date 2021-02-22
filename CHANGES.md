@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] jitter buffer delay を画面上に表示する機能を追加する
+    - @yuitowest
 - [ADD] stream の stats report を映像の横に表示する機能を追加する
     - @yuitowest
 - [FIX] 存在しないデバイスIDをURLパラメーターから渡した場合にgetUserMediaが失敗する問題を修正する
