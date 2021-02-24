@@ -182,17 +182,19 @@ footer .btn {
 
 .normal-jitter-buffer {
   border-width: 2px;
-  border-color: var(--green);
+  border-color: var(--dark);
 }
 
 .warning-jitter-buffer {
   border-width: 2px;
-  border-color: var(--orange);
+  border-color: var(--yellow);
 }
 
 .danger-jitter-buffer {
   border-width: 2px;
-  border-color: var(--red);
+  border-color: var(--orange);
+  background-color: var(--orange);
+  color: var(--light);
 }
 
 .critical-jitter-buffer {
