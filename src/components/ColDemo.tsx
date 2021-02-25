@@ -36,8 +36,8 @@ import FormVideo from "@/components/Form/Video";
 import FormVideoBitRate from "@/components/Form/VideoBitRate";
 import FormVideoCodecType from "@/components/Form/VideoCodecType";
 import FormVideoInput from "@/components/Form/VideoInput";
-import RemoteVideos from "@/components/RemoteVideos";
-import SelfConnection from "@/components/SelfConnection";
+import LocalVideo from "@/components/Video/LocalVideo";
+import RemoteVideos from "@/components/Video/RemoteVideos";
 import { SoraDemoState } from "@/slice";
 import { ConnectType, EnabledParameters } from "@/utils";
 
@@ -126,7 +126,7 @@ const ColDemo: React.FC<Props> = (props) => {
           </>
         ) : null}
       </div>
-      <SelfConnection connectType={props.connectType} />
+      <LocalVideo connectType={props.connectType} />
       {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
         <RemoteVideos
           multistream={props.multistream === true}

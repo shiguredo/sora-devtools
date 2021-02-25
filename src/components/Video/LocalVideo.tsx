@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import ConnectionStatusBar from "@/components/ConnectionStatusBar";
 import { setFakeVolume, SoraDemoState } from "@/slice";
 import { ConnectType, CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
+import ConnectionStatusBar from "./ConnectionStatusBar";
 import VolumeVisualizer from "./VolumeVisualizer";
 
 const VolumeRange: React.FC = () => {
@@ -104,10 +104,10 @@ const VideoBox: React.FC = () => {
   );
 };
 
-type SelfConnectionProps = {
+type LocalVideoProps = {
   connectType: ConnectType;
 };
-const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
+const LocalVideo: React.FC<LocalVideoProps> = (props) => {
   const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
   const clientId = useSelector((state: SoraDemoState) => state.soraContents.clientId);
   return (
@@ -128,4 +128,4 @@ const SelfConnection: React.FC<SelfConnectionProps> = (props) => {
   );
 };
 
-export default SelfConnection;
+export default LocalVideo;

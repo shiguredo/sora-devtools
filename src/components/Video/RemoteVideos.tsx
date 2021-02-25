@@ -3,10 +3,10 @@ import { useSelector } from "react-redux";
 
 import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
-import ConnectionStatusBar from "@/components/ConnectionStatusBar";
 import { SoraDemoState } from "@/slice";
 import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
+import ConnectionStatusBar from "./ConnectionStatusBar";
 import JitterButter from "./JitterBuffer";
 import VolumeVisualizer from "./VolumeVisualizer";
 
