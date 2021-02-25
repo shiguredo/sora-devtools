@@ -41,15 +41,17 @@ const VideoBox: React.FC = () => {
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
   return (
     <>
-      <div className={"d-flex" + (focused ? " spotlight-focused" : "")}>
-        <Video
-          stream={localMediaStream}
-          setHeight={setHeight}
-          audioOutput={audioOutput}
-          displayResolution={displayResolution}
-          mute
-        />
-        {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
+      <div className="d-flex">
+        <div className={"d-flex flex-nowrap align-items-start" + (focused ? " spotlight-focused" : "")}>
+          <Video
+            stream={localMediaStream}
+            setHeight={setHeight}
+            audioOutput={audioOutput}
+            displayResolution={displayResolution}
+            mute
+          />
+          {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
+        </div>
       </div>
       {mediaType === "fakeMedia" ? <VolumeRange /> : null}
     </>
