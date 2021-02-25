@@ -30,7 +30,7 @@ const RequestRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
   };
   return (
     <input
-      className="btn btn-secondary btn-sm mb-1 mx-1"
+      className="btn btn-secondary btn-sm mx-1"
       type="button"
       name={`requestSimulcastRidTo${props.rid.charAt(0).toUpperCase() + props.rid.slice(1)}`}
       defaultValue={`${props.rid} rid`}

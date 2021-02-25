@@ -141,14 +141,22 @@ footer .btn {
 
 .video-status {
   display: flex;
+  flex-direction: column;
   top: 0;
   left: 0;
-  align-items: center;
   white-space: nowrap;
+}
+
+.video-status .btn {
+  padding: 0.5rem 0.5rem;
 }
 
 .video-status p {
   margin: 0;
+}
+
+.video-status > .video-status-inner > *:first-child {
+  margin-left: 0!important;
 }
 
 .alert-messages {
@@ -181,25 +189,33 @@ footer .btn {
 }
 
 .normal-jitter-buffer {
+  min-width: 90px;
   border-width: 2px;
   border-color: var(--dark);
+  cursor: initial!important;
 }
 
 .warning-jitter-buffer {
+  min-width: 90px;
   border-width: 2px;
   border-color: var(--yellow);
+  cursor: initial!important;
 }
 
 .danger-jitter-buffer {
+  min-width: 90px;
   border-width: 2px;
   border-color: var(--orange);
   background-color: var(--orange);
   color: var(--light);
+  cursor: initial!important;
 }
 
 .critical-jitter-buffer {
+  min-width: 90px;
   border-width: 2px;
   border-color: var(--red);
   background-color: var(--red);
   color: var(--light);
+  cursor: initial!important;
 }

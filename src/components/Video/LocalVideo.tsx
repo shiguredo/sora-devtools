@@ -65,7 +65,7 @@ const LocalVideo: React.FC<LocalVideoProps> = (props) => {
   const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
   const clientId = useSelector((state: SoraDemoState) => state.soraContents.clientId);
   return (
-    <div className="row mt-2">
+    <div className="row my-1">
       <div className="col-auto">
         <div className="video-status mb-1">
           {connectionId !== null || clientId !== null ? (

@@ -73,7 +73,7 @@ const JitterButter: React.FC<Props> = (props) => {
     borderClassName = "warning-jitter-buffer";
   }
   return (
-    <div className={`btn btn-sm mr-1 ${borderClassName}`}>
+    <div className={`btn btn-sm mx-1 ${borderClassName}`}>
       <span>
         {props.type}: {currentJitterBufferDelay}
       </span>

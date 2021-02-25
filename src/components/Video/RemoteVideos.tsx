@@ -4,16 +4,12 @@ import { useSelector } from "react-redux";
 import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
 import { SoraDemoState } from "@/slice";
+import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
 
 import ConnectionStatusBar from "./ConnectionStatusBar";
 import JitterButter from "./JitterBuffer";
 import Video from "./Video";
 import VolumeVisualizer from "./VolumeVisualizer";
-
-interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
-  jitterBufferDelay: number;
-  jitterBufferEmittedCount: number;
-}
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
@@ -104,7 +100,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id];
   return (
     <div className="col-auto">
-      <div className="video-status mb-1">
+      <div className="video-status">
         {/** spotlight legacy の場合とそれ以外で表示方法を変える **/}
         {props.stream.id in spotlightConnectionIds ? (
           <ConnectionStatusBar
@@ -115,23 +111,25 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         ) : (
           <ConnectionStatusBar connectionId={props.stream.id} />
         )}
-        <JitterButter type="audio" stream={props.stream} />
-        <JitterButter type="video" stream={props.stream} />
-        {!props.spotlight && props.multistream && props.simulcast ? (
-          <>
-            <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
-            <ButtonRequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
-            <ButtonRequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
-          </>
-        ) : null}
-        {props.spotlight && props.multistream && props.simulcast ? (
-          <>
-            <ButtonRequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
-            <ButtonRequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
-            <ButtonRequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
-            <ButtonResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
-          </>
-        ) : null}
+        <div className="d-flex align-items-center mb-1 video-status-inner">
+          <JitterButter type="audio" stream={props.stream} />
+          <JitterButter type="video" stream={props.stream} />
+          {!props.spotlight && props.multistream && props.simulcast ? (
+            <>
+              <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
+              <ButtonRequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
+              <ButtonRequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
+            </>
+          ) : null}
+          {props.spotlight && props.multistream && props.simulcast ? (
+            <>
+              <ButtonRequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
+              <ButtonRequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
+              <ButtonRequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
+              <ButtonResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
+            </>
+          ) : null}
+        </div>
       </div>
       <div className="d-flex flex-wrap align-items-start overflow-hidden">
         <div className={"d-flex flex-nowrap align-items-start" + (focused ? " spotlight-focused" : "")}>
@@ -158,7 +156,7 @@ type RemoteVideosProps = {
 const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
   const remoteMediaStreams = useSelector((state: SoraDemoState) => state.soraContents.remoteMediaStreams);
   return (
-    <div className="row mt-2">
+    <div className="row my-2">
       {remoteMediaStreams.map((mediaStream) => {
         return (
           <RemoteVideo
