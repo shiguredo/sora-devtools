@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 import { SoraDemoState } from "@/slice";
-import {CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
+import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 type VideoProps = {
   displayResolution: SoraDemoState["displayResolution"];

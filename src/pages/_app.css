@@ -156,7 +156,7 @@ footer .btn {
 }
 
 .video-status > .video-status-inner > *:first-child {
-  margin-left: 0!important;
+  margin-left: 0 !important;
 }
 
 .alert-messages {
@@ -192,14 +192,14 @@ footer .btn {
   min-width: 90px;
   border-width: 2px;
   border-color: var(--dark);
-  cursor: initial!important;
+  cursor: initial !important;
 }
 
 .warning-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
   border-color: var(--yellow);
-  cursor: initial!important;
+  cursor: initial !important;
 }
 
 .danger-jitter-buffer {
@@ -208,7 +208,7 @@ footer .btn {
   border-color: var(--orange);
   background-color: var(--orange);
   color: var(--light);
-  cursor: initial!important;
+  cursor: initial !important;
 }
 
 .critical-jitter-buffer {
@@ -217,5 +217,5 @@ footer .btn {
   border-color: var(--red);
   background-color: var(--red);
   color: var(--light);
-  cursor: initial!important;
+  cursor: initial !important;
 }
