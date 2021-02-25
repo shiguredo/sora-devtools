@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setFakeVolume, SoraDemoState } from "@/slice";
-import { ConnectType, CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
+import { ConnectType } from "@/utils";
 
 import ConnectionStatusBar from "./ConnectionStatusBar";
+import Video from "./Video";
 import VolumeVisualizer from "./VolumeVisualizer";
 
 const VolumeRange: React.FC = () => {
@@ -29,56 +30,6 @@ const VolumeRange: React.FC = () => {
   );
 };
 
-type VideoElementProps = {
-  displayResolution: SoraDemoState["displayResolution"];
-  stream: MediaStream | null;
-  audioOutput: string;
-  setHeight: Dispatch<SetStateAction<number>>;
-};
-const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const { displayResolution, stream, audioOutput, setHeight } = props;
-  const videoRef = useRef<CustomHTMLVideoElement>(null);
-  const videoSize = getVideoSizeByResolution(displayResolution);
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
-        setHeight(entry.contentRect.height);
-      });
-    });
-    if (videoRef.current) {
-      resizeObserver.observe(videoRef.current);
-    }
-    return () => {
-      resizeObserver.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
-  if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
-    videoRef.current.setSinkId(audioOutput);
-  }
-  return (
-    <video
-      id="local-video"
-      autoPlay
-      playsInline
-      controls
-      muted
-      ref={videoRef}
-      width={0 < videoSize.width ? videoSize.width : undefined}
-      height={0 < videoSize.height ? videoSize.height : undefined}
-    />
-  );
-};
-
-const VideoElementMemo = React.memo((props: VideoElementProps) => {
-  return <VideoElement {...props} />;
-});
-
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
   const mediaType = useSelector((state: SoraDemoState) => state.mediaType);
@@ -91,11 +42,12 @@ const VideoBox: React.FC = () => {
   return (
     <>
       <div className={"d-flex" + (focused ? " spotlight-focused" : "")}>
-        <VideoElementMemo
+        <Video
           stream={localMediaStream}
           setHeight={setHeight}
           audioOutput={audioOutput}
           displayResolution={displayResolution}
+          mute
         />
         {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
       </div>

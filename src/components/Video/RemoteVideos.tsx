@@ -1,13 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
 import { SoraDemoState } from "@/slice";
-import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 import ConnectionStatusBar from "./ConnectionStatusBar";
 import JitterButter from "./JitterBuffer";
+import Video from "./Video";
 import VolumeVisualizer from "./VolumeVisualizer";
 
 interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
@@ -84,80 +84,6 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   );
 };
 
-type VideoElementProps = {
-  stream: MediaStream;
-  setHeight: Dispatch<SetStateAction<number>>;
-  mute: boolean;
-  audioOutput: string;
-  displayResolution: SoraDemoState["displayResolution"];
-};
-const VideoElement: React.FC<VideoElementProps> = (props) => {
-  const { stream, setHeight, mute, audioOutput, displayResolution } = props;
-  const videoRef = useRef<CustomHTMLVideoElement>(null);
-  const videoSize = getVideoSizeByResolution(displayResolution);
-  // 映像のサイズが小さすぎる場合にサイズを固定するためのハック
-  const [videoWidth, setVideoWidth] = useState<number>(videoSize.width);
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setHeight(entry.contentRect.height);
-        if (entry.contentRect.width < 10) {
-          setVideoWidth(300);
-        } else {
-          setVideoWidth(0);
-        }
-      }
-    });
-    if (videoRef.current) {
-      resizeObserver.observe(videoRef.current);
-    }
-    return () => {
-      resizeObserver.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    if (videoRef.current) {
-      if (mute) {
-        videoRef.current.muted = true;
-      }
-      // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
-      // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
-      // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
-      stream.getVideoTracks().forEach((track) => {
-        track.enabled = false;
-      });
-      videoRef.current.onloadedmetadata = (_) => {
-        stream.getVideoTracks().forEach((track) => {
-          track.enabled = true;
-        });
-        if (videoRef.current && (videoRef.current.offsetWidth < 10 || videoRef.current.offsetHeight < 10)) {
-          setVideoWidth(300);
-        }
-      };
-      videoRef.current.srcObject = stream;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stream]);
-  if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
-    videoRef.current.setSinkId(audioOutput);
-  }
-  return (
-    <video
-      autoPlay
-      playsInline
-      controls
-      ref={videoRef}
-      width={0 < videoWidth ? videoWidth : undefined}
-      height={0 < videoSize.height ? videoSize.height : undefined}
-    />
-  );
-};
-
-const VideoElementMemo = React.memo((props: VideoElementProps) => {
-  return <VideoElement {...props} />;
-});
-
 type RemoteVideoProps = {
   stream: MediaStream;
   multistream: boolean;
@@ -209,7 +135,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
       </div>
       <div className={"d-flex flex-wrap align-items-start overflow-hidden" + (focused ? " spotlight-focused" : "")}>
         <div className="d-flex flex-nowrap align-items-start">
-          <VideoElementMemo
+          <Video
             stream={props.stream}
             setHeight={setHeight}
             mute={mute}
