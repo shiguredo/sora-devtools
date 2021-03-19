@@ -6,6 +6,9 @@ export const VIDEO_CODEC_TYPES = ["", "VP8", "VP9", "H264", "H265", "AV1"] as co
 
 export const VIDEO_BIT_RATES = [
   "",
+  "10",
+  "30",
+  "50",
   "100",
   "300",
   "500",
