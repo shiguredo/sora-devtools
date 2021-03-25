@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] package を更新する
+    - next: 10.0.2 -> 10.0.9
 - [ADD] 映像枠の width/height 固定機能を全ページに追加する
     - @yuitowest
 - [ADD] jitter buffer delay を画面上に表示する機能を追加する
