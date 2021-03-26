@@ -22,6 +22,9 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       });
     });
     if (videoRef.current) {
+      if (audioOutput && stream && stream.getAudioTracks().length > 0) {
+        videoRef.current.setSinkId(audioOutput);
+      }
       resizeObserver.observe(videoRef.current);
     }
     return () => {
@@ -51,7 +54,11 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       };
 
       videoRef.current.srcObject = stream;
+      if (audioOutput && stream.getAudioTracks().length > 0) {
+        videoRef.current.setSinkId(audioOutput);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stream]);
 
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
@@ -63,7 +70,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       autoPlay
       playsInline
       controls
-      muted
+      muted={mute}
       ref={videoRef}
       width={0 < videoSize.width ? videoSize.width : undefined}
       height={0 < videoSize.height ? videoSize.height : undefined}

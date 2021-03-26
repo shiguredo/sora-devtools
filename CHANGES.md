@@ -31,6 +31,11 @@
     - @yuitowest
 - [UPDATE] camera/mic の on/off を Sora helpers を使うように修正する
 
+## 2020.6.3
+
+- [FIX] audioOutput に設定したデバイスが使用されない問題を修正する
+    - @yuitowest
+
 ## 2020.6.2
 
 - [FIX] sora-js-sdk のバージョンを 2020.6.2 に更新する
