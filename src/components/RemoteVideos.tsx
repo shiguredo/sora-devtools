@@ -31,6 +31,9 @@ const VideoElement: React.FC<VideoElementProps> = (props) => {
         videoRef.current.muted = true;
       }
       videoRef.current.srcObject = stream;
+      if (audioOutput && stream && stream.getAudioTracks().length > 0) {
+        videoRef.current.setSinkId(audioOutput);
+      }
       resizeObserver.observe(videoRef.current);
     }
     return () => {
