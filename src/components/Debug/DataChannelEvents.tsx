@@ -1,6 +1,8 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import Message from "@/components/Debug/Message";
+import { SoraDemoState } from "@/slice";
 import { DataChannelMessage } from "@/utils";
 
 type CollapsePushProps = {
@@ -13,10 +15,11 @@ const CollapseMessage: React.FC<CollapsePushProps> = (props) => {
   return <Message title={title} timestamp={timestamp} description={data === null || data === undefined ? "" : data} defaultShow />;
 };
 
-const DataChannelMessages: React.FC<{messages: DataChannelMessage[]}> = (props) => {
+const DetaChannelEvents: React.FC = () => {
+  const DataChannelEvents = useSelector((state: SoraDemoState) => state.dataChannelEvents);
   return (
     <>
-      {props.messages.map((message, index) => {
+      {DataChannelEvents.map((message, index) => {
         const key = `${message.timestamp}-${index}`;
         return <CollapseMessage key={key} ariaControls={key} message={message} />;
       })}
@@ -24,4 +27,4 @@ const DataChannelMessages: React.FC<{messages: DataChannelMessage[]}> = (props) 
   );
 };
 
-export default DataChannelMessages;
+export default DetaChannelEvents;

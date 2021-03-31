@@ -54,7 +54,10 @@ export type SoraDemoState = {
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
-  dataChannelMessages: DataChannelMessage[];
+  dataChannelEvents: DataChannelMessage[];
+  dataChannelMessages: {
+    [key: string]: DataChannelMessage[];
+  };
   debug: boolean;
   debugType: DebugType;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
@@ -124,7 +127,8 @@ const initialState: SoraDemoState = {
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
-  dataChannelMessages: [],
+  dataChannelEvents: [],
+  dataChannelMessages: {},
   debug: false,
   debugType: "log",
   displayResolution: "",
@@ -209,7 +213,16 @@ const slice = createSlice({
       state.channelId = action.payload;
     },
     setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
-      state.dataChannelMessages.push(action.payload);
+      if (action.payload.type === "ondatachannel" && !Object.keys(state.dataChannelMessages).includes(action.payload.label)) {
+        state.dataChannelMessages[action.payload.label] = [];
+      }
+      if (action.payload.type === "send" || action.payload.type === "onmessage") {
+        if (Array.isArray(state.dataChannelMessages[action.payload.label])) {
+          state.dataChannelMessages[action.payload.label].push(action.payload);
+        }
+      } else {
+        state.dataChannelEvents.push(action.payload);
+      }
     },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
