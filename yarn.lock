@@ -2510,7 +2510,7 @@ slice-ansi@^4.0.0:
 
 sora-js-sdk@shiguredo/sora-js-sdk#feature/data-channel:
   version "2021.1.0-canary.1"
-  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/d35f364211cad34068a8ae0242fb4c876f2596e2"
+  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/9d623a5e3db96286339a165d132db06905c24e06"
 
 source-map@0.7.3:
   version "0.7.3"
