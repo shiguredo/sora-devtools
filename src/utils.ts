@@ -132,7 +132,7 @@ export type DataChannelMessage = {
   type: string;
   data?: {
     [x: string]: unknown;
-  } | null;
+  } | string | null;
 };
 
 // 画面表示する message の Type
