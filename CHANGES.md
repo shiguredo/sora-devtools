@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] spotlight_focus_rid / spotlight_unfocus_rid を form から指定できるようにする
+    - @yuitowest
 - [UPDATE] package を更新する
     - next: 10.0.2 -> 10.0.9
 - [ADD] 映像枠の width/height 固定機能を全ページに追加する
