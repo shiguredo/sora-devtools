@@ -31,7 +31,9 @@ import FormResolution from "@/components/Form/Resolution";
 import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
 import FormSimulcastRid from "@/components/Form/SimulcastRid";
 import FormSpotlight from "@/components/Form/Spotlight";
+import FormSpotlightFocusRid from "@/components/Form/SpotlightFocusRid";
 import FormSpotlightNumber from "@/components/Form/SpotlightNumber";
+import FormSpotlightUnfocusRid from "@/components/Form/SpotlightUnfocusRid";
 import FormVideo from "@/components/Form/Video";
 import FormVideoBitRate from "@/components/Form/VideoBitRate";
 import FormVideoCodecType from "@/components/Form/VideoCodecType";
@@ -84,6 +86,8 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.resolution ? <FormResolution /> : null}
         {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
         {props.enabledParameters.simulcastRid ? <FormSimulcastRid /> : null}
+        {props.enabledParameters.spotlightFocusRid ? <FormSpotlightFocusRid /> : null}
+        {props.enabledParameters.spotlightUnfocusRid ? <FormSpotlightUnfocusRid /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.audio ? <FormAudio /> : null}

@@ -72,6 +72,12 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.spotlightNumber) {
       parameters.push(`spotlightNumber=${state.spotlightNumber}`);
     }
+    if (props.enabledParameters.spotlightFocusRid) {
+      parameters.push(`spotlightFocusRid=${state.spotlightFocusRid}`);
+    }
+    if (props.enabledParameters.spotlightUnfocusRid) {
+      parameters.push(`spotlightUnfocusRid=${state.spotlightUnfocusRid}`);
+    }
     if (props.enabledParameters.video) {
       parameters.push(`video=${state.video}`);
     }

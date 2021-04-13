@@ -20,6 +20,8 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   signalingNotifyMetadata: true,
   video: true,
   spotlightNumber: true,
+  spotlightFocusRid: true,
+  spotlightUnfocusRid: true,
 };
 
 const SpotlightRecvonly: React.FC = () => {

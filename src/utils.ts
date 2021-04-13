@@ -9,6 +9,7 @@ import {
   MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
+  SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -78,7 +79,9 @@ export type EnabledParameters = {
   signalingNotifyMetadata?: boolean;
   simulcastRid?: boolean;
   spotlight?: boolean;
+  spotlightFocusRid?: boolean;
   spotlightNumber?: boolean;
+  spotlightUnfocusRid?: boolean;
   video?: boolean;
   videoBitRate?: boolean;
   videoCodecType?: boolean;
@@ -220,6 +223,13 @@ export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[n
   return (SPOTLIGHTS as readonly string[]).indexOf(spotlight) >= 0;
 }
 
+// SpotlightFocusRid / SpotlightUnfocusRid の Type Guard
+export function isSpotlightFocusRid(
+  spotlightFocusRid: string
+): spotlightFocusRid is typeof SPOTLIGHT_FOCUS_RIDS[number] {
+  return (SPOTLIGHT_FOCUS_RIDS as readonly string[]).indexOf(spotlightFocusRid) >= 0;
+}
+
 // SimulcastQuality の Type Guard
 export function isSimulcastRid(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
   return (SIMULCAST_RID as readonly string[]).indexOf(simulcastRid) >= 0;
@@ -255,7 +265,9 @@ export type QueryStringParameters = {
   showStats: boolean;
   signalingNotifyMetadata: string;
   spotlight: typeof SPOTLIGHTS[number];
+  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
+  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   simulcastRid: typeof SIMULCAST_RID[number];
   resolution: typeof RESOLUTIONS[number];
   video: boolean;
@@ -291,6 +303,8 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     signalingNotifyMetadata,
     spotlight,
     spotlightNumber,
+    spotlightFocusRid,
+    spotlightUnfocusRid,
     simulcastRid,
     resolution,
     video,
@@ -364,6 +378,12 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
     queryStringParameters.spotlightNumber = spotlightNumber;
+  }
+  if (typeof spotlightFocusRid === "string" && isSpotlightFocusRid(spotlightFocusRid)) {
+    queryStringParameters.spotlightFocusRid = spotlightFocusRid;
+  }
+  if (typeof spotlightUnfocusRid === "string" && isSpotlightFocusRid(spotlightUnfocusRid)) {
+    queryStringParameters.spotlightUnfocusRid = spotlightUnfocusRid;
   }
   if (typeof resolution === "string" && isResolution(resolution)) {
     queryStringParameters.resolution = resolution;

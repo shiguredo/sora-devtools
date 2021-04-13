@@ -33,6 +33,8 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   videoCodecType: true,
   videoInput: true,
   spotlightNumber: true,
+  spotlightFocusRid: true,
+  spotlightUnfocusRid: true,
 };
 
 const SpotlightSendrecv: React.FC = () => {
