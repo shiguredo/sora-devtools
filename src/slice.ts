@@ -10,6 +10,7 @@ import {
   MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
+  SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -98,6 +99,8 @@ export type SoraDemoState = {
   };
   spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
+  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
+  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
@@ -159,6 +162,8 @@ const initialState: SoraDemoState = {
   simulcastRid: "",
   spotlight: "2",
   spotlightNumber: "",
+  spotlightFocusRid: "",
+  spotlightUnfocusRid: "",
   spotlightConnectionIds: {},
   focusedSpotlightConnectionIds: {},
   video: true,
@@ -276,6 +281,12 @@ const slice = createSlice({
     },
     setSpotlightNumber: (state, action: PayloadAction<typeof SPOTLIGHT_NUMBERS[number]>) => {
       state.spotlightNumber = action.payload;
+    },
+    setSpotlightFocusRid: (state, action: PayloadAction<typeof SPOTLIGHT_FOCUS_RIDS[number]>) => {
+      state.spotlightFocusRid = action.payload;
+    },
+    setSpotlightUnfocusRid: (state, action: PayloadAction<typeof SPOTLIGHT_FOCUS_RIDS[number]>) => {
+      state.spotlightUnfocusRid = action.payload;
     },
     setVideo: (state, action: PayloadAction<boolean>) => {
       state.video = action.payload;
@@ -625,7 +636,9 @@ function createConnectOptions(
     | "signalingNotifyMetadata"
     | "simulcastRid"
     | "spotlight"
+    | "spotlightFocusRid"
     | "spotlightNumber"
+    | "spotlightUnfocusRid"
     | "video"
     | "videoBitRate"
     | "videoCodecType"
@@ -667,6 +680,12 @@ function createConnectOptions(
     const parsedSpotlightNumber = parseInt(pickedState.spotlightNumber);
     if (parsedSpotlight === true && parsedSpotlightNumber) {
       connectionOptions.spotlightNumber = parsedSpotlightNumber;
+    }
+    if (connectionOptions.spotlight === true && pickedState.spotlightFocusRid) {
+      connectionOptions.spotlightFocusRid = pickedState.spotlightFocusRid;
+    }
+    if (connectionOptions.spotlight === true && pickedState.spotlightUnfocusRid) {
+      connectionOptions.spotlightUnfocusRid = pickedState.spotlightUnfocusRid;
     }
   }
   if (simulcast) {
@@ -730,6 +749,8 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       simulcastRid: "",
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
+      spotlightFocusRid: state.spotlightFocusRid,
+      spotlightUnfocusRid: state.spotlightUnfocusRid,
       video: state.video,
       videoBitRate: state.videoBitRate,
       videoCodecType: state.videoCodecType,
@@ -800,6 +821,8 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
+      spotlightFocusRid: state.spotlightFocusRid,
+      spotlightUnfocusRid: state.spotlightUnfocusRid,
       video: state.video,
       videoBitRate: state.videoBitRate,
       videoCodecType: state.videoCodecType,
@@ -863,6 +886,8 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
+      spotlightFocusRid: state.spotlightFocusRid,
+      spotlightUnfocusRid: state.spotlightUnfocusRid,
       video: state.video,
       videoBitRate: state.videoBitRate,
       videoCodecType: state.videoCodecType,
@@ -1146,6 +1171,18 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.spotlightNumber,
     queryStringParameters.spotlightNumber
   );
+  setInitialState<SoraDemoState["spotlightFocusRid"]>(
+    dispatch,
+    slice.actions.setSpotlightFocusRid,
+    pageInitialParameters.spotlightFocusRid,
+    queryStringParameters.spotlightFocusRid
+  );
+  setInitialState<SoraDemoState["spotlightUnfocusRid"]>(
+    dispatch,
+    slice.actions.setSpotlightUnfocusRid,
+    pageInitialParameters.spotlightUnfocusRid,
+    queryStringParameters.spotlightUnfocusRid
+  );
   setInitialState<SoraDemoState["video"]>(
     dispatch,
     slice.actions.setVideo,
@@ -1315,7 +1352,9 @@ export const {
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,
   setSpotlight,
+  setSpotlightFocusRid,
   setSpotlightNumber,
+  setSpotlightUnfocusRid,
   setVideo,
   setVideoBitRate,
   setVideoCodecType,
