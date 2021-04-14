@@ -2509,8 +2509,8 @@ slice-ansi@^4.0.0:
     is-fullwidth-code-point "^3.0.0"
 
 sora-js-sdk@shiguredo/sora-js-sdk#feature/data-channel:
-  version "2021.1.0-canary.1"
-  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/c09594c6e5877f8e4083e5eba49d8ba86e775ea9"
+  version "2021.1.0-canary.2"
+  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/b6cbac57ab35d3cac2df7de545aba082d671c9b3"
 
 source-map@0.7.3:
   version "0.7.3"
