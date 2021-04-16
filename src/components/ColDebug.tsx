@@ -2,7 +2,6 @@ import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
-import DebugDataChannelEvents from "@/components/Debug/DataChannelEvents";
 import DebugDataChannelMessages from "@/components/Debug/DataChannelMessages";
 import DebugLogMessages from "@/components/Debug/LogMessages";
 import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
@@ -11,7 +10,7 @@ import DebugStats from "@/components/Debug/Stats";
 import { setDebugType, SoraDemoState } from "@/slice";
 
 const ColDebug: React.FC = () => {
-  const { debug, debugType, dataChannelMessages } = useSelector((state: SoraDemoState) => state);
+  const { debug, debugType } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   if (!debug) {
     return null;
@@ -36,16 +35,9 @@ const ColDebug: React.FC = () => {
         <Tab eventKey="stats" title="Stats">
           <DebugStats />
         </Tab>
-        <Tab eventKey="datachannelevent" title="DCEvent">
-          <DebugDataChannelEvents />
+        <Tab eventKey="datachannel" title="DataChannel">
+          <DebugDataChannelMessages />
         </Tab>
-        {Object.keys(dataChannelMessages).map((dataChannelLabel) => {
-          return (
-            <Tab key={dataChannelLabel} eventKey={`datachannel${dataChannelLabel}`} title={`DCMessage[${dataChannelLabel}]`}>
-              <DebugDataChannelMessages messages={dataChannelMessages[dataChannelLabel]} />
-            </Tab>
-          );
-        })}
       </Tabs>
     </div>
   );

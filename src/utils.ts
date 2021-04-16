@@ -130,9 +130,19 @@ export type DataChannelMessage = {
   id: number | null;
   label: string;
   type: string;
-  data?: {
-    [x: string]: unknown;
-  } | string | null;
+  data: {
+    binaryType: RTCDataChannel["binaryType"];
+    bufferedAmount: RTCDataChannel["bufferedAmount"];
+    bufferedAmountLowThreshold: RTCDataChannel["bufferedAmountLowThreshold"];
+    id: RTCDataChannel["id"];
+    label: RTCDataChannel["label"];
+    maxPacketLifeTime: RTCDataChannel["maxPacketLifeTime"];
+    maxRetransmits: RTCDataChannel["maxRetransmits"];
+    negotiated: RTCDataChannel["negotiated"];
+    ordered: RTCDataChannel["ordered"];
+    protocol: RTCDataChannel["protocol"];
+    readyState: RTCDataChannel["readyState"];
+  };
 };
 
 // 画面表示する message の Type
