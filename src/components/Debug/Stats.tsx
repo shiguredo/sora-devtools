@@ -21,7 +21,7 @@ const DebugGetStats: React.FC = () => {
   return (
     <>
       {statsReport.map((stats) => {
-        return <Log key={stats.id} {...stats as RTCStatsWithIndexSignature} />;
+        return <Log key={stats.id} {...(stats as RTCStatsWithIndexSignature)} />;
       })}
     </>
   );
