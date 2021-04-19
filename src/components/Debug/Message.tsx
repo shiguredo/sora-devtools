@@ -48,10 +48,10 @@ type Props = {
   title: string;
   description: string | number | Record<string, unknown>;
   defaultShow?: boolean;
-  titleColor?: string;
+  label?: JSX.Element | null;
 };
 const Message: React.FC<Props> = (props) => {
-  const { defaultShow, description, title, timestamp, titleColor } = props;
+  const { defaultShow, description, title, timestamp, label } = props;
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
   return (
@@ -60,7 +60,8 @@ const Message: React.FC<Props> = (props) => {
         <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
           <i className={show ? "arrow-bottom" : "arrow-right"} />{" "}
           {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
-          <span style={titleColor ? { color: titleColor } : {}}>{title}</span>
+          {label}
+          {title}
         </a>
         <div className="border-left">
           <ButtonCopyLog text={JSON.stringify(description, null, 2)} />

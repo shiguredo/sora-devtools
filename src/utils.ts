@@ -145,6 +145,15 @@ export type DataChannelMessage = {
   };
 };
 
+// Debug signaling message の Type
+export type SignalingMessage = {
+  timestamp: number;
+  type: string;
+  transportType?: "websocket" | "datachannel";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
+};
+
 // 画面表示する message の Type
 export type AlertMessage = {
   timestamp: number;

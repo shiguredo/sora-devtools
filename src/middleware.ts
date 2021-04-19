@@ -13,7 +13,15 @@ const middleware = [
       ignoredPaths: ["soraContents", "fakeContents"],
     },
     immutableCheck: {
-      ignoredPaths: ["soraContents", "fakeContents"],
+      ignoredPaths: [
+        "soraContents",
+        "fakeContents",
+        "dataChannelMessages",
+        "logMessages",
+        "notifyMessages",
+        "pushMessages",
+        "signalingMessages",
+      ],
     },
   }),
 ];

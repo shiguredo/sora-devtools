@@ -6,6 +6,7 @@ import DebugDataChannelMessages from "@/components/Debug/DataChannelMessages";
 import DebugLogMessages from "@/components/Debug/LogMessages";
 import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
 import DebugPushMessages from "@/components/Debug/PushMessages";
+import DebugSignalingMessages from "@/components/Debug/SignalingMessages";
 import DebugStats from "@/components/Debug/Stats";
 import { setDebugType, SoraDemoState } from "@/slice";
 
@@ -25,6 +26,9 @@ const ColDebug: React.FC = () => {
       <Tabs id="debug-tab" defaultActiveKey={debugType} onSelect={onSelect}>
         <Tab eventKey="log" title="Log">
           <DebugLogMessages />
+        </Tab>
+        <Tab eventKey="signaling" title="Signaling">
+          <DebugSignalingMessages />
         </Tab>
         <Tab eventKey="notify" title="Notfiy">
           <DebugNotifyMessages />

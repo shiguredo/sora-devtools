@@ -35,6 +35,7 @@ import {
   parseQueryString,
   parseSpotlight,
   PushMessage,
+  SignalingMessage,
   SoraDemoMediaDevices,
   SoraNotifyMessage,
   SoraPushMessage,
@@ -93,7 +94,7 @@ export type SoraDemoState = {
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
-  signalingMessages: unknown[];
+  signalingMessages: SignalingMessage[];
   simulcastRid: typeof SIMULCAST_RID[number];
   spotlightConnectionIds: {
     [key: string]: string;
@@ -234,6 +235,9 @@ const slice = createSlice({
     },
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
+    },
+    setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
+      state.signalingMessages.push(action.payload);
     },
     setEnabledSignalingNotifyMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledSignalingNotifyMetadata = action.payload;
@@ -630,36 +634,35 @@ function setSoraCallbacks(
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
   });
   sora.on("datachannel", (event) => {
-    if (!event.currentTarget) {
-      return;
-    }
-    let target = event.currentTarget as RTCDataChannel;
-    if (event.type === "datachannel") {
-      target = (event as RTCDataChannelEvent).channel;
-    }
-    const message: DataChannelMessage = {
+    const message = {
       timestamp: new Date().getTime(),
-      id: target.id,
-      label: target.label,
+      id: event.id,
+      label: event.label,
       type: event.type,
       data: {
-        binaryType: target.binaryType,
-        bufferedAmount: target.bufferedAmount,
-        bufferedAmountLowThreshold: target.bufferedAmountLowThreshold,
-        id: target.id,
-        label: target.label,
-        maxPacketLifeTime: target.maxPacketLifeTime,
-        maxRetransmits: target.maxRetransmits,
-        negotiated: target.negotiated,
-        ordered: target.ordered,
-        protocol: target.protocol,
-        readyState: target.readyState,
+        binaryType: event.binaryType,
+        bufferedAmount: event.bufferedAmount,
+        bufferedAmountLowThreshold: event.bufferedAmountLowThreshold,
+        id: event.id,
+        label: event.label,
+        maxPacketLifeTime: event.maxPacketLifeTime,
+        maxRetransmits: event.maxRetransmits,
+        negotiated: event.negotiated,
+        ordered: event.ordered,
+        protocol: event.protocol,
+        readyState: event.readyState,
       },
     };
     dispatch(slice.actions.setDataChannelMessage(message));
   });
   sora.on("signaling", (event) => {
-    console.log(event);
+    const message = {
+      timestamp: new Date().getTime(),
+      transportType: event.transportType,
+      type: event.type,
+      data: event.data,
+    };
+    dispatch(slice.actions.setSignalingMessage(message));
   });
 }
 

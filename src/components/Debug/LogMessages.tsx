@@ -5,17 +5,21 @@ import Message from "@/components/Debug/Message";
 import { SoraDemoState } from "@/slice";
 import { LogMessage } from "@/utils";
 
-const CollapseLog: React.FC<LogMessage> = (props) => {
+const Collapse: React.FC<LogMessage> = (props) => {
   const { message, timestamp } = props;
   return <Message title={message.title} timestamp={timestamp} description={JSON.parse(message.description)} />;
 };
+
+const Log = React.memo((props: LogMessage) => {
+  return <Collapse {...props} />;
+});
 
 const LogMessages: React.FC = () => {
   const { logMessages } = useSelector((state: SoraDemoState) => state);
   return (
     <>
       {logMessages.map((log) => {
-        return <CollapseLog key={log.message.title + log.timestamp} {...log} />;
+        return <Log key={log.message.title + log.timestamp} {...log} />;
       })}
     </>
   );
