@@ -18,14 +18,14 @@ const Label: React.FC<{ label: string; datachannelId: number | null }> = (props)
   const color = Object.keys(DATA_CHANNEL_COLORS).includes(label) ? DATA_CHANNEL_COLORS[label] : undefined;
   return (
     <span style={color ? { color: color } : {}}>
-      [{label}]{datachannelId ? `[${datachannelId}]` : null}
+      [{label}]{datachannelId !== null ? `[${datachannelId}]` : null}
     </span>
   );
 };
 
 const Collapse: React.FC<DataChannelMessage> = (props) => {
   const { timestamp, id, label, type, data } = props;
-  const title = `[${label}][${id}] ${type}`;
+  const title = `${type}`;
   const labelComponent = <Label label={label} datachannelId={id} />;
   return (
     <Message
