@@ -1,5 +1,6 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
-import Sora, { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber } from "sora-js-sdk";
+import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber } from "sora-js-sdk";
+import Sora from "sora-js-sdk";
 
 import {
   AUDIO_BIT_RATES,
@@ -24,6 +25,7 @@ import {
   createFakeMediaStream,
   createSignalingURL,
   createVideoConstraints,
+  DataChannelMessage,
   DebugType,
   drawFakeCanvas,
   Json,
@@ -33,6 +35,7 @@ import {
   parseQueryString,
   parseSpotlight,
   PushMessage,
+  SignalingMessage,
   SoraDemoMediaDevices,
   SoraNotifyMessage,
   SoraPushMessage,
@@ -53,6 +56,7 @@ export type SoraDemoState = {
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
+  dataChannelMessages: DataChannelMessage[];
   debug: boolean;
   debugType: DebugType;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
@@ -90,6 +94,7 @@ export type SoraDemoState = {
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
+  signalingMessages: SignalingMessage[];
   simulcastRid: typeof SIMULCAST_RID[number];
   spotlightConnectionIds: {
     [key: string]: string;
@@ -122,6 +127,7 @@ const initialState: SoraDemoState = {
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
+  dataChannelMessages: [],
   debug: false,
   debugType: "log",
   displayResolution: "",
@@ -159,6 +165,7 @@ const initialState: SoraDemoState = {
   resolution: "",
   showStats: false,
   signalingNotifyMetadata: "",
+  signalingMessages: [],
   simulcastRid: "",
   spotlight: "2",
   spotlightNumber: "",
@@ -205,6 +212,9 @@ const slice = createSlice({
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload;
     },
+    setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
+      state.dataChannelMessages.push(action.payload);
+    },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
     },
@@ -225,6 +235,9 @@ const slice = createSlice({
     },
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
+    },
+    setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
+      state.signalingMessages.push(action.payload);
     },
     setEnabledSignalingNotifyMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledSignalingNotifyMetadata = action.payload;
@@ -619,6 +632,37 @@ function setSoraCallbacks(
     dispatch(slice.actions.setLocalMediaStream(null));
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
+  });
+  sora.on("datachannel", (event) => {
+    const message = {
+      timestamp: new Date().getTime(),
+      id: event.id,
+      label: event.label,
+      type: event.type,
+      data: {
+        binaryType: event.binaryType,
+        bufferedAmount: event.bufferedAmount,
+        bufferedAmountLowThreshold: event.bufferedAmountLowThreshold,
+        id: event.id,
+        label: event.label,
+        maxPacketLifeTime: event.maxPacketLifeTime,
+        maxRetransmits: event.maxRetransmits,
+        negotiated: event.negotiated,
+        ordered: event.ordered,
+        protocol: event.protocol,
+        readyState: event.readyState,
+      },
+    };
+    dispatch(slice.actions.setDataChannelMessage(message));
+  });
+  sora.on("signaling", (event) => {
+    const message = {
+      timestamp: new Date().getTime(),
+      transportType: event.transportType,
+      type: event.type,
+      data: event.data,
+    };
+    dispatch(slice.actions.setSignalingMessage(message));
   });
 }
 

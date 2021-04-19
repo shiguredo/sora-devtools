@@ -22,6 +22,9 @@ const Description: React.FC<DescriptionProps> = (props) => {
     <>
       {Object.keys(description).map((key) => {
         const message = ((m) => {
+          if (key === "sdp") {
+            return m as string;
+          }
           if (typeof m === "string") {
             return JSON.stringify(m);
           }
@@ -44,10 +47,12 @@ type Props = {
   timestamp: number | null;
   title: string;
   description: string | number | Record<string, unknown>;
+  defaultShow?: boolean;
+  label?: JSX.Element | null;
 };
 const Message: React.FC<Props> = (props) => {
-  const { description, title, timestamp } = props;
-  const [show, setShow] = useState(false);
+  const { defaultShow, description, title, timestamp, label } = props;
+  const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
   return (
     <div className="border border-light rounded my-2 bg-dark">
@@ -55,6 +60,7 @@ const Message: React.FC<Props> = (props) => {
         <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
           <i className={show ? "arrow-bottom" : "arrow-right"} />{" "}
           {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
+          {label}&nbsp;
           {title}
         </a>
         <div className="border-left">

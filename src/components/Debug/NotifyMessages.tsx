@@ -13,12 +13,16 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
   return <Message title={notify.message.event_type} timestamp={notify.timestamp} description={notify.message} />;
 };
 
+const Log = React.memo((props: CollapseNotifyProps) => {
+  return <CollapseNotify {...props} />;
+});
+
 const NotifyMessages: React.FC = () => {
   const { notifyMessages } = useSelector((state: SoraDemoState) => state);
   return (
     <>
       {notifyMessages.map((notify) => {
-        return <CollapseNotify key={notify.message.type + notify.timestamp} notify={notify} />;
+        return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
       })}
     </>
   );
