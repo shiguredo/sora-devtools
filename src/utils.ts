@@ -163,7 +163,7 @@ export type AlertMessage = {
 };
 
 // Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "push" | "stats" | "datachannel";
+export type DebugType = "log" | "notify" | "push" | "stats" | "datachannel" | "signaling";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
