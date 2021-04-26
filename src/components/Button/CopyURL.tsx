@@ -90,6 +90,10 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.videoInput) {
       parameters.push(`videoInput=${state.videoInput}`);
     }
+    if (props.enabledParameters.dataChannel) {
+      parameters.push(`dataChannelSignaling=${state.dataChannelSignaling}`);
+      parameters.push(`ignoreDisconnectWebSocket=${state.ignoreDisconnectWebSocket}`);
+    }
     parameters.push(`debug=${state.debug}`);
     copy2clipboard(`${location.origin}${location.pathname}?${parameters.join("&")}`);
   };

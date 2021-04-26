@@ -16,14 +16,17 @@ import FormAudioOutput from "@/components/Form/AudioOutput";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormChannelId from "@/components/Form/ChannelId";
 import FormClientId from "@/components/Form/ClientId";
+import FormDataChannelSignaling from "@/components/Form/DataChannelSignaling";
 import FormDisplayResolution from "@/components/Form/DisplayResolution";
 import FormE2EE from "@/components/Form/E2EE";
 import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
 import FormEnabledClientId from "@/components/Form/EnabledClientId";
+import FormEnabledDataChannel from "@/components/Form/EnabledDataChannel";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
 import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
 import FormFrameRate from "@/components/Form/FrameRate";
+import FormIgnoreDisconnectWebSocket from "@/components/Form/IgnoreDisconnectWebSocket";
 import FormMediaType from "@/components/Form/MediaType";
 import FormMetadata from "@/components/Form/Metadata";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
@@ -53,19 +56,21 @@ type Props = {
 const ColDemo: React.FC<Props> = (props) => {
   const debug = useSelector((state: SoraDemoState) => state.debug);
   const enabledClientId = useSelector((state: SoraDemoState) => state.enabledClientId);
+  const enabledDataChannel = useSelector((state: SoraDemoState) => state.enabledDataChannel);
   const enabledMetadata = useSelector((state: SoraDemoState) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useSelector((state: SoraDemoState) => state.enabledSignalingNotifyMetadata);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
+      <div className="form-row align-items-center">{props.enabledParameters.mediaType ? <FormMediaType /> : null}</div>
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.clientId ? <FormEnabledClientId /> : null}
         {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}
         {props.enabledParameters.signalingNotifyMetadata ? <FormEnabledSignalingNotifyMetadata /> : null}
+        {props.enabledParameters.dataChannel ? <FormEnabledDataChannel /> : null}
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
-        {props.enabledParameters.mediaType ? <FormMediaType /> : null}
         {props.enabledParameters.e2ee ? <FormE2EE /> : null}
       </div>
       <div className="form-row align-items-center">
@@ -77,6 +82,14 @@ const ColDemo: React.FC<Props> = (props) => {
       <div className="form-row align-items-center">
         {props.enabledParameters.signalingNotifyMetadata && enabledSignalingNotifyMetadata ? (
           <FormSignalingNotifyMetadata />
+        ) : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.dataChannel && enabledDataChannel ? (
+          <>
+            <FormDataChannelSignaling />
+            <FormIgnoreDisconnectWebSocket />
+          </>
         ) : null}
       </div>
       <div className="form-row align-items-center">
