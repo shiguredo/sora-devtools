@@ -5,9 +5,11 @@ import Sora from "sora-js-sdk";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DATA_CHANNEL_SIGNALING,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
+  IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
@@ -59,12 +61,14 @@ export type SoraDemoState = {
   dataChannelMessages: DataChannelMessage[];
   debug: boolean;
   debugType: DebugType;
+  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
   enabledCamera: boolean;
   enabledClientId: boolean;
+  enabledDataChannel: boolean;
   enabledMetadata: boolean;
   enabledMic: boolean;
   enabledSignalingNotifyMetadata: boolean;
@@ -84,6 +88,7 @@ export type SoraDemoState = {
     prevStatsReport: RTCStats[];
     statsReport: RTCStats[];
   };
+  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   logMessages: LogMessage[];
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
@@ -130,10 +135,12 @@ const initialState: SoraDemoState = {
   dataChannelMessages: [],
   debug: false,
   debugType: "log",
+  dataChannelSignaling: "",
   displayResolution: "",
   e2ee: false,
   echoCancellation: true,
   echoCancellationType: "",
+  enabledDataChannel: false,
   enabledCamera: false,
   enabledClientId: false,
   enabledMetadata: false,
@@ -155,6 +162,7 @@ const initialState: SoraDemoState = {
     prevStatsReport: [],
     statsReport: [],
   },
+  ignoreDisconnectWebSocket: "",
   logMessages: [],
   mediaType: "getUserMedia",
   metadata: "",
@@ -215,6 +223,9 @@ const slice = createSlice({
     setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
       state.dataChannelMessages.push(action.payload);
     },
+    setDataChannelSignaling: (state, action: PayloadAction<typeof DATA_CHANNEL_SIGNALING[number]>) => {
+      state.dataChannelSignaling = action.payload;
+    },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
     },
@@ -233,8 +244,14 @@ const slice = createSlice({
     setEnabledClientId: (state, action: PayloadAction<boolean>) => {
       state.enabledClientId = action.payload;
     },
+    setEnabledDataChannel: (state, action: PayloadAction<boolean>) => {
+      state.enabledDataChannel = action.payload;
+    },
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
+    },
+    setIgnoreDisconnectWebSocket: (state, action: PayloadAction<typeof IGNORE_DISCONNECT_WEBSOCKET[number]>) => {
+      state.ignoreDisconnectWebSocket = action.payload;
     },
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
       state.signalingMessages.push(action.payload);
@@ -674,9 +691,12 @@ function createConnectOptions(
     | "audioBitRate"
     | "audioCodecType"
     | "clientId"
+    | "dataChannelSignaling"
     | "enabledClientId"
     | "e2ee"
+    | "enabledDataChannel"
     | "enabledSignalingNotifyMetadata"
+    | "ignoreDisconnectWebSocket"
     | "signalingNotifyMetadata"
     | "simulcastRid"
     | "spotlight"
@@ -744,6 +764,19 @@ function createConnectOptions(
   if (pickedState.enabledClientId) {
     connectionOptions.clientId = pickedState.clientId;
   }
+  if (pickedState.enabledDataChannel) {
+    if (pickedState.dataChannelSignaling === "true") {
+      connectionOptions.dataChannelSignaling = true;
+    } else if (pickedState.dataChannelSignaling === "false") {
+      connectionOptions.dataChannelSignaling = false;
+    }
+
+    if (pickedState.ignoreDisconnectWebSocket === "true") {
+      connectionOptions.ignoreDisconnectWebSocket = true;
+    } else if (pickedState.ignoreDisconnectWebSocket === "false") {
+      connectionOptions.ignoreDisconnectWebSocket = false;
+    }
+  }
   return connectionOptions;
 }
 
@@ -786,9 +819,12 @@ export const sendonlyConnectSora = (options?: SendonlyOption) => async (
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
       clientId: state.clientId,
+      dataChannelSignaling: state.dataChannelSignaling,
       enabledClientId: state.enabledClientId,
+      enabledDataChannel: state.enabledDataChannel,
       e2ee: state.e2ee,
       enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
       signalingNotifyMetadata: state.signalingNotifyMetadata,
       simulcastRid: "",
       spotlight: state.spotlight,
@@ -858,9 +894,12 @@ export const recvonlyConnectSora = (options?: RecvonlyOption) => async (
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
       clientId: state.clientId,
+      dataChannelSignaling: state.dataChannelSignaling,
       enabledClientId: state.enabledClientId,
+      enabledDataChannel: state.enabledDataChannel,
       e2ee: state.e2ee,
       enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
       signalingNotifyMetadata: state.signalingNotifyMetadata,
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
@@ -923,9 +962,12 @@ export const sendrecvConnectSora = (options?: SendrecvOption) => async (
       audioBitRate: state.audioBitRate,
       audioCodecType: state.audioCodecType,
       clientId: state.clientId,
+      dataChannelSignaling: state.dataChannelSignaling,
       enabledClientId: state.enabledClientId,
+      enabledDataChannel: state.enabledDataChannel,
       e2ee: state.e2ee,
       enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+      ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
       signalingNotifyMetadata: state.signalingNotifyMetadata,
       simulcastRid: state.simulcastRid,
       spotlight: state.spotlight,
@@ -1257,6 +1299,18 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     pageInitialParameters.mute,
     queryStringParameters.mute
   );
+  setInitialState<SoraDemoState["dataChannelSignaling"]>(
+    dispatch,
+    slice.actions.setDataChannelSignaling,
+    pageInitialParameters.dataChannelSignaling,
+    queryStringParameters.dataChannelSignaling
+  );
+  setInitialState<SoraDemoState["ignoreDisconnectWebSocket"]>(
+    dispatch,
+    slice.actions.setIgnoreDisconnectWebSocket,
+    pageInitialParameters.ignoreDisconnectWebSocket,
+    queryStringParameters.ignoreDisconnectWebSocket
+  );
   // googCpuOveruseDetection は query string からのみ受け付ける
   if (queryStringParameters.googCpuOveruseDetection !== undefined) {
     dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
@@ -1290,6 +1344,13 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
       pageInitialParameters.signalingNotifyMetadata,
       queryStringParameters.signalingNotifyMetadata
     );
+  }
+  // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
+  if (
+    queryStringParameters.dataChannelSignaling !== undefined ||
+    queryStringParameters.ignoreDisconnectWebSocket !== undefined
+  ) {
+    dispatch(slice.actions.setEnabledDataChannel(true));
   }
   dispatch(slice.actions.setInitialFakeContents());
   // e2ee が有効な場合は e2ee 初期化処理をする
@@ -1373,16 +1434,19 @@ export const {
   setAutoGainControl,
   setClientId,
   setChannelId,
+  setDataChannelSignaling,
   setDebug,
   setDebugType,
   setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledDataChannel,
   setEnabledClientId,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setFakeVolume,
   setFrameRate,
+  setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
   setLogMessages,
   setMediaType,

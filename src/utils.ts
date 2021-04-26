@@ -3,9 +3,11 @@ import queryString from "query-string";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DATA_CHANNEL_SIGNALING,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
+  IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
@@ -67,6 +69,7 @@ export type EnabledParameters = {
   autoGainControl?: boolean;
   clientId?: boolean;
   channelId?: boolean;
+  dataChannel?: boolean;
   displayResolution?: boolean;
   e2ee?: boolean;
   echoCancellation?: boolean;
@@ -270,6 +273,20 @@ export function isMediaType(mediaType: string): mediaType is typeof MEDIA_TYPES[
   return (MEDIA_TYPES as readonly string[]).indexOf(mediaType) >= 0;
 }
 
+// DataChannelSignaling の Type Guard
+export function isDataChannelSignaling(
+  dataChannelSignaling: string
+): dataChannelSignaling is typeof DATA_CHANNEL_SIGNALING[number] {
+  return (DATA_CHANNEL_SIGNALING as readonly string[]).indexOf(dataChannelSignaling) >= 0;
+}
+
+// IgnoreDisconnectWebSocket の Type Guard
+export function isIgnoreDisconnectWebSocket(
+  ignoreDisconnectWebSocket: string
+): ignoreDisconnectWebSocket is typeof IGNORE_DISCONNECT_WEBSOCKET[number] {
+  return (IGNORE_DISCONNECT_WEBSOCKET as readonly string[]).indexOf(ignoreDisconnectWebSocket) >= 0;
+}
+
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = {
   audio: boolean;
@@ -278,8 +295,9 @@ export type QueryStringParameters = {
   audioInput: string;
   audioOutput: string;
   autoGainControl: boolean;
-  clientId: string;
   channelId: string;
+  clientId: string;
+  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   debug: boolean;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   e2ee: boolean;
@@ -288,18 +306,19 @@ export type QueryStringParameters = {
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
   googCpuOveruseDetection: boolean;
+  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
-  noiseSuppression: boolean;
   mute: boolean;
+  noiseSuppression: boolean;
+  resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
+  simulcastRid: typeof SIMULCAST_RID[number];
   spotlight: typeof SPOTLIGHTS[number];
   spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
   spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  simulcastRid: typeof SIMULCAST_RID[number];
-  resolution: typeof RESOLUTIONS[number];
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
@@ -318,6 +337,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     channelId,
     clientId,
     debug,
+    dataChannelSignaling,
     displayResolution,
     e2ee,
     echoCancellation,
@@ -325,6 +345,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     fakeVolume,
     frameRate,
     googCpuOveruseDetection,
+    ignoreDisconnectWebSocket,
     mediaType,
     metadata,
     noiseSuppression,
@@ -438,6 +459,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof mute === "boolean") {
     queryStringParameters.mute = mute;
+  }
+  const stringDataChannelSignaling = String(dataChannelSignaling);
+  if (isDataChannelSignaling(stringDataChannelSignaling)) {
+    queryStringParameters.dataChannelSignaling = stringDataChannelSignaling;
+  }
+  const stringIgnoreDisconnectWebSocket = String(ignoreDisconnectWebSocket);
+  if (isIgnoreDisconnectWebSocket(stringIgnoreDisconnectWebSocket)) {
+    queryStringParameters.ignoreDisconnectWebSocket = stringIgnoreDisconnectWebSocket;
   }
   return queryStringParameters;
 }
