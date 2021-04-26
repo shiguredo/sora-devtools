@@ -13,6 +13,7 @@
 
 - [ADD] DataChannel 対応を追加する
     - Debug Mode 時に Signaling タブと DataChannel タブを追加する
+    - dataChannelSignaling / ignoreDisconnectWebSocket を from から指定できるようにする
     - @yuitowest
 - [ADD] spotlight_focus_rid / spotlight_unfocus_rid を form から指定できるようにする
     - @yuitowest
