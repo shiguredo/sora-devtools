@@ -14,6 +14,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   channelId: true,
   clientId: true,
+  dataChannel: true,
   displayResolution: true,
   e2ee: true,
   metadata: true,

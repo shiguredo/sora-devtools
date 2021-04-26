@@ -18,6 +18,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   autoGainControl: true,
   channelId: true,
   clientId: true,
+  dataChannel: true,
   displayResolution: true,
   e2ee: true,
   echoCancellation: true,
