@@ -42,7 +42,7 @@ const VideoBox: React.FC = () => {
   return (
     <>
       <div className="d-flex">
-        <div className={"d-flex flex-nowrap align-items-start" + (focused ? " spotlight-focused" : "")}>
+        <div className={"d-flex flex-nowrap align-items-start video-wrapper" + (focused ? " spotlight-focused" : "")}>
           <Video
             stream={localMediaStream}
             setHeight={setHeight}
