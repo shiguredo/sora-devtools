@@ -1346,7 +1346,10 @@ export const setInitialParameter = (pageInitialParameters: Partial<SoraDemoState
     );
   }
   // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
-  if (queryStringParameters.dataChannelSignaling !== undefined || queryStringParameters.ignoreDisconnectWebSocket !== undefined) {
+  if (
+    queryStringParameters.dataChannelSignaling !== undefined ||
+    queryStringParameters.ignoreDisconnectWebSocket !== undefined
+  ) {
     dispatch(slice.actions.setEnabledDataChannel(true));
   }
   dispatch(slice.actions.setInitialFakeContents());
