@@ -184,8 +184,7 @@ footer .btn {
 }
 
 .spotlight-focused {
-  outline: 5px solid var(--primary);
-  outline-offset: -5px;
+  border: 5px solid var(--primary);
   border-radius: 5px;
 }
 
