@@ -1,11 +1,34 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setMediaType, SoraDemoState } from "@/slice";
+import { setFakeVolume, setMediaType, SoraDemoState } from "@/slice";
 import { isMediaType } from "@/utils";
 
+const VolumeRange: React.FC = () => {
+  const fakeVolume = useSelector((state: SoraDemoState) => state.fakeVolume);
+  const dispatch = useDispatch();
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setFakeVolume(event.target.value));
+  };
+  return (
+    <div className="form-check ml-2">
+      <input
+        id="fakeVolume"
+        className="fake-volume-range"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={fakeVolume}
+        onChange={onChange}
+      />
+    </div>
+  );
+};
+
 const GetDisplayMedia: React.FC = () => {
-  const { soraContents, mediaType } = useSelector((state: SoraDemoState) => state);
+  const soraContents = useSelector((state: SoraDemoState) => state.soraContents);
+  const mediaType = useSelector((state: SoraDemoState) => state.mediaType);
   const disabled = soraContents.sora !== null;
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -60,6 +83,7 @@ const GetDisplayMedia: React.FC = () => {
           fakeMedia
         </label>
       </div>
+      {mediaType === "fakeMedia" ? <VolumeRange /> : null}
     </div>
   );
 };

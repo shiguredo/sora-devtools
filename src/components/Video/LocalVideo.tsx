@@ -1,38 +1,15 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { setFakeVolume, SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/slice";
 import { ConnectType } from "@/utils";
 
 import ConnectionStatusBar from "./ConnectionStatusBar";
 import Video from "./Video";
 import VolumeVisualizer from "./VolumeVisualizer";
 
-const VolumeRange: React.FC = () => {
-  const { fakeVolume } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setFakeVolume(event.target.value));
-  };
-  return (
-    <div>
-      <input
-        id="fakeVolume"
-        className="fake-volume-range"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={fakeVolume}
-        onChange={onChange}
-      />
-    </div>
-  );
-};
-
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
-  const mediaType = useSelector((state: SoraDemoState) => state.mediaType);
   const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
   const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
   const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
@@ -42,7 +19,7 @@ const VideoBox: React.FC = () => {
   return (
     <>
       <div className="d-flex">
-        <div className={"d-flex flex-nowrap align-items-start" + (focused ? " spotlight-focused" : "")}>
+        <div className={"d-flex flex-nowrap align-items-start video-wrapper" + (focused ? " spotlight-focused" : "")}>
           <Video
             stream={localMediaStream}
             setHeight={setHeight}
@@ -53,7 +30,6 @@ const VideoBox: React.FC = () => {
           {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
         </div>
       </div>
-      {mediaType === "fakeMedia" ? <VolumeRange /> : null}
     </>
   );
 };

@@ -178,6 +178,11 @@ footer .btn {
   margin-left: 0.25rem;
 }
 
+.video-wrapper {
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
 .spotlight-focused {
   border: 5px solid var(--primary);
   border-radius: 5px;
