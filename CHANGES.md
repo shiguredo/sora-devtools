@@ -10,7 +10,10 @@
     - バグ修正
 
 ## develop
-
+- [UPDATE] Spotlight 関連のデザイン修正をする
+    - Spotlight focused の枠が表示された場合に Vidoe box 全体のサイズが変わらないようにする
+    - Fake volume meter の位置を Form MediaType の横に移動する
+    - @yuitowest
 - [ADD] DataChannel 対応を追加する
     - Debug Mode 時に Signaling タブと DataChannel タブを追加する
     - dataChannelSignaling / ignoreDisconnectWebSocket を from から指定できるようにする
