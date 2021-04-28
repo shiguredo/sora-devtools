@@ -43,6 +43,11 @@ footer .btn {
   padding: 5px;
 }
 
+video {
+  min-width: 80px;
+  min-height: 60px;
+}
+
 .nav-tabs .nav-link {
   color: #ffffff;
 }

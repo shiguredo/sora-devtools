@@ -14,7 +14,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props;
   const videoRef = useRef<CustomHTMLVideoElement>(null);
   const videoSize = getVideoSizeByResolution(displayResolution);
-  // 映像のサイズが小さすぎる場合にサイズを固定するためのハック
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       entries.forEach((entry) => {
@@ -66,7 +65,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   }
   return (
     <video
-      id="local-video"
       autoPlay
       playsInline
       controls
