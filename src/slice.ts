@@ -572,7 +572,7 @@ function setSoraCallbacks(
       })
     );
   });
-  sora.on("notify", (message: SoraNotifyMessage) => {
+  sora.on("notify", (message: SoraNotifyMessage, transportType: string) => {
     if (
       message.event_type === "spotlight.changed" &&
       typeof message.spotlight_id === "string" &&
@@ -599,14 +599,16 @@ function setSoraCallbacks(
       slice.actions.setNotifyMessages({
         timestamp: new Date().getTime(),
         message: message,
+        transportType: transportType,
       })
     );
   });
-  sora.on("push", (message: SoraPushMessage) => {
+  sora.on("push", (message: SoraPushMessage, transportType: string) => {
     dispatch(
       slice.actions.setPushMessages({
         timestamp: new Date().getTime(),
         message: message,
+        transportType: transportType,
       })
     );
   });

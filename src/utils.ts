@@ -111,6 +111,7 @@ export type SoraNotifyMessage = {
 export type NotifyMessage = {
   timestamp: number;
   message: SoraNotifyMessage;
+  transportType: string;
 };
 
 // Sora on push callback の引数 Type
@@ -125,6 +126,7 @@ export type SoraPushMessage = {
 export type PushMessage = {
   timestamp: number;
   message: SoraPushMessage;
+  transportType: string;
 };
 
 // Debug data channel message の Type
