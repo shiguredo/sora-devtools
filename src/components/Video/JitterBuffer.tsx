@@ -23,7 +23,7 @@ function mediaStreamStatsReportFilter(
     });
   }
   return statsReport.find((stats) => {
-    if (!stats.id.match(/^RTCMediaStreamTrack/)) {
+    if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
       return false;
     }
     if ("trackIdentifier" in stats) {

@@ -15,7 +15,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const videoRef = useRef<CustomHTMLVideoElement>(null);
   const videoSize = getVideoSizeByResolution(displayResolution);
   useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
+    const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       entries.forEach((entry) => {
         setHeight(entry.contentRect.height);
       });
