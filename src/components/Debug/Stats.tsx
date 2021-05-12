@@ -5,7 +5,7 @@ import Message from "@/components/Debug/Message";
 import { SoraDemoState } from "@/slice";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
-  [x: string]: string | number;
+  [x: string]: string | number | undefined;
 }
 
 const Collapse: React.FC<RTCStatsWithIndexSignature> = (props) => {
