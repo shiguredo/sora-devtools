@@ -611,9 +611,11 @@ export function createFakeMediaConstraints(
 }
 
 // Fake 用の MediaStream を生成
-export function createFakeMediaStream(
-  parameters: FakeMediaStreamConstraints
-): { canvas: CustomHTMLCanvasElement; stream: MediaStream; gainNode: GainNode } {
+export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
+  canvas: CustomHTMLCanvasElement;
+  stream: MediaStream;
+  gainNode: GainNode;
+} {
   const stream = new MediaStream();
   const canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
   // Firefox では getContext を呼ばないと captureStream が失敗する
