@@ -115,9 +115,17 @@ video {
   transform: rotate(45deg);
 }
 
+.arrow-right.disabled {
+  opacity: 0.1;
+}
+
 .debug-title {
   cursor: pointer;
   color: #ffffff !important;
+}
+
+.debug-title.disabled {
+  pointer-events: none;
 }
 
 .debug-message {

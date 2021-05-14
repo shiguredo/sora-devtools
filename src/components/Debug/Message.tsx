@@ -9,6 +9,9 @@ type DescriptionProps = {
 };
 const Description: React.FC<DescriptionProps> = (props) => {
   const { description } = props;
+  if (description === null || description === undefined) {
+    return null;
+  }
   if (typeof description !== "object") {
     return (
       <div className="debug-message">
@@ -54,17 +57,18 @@ const Message: React.FC<Props> = (props) => {
   const { defaultShow, description, title, timestamp, label } = props;
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
+  const disabled = description === null || description === undefined;
   return (
     <div className="border border-light rounded my-2 bg-dark">
       <div className="d-flex justify-content-between align-items-center text-break">
-        <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-          <i className={show ? "arrow-bottom" : "arrow-right"} />{" "}
+        <a className={`debug-title ${disabled ? "disabled" : ""}`} onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
+          <i className={`${show ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`} />{" "}
           {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
           {label}&nbsp;
           {title}
         </a>
         <div className="border-left">
-          <ButtonCopyLog text={JSON.stringify(description, null, 2)} />
+          <ButtonCopyLog text={JSON.stringify(description, null, 2)} disabled={disabled} />
         </div>
       </div>
       <Collapse in={show}>
