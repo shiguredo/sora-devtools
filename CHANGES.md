@@ -10,6 +10,9 @@
     - バグ修正
 
 ## develop
+
+- [UPDATE] GitHub Actions で利用する Node.js バージョン 10 を落とす
+- [UPDATE] GitHub Actions で利用する Node.js バージョン 16 を追加する
 - [UPDATE] Spotlight 関連のデザイン修正をする
     - Spotlight focused の枠が表示された場合に Vidoe box 全体のサイズが変わらないようにする
     - Fake volume meter の位置を Form MediaType の横に移動する
@@ -39,6 +42,7 @@
 - [UPDATE] spotlight focused / spotlight unfocused 時に映像枠を表示する
     - @yuitowest
 - [UPDATE] camera/mic の on/off を Sora helpers を使うように修正する
+    - @yuitowest
 
 ## 2020.6.3
 
