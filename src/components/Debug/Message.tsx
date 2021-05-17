@@ -61,7 +61,12 @@ const Message: React.FC<Props> = (props) => {
   return (
     <div className="border border-light rounded my-2 bg-dark">
       <div className="d-flex justify-content-between align-items-center text-break">
-        <a className={`debug-title ${disabled ? "disabled" : ""}`} onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
+        <a
+          className={`debug-title ${disabled ? "disabled" : ""}`}
+          onClick={() => setShow(!show)}
+          aria-controls={ariaControls}
+          aria-expanded={show}
+        >
           <i className={`${show ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`} />{" "}
           {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
           {label}&nbsp;
