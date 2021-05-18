@@ -66,11 +66,9 @@ export type SoraDemoState = {
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
-  enabledCamera: boolean;
   enabledClientId: boolean;
   enabledDataChannel: boolean;
   enabledMetadata: boolean;
-  enabledMic: boolean;
   enabledSignalingNotifyMetadata: boolean;
   fakeContents: {
     worker: Worker | null;
@@ -117,6 +115,10 @@ export type SoraDemoState = {
   videoInput: string;
   videoInputDevices: MediaDeviceInfo[];
   version: string;
+  cameraDevice: boolean;
+  videoTrack: boolean;
+  micDevice: boolean;
+  audioTrack: boolean;
 };
 
 const initialState: SoraDemoState = {
@@ -141,10 +143,8 @@ const initialState: SoraDemoState = {
   echoCancellation: true,
   echoCancellationType: "",
   enabledDataChannel: false,
-  enabledCamera: false,
   enabledClientId: false,
   enabledMetadata: false,
-  enabledMic: false,
   enabledSignalingNotifyMetadata: false,
   fakeVolume: "0",
   fakeContents: {
@@ -187,6 +187,10 @@ const initialState: SoraDemoState = {
   videoInput: "",
   videoInputDevices: [],
   version: packageJSON.version,
+  cameraDevice: true,
+  videoTrack: true,
+  micDevice: true,
+  audioTrack: true,
 };
 
 const slice = createSlice({
@@ -349,13 +353,6 @@ const slice = createSlice({
         });
       }
       state.soraContents.localMediaStream = action.payload;
-      if (action.payload) {
-        state.enabledMic = action.payload.getAudioTracks().some((track) => track.enabled);
-        state.enabledCamera = action.payload.getVideoTracks().some((track) => track.enabled);
-      } else {
-        state.enabledMic = false;
-        state.enabledCamera = false;
-      }
     },
     setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
       state.soraContents.remoteMediaStreams.push(action.payload);
@@ -370,12 +367,6 @@ const slice = createSlice({
     },
     removeAllRemoteMediaStreams: (state) => {
       state.soraContents.remoteMediaStreams = [];
-    },
-    setEnabledMic: (state, action: PayloadAction<boolean>) => {
-      state.enabledMic = action.payload;
-    },
-    setEnabledCamera: (state, action: PayloadAction<boolean>) => {
-      state.enabledCamera = action.payload;
     },
     setAudioInputDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
       state.audioInputDevices = action.payload;
@@ -1376,61 +1367,6 @@ export const setInitialParameter =
         return;
       }
     }
-  };
-
-export const toggleEnabledMic =
-  () =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    const {
-      audio,
-      audioInput,
-      autoGainControl,
-      enabledMic,
-      echoCancellation,
-      echoCancellationType,
-      noiseSuppression,
-      soraContents,
-    } = getState();
-    if (enabledMic) {
-      if (soraContents.localMediaStream) {
-        Sora.helpers.stopAudioMediaDevice(soraContents.localMediaStream);
-      }
-    } else {
-      if (soraContents.localMediaStream && soraContents.sora?.pc) {
-        const audioConstraints = createAudioConstraints({
-          audio: audio,
-          autoGainControl: autoGainControl,
-          noiseSuppression: noiseSuppression,
-          echoCancellation: echoCancellation,
-          echoCancellationType: echoCancellationType,
-          audioInput: audioInput,
-        });
-        await Sora.helpers.startAudioMediaDevice(soraContents.localMediaStream, soraContents.sora.pc, audioConstraints);
-      }
-    }
-    dispatch(slice.actions.setEnabledMic(!enabledMic));
-  };
-
-export const toggleEnabledCamera =
-  () =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    const { enabledCamera, frameRate, resolution, soraContents, video, videoInput } = getState();
-    if (enabledCamera) {
-      if (soraContents.localMediaStream) {
-        Sora.helpers.stopVideoMediaDevice(soraContents.localMediaStream);
-      }
-    } else {
-      if (soraContents.localMediaStream && soraContents.sora?.pc) {
-        const videoConstraints = createVideoConstraints({
-          video: video,
-          frameRate: frameRate,
-          resolution: resolution,
-          videoInput: videoInput,
-        });
-        await Sora.helpers.startVideoMediaDevice(soraContents.localMediaStream, soraContents.sora.pc, videoConstraints);
-      }
-    }
-    dispatch(slice.actions.setEnabledCamera(!enabledCamera));
   };
 
 export const {

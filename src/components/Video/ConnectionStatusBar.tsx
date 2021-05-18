@@ -1,7 +1,5 @@
 import React from "react";
 
-import ButtonCamera from "@/components/Button/Camera";
-import ButtonMic from "@/components/Button/Mic";
 import IconClipboard from "@/components/IconClipboard";
 import { copy2clipboard } from "@/utils";
 
@@ -25,19 +23,9 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
   );
 };
 
-const MediaButton: React.FC = () => {
-  return (
-    <>
-      <ButtonMic />
-      <ButtonCamera />
-    </>
-  );
-};
-
 type Props = {
   connectionId: string | null;
   clientId?: string | null;
-  showMediaButton?: boolean;
   spotlightId?: string;
 };
 const ConnectionStatusBar: React.FC<Props> = (props) => {
@@ -48,7 +36,6 @@ const ConnectionStatusBar: React.FC<Props> = (props) => {
         <TextBox text={props.clientId} />
       ) : null}
       {props.spotlightId ? <TextBox text={props.spotlightId} /> : null}
-      {props.showMediaButton ? <MediaButton /> : null}
     </div>
   );
 };

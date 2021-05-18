@@ -45,11 +45,7 @@ const LocalVideo: React.FC<LocalVideoProps> = (props) => {
       <div className="col-auto">
         <div className="video-status mb-1">
           {connectionId !== null || clientId !== null ? (
-            <ConnectionStatusBar
-              connectionId={connectionId}
-              clientId={clientId}
-              showMediaButton={props.connectType !== "recvonly"}
-            />
+            <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           ) : null}
         </div>
         {props.connectType !== "recvonly" ? <VideoBox /> : null}
