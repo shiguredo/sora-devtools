@@ -10,7 +10,7 @@ const EnabledDataChannel: React.FC = () => {
     dispatch(setEnabledDataChannel(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="form-check">
         <input
           id="enabledDataChannel"
@@ -20,7 +20,7 @@ const EnabledDataChannel: React.FC = () => {
           checked={enabledDataChannel}
           onChange={onChange}
         />
-        <label className="form-check-label mr-1" htmlFor="enabledDataChannel">
+        <label className="form-check-label" htmlFor="enabledDataChannel">
           dataChannel
         </label>
       </div>

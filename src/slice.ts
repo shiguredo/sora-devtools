@@ -459,6 +459,30 @@ const slice = createSlice({
     setShowStats: (state, action: PayloadAction<boolean>) => {
       state.showStats = action.payload;
     },
+    setCameraDevice: (state, action: PayloadAction<boolean>) => {
+      state.cameraDevice = action.payload;
+      // TODO(yuito) camera device を削除する
+    },
+    setMicDevice: (state, action: PayloadAction<boolean>) => {
+      state.micDevice = action.payload;
+      // TODO(yuito) mic device を削除する
+    },
+    setAudioTrack: (state, action: PayloadAction<boolean>) => {
+      state.audioTrack = action.payload;
+      if (state.soraContents.localMediaStream) {
+        for(const track of state.soraContents.localMediaStream.getAudioTracks()) {
+          track.enabled = state.audioTrack;
+        }
+      }
+    },
+    setVideoTrack: (state, action: PayloadAction<boolean>) => {
+      state.videoTrack = action.payload;
+      if (state.soraContents.localMediaStream) {
+        for(const track of state.soraContents.localMediaStream.getVideoTracks()) {
+          track.enabled = state.videoTrack;
+        }
+      }
+    },
   },
 });
 
@@ -491,22 +515,29 @@ function setAlertMessagesAndLogMessages(
 async function createMediaStream(dispatch: Dispatch, state: SoraDemoState): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   if (state.mediaType === "getDisplayMedia") {
+    if (!state.cameraDevice) {
+      return [new MediaStream(), null];
+    }
     const constraints = {
       video: true,
     };
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    return [await (navigator.mediaDevices as SoraDemoMediaDevices).getDisplayMedia(constraints), null];
+    const stream = await (navigator.mediaDevices as SoraDemoMediaDevices).getDisplayMedia(constraints);
+    for(const track of stream.getVideoTracks()) {
+      track.enabled = state.videoTrack;
+    }
+    return [stream, null];
   }
   if (state.mediaType === "fakeMedia" && state.fakeContents.worker) {
     const constraints = createFakeMediaConstraints({
-      audio: state.audio,
-      video: state.video,
+      audio: state.micDevice,
+      video: state.cameraDevice,
       frameRate: state.frameRate,
       resolution: state.resolution,
       volume: state.fakeVolume,
     });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    const { canvas, stream, gainNode } = createFakeMediaStream(constraints);
+    const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints);
     state.fakeContents.worker.onmessage = (event) => {
       const data = event.data;
       if (data.type !== "update") {
@@ -515,11 +546,17 @@ async function createMediaStream(dispatch: Dispatch, state: SoraDemoState): Prom
       drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, data.counter.toString());
     };
     state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
-    return [stream, gainNode];
+    for(const track of mediaStream.getVideoTracks()) {
+      track.enabled = state.videoTrack;
+    }
+    for(const track of mediaStream.getAudioTracks()) {
+      track.enabled = state.videoTrack;
+    }
+    return [mediaStream, gainNode];
   }
   const mediaStream = new MediaStream();
   const audioConstraints = createAudioConstraints({
-    audio: state.audio,
+    audio: state.micDevice,
     autoGainControl: state.autoGainControl,
     noiseSuppression: state.noiseSuppression,
     echoCancellation: state.echoCancellation,
@@ -534,7 +571,7 @@ async function createMediaStream(dispatch: Dispatch, state: SoraDemoState): Prom
     mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
   }
   const videoConstraints = createVideoConstraints({
-    video: state.video,
+    video: state.cameraDevice,
     frameRate: state.frameRate,
     resolution: state.resolution,
     videoInput: state.videoInput,
@@ -545,6 +582,12 @@ async function createMediaStream(dispatch: Dispatch, state: SoraDemoState): Prom
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
     mediaStream.addTrack(videoMediaStream.getVideoTracks()[0]);
+  }
+  for(const track of mediaStream.getVideoTracks()) {
+    track.enabled = state.videoTrack;
+  }
+  for(const track of mediaStream.getAudioTracks()) {
+    track.enabled = state.videoTrack;
   }
   return [mediaStream, null];
 }
@@ -1378,17 +1421,19 @@ export const {
   setAudioCodecType,
   setAudioInput,
   setAudioOutput,
+  setAudioTrack,
   setAutoGainControl,
-  setClientId,
+  setCameraDevice,
   setChannelId,
+  setClientId,
   setDataChannelSignaling,
   setDebug,
   setDebugType,
   setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
-  setEnabledDataChannel,
   setEnabledClientId,
+  setEnabledDataChannel,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setFakeVolume,
@@ -1398,6 +1443,7 @@ export const {
   setLogMessages,
   setMediaType,
   setMetadata,
+  setMicDevice,
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
@@ -1414,6 +1460,7 @@ export const {
   setVideoBitRate,
   setVideoCodecType,
   setVideoInput,
+  setVideoTrack,
 } = slice.actions;
 
 export default slice.reducer;

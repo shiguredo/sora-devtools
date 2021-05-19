@@ -10,7 +10,7 @@ const Audio: React.FC = () => {
     dispatch(setAudio(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="form-check">
         <input
           id="audio"
