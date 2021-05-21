@@ -245,7 +245,7 @@ video {
 }
 
 .form-sora:after {
-  content: '';
+  content: "";
   position: absolute;
   border-left: 1px solid var(--gray);
   right: -1rem;

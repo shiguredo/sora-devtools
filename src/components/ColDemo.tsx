@@ -66,7 +66,9 @@ const ColDemo: React.FC<Props> = (props) => {
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
-      <div className="form-row align-items-center py-1">{props.enabledParameters.mediaType ? <FormMediaType /> : null}</div>
+      <div className="form-row align-items-center py-1">
+        {props.enabledParameters.mediaType ? <FormMediaType /> : null}
+      </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.clientId ? <FormEnabledClientId /> : null}

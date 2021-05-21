@@ -12,8 +12,16 @@ const AudioTrack: React.FC = () => {
   return (
     <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="custom-control custom-switch">
-        <input type="checkbox" className="custom-control-input" id="audioTrack" checked={audioTrack} onChange={onChange} />
-        <label className="custom-control-label" htmlFor="audioTrack">audioTrack on/off</label>
+        <input
+          type="checkbox"
+          className="custom-control-input"
+          id="audioTrack"
+          checked={audioTrack}
+          onChange={onChange}
+        />
+        <label className="custom-control-label" htmlFor="audioTrack">
+          audioTrack on/off
+        </label>
       </div>
     </div>
   );
