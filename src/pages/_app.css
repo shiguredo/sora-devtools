@@ -237,3 +237,25 @@ video {
   color: var(--light);
   cursor: initial !important;
 }
+
+.form-sora {
+  margin-bottom: 0.25rem;
+  padding-left: 2rem !important;
+  padding-right: 0 !important;
+}
+
+.form-sora:after {
+  content: "";
+  position: absolute;
+  border-left: 1px solid var(--gray);
+  right: -1rem;
+  height: 70%;
+}
+
+.form-sora:first-child {
+  padding-left: 0.5rem !important;
+}
+
+.form-sora:last-child:after {
+  border: none;
+}

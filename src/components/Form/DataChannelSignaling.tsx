@@ -14,9 +14,9 @@ const DataChannelSignaling: React.FC = () => {
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <label className="mr-1" htmlFor="dataChannelSignaling">
-        DataChannelSignaling:
+        dataChannelSignaling:
       </label>
       <select
         id="dataChannelSignaling"

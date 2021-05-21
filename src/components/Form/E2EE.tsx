@@ -20,7 +20,7 @@ const E2EE: React.FC = () => {
     }
   }, [e2ee]);
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="form-check">
         <input id="e2ee" name="e2ee" className="form-check-input" type="checkbox" checked={e2ee} onChange={onChange} />
         <label className="form-check-label" htmlFor="e2ee">

@@ -26,8 +26,6 @@ const DownloadReport: React.FC<Props> = (props) => {
       googCpuOveruseDetection: state.googCpuOveruseDetection,
       echoCancellation: state.echoCancellation,
       echoCancellationType: state.echoCancellationType,
-      enabledCamera: state.enabledCamera,
-      enabledMic: state.enabledMic,
       frameRate: state.frameRate,
       mediaType: state.mediaType,
       noiseSuppression: state.noiseSuppression,

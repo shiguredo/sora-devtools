@@ -10,7 +10,7 @@ const EnabledMetadata: React.FC = () => {
     dispatch(setEnabledMetadata(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="form-check">
         <input
           id="enabledMetadata"
@@ -20,7 +20,7 @@ const EnabledMetadata: React.FC = () => {
           checked={enabledMetadata}
           onChange={onChange}
         />
-        <label className="form-check-label mr-1" htmlFor="enabledMetadata">
+        <label className="form-check-label" htmlFor="enabledMetadata">
           metadata
         </label>
       </div>

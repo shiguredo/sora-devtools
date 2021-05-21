@@ -10,7 +10,7 @@ const EnabledClientId: React.FC = () => {
     dispatch(setEnabledClientId(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="form-check">
         <input
           id="enabledClientId"
@@ -20,7 +20,7 @@ const EnabledClientId: React.FC = () => {
           checked={enabledClientId}
           onChange={onChange}
         />
-        <label className="form-check-label mr-1" htmlFor="enabledClientId">
+        <label className="form-check-label" htmlFor="enabledClientId">
           clientId
         </label>
       </div>

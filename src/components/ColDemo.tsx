@@ -13,7 +13,9 @@ import FormAudioBitRate from "@/components/Form/AudioBitRate";
 import FormAudioCodecType from "@/components/Form/AudioCodecType";
 import FormAudioInput from "@/components/Form/AudioInput";
 import FormAudioOutput from "@/components/Form/AudioOutput";
+import FormAudioTrack from "@/components/Form/AudioTrack";
 import FormAutoGainControl from "@/components/Form/AutoGainControl";
+import FormCameraDevice from "@/components/Form/CameraDevice";
 import FormChannelId from "@/components/Form/ChannelId";
 import FormClientId from "@/components/Form/ClientId";
 import FormDataChannelSignaling from "@/components/Form/DataChannelSignaling";
@@ -29,6 +31,7 @@ import FormFrameRate from "@/components/Form/FrameRate";
 import FormIgnoreDisconnectWebSocket from "@/components/Form/IgnoreDisconnectWebSocket";
 import FormMediaType from "@/components/Form/MediaType";
 import FormMetadata from "@/components/Form/Metadata";
+import FormMicDevice from "@/components/Form/MicDevice";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
 import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
@@ -41,6 +44,7 @@ import FormVideo from "@/components/Form/Video";
 import FormVideoBitRate from "@/components/Form/VideoBitRate";
 import FormVideoCodecType from "@/components/Form/VideoCodecType";
 import FormVideoInput from "@/components/Form/VideoInput";
+import FormVideoTrack from "@/components/Form/VideoTrack";
 import LocalVideo from "@/components/Video/LocalVideo";
 import RemoteVideos from "@/components/Video/RemoteVideos";
 import { SoraDemoState } from "@/slice";
@@ -62,7 +66,9 @@ const ColDemo: React.FC<Props> = (props) => {
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
-      <div className="form-row align-items-center">{props.enabledParameters.mediaType ? <FormMediaType /> : null}</div>
+      <div className="form-row align-items-center py-1">
+        {props.enabledParameters.mediaType ? <FormMediaType /> : null}
+      </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.channelId ? <FormChannelId /> : null}
         {props.enabledParameters.clientId ? <FormEnabledClientId /> : null}
@@ -93,6 +99,15 @@ const ColDemo: React.FC<Props> = (props) => {
         ) : null}
       </div>
       <div className="form-row align-items-center">
+        {props.enabledParameters.audio ? <FormAudio /> : null}
+        {props.enabledParameters.audioCodecType ? <FormAudioCodecType /> : null}
+        {props.enabledParameters.audioBitRate ? <FormAudioBitRate /> : null}
+        {props.enabledParameters.autoGainControl ? <FormAutoGainControl /> : null}
+        {props.enabledParameters.noiseSuppression ? <FormNoiseSuppression /> : null}
+        {props.enabledParameters.echoCancellation ? <FormEchoCancellation /> : null}
+        {props.enabledParameters.echoCancellationType ? <FormEchoCancellationType /> : null}
+      </div>
+      <div className="form-row align-items-center">
         {props.enabledParameters.video ? <FormVideo /> : null}
         {props.enabledParameters.videoCodecType ? <FormVideoCodecType /> : null}
         {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
@@ -103,19 +118,16 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.spotlightUnfocusRid ? <FormSpotlightUnfocusRid /> : null}
       </div>
       <div className="form-row align-items-center">
-        {props.enabledParameters.audio ? <FormAudio /> : null}
-        {props.enabledParameters.audioCodecType ? <FormAudioCodecType /> : null}
-        {props.enabledParameters.audioBitRate ? <FormAudioBitRate /> : null}
-        {props.enabledParameters.autoGainControl ? <FormAutoGainControl /> : null}
-        {props.enabledParameters.noiseSuppression ? <FormNoiseSuppression /> : null}
-        {props.enabledParameters.echoCancellation ? <FormEchoCancellation /> : null}
-        {props.enabledParameters.echoCancellationType ? <FormEchoCancellationType /> : null}
-      </div>
-      <div className="form-row align-items-center">
         {props.enabledParameters.audioInput ? <FormAudioInput /> : null}
-        {props.enabledParameters.videoInput ? <FormVideoInput /> : null}
         {props.enabledParameters.audioOutput ? <FormAudioOutput /> : null}
+        {props.enabledParameters.videoInput ? <FormVideoInput /> : null}
         {props.enabledParameters.displayResolution ? <FormDisplayResolution /> : null}
+      </div>
+      <div className="form-row align-items-center py-1">
+        <FormMicDevice />
+        <FormCameraDevice />
+        <FormAudioTrack />
+        <FormVideoTrack />
       </div>
       <div className="form-row align-items-center">
         <ButtonConnect

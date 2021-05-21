@@ -613,32 +613,37 @@ export function createFakeMediaConstraints(
 // Fake 用の MediaStream を生成
 export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   canvas: CustomHTMLCanvasElement;
-  stream: MediaStream;
-  gainNode: GainNode;
+  mediaStream: MediaStream;
+  gainNode: GainNode | null;
 } {
-  const stream = new MediaStream();
+  const mediaStream = new MediaStream();
   const canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
   // Firefox では getContext を呼ばないと captureStream が失敗する
   canvas.getContext("2d");
   canvas.width = parameters.width;
   canvas.height = parameters.height;
   const cancasStream = canvas.captureStream(parameters.frameRate);
-  const videoTracks = cancasStream.getTracks();
-  stream.addTrack(videoTracks[0]);
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const audioContext = new AudioContext();
-  const oscillator = audioContext.createOscillator();
-  const selectedOscillatorType = "sine";
-  oscillator.type = selectedOscillatorType;
-  const gainNode = audioContext.createGain();
-  oscillator.connect(gainNode);
-  oscillator.start(0);
-  const mediaStreamDestination = audioContext.createMediaStreamDestination();
-  gainNode.connect(mediaStreamDestination);
-  const audioTracks = mediaStreamDestination.stream.getTracks();
-  stream.addTrack(audioTracks[0]);
-  gainNode.gain.setValueAtTime(parameters.volume, 0);
-  return { canvas, stream, gainNode };
+  if (parameters.video) {
+    const videoTracks = cancasStream.getTracks();
+    mediaStream.addTrack(videoTracks[0]);
+  }
+  let gainNode = null;
+  if (parameters.audio) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContext();
+    const oscillator = audioContext.createOscillator();
+    const selectedOscillatorType = "sine";
+    oscillator.type = selectedOscillatorType;
+    gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    oscillator.start(0);
+    const mediaStreamDestination = audioContext.createMediaStreamDestination();
+    gainNode.connect(mediaStreamDestination);
+    const audioTracks = mediaStreamDestination.stream.getTracks();
+    mediaStream.addTrack(audioTracks[0]);
+    gainNode.gain.setValueAtTime(parameters.volume, 0);
+  }
+  return { canvas, mediaStream, gainNode };
 }
 
 // Fake mediastream を生成するための canvas に書き込みをする
