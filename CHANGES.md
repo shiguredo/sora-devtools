@@ -11,7 +11,10 @@
 
 ## develop
 
+- [CHANGE] 接続/切断の最中には connect / disconnect ボタンを押せないようにする
+    - @yuitowest
 - [UPDATE] Debug log 表示で詳細が存在しない場合は折りたたみを表示しないように修正する
+    - @yuitowest
 - [UPDATE] GitHub Actions で利用する Node.js バージョン 10 を落とす
 - [UPDATE] GitHub Actions で利用する Node.js バージョン 16 を追加する
 - [UPDATE] Spotlight 関連のデザイン修正をする
