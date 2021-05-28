@@ -1,9 +1,10 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { disconnectSora } from "@/slice";
+import { disconnectSora, SoraDemoState } from "@/slice";
 
 const Disconnect: React.FC = () => {
+  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
   const dispatch = useDispatch();
   const disconnect = (): void => {
     dispatch(disconnectSora());
@@ -16,6 +17,7 @@ const Disconnect: React.FC = () => {
         name="disconnect"
         defaultValue="disconnect"
         onClick={disconnect}
+        disabled={connectionStatus === "disconnecting" || connectionStatus === "connecting"}
       />
     </div>
   );

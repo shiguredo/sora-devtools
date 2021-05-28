@@ -78,6 +78,7 @@ export type SoraDemoState = {
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
   soraContents: {
+    connectionStatus: "disconnected" | "disconnecting" | "connected" | "connecting";
     sora: ConnectionPublisher | ConnectionSubscriber | null;
     connectionId: string | null;
     clientId: string | null;
@@ -154,6 +155,7 @@ const initialState: SoraDemoState = {
   },
   frameRate: "",
   soraContents: {
+    connectionStatus: "disconnected",
     sora: null,
     connectionId: null,
     clientId: null,
@@ -345,6 +347,9 @@ const slice = createSlice({
         state.soraContents.connectionId = null;
         state.soraContents.clientId = null;
       }
+    },
+    setSoraConnectionStatus: (state, action: PayloadAction<SoraDemoState["soraContents"]["connectionStatus"]>) => {
+      state.soraContents.connectionStatus = action.payload;
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
@@ -835,6 +840,7 @@ type SendonlyOption = {
 export const sendonlyConnectSora =
   (options?: SendonlyOption) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
     const state = getState();
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect();
@@ -888,6 +894,7 @@ export const sendonlyConnectSora =
         track.stop();
       });
       dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
     await setStatsReport(dispatch, sora);
@@ -902,6 +909,7 @@ export const sendonlyConnectSora =
     dispatch(slice.actions.setSora(sora));
     dispatch(slice.actions.setLocalMediaStream(mediaStream));
     dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+    dispatch(slice.actions.setSoraConnectionStatus("connected"));
   };
 
 // Sora との視聴のみ接続
@@ -913,6 +921,7 @@ type RecvonlyOption = {
 export const recvonlyConnectSora =
   (options?: RecvonlyOption) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
     const state = getState();
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect();
@@ -954,6 +963,7 @@ export const recvonlyConnectSora =
       dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
     } catch (error) {
       dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
     await setStatsReport(dispatch, sora);
@@ -966,6 +976,7 @@ export const recvonlyConnectSora =
       }
     }, 1000);
     dispatch(slice.actions.setSora(sora));
+    dispatch(slice.actions.setSoraConnectionStatus("connected"));
   };
 
 // Sora との配信/視聴接続
@@ -976,6 +987,7 @@ type SendrecvOption = {
 export const sendrecvConnectSora =
   (options?: SendrecvOption) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
     const state = getState();
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect();
@@ -1029,6 +1041,7 @@ export const sendrecvConnectSora =
         track.stop();
       });
       dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
     await setStatsReport(dispatch, sora);
@@ -1043,15 +1056,18 @@ export const sendrecvConnectSora =
     dispatch(slice.actions.setSora(sora));
     dispatch(slice.actions.setLocalMediaStream(mediaStream));
     dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+    dispatch(slice.actions.setSoraConnectionStatus("connected"));
   };
 
 // Sora との切断処理
 export const disconnectSora =
   () =>
-  async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
     const { soraContents } = getState();
     if (soraContents.sora) {
+      dispatch(slice.actions.setSoraConnectionStatus("disconnecting"));
       await soraContents.sora.disconnect();
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
     }
   };
 
