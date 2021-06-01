@@ -847,6 +847,7 @@ export const sendonlyConnectSora =
     }
     const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
       dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     });
     const signalingURL = createSignalingURL();
@@ -994,6 +995,7 @@ export const sendrecvConnectSora =
     }
     const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
       dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     });
     const signalingURL = createSignalingURL();
@@ -1111,6 +1113,7 @@ export const updateMediaStream =
     }
     const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
       dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     });
     mediaStream.getTracks().forEach((track) => {
