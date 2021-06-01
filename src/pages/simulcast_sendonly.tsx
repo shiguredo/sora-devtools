@@ -15,7 +15,9 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioCodecType: true,
   audioInput: true,
   audioOutput: true,
+  audioTrack: true,
   autoGainControl: true,
+  cameraDevice: true,
   channelId: true,
   clientId: true,
   dataChannel: true,
@@ -26,13 +28,15 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   frameRate: true,
   mediaType: true,
   metadata: true,
-  signalingNotifyMetadata: true,
+  micDevice: true,
   noiseSuppression: true,
   resolution: true,
+  signalingNotifyMetadata: true,
   video: true,
   videoBitRate: true,
   videoCodecType: true,
   videoInput: true,
+  videoTrack: true,
 };
 
 const SimulcastSendonly: React.FC = () => {

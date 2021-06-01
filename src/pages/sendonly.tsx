@@ -15,7 +15,9 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioCodecType: true,
   audioInput: true,
   audioOutput: true,
+  audioTrack: true,
   autoGainControl: true,
+  cameraDevice: true,
   channelId: true,
   clientId: true,
   dataChannel: true,
@@ -26,6 +28,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   frameRate: true,
   mediaType: true,
   metadata: true,
+  micDevice: true,
   noiseSuppression: true,
   resolution: true,
   signalingNotifyMetadata: true,
@@ -33,6 +36,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   videoBitRate: true,
   videoCodecType: true,
   videoInput: true,
+  videoTrack: true,
 };
 
 const Sendonly: React.FC = () => {

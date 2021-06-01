@@ -66,9 +66,11 @@ export type EnabledParameters = {
   audioCodecType?: boolean;
   audioInput?: boolean;
   audioOutput?: boolean;
+  audioTrack?: boolean;
   autoGainControl?: boolean;
-  clientId?: boolean;
+  cameraDevice?: boolean;
   channelId?: boolean;
+  clientId?: boolean;
   dataChannel?: boolean;
   displayResolution?: boolean;
   e2ee?: boolean;
@@ -77,6 +79,7 @@ export type EnabledParameters = {
   frameRate?: boolean;
   mediaType?: boolean;
   metadata?: boolean;
+  micDevice?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
   signalingNotifyMetadata?: boolean;
@@ -89,6 +92,7 @@ export type EnabledParameters = {
   videoBitRate?: boolean;
   videoCodecType?: boolean;
   videoInput?: boolean;
+  videoTrack?: boolean;
 };
 
 // Debug log message の Type

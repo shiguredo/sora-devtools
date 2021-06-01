@@ -124,10 +124,10 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.displayResolution ? <FormDisplayResolution /> : null}
       </div>
       <div className="form-row align-items-center py-1">
-        <FormMicDevice />
-        <FormCameraDevice />
-        <FormAudioTrack />
-        <FormVideoTrack />
+        {props.enabledParameters.micDevice ? <FormMicDevice /> : null}
+        {props.enabledParameters.cameraDevice ? <FormCameraDevice /> : null}
+        {props.enabledParameters.audioTrack ? <FormAudioTrack /> : null}
+        {props.enabledParameters.videoTrack ? <FormVideoTrack /> : null}
       </div>
       <div className="form-row align-items-center">
         <ButtonConnect
