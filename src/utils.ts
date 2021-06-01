@@ -296,7 +296,9 @@ export type QueryStringParameters = {
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];
   audioInput: string;
   audioOutput: string;
+  audioTrack: boolean;
   autoGainControl: boolean;
+  cameraDevice: boolean;
   channelId: string;
   clientId: string;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
@@ -311,6 +313,7 @@ export type QueryStringParameters = {
   ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
+  micDevice: boolean;
   mute: boolean;
   noiseSuppression: boolean;
   resolution: typeof RESOLUTIONS[number];
@@ -325,6 +328,7 @@ export type QueryStringParameters = {
   videoBitRate: typeof VIDEO_BIT_RATES[number];
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
   videoInput: string;
+  videoTrack: boolean;
 };
 
 // クエリ文字列パーサー
@@ -335,11 +339,13 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioCodecType,
     audioInput,
     audioOutput,
+    audioTrack,
     autoGainControl,
+    cameraDevice,
     channelId,
     clientId,
-    debug,
     dataChannelSignaling,
+    debug,
     displayResolution,
     e2ee,
     echoCancellation,
@@ -350,20 +356,22 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     ignoreDisconnectWebSocket,
     mediaType,
     metadata,
-    noiseSuppression,
+    micDevice,
     mute,
+    noiseSuppression,
+    resolution,
     showStats,
     signalingNotifyMetadata,
-    spotlight,
-    spotlightNumber,
-    spotlightFocusRid,
-    spotlightUnfocusRid,
     simulcastRid,
-    resolution,
+    spotlight,
+    spotlightFocusRid,
+    spotlightNumber,
+    spotlightUnfocusRid,
     video,
     videoBitRate,
     videoCodecType,
     videoInput,
+    videoTrack,
   } = queryString.parse(location.search, { parseBooleans: true });
   const queryStringParameters: Partial<QueryStringParameters> = {};
   if (typeof audio === "boolean") {
@@ -469,6 +477,18 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const stringIgnoreDisconnectWebSocket = String(ignoreDisconnectWebSocket);
   if (isIgnoreDisconnectWebSocket(stringIgnoreDisconnectWebSocket)) {
     queryStringParameters.ignoreDisconnectWebSocket = stringIgnoreDisconnectWebSocket;
+  }
+  if (typeof micDevice === "boolean") {
+    queryStringParameters.micDevice = micDevice;
+  }
+  if (typeof cameraDevice === "boolean") {
+    queryStringParameters.cameraDevice = cameraDevice;
+  }
+  if (typeof audioTrack === "boolean") {
+    queryStringParameters.audioTrack = audioTrack;
+  }
+  if (typeof videoTrack === "boolean") {
+    queryStringParameters.videoTrack = videoTrack;
   }
   return queryStringParameters;
 }

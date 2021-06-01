@@ -1413,6 +1413,30 @@ export const setInitialParameter =
       pageInitialParameters.ignoreDisconnectWebSocket,
       queryStringParameters.ignoreDisconnectWebSocket
     );
+    setInitialState<SoraDemoState["micDevice"]>(
+      dispatch,
+      slice.actions.setMicDevice,
+      pageInitialParameters.micDevice,
+      queryStringParameters.micDevice
+    );
+    setInitialState<SoraDemoState["cameraDevice"]>(
+      dispatch,
+      slice.actions.setCameraDevice,
+      pageInitialParameters.cameraDevice,
+      queryStringParameters.cameraDevice
+    );
+    setInitialState<SoraDemoState["audioTrack"]>(
+      dispatch,
+      slice.actions.setAudioTrack,
+      pageInitialParameters.audioTrack,
+      queryStringParameters.audioTrack
+    );
+    setInitialState<SoraDemoState["videoTrack"]>(
+      dispatch,
+      slice.actions.setVideoTrack,
+      pageInitialParameters.videoTrack,
+      queryStringParameters.videoTrack
+    );
     // googCpuOveruseDetection は query string からのみ受け付ける
     if (queryStringParameters.googCpuOveruseDetection !== undefined) {
       dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
