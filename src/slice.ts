@@ -515,7 +515,30 @@ function setAlertMessagesAndLogMessages(
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
-async function createMediaStream(dispatch: Dispatch, state: SoraDemoState): Promise<[MediaStream, GainNode | null]> {
+type craeteMediaStreamPickedSttate = Pick<
+  SoraDemoState,
+  | "audio"
+  | "audioInput"
+  | "audioTrack"
+  | "autoGainControl"
+  | "cameraDevice"
+  | "echoCancellation"
+  | "echoCancellationType"
+  | "fakeContents"
+  | "fakeVolume"
+  | "frameRate"
+  | "mediaType"
+  | "micDevice"
+  | "noiseSuppression"
+  | "resolution"
+  | "video"
+  | "videoInput"
+  | "videoTrack"
+>;
+async function createMediaStream(
+  dispatch: Dispatch,
+  state: craeteMediaStreamPickedSttate
+): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   if (state.mediaType === "getDisplayMedia") {
     if (!state.video || !state.cameraDevice) {
@@ -1157,35 +1180,74 @@ export const setE2EE =
 export const setMicDevice =
   (micDevice: boolean) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    dispatch(slice.actions.setMicDevice(micDevice));
     const state = getState();
     if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
+      dispatch(slice.actions.setMicDevice(micDevice));
       return;
     }
     if (micDevice) {
-      const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+      const pickedState = {
+        audio: state.audio,
+        audioInput: state.audioInput,
+        audioTrack: state.audioTrack,
+        autoGainControl: state.autoGainControl,
+        cameraDevice: state.cameraDevice,
+        echoCancellation: state.echoCancellation,
+        echoCancellationType: state.echoCancellationType,
+        fakeContents: state.fakeContents,
+        fakeVolume: state.fakeVolume,
+        frameRate: state.frameRate,
+        mediaType: state.mediaType,
+        micDevice: micDevice,
+        noiseSuppression: state.noiseSuppression,
+        resolution: state.resolution,
+        video: state.video,
+        videoInput: state.videoInput,
+        videoTrack: state.videoTrack,
+      };
+      const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
         throw error;
       });
       if (0 < mediaStream.getAudioTracks().length) {
-        state.soraContents.sora.replaceAudioTrack(state.soraContents.localMediaStream, mediaStream.getAudioTracks()[0]);
+        await state.soraContents.sora.replaceAudioTrack(state.soraContents.localMediaStream, mediaStream.getAudioTracks()[0]);
         dispatch(slice.actions.setFakeContentsGainNode(gainNode));
       }
     } else {
       state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream);
     }
+    dispatch(slice.actions.setMicDevice(micDevice));
   };
 
 export const setCameraDevice =
   (cameraDevice: boolean) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    dispatch(slice.actions.setCameraDevice(cameraDevice));
     const state = getState();
     if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
+      dispatch(slice.actions.setCameraDevice(cameraDevice));
       return;
     }
     if (cameraDevice) {
-      const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+      const pickedState = {
+        audio: state.audio,
+        audioInput: state.audioInput,
+        audioTrack: state.audioTrack,
+        autoGainControl: state.autoGainControl,
+        cameraDevice: cameraDevice,
+        echoCancellation: state.echoCancellation,
+        echoCancellationType: state.echoCancellationType,
+        fakeContents: state.fakeContents,
+        fakeVolume: state.fakeVolume,
+        frameRate: state.frameRate,
+        mediaType: state.mediaType,
+        micDevice: state.micDevice,
+        noiseSuppression: state.noiseSuppression,
+        resolution: state.resolution,
+        video: state.video,
+        videoInput: state.videoInput,
+        videoTrack: state.videoTrack,
+      };
+      const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
         throw error;
       });
@@ -1196,6 +1258,7 @@ export const setCameraDevice =
     } else {
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream);
     }
+    dispatch(slice.actions.setCameraDevice(cameraDevice));
   };
 
 // QueryString の値とページから渡されたパラメーターを適切に action に渡すためのメソッド

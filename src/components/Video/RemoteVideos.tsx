@@ -140,7 +140,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
             audioOutput={audioOutput}
             displayResolution={displayResolution}
           />
-          <VolumeVisualizer stream={props.stream} height={height} />
+          <VolumeVisualizer micDevice stream={props.stream} height={height} />
         </div>
         <MediaStreamStatsReport stream={props.stream} />
       </div>

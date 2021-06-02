@@ -33,6 +33,7 @@ function createVolumeForeground(ctx: CanvasRenderingContext2D, canvasHeight: num
 }
 
 type VolumeVisualizerProps = {
+  micDevice: boolean;
   stream: MediaStream;
   height: number;
 };
@@ -89,6 +90,33 @@ const VolumeVisualizer: React.FC<VolumeVisualizerProps> = (props) => {
   return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
 };
 
+type MutedVolumeVisualizerProps = {
+  height: number;
+};
+const MutedVolumeVisualizer: React.FC<MutedVolumeVisualizerProps> = (props) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas === null) {
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    if (ctx === null) {
+      return;
+    }
+    ctx.clearRect(0, 0, CANVAS_WIDTH, canvas.height);
+    ctx.save();
+    // 背景のバーをレンダリングする
+    createVolumeBackground(ctx, canvas.height);
+    ctx.restore();
+  }, []);
+  return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
+};
+
 export default React.memo<VolumeVisualizerProps>((props) => {
-  return <VolumeVisualizer {...props} />;
+  if (props.micDevice && 0 < props.stream.getAudioTracks().length) {
+    return <VolumeVisualizer {...props} />;
+  }
+  return <MutedVolumeVisualizer {...props} />;
 });

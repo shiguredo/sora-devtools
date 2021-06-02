@@ -15,6 +15,7 @@ const VideoBox: React.FC = () => {
   const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
   const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
   const localMediaStream = useSelector((state: SoraDemoState) => state.soraContents.localMediaStream);
+  const micDevice = useSelector((state: SoraDemoState) => state.micDevice);
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
   return (
     <>
@@ -27,7 +28,7 @@ const VideoBox: React.FC = () => {
             displayResolution={displayResolution}
             mute
           />
-          {localMediaStream !== null ? <VolumeVisualizer stream={localMediaStream} height={height} /> : null}
+          {localMediaStream !== null ? <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} /> : null}
         </div>
       </div>
     </>
