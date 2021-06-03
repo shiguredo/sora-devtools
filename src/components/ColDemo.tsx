@@ -47,6 +47,7 @@ import FormVideoInput from "@/components/Form/VideoInput";
 import FormVideoTrack from "@/components/Form/VideoTrack";
 import LocalVideo from "@/components/Video/LocalVideo";
 import RemoteVideos from "@/components/Video/RemoteVideos";
+import ReloadDevices from "@/components/Button/ReloadDevices";
 import { SoraDemoState } from "@/slice";
 import { ConnectType, EnabledParameters } from "@/utils";
 
@@ -154,6 +155,7 @@ const ColDemo: React.FC<Props> = (props) => {
             <ButtonResetRtpStream />
           </>
         ) : null}
+        <ReloadDevices />
       </div>
       <LocalVideo connectType={props.connectType} />
       {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
