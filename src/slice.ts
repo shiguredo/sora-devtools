@@ -1210,7 +1210,10 @@ export const setMicDevice =
         throw error;
       });
       if (0 < mediaStream.getAudioTracks().length) {
-        await state.soraContents.sora.replaceAudioTrack(state.soraContents.localMediaStream, mediaStream.getAudioTracks()[0]);
+        await state.soraContents.sora.replaceAudioTrack(
+          state.soraContents.localMediaStream,
+          mediaStream.getAudioTracks()[0]
+        );
         dispatch(slice.actions.setFakeContentsGainNode(gainNode));
       }
     } else {

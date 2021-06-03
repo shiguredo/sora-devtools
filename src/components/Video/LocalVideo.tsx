@@ -28,7 +28,9 @@ const VideoBox: React.FC = () => {
             displayResolution={displayResolution}
             mute
           />
-          {localMediaStream !== null ? <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} /> : null}
+          {localMediaStream !== null ? (
+            <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} />
+          ) : null}
         </div>
       </div>
     </>
