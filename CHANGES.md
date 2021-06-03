@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] デバイス一覧を更新するボタンを作成する
+    - @yuitowest
 - [CHANGE] 接続/切断の最中には connect / disconnect ボタンを押せないようにする
     - @yuitowest
 - [UPDATE] Debug log 表示で詳細が存在しない場合は折りたたみを表示しないように修正する
