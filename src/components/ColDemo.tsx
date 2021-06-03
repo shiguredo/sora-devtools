@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import AlertMessages from "@/components/AlertMessages";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
+import ReloadDevices from "@/components/Button/ReloadDevices";
 import ButtonRequestRtpStream from "@/components/Button/RequestRtpStream";
 import ButtonResetRtpStream from "@/components/Button/ResetRtpStream";
 import ButtonStartRecording from "@/components/Button/StartRecording";
@@ -47,7 +48,6 @@ import FormVideoInput from "@/components/Form/VideoInput";
 import FormVideoTrack from "@/components/Form/VideoTrack";
 import LocalVideo from "@/components/Video/LocalVideo";
 import RemoteVideos from "@/components/Video/RemoteVideos";
-import ReloadDevices from "@/components/Button/ReloadDevices";
 import { SoraDemoState } from "@/slice";
 import { ConnectType, EnabledParameters } from "@/utils";
 
