@@ -133,32 +133,22 @@ export type PushMessage = {
   transportType: string;
 };
 
-// Debug data channel message の Type
-export type DataChannelMessage = {
+// Debug timeline message の Type
+export type TimelineMessage = {
   timestamp: number;
-  id: number | null;
-  label: string;
   type: string;
-  data: {
-    binaryType: RTCDataChannel["binaryType"];
-    bufferedAmount: RTCDataChannel["bufferedAmount"];
-    bufferedAmountLowThreshold: RTCDataChannel["bufferedAmountLowThreshold"];
-    id: RTCDataChannel["id"];
-    label: RTCDataChannel["label"];
-    maxPacketLifeTime: RTCDataChannel["maxPacketLifeTime"];
-    maxRetransmits: RTCDataChannel["maxRetransmits"];
-    negotiated: RTCDataChannel["negotiated"];
-    ordered: RTCDataChannel["ordered"];
-    protocol: RTCDataChannel["protocol"];
-    readyState: RTCDataChannel["readyState"];
-  };
+  transportType?: "websocket" | "datachannel" | "peerconnection";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
+  dataChannelId?: number | null;
+  dataChannelLabel?: string | null;
 };
 
 // Debug signaling message の Type
 export type SignalingMessage = {
   timestamp: number;
   type: string;
-  transportType?: "websocket" | "datachannel";
+  transportType?: "websocket" | "datachannel" | "peerconnection";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 };
