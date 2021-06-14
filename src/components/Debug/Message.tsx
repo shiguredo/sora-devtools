@@ -9,7 +9,7 @@ type DescriptionProps = {
 };
 const Description: React.FC<DescriptionProps> = (props) => {
   const { description } = props;
-  if (description === null || description === undefined) {
+  if (description === undefined) {
     return null;
   }
   if (typeof description !== "object") {
@@ -17,6 +17,15 @@ const Description: React.FC<DescriptionProps> = (props) => {
       <div className="debug-message">
         <div className="pl-0 col-sm-12">
           <pre>{description}</pre>
+        </div>
+      </div>
+    );
+  }
+  if (description === null) {
+    return (
+      <div className="debug-message">
+        <div className="pl-0 col-sm-12">
+          <pre>null</pre>
         </div>
       </div>
     );
@@ -57,7 +66,7 @@ const Message: React.FC<Props> = (props) => {
   const { defaultShow, description, title, timestamp, label } = props;
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
-  const disabled = description === null || description === undefined;
+  const disabled = description === undefined;
   return (
     <div className="border border-light rounded my-2 bg-dark">
       <div className="d-flex justify-content-between align-items-center text-break">

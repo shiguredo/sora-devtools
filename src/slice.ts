@@ -27,7 +27,6 @@ import {
   createFakeMediaStream,
   createSignalingURL,
   createVideoConstraints,
-  DataChannelMessage,
   DebugType,
   drawFakeCanvas,
   Json,
@@ -41,6 +40,7 @@ import {
   SoraDemoMediaDevices,
   SoraNotifyMessage,
   SoraPushMessage,
+  TimelineMessage,
 } from "@/utils";
 
 import packageJSON from "../package.json";
@@ -58,7 +58,7 @@ export type SoraDemoState = {
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
-  dataChannelMessages: DataChannelMessage[];
+  timelineMessages: TimelineMessage[];
   debug: boolean;
   debugType: DebugType;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
@@ -135,7 +135,7 @@ const initialState: SoraDemoState = {
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
-  dataChannelMessages: [],
+  timelineMessages: [],
   debug: false,
   debugType: "log",
   dataChannelSignaling: "",
@@ -226,8 +226,8 @@ const slice = createSlice({
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload;
     },
-    setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
-      state.dataChannelMessages.push(action.payload);
+    setTimelineMessage: (state, action: PayloadAction<TimelineMessage>) => {
+      state.timelineMessages.push(action.payload);
     },
     setDataChannelSignaling: (state, action: PayloadAction<typeof DATA_CHANNEL_SIGNALING[number]>) => {
       state.dataChannelSignaling = action.payload;
@@ -712,27 +712,16 @@ function setSoraCallbacks(
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
   });
-  sora.on("datachannel", (event) => {
+  sora.on("timeline", (event) => {
     const message = {
       timestamp: new Date().getTime(),
-      id: event.id,
-      label: event.label,
       type: event.type,
-      data: {
-        binaryType: event.binaryType,
-        bufferedAmount: event.bufferedAmount,
-        bufferedAmountLowThreshold: event.bufferedAmountLowThreshold,
-        id: event.id,
-        label: event.label,
-        maxPacketLifeTime: event.maxPacketLifeTime,
-        maxRetransmits: event.maxRetransmits,
-        negotiated: event.negotiated,
-        ordered: event.ordered,
-        protocol: event.protocol,
-        readyState: event.readyState,
-      },
+      data: event.data,
+      dataChannelId: event.dataChannelId,
+      dataChannelLabel: event.dataChannelLabel,
+      transportType: event.transportType,
     };
-    dispatch(slice.actions.setDataChannelMessage(message));
+    dispatch(slice.actions.setTimelineMessage(message));
   });
   sora.on("signaling", (event) => {
     const message = {
