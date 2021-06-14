@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] Debug Mode 時の DataChannel タブを Timeline タブに変更する
+    - @yuitowest
 - [CHANGE] デバイス一覧を更新するボタンを作成する
     - @yuitowest
 - [CHANGE] 接続/切断の最中には connect / disconnect ボタンを押せないようにする
