@@ -56,6 +56,8 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       if (audioOutput && stream.getAudioTracks().length > 0) {
         videoRef.current.setSinkId(audioOutput);
       }
+    } else if (videoRef.current && stream === null) {
+      videoRef.current.srcObject = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stream]);
