@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] Debug mode のコピーボタンを押した時のテキストの扱いを修正する
+    - @yuitowest
 - [ADD] Debug Mode 時の DataChannel タブを Timeline タブに変更する
     - @yuitowest
 - [CHANGE] デバイス一覧を更新するボタンを作成する
