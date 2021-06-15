@@ -82,7 +82,10 @@ const Message: React.FC<Props> = (props) => {
           {title}
         </a>
         <div className="border-left">
-          <ButtonCopyLog text={JSON.stringify(description, null, 2)} disabled={disabled} />
+          <ButtonCopyLog
+            text={typeof description === "string" ? description : JSON.stringify(description, null, 2)}
+            disabled={disabled}
+          />
         </div>
       </div>
       <Collapse in={show}>
