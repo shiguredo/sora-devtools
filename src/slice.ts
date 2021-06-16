@@ -29,6 +29,7 @@ import {
   createVideoConstraints,
   DebugType,
   drawFakeCanvas,
+  getDevices,
   Json,
   LogMessage,
   NotifyMessage,
@@ -1089,7 +1090,7 @@ export const disconnectSora =
 export const setMediaDevices =
   () =>
   async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
-    const deviceInfos = await navigator.mediaDevices.enumerateDevices();
+    const deviceInfos = await getDevices();
     const audioInputDevices: MediaDeviceInfo[] = [];
     const videoInputDevices: MediaDeviceInfo[] = [];
     const audioOutputDevices: MediaDeviceInfo[] = [];
@@ -1292,7 +1293,7 @@ export const setInitialParameter =
       queryStringParameters.audioCodecType
     );
     // 存在しない Device の場合はセットしない
-    const deviceInfos = await navigator.mediaDevices.enumerateDevices();
+    const deviceInfos = await getDevices();
     if (
       deviceInfos.find((d) => d.kind === "audioinput" && d.deviceId === queryStringParameters.audioInput) !== undefined
     ) {
