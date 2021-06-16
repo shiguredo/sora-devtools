@@ -11,6 +11,8 @@
 
 ## develop
 
+- [FIX] http で recvonly を使用した場合に正常に動かなかった問題を修正する
+    - @yuitowest
 - [UPDATE] Debug mode のコピーボタンを押した時のテキストの扱いを修正する
     - @yuitowest
 - [ADD] Debug Mode 時の DataChannel タブを Timeline タブに変更する
