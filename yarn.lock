@@ -2690,10 +2690,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-sora-js-sdk@2021.1.0-canary.32:
-  version "2021.1.0-canary.32"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2021.1.0-canary.32.tgz#440a2784abd38244cc918d80388538b348e2572d"
-  integrity sha512-v3K3X0+HO/3arQ9fkSHRqeatXpdE54t9QfI7BS9oott1B8//euEYgO3apE/f5xT8PNxXVWMHEyllynP4fKge4g==
+sora-js-sdk@2021.1.0-canary.33:
+  version "2021.1.0-canary.33"
+  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2021.1.0-canary.33.tgz#fccba056b6128b64cf81266215e1fd35999dad81"
+  integrity sha512-T96xWq3WAptTUc27AlEqq4zuJktB8pv6MjjvRxBr9D/T0+FDLXUOIvtYdHvOfjusmPlrk1YSaHmXJHQmLTqQ9g==
 
 source-map@0.7.3:
   version "0.7.3"
