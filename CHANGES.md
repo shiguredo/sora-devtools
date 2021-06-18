@@ -11,7 +11,12 @@
 
 ## develop
 
+
 - [FIX] http で recvonly を使用した場合に正常に動かなかった問題を修正する
+    - @yuitowest
+- [CHANGE] spotlight_legacy_sendonly を削除する
+    - @yuitowest
+- [CHANGE] Video component に渡される stream が null の場合は videoElement.srcObject に null をセットする
     - @yuitowest
 - [UPDATE] Debug mode のコピーボタンを押した時のテキストの扱いを修正する
     - @yuitowest
