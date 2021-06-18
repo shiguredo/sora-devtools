@@ -9,8 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
-
+## 2021.1.0
 
 - [FIX] http で recvonly を使用した場合に正常に動かなかった問題を修正する
     - @yuitowest
