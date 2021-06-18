@@ -626,18 +626,19 @@ export function createFakeMediaConstraints(
 
 // Fake 用の MediaStream を生成
 export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
-  canvas: CustomHTMLCanvasElement;
+  canvas: CustomHTMLCanvasElement | null;
   mediaStream: MediaStream;
   gainNode: GainNode | null;
 } {
   const mediaStream = new MediaStream();
-  const canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
-  // Firefox では getContext を呼ばないと captureStream が失敗する
-  canvas.getContext("2d");
-  canvas.width = parameters.width;
-  canvas.height = parameters.height;
-  const cancasStream = canvas.captureStream(parameters.frameRate);
+  let canvas = null;
   if (parameters.video) {
+    canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
+    // Firefox では getContext を呼ばないと captureStream が失敗する
+    canvas.getContext("2d");
+    canvas.width = parameters.width;
+    canvas.height = parameters.height;
+    const cancasStream = canvas.captureStream(parameters.frameRate);
     const videoTracks = cancasStream.getTracks();
     mediaStream.addTrack(videoTracks[0]);
   }

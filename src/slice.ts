@@ -565,14 +565,17 @@ async function createMediaStream(
     });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints);
-    state.fakeContents.worker.onmessage = (event) => {
-      const data = event.data;
-      if (data.type !== "update") {
-        return;
-      }
-      drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, data.counter.toString());
-    };
-    state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
+    if (canvas !== null) {
+      state.fakeContents.worker.onmessage = (event) => {
+        const data = event.data;
+        if (data.type !== "update") {
+          return;
+        }
+        drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, data.counter.toString());
+      };
+      state.fakeContents.worker.postMessage({ type: "stop" });
+      state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
+    }
     for (const track of mediaStream.getVideoTracks()) {
       track.enabled = state.videoTrack;
     }
@@ -1191,7 +1194,7 @@ export const setMicDevice =
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
         resolution: state.resolution,
-        video: state.video,
+        video: false,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
       };
@@ -1222,7 +1225,7 @@ export const setCameraDevice =
     }
     if (cameraDevice) {
       const pickedState = {
-        audio: state.audio,
+        audio: false,
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
