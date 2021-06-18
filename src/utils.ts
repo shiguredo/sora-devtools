@@ -746,11 +746,11 @@ export function getDefaultVideoCodecType(
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
   // https じゃない場合などで mediaDevices が undefined になる可能性がある
   if (navigator.mediaDevices === undefined) {
-    return []
+    return [];
   }
   try {
     return await navigator.mediaDevices.enumerateDevices();
-  } catch(_) {
+  } catch (_) {
     // 例外が起きた場合は何もしない
   }
   return [];
