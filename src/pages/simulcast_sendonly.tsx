@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters } from "@/utils";
+import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -15,22 +15,28 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioCodecType: true,
   audioInput: true,
   audioOutput: true,
+  audioTrack: true,
   autoGainControl: true,
+  cameraDevice: true,
   channelId: true,
   clientId: true,
+  dataChannel: true,
+  displayResolution: true,
   e2ee: true,
   echoCancellation: true,
   echoCancellationType: true,
   frameRate: true,
   mediaType: true,
   metadata: true,
-  signalingNotifyMetadata: true,
+  micDevice: true,
   noiseSuppression: true,
   resolution: true,
+  signalingNotifyMetadata: true,
   video: true,
   videoBitRate: true,
   videoCodecType: true,
   videoInput: true,
+  videoTrack: true,
 };
 
 const SimulcastSendonly: React.FC = () => {
@@ -39,7 +45,7 @@ const SimulcastSendonly: React.FC = () => {
     dispatch(
       setInitialParameter({
         audioCodecType: "OPUS",
-        videoCodecType: "VP8",
+        videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "3000",
         resolution: "HD",
       })

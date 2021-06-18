@@ -13,12 +13,15 @@ const VideoBitRate: React.FC = () => {
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <label className="mr-1" htmlFor="videoBitRate">
         videoBitRate:
       </label>
       <select id="videoBitRate" name="videoBitRate" className="custom-select" value={videoBitRate} onChange={onChange}>
         <option value="">未指定</option>
+        <option value="10">10</option>
+        <option value="30">30</option>
+        <option value="50">50</option>
         <option value="100">100</option>
         <option value="300">300</option>
         <option value="500">500</option>

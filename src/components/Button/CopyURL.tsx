@@ -27,8 +27,14 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.audioOutput) {
       parameters.push(`audioOutput=${state.audioOutput}`);
     }
+    if (props.enabledParameters.audioTrack) {
+      parameters.push(`audioTrack=${state.audioTrack}`);
+    }
     if (props.enabledParameters.autoGainControl) {
       parameters.push(`autoGainControl=${state.autoGainControl}`);
+    }
+    if (props.enabledParameters.cameraDevice) {
+      parameters.push(`cameraDevice=${state.cameraDevice}`);
     }
     if (props.enabledParameters.channelId) {
       parameters.push(`channelId=${state.channelId}`);
@@ -57,6 +63,9 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.metadata && state.enabledMetadata) {
       parameters.push(`metadata=${state.metadata}`);
     }
+    if (props.enabledParameters.micDevice) {
+      parameters.push(`micDevice=${state.micDevice}`);
+    }
     if (props.enabledParameters.noiseSuppression) {
       parameters.push(`noiseSuppression=${state.noiseSuppression}`);
     }
@@ -72,6 +81,12 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.spotlightNumber) {
       parameters.push(`spotlightNumber=${state.spotlightNumber}`);
     }
+    if (props.enabledParameters.spotlightFocusRid) {
+      parameters.push(`spotlightFocusRid=${state.spotlightFocusRid}`);
+    }
+    if (props.enabledParameters.spotlightUnfocusRid) {
+      parameters.push(`spotlightUnfocusRid=${state.spotlightUnfocusRid}`);
+    }
     if (props.enabledParameters.video) {
       parameters.push(`video=${state.video}`);
     }
@@ -83,6 +98,13 @@ const CopyURL: React.FC<Props> = (props) => {
     }
     if (props.enabledParameters.videoInput) {
       parameters.push(`videoInput=${state.videoInput}`);
+    }
+    if (props.enabledParameters.videoTrack) {
+      parameters.push(`videoTrack=${state.videoTrack}`);
+    }
+    if (props.enabledParameters.dataChannel) {
+      parameters.push(`dataChannelSignaling=${state.dataChannelSignaling}`);
+      parameters.push(`ignoreDisconnectWebSocket=${state.ignoreDisconnectWebSocket}`);
     }
     parameters.push(`debug=${state.debug}`);
     copy2clipboard(`${location.origin}${location.pathname}?${parameters.join("&")}`);

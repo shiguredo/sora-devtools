@@ -13,7 +13,7 @@ const VideoCodecType: React.FC = () => {
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <label className="mr-1" htmlFor="videoCodecType">
         videoCodecType:
       </label>
@@ -27,9 +27,7 @@ const VideoCodecType: React.FC = () => {
         <option value="">未指定</option>
         <option value="VP8">VP8</option>
         <option value="VP9">VP9</option>
-        <option value="AV1" disabled>
-          AV1
-        </option>
+        <option value="AV1">AV1</option>
         <option value="H264">H.264</option>
         <option value="H265">H.265</option>
       </select>

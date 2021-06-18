@@ -2,10 +2,13 @@ export const AUDIO_CODEC_TYPES = ["", "OPUS"] as const;
 
 export const AUDIO_BIT_RATES = ["", "8", "16", "24", "32", "64", "96", "128", "256"] as const;
 
-export const VIDEO_CODEC_TYPES = ["", "VP8", "VP9", "H264", "H265"] as const;
+export const VIDEO_CODEC_TYPES = ["", "VP8", "VP9", "H264", "H265", "AV1"] as const;
 
 export const VIDEO_BIT_RATES = [
   "",
+  "10",
+  "30",
+  "50",
   "100",
   "300",
   "500",
@@ -49,7 +52,13 @@ export const SPOTLIGHTS = ["1", "2", "3", "4", "5", "6", "7", "8", "true"] as co
 
 export const SPOTLIGHT_NUMBERS = ["", "1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
+export const SPOTLIGHT_FOCUS_RIDS = ["", "none", "r0", "r1", "r2"] as const;
+
 export const SIMULCAST_RID = ["", "r0", "r1", "r2"] as const;
+
+export const DATA_CHANNEL_SIGNALING = ["", "true", "false"] as const;
+
+export const IGNORE_DISCONNECT_WEBSOCKET = ["", "true", "false"] as const;
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {

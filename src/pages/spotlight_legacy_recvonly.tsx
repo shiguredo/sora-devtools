@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Head from "@/components/Head";
 import Header from "@/components/Header";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters } from "@/utils";
+import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -15,6 +15,8 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   channelId: true,
   clientId: true,
+  dataChannel: true,
+  displayResolution: true,
   e2ee: true,
   metadata: true,
   signalingNotifyMetadata: true,
@@ -29,7 +31,7 @@ const SpotlightLegacyRecvonly: React.FC = () => {
     dispatch(
       setInitialParameter({
         audioCodecType: "OPUS",
-        videoCodecType: "VP9",
+        videoCodecType: getDefaultVideoCodecType("VP9"),
       })
     );
     dispatch(setMediaDevices());

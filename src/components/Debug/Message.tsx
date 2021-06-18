@@ -9,6 +9,9 @@ type DescriptionProps = {
 };
 const Description: React.FC<DescriptionProps> = (props) => {
   const { description } = props;
+  if (description === undefined) {
+    return null;
+  }
   if (typeof description !== "object") {
     return (
       <div className="debug-message">
@@ -18,12 +21,24 @@ const Description: React.FC<DescriptionProps> = (props) => {
       </div>
     );
   }
+  if (description === null) {
+    return (
+      <div className="debug-message">
+        <div className="pl-0 col-sm-12">
+          <pre>null</pre>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       {Object.keys(description).map((key) => {
         const message = ((m) => {
+          if (key === "sdp") {
+            return m as string;
+          }
           if (typeof m === "string") {
-            return m;
+            return JSON.stringify(m);
           }
           return JSON.stringify(m, null, 2);
         })(description[key]);
@@ -44,21 +59,33 @@ type Props = {
   timestamp: number | null;
   title: string;
   description: string | number | Record<string, unknown>;
+  defaultShow?: boolean;
+  label?: JSX.Element | null;
 };
 const Message: React.FC<Props> = (props) => {
-  const { description, title, timestamp } = props;
-  const [show, setShow] = useState(false);
+  const { defaultShow, description, title, timestamp, label } = props;
+  const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
+  const disabled = description === undefined;
   return (
     <div className="border border-light rounded my-2 bg-dark">
       <div className="d-flex justify-content-between align-items-center text-break">
-        <a className="debug-title" onClick={() => setShow(!show)} aria-controls={ariaControls} aria-expanded={show}>
-          <i className={show ? "arrow-bottom" : "arrow-right"} />{" "}
+        <a
+          className={`debug-title ${disabled ? "disabled" : ""}`}
+          onClick={() => setShow(!show)}
+          aria-controls={ariaControls}
+          aria-expanded={show}
+        >
+          <i className={`${show ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`} />{" "}
           {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
+          {label}&nbsp;
           {title}
         </a>
         <div className="border-left">
-          <ButtonCopyLog text={JSON.stringify(description, null, 2)} />
+          <ButtonCopyLog
+            text={typeof description === "string" ? description : JSON.stringify(description, null, 2)}
+            disabled={disabled}
+          />
         </div>
       </div>
       <Collapse in={show}>

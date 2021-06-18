@@ -5,20 +5,23 @@ import Message from "@/components/Debug/Message";
 import { SoraDemoState } from "@/slice";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
-  [x: string]: string | number;
+  [x: string]: string | number | undefined;
 }
 
-const CollapseStats: React.FC<{ stats: RTCStatsWithIndexSignature }> = (props) => {
-  const { stats } = props;
-  return <Message title={`${stats.id}(${stats.type})`} timestamp={null} description={stats} />;
+const Collapse: React.FC<RTCStatsWithIndexSignature> = (props) => {
+  return <Message title={`${props.id}(${props.type})`} timestamp={null} description={props} />;
 };
+
+const Log = React.memo((props: RTCStatsWithIndexSignature) => {
+  return <Collapse {...props} />;
+});
 
 const DebugGetStats: React.FC = () => {
   const { statsReport } = useSelector((state: SoraDemoState) => state.soraContents);
   return (
     <>
       {statsReport.map((stats) => {
-        return <CollapseStats key={stats.id} stats={stats as RTCStatsWithIndexSignature} />;
+        return <Log key={stats.id} {...(stats as RTCStatsWithIndexSignature)} />;
       })}
     </>
   );

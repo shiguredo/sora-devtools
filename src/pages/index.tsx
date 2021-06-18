@@ -51,7 +51,6 @@ const Index: React.FC = () => {
             <Link pageName="spotlight_recvonly" />
             <li className="separator">スポットライトレガシー</li>
             <Link pageName="spotlight_legacy_sendrecv" />
-            <Link pageName="spotlight_legacy_sendonly" />
             <Link pageName="spotlight_legacy_recvonly" />
           </ul>
         </div>

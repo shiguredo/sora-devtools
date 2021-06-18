@@ -10,7 +10,7 @@ const SignalingNotifyMetadata: React.FC = () => {
     dispatch(setSignalingNotifyMetadata(event.target.value));
   };
   return (
-    <div className="col-10 form-inline flex-nowrap mb-1">
+    <div className="col-10 form-inline flex-nowrap form-sora">
       <label className="mr-1" htmlFor="channelId">
         signalingNotifyMetadata:
       </label>

@@ -10,7 +10,7 @@ const EnabledSignalingNotifyMetadata: React.FC = () => {
     dispatch(setEnabledSignalingNotifyMetadata(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap mb-1">
+    <div className="col-auto form-inline flex-nowrap form-sora">
       <div className="form-check">
         <input
           id="enabledSignalingNotifyMetadata"
@@ -20,7 +20,7 @@ const EnabledSignalingNotifyMetadata: React.FC = () => {
           checked={enabledSignalingNotifyMetadata}
           onChange={onChange}
         />
-        <label className="form-check-label mr-1" htmlFor="enabledSignalingNotifyMetadata">
+        <label className="form-check-label" htmlFor="enabledSignalingNotifyMetadata">
           signalingNotifyMetadata
         </label>
       </div>

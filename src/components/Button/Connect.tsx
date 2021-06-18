@@ -1,7 +1,7 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora } from "@/slice";
+import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora, SoraDemoState } from "@/slice";
 
 type Props = {
   connectType: "sendonly" | "sendrecv" | "recvonly";
@@ -10,6 +10,7 @@ type Props = {
   simulcast: boolean;
 };
 const Connect: React.FC<Props> = (props) => {
+  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
   const dispatch = useDispatch();
   const connect = (): void => {
     const connectOptions = {
@@ -27,7 +28,14 @@ const Connect: React.FC<Props> = (props) => {
   };
   return (
     <div className="col-auto mb-1">
-      <input className="btn btn-secondary" type="button" name="connect" defaultValue="connect" onClick={connect} />
+      <input
+        className="btn btn-secondary"
+        type="button"
+        name="connect"
+        defaultValue="connect"
+        onClick={connect}
+        disabled={connectionStatus === "disconnecting" || connectionStatus === "connecting"}
+      />
     </div>
   );
 };

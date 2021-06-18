@@ -3,12 +3,15 @@ import queryString from "query-string";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  DATA_CHANNEL_SIGNALING,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
+  IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
+  SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   SPOTLIGHTS,
   VIDEO_BIT_RATES,
@@ -25,7 +28,7 @@ interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
   echoCancellationType?: "system" | "browser";
 }
 
-type Json =
+export type Json =
   | null
   | boolean
   | number
@@ -48,6 +51,14 @@ export interface SoraDemoMediaDevices extends MediaDevices {
   getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
 }
 
+// RTCMediaStreamTrackStats に jitterBuffer 関連を追加
+export interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
+  jitterBufferDelay: number;
+  jitterBufferEmittedCount: number;
+  prevJitterBufferDelay: number;
+  prevJitterBufferEmittedCount: number;
+}
+
 // 各 page で有効にするパラメーターを指定するための Type
 export type EnabledParameters = {
   audio?: boolean;
@@ -55,9 +66,12 @@ export type EnabledParameters = {
   audioCodecType?: boolean;
   audioInput?: boolean;
   audioOutput?: boolean;
+  audioTrack?: boolean;
   autoGainControl?: boolean;
-  clientId?: boolean;
+  cameraDevice?: boolean;
   channelId?: boolean;
+  clientId?: boolean;
+  dataChannel?: boolean;
   displayResolution?: boolean;
   e2ee?: boolean;
   echoCancellation?: boolean;
@@ -65,16 +79,20 @@ export type EnabledParameters = {
   frameRate?: boolean;
   mediaType?: boolean;
   metadata?: boolean;
+  micDevice?: boolean;
   noiseSuppression?: boolean;
   resolution?: boolean;
   signalingNotifyMetadata?: boolean;
   simulcastRid?: boolean;
   spotlight?: boolean;
+  spotlightFocusRid?: boolean;
   spotlightNumber?: boolean;
+  spotlightUnfocusRid?: boolean;
   video?: boolean;
   videoBitRate?: boolean;
   videoCodecType?: boolean;
   videoInput?: boolean;
+  videoTrack?: boolean;
 };
 
 // Debug log message の Type
@@ -88,7 +106,7 @@ export type LogMessage = {
 
 // Sora on notify callback の引数 Type
 export type SoraNotifyMessage = {
-  type: string;
+  type: "notify";
   event_type: string;
   [x: string]: unknown;
 };
@@ -97,6 +115,7 @@ export type SoraNotifyMessage = {
 export type NotifyMessage = {
   timestamp: number;
   message: SoraNotifyMessage;
+  transportType: string;
 };
 
 // Sora on push callback の引数 Type
@@ -111,6 +130,27 @@ export type SoraPushMessage = {
 export type PushMessage = {
   timestamp: number;
   message: SoraPushMessage;
+  transportType: string;
+};
+
+// Debug timeline message の Type
+export type TimelineMessage = {
+  timestamp: number;
+  type: string;
+  transportType?: "websocket" | "datachannel" | "peerconnection";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
+  dataChannelId?: number | null;
+  dataChannelLabel?: string | null;
+};
+
+// Debug signaling message の Type
+export type SignalingMessage = {
+  timestamp: number;
+  type: string;
+  transportType?: "websocket" | "datachannel" | "peerconnection";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
 };
 
 // 画面表示する message の Type
@@ -122,7 +162,7 @@ export type AlertMessage = {
 };
 
 // Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "push" | "stats";
+export type DebugType = "log" | "notify" | "push" | "stats" | "datachannel" | "signaling";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -130,10 +170,10 @@ export function formatUnixtime(time: number): string {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
-  const millisecond = date.getMilliseconds();
+  const hour = date.getHours().toString().padStart(2, "0");
+  const minute = date.getMinutes().toString().padStart(2, "0");
+  const second = date.getSeconds().toString().padStart(2, "0");
+  const millisecond = date.getMilliseconds().toString().padStart(3, "0");
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
@@ -212,6 +252,13 @@ export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[n
   return (SPOTLIGHTS as readonly string[]).indexOf(spotlight) >= 0;
 }
 
+// SpotlightFocusRid / SpotlightUnfocusRid の Type Guard
+export function isSpotlightFocusRid(
+  spotlightFocusRid: string
+): spotlightFocusRid is typeof SPOTLIGHT_FOCUS_RIDS[number] {
+  return (SPOTLIGHT_FOCUS_RIDS as readonly string[]).indexOf(spotlightFocusRid) >= 0;
+}
+
 // SimulcastQuality の Type Guard
 export function isSimulcastRid(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
   return (SIMULCAST_RID as readonly string[]).indexOf(simulcastRid) >= 0;
@@ -222,6 +269,20 @@ export function isMediaType(mediaType: string): mediaType is typeof MEDIA_TYPES[
   return (MEDIA_TYPES as readonly string[]).indexOf(mediaType) >= 0;
 }
 
+// DataChannelSignaling の Type Guard
+export function isDataChannelSignaling(
+  dataChannelSignaling: string
+): dataChannelSignaling is typeof DATA_CHANNEL_SIGNALING[number] {
+  return (DATA_CHANNEL_SIGNALING as readonly string[]).indexOf(dataChannelSignaling) >= 0;
+}
+
+// IgnoreDisconnectWebSocket の Type Guard
+export function isIgnoreDisconnectWebSocket(
+  ignoreDisconnectWebSocket: string
+): ignoreDisconnectWebSocket is typeof IGNORE_DISCONNECT_WEBSOCKET[number] {
+  return (IGNORE_DISCONNECT_WEBSOCKET as readonly string[]).indexOf(ignoreDisconnectWebSocket) >= 0;
+}
+
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = {
   audio: boolean;
@@ -229,9 +290,12 @@ export type QueryStringParameters = {
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];
   audioInput: string;
   audioOutput: string;
+  audioTrack: boolean;
   autoGainControl: boolean;
-  clientId: string;
+  cameraDevice: boolean;
   channelId: string;
+  clientId: string;
+  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   debug: boolean;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   e2ee: boolean;
@@ -240,19 +304,25 @@ export type QueryStringParameters = {
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
   googCpuOveruseDetection: boolean;
+  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
-  noiseSuppression: boolean;
+  micDevice: boolean;
   mute: boolean;
-  signalingNotifyMetadata: string;
-  spotlight: typeof SPOTLIGHTS[number];
-  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  simulcastRid: typeof SIMULCAST_RID[number];
+  noiseSuppression: boolean;
   resolution: typeof RESOLUTIONS[number];
+  showStats: boolean;
+  signalingNotifyMetadata: string;
+  simulcastRid: typeof SIMULCAST_RID[number];
+  spotlight: typeof SPOTLIGHTS[number];
+  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
+  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
+  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
   videoInput: string;
+  videoTrack: boolean;
 };
 
 // クエリ文字列パーサー
@@ -263,9 +333,12 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioCodecType,
     audioInput,
     audioOutput,
+    audioTrack,
     autoGainControl,
+    cameraDevice,
     channelId,
     clientId,
+    dataChannelSignaling,
     debug,
     displayResolution,
     e2ee,
@@ -274,19 +347,25 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     fakeVolume,
     frameRate,
     googCpuOveruseDetection,
+    ignoreDisconnectWebSocket,
     mediaType,
     metadata,
-    noiseSuppression,
+    micDevice,
     mute,
-    signalingNotifyMetadata,
-    spotlight,
-    spotlightNumber,
-    simulcastRid,
+    noiseSuppression,
     resolution,
+    showStats,
+    signalingNotifyMetadata,
+    simulcastRid,
+    spotlight,
+    spotlightFocusRid,
+    spotlightNumber,
+    spotlightUnfocusRid,
     video,
     videoBitRate,
     videoCodecType,
     videoInput,
+    videoTrack,
   } = queryString.parse(location.search, { parseBooleans: true });
   const queryStringParameters: Partial<QueryStringParameters> = {};
   if (typeof audio === "boolean") {
@@ -340,6 +419,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (metadata) {
     queryStringParameters.metadata = String(metadata);
   }
+  if (typeof showStats === "boolean") {
+    queryStringParameters.showStats = showStats;
+  }
   if (signalingNotifyMetadata) {
     queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
   }
@@ -351,6 +433,12 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
     queryStringParameters.spotlightNumber = spotlightNumber;
+  }
+  if (typeof spotlightFocusRid === "string" && isSpotlightFocusRid(spotlightFocusRid)) {
+    queryStringParameters.spotlightFocusRid = spotlightFocusRid;
+  }
+  if (typeof spotlightUnfocusRid === "string" && isSpotlightFocusRid(spotlightUnfocusRid)) {
+    queryStringParameters.spotlightUnfocusRid = spotlightUnfocusRid;
   }
   if (typeof resolution === "string" && isResolution(resolution)) {
     queryStringParameters.resolution = resolution;
@@ -375,6 +463,26 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof mute === "boolean") {
     queryStringParameters.mute = mute;
+  }
+  const stringDataChannelSignaling = String(dataChannelSignaling);
+  if (isDataChannelSignaling(stringDataChannelSignaling)) {
+    queryStringParameters.dataChannelSignaling = stringDataChannelSignaling;
+  }
+  const stringIgnoreDisconnectWebSocket = String(ignoreDisconnectWebSocket);
+  if (isIgnoreDisconnectWebSocket(stringIgnoreDisconnectWebSocket)) {
+    queryStringParameters.ignoreDisconnectWebSocket = stringIgnoreDisconnectWebSocket;
+  }
+  if (typeof micDevice === "boolean") {
+    queryStringParameters.micDevice = micDevice;
+  }
+  if (typeof cameraDevice === "boolean") {
+    queryStringParameters.cameraDevice = cameraDevice;
+  }
+  if (typeof audioTrack === "boolean") {
+    queryStringParameters.audioTrack = audioTrack;
+  }
+  if (typeof videoTrack === "boolean") {
+    queryStringParameters.videoTrack = videoTrack;
   }
   return queryStringParameters;
 }
@@ -517,32 +625,40 @@ export function createFakeMediaConstraints(
 }
 
 // Fake 用の MediaStream を生成
-export function createFakeMediaStream(
-  parameters: FakeMediaStreamConstraints
-): { canvas: CustomHTMLCanvasElement; stream: MediaStream; gainNode: GainNode } {
-  const stream = new MediaStream();
-  const canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
-  // Firefox では getContext を呼ばないと captureStream が失敗する
-  canvas.getContext("2d");
-  canvas.width = parameters.width;
-  canvas.height = parameters.height;
-  const cancasStream = canvas.captureStream(parameters.frameRate);
-  const videoTracks = cancasStream.getTracks();
-  stream.addTrack(videoTracks[0]);
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const audioContext = new AudioContext();
-  const oscillator = audioContext.createOscillator();
-  const selectedOscillatorType = "sine";
-  oscillator.type = selectedOscillatorType;
-  const gainNode = audioContext.createGain();
-  oscillator.connect(gainNode);
-  oscillator.start(0);
-  const mediaStreamDestination = audioContext.createMediaStreamDestination();
-  gainNode.connect(mediaStreamDestination);
-  const audioTracks = mediaStreamDestination.stream.getTracks();
-  stream.addTrack(audioTracks[0]);
-  gainNode.gain.setValueAtTime(parameters.volume, 0);
-  return { canvas, stream, gainNode };
+export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
+  canvas: CustomHTMLCanvasElement | null;
+  mediaStream: MediaStream;
+  gainNode: GainNode | null;
+} {
+  const mediaStream = new MediaStream();
+  let canvas = null;
+  if (parameters.video) {
+    canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
+    // Firefox では getContext を呼ばないと captureStream が失敗する
+    canvas.getContext("2d");
+    canvas.width = parameters.width;
+    canvas.height = parameters.height;
+    const cancasStream = canvas.captureStream(parameters.frameRate);
+    const videoTracks = cancasStream.getTracks();
+    mediaStream.addTrack(videoTracks[0]);
+  }
+  let gainNode = null;
+  if (parameters.audio) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContext();
+    const oscillator = audioContext.createOscillator();
+    const selectedOscillatorType = "sine";
+    oscillator.type = selectedOscillatorType;
+    gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    oscillator.start(0);
+    const mediaStreamDestination = audioContext.createMediaStreamDestination();
+    gainNode.connect(mediaStreamDestination);
+    const audioTracks = mediaStreamDestination.stream.getTracks();
+    mediaStream.addTrack(audioTracks[0]);
+    gainNode.gain.setValueAtTime(parameters.volume, 0);
+  }
+  return { canvas, mediaStream, gainNode };
 }
 
 // Fake mediastream を生成するための canvas に書き込みをする
@@ -593,4 +709,49 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
     // JSON parse に失敗しても何もしない
   }
   return metadata;
+}
+
+export function getDefaultVideoCodecType(
+  initialValue: typeof VIDEO_CODEC_TYPES[number]
+): typeof VIDEO_CODEC_TYPES[number] {
+  if (!RTCRtpSender.getCapabilities) {
+    return initialValue;
+  }
+  const capabilities = RTCRtpSender.getCapabilities("video");
+  if (!capabilities || !capabilities.codecs) {
+    return initialValue;
+  }
+  const codecs = capabilities.codecs.map((c) => c.mimeType.replace("video/", ""));
+  if (codecs.includes(initialValue)) {
+    return initialValue;
+  }
+  if (codecs.includes("VP9")) {
+    return "VP9";
+  }
+  if (codecs.includes("VP8")) {
+    return "VP8";
+  }
+  if (codecs.includes("H264")) {
+    return "H264";
+  }
+  if (codecs.includes("AV1X")) {
+    return "AV1";
+  }
+  if (codecs.includes("H265")) {
+    return "H265";
+  }
+  return initialValue;
+}
+
+export async function getDevices(): Promise<MediaDeviceInfo[]> {
+  // https じゃない場合などで mediaDevices が undefined になる可能性がある
+  if (navigator.mediaDevices === undefined) {
+    return [];
+  }
+  try {
+    return await navigator.mediaDevices.enumerateDevices();
+  } catch (_) {
+    // 例外が起きた場合は何もしない
+  }
+  return [];
 }

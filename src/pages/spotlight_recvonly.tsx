@@ -14,12 +14,15 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   audioOutput: true,
   channelId: true,
   clientId: true,
+  dataChannel: true,
   displayResolution: true,
   e2ee: true,
   metadata: true,
   signalingNotifyMetadata: true,
   video: true,
   spotlightNumber: true,
+  spotlightFocusRid: true,
+  spotlightUnfocusRid: true,
 };
 
 const SpotlightRecvonly: React.FC = () => {

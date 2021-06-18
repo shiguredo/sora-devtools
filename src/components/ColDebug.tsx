@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import DebugLogMessages from "@/components/Debug/LogMessages";
 import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
 import DebugPushMessages from "@/components/Debug/PushMessages";
+import DebugSignalingMessages from "@/components/Debug/SignalingMessages";
 import DebugStats from "@/components/Debug/Stats";
+import DebugTimelineMessages from "@/components/Debug/TimelineMessages";
 import { setDebugType, SoraDemoState } from "@/slice";
 
 const ColDebug: React.FC = () => {
@@ -15,7 +17,7 @@ const ColDebug: React.FC = () => {
     return null;
   }
   const onSelect = (key: string | null): void => {
-    if (key === "log" || key === "notify" || key === "push" || key === "stats") {
+    if (key === "log" || key === "notify" || key === "push" || key === "stats" || key === "datachannel") {
       dispatch(setDebugType(key));
     }
   };
@@ -25,6 +27,9 @@ const ColDebug: React.FC = () => {
         <Tab eventKey="log" title="Log">
           <DebugLogMessages />
         </Tab>
+        <Tab eventKey="signaling" title="Signaling">
+          <DebugSignalingMessages />
+        </Tab>
         <Tab eventKey="notify" title="Notfiy">
           <DebugNotifyMessages />
         </Tab>
@@ -33,6 +38,9 @@ const ColDebug: React.FC = () => {
         </Tab>
         <Tab eventKey="stats" title="Stats">
           <DebugStats />
+        </Tab>
+        <Tab eventKey="timeline" title="Timeline">
+          <DebugTimelineMessages />
         </Tab>
       </Tabs>
     </div>
