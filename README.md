@@ -166,8 +166,6 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 
 - スポットライトレガシー送受信
     - spotlight_legacy_sendrecv.html
-- スポットライトレガシー送信のみ
-    - spotlight_legacy_sendonly.html
 - スポットライトレガシー受信のみ
     - spotlight_legacy_recvonly.html
 
