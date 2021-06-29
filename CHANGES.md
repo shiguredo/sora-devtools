@@ -9,6 +9,12 @@
 - FIX
     - バグ修正
 
+## 2021.1.1
+
+- [FIX] sora-js-sdk のバージョンを 2021.1.1 に更新する
+    - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.1
+    - @yuitowest
+
 ## 2021.1.0
 
 - [FIX] http で recvonly を使用した場合に正常に動かなかった問題を修正する
