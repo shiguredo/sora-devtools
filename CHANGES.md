@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## 2021.1.2
+
+- [FIX] "videoTrack on/off" を off の状態で connect した場合に videoTrack が off にならない問題を修正する
+    - @yuitowest
+
 ## 2021.1.1
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.1 に更新する
