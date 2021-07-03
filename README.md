@@ -21,7 +21,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/433fb2be3b46d4f59f59e94ef0096945.png)](https://gyazo.com/433fb2be3b46d4f59f59e94ef0096945)
+[![Image from Gyazo](https://i.gyazo.com/953a1d60ba647315133c82cc6e7440de.png)](https://gyazo.com/953a1d60ba647315133c82cc6e7440de)
 
 ## 利用技術
 
