@@ -687,18 +687,6 @@ export function drawFakeCanvas(
   context.fillText(text, x - margin, y);
 }
 
-// 新/旧 spotlight の互換性を保つための parser
-export function parseSpotlight(spotlight: string): boolean | number {
-  if (spotlight === "true") {
-    return true;
-  }
-  const numberSpotlight = parseInt(spotlight, 10);
-  if (isNaN(numberSpotlight)) {
-    return false;
-  }
-  return numberSpotlight;
-}
-
 export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
   if (!enabledMetadata) {
     return undefined;

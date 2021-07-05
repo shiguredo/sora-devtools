@@ -35,7 +35,6 @@ import {
   NotifyMessage,
   parseMetadata,
   parseQueryString,
-  parseSpotlight,
   PushMessage,
   SignalingMessage,
   SoraDemoMediaDevices,
@@ -101,9 +100,6 @@ export type SoraDemoState = {
   signalingNotifyMetadata: string;
   signalingMessages: SignalingMessage[];
   simulcastRid: typeof SIMULCAST_RID[number];
-  spotlightConnectionIds: {
-    [key: string]: string;
-  };
   focusedSpotlightConnectionIds: {
     [key: string]: boolean;
   };
@@ -182,7 +178,6 @@ const initialState: SoraDemoState = {
   spotlightNumber: "",
   spotlightFocusRid: "",
   spotlightUnfocusRid: "",
-  spotlightConnectionIds: {},
   focusedSpotlightConnectionIds: {},
   video: true,
   videoBitRate: "",
@@ -446,13 +441,6 @@ const slice = createSlice({
     setPushMessages: (state, action: PayloadAction<PushMessage>) => {
       state.pushMessages.push(action.payload);
     },
-    setSpotlightConnectionIds: (state, action: PayloadAction<{ spotlightId: string; connectionId: string }>) => {
-      // Spotlight 有効時に streamID(spotligId) と映像の配信者ID(connectionId) のマッピングを保存
-      const spotlightConnectionIds = Object.assign(state.spotlightConnectionIds, {
-        [action.payload.spotlightId]: action.payload.connectionId,
-      });
-      state.spotlightConnectionIds = spotlightConnectionIds;
-    },
     setFocusedSpotlightConnectionId: (state, action: PayloadAction<string>) => {
       state.focusedSpotlightConnectionIds[action.payload] = true;
     },
@@ -637,19 +625,6 @@ function setSoraCallbacks(
     );
   });
   sora.on("notify", (message: SoraNotifyMessage, transportType: string) => {
-    if (
-      message.event_type === "spotlight.changed" &&
-      typeof message.spotlight_id === "string" &&
-      typeof message.connection_id === "string"
-    ) {
-      // Spotlight legacy 有効時に stream と映像の配信者の connection_id のマッピングが送られてくるため表示用に保存
-      dispatch(
-        slice.actions.setSpotlightConnectionIds({
-          spotlightId: message.spotlight_id,
-          connectionId: message.connection_id,
-        })
-      );
-    }
     if (message.event_type === "spotlight.focused" && typeof message.connection_id === "string") {
       dispatch(slice.actions.setFocusedSpotlightConnectionId(message.connection_id));
     }
@@ -790,15 +765,10 @@ function createConnectOptions(
   if (pickedState.e2ee) {
     connectionOptions.e2ee = true;
   }
-  // 新/旧 spotlight 互換性のため parsedSpotlight は boolean | number になる
-  // parsedSpotlight が number の場合は旧 spotlight 扱いになる
-  // parsedSpotlight が true の場合は新 spotlight 扱いになるので spotlightNumber をセットする
-  const parsedSpotlight = parseSpotlight(pickedState.spotlight);
-  if (spotlight && parsedSpotlight) {
-    connectionOptions.spotlight = parsedSpotlight;
-    const parsedSpotlightNumber = parseInt(pickedState.spotlightNumber);
-    if (parsedSpotlight === true && parsedSpotlightNumber) {
-      connectionOptions.spotlightNumber = parsedSpotlightNumber;
+  if (spotlight) {
+    connectionOptions.spotlight = true;
+    if (pickedState.spotlightNumber) {
+      connectionOptions.spotlightNumber = parseInt(pickedState.spotlightNumber);
     }
     if (connectionOptions.spotlight === true && pickedState.spotlightFocusRid) {
       connectionOptions.spotlightFocusRid = pickedState.spotlightFocusRid;

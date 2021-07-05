@@ -26,7 +26,6 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
 type Props = {
   connectionId: string | null;
   clientId?: string | null;
-  spotlightId?: string;
 };
 const ConnectionStatusBar: React.FC<Props> = (props) => {
   return (
@@ -35,7 +34,6 @@ const ConnectionStatusBar: React.FC<Props> = (props) => {
       {props.clientId !== null && props.clientId !== undefined && props.connectionId !== props.clientId ? (
         <TextBox text={props.clientId} />
       ) : null}
-      {props.spotlightId ? <TextBox text={props.spotlightId} /> : null}
     </div>
   );
 };
