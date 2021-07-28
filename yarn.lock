@@ -2690,10 +2690,9 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-sora-js-sdk@^2021.1.1:
+sora-js-sdk@shiguredo/sora-js-sdk#hotfix/2021.1.2:
   version "2021.1.1"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2021.1.1.tgz#93ff46ef2eee5971fc4397c4ef369d2757660e48"
-  integrity sha512-w+3P1t4xYUkXEdn2s46vR8u5n817EsWxnPBj5BPYUDrOFpp6ZHkrFsPw9qonYw7FAHpx6w1OBrk96CRpXL6XlA==
+  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/e3dfdc5bc04f80a9e895dcc487013c5cff380d0d"
 
 source-map@0.7.3:
   version "0.7.3"
