@@ -1,5 +1,5 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
-import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber } from "sora-js-sdk";
+import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber, TransportType } from "sora-js-sdk";
 import Sora from "sora-js-sdk";
 
 import {
@@ -624,7 +624,7 @@ function setSoraCallbacks(
       })
     );
   });
-  sora.on("notify", (message: SoraNotifyMessage, transportType: string) => {
+  sora.on("notify", (message: SoraNotifyMessage, transportType: TransportType) => {
     if (message.event_type === "spotlight.focused" && typeof message.connection_id === "string") {
       dispatch(slice.actions.setFocusedSpotlightConnectionId(message.connection_id));
     }
@@ -642,7 +642,7 @@ function setSoraCallbacks(
       })
     );
   });
-  sora.on("push", (message: SoraPushMessage, transportType: string) => {
+  sora.on("push", (message: SoraPushMessage, transportType: TransportType) => {
     dispatch(
       slice.actions.setPushMessages({
         timestamp: new Date().getTime(),
@@ -698,7 +698,7 @@ function setSoraCallbacks(
       data: event.data,
       dataChannelId: event.dataChannelId,
       dataChannelLabel: event.dataChannelLabel,
-      transportType: event.transportType,
+      logType: event.logType,
     };
     dispatch(slice.actions.setTimelineMessage(message));
   });

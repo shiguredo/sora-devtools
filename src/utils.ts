@@ -1,4 +1,5 @@
 import queryString from "query-string";
+import type { TimelineEventLogType, TransportType } from "sora-js-sdk";
 
 import {
   AUDIO_BIT_RATES,
@@ -115,7 +116,7 @@ export type SoraNotifyMessage = {
 export type NotifyMessage = {
   timestamp: number;
   message: SoraNotifyMessage;
-  transportType: string;
+  transportType: TransportType;
 };
 
 // Sora on push callback の引数 Type
@@ -130,14 +131,14 @@ export type SoraPushMessage = {
 export type PushMessage = {
   timestamp: number;
   message: SoraPushMessage;
-  transportType: string;
+  transportType: TransportType;
 };
 
 // Debug timeline message の Type
 export type TimelineMessage = {
   timestamp: number;
   type: string;
-  transportType?: "websocket" | "datachannel" | "peerconnection";
+  logType: TimelineEventLogType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   dataChannelId?: number | null;
@@ -148,7 +149,7 @@ export type TimelineMessage = {
 export type SignalingMessage = {
   timestamp: number;
   type: string;
-  transportType?: "websocket" | "datachannel" | "peerconnection";
+  transportType: TransportType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 };
