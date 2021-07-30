@@ -17,8 +17,12 @@ const WebSocketLabel: React.FC = () => {
   return <span style={{ color: "#00ff00" }}>[websocket]</span>;
 };
 
-const PeerConnectionLable: React.FC = () => {
+const PeerConnectionLabel: React.FC = () => {
   return <span style={{ color: "#ff8c00" }}>[peerconnection]</span>;
+};
+
+const SoraLabel: React.FC = () => {
+  return <span style={{ color: "#73b8e2" }}>[sora]</span>;
 };
 
 type DataChannelLabelProps = {
@@ -37,15 +41,17 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
 };
 
 const Collapse: React.FC<TimelineMessage> = (props) => {
-  const { timestamp, transportType, dataChannelId, dataChannelLabel, type, data } = props;
+  const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
   const title = `${type}`;
   let labelComponent;
-  if (transportType === "websocket") {
+  if (logType === "websocket") {
     labelComponent = <WebSocketLabel />;
-  } else if (transportType === "datachannel") {
+  } else if (logType === "datachannel") {
     labelComponent = <DataChannelLabel id={dataChannelId} label={dataChannelLabel} />;
-  } else if (transportType === "peerconnection") {
-    labelComponent = <PeerConnectionLable />;
+  } else if (logType === "peerconnection") {
+    labelComponent = <PeerConnectionLabel />;
+  } else if (logType === "sora") {
+    labelComponent = <SoraLabel />;
   }
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
 };
