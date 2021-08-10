@@ -17,15 +17,15 @@ const ColDebug: React.FC = () => {
     return null;
   }
   const onSelect = (key: string | null): void => {
-    if (key === "log" || key === "notify" || key === "push" || key === "stats" || key === "datachannel") {
+    if (key === "log" || key === "notify" || key === "push" || key === "stats" || key === "timeline") {
       dispatch(setDebugType(key));
     }
   };
   return (
     <div className="col-debug col-6">
       <Tabs id="debug-tab" defaultActiveKey={debugType} onSelect={onSelect}>
-        <Tab eventKey="log" title="Log">
-          <DebugLogMessages />
+        <Tab eventKey="timeline" title="Timeline">
+          <DebugTimelineMessages />
         </Tab>
         <Tab eventKey="signaling" title="Signaling">
           <DebugSignalingMessages />
@@ -39,8 +39,8 @@ const ColDebug: React.FC = () => {
         <Tab eventKey="stats" title="Stats">
           <DebugStats />
         </Tab>
-        <Tab eventKey="timeline" title="Timeline">
-          <DebugTimelineMessages />
+        <Tab eventKey="log" title="Log">
+          <DebugLogMessages />
         </Tab>
       </Tabs>
     </div>

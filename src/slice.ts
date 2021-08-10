@@ -134,7 +134,7 @@ const initialState: SoraDemoState = {
   googCpuOveruseDetection: null,
   timelineMessages: [],
   debug: false,
-  debugType: "log",
+  debugType: "timeline",
   dataChannelSignaling: "",
   displayResolution: "",
   e2ee: false,
