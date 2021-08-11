@@ -138,7 +138,7 @@ export type PushMessage = {
 export type TimelineMessage = {
   timestamp: number;
   type: string;
-  logType: TimelineEventLogType;
+  logType: TimelineEventLogType | "sora-demo";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   dataChannelId?: number | null;

@@ -22,7 +22,11 @@ const PeerConnectionLabel: React.FC = () => {
 };
 
 const SoraLabel: React.FC = () => {
-  return <span className="mr-1" style={{ color: "#73b8e2" }}>[sora]</span>;
+  return <span className="mr-1" style={{ color: "#bce2e8" }}>[sora]</span>;
+};
+
+const SoraDemoLabel: React.FC = () => {
+  return <span className="mr-1" style={{ color: "#73b8e2" }}>[sora-demo]</span>;
 };
 
 type DataChannelLabelProps = {
@@ -52,6 +56,8 @@ const Collapse: React.FC<TimelineMessage> = (props) => {
     labelComponent = <PeerConnectionLabel />;
   } else if (logType === "sora") {
     labelComponent = <SoraLabel />;
+  } else if (logType === "sora-demo") {
+    labelComponent = <SoraDemoLabel />;
   }
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
 };
