@@ -14,15 +14,15 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
 };
 
 const WebSocketLabel: React.FC = () => {
-  return <span style={{ color: "#00ff00" }}>[websocket]</span>;
+  return <span className="mr-1" style={{ color: "#00ff00" }}>[websocket]</span>;
 };
 
 const PeerConnectionLabel: React.FC = () => {
-  return <span style={{ color: "#ff8c00" }}>[peerconnection]</span>;
+  return <span className="mr-1" style={{ color: "#ff8c00" }}>[peerconnection]</span>;
 };
 
 const SoraLabel: React.FC = () => {
-  return <span style={{ color: "#73b8e2" }}>[sora]</span>;
+  return <span className="mr-1" style={{ color: "#73b8e2" }}>[sora]</span>;
 };
 
 type DataChannelLabelProps = {
@@ -33,7 +33,7 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
   const { label, id } = props;
   const color = label && Object.keys(DATA_CHANNEL_COLORS).includes(label) ? DATA_CHANNEL_COLORS[label] : undefined;
   return (
-    <span style={color ? { color: color } : {}}>
+    <span className="mr-1" style={color ? { color: color } : {}}>
       [datachannel]{label ? `[${label}]` : ""}
       {typeof id === "number" ? `[${id}]` : ""}
     </span>

@@ -129,6 +129,7 @@ video {
 .debug-title {
   cursor: pointer;
   color: #ffffff !important;
+  width: 100%;
 }
 
 .debug-title.disabled {

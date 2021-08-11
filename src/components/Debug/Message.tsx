@@ -35,7 +35,7 @@ const Description: React.FC<DescriptionProps> = (props) => {
       {Object.keys(description).map((key) => {
         const message = ((m) => {
           if (key === "sdp") {
-            return m as string;
+            return `"\r\n${m}"`;
           }
           if (typeof m === "string") {
             return JSON.stringify(m);
@@ -44,7 +44,7 @@ const Description: React.FC<DescriptionProps> = (props) => {
         })(description[key]);
         return (
           <div key={key} className="debug-message">
-            <div className="pl-0 col-4 text-break">{key}:</div>
+            <div className="pl-0 col-4 text-break">{key}</div>
             <div className="col-8">
               <pre>{message}</pre>
             </div>
@@ -78,8 +78,8 @@ const Message: React.FC<Props> = (props) => {
         >
           <i className={`${show ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`} />{" "}
           {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
-          {label}&nbsp;
-          {title}
+          {label}
+          <span>{title}</span>
         </a>
         <div className="border-left">
           <ButtonCopyLog
