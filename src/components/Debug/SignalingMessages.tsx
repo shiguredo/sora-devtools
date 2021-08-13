@@ -13,7 +13,11 @@ const SIGNALING_COLORS: { [key: string]: string } = {
 const Label: React.FC<{ text: string }> = (props) => {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
-  return <span className="mr-1" style={color ? { color: color } : {}}>[{text}]</span>;
+  return (
+    <span className="mr-1" style={color ? { color: color } : {}}>
+      [{text}]
+    </span>
+  );
 };
 
 const Collapse: React.FC<SignalingMessage> = (props) => {

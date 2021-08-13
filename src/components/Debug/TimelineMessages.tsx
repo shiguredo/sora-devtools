@@ -14,19 +14,35 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
 };
 
 const WebSocketLabel: React.FC = () => {
-  return <span className="mr-1" style={{ color: "#00ff00" }}>[websocket]</span>;
+  return (
+    <span className="mr-1" style={{ color: "#00ff00" }}>
+      [websocket]
+    </span>
+  );
 };
 
 const PeerConnectionLabel: React.FC = () => {
-  return <span className="mr-1" style={{ color: "#ff8c00" }}>[peerconnection]</span>;
+  return (
+    <span className="mr-1" style={{ color: "#ff8c00" }}>
+      [peerconnection]
+    </span>
+  );
 };
 
 const SoraLabel: React.FC = () => {
-  return <span className="mr-1" style={{ color: "#bce2e8" }}>[sora]</span>;
+  return (
+    <span className="mr-1" style={{ color: "#bce2e8" }}>
+      [sora]
+    </span>
+  );
 };
 
 const SoraDemoLabel: React.FC = () => {
-  return <span className="mr-1" style={{ color: "#73b8e2" }}>[sora-demo]</span>;
+  return (
+    <span className="mr-1" style={{ color: "#73b8e2" }}>
+      [sora-demo]
+    </span>
+  );
 };
 
 type DataChannelLabelProps = {

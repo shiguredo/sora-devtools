@@ -589,7 +589,11 @@ async function createMediaStream(
     dispatch(
       slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify({ audio: audioConstraints }) })
     );
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("audio-media-constraints", { audio: audioConstraints })));
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDemoTimelineMessage("audio-media-constraints", { audio: audioConstraints })
+      )
+    );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-audio-get-user-media")));
     mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
@@ -604,7 +608,11 @@ async function createMediaStream(
     dispatch(
       slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify({ video: videoConstraints }) })
     );
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("video-media-constraints", { video: videoConstraints })));
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDemoTimelineMessage("video-media-constraints", { video: videoConstraints })
+      )
+    );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-video-get-user-media")));
     mediaStream.addTrack(videoMediaStream.getVideoTracks()[0]);
