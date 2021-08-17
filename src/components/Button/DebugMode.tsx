@@ -11,10 +11,7 @@ const DebugMode: React.FC = () => {
   };
   return (
     <div>
-      <button
-        className={debug ? "btn btn-debug-mode active" : "btn btn-debug-mode"}
-        onClick={disconnect}
-      >
+      <button className={debug ? "btn btn-debug-mode active" : "btn btn-debug-mode"} onClick={disconnect}>
         debug
       </button>
     </div>

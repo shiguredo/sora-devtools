@@ -306,7 +306,7 @@ video {
     height: calc(100vh - 56px);
   }
 
-  .col-demo.col-6{
+  .col-demo.col-6 {
     display: none;
   }
 
