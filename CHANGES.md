@@ -11,7 +11,12 @@
 
 ## develop
 
+- [UPDATE] Debug 関連の UI/UX を変更する
+    - header の debug checkbox を削除して右下に常駐のボタンを設置する
+    - width がモバイルサイズの場合、通常表示とデバッグ表示はトグル切り替えになるように修正する
+    - @yuitowest
 - [CHANGE] spotlight_legacy を削除する
+    - @yuitowest
 
 ## 2021.1.6
 
