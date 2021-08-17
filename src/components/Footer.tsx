@@ -3,6 +3,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
+import ButtonDebugMode from "@/components/Button/DebugMode";
 import { SoraDemoState } from "@/slice";
 
 const Footer: React.FC = () => {
@@ -22,6 +23,7 @@ const Footer: React.FC = () => {
           </Navbar.Collapse>
         </Nav>
       </Navbar>
+      <ButtonDebugMode />
     </footer>
   );
 };

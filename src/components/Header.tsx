@@ -14,7 +14,7 @@ const Debug: React.FC = () => {
     dispatch(setDebug(event.target.checked));
   };
   return (
-    <div className="custom-control custom-checkbox">
+    <div className="custom-control custom-checkbox debug-checkbox">
       <input
         id="debug"
         className="custom-control-input"
