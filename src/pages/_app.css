@@ -267,3 +267,56 @@ video {
 .form-sora:last-child:after {
   border: none;
 }
+
+.btn-debug-mode {
+  width: 65px;
+  height: 65px;
+  border-radius: 100%;
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  z-index: 10;
+  background-color: #6c757d;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.btn-debug-mode:hover {
+  background-color: #5a6268;
+  color: #ffffff;
+}
+
+.btn-debug-mode.active {
+  background-color: #ff4c93;
+}
+
+.btn-debug-mode.active:hover {
+  background-color: #ff0066;
+  outline: 0;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 0;
+  }
+
+  .col-demo {
+    flex: none;
+    max-width: none;
+    height: calc(100vh - 56px);
+  }
+
+  .col-demo.col-6 {
+    display: none;
+  }
+
+  .col-debug {
+    flex: none;
+    max-width: none;
+    height: calc(100vh - 56px);
+  }
+
+  .debug-checkbox {
+    display: none;
+  }
+}
