@@ -1,34 +1,9 @@
 import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 
 import ButtonCopyURL from "@/components/Button/CopyURL";
 import ButtonDownloadReport from "@/components/Button/DownloadReport";
-import { setDebug, SoraDemoState } from "@/slice";
 import { EnabledParameters } from "@/utils";
-
-const Debug: React.FC = () => {
-  const { debug } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setDebug(event.target.checked));
-  };
-  return (
-    <div className="custom-control custom-checkbox debug-checkbox">
-      <input
-        id="debug"
-        className="custom-control-input"
-        type="checkbox"
-        name="debug"
-        checked={debug}
-        onChange={onChange}
-      />
-      <label className="mb-0 ml-1 custom-control-label" htmlFor="debug">
-        debug
-      </label>
-    </div>
-  );
-};
 
 type Props = {
   enabledParameters: EnabledParameters;
@@ -45,9 +20,6 @@ const Header: React.FC<Props> = (props) => {
             <Navbar.Text>{props.pageName}</Navbar.Text>
           </Nav>
           <Nav>
-            <Navbar.Text className="mr-3">
-              <Debug />
-            </Navbar.Text>
             <ButtonDownloadReport pageName={props.pageName} />
             <ButtonCopyURL enabledParameters={props.enabledParameters} />
           </Nav>
