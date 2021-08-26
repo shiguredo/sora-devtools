@@ -533,6 +533,9 @@ async function createMediaStream(
     if (!state.video || !state.cameraDevice) {
       return [new MediaStream(), null];
     }
+    if (navigator.mediaDevices === undefined) {
+      throw new Error("Failed to call getUserMedia. Make sure domain is secure");
+    }
     const constraints = {
       video: true,
     };
@@ -575,6 +578,9 @@ async function createMediaStream(
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-create-fake-media")));
     return [mediaStream, gainNode];
+  }
+  if (navigator.mediaDevices === undefined) {
+    throw new Error("Failed to call getUserMedia. Make sure domain is secure");
   }
   const mediaStream = new MediaStream();
   const audioConstraints = createAudioConstraints({
