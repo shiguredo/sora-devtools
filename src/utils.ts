@@ -84,6 +84,7 @@ export type EnabledParameters = {
   noiseSuppression?: boolean;
   resolution?: boolean;
   signalingNotifyMetadata?: boolean;
+  signalingUrlCandidates?: boolean;
   simulcastRid?: boolean;
   spotlight?: boolean;
   spotlightFocusRid?: boolean;
@@ -314,6 +315,7 @@ export type QueryStringParameters = {
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
+  signalingUrlCandidates: string[];
   simulcastRid: typeof SIMULCAST_RID[number];
   spotlight: typeof SPOTLIGHTS[number];
   spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
@@ -357,6 +359,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     resolution,
     showStats,
     signalingNotifyMetadata,
+    signalingUrlCandidates,
     simulcastRid,
     spotlight,
     spotlightFocusRid,
@@ -425,6 +428,12 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (signalingNotifyMetadata) {
     queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
+  }
+  if (signalingUrlCandidates && typeof signalingUrlCandidates === "string") {
+    const parsedSignalingUrlCandidates = JSON.parse(signalingUrlCandidates);
+    if (Array.isArray(parsedSignalingUrlCandidates)) {
+      queryStringParameters.signalingUrlCandidates = parsedSignalingUrlCandidates;
+    }
   }
   if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;

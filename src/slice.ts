@@ -70,6 +70,7 @@ export type SoraDemoState = {
   enabledDataChannel: boolean;
   enabledMetadata: boolean;
   enabledSignalingNotifyMetadata: boolean;
+  enabledSignalingUrlCandidates: boolean;
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -98,6 +99,7 @@ export type SoraDemoState = {
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
+  signalingUrlCandidates: string[];
   signalingMessages: SignalingMessage[];
   simulcastRid: typeof SIMULCAST_RID[number];
   focusedSpotlightConnectionIds: {
@@ -144,6 +146,7 @@ const initialState: SoraDemoState = {
   enabledClientId: false,
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
+  enabledSignalingUrlCandidates: false,
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -171,8 +174,9 @@ const initialState: SoraDemoState = {
   pushMessages: [],
   resolution: "",
   showStats: false,
-  signalingNotifyMetadata: "",
   signalingMessages: [],
+  signalingNotifyMetadata: "",
+  signalingUrlCandidates: [],
   simulcastRid: "",
   spotlight: "2",
   spotlightNumber: "",
@@ -261,6 +265,9 @@ const slice = createSlice({
     setEnabledSignalingNotifyMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledSignalingNotifyMetadata = action.payload;
     },
+    setEnabledSignalingUrlCandidates: (state, action: PayloadAction<boolean>) => {
+      state.enabledSignalingUrlCandidates = action.payload;
+    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
@@ -304,6 +311,9 @@ const slice = createSlice({
     },
     setSignalingNotifyMetadata: (state, action: PayloadAction<string>) => {
       state.signalingNotifyMetadata = action.payload;
+    },
+    setSignalingUrlCandidates: (state, action: PayloadAction<string[]>) => {
+      state.signalingUrlCandidates = action.payload;
     },
     setSimulcastRid: (state, action: PayloadAction<typeof SIMULCAST_RID[number]>) => {
       state.simulcastRid = action.payload;
@@ -1555,6 +1565,17 @@ export const setInitialParameter =
         queryStringParameters.signalingNotifyMetadata
       );
     }
+    // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates と signalingUrlCandidates 両方をセットする
+    if (queryStringParameters.signalingUrlCandidates !== undefined) {
+      dispatch(slice.actions.setEnabledSignalingUrlCandidates(true));
+      setInitialState<SoraDemoState["signalingUrlCandidates"]>(
+        dispatch,
+        slice.actions.setSignalingUrlCandidates,
+        pageInitialParameters.signalingUrlCandidates,
+        queryStringParameters.signalingUrlCandidates
+      );
+    }
+
     // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
     if (
       queryStringParameters.dataChannelSignaling !== undefined ||
@@ -1604,6 +1625,7 @@ export const {
   setEnabledDataChannel,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
+  setEnabledSignalingUrlCandidates,
   setFakeVolume,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
@@ -1615,6 +1637,7 @@ export const {
   setNotifyMessages,
   setResolution,
   setSignalingNotifyMetadata,
+  setSignalingUrlCandidates,
   setSimulcastRid,
   setSora,
   setSoraErrorAlertMessage,

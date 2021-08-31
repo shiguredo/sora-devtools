@@ -19,6 +19,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   e2ee: true,
   metadata: true,
   signalingNotifyMetadata: true,
+  signalingUrlCandidates: true,
   simulcastRid: true,
   video: true,
 };
