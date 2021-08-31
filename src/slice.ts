@@ -896,9 +896,9 @@ export const sendonlyConnectSora =
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     });
-    const signalingURL = createSignalingURL();
-    dispatch(slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingURL) }));
-    const connection = Sora.connection(signalingURL, state.debug);
+    const signalingUrlCandidates = createSignalingURL(state.signalingUrlCandidates);
+    dispatch(slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) }));
+    const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptions = createConnectOptions(
       {
         audio: state.audio,
@@ -975,9 +975,9 @@ export const recvonlyConnectSora =
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect();
     }
-    const signalingURL = createSignalingURL();
-    dispatch(slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingURL) }));
-    const connection = Sora.connection(signalingURL, state.debug);
+    const signalingUrlCandidates = createSignalingURL(state.signalingUrlCandidates);
+    dispatch(slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) }));
+    const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptions = createConnectOptions(
       {
         audio: state.audio,
@@ -1048,9 +1048,9 @@ export const sendrecvConnectSora =
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     });
-    const signalingURL = createSignalingURL();
-    dispatch(slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingURL) }));
-    const connection = Sora.connection(signalingURL, state.debug);
+    const signalingUrlCandidates = createSignalingURL(state.signalingUrlCandidates);
+    dispatch(slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) }));
+    const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptions = createConnectOptions(
       {
         audio: state.audio,
