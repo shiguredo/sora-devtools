@@ -2688,7 +2688,7 @@ slice-ansi@^4.0.0:
 
 sora-js-sdk@shiguredo/sora-js-sdk#feature/type-redirect:
   version "2021.1.6"
-  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/91d09c96ba492956be2854b380fef3a14142d40a"
+  resolved "https://codeload.github.com/shiguredo/sora-js-sdk/tar.gz/f33a3148b81a21ce649e89dcb76c82f6bdd3b0b1"
 
 source-map@0.7.3:
   version "0.7.3"
