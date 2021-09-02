@@ -148,6 +148,10 @@ video {
   margin: 0;
 }
 
+.debug-signaling-url {
+  color: #ffffff;
+}
+
 #debug:checked ~ .custom-control-label::before {
   background-color: #ff0066;
 }
