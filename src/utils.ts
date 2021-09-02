@@ -498,8 +498,11 @@ export function parseQueryString(): Partial<QueryStringParameters> {
 }
 
 // Sora のシグナリングURLを生成
-export function createSignalingURL(signalingUrlCandidates: string[]): string | string[] {
-  if (0 < signalingUrlCandidates.length) {
+export function createSignalingURL(
+  enabledSignalingUrlCandidates: boolean,
+  signalingUrlCandidates: string[]
+): string | string[] {
+  if (enabledSignalingUrlCandidates) {
     // 空文字列は取り除く
     return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== "");
   }
