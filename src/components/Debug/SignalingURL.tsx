@@ -8,7 +8,11 @@ const SignalingURL: React.FC = () => {
   return (
     <div className="debug-signaling-url d-flex align-items-center">
       <span className="mr-1">signaling server</span>
-      <p className="border rounded p-2 m-0 flex-fill">{sora ? sora.signalingUrl : ""}</p>
+      {sora ? (
+        <p className="border rounded px-2 py-1 m-0 flex-fill">{sora.connectedSignalingUrl}</p>
+      ) : (
+        <p className="border rounded py-3 m-0 flex-fill" />
+      )}
     </div>
   );
 };
