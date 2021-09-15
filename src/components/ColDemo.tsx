@@ -28,6 +28,7 @@ import FormEnabledClientId from "@/components/Form/EnabledClientId";
 import FormEnabledDataChannel from "@/components/Form/EnabledDataChannel";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
 import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
+import FormEnabledSignalingUrlCandidates from "@/components/Form/EnabledSignalingUrlCandidates";
 import FormFrameRate from "@/components/Form/FrameRate";
 import FormIgnoreDisconnectWebSocket from "@/components/Form/IgnoreDisconnectWebSocket";
 import FormMediaType from "@/components/Form/MediaType";
@@ -36,6 +37,7 @@ import FormMicDevice from "@/components/Form/MicDevice";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
 import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
+import FormSignalingUrlCandidates from "@/components/Form/SignalingUrlCandidates";
 import FormSimulcastRid from "@/components/Form/SimulcastRid";
 import FormSpotlight from "@/components/Form/Spotlight";
 import FormSpotlightFocusRid from "@/components/Form/SpotlightFocusRid";
@@ -64,6 +66,7 @@ const ColDemo: React.FC<Props> = (props) => {
   const enabledDataChannel = useSelector((state: SoraDemoState) => state.enabledDataChannel);
   const enabledMetadata = useSelector((state: SoraDemoState) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useSelector((state: SoraDemoState) => state.enabledSignalingNotifyMetadata);
+  const enabledSignalingUrlCandidates = useSelector((state: SoraDemoState) => state.enabledSignalingUrlCandidates);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
@@ -79,6 +82,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.e2ee ? <FormE2EE /> : null}
+        {props.enabledParameters.signalingUrlCandidates ? <FormEnabledSignalingUrlCandidates /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.clientId && enabledClientId ? <FormClientId /> : null}
@@ -97,6 +101,11 @@ const ColDemo: React.FC<Props> = (props) => {
             <FormDataChannelSignaling />
             <FormIgnoreDisconnectWebSocket />
           </>
+        ) : null}
+      </div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.signalingUrlCandidates && enabledSignalingUrlCandidates ? (
+          <FormSignalingUrlCandidates />
         ) : null}
       </div>
       <div className="form-row align-items-center">

@@ -32,6 +32,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
   noiseSuppression: true,
   resolution: true,
   signalingNotifyMetadata: true,
+  signalingUrlCandidates: true,
   spotlightNumber: true,
   video: true,
   videoBitRate: true,

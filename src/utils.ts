@@ -84,6 +84,7 @@ export type EnabledParameters = {
   noiseSuppression?: boolean;
   resolution?: boolean;
   signalingNotifyMetadata?: boolean;
+  signalingUrlCandidates?: boolean;
   simulcastRid?: boolean;
   spotlight?: boolean;
   spotlightFocusRid?: boolean;
@@ -314,6 +315,7 @@ export type QueryStringParameters = {
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
+  signalingUrlCandidates: string[];
   simulcastRid: typeof SIMULCAST_RID[number];
   spotlight: typeof SPOTLIGHTS[number];
   spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
@@ -357,6 +359,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     resolution,
     showStats,
     signalingNotifyMetadata,
+    signalingUrlCandidates,
     simulcastRid,
     spotlight,
     spotlightFocusRid,
@@ -426,6 +429,12 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (signalingNotifyMetadata) {
     queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
   }
+  if (signalingUrlCandidates && typeof signalingUrlCandidates === "string") {
+    const parsedSignalingUrlCandidates = JSON.parse(signalingUrlCandidates);
+    if (Array.isArray(parsedSignalingUrlCandidates)) {
+      queryStringParameters.signalingUrlCandidates = parsedSignalingUrlCandidates;
+    }
+  }
   if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;
   }
@@ -489,7 +498,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
 }
 
 // Sora のシグナリングURLを生成
-export function createSignalingURL(): string {
+export function createSignalingURL(
+  enabledSignalingUrlCandidates: boolean,
+  signalingUrlCandidates: string[]
+): string | string[] {
+  if (enabledSignalingUrlCandidates) {
+    // 空文字列は取り除く
+    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== "");
+  }
   if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
     return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL;
   }

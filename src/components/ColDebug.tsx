@@ -6,6 +6,7 @@ import DebugLogMessages from "@/components/Debug/LogMessages";
 import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
 import DebugPushMessages from "@/components/Debug/PushMessages";
 import DebugSignalingMessages from "@/components/Debug/SignalingMessages";
+import DebugSignalingURL from "@/components/Debug/SignalingURL";
 import DebugStats from "@/components/Debug/Stats";
 import DebugTimelineMessages from "@/components/Debug/TimelineMessages";
 import { setDebugType, SoraDemoState } from "@/slice";
@@ -23,7 +24,8 @@ const ColDebug: React.FC = () => {
   };
   return (
     <div className="col-debug col-6">
-      <Tabs id="debug-tab" defaultActiveKey={debugType} onSelect={onSelect}>
+      <DebugSignalingURL />
+      <Tabs id="debug-tab" className="mt-2" defaultActiveKey={debugType} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <DebugTimelineMessages />
         </Tab>

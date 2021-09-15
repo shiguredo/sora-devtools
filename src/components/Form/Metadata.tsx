@@ -11,7 +11,7 @@ const Metadata: React.FC = () => {
   };
   return (
     <div className="col-10 form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="channelId">
+      <label className="mr-1" htmlFor="metadata">
         metadata:
       </label>
       <input

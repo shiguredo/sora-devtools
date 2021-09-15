@@ -106,6 +106,9 @@ const CopyURL: React.FC<Props> = (props) => {
       parameters.push(`dataChannelSignaling=${state.dataChannelSignaling}`);
       parameters.push(`ignoreDisconnectWebSocket=${state.ignoreDisconnectWebSocket}`);
     }
+    if (props.enabledParameters.signalingUrlCandidates) {
+      parameters.push(`signalingUrlCandidates=${JSON.stringify(state.signalingUrlCandidates)}`);
+    }
     parameters.push(`debug=${state.debug}`);
     copy2clipboard(`${location.origin}${location.pathname}?${parameters.join("&")}`);
   };
