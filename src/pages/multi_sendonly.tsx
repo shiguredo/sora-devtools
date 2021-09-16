@@ -73,4 +73,5 @@ const MultiSendonly: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default MultiSendonly;
