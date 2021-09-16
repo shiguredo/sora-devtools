@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setVideoTrack, SoraDemoState } from "@/app/slice";
 
-const VideoTrack: React.FC = () => {
+export const VideoTrack: React.FC = () => {
   const videoTrack = useSelector((state: SoraDemoState) => state.videoTrack);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -26,5 +26,3 @@ const VideoTrack: React.FC = () => {
     </div>
   );
 };
-
-export default VideoTrack;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setAudioInput, SoraDemoState, updateMediaStream } from "@/app/slice";
 
-const AudioInput: React.FC = () => {
+export const AudioInput: React.FC = () => {
   const { audioInput, audioInputDevices } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -34,5 +34,3 @@ const AudioInput: React.FC = () => {
     </div>
   );
 };
-
-export default AudioInput;

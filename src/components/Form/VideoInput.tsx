@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setVideoInput, SoraDemoState, updateMediaStream } from "@/app/slice";
 
-const VideoInput: React.FC = () => {
+export const VideoInput: React.FC = () => {
   const { videoInput, videoInputDevices } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -34,5 +34,3 @@ const VideoInput: React.FC = () => {
     </div>
   );
 };
-
-export default VideoInput;

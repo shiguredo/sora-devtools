@@ -1,6 +1,6 @@
 import React from "react";
 
-import IconClipboard from "@/components/IconClipboard";
+import { IconClipboard } from "@/components/IconClipboard";
 import { copy2clipboard } from "@/utils";
 
 type TextBoxProps = {
@@ -27,7 +27,7 @@ type Props = {
   connectionId: string | null;
   clientId?: string | null;
 };
-const ConnectionStatusBar: React.FC<Props> = (props) => {
+export const ConnectionStatusBar: React.FC<Props> = (props) => {
   return (
     <div className="d-flex align-items-center mb-1 video-status-inner">
       {props.connectionId ? <TextBox text={props.connectionId} /> : null}
@@ -37,5 +37,3 @@ const ConnectionStatusBar: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default ConnectionStatusBar;

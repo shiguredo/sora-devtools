@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
-import Message from "@/components/Debug/Message";
+import { Message } from "@/components/Debug/Message";
 import { TimelineMessage } from "@/utils";
 
 const DATA_CHANNEL_COLORS: { [key: string]: string } = {
@@ -82,7 +82,7 @@ const Log = React.memo((props: TimelineMessage) => {
   return <Collapse {...props} />;
 });
 
-const TimelineMessages: React.FC = () => {
+export const TimelineMessages: React.FC = () => {
   const timelineMessages = useSelector((state: SoraDemoState) => state.timelineMessages);
   return (
     <>
@@ -93,5 +93,3 @@ const TimelineMessages: React.FC = () => {
     </>
   );
 };
-
-export default TimelineMessages;

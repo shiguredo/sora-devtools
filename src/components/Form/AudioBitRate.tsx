@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAudioBitRate, SoraDemoState } from "@/app/slice";
 import { isAudioBitRate } from "@/utils";
 
-const AudioBitRate: React.FC = () => {
+export const AudioBitRate: React.FC = () => {
   const { audioBitRate } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -31,5 +31,3 @@ const AudioBitRate: React.FC = () => {
     </div>
   );
 };
-
-export default AudioBitRate;

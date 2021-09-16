@@ -26,7 +26,7 @@ const VolumeRange: React.FC = () => {
   );
 };
 
-const GetDisplayMedia: React.FC = () => {
+export const MediaType: React.FC = () => {
   const soraContents = useSelector((state: SoraDemoState) => state.soraContents);
   const mediaType = useSelector((state: SoraDemoState) => state.mediaType);
   const disabled = soraContents.sora !== null;
@@ -87,5 +87,3 @@ const GetDisplayMedia: React.FC = () => {
     </div>
   );
 };
-
-export default GetDisplayMedia;

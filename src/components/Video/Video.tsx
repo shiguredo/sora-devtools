@@ -82,8 +82,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   );
 };
 
-const Video = React.memo((props: VideoProps) => {
+export const Video = React.memo((props: VideoProps) => {
   return <VideoElement {...props} />;
 });
-
-export default Video;

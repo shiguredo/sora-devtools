@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setEnabledMetadata, SoraDemoState } from "@/app/slice";
 
-const EnabledMetadata: React.FC = () => {
+export const EnabledMetadata: React.FC = () => {
   const { enabledMetadata } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,5 +27,3 @@ const EnabledMetadata: React.FC = () => {
     </div>
   );
 };
-
-export default EnabledMetadata;

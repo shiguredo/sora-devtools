@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setEchoCancellation, SoraDemoState } from "@/app/slice";
 
-const EchoCancellation: React.FC = () => {
+export const EchoCancellation: React.FC = () => {
   const { echoCancellation } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,5 +27,3 @@ const EchoCancellation: React.FC = () => {
     </div>
   );
 };
-
-export default EchoCancellation;

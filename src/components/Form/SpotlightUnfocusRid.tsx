@@ -5,7 +5,7 @@ import { setSpotlightUnfocusRid, SoraDemoState } from "@/app/slice";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 import { isSpotlightFocusRid } from "@/utils";
 
-const SpotlightUnfocusRid: React.FC = () => {
+export const SpotlightUnfocusRid: React.FC = () => {
   const { spotlightUnfocusRid } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -37,5 +37,3 @@ const SpotlightUnfocusRid: React.FC = () => {
     </div>
   );
 };
-
-export default SpotlightUnfocusRid;

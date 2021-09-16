@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDisplayResolution, SoraDemoState } from "@/app/slice";
 import { isDisplayResolution } from "@/utils";
 
-const DisplayResolution: React.FC = () => {
+export const DisplayResolution: React.FC = () => {
   const { displayResolution } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -31,5 +31,3 @@ const DisplayResolution: React.FC = () => {
     </div>
   );
 };
-
-export default DisplayResolution;

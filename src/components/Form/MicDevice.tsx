@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setMicDevice, SoraDemoState } from "@/app/slice";
 
-const MicDevice: React.FC = () => {
+export const MicDevice: React.FC = () => {
   const micDevice = useSelector((state: SoraDemoState) => state.micDevice);
   const sora = useSelector((state: SoraDemoState) => state.soraContents.sora);
   const audio = useSelector((state: SoraDemoState) => state.audio);
@@ -30,5 +30,3 @@ const MicDevice: React.FC = () => {
     </div>
   );
 };
-
-export default MicDevice;

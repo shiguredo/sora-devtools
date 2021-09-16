@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSimulcastRid, SoraDemoState } from "@/app/slice";
 import { isSimulcastRid } from "@/utils";
 
-const SimulcastRid: React.FC = () => {
+export const SimulcastRid: React.FC = () => {
   const { simulcastRid } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -26,5 +26,3 @@ const SimulcastRid: React.FC = () => {
     </div>
   );
 };
-
-export default SimulcastRid;

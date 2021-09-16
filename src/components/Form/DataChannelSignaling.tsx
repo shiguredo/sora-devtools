@@ -5,7 +5,7 @@ import { setDataChannelSignaling, SoraDemoState } from "@/app/slice";
 import { DATA_CHANNEL_SIGNALING } from "@/constants";
 import { isDataChannelSignaling } from "@/utils";
 
-const DataChannelSignaling: React.FC = () => {
+export const DataChannelSignaling: React.FC = () => {
   const dataChannelSignaling = useSelector((state: SoraDemoState) => state.dataChannelSignaling);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -36,5 +36,3 @@ const DataChannelSignaling: React.FC = () => {
     </div>
   );
 };
-
-export default DataChannelSignaling;

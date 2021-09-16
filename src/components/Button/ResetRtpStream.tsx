@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetRtpStream } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/app/slice";
 
-const ResetSpotlightQuality: React.FC = () => {
+export const ResetRtpStream: React.FC = () => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onClick = async (): Promise<void> => {
@@ -15,7 +15,9 @@ const ResetSpotlightQuality: React.FC = () => {
       const response = await resetRtpStream(channelId, soraContents.sora.connectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setAPIErrorAlertMessage(error.message));
+      if (error instanceof Error) {
+        dispatch(setAPIErrorAlertMessage(error.message));
+      }
     }
   };
   return (
@@ -30,5 +32,3 @@ const ResetSpotlightQuality: React.FC = () => {
     </div>
   );
 };
-
-export default ResetSpotlightQuality;

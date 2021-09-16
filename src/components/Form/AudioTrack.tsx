@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setAudioTrack, SoraDemoState } from "@/app/slice";
 
-const AudioTrack: React.FC = () => {
+export const AudioTrack: React.FC = () => {
   const audioTrack = useSelector((state: SoraDemoState) => state.audioTrack);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -26,5 +26,3 @@ const AudioTrack: React.FC = () => {
     </div>
   );
 };
-
-export default AudioTrack;

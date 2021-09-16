@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setEchoCancellationType, SoraDemoState } from "@/app/slice";
 import { isEchoCancellationType } from "@/utils";
 
-const EchoCancellationType: React.FC = () => {
+export const EchoCancellationType: React.FC = () => {
   const { echoCancellationType } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -31,5 +31,3 @@ const EchoCancellationType: React.FC = () => {
     </div>
   );
 };
-
-export default EchoCancellationType;

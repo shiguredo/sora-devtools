@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFrameRate, SoraDemoState } from "@/app/slice";
 import { isFrameRate } from "@/utils";
 
-const FrameRate: React.FC = () => {
+export const FrameRate: React.FC = () => {
   const { frameRate } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -29,5 +29,3 @@ const FrameRate: React.FC = () => {
     </div>
   );
 };
-
-export default FrameRate;

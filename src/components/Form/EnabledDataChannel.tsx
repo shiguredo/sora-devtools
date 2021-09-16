@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setEnabledDataChannel, SoraDemoState } from "@/app/slice";
 
-const EnabledDataChannel: React.FC = () => {
+export const EnabledDataChannel: React.FC = () => {
   const { enabledDataChannel } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,5 +27,3 @@ const EnabledDataChannel: React.FC = () => {
     </div>
   );
 };
-
-export default EnabledDataChannel;

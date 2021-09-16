@@ -38,7 +38,7 @@ type Props = {
   stream: MediaStream;
   type: "video" | "audio";
 };
-const JitterButter: React.FC<Props> = (props) => {
+export const JitterButter: React.FC<Props> = (props) => {
   const statsReport = useSelector((state: SoraDemoState) => state.soraContents.statsReport);
   const prevStatsReport = useSelector((state: SoraDemoState) => state.soraContents.prevStatsReport);
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
@@ -80,5 +80,3 @@ const JitterButter: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default JitterButter;

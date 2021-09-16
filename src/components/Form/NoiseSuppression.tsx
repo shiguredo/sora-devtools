@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setNoiseSuppression, SoraDemoState } from "@/app/slice";
 
-const NoiseSuppression: React.FC = () => {
+export const NoiseSuppression: React.FC = () => {
   const { noiseSuppression } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,5 +27,3 @@ const NoiseSuppression: React.FC = () => {
     </div>
   );
 };
-
-export default NoiseSuppression;

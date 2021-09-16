@@ -9,7 +9,7 @@ type Props = {
   spotlight: boolean;
   simulcast: boolean;
 };
-const Connect: React.FC<Props> = (props) => {
+export const Connect: React.FC<Props> = (props) => {
   const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
   const dispatch = useDispatch();
   const connect = (): void => {
@@ -39,5 +39,3 @@ const Connect: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default Connect;

@@ -32,12 +32,12 @@ function createVolumeForeground(ctx: CanvasRenderingContext2D, canvasHeight: num
   }
 }
 
-type VolumeVisualizerProps = {
+type VisualizerProps = {
   micDevice: boolean;
   stream: MediaStream;
   height: number;
 };
-const VolumeVisualizer: React.FC<VolumeVisualizerProps> = (props) => {
+const Visualizer: React.FC<VisualizerProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -90,10 +90,10 @@ const VolumeVisualizer: React.FC<VolumeVisualizerProps> = (props) => {
   return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
 };
 
-type MutedVolumeVisualizerProps = {
+type MutedVisualizerProps = {
   height: number;
 };
-const MutedVolumeVisualizer: React.FC<MutedVolumeVisualizerProps> = (props) => {
+const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -114,9 +114,9 @@ const MutedVolumeVisualizer: React.FC<MutedVolumeVisualizerProps> = (props) => {
   return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
 };
 
-export default React.memo<VolumeVisualizerProps>((props) => {
+export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {
   if (props.micDevice && 0 < props.stream.getAudioTracks().length) {
-    return <VolumeVisualizer {...props} />;
+    return <Visualizer {...props} />;
   }
-  return <MutedVolumeVisualizer {...props} />;
+  return <MutedVisualizer {...props} />;
 });

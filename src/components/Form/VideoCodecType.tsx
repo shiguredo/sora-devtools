@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setVideoCodecType, SoraDemoState } from "@/app/slice";
 import { isVideoCodecType } from "@/utils";
 
-const VideoCodecType: React.FC = () => {
+export const VideoCodecType: React.FC = () => {
   const { videoCodecType } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -34,5 +34,3 @@ const VideoCodecType: React.FC = () => {
     </div>
   );
 };
-
-export default VideoCodecType;

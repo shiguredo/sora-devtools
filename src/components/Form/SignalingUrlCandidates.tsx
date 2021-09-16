@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setSignalingUrlCandidates, SoraDemoState } from "@/app/slice";
 
-const SignalingUrlCandidates: React.FC = () => {
+export const SignalingUrlCandidates: React.FC = () => {
   const signalingUrlCandidates = useSelector((state: SoraDemoState) => state.signalingUrlCandidates);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -24,5 +24,3 @@ const SignalingUrlCandidates: React.FC = () => {
     </div>
   );
 };
-
-export default SignalingUrlCandidates;

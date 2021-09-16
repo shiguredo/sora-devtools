@@ -8,7 +8,7 @@ import { EnabledParameters } from "@/utils";
 type Props = {
   enabledParameters: EnabledParameters;
 };
-const CopyURL: React.FC<Props> = (props) => {
+export const CopyURL: React.FC<Props> = (props) => {
   const state = useSelector((state: SoraDemoState) => state);
   const onClick = (): void => {
     const parameters: string[] = [];
@@ -125,5 +125,3 @@ const CopyURL: React.FC<Props> = (props) => {
     />
   );
 };
-
-export default CopyURL;

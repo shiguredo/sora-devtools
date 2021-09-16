@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setAutoGainControl, SoraDemoState } from "@/app/slice";
 
-const AutoGainControl: React.FC = () => {
+export const AutoGainControl: React.FC = () => {
   const { autoGainControl } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,5 +27,3 @@ const AutoGainControl: React.FC = () => {
     </div>
   );
 };
-
-export default AutoGainControl;

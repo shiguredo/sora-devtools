@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
 
-const SignalingURL: React.FC = () => {
+export const SignalingURL: React.FC = () => {
   const { sora } = useSelector((state: SoraDemoState) => state.soraContents);
   return (
     <div className="debug-signaling-url d-flex align-items-center">
@@ -16,5 +16,3 @@ const SignalingURL: React.FC = () => {
     </div>
   );
 };
-
-export default SignalingURL;

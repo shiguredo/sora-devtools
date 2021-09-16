@@ -5,7 +5,7 @@ import { setIgnoreDisconnectWebSocket, SoraDemoState } from "@/app/slice";
 import { IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
 import { isIgnoreDisconnectWebSocket } from "@/utils";
 
-const IgnoreDisconnectWebSocket: React.FC = () => {
+export const IgnoreDisconnectWebSocket: React.FC = () => {
   const ignoreDisconnectWebSocket = useSelector((state: SoraDemoState) => state.ignoreDisconnectWebSocket);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -36,5 +36,3 @@ const IgnoreDisconnectWebSocket: React.FC = () => {
     </div>
   );
 };
-
-export default IgnoreDisconnectWebSocket;

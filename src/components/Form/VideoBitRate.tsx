@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setVideoBitRate, SoraDemoState } from "@/app/slice";
 import { isVideoBitRate } from "@/utils";
 
-const VideoBitRate: React.FC = () => {
+export const VideoBitRate: React.FC = () => {
   const { videoBitRate } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -42,5 +42,3 @@ const VideoBitRate: React.FC = () => {
     </div>
   );
 };
-
-export default VideoBitRate;

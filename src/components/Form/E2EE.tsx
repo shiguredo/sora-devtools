@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setE2EE, SoraDemoState } from "@/app/slice";
 
-const E2EE: React.FC = () => {
+export const E2EE: React.FC = () => {
   const [displaySpinner, setDisplaySpinner] = useState(false);
   const { e2ee } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
@@ -33,5 +33,3 @@ const E2EE: React.FC = () => {
     </div>
   );
 };
-
-export default E2EE;

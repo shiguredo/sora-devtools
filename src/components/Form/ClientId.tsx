@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setClientId, SoraDemoState } from "@/app/slice";
 
-const ClientId: React.FC = () => {
+export const ClientId: React.FC = () => {
   const { clientId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -26,5 +26,3 @@ const ClientId: React.FC = () => {
     </div>
   );
 };
-
-export default ClientId;

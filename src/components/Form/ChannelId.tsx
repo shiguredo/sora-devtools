@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setChannelId, SoraDemoState } from "@/app/slice";
 
-const ChannelId: React.FC = () => {
+export const ChannelId: React.FC = () => {
   const { channelId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -26,5 +26,3 @@ const ChannelId: React.FC = () => {
     </div>
   );
 };
-
-export default ChannelId;

@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setDataChannelMessaging, SoraDemoState } from "@/slice";
+import { setDataChannelMessaging, SoraDemoState } from "@/app/slice";
 
-const DataChannelMessaging: React.FC = () => {
+export const DataChannelMessaging: React.FC = () => {
   const dataChannelMessaging = useSelector((state: SoraDemoState) => state.dataChannelMessaging);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -25,5 +25,3 @@ const DataChannelMessaging: React.FC = () => {
     </div>
   );
 };
-
-export default DataChannelMessaging;

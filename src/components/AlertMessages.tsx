@@ -23,7 +23,7 @@ const Alert: React.FC<AlertMessage> = (props) => {
   );
 };
 
-const AlertMessages: React.FC = () => {
+export const AlertMessages: React.FC = () => {
   const { alertMessages } = useSelector((state: SoraDemoState) => state);
   return (
     <div className="alert-messages">
@@ -33,5 +33,3 @@ const AlertMessages: React.FC = () => {
     </div>
   );
 };
-
-export default AlertMessages;

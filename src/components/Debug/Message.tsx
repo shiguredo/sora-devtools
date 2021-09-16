@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Collapse } from "react-bootstrap";
 
-import ButtonCopyLog from "@/components/Button/CopyLog";
+import { CopyLog } from "@/components/Button/CopyLog";
 import { formatUnixtime } from "@/utils";
 
 type DescriptionProps = {
@@ -62,7 +62,7 @@ type Props = {
   defaultShow?: boolean;
   label?: JSX.Element | null;
 };
-const Message: React.FC<Props> = (props) => {
+export const Message: React.FC<Props> = (props) => {
   const { defaultShow, description, title, timestamp, label } = props;
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
@@ -82,7 +82,7 @@ const Message: React.FC<Props> = (props) => {
           <span>{title}</span>
         </a>
         <div className="border-left">
-          <ButtonCopyLog
+          <CopyLog
             text={typeof description === "string" ? description : JSON.stringify(description, null, 2)}
             disabled={disabled}
           />
@@ -96,5 +96,3 @@ const Message: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default Message;

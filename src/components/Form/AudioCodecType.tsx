@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAudioCodecType, SoraDemoState } from "@/app/slice";
 import { isAudioCodecType } from "@/utils";
 
-const AudioCodecType: React.FC = () => {
+export const AudioCodecType: React.FC = () => {
   const { audioCodecType } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -30,5 +30,3 @@ const AudioCodecType: React.FC = () => {
     </div>
   );
 };
-
-export default AudioCodecType;

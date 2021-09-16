@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setCameraDevice, SoraDemoState } from "@/app/slice";
 
-const CameraDevice: React.FC = () => {
+export const CameraDevice: React.FC = () => {
   const cameraDevice = useSelector((state: SoraDemoState) => state.cameraDevice);
   const sora = useSelector((state: SoraDemoState) => state.soraContents.sora);
   const video = useSelector((state: SoraDemoState) => state.video);
@@ -30,5 +30,3 @@ const CameraDevice: React.FC = () => {
     </div>
   );
 };
-
-export default CameraDevice;

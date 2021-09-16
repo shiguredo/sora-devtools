@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 
-const SendDataChannelMessaging: React.FC = () => {
+export const SendDataChannelMessaging: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
   const textRef = useRef<HTMLInputElement>(null);
   const { sora } = useSelector((state: SoraDemoState) => state.soraContents);
@@ -54,5 +54,3 @@ const SendDataChannelMessaging: React.FC = () => {
     </div>
   );
 };
-
-export default SendDataChannelMessaging;

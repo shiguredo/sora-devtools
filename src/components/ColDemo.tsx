@@ -2,58 +2,57 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
-import AlertMessages from "@/components/AlertMessages";
-import ButtonConnect from "@/components/Button/Connect";
-import ButtonDisconnect from "@/components/Button/Disconnect";
-import ReloadDevices from "@/components/Button/ReloadDevices";
-import ButtonRequestRtpStream from "@/components/Button/RequestRtpStream";
-import ButtonResetRtpStream from "@/components/Button/ResetRtpStream";
-import ButtonStartRecording from "@/components/Button/StartRecording";
-import ButtonStopRecording from "@/components/Button/StopRecording";
-import FormAudio from "@/components/Form/Audio";
-import FormAudioBitRate from "@/components/Form/AudioBitRate";
-import FormAudioCodecType from "@/components/Form/AudioCodecType";
-import FormAudioInput from "@/components/Form/AudioInput";
-import FormAudioOutput from "@/components/Form/AudioOutput";
-import FormAudioTrack from "@/components/Form/AudioTrack";
-import FormAutoGainControl from "@/components/Form/AutoGainControl";
-import FormCameraDevice from "@/components/Form/CameraDevice";
-import FormChannelId from "@/components/Form/ChannelId";
-import FormClientId from "@/components/Form/ClientId";
-import FormDataChannelMessaging from "@/components/Form/DataChannelMessaging";
-import FormDataChannelSignaling from "@/components/Form/DataChannelSignaling";
-import FormDisplayResolution from "@/components/Form/DisplayResolution";
-import FormE2EE from "@/components/Form/E2EE";
-import FormEchoCancellation from "@/components/Form/EchoCancellation";
-import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
-import FormEnabledClientId from "@/components/Form/EnabledClientId";
-import FormEnabledDataChannel from "@/components/Form/EnabledDataChannel";
-import FormEnabledDataChannelMessaging from "@/components/Form/EnabledDataChannelMessaging";
-import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
-import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
-import FormEnabledSignalingUrlCandidates from "@/components/Form/EnabledSignalingUrlCandidates";
-import FormFrameRate from "@/components/Form/FrameRate";
-import FormIgnoreDisconnectWebSocket from "@/components/Form/IgnoreDisconnectWebSocket";
-import FormMediaType from "@/components/Form/MediaType";
-import FormMetadata from "@/components/Form/Metadata";
-import FormMicDevice from "@/components/Form/MicDevice";
-import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
-import FormResolution from "@/components/Form/Resolution";
-import FormSendDataChannelMessaging from "@/components/Form/SendDataChannelMessaging";
-import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
-import FormSignalingUrlCandidates from "@/components/Form/SignalingUrlCandidates";
-import FormSimulcastRid from "@/components/Form/SimulcastRid";
-import FormSpotlight from "@/components/Form/Spotlight";
-import FormSpotlightFocusRid from "@/components/Form/SpotlightFocusRid";
-import FormSpotlightNumber from "@/components/Form/SpotlightNumber";
-import FormSpotlightUnfocusRid from "@/components/Form/SpotlightUnfocusRid";
-import FormVideo from "@/components/Form/Video";
-import FormVideoBitRate from "@/components/Form/VideoBitRate";
-import FormVideoCodecType from "@/components/Form/VideoCodecType";
-import FormVideoInput from "@/components/Form/VideoInput";
-import FormVideoTrack from "@/components/Form/VideoTrack";
-import LocalVideo from "@/components/Video/LocalVideo";
-import RemoteVideos from "@/components/Video/RemoteVideos";
+import { AlertMessages } from "@/components/AlertMessages";
+import { Connect } from "@/components/Button/Connect";
+import { Disconnect } from "@/components/Button/Disconnect";
+import { ReloadDevices } from "@/components/Button/ReloadDevices";
+import { RequestRtpStream } from "@/components/Button/RequestRtpStream";
+import { ResetRtpStream } from "@/components/Button/ResetRtpStream";
+import { StartRecording } from "@/components/Button/StartRecording";
+import { StopRecording } from "@/components/Button/StopRecording";
+import { Audio } from "@/components/Form/Audio";
+import { AudioBitRate } from "@/components/Form/AudioBitRate";
+import { AudioCodecType } from "@/components/Form/AudioCodecType";
+import { AudioInput } from "@/components/Form/AudioInput";
+import { AudioOutput } from "@/components/Form/AudioOutput";
+import { AudioTrack } from "@/components/Form/AudioTrack";
+import { AutoGainControl } from "@/components/Form/AutoGainControl";
+import { CameraDevice } from "@/components/Form/CameraDevice";
+import { ChannelId } from "@/components/Form/ChannelId";
+import { ClientId } from "@/components/Form/ClientId";
+import { DataChannelMessaging } from "@/components/Form/DataChannelMessaging";
+import { DataChannelSignaling } from "@/components/Form/DataChannelSignaling";
+import { DisplayResolution } from "@/components/Form/DisplayResolution";
+import { E2EE } from "@/components/Form/E2EE";
+import { EchoCancellation } from "@/components/Form/EchoCancellation";
+import { EchoCancellationType } from "@/components/Form/EchoCancellationType";
+import { EnabledClientId } from "@/components/Form/EnabledClientId";
+import { EnabledDataChannel } from "@/components/Form/EnabledDataChannel";
+import { EnabledDataChannelMessaging } from "@/components/Form/EnabledDataChannelMessaging";
+import { EnabledMetadata } from "@/components/Form/EnabledMetadata";
+import { EnabledSignalingNotifyMetadata } from "@/components/Form/EnabledSignalingNotifyMetadata";
+import { EnabledSignalingUrlCandidates } from "@/components/Form/EnabledSignalingUrlCandidates";
+import { FrameRate } from "@/components/Form/FrameRate";
+import { IgnoreDisconnectWebSocket } from "@/components/Form/IgnoreDisconnectWebSocket";
+import { MediaType } from "@/components/Form/MediaType";
+import { Metadata } from "@/components/Form/Metadata";
+import { MicDevice } from "@/components/Form/MicDevice";
+import { NoiseSuppression } from "@/components/Form/NoiseSuppression";
+import { Resolution } from "@/components/Form/Resolution";
+import { SignalingNotifyMetadata } from "@/components/Form/SignalingNotifyMetadata";
+import { SignalingUrlCandidates } from "@/components/Form/SignalingUrlCandidates";
+import { SimulcastRid } from "@/components/Form/SimulcastRid";
+import { Spotlight } from "@/components/Form/Spotlight";
+import { SpotlightFocusRid } from "@/components/Form/SpotlightFocusRid";
+import { SpotlightNumber } from "@/components/Form/SpotlightNumber";
+import { SpotlightUnfocusRid } from "@/components/Form/SpotlightUnfocusRid";
+import { Video } from "@/components/Form/Video";
+import { VideoBitRate } from "@/components/Form/VideoBitRate";
+import { VideoCodecType } from "@/components/Form/VideoCodecType";
+import { VideoInput } from "@/components/Form/VideoInput";
+import { VideoTrack } from "@/components/Form/VideoTrack";
+import { LocalVideo } from "@/components/Video/LocalVideo";
+import { RemoteVideos } from "@/components/Video/RemoteVideos";
 import { ConnectType, EnabledParameters } from "@/utils";
 
 type Props = {
@@ -63,9 +62,7 @@ type Props = {
   spotlight?: boolean;
   enabledParameters: EnabledParameters;
 };
-const ColDemo: React.FC<Props> = (props) => {
-  const sora = useSelector((state: SoraDemoState) => state.soraContents.sora);
-  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
+export const ColDemo: React.FC<Props> = (props) => {
   const debug = useSelector((state: SoraDemoState) => state.debug);
   const enabledClientId = useSelector((state: SoraDemoState) => state.enabledClientId);
   const enabledDataChannel = useSelector((state: SoraDemoState) => state.enabledDataChannel);
@@ -76,107 +73,98 @@ const ColDemo: React.FC<Props> = (props) => {
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
-      <div className="form-row align-items-center py-1">
-        {props.enabledParameters.mediaType ? <FormMediaType /> : null}
+      <div className="form-row align-items-center py-1">{props.enabledParameters.mediaType ? <MediaType /> : null}</div>
+      <div className="form-row align-items-center">
+        {props.enabledParameters.channelId ? <ChannelId /> : null}
+        {props.enabledParameters.clientId ? <EnabledClientId /> : null}
+        {props.enabledParameters.metadata ? <EnabledMetadata /> : null}
+        {props.enabledParameters.signalingNotifyMetadata ? <EnabledSignalingNotifyMetadata /> : null}
+        {props.enabledParameters.dataChannel ? <EnabledDataChannel /> : null}
+        {props.enabledParameters.spotlight ? <Spotlight /> : null}
+        {props.enabledParameters.spotlightNumber ? <SpotlightNumber /> : null}
+        {props.enabledParameters.e2ee ? <E2EE /> : null}
+        {props.enabledParameters.signalingUrlCandidates ? <EnabledSignalingUrlCandidates /> : null}
+        <EnabledDataChannelMessaging />
       </div>
       <div className="form-row align-items-center">
-        {props.enabledParameters.channelId ? <FormChannelId /> : null}
-        {props.enabledParameters.clientId ? <FormEnabledClientId /> : null}
-        {props.enabledParameters.metadata ? <FormEnabledMetadata /> : null}
-        {props.enabledParameters.signalingNotifyMetadata ? <FormEnabledSignalingNotifyMetadata /> : null}
-        {props.enabledParameters.dataChannel ? <FormEnabledDataChannel /> : null}
-        {props.enabledParameters.spotlight ? <FormSpotlight /> : null}
-        {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
-        {props.enabledParameters.e2ee ? <FormE2EE /> : null}
-        {props.enabledParameters.signalingUrlCandidates ? <FormEnabledSignalingUrlCandidates /> : null}
-        <FormEnabledDataChannelMessaging />
+        {props.enabledParameters.clientId && enabledClientId ? <ClientId /> : null}
       </div>
       <div className="form-row align-items-center">
-        {props.enabledParameters.clientId && enabledClientId ? <FormClientId /> : null}
-      </div>
-      <div className="form-row align-items-center">
-        {props.enabledParameters.metadata && enabledMetadata ? <FormMetadata /> : null}
+        {props.enabledParameters.metadata && enabledMetadata ? <Metadata /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.signalingNotifyMetadata && enabledSignalingNotifyMetadata ? (
-          <FormSignalingNotifyMetadata />
+          <SignalingNotifyMetadata />
         ) : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.dataChannel && enabledDataChannel ? (
           <>
-            <FormDataChannelSignaling />
-            <FormIgnoreDisconnectWebSocket />
+            <DataChannelSignaling />
+            <IgnoreDisconnectWebSocket />
           </>
         ) : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.signalingUrlCandidates && enabledSignalingUrlCandidates ? (
-          <FormSignalingUrlCandidates />
+          <SignalingUrlCandidates />
         ) : null}
       </div>
+      <div className="form-row align-items-center">{enabledDataChannelMessaging ? <DataChannelMessaging /> : null}</div>
       <div className="form-row align-items-center">
-        {enabledDataChannelMessaging ? <FormDataChannelMessaging /> : null}
+        {props.enabledParameters.audio ? <Audio /> : null}
+        {props.enabledParameters.audioCodecType ? <AudioCodecType /> : null}
+        {props.enabledParameters.audioBitRate ? <AudioBitRate /> : null}
+        {props.enabledParameters.autoGainControl ? <AutoGainControl /> : null}
+        {props.enabledParameters.noiseSuppression ? <NoiseSuppression /> : null}
+        {props.enabledParameters.echoCancellation ? <EchoCancellation /> : null}
+        {props.enabledParameters.echoCancellationType ? <EchoCancellationType /> : null}
       </div>
       <div className="form-row align-items-center">
-        {props.enabledParameters.audio ? <FormAudio /> : null}
-        {props.enabledParameters.audioCodecType ? <FormAudioCodecType /> : null}
-        {props.enabledParameters.audioBitRate ? <FormAudioBitRate /> : null}
-        {props.enabledParameters.autoGainControl ? <FormAutoGainControl /> : null}
-        {props.enabledParameters.noiseSuppression ? <FormNoiseSuppression /> : null}
-        {props.enabledParameters.echoCancellation ? <FormEchoCancellation /> : null}
-        {props.enabledParameters.echoCancellationType ? <FormEchoCancellationType /> : null}
+        {props.enabledParameters.video ? <Video /> : null}
+        {props.enabledParameters.videoCodecType ? <VideoCodecType /> : null}
+        {props.enabledParameters.videoBitRate ? <VideoBitRate /> : null}
+        {props.enabledParameters.resolution ? <Resolution /> : null}
+        {props.enabledParameters.frameRate ? <FrameRate /> : null}
+        {props.enabledParameters.simulcastRid ? <SimulcastRid /> : null}
+        {props.enabledParameters.spotlightFocusRid ? <SpotlightFocusRid /> : null}
+        {props.enabledParameters.spotlightUnfocusRid ? <SpotlightUnfocusRid /> : null}
       </div>
       <div className="form-row align-items-center">
-        {props.enabledParameters.video ? <FormVideo /> : null}
-        {props.enabledParameters.videoCodecType ? <FormVideoCodecType /> : null}
-        {props.enabledParameters.videoBitRate ? <FormVideoBitRate /> : null}
-        {props.enabledParameters.resolution ? <FormResolution /> : null}
-        {props.enabledParameters.frameRate ? <FormFrameRate /> : null}
-        {props.enabledParameters.simulcastRid ? <FormSimulcastRid /> : null}
-        {props.enabledParameters.spotlightFocusRid ? <FormSpotlightFocusRid /> : null}
-        {props.enabledParameters.spotlightUnfocusRid ? <FormSpotlightUnfocusRid /> : null}
-      </div>
-      <div className="form-row align-items-center">
-        {props.enabledParameters.audioInput ? <FormAudioInput /> : null}
-        {props.enabledParameters.audioOutput ? <FormAudioOutput /> : null}
-        {props.enabledParameters.videoInput ? <FormVideoInput /> : null}
-        {props.enabledParameters.displayResolution ? <FormDisplayResolution /> : null}
+        {props.enabledParameters.audioInput ? <AudioInput /> : null}
+        {props.enabledParameters.audioOutput ? <AudioOutput /> : null}
+        {props.enabledParameters.videoInput ? <VideoInput /> : null}
+        {props.enabledParameters.displayResolution ? <DisplayResolution /> : null}
       </div>
       <div className="form-row align-items-center py-1">
-        {props.enabledParameters.micDevice ? <FormMicDevice /> : null}
-        {props.enabledParameters.cameraDevice ? <FormCameraDevice /> : null}
-        {props.enabledParameters.audioTrack ? <FormAudioTrack /> : null}
-        {props.enabledParameters.videoTrack ? <FormVideoTrack /> : null}
+        {props.enabledParameters.micDevice ? <MicDevice /> : null}
+        {props.enabledParameters.cameraDevice ? <CameraDevice /> : null}
+        {props.enabledParameters.audioTrack ? <AudioTrack /> : null}
+        {props.enabledParameters.videoTrack ? <VideoTrack /> : null}
       </div>
       <div className="form-row align-items-center">
-        {connectionStatus === "connected" && sora && 0 < sora.messagingDataChannels.length ? (
-          <FormSendDataChannelMessaging />
-        ) : null}
-      </div>
-      <div className="form-row align-items-center">
-        <ButtonConnect
+        <Connect
           connectType={props.connectType}
           multistream={props.multistream ? true : false}
           spotlight={props.spotlight ? true : false}
           simulcast={props.simulcast ? true : false}
         />
-        <ButtonDisconnect />
-        <ButtonStartRecording />
-        <ButtonStopRecording />
+        <Disconnect />
+        <StartRecording />
+        <StopRecording />
         {!props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonRequestRtpStream rid={"r0"} />
-            <ButtonRequestRtpStream rid={"r1"} />
-            <ButtonRequestRtpStream rid={"r2"} />
+            <RequestRtpStream rid={"r0"} />
+            <RequestRtpStream rid={"r1"} />
+            <RequestRtpStream rid={"r2"} />
           </>
         ) : null}
         {props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
           <>
-            <ButtonRequestRtpStream rid={"r0"} />
-            <ButtonRequestRtpStream rid={"r1"} />
-            <ButtonRequestRtpStream rid={"r2"} />
-            <ButtonResetRtpStream />
+            <RequestRtpStream rid={"r0"} />
+            <RequestRtpStream rid={"r1"} />
+            <RequestRtpStream rid={"r2"} />
+            <ResetRtpStream />
           </>
         ) : null}
         <ReloadDevices />
@@ -192,5 +180,3 @@ const ColDemo: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default ColDemo;

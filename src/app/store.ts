@@ -1,7 +1,7 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { logger } from "redux-logger";
 
-import reducer from "./slice";
+import { reducer } from "./slice";
 
 /**
  * @see https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type

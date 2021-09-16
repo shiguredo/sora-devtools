@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setEnabledSignalingNotifyMetadata, SoraDemoState } from "@/app/slice";
 
-const EnabledSignalingNotifyMetadata: React.FC = () => {
+export const EnabledSignalingNotifyMetadata: React.FC = () => {
   const { enabledSignalingNotifyMetadata } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,5 +27,3 @@ const EnabledSignalingNotifyMetadata: React.FC = () => {
     </div>
   );
 };
-
-export default EnabledSignalingNotifyMetadata;

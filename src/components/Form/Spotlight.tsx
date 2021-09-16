@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSpotlight, SoraDemoState } from "@/app/slice";
 import { isSpotlight } from "@/utils";
 
-const Spotlight: React.FC = () => {
+export const Spotlight: React.FC = () => {
   const { spotlight } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -30,5 +30,3 @@ const Spotlight: React.FC = () => {
     </div>
   );
 };
-
-export default Spotlight;

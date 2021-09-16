@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
-import Message from "@/components/Debug/Message";
+import { Message } from "@/components/Debug/Message";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
   [x: string]: string | number | undefined;
@@ -16,7 +16,7 @@ const Log = React.memo((props: RTCStatsWithIndexSignature) => {
   return <Collapse {...props} />;
 });
 
-const DebugGetStats: React.FC = () => {
+export const Stats: React.FC = () => {
   const { statsReport } = useSelector((state: SoraDemoState) => state.soraContents);
   return (
     <>
@@ -26,5 +26,3 @@ const DebugGetStats: React.FC = () => {
     </>
   );
 };
-
-export default DebugGetStats;

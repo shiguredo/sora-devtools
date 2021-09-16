@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
-import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
-import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
+import { RequestRtpStreamBySendConnectionId } from "@/components/Button/RequestRtpStreamBySendConnectionId";
+import { ResetRtpStreamBySendConnectionId } from "@/components/Button/ResetRtpStreamBySendConnectionId";
 import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
 
-import ConnectionStatusBar from "./ConnectionStatusBar";
-import JitterButter from "./JitterBuffer";
-import Video from "./Video";
-import VolumeVisualizer from "./VolumeVisualizer";
+import { ConnectionStatusBar } from "./ConnectionStatusBar";
+import { JitterButter } from "./JitterBuffer";
+import { Video } from "./Video";
+import { VolumeVisualizer } from "./VolumeVisualizer";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
@@ -106,17 +106,17 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
           <JitterButter type="video" stream={props.stream} />
           {!props.spotlight && props.multistream && props.simulcast ? (
             <>
-              <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
             </>
           ) : null}
           {props.spotlight && props.multistream && props.simulcast ? (
             <>
-              <ButtonRequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
-              <ButtonResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
+              <ResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
             </>
           ) : null}
         </div>
@@ -143,7 +143,7 @@ type RemoteVideosProps = {
   simulcast: boolean;
   spotlight: boolean;
 };
-const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
+export const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
   const remoteMediaStreams = useSelector((state: SoraDemoState) => state.soraContents.remoteMediaStreams);
   return (
     <div className="row my-2">
@@ -161,5 +161,3 @@ const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
     </div>
   );
 };
-
-export default RemoteVideos;

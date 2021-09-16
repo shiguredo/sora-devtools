@@ -7,7 +7,7 @@ import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "
 type Props = {
   sendConnectionId: string;
 };
-const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
+export const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onClick = async (): Promise<void> => {
@@ -18,7 +18,9 @@ const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
       const response = await resetRtpStream(channelId, soraContents.sora.connectionId, props.sendConnectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setAPIErrorAlertMessage(error.message));
+      if (error instanceof Error) {
+        dispatch(setAPIErrorAlertMessage(error.message));
+      }
     }
   };
   return (
@@ -31,5 +33,3 @@ const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
     />
   );
 };
-
-export default ResetRtpStreamBySendConnectionId;

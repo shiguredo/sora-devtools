@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
-import Message from "@/components/Debug/Message";
+import { Message } from "@/components/Debug/Message";
 import { LogMessage } from "@/utils";
 
 const Collapse: React.FC<LogMessage> = (props) => {
@@ -14,7 +14,7 @@ const Log = React.memo((props: LogMessage) => {
   return <Collapse {...props} />;
 });
 
-const LogMessages: React.FC = () => {
+export const LogMessages: React.FC = () => {
   const { logMessages } = useSelector((state: SoraDemoState) => state);
   return (
     <>
@@ -24,5 +24,3 @@ const LogMessages: React.FC = () => {
     </>
   );
 };
-
-export default LogMessages;

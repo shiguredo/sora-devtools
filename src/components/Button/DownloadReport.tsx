@@ -7,7 +7,7 @@ import { SoraDemoState } from "@/app/slice";
 type Props = {
   pageName: string;
 };
-const DownloadReport: React.FC<Props> = (props) => {
+export const DownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const state = useSelector((state: SoraDemoState) => state);
   const { statsReport } = state.soraContents;
@@ -81,5 +81,3 @@ const DownloadReport: React.FC<Props> = (props) => {
     </>
   );
 };
-
-export default DownloadReport;

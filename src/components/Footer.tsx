@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
 import { SoraDemoState } from "@/app/slice";
-import ButtonDebugMode from "@/components/Button/DebugMode";
+import { DebugMode } from "@/components/Button/DebugMode";
 
-const Footer: React.FC = () => {
+export const Footer: React.FC = () => {
   const { version } = useSelector((state: SoraDemoState) => state);
   return (
     <footer>
@@ -23,9 +23,7 @@ const Footer: React.FC = () => {
           </Navbar.Collapse>
         </Nav>
       </Navbar>
-      <ButtonDebugMode />
+      <DebugMode />
     </footer>
   );
 };
-
-export default Footer;
