@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { SoraDemoState } from "@/app/slice";
 import { RequestRtpStreamBySendConnectionId } from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import { ResetRtpStreamBySendConnectionId } from "@/components/Button/ResetRtpStreamBySendConnectionId";
-import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
+import { RTCMediaStreamTrackStats } from "@/utils";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
 import { JitterButter } from "./JitterBuffer";
@@ -21,16 +21,19 @@ function mediaStreamStatsReportFilter(
   const trackIds = mediaStream.getTracks().map((t) => {
     return t.id;
   });
-  return statsReport.filter((stats) => {
+  const result: RTCMediaStreamTrackStats[] = [];
+  for (const stats of statsReport) {
     if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
-      return false;
+      continue;
     }
     if ("trackIdentifier" in stats) {
       const mediaStreamStats = stats as RTCMediaStreamTrackStats;
-      return mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier);
+      if (mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier)) {
+        result.push(mediaStreamStats);
+      }
     }
-    return false;
-  });
+  }
+  return result;
 }
 
 const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
@@ -43,11 +46,11 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport,
     props.stream
-  ) as ExpansionRTCMediaStreamTrackStats[];
+  ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport,
     props.stream
-  ) as ExpansionRTCMediaStreamTrackStats[];
+  ) as RTCMediaStreamTrackStats[];
   return (
     <>
       {currentMediaStreamTrackStatsReport.map((s) => {

@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { SoraDemoState } from "@/app/slice";
-import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
+import { RTCMediaStreamTrackStats } from "@/utils";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
@@ -22,7 +22,7 @@ function mediaStreamStatsReportFilter(
       return t.id;
     });
   }
-  return statsReport.find((stats) => {
+  const targetStats = statsReport.find((stats) => {
     if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
       return false;
     }
@@ -32,6 +32,7 @@ function mediaStreamStatsReportFilter(
     }
     return false;
   });
+  return targetStats as RTCMediaStreamTrackStats;
 }
 
 type Props = {
@@ -45,12 +46,12 @@ export const JitterButter: React.FC<Props> = (props) => {
     statsReport,
     props.stream,
     props.type
-  ) as ExpansionRTCMediaStreamTrackStats;
+  ) as RTCMediaStreamTrackStats;
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport,
     props.stream,
     props.type
-  ) as ExpansionRTCMediaStreamTrackStats;
+  ) as RTCMediaStreamTrackStats;
   if (!currentMediaStreamTrackStatsReport) {
     return null;
   }
