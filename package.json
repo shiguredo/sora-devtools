@@ -46,6 +46,6 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
     "redux-logger": "^3.0.6",
-    "sora-js-sdk": "2021.2.0-canary.0"
+    "sora-js-sdk": "2021.2.0-canary.1"
   }
 }
