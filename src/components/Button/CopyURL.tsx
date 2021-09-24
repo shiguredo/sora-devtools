@@ -102,11 +102,11 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.videoTrack) {
       parameters.push(`videoTrack=${state.videoTrack}`);
     }
-    if (props.enabledParameters.dataChannel) {
+    if (props.enabledParameters.dataChannel && state.enabledDataChannel) {
       parameters.push(`dataChannelSignaling=${state.dataChannelSignaling}`);
       parameters.push(`ignoreDisconnectWebSocket=${state.ignoreDisconnectWebSocket}`);
     }
-    if (props.enabledParameters.signalingUrlCandidates) {
+    if (props.enabledParameters.signalingUrlCandidates && state.enabledSignalingUrlCandidates) {
       parameters.push(`signalingUrlCandidates=${JSON.stringify(state.signalingUrlCandidates)}`);
     }
     parameters.push(`debug=${state.debug}`);
