@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] モバイル表示でも画面タイトルが表示されるように修正する
+    - @yuitowest
 - [ADD] 複数シグナリング URL 対応を追加する
     - signalingUrlCandidates を設定できるようにする
     - デバッグモード時に現在接続中のシグナリング URL を表示する機能を追加する
