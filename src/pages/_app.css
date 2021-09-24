@@ -46,6 +46,7 @@ footer .btn {
 video {
   min-width: 80px;
   min-height: 60px;
+  object-fit: none;
 }
 
 .nav-tabs .nav-link {
