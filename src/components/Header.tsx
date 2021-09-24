@@ -14,11 +14,12 @@ const Header: React.FC<Props> = (props) => {
     <header>
       <Navbar variant="dark" bg="sora" expand="md" fixed="top">
         <Navbar.Brand href="/">Sora DEMO</Navbar.Brand>
+        <Nav>
+          <Navbar.Text>{props.pageName}</Navbar.Text>
+        </Nav>
         <Navbar.Toggle aria-controls="navbar-collapse" />
         <Navbar.Collapse id="navbar-collapse">
-          <Nav className="mr-auto">
-            <Navbar.Text>{props.pageName}</Navbar.Text>
-          </Nav>
+          <Nav className="mr-auto" />
           <Nav>
             <ButtonDownloadReport pageName={props.pageName} />
             <ButtonCopyURL enabledParameters={props.enabledParameters} />
