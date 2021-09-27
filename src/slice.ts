@@ -27,6 +27,7 @@ import {
   createFakeMediaStream,
   createSignalingURL,
   createVideoConstraints,
+  DataChannelMessage,
   DebugType,
   drawFakeCanvas,
   getDevices,
@@ -62,11 +63,14 @@ export type SoraDemoState = {
   debug: boolean;
   debugType: DebugType;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
+  dataChannelMessaging: string;
+  dataChannelMessages: DataChannelMessage[];
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
   enabledClientId: boolean;
+  enabledDataChannelMessaging: boolean;
   enabledDataChannel: boolean;
   enabledMetadata: boolean;
   enabledSignalingNotifyMetadata: boolean;
@@ -138,12 +142,15 @@ const initialState: SoraDemoState = {
   debug: false,
   debugType: "timeline",
   dataChannelSignaling: "",
+  dataChannelMessaging: "",
+  dataChannelMessages: [],
   displayResolution: "",
   e2ee: false,
   echoCancellation: true,
   echoCancellationType: "",
-  enabledDataChannel: false,
   enabledClientId: false,
+  enabledDataChannel: false,
+  enabledDataChannelMessaging: false,
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
   enabledSignalingUrlCandidates: false,
@@ -232,6 +239,12 @@ const slice = createSlice({
     setDataChannelSignaling: (state, action: PayloadAction<typeof DATA_CHANNEL_SIGNALING[number]>) => {
       state.dataChannelSignaling = action.payload;
     },
+    setDataChannelMessaging: (state, action: PayloadAction<string>) => {
+      state.dataChannelMessaging = action.payload;
+    },
+    setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
+      state.dataChannelMessages.push(action.payload);
+    },
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
     },
@@ -249,6 +262,9 @@ const slice = createSlice({
     },
     setEnabledClientId: (state, action: PayloadAction<boolean>) => {
       state.enabledClientId = action.payload;
+    },
+    setEnabledDataChannelMessaging: (state, action: PayloadAction<boolean>) => {
+      state.enabledDataChannelMessaging = action.payload;
     },
     setEnabledDataChannel: (state, action: PayloadAction<boolean>) => {
       state.enabledDataChannel = action.payload;
@@ -760,6 +776,15 @@ function setSoraCallbacks(
     };
     dispatch(slice.actions.setSignalingMessage(message));
   });
+  sora.on("messaging", (event) => {
+    dispatch(
+      slice.actions.setDataChannelMessage({
+        timestamp: new Date().getTime(),
+        label: event.label,
+        data: event.data,
+      })
+    );
+  });
 }
 
 // Sora の connectOptions を生成する
@@ -771,6 +796,7 @@ function createConnectOptions(
     | "audioCodecType"
     | "clientId"
     | "dataChannelSignaling"
+    | "dataChannelMessaging"
     | "enabledClientId"
     | "e2ee"
     | "enabledDataChannel"
@@ -851,6 +877,18 @@ function createConnectOptions(
       connectionOptions.ignoreDisconnectWebSocket = false;
     }
   }
+  if (pickedState.dataChannelMessaging !== "") {
+    let dataChannelMessaging = [];
+    try {
+      dataChannelMessaging = JSON.parse(pickedState.dataChannelMessaging);
+    } catch (_) {
+      // サンプル実装なので warning で回避
+      console.warn("Illegal format DataChannelMessaging");
+    }
+    if (Array.isArray(dataChannelMessaging)) {
+      connectionOptions.messagingDataChannels = dataChannelMessaging;
+    }
+  }
   return connectionOptions;
 }
 
@@ -911,6 +949,7 @@ export const sendonlyConnectSora =
         audioCodecType: state.audioCodecType,
         clientId: state.clientId,
         dataChannelSignaling: state.dataChannelSignaling,
+        dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
         enabledClientId: state.enabledClientId,
         enabledDataChannel: state.enabledDataChannel,
         e2ee: state.e2ee,
@@ -995,6 +1034,7 @@ export const recvonlyConnectSora =
         audioCodecType: state.audioCodecType,
         clientId: state.clientId,
         dataChannelSignaling: state.dataChannelSignaling,
+        dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
         enabledClientId: state.enabledClientId,
         enabledDataChannel: state.enabledDataChannel,
         e2ee: state.e2ee,
@@ -1073,6 +1113,7 @@ export const sendrecvConnectSora =
         audioCodecType: state.audioCodecType,
         clientId: state.clientId,
         dataChannelSignaling: state.dataChannelSignaling,
+        dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
         enabledClientId: state.enabledClientId,
         enabledDataChannel: state.enabledDataChannel,
         e2ee: state.e2ee,
@@ -1590,13 +1631,22 @@ export const setInitialParameter =
         queryStringParameters.signalingUrlCandidates
       );
     }
-
     // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
     if (
       queryStringParameters.dataChannelSignaling !== undefined ||
       queryStringParameters.ignoreDisconnectWebSocket !== undefined
     ) {
       dispatch(slice.actions.setEnabledDataChannel(true));
+    }
+    // dataChannelMessaging が存在した場合は enabledDataChannelMessaging をセットする
+    if (queryStringParameters.dataChannelMessaging !== undefined) {
+      dispatch(slice.actions.setEnabledDataChannelMessaging(true));
+      setInitialState<SoraDemoState["dataChannelMessaging"]>(
+        dispatch,
+        slice.actions.setDataChannelMessaging,
+        pageInitialParameters.dataChannelMessaging,
+        queryStringParameters.dataChannelMessaging
+      );
     }
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
@@ -1630,6 +1680,7 @@ export const {
   setAutoGainControl,
   setChannelId,
   setClientId,
+  setDataChannelMessaging,
   setDataChannelSignaling,
   setDebug,
   setDebugType,
@@ -1637,6 +1688,7 @@ export const {
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledClientId,
+  setEnabledDataChannelMessaging,
   setEnabledDataChannel,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,

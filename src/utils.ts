@@ -155,6 +155,14 @@ export type SignalingMessage = {
   data?: any;
 };
 
+// Debug data channel message の Type
+export type DataChannelMessage = {
+  timestamp: number;
+  label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
+};
+
 // 画面表示する message の Type
 export type AlertMessage = {
   timestamp: number;
@@ -298,6 +306,7 @@ export type QueryStringParameters = {
   channelId: string;
   clientId: string;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
+  dataChannelMessaging: string;
   debug: boolean;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   e2ee: boolean;
@@ -342,6 +351,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     channelId,
     clientId,
     dataChannelSignaling,
+    dataChannelMessaging,
     debug,
     displayResolution,
     e2ee,
@@ -493,6 +503,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof videoTrack === "boolean") {
     queryStringParameters.videoTrack = videoTrack;
+  }
+  if (typeof dataChannelMessaging === "string") {
+    queryStringParameters.dataChannelMessaging = dataChannelMessaging;
   }
   return queryStringParameters;
 }

@@ -19,6 +19,7 @@ import FormAutoGainControl from "@/components/Form/AutoGainControl";
 import FormCameraDevice from "@/components/Form/CameraDevice";
 import FormChannelId from "@/components/Form/ChannelId";
 import FormClientId from "@/components/Form/ClientId";
+import FormDataChannelMessaging from "@/components/Form/DataChannelMessaging";
 import FormDataChannelSignaling from "@/components/Form/DataChannelSignaling";
 import FormDisplayResolution from "@/components/Form/DisplayResolution";
 import FormE2EE from "@/components/Form/E2EE";
@@ -26,6 +27,7 @@ import FormEchoCancellation from "@/components/Form/EchoCancellation";
 import FormEchoCancellationType from "@/components/Form/EchoCancellationType";
 import FormEnabledClientId from "@/components/Form/EnabledClientId";
 import FormEnabledDataChannel from "@/components/Form/EnabledDataChannel";
+import FormEnabledDataChannelMessaging from "@/components/Form/EnabledDataChannelMessaging";
 import FormEnabledMetadata from "@/components/Form/EnabledMetadata";
 import FormEnabledSignalingNotifyMetadata from "@/components/Form/EnabledSignalingNotifyMetadata";
 import FormEnabledSignalingUrlCandidates from "@/components/Form/EnabledSignalingUrlCandidates";
@@ -36,6 +38,7 @@ import FormMetadata from "@/components/Form/Metadata";
 import FormMicDevice from "@/components/Form/MicDevice";
 import FormNoiseSuppression from "@/components/Form/NoiseSuppression";
 import FormResolution from "@/components/Form/Resolution";
+import FormSendDataChannelMessaging from "@/components/Form/SendDataChannelMessaging";
 import FormSignalingNotifyMetadata from "@/components/Form/SignalingNotifyMetadata";
 import FormSignalingUrlCandidates from "@/components/Form/SignalingUrlCandidates";
 import FormSimulcastRid from "@/components/Form/SimulcastRid";
@@ -61,9 +64,12 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 const ColDemo: React.FC<Props> = (props) => {
+  const sora = useSelector((state: SoraDemoState) => state.soraContents.sora);
+  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
   const debug = useSelector((state: SoraDemoState) => state.debug);
   const enabledClientId = useSelector((state: SoraDemoState) => state.enabledClientId);
   const enabledDataChannel = useSelector((state: SoraDemoState) => state.enabledDataChannel);
+  const enabledDataChannelMessaging = useSelector((state: SoraDemoState) => state.enabledDataChannelMessaging);
   const enabledMetadata = useSelector((state: SoraDemoState) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useSelector((state: SoraDemoState) => state.enabledSignalingNotifyMetadata);
   const enabledSignalingUrlCandidates = useSelector((state: SoraDemoState) => state.enabledSignalingUrlCandidates);
@@ -83,6 +89,7 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.spotlightNumber ? <FormSpotlightNumber /> : null}
         {props.enabledParameters.e2ee ? <FormE2EE /> : null}
         {props.enabledParameters.signalingUrlCandidates ? <FormEnabledSignalingUrlCandidates /> : null}
+        <FormEnabledDataChannelMessaging />
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.clientId && enabledClientId ? <FormClientId /> : null}
@@ -107,6 +114,9 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.signalingUrlCandidates && enabledSignalingUrlCandidates ? (
           <FormSignalingUrlCandidates />
         ) : null}
+      </div>
+      <div className="form-row align-items-center">
+        {enabledDataChannelMessaging ? <FormDataChannelMessaging /> : null}
       </div>
       <div className="form-row align-items-center">
         {props.enabledParameters.audio ? <FormAudio /> : null}
@@ -138,6 +148,11 @@ const ColDemo: React.FC<Props> = (props) => {
         {props.enabledParameters.cameraDevice ? <FormCameraDevice /> : null}
         {props.enabledParameters.audioTrack ? <FormAudioTrack /> : null}
         {props.enabledParameters.videoTrack ? <FormVideoTrack /> : null}
+      </div>
+      <div className="form-row align-items-center">
+        {connectionStatus === "connected" && sora && 0 < sora.messagingDataChannels.length ? (
+          <FormSendDataChannelMessaging />
+        ) : null}
       </div>
       <div className="form-row align-items-center">
         <ButtonConnect

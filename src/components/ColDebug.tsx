@@ -2,6 +2,7 @@ import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
+import DebugDataChannelMessages from "@/components/Debug/DataChannelMessages";
 import DebugLogMessages from "@/components/Debug/LogMessages";
 import DebugNotifyMessages from "@/components/Debug/NotifyMessages";
 import DebugPushMessages from "@/components/Debug/PushMessages";
@@ -43,6 +44,9 @@ const ColDebug: React.FC = () => {
         </Tab>
         <Tab eventKey="log" title="Log">
           <DebugLogMessages />
+        </Tab>
+        <Tab eventKey="messaging" title="Messaging">
+          <DebugDataChannelMessages />
         </Tab>
       </Tabs>
     </div>

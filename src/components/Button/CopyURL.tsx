@@ -109,6 +109,9 @@ const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.signalingUrlCandidates && state.enabledSignalingUrlCandidates) {
       parameters.push(`signalingUrlCandidates=${JSON.stringify(state.signalingUrlCandidates)}`);
     }
+    if (state.enabledDataChannelMessaging && state.dataChannelMessaging !== "") {
+      parameters.push(`dataChannelMessaging=${encodeURIComponent(state.dataChannelMessaging)}`);
+    }
     parameters.push(`debug=${state.debug}`);
     copy2clipboard(`${location.origin}${location.pathname}?${parameters.join("&")}`);
   };
