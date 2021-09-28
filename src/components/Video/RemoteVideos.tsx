@@ -121,7 +121,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start overflow-hidden">
+      <div className="d-flex flex-wrap align-items-start">
         <div className={"d-flex flex-nowrap align-items-start video-wrapper" + (focused ? " spotlight-focused" : "")}>
           <Video
             stream={props.stream}
