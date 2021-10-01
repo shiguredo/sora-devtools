@@ -1,17 +1,17 @@
 import React, { useRef } from "react";
-import { useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 
 type Props = {
   pageName: string;
 };
 export const DownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
-  const state = useSelector((state: SoraDemoState) => state);
-  const { statsReport } = state.soraContents;
   const onClick = async (): Promise<void> => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const state = useAppSelector((state) => state);
+    const { statsReport } = state.soraContents;
     const parametersReport = {
       audio: state.audio,
       audioBitRate: state.audioBitRate,

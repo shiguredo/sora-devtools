@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
+import { useAppDispatch } from "@/app/hooks";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
 import { ColDebug } from "@/components/ColDebug";
 import { ColDemo } from "@/components/ColDemo";
@@ -44,7 +44,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
 };
 
 const SpotlightSendrecv: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(
       setInitialParameter({

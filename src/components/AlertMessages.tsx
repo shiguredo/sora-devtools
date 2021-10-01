@@ -1,12 +1,12 @@
 import React from "react";
 import { Toast } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 
-import { deleteAlertMessage, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { deleteAlertMessage } from "@/app/slice";
 import { AlertMessage } from "@/utils";
 
 const Alert: React.FC<AlertMessage> = (props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onClose = (): void => {
     dispatch(deleteAlertMessage(props.timestamp));
   };
@@ -24,7 +24,7 @@ const Alert: React.FC<AlertMessage> = (props) => {
 };
 
 export const AlertMessages: React.FC = () => {
-  const { alertMessages } = useSelector((state: SoraDemoState) => state);
+  const alertMessages = useAppSelector((state) => state.alertMessages);
   return (
     <div className="alert-messages">
       {alertMessages.map((alertMessage) => {

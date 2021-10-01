@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
 import { PushMessage } from "@/utils";
 
@@ -31,7 +30,7 @@ const Log = React.memo((props: CollapsePushProps) => {
 });
 
 export const PushMessages: React.FC = () => {
-  const { pushMessages } = useSelector((state: SoraDemoState) => state);
+  const pushMessages = useAppSelector((state) => state.pushMessages);
   return (
     <>
       {pushMessages.map((pushMessage, index) => {

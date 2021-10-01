@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
 import { NotifyMessage } from "@/utils";
 
@@ -37,7 +36,7 @@ const Log = React.memo((props: CollapseNotifyProps) => {
 });
 
 export const NotifyMessages: React.FC = () => {
-  const { notifyMessages } = useSelector((state: SoraDemoState) => state);
+  const notifyMessages = useAppSelector((state) => state.notifyMessages);
   return (
     <>
       {notifyMessages.map((notify) => {

@@ -1,10 +1,9 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 
 export const SignalingURL: React.FC = () => {
-  const { sora } = useSelector((state: SoraDemoState) => state.soraContents);
+  const sora = useAppSelector((state) => state.soraContents.sora);
   return (
     <div className="debug-signaling-url d-flex align-items-center">
       <span className="me-1">signaling server</span>

@@ -1,12 +1,12 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { stopRec } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
 export const StopRecording: React.FC = () => {
-  const { channelId } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+  const channelId = useAppSelector((state) => state.channelId);
+  const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     try {
       const response = await stopRec(channelId);

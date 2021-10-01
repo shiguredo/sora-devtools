@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
 import { SignalingMessage } from "@/utils";
 
@@ -31,7 +30,7 @@ const Log = React.memo((props: SignalingMessage) => {
 });
 
 export const SignalingMessages: React.FC = () => {
-  const signalingMessages = useSelector((state: SoraDemoState) => state.signalingMessages);
+  const signalingMessages = useAppSelector((state) => state.signalingMessages);
   return (
     <>
       {signalingMessages.map((message) => {

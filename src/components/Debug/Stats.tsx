@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
@@ -17,7 +16,7 @@ const Log = React.memo((props: RTCStatsWithIndexSignature) => {
 });
 
 export const Stats: React.FC = () => {
-  const { statsReport } = useSelector((state: SoraDemoState) => state.soraContents);
+  const statsReport = useAppSelector((state) => state.soraContents.statsReport);
   return (
     <>
       {statsReport.map((stats) => {

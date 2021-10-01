@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
 import { TimelineMessage } from "@/utils";
 
@@ -83,7 +82,7 @@ const Log = React.memo((props: TimelineMessage) => {
 });
 
 export const TimelineMessages: React.FC = () => {
-  const timelineMessages = useSelector((state: SoraDemoState) => state.timelineMessages);
+  const timelineMessages = useAppSelector((state) => state.timelineMessages);
   return (
     <>
       {timelineMessages.map((message) => {

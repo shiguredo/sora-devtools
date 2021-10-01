@@ -1,8 +1,8 @@
 import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 
-import { setDebugType, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setDebugType } from "@/app/slice";
 import { DataChannelMessages } from "@/components/Debug/DataChannelMessages";
 import { LogMessages } from "@/components/Debug/LogMessages";
 import { NotifyMessages } from "@/components/Debug/NotifyMessages";
@@ -13,8 +13,9 @@ import { Stats } from "@/components/Debug/Stats";
 import { TimelineMessages } from "@/components/Debug/TimelineMessages";
 
 export const ColDebug: React.FC = () => {
-  const { debug, debugType } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+  const debug = useAppSelector((state) => state.debug);
+  const debugType = useAppSelector((state) => state.debugType);
+  const dispatch = useAppDispatch();
   if (!debug) {
     return null;
   }

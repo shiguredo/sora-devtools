@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { RequestRtpStreamBySendConnectionId } from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import { ResetRtpStreamBySendConnectionId } from "@/components/Button/ResetRtpStreamBySendConnectionId";
 import { RTCMediaStreamTrackStats } from "@/utils";
@@ -37,9 +36,9 @@ function mediaStreamStatsReportFilter(
 }
 
 const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
-  const showStats = useSelector((state: SoraDemoState) => state.showStats);
-  const statsReport = useSelector((state: SoraDemoState) => state.soraContents.statsReport);
-  const prevStatsReport = useSelector((state: SoraDemoState) => state.soraContents.prevStatsReport);
+  const showStats = useAppSelector((state) => state.showStats);
+  const statsReport = useAppSelector((state) => state.soraContents.statsReport);
+  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport);
   if (!showStats) {
     return null;
   }
@@ -95,10 +94,10 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [height, setHeight] = useState<number>(0);
-  const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
-  const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
-  const mute = useSelector((state: SoraDemoState) => state.mute);
-  const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
+  const audioOutput = useAppSelector((state) => state.audioOutput);
+  const displayResolution = useAppSelector((state) => state.displayResolution);
+  const mute = useAppSelector((state) => state.mute);
+  const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
   const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id];
   return (
     <div className="col-auto">
@@ -147,7 +146,7 @@ type RemoteVideosProps = {
   spotlight: boolean;
 };
 export const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
-  const remoteMediaStreams = useSelector((state: SoraDemoState) => state.soraContents.remoteMediaStreams);
+  const remoteMediaStreams = useAppSelector((state) => state.soraContents.remoteMediaStreams);
   return (
     <div className="row my-2">
       {remoteMediaStreams.map((mediaStream) => {

@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 
-import { setMediaType, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setMediaType } from "@/app/slice";
 import { isMediaType } from "@/utils";
 
 type FormRadioProps = {
@@ -28,10 +28,10 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
 };
 
 export const FormMediaType: React.FC = () => {
-  const soraContents = useSelector((state: SoraDemoState) => state.soraContents);
-  const mediaType = useSelector((state: SoraDemoState) => state.mediaType);
+  const soraContents = useAppSelector((state) => state.soraContents);
+  const mediaType = useAppSelector((state) => state.mediaType);
   const disabled = soraContents.sora !== null;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (isMediaType(event.target.value)) {
       dispatch(setMediaType(event.target.value));

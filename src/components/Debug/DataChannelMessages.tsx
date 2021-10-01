@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
 import { DataChannelMessage } from "@/utils";
 
@@ -15,7 +14,7 @@ const Log = React.memo((props: DataChannelMessage) => {
 });
 
 export const DataChannelMessages: React.FC = () => {
-  const dataChannelMessages = useSelector((state: SoraDemoState) => state.dataChannelMessages);
+  const dataChannelMessages = useAppSelector((state) => state.dataChannelMessages);
   return (
     <>
       {dataChannelMessages.map((message) => {

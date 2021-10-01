@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { RTCMediaStreamTrackStats } from "@/utils";
 
 function mediaStreamStatsReportFilter(
@@ -40,8 +39,8 @@ type Props = {
   type: "video" | "audio";
 };
 export const JitterButter: React.FC<Props> = (props) => {
-  const statsReport = useSelector((state: SoraDemoState) => state.soraContents.statsReport);
-  const prevStatsReport = useSelector((state: SoraDemoState) => state.soraContents.prevStatsReport);
+  const statsReport = useAppSelector((state) => state.soraContents.statsReport);
+  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport);
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport,
     props.stream,

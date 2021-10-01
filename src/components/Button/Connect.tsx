@@ -1,7 +1,7 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora } from "@/app/slice";
 
 type Props = {
   connectType: "sendonly" | "sendrecv" | "recvonly";
@@ -10,8 +10,8 @@ type Props = {
   simulcast: boolean;
 };
 export const Connect: React.FC<Props> = (props) => {
-  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
-  const dispatch = useDispatch();
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const dispatch = useAppDispatch();
   const connect = (): void => {
     const connectOptions = {
       multistream: props.multistream,

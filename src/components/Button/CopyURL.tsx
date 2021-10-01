@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { copy2clipboard } from "@/utils";
 import { EnabledParameters } from "@/utils";
 
@@ -9,8 +8,9 @@ type Props = {
   enabledParameters: EnabledParameters;
 };
 export const CopyURL: React.FC<Props> = (props) => {
-  const state = useSelector((state: SoraDemoState) => state);
   const onClick = (): void => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const state = useAppSelector((state) => state);
     const parameters: string[] = [];
     if (props.enabledParameters.audio) {
       parameters.push(`audio=${state.audio}`);

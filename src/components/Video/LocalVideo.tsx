@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/app/slice";
+import { useAppSelector } from "@/app/hooks";
 import { ConnectType } from "@/utils";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
@@ -10,12 +9,12 @@ import { VolumeVisualizer } from "./VolumeVisualizer";
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
-  const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
-  const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
-  const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
-  const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
-  const localMediaStream = useSelector((state: SoraDemoState) => state.soraContents.localMediaStream);
-  const micDevice = useSelector((state: SoraDemoState) => state.micDevice);
+  const audioOutput = useAppSelector((state) => state.audioOutput);
+  const displayResolution = useAppSelector((state) => state.displayResolution);
+  const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
+  const connectionId = useAppSelector((state) => state.soraContents.connectionId);
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
+  const micDevice = useAppSelector((state) => state.micDevice);
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
   return (
     <>
@@ -41,8 +40,8 @@ type LocalVideoProps = {
   connectType: ConnectType;
 };
 export const LocalVideo: React.FC<LocalVideoProps> = (props) => {
-  const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
-  const clientId = useSelector((state: SoraDemoState) => state.soraContents.clientId);
+  const connectionId = useAppSelector((state) => state.soraContents.connectionId);
+  const clientId = useAppSelector((state) => state.soraContents.clientId);
   return (
     <div className="row my-1">
       <div className="col-auto">

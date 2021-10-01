@@ -1,11 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { setDebug, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setDebug } from "@/app/slice";
 
 export const DebugMode: React.FC = () => {
-  const { debug } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+  const debug = useAppSelector((state) => state.debug);
+  const dispatch = useAppDispatch();
   const disconnect = (): void => {
     dispatch(setDebug(!debug));
   };
