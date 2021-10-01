@@ -75,9 +75,6 @@ export const CopyURL: React.FC<Props> = (props) => {
     if (props.enabledParameters.simulcastRid) {
       parameters.push(`simulcastRid=${state.simulcastRid}`);
     }
-    if (props.enabledParameters.spotlight) {
-      parameters.push(`spotlight=${state.spotlight}`);
-    }
     if (props.enabledParameters.spotlightNumber) {
       parameters.push(`spotlightNumber=${state.spotlightNumber}`);
     }

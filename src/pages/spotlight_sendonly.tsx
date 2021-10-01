@@ -50,7 +50,6 @@ const SpotlightSendonly: React.FC = () => {
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "500",
         resolution: "VGA",
-        spotlight: "true",
       })
     );
     dispatch(setMediaDevices());

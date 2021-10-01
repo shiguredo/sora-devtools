@@ -15,7 +15,6 @@ import {
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  SPOTLIGHTS,
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   WORKER_SCRIPT,
@@ -109,7 +108,6 @@ export type SoraDemoState = {
   focusedSpotlightConnectionIds: {
     [key: string]: boolean;
   };
-  spotlight: typeof SPOTLIGHTS[number];
   spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
   spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
@@ -185,7 +183,6 @@ const initialState: SoraDemoState = {
   signalingNotifyMetadata: "",
   signalingUrlCandidates: [],
   simulcastRid: "",
-  spotlight: "2",
   spotlightNumber: "",
   spotlightFocusRid: "",
   spotlightUnfocusRid: "",
@@ -333,9 +330,6 @@ const slice = createSlice({
     },
     setSimulcastRid: (state, action: PayloadAction<typeof SIMULCAST_RID[number]>) => {
       state.simulcastRid = action.payload;
-    },
-    setSpotlight: (state, action: PayloadAction<typeof SPOTLIGHTS[number]>) => {
-      state.spotlight = action.payload;
     },
     setSpotlightNumber: (state, action: PayloadAction<typeof SPOTLIGHT_NUMBERS[number]>) => {
       state.spotlightNumber = action.payload;
@@ -807,7 +801,6 @@ function createConnectOptions(
     | "ignoreDisconnectWebSocket"
     | "signalingNotifyMetadata"
     | "simulcastRid"
-    | "spotlight"
     | "spotlightFocusRid"
     | "spotlightNumber"
     | "spotlightUnfocusRid"
@@ -960,7 +953,6 @@ export const sendonlyConnectSora =
         ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
         signalingNotifyMetadata: state.signalingNotifyMetadata,
         simulcastRid: "",
-        spotlight: state.spotlight,
         spotlightNumber: state.spotlightNumber,
         spotlightFocusRid: state.spotlightFocusRid,
         spotlightUnfocusRid: state.spotlightUnfocusRid,
@@ -1047,7 +1039,6 @@ export const recvonlyConnectSora =
         ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
         signalingNotifyMetadata: state.signalingNotifyMetadata,
         simulcastRid: state.simulcastRid,
-        spotlight: state.spotlight,
         spotlightNumber: state.spotlightNumber,
         spotlightFocusRid: state.spotlightFocusRid,
         spotlightUnfocusRid: state.spotlightUnfocusRid,
@@ -1128,7 +1119,6 @@ export const sendrecvConnectSora =
         ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
         signalingNotifyMetadata: state.signalingNotifyMetadata,
         simulcastRid: state.simulcastRid,
-        spotlight: state.spotlight,
         spotlightNumber: state.spotlightNumber,
         spotlightFocusRid: state.spotlightFocusRid,
         spotlightUnfocusRid: state.spotlightUnfocusRid,
@@ -1506,12 +1496,6 @@ export const setInitialParameter =
       pageInitialParameters.simulcastRid,
       queryStringParameters.simulcastRid
     );
-    setInitialState<SoraDemoState["spotlight"]>(
-      dispatch,
-      slice.actions.setSpotlight,
-      pageInitialParameters.spotlight,
-      queryStringParameters.spotlight
-    );
     setInitialState<SoraDemoState["spotlightNumber"]>(
       dispatch,
       slice.actions.setSpotlightNumber,
@@ -1718,7 +1702,6 @@ export const {
   setSora,
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,
-  setSpotlight,
   setSpotlightFocusRid,
   setSpotlightNumber,
   setSpotlightUnfocusRid,

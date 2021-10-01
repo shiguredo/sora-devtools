@@ -31,7 +31,6 @@ export const DownloadReport: React.FC<Props> = (props) => {
       noiseSuppression: state.noiseSuppression,
       resolution: state.resolution,
       simulcastRid: state.simulcastRid,
-      spotlight: state.spotlight,
       spotlightNumber: state.spotlightNumber,
       video: state.video,
       videoBitRate: state.videoBitRate,

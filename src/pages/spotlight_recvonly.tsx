@@ -29,7 +29,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
 const SpotlightRecvonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter({ spotlight: "true" }));
+    dispatch(setInitialParameter({}));
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
