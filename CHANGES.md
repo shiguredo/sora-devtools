@@ -11,6 +11,11 @@
 
 ## develop
 
+- [UPDATE] package を更新する
+    - react-bootstrap: 1.6.1, -> 2.0.0-beta.6
+    - bootstrap: 4.5.3 -> 5.1.1
+    - typescript: 4.3.5 -> 4.4.3
+    - @yuitowest
 - [UPDATE] モバイル表示でも画面タイトルが表示されるように修正する
     - @yuitowest
 - [ADD] 複数シグナリング URL 対応を追加する
