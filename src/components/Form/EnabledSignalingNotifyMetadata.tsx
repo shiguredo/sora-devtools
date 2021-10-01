@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setEnabledSignalingNotifyMetadata, SoraDemoState } from "@/slice";
+import { setEnabledSignalingNotifyMetadata, SoraDemoState } from "@/app/slice";
 
 const EnabledSignalingNotifyMetadata: React.FC = () => {
   const { enabledSignalingNotifyMetadata } = useSelector((state: SoraDemoState) => state);

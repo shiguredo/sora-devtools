@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setFrameRate, SoraDemoState } from "@/slice";
+import { setFrameRate, SoraDemoState } from "@/app/slice";
 import { isFrameRate } from "@/utils";
 
 const FrameRate: React.FC = () => {

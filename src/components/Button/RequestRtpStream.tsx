@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SimulcastRid } from "sora-js-sdk";
 
 import { requestRtpStream } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/app/slice";
 
 type Props = {
   rid: SimulcastRid;

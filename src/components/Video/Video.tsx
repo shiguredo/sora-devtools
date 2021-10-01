@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
 
 type VideoProps = {

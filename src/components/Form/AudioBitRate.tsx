@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setAudioBitRate, SoraDemoState } from "@/slice";
+import { setAudioBitRate, SoraDemoState } from "@/app/slice";
 import { isAudioBitRate } from "@/utils";
 
 const AudioBitRate: React.FC = () => {

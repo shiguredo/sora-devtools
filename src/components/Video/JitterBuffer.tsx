@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
 
 function mediaStreamStatsReportFilter(

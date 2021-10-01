@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setAutoGainControl, SoraDemoState } from "@/slice";
+import { setAutoGainControl, SoraDemoState } from "@/app/slice";
 
 const AutoGainControl: React.FC = () => {
   const { autoGainControl } = useSelector((state: SoraDemoState) => state);

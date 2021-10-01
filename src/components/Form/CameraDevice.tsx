@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setCameraDevice, SoraDemoState } from "@/slice";
+import { setCameraDevice, SoraDemoState } from "@/app/slice";
 
 const CameraDevice: React.FC = () => {
   const cameraDevice = useSelector((state: SoraDemoState) => state.cameraDevice);

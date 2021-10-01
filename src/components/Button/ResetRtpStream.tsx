@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { resetRtpStream } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/app/slice";
 
 const ResetSpotlightQuality: React.FC = () => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);

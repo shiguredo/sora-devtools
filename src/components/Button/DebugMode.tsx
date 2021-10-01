@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setDebug, SoraDemoState } from "@/slice";
+import { setDebug, SoraDemoState } from "@/app/slice";
 
 const DebugMode: React.FC = () => {
   const { debug } = useSelector((state: SoraDemoState) => state);

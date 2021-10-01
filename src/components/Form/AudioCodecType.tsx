@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setAudioCodecType, SoraDemoState } from "@/slice";
+import { setAudioCodecType, SoraDemoState } from "@/app/slice";
 import { isAudioCodecType } from "@/utils";
 
 const AudioCodecType: React.FC = () => {

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 
 type Props = {
   pageName: string;

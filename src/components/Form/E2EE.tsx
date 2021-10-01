@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setE2EE, SoraDemoState } from "@/slice";
+import { setE2EE, SoraDemoState } from "@/app/slice";
 
 const E2EE: React.FC = () => {
   const [displaySpinner, setDisplaySpinner] = useState(false);

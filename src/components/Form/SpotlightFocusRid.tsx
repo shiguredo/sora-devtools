@@ -1,8 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { setSpotlightFocusRid, SoraDemoState } from "@/app/slice";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
-import { setSpotlightFocusRid, SoraDemoState } from "@/slice";
 import { isSpotlightFocusRid } from "@/utils";
 
 const SpotlightFocusRid: React.FC = () => {

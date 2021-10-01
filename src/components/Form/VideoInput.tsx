@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setVideoInput, SoraDemoState, updateMediaStream } from "@/slice";
+import { setVideoInput, SoraDemoState, updateMediaStream } from "@/app/slice";
 
 const VideoInput: React.FC = () => {
   const { videoInput, videoInputDevices } = useSelector((state: SoraDemoState) => state);

@@ -2,7 +2,7 @@ import React from "react";
 import { Toast } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
-import { deleteAlertMessage, SoraDemoState } from "@/slice";
+import { deleteAlertMessage, SoraDemoState } from "@/app/slice";
 import { AlertMessage } from "@/utils";
 
 const Alert: React.FC<AlertMessage> = (props) => {

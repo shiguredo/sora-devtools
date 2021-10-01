@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
+import { SoraDemoState } from "@/app/slice";
 import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
 import { NotifyMessage } from "@/utils";
 
 const SIGNALING_COLORS: { [key: string]: string } = {

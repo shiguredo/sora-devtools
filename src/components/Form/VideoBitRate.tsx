@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setVideoBitRate, SoraDemoState } from "@/slice";
+import { setVideoBitRate, SoraDemoState } from "@/app/slice";
 import { isVideoBitRate } from "@/utils";
 
 const VideoBitRate: React.FC = () => {

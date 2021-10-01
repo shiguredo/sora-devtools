@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setVideoCodecType, SoraDemoState } from "@/slice";
+import { setVideoCodecType, SoraDemoState } from "@/app/slice";
 import { isVideoCodecType } from "@/utils";
 
 const VideoCodecType: React.FC = () => {

@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
+import { SoraDemoState } from "@/app/slice";
 import AlertMessages from "@/components/AlertMessages";
 import ButtonConnect from "@/components/Button/Connect";
 import ButtonDisconnect from "@/components/Button/Disconnect";
@@ -53,7 +54,6 @@ import FormVideoInput from "@/components/Form/VideoInput";
 import FormVideoTrack from "@/components/Form/VideoTrack";
 import LocalVideo from "@/components/Video/LocalVideo";
 import RemoteVideos from "@/components/Video/RemoteVideos";
-import { SoraDemoState } from "@/slice";
 import { ConnectType, EnabledParameters } from "@/utils";
 
 type Props = {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setMetadata, SoraDemoState } from "@/slice";
+import { setMetadata, SoraDemoState } from "@/app/slice";
 
 const Metadata: React.FC = () => {
   const { metadata } = useSelector((state: SoraDemoState) => state);

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setSpotlight, SoraDemoState } from "@/slice";
+import { setSpotlight, SoraDemoState } from "@/app/slice";
 import { isSpotlight } from "@/utils";
 
 const Spotlight: React.FC = () => {

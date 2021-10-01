@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setEchoCancellationType, SoraDemoState } from "@/slice";
+import { setEchoCancellationType, SoraDemoState } from "@/app/slice";
 import { isEchoCancellationType } from "@/utils";
 
 const EchoCancellationType: React.FC = () => {

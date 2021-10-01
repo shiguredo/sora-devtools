@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setSimulcastRid, SoraDemoState } from "@/slice";
+import { setSimulcastRid, SoraDemoState } from "@/app/slice";
 import { isSimulcastRid } from "@/utils";
 
 const SimulcastRid: React.FC = () => {

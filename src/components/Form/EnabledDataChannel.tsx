@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setEnabledDataChannel, SoraDemoState } from "@/slice";
+import { setEnabledDataChannel, SoraDemoState } from "@/app/slice";
 
 const EnabledDataChannel: React.FC = () => {
   const { enabledDataChannel } = useSelector((state: SoraDemoState) => state);

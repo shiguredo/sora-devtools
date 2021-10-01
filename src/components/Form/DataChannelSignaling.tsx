@@ -1,8 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { setDataChannelSignaling, SoraDemoState } from "@/app/slice";
 import { DATA_CHANNEL_SIGNALING } from "@/constants";
-import { setDataChannelSignaling, SoraDemoState } from "@/slice";
 import { isDataChannelSignaling } from "@/utils";
 
 const DataChannelSignaling: React.FC = () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setMicDevice, SoraDemoState } from "@/slice";
+import { setMicDevice, SoraDemoState } from "@/app/slice";
 
 const MicDevice: React.FC = () => {
   const micDevice = useSelector((state: SoraDemoState) => state.micDevice);

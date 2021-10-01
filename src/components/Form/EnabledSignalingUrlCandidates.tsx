@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setEnabledSignalingUrlCandidates, SoraDemoState } from "@/slice";
+import { setEnabledSignalingUrlCandidates, SoraDemoState } from "@/app/slice";
 
 const EnabledSignalingUrlCandidates: React.FC = () => {
   const enabledSignalingUrlCandidates = useSelector((state: SoraDemoState) => state.enabledSignalingUrlCandidates);

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setChannelId, SoraDemoState } from "@/slice";
+import { setChannelId, SoraDemoState } from "@/app/slice";
 
 const ChannelId: React.FC = () => {
   const { channelId } = useSelector((state: SoraDemoState) => state);

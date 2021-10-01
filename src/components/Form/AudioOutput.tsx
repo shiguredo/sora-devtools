@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setAudioOutput, SoraDemoState } from "@/slice";
+import { setAudioOutput, SoraDemoState } from "@/app/slice";
 
 const AudioOutput: React.FC = () => {
   const { audioOutput, audioOutputDevices } = useSelector((state: SoraDemoState) => state);

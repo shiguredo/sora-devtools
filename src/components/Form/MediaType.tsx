@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setFakeVolume, setMediaType, SoraDemoState } from "@/slice";
+import { setFakeVolume, setMediaType, SoraDemoState } from "@/app/slice";
 import { isMediaType } from "@/utils";
 
 const VolumeRange: React.FC = () => {

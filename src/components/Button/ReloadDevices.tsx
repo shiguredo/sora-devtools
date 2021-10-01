@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 
-import { setMediaDevices } from "@/slice";
+import { setMediaDevices } from "@/app/slice";
 
 const ReloadDevices: React.FC = () => {
   const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setEnabledClientId, SoraDemoState } from "@/slice";
+import { setEnabledClientId, SoraDemoState } from "@/app/slice";
 
 const EnabledClientId: React.FC = () => {
   const { enabledClientId } = useSelector((state: SoraDemoState) => state);

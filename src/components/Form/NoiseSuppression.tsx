@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setNoiseSuppression, SoraDemoState } from "@/slice";
+import { setNoiseSuppression, SoraDemoState } from "@/app/slice";
 
 const NoiseSuppression: React.FC = () => {
   const { noiseSuppression } = useSelector((state: SoraDemoState) => state);

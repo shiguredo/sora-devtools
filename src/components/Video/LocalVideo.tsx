@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 import { ConnectType } from "@/utils";
 
 import ConnectionStatusBar from "./ConnectionStatusBar";

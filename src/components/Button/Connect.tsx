@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora, SoraDemoState } from "@/slice";
+import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora, SoraDemoState } from "@/app/slice";
 
 type Props = {
   connectType: "sendonly" | "sendrecv" | "recvonly";

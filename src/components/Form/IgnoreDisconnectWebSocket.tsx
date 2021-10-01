@@ -1,8 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { setIgnoreDisconnectWebSocket, SoraDemoState } from "@/app/slice";
 import { IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
-import { setIgnoreDisconnectWebSocket, SoraDemoState } from "@/slice";
 import { isIgnoreDisconnectWebSocket } from "@/utils";
 
 const IgnoreDisconnectWebSocket: React.FC = () => {

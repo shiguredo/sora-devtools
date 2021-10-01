@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { SoraDemoState } from "@/app/slice";
 import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
-import { SoraDemoState } from "@/slice";
 import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
 
 import ConnectionStatusBar from "./ConnectionStatusBar";

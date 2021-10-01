@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setResolution, SoraDemoState } from "@/slice";
+import { setResolution, SoraDemoState } from "@/app/slice";
 import { isResolution } from "@/utils";
 
 const Resolution: React.FC = () => {
