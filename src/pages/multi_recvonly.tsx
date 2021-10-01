@@ -26,7 +26,7 @@ const ENABLED_PARAMETERS: EnabledParameters = {
 const MultiRecvonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter({}));
+    dispatch(setInitialParameter({ role: "recvonly" }));
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -40,7 +40,7 @@ const MultiRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" multistream enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

@@ -48,6 +48,7 @@ const Sendonly: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
         videoBitRate: "500",
+        role: "sendonly",
       })
     );
     dispatch(setMediaDevices());
@@ -63,7 +64,7 @@ const Sendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

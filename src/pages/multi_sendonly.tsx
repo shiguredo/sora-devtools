@@ -48,6 +48,7 @@ const MultiSendonly: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
         videoBitRate: "1000",
+        role: "sendonly",
       })
     );
     dispatch(setMediaDevices());
@@ -63,7 +64,7 @@ const MultiSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" multistream enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

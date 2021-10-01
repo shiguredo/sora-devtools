@@ -48,6 +48,7 @@ const MultiSendrecv: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
         videoBitRate: "1000",
+        role: "sendrecv",
       })
     );
     dispatch(setMediaDevices());
@@ -63,7 +64,7 @@ const MultiSendrecv: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendrecv" multistream enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

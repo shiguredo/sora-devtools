@@ -34,6 +34,7 @@ const SimulcastRecvonly: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP8"),
         simulcastRid: "r0",
+        role: "recvonly",
       })
     );
     dispatch(setMediaDevices());
@@ -49,7 +50,7 @@ const SimulcastRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

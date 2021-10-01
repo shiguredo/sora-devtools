@@ -49,6 +49,7 @@ const MultiSimulcastSendonly: React.FC = () => {
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "3000",
         resolution: "HD",
+        role: "sendonly",
       })
     );
     dispatch(setMediaDevices());
@@ -64,7 +65,7 @@ const MultiSimulcastSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

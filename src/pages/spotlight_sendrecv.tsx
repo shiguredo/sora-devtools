@@ -52,6 +52,7 @@ const SpotlightSendrecv: React.FC = () => {
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "500",
         resolution: "VGA",
+        role: "sendrecv",
       })
     );
     dispatch(setMediaDevices());
@@ -67,7 +68,7 @@ const SpotlightSendrecv: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendrecv" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

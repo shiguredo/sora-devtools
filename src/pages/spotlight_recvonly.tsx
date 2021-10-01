@@ -29,7 +29,11 @@ const ENABLED_PARAMETERS: EnabledParameters = {
 const SpotlightRecvonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter({}));
+    dispatch(
+      setInitialParameter({
+        role: "recvonly",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -43,7 +47,7 @@ const SpotlightRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

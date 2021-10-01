@@ -32,6 +32,7 @@ const Recvonly: React.FC = () => {
       setInitialParameter({
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
+        role: "recvonly",
       })
     );
     dispatch(setMediaDevices());
@@ -47,7 +48,7 @@ const Recvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

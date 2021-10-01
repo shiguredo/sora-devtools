@@ -1,5 +1,5 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
-import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber, TransportType } from "sora-js-sdk";
+import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber, Role, TransportType } from "sora-js-sdk";
 import Sora from "sora-js-sdk";
 
 import {
@@ -121,6 +121,7 @@ export type SoraDemoState = {
   videoTrack: boolean;
   micDevice: boolean;
   audioTrack: boolean;
+  role: Role;
 };
 
 const initialState: SoraDemoState = {
@@ -197,6 +198,7 @@ const initialState: SoraDemoState = {
   videoTrack: true,
   micDevice: true,
   audioTrack: true,
+  role: "sendonly",
 };
 
 const slice = createSlice({
@@ -494,6 +496,9 @@ const slice = createSlice({
           track.enabled = state.videoTrack;
         }
       }
+    },
+    setRole: (state, action: PayloadAction<Role>) => {
+      state.role = action.payload;
     },
   },
 });
@@ -1362,8 +1367,50 @@ function setInitialState<T>(
   }
 }
 // component レンダリング後に画面初期状態を更新
+type PageInitialParameters = {
+  role: SoraDemoState["role"];
+  audio?: SoraDemoState["audio"];
+  audioBitRate?: SoraDemoState["audioBitRate"];
+  audioCodecType?: SoraDemoState["audioCodecType"];
+  audioInput?: SoraDemoState["audioInput"];
+  audioOutput?: SoraDemoState["audioOutput"];
+  autoGainControl?: SoraDemoState["autoGainControl"];
+  channelId?: SoraDemoState["channelId"];
+  clientId?: SoraDemoState["clientId"];
+  googCpuOveruseDetection?: SoraDemoState["googCpuOveruseDetection"];
+  debug?: SoraDemoState["debug"];
+  dataChannelSignaling?: SoraDemoState["dataChannelSignaling"];
+  dataChannelMessaging?: SoraDemoState["dataChannelMessaging"];
+  displayResolution?: SoraDemoState["displayResolution"];
+  echoCancellation?: SoraDemoState["echoCancellation"];
+  echoCancellationType?: SoraDemoState["echoCancellationType"];
+  e2ee?: SoraDemoState["e2ee"];
+  fakeVolume?: SoraDemoState["fakeVolume"];
+  frameRate?: SoraDemoState["frameRate"];
+  ignoreDisconnectWebSocket?: SoraDemoState["ignoreDisconnectWebSocket"];
+  mediaType?: SoraDemoState["mediaType"];
+  metadata?: SoraDemoState["metadata"];
+  mute?: SoraDemoState["mute"];
+  noiseSuppression?: SoraDemoState["noiseSuppression"];
+  resolution?: SoraDemoState["resolution"];
+  showStats?: SoraDemoState["showStats"];
+  signalingNotifyMetadata?: SoraDemoState["signalingNotifyMetadata"];
+  signalingUrlCandidates?: SoraDemoState["signalingUrlCandidates"];
+  simulcastRid?: SoraDemoState["simulcastRid"];
+  spotlightNumber?: SoraDemoState["spotlightNumber"];
+  spotlightFocusRid?: SoraDemoState["spotlightFocusRid"];
+  spotlightUnfocusRid?: SoraDemoState["spotlightUnfocusRid"];
+  video?: SoraDemoState["video"];
+  videoBitRate?: SoraDemoState["videoBitRate"];
+  videoCodecType?: SoraDemoState["videoCodecType"];
+  videoInput?: SoraDemoState["videoInput"];
+  cameraDevice?: SoraDemoState["cameraDevice"];
+  videoTrack?: SoraDemoState["videoTrack"];
+  micDevice?: SoraDemoState["micDevice"];
+  audioTrack?: SoraDemoState["audioTrack"];
+};
 export const setInitialParameter =
-  (pageInitialParameters: Partial<SoraDemoState>) =>
+  (pageInitialParameters: PageInitialParameters) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
     dispatch(slice.actions.resetState());
     const queryStringParameters = parseQueryString();
@@ -1642,6 +1689,11 @@ export const setInitialParameter =
       );
     }
     dispatch(slice.actions.setInitialFakeContents());
+    if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {
+      dispatch(slice.actions.setRole(pageInitialParameters.role));
+    } else {
+      throw new Error(`Failed to initialize. Invalid role parameter '${pageInitialParameters.role}'.`);
+    }
     // e2ee が有効な場合は e2ee 初期化処理をする
     const { e2ee } = getState();
     if (e2ee) {

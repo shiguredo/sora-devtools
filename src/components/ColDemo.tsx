@@ -18,10 +18,9 @@ import { FormRowSpotlightSettings } from "@/components/Form/RowSpotlightSettings
 import { FormRowVideoSettings } from "@/components/Form/RowVideoSettings";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
-import { ConnectType, EnabledParameters } from "@/utils";
+import { EnabledParameters } from "@/utils";
 
 type Props = {
-  connectType: ConnectType;
   multistream?: boolean;
   simulcast?: boolean;
   spotlight?: boolean;
@@ -29,6 +28,7 @@ type Props = {
 };
 export const ColDemo: React.FC<Props> = (props) => {
   const debug = useAppSelector((state) => state.debug);
+  const role = useAppSelector((state) => state.role);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
@@ -45,7 +45,6 @@ export const ColDemo: React.FC<Props> = (props) => {
 
       <div className="row">
         <Connect
-          connectType={props.connectType}
           multistream={props.multistream ? true : false}
           spotlight={props.spotlight ? true : false}
           simulcast={props.simulcast ? true : false}
@@ -53,14 +52,14 @@ export const ColDemo: React.FC<Props> = (props) => {
         <Disconnect />
         <StartRecording />
         <StopRecording />
-        {!props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
+        {!props.spotlight && props.simulcast && role !== "sendonly" ? (
           <>
             <RequestRtpStream rid={"r0"} />
             <RequestRtpStream rid={"r1"} />
             <RequestRtpStream rid={"r2"} />
           </>
         ) : null}
-        {props.spotlight && props.simulcast && props.connectType !== "sendonly" ? (
+        {props.spotlight && props.simulcast && role !== "sendonly" ? (
           <>
             <RequestRtpStream rid={"r0"} />
             <RequestRtpStream rid={"r1"} />
@@ -69,8 +68,8 @@ export const ColDemo: React.FC<Props> = (props) => {
           </>
         ) : null}
       </div>
-      <LocalVideo connectType={props.connectType} />
-      {props.connectType === "recvonly" || props.connectType === "sendrecv" ? (
+      <LocalVideo />
+      {role === "recvonly" || role === "sendrecv" ? (
         <RemoteVideos
           multistream={props.multistream === true}
           simulcast={props.simulcast === true}

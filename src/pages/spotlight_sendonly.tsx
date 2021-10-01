@@ -50,6 +50,7 @@ const SpotlightSendonly: React.FC = () => {
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "500",
         resolution: "VGA",
+        role: "sendonly",
       })
     );
     dispatch(setMediaDevices());
@@ -65,7 +66,7 @@ const SpotlightSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

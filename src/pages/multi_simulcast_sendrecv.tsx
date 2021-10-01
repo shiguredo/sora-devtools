@@ -51,6 +51,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
         videoBitRate: "3000",
         resolution: "HD",
         simulcastRid: "r0",
+        role: "sendrecv",
       })
     );
     dispatch(setMediaDevices());
@@ -66,7 +67,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendrecv" multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

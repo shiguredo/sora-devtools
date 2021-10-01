@@ -31,6 +31,7 @@ const MultiSimulcastRecvonly: React.FC = () => {
       setInitialParameter({
         videoCodecType: getDefaultVideoCodecType("VP9"),
         simulcastRid: "r0",
+        role: "recvonly",
       })
     );
     dispatch(setMediaDevices());
@@ -46,7 +47,7 @@ const MultiSimulcastRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

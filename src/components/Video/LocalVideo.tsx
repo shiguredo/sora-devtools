@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { ConnectType } from "@/utils";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
 import { Video } from "./Video";
@@ -36,12 +35,10 @@ const VideoBox: React.FC = () => {
   );
 };
 
-type LocalVideoProps = {
-  connectType: ConnectType;
-};
-export const LocalVideo: React.FC<LocalVideoProps> = (props) => {
+export const LocalVideo: React.FC = () => {
   const connectionId = useAppSelector((state) => state.soraContents.connectionId);
   const clientId = useAppSelector((state) => state.soraContents.clientId);
+  const role = useAppSelector((state) => state.role);
   return (
     <div className="row my-1">
       <div className="col-auto">
@@ -50,7 +47,7 @@ export const LocalVideo: React.FC<LocalVideoProps> = (props) => {
             <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           ) : null}
         </div>
-        {props.connectType !== "recvonly" ? <VideoBox /> : null}
+        {role !== "recvonly" ? <VideoBox /> : null}
       </div>
     </div>
   );

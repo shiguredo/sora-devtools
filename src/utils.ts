@@ -41,9 +41,6 @@ export type Json =
       [prop: string]: Json | undefined;
     };
 
-// Sora demo の接続種類
-export type ConnectType = "sendonly" | "sendrecv" | "recvonly";
-
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
   setSinkId(audioId: string): void;

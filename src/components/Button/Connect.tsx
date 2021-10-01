@@ -4,13 +4,13 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora } from "@/app/slice";
 
 type Props = {
-  connectType: "sendonly" | "sendrecv" | "recvonly";
   multistream: boolean;
   spotlight: boolean;
   simulcast: boolean;
 };
 export const Connect: React.FC<Props> = (props) => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const role = useAppSelector((state) => state.role);
   const dispatch = useAppDispatch();
   const connect = (): void => {
     const connectOptions = {
@@ -18,11 +18,11 @@ export const Connect: React.FC<Props> = (props) => {
       spotlight: props.spotlight,
       simulcast: props.simulcast,
     };
-    if (props.connectType === "sendonly") {
+    if (role === "sendonly") {
       dispatch(sendonlyConnectSora(connectOptions));
-    } else if (props.connectType === "recvonly") {
+    } else if (role === "recvonly") {
       dispatch(recvonlyConnectSora(connectOptions));
-    } else if (props.connectType === "sendrecv") {
+    } else if (role === "sendrecv") {
       dispatch(sendrecvConnectSora(connectOptions));
     }
   };
