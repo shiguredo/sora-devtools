@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
+import { Message } from "@/components/Debug/Message";
 import { SignalingMessage } from "@/utils";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
@@ -14,7 +14,7 @@ const Label: React.FC<{ text: string }> = (props) => {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
-    <span className="mr-1" style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color: color } : {}}>
       [{text}]
     </span>
   );
@@ -30,7 +30,7 @@ const Log = React.memo((props: SignalingMessage) => {
   return <Collapse {...props} />;
 });
 
-const SignalingMessages: React.FC = () => {
+export const SignalingMessages: React.FC = () => {
   const signalingMessages = useSelector((state: SoraDemoState) => state.signalingMessages);
   return (
     <>
@@ -41,5 +41,3 @@ const SignalingMessages: React.FC = () => {
     </>
   );
 };
-
-export default SignalingMessages;

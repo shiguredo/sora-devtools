@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
+import { Message } from "@/components/Debug/Message";
 import { DataChannelMessage } from "@/utils";
 
 const Collapse: React.FC<DataChannelMessage> = (props) => {
@@ -14,7 +14,7 @@ const Log = React.memo((props: DataChannelMessage) => {
   return <Collapse {...props} />;
 });
 
-const DataChannelMessages: React.FC = () => {
+export const DataChannelMessages: React.FC = () => {
   const dataChannelMessages = useSelector((state: SoraDemoState) => state.dataChannelMessages);
   return (
     <>
@@ -25,5 +25,3 @@ const DataChannelMessages: React.FC = () => {
     </>
   );
 };
-
-export default DataChannelMessages;

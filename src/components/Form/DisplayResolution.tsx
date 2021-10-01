@@ -1,35 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setDisplayResolution, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setDisplayResolution } from "@/app/slice";
+import { DISPLAY_RESOLUTIONS } from "@/constants";
 import { isDisplayResolution } from "@/utils";
 
-const DisplayResolution: React.FC = () => {
-  const { displayResolution } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormDisplayResolution: React.FC = () => {
+  const displayResolution = useAppSelector((state) => state.displayResolution);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isDisplayResolution(event.target.value)) {
       dispatch(setDisplayResolution(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="resolution">
-        displayResolution:
-      </label>
-      <select
-        id="displayResolution"
-        name="displayResolution"
-        className="custom-select"
-        value={displayResolution}
-        onChange={onChange}
-      >
-        <option value="">未指定</option>
-        <option value="VGA">VGA</option>
-        <option value="QVGA">QVGA</option>
-      </select>
-    </div>
+    <FormGroup className="form-inline" controlId="displayResolution">
+      <FormLabel>displayResolution:</FormLabel>
+      <FormSelect name="displayResolution" value={displayResolution} onChange={onChange}>
+        {DISPLAY_RESOLUTIONS.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default DisplayResolution;

@@ -10,7 +10,8 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/eslint-recommended"
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -24,6 +25,7 @@
     "@typescript-eslint",
     "react",
     "react-hooks",
+    "import",
     "simple-import-sort"
   ],
   "settings": {
@@ -49,6 +51,7 @@
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "curly": "error",
-    "react/jsx-boolean-value": "warn"
+    "react/jsx-boolean-value": "warn",
+    "import/no-default-export": "error"
   }
 }

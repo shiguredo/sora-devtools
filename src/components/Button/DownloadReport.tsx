@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 
 type Props = {
   pageName: string;
 };
-const DownloadReport: React.FC<Props> = (props) => {
+export const DownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const state = useSelector((state: SoraDemoState) => state);
   const { statsReport } = state.soraContents;
@@ -71,7 +71,7 @@ const DownloadReport: React.FC<Props> = (props) => {
   return (
     <>
       <input
-        className="btn btn-light btn-sm ml-1"
+        className="btn btn-light btn-sm ms-1"
         type="button"
         name="downloadReport"
         defaultValue="Download report"
@@ -81,5 +81,3 @@ const DownloadReport: React.FC<Props> = (props) => {
     </>
   );
 };
-
-export default DownloadReport;

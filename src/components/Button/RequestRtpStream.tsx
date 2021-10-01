@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { SimulcastRid } from "sora-js-sdk";
 
 import { requestRtpStream } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/app/slice";
 
 type Props = {
   rid: SimulcastRid;
 };
-const RequestRtpStream: React.FC<Props> = (props) => {
+export const RequestRtpStream: React.FC<Props> = (props) => {
   const { soraContents, channelId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onClick = async (): Promise<void> => {
@@ -19,7 +19,9 @@ const RequestRtpStream: React.FC<Props> = (props) => {
       const response = await requestRtpStream(channelId, soraContents.sora.connectionId, props.rid);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setAPIErrorAlertMessage(error.message));
+      if (error instanceof Error) {
+        dispatch(setAPIErrorAlertMessage(error.message));
+      }
     }
   };
   return (
@@ -34,5 +36,3 @@ const RequestRtpStream: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default RequestRtpStream;

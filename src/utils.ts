@@ -25,7 +25,9 @@ interface CustomHTMLCanvasElement extends HTMLCanvasElement {
 }
 
 // MediaTrackConstraints interface に echoCancellationType を追加
-interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
+interface SoraDemoMediaTrackConstraints extends MediaTrackConstraintSet {
+  autoGainControl?: boolean;
+  noiseSuppression?: boolean;
   echoCancellationType?: "system" | "browser";
 }
 
@@ -53,9 +55,35 @@ export interface SoraDemoMediaDevices extends MediaDevices {
 }
 
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加
-export interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
+export interface RTCMediaStreamTrackStats extends RTCStats {
+  ssrc: number;
+  kind: string;
+  trackId: string;
+  trackIdentifier: string;
+  transportId: string;
+  codecId: string;
+  mediaType: string;
+  jitter: number;
+  packetsLost: number;
+  remoteId: string;
+  packetsReceived: number;
+  fecPacketsReceived: number;
+  fecPacketsDiscarded: number;
+  bytesReceived: number;
+  headerBytesReceived: number;
+  lastPacketReceivedTimestamp: number;
   jitterBufferDelay: number;
   jitterBufferEmittedCount: number;
+  totalSamplesReceived: number;
+  concealedSamples: number;
+  silentConcealedSamples: number;
+  concealmentEvents: number;
+  insertedSamplesForDeceleration: number;
+  removedSamplesForAcceleration: number;
+  audioLevel: number;
+  totalAudioEnergy: number;
+  totalSamplesDuration: number;
+  estimatedPlayoutTimestamp: number;
   prevJitterBufferDelay: number;
   prevJitterBufferEmittedCount: number;
 }

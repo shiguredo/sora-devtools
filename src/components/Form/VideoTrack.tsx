@@ -1,30 +1,18 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setVideoTrack, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setVideoTrack } from "@/app/slice";
 
-const VideoTrack: React.FC = () => {
-  const videoTrack = useSelector((state: SoraDemoState) => state.videoTrack);
-  const dispatch = useDispatch();
+export const FormVideoTrack: React.FC = () => {
+  const videoTrack = useAppSelector((state) => state.videoTrack);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setVideoTrack(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="custom-control custom-switch">
-        <input
-          type="checkbox"
-          className="custom-control-input"
-          id="videoTrack"
-          checked={videoTrack}
-          onChange={onChange}
-        />
-        <label className="custom-control-label" htmlFor="videoTrack">
-          videoTrack on/off
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="videoTrack">
+      <FormCheck type="switch" name="videoTrack" label="Enable video track" checked={videoTrack} onChange={onChange} />
+    </FormGroup>
   );
 };
-
-export default VideoTrack;

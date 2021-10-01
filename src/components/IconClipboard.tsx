@@ -1,6 +1,6 @@
 import React from "react";
 
-const IconClipboard: React.FC = () => {
+export const IconClipboard: React.FC = () => {
   return (
     <svg
       width="1em"
@@ -21,5 +21,3 @@ const IconClipboard: React.FC = () => {
     </svg>
   );
 };
-
-export default IconClipboard;

@@ -2,9 +2,9 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { startRec } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/app/slice";
 
-const StartRecording: React.FC = () => {
+export const StartRecording: React.FC = () => {
   const { channelId } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const onClick = async (): Promise<void> => {
@@ -12,7 +12,9 @@ const StartRecording: React.FC = () => {
       const response = await startRec(channelId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setAPIErrorAlertMessage(error.message));
+      if (error instanceof Error) {
+        dispatch(setAPIErrorAlertMessage(error.message));
+      }
     }
   };
   return (
@@ -21,5 +23,3 @@ const StartRecording: React.FC = () => {
     </div>
   );
 };
-
-export default StartRecording;

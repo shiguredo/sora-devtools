@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
+import { Message } from "@/components/Debug/Message";
 import { PushMessage } from "@/utils";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
@@ -30,7 +30,7 @@ const Log = React.memo((props: CollapsePushProps) => {
   return <Collapse {...props} />;
 });
 
-const PushMessages: React.FC = () => {
+export const PushMessages: React.FC = () => {
   const { pushMessages } = useSelector((state: SoraDemoState) => state);
   return (
     <>
@@ -41,5 +41,3 @@ const PushMessages: React.FC = () => {
     </>
   );
 };
-
-export default PushMessages;

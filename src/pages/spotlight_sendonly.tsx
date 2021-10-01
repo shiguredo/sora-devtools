@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import ColDebug from "@/components/ColDebug";
-import ColDemo from "@/components/ColDemo";
-import Footer from "@/components/Footer";
-import Head from "@/components/Head";
-import Header from "@/components/Header";
-import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
+import { ColDebug } from "@/components/ColDebug";
+import { ColDemo } from "@/components/ColDemo";
+import { Footer } from "@/components/Footer";
+import { Head } from "@/components/Head";
+import { Header } from "@/components/Header";
 import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
@@ -76,4 +76,5 @@ const SpotlightSendonly: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default SpotlightSendonly;

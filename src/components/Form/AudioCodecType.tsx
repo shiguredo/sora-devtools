@@ -1,34 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setAudioCodecType, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAudioCodecType } from "@/app/slice";
+import { AUDIO_CODEC_TYPES } from "@/constants";
 import { isAudioCodecType } from "@/utils";
 
-const AudioCodecType: React.FC = () => {
-  const { audioCodecType } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormAudioCodecType: React.FC = () => {
+  const audioCodecType = useAppSelector((state) => state.audioCodecType);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isAudioCodecType(event.target.value)) {
       dispatch(setAudioCodecType(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="audioCodecType">
-        audioCodecType:
-      </label>
-      <select
-        id="audioCodecType"
-        name="audioCodecType"
-        className="custom-select"
-        value={audioCodecType}
-        onChange={onChange}
-      >
-        <option value="">未指定</option>
-        <option value="OPUS">OPUS</option>
-      </select>
-    </div>
+    <FormGroup className="form-inline" controlId="audioBitRate">
+      <FormLabel>audioCodecType:</FormLabel>
+      <FormSelect name="audioCodecType" value={audioCodecType} onChange={onChange}>
+        {AUDIO_CODEC_TYPES.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default AudioCodecType;

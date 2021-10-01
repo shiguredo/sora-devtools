@@ -1,28 +1,50 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
-import { setSignalingUrlCandidates, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/slice";
 
-const SignalingUrlCandidates: React.FC = () => {
-  const signalingUrlCandidates = useSelector((state: SoraDemoState) => state.signalingUrlCandidates);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+export const FormSignalingUrlCandidates: React.FC = () => {
+  const enabledSignalingUrlCandidates = useAppSelector((state) => state.enabledSignalingUrlCandidates);
+  const signalingUrlCandidates = useAppSelector((state) => state.signalingUrlCandidates);
+  const dispatch = useAppDispatch();
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setEnabledSignalingUrlCandidates(event.target.checked));
+  };
+  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setSignalingUrlCandidates(event.target.value.split("\n")));
   };
   return (
-    <div className="col-10 form-inline flex-nowrap align-items-start form-sora">
-      <label className="mr-1 my-2" htmlFor="signalingUrlCandidates">
-        signalingUrlCandidates:
-      </label>
-      <textarea
-        id="signalingUrlCandidates"
-        className="form-control flex-fill"
-        rows={10}
-        onChange={onChange}
-        defaultValue={signalingUrlCandidates.join("\n")}
-      />
-    </div>
+    <>
+      <Row className="form-row">
+        <Col>
+          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
+            <FormCheck
+              type="switch"
+              name="enabledSignalingUrlCandidates"
+              label="signalingUrlCandidates"
+              checked={enabledSignalingUrlCandidates}
+              onChange={onChangeSwitch}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
+      {enabledSignalingUrlCandidates ? (
+        <Row>
+          <Col>
+            <FormGroup className="form-inline w-50" controlId="signalingNotifyMetadata">
+              <FormControl
+                className="flex-fill"
+                as="textarea"
+                placeholder="signalingUrlCandidatesを指定"
+                value={signalingUrlCandidates.join("\n")}
+                onChange={onChangeText}
+                rows={10}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+      ) : null}
+    </>
   );
 };
-
-export default SignalingUrlCandidates;

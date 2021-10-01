@@ -1,41 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setSpotlightFocusRid } from "@/app/slice";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
-import { setSpotlightUnfocusRid, SoraDemoState } from "@/slice";
 import { isSpotlightFocusRid } from "@/utils";
 
-const SpotlightUnfocusRid: React.FC = () => {
-  const { spotlightUnfocusRid } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormSpotlightUnfocusRid: React.FC = () => {
+  const spotlightUnfocusRid = useAppSelector((state) => state.spotlightUnfocusRid);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isSpotlightFocusRid(event.target.value)) {
-      dispatch(setSpotlightUnfocusRid(event.target.value));
+      dispatch(setSpotlightFocusRid(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="spotlightUnfocusRid">
-        spotlightUnfocusRid:
-      </label>
-      <select
-        id="spotlightUnfocusRid"
-        name="spotlightUnfocusRid"
-        className="custom-select"
-        value={spotlightUnfocusRid}
-        onChange={onChange}
-      >
-        {SPOTLIGHT_FOCUS_RIDS.map((rid) => {
-          const label = rid === "" ? "未指定" : rid;
+    <FormGroup className="form-inline" controlId="spotlightUnfocusRid">
+      <FormLabel>spotlightUnfocusRid:</FormLabel>
+      <FormSelect value={spotlightUnfocusRid} onChange={onChange}>
+        {SPOTLIGHT_FOCUS_RIDS.map((value) => {
           return (
-            <option key={rid} value={rid}>
-              {label}
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
             </option>
           );
         })}
-      </select>
-    </div>
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default SpotlightUnfocusRid;

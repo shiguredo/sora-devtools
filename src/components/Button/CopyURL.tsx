@@ -1,14 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 import { copy2clipboard } from "@/utils";
 import { EnabledParameters } from "@/utils";
 
 type Props = {
   enabledParameters: EnabledParameters;
 };
-const CopyURL: React.FC<Props> = (props) => {
+export const CopyURL: React.FC<Props> = (props) => {
   const state = useSelector((state: SoraDemoState) => state);
   const onClick = (): void => {
     const parameters: string[] = [];
@@ -117,7 +117,7 @@ const CopyURL: React.FC<Props> = (props) => {
   };
   return (
     <input
-      className="btn btn-light btn-sm ml-1"
+      className="btn btn-light btn-sm ms-1"
       type="button"
       name="copyUrl"
       defaultValue="copy URL"
@@ -125,5 +125,3 @@ const CopyURL: React.FC<Props> = (props) => {
     />
   );
 };
-
-export default CopyURL;

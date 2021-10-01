@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setDebug, SoraDemoState } from "@/slice";
+import { setDebug, SoraDemoState } from "@/app/slice";
 
-const DebugMode: React.FC = () => {
+export const DebugMode: React.FC = () => {
   const { debug } = useSelector((state: SoraDemoState) => state);
   const dispatch = useDispatch();
   const disconnect = (): void => {
@@ -17,5 +17,3 @@ const DebugMode: React.FC = () => {
     </div>
   );
 };
-
-export default DebugMode;

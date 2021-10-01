@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
+import { Message } from "@/components/Debug/Message";
 import { NotifyMessage } from "@/utils";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
@@ -36,7 +36,7 @@ const Log = React.memo((props: CollapseNotifyProps) => {
   return <CollapseNotify {...props} />;
 });
 
-const NotifyMessages: React.FC = () => {
+export const NotifyMessages: React.FC = () => {
   const { notifyMessages } = useSelector((state: SoraDemoState) => state);
   return (
     <>
@@ -46,5 +46,3 @@ const NotifyMessages: React.FC = () => {
     </>
   );
 };
-
-export default NotifyMessages;

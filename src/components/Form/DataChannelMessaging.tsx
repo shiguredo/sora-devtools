@@ -1,29 +1,101 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useRef } from "react";
+import { Button, Col, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
 
-import { setDataChannelMessaging, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setDataChannelMessaging, setEnabledDataChannelMessaging } from "@/app/slice";
 
-const DataChannelMessaging: React.FC = () => {
-  const dataChannelMessaging = useSelector((state: SoraDemoState) => state.dataChannelMessaging);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    dispatch(setDataChannelMessaging(event.target.value));
+const FormSendDataChannelMessaging: React.FC = () => {
+  const selectRef = useRef<HTMLSelectElement>(null);
+  const textareaRef = useRef<HTMLInputElement>(null);
+  const sora = useAppSelector((state) => state.soraContents.sora);
+  if (!sora) {
+    return null;
+  }
+  const handleSendMessage = (): void => {
+    if (selectRef.current === null || textareaRef.current === null) {
+      return;
+    }
+    const label = selectRef.current.value;
+    let text = textareaRef.current.value;
+    try {
+      text = JSON.parse(textareaRef.current.value);
+    } catch (_) {
+      // JSON parse に失敗しても何もしない
+    }
+    sora.sendMessage(label, text);
   };
   return (
-    <div className="col-10 form-inline flex-nowrap align-items-start form-sora">
-      <label className="mr-1 my-2" htmlFor="dataChannelMessaging">
-        dataChannelMessaging:
-      </label>
-      <textarea
-        id="dataChannelMessaging"
-        className="form-control flex-fill"
-        rows={15}
-        onChange={onChange}
-        defaultValue={dataChannelMessaging}
-        placeholder={`[{"label":"#spam","max_packet_life_time":10,"ordered":true,"protocol":"efg","compress":false,"direction":"sendrecv"}]`}
-      />
-    </div>
+    <Row xs="auto" className="form-row">
+      <Col>
+        <FormGroup className="form-inline" controlId="sendDataChannelMessaging">
+          <FormLabel>sendDataChannelMessaging:</FormLabel>
+          <FormSelect name="sendDataChannelMessaging" ref={selectRef}>
+            {sora.messagingDataChannels.map((messagingDataChannel) => {
+              return (
+                <option key={messagingDataChannel.label} value={messagingDataChannel.label}>
+                  {messagingDataChannel.label}
+                </option>
+              );
+            })}
+          </FormSelect>
+        </FormGroup>
+      </Col>
+      <Col xs="6">
+        <FormControl className="flex-fill" placeholder="sendDataChannelMessagingを指定" type="text" ref={textareaRef} />
+      </Col>
+      <Col>
+        <Button variant="secondary" onClick={handleSendMessage}>
+          sendDataChannelMessaging
+        </Button>
+      </Col>
+    </Row>
   );
 };
 
-export default DataChannelMessaging;
+export const FormDataChannelMessaging: React.FC = () => {
+  const enabledDataChannelMessaging = useAppSelector((state) => state.enabledDataChannelMessaging);
+  const dataChannelMessaging = useAppSelector((state) => state.dataChannelMessaging);
+  const dispatch = useAppDispatch();
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setEnabledDataChannelMessaging(event.target.checked));
+  };
+  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setDataChannelMessaging(event.target.value));
+  };
+  return (
+    <>
+      <Row className="form-row">
+        <Col>
+          <FormGroup className="form-inline" controlId="enabledDataChannelMessaging">
+            <FormCheck
+              type="switch"
+              name="enabledDataChannelMessaging"
+              label="dataChannelMessaging"
+              checked={enabledDataChannelMessaging}
+              onChange={onChangeSwitch}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
+      {enabledDataChannelMessaging ? (
+        <>
+          <Row className="form-row">
+            <Col>
+              <FormGroup className="form-inline w-50" controlId="dataChannelMessaging">
+                <FormControl
+                  className="flex-fill"
+                  as="textarea"
+                  placeholder="dataChannelMessagingを指定"
+                  value={dataChannelMessaging}
+                  onChange={onChangeText}
+                  rows={10}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <FormSendDataChannelMessaging />
+        </>
+      ) : null}
+    </>
+  );
+};

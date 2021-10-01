@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/slice";
+import { SoraDemoState } from "@/app/slice";
 import { ConnectType } from "@/utils";
 
-import ConnectionStatusBar from "./ConnectionStatusBar";
-import Video from "./Video";
-import VolumeVisualizer from "./VolumeVisualizer";
+import { ConnectionStatusBar } from "./ConnectionStatusBar";
+import { Video } from "./Video";
+import { VolumeVisualizer } from "./VolumeVisualizer";
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
@@ -40,7 +40,7 @@ const VideoBox: React.FC = () => {
 type LocalVideoProps = {
   connectType: ConnectType;
 };
-const LocalVideo: React.FC<LocalVideoProps> = (props) => {
+export const LocalVideo: React.FC<LocalVideoProps> = (props) => {
   const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
   const clientId = useSelector((state: SoraDemoState) => state.soraContents.clientId);
   return (
@@ -56,5 +56,3 @@ const LocalVideo: React.FC<LocalVideoProps> = (props) => {
     </div>
   );
 };
-
-export default LocalVideo;

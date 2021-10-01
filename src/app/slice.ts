@@ -44,7 +44,7 @@ import {
   TimelineMessage,
 } from "@/utils";
 
-import packageJSON from "../package.json";
+import packageJSON from "../../package.json";
 
 export type SoraDemoState = {
   alertMessages: AlertMessage[];
@@ -766,6 +766,9 @@ function setSoraCallbacks(
       logType: event.logType,
     };
     dispatch(slice.actions.setTimelineMessage(message));
+    if (event.data && typeof event.data === "object" && "sdp" in event.data) {
+      dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage(`${event.type}-sdp`, event.data.sdp)));
+    }
   });
   sora.on("signaling", (event) => {
     const message = {
@@ -984,7 +987,9 @@ export const sendonlyConnectSora =
       mediaStream.getTracks().forEach((track) => {
         track.stop();
       });
-      dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      if (error instanceof Error) {
+        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      }
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
@@ -1061,7 +1066,9 @@ export const recvonlyConnectSora =
       await sora.connect();
       dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
     } catch (error) {
-      dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      if (error instanceof Error) {
+        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      }
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
@@ -1148,7 +1155,9 @@ export const sendrecvConnectSora =
       mediaStream.getTracks().forEach((track) => {
         track.stop();
       });
-      dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      if (error instanceof Error) {
+        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+      }
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
@@ -1720,4 +1729,4 @@ export const {
   setVideoTrack,
 } = slice.actions;
 
-export default slice.reducer;
+export const reducer = slice.reducer;

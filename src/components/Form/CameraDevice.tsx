@@ -1,34 +1,28 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setCameraDevice, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setCameraDevice } from "@/app/slice";
 
-const CameraDevice: React.FC = () => {
-  const cameraDevice = useSelector((state: SoraDemoState) => state.cameraDevice);
-  const sora = useSelector((state: SoraDemoState) => state.soraContents.sora);
-  const video = useSelector((state: SoraDemoState) => state.video);
+export const FormCameraDevice: React.FC = () => {
+  const cameraDevice = useAppSelector((state) => state.cameraDevice);
+  const sora = useAppSelector((state) => state.soraContents.sora);
+  const video = useAppSelector((state) => state.video);
   const disabled = !(sora ? sora.video : video);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setCameraDevice(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="custom-control custom-switch">
-        <input
-          type="checkbox"
-          className="custom-control-input"
-          id="cameraDevice"
-          checked={cameraDevice}
-          onChange={onChange}
-          disabled={disabled}
-        />
-        <label className="custom-control-label" htmlFor="cameraDevice">
-          cameraDevice on/off
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="cameraDevice">
+      <FormCheck
+        type="switch"
+        name="cameraDevice"
+        label="Enable camera device"
+        checked={cameraDevice}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    </FormGroup>
   );
 };
-
-export default CameraDevice;
