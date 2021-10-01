@@ -1,32 +1,28 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setMicDevice, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setMicDevice } from "@/app/slice";
 
-export const MicDevice: React.FC = () => {
-  const micDevice = useSelector((state: SoraDemoState) => state.micDevice);
-  const sora = useSelector((state: SoraDemoState) => state.soraContents.sora);
-  const audio = useSelector((state: SoraDemoState) => state.audio);
+export const FormMicDevice: React.FC = () => {
+  const micDevice = useAppSelector((state) => state.micDevice);
+  const sora = useAppSelector((state) => state.soraContents.sora);
+  const audio = useAppSelector((state) => state.audio);
   const disabled = !(sora ? sora.audio : audio);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setMicDevice(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="custom-control custom-switch">
-        <input
-          type="checkbox"
-          className="custom-control-input"
-          id="micDevice"
-          checked={micDevice}
-          onChange={onChange}
-          disabled={disabled}
-        />
-        <label className="custom-control-label" htmlFor="micDevice">
-          micDevice on/off
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="micDevice">
+      <FormCheck
+        type="switch"
+        name="micDevice"
+        label="Enable mic device"
+        checked={micDevice}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    </FormGroup>
   );
 };

@@ -1,31 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setFrameRate, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setFrameRate } from "@/app/slice";
+import { FRAME_RATES } from "@/constants";
 import { isFrameRate } from "@/utils";
 
-export const FrameRate: React.FC = () => {
-  const { frameRate } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormFrameRate: React.FC = () => {
+  const frameRate = useAppSelector((state) => state.frameRate);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isFrameRate(event.target.value)) {
       dispatch(setFrameRate(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="frameRate">
-        frameRate:
-      </label>
-      <select id="frameRate" name="frameRate" className="custom-select" value={frameRate} onChange={onChange}>
-        <option value="">未指定</option>
-        <option value="60">60</option>
-        <option value="30">30</option>
-        <option value="24">24</option>
-        <option value="20">20</option>
-        <option value="15">15</option>
-        <option value="10">10</option>
-      </select>
-    </div>
+    <FormGroup className="form-inline" controlId="frameRate">
+      <FormLabel>frameRate:</FormLabel>
+      <FormSelect name="frameRate" value={frameRate} onChange={onChange}>
+        {FRAME_RATES.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };

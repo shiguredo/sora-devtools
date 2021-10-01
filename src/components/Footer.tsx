@@ -10,8 +10,8 @@ export const Footer: React.FC = () => {
   const { version } = useSelector((state: SoraDemoState) => state);
   return (
     <footer>
-      <Navbar variant="dark" bg="sora" expand="md" fixed="bottom" className="p-0">
-        <Nav className="mr-auto" />
+      <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
+        <Nav className="me-auto" />
         <Nav>
           <Navbar.Collapse id="navbar-collapse">
             <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light m-1">

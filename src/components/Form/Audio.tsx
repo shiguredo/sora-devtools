@@ -1,29 +1,18 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setAudio, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAudio } from "@/app/slice";
 
-export const Audio: React.FC = () => {
-  const { audio } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormAudio: React.FC = () => {
+  const audio = useAppSelector((state) => state.audio);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setAudio(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="form-check">
-        <input
-          id="audio"
-          name="audio"
-          className="form-check-input"
-          type="checkbox"
-          checked={audio}
-          onChange={onChange}
-        />
-        <label className="form-check-label" htmlFor="audio">
-          audio
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="audio">
+      <FormCheck type="switch" name="audio" label="audio" checked={audio} onChange={onChange} />
+    </FormGroup>
   );
 };

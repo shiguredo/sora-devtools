@@ -1,28 +1,49 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
-import { setClientId, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setClientId, setEnabledClientId } from "@/app/slice";
 
-export const ClientId: React.FC = () => {
-  const { clientId } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+export const FormClientId: React.FC = () => {
+  const enabledClientId = useAppSelector((state) => state.enabledClientId);
+  const clientId = useAppSelector((state) => state.clientId);
+  const dispatch = useAppDispatch();
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setEnabledClientId(event.target.checked));
+  };
+  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setClientId(event.target.value));
   };
   return (
-    <div className="col-10 form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="channelId">
-        clientId:
-      </label>
-      <input
-        id="clientId"
-        name="clientId"
-        className="form-control flex-fill"
-        type="text"
-        placeholder="clientId を指定"
-        value={clientId}
-        onChange={onChange}
-      />
-    </div>
+    <>
+      <Row className="form-row">
+        <Col>
+          <FormGroup className="form-inline" controlId="enabledClientId">
+            <FormCheck
+              type="switch"
+              name="enabledClientId"
+              label="clientId"
+              checked={enabledClientId}
+              onChange={onChangeSwitch}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
+      {enabledClientId ? (
+        <Row>
+          <Col>
+            <FormGroup className="form-inline w-50" controlId="clientId">
+              <FormControl
+                className="flex-fill"
+                type="text"
+                placeholder="ClientIdを指定"
+                value={clientId}
+                onChange={onChangeText}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+      ) : null}
+    </>
   );
 };

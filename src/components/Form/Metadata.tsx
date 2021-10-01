@@ -1,28 +1,50 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
-import { setMetadata, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setEnabledMetadata, setMetadata } from "@/app/slice";
 
-export const Metadata: React.FC = () => {
-  const { metadata } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+export const FormMetadata: React.FC = () => {
+  const enabledMetadata = useAppSelector((state) => state.enabledMetadata);
+  const metadata = useAppSelector((state) => state.metadata);
+  const dispatch = useAppDispatch();
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setEnabledMetadata(event.target.checked));
+  };
+  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setMetadata(event.target.value));
   };
   return (
-    <div className="col-10 form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="metadata">
-        metadata:
-      </label>
-      <input
-        id="metadata"
-        name="metadata"
-        className="form-control flex-fill"
-        type="text"
-        placeholder="Metadataを指定"
-        value={metadata}
-        onChange={onChange}
-      />
-    </div>
+    <>
+      <Row className="form-row">
+        <Col>
+          <FormGroup className="form-inline" controlId="enabledMetadata">
+            <FormCheck
+              type="switch"
+              name="enabledMetadata"
+              label="metadata"
+              checked={enabledMetadata}
+              onChange={onChangeSwitch}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
+      {enabledMetadata ? (
+        <Row>
+          <Col>
+            <FormGroup className="form-inline w-50" controlId="metadata">
+              <FormControl
+                className="flex-fill"
+                as="textarea"
+                placeholder="Metadataを指定"
+                value={metadata}
+                onChange={onChangeText}
+                rows={10}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+      ) : null}
+    </>
   );
 };

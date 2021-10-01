@@ -1,6 +1,6 @@
 import NextLink from "next/link";
 import React from "react";
-import { Navbar } from "react-bootstrap";
+import { Container, Navbar } from "react-bootstrap";
 
 const createAs = (pageName: string): string => {
   if (process.env.NODE_ENV === "production") {
@@ -24,8 +24,10 @@ const Index: React.FC = () => {
     <>
       <header>
         <Navbar variant="dark" bg="sora" expand="md" fixed="top">
-          <Navbar.Brand href="/">Sora DEMO</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-collapse" />
+          <Container>
+            <Navbar.Brand href="/">Sora DEMO</Navbar.Brand>
+            <Navbar.Toggle aria-controls="navbar-collapse" />
+          </Container>
         </Navbar>
       </header>
       <div className="container">

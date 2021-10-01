@@ -1,28 +1,21 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setAudioInput, SoraDemoState, updateMediaStream } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAudioInput, updateMediaStream } from "@/app/slice";
 
-export const AudioInput: React.FC = () => {
-  const { audioInput, audioInputDevices } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormAudioInput: React.FC = () => {
+  const audioInput = useAppSelector((state) => state.audioInput);
+  const audioInputDevices = useAppSelector((state) => state.audioInputDevices);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     dispatch(setAudioInput(event.target.value));
     dispatch(updateMediaStream());
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="audioInput">
-        audioInput:
-      </label>
-      <select
-        id="audioInput"
-        name="audioInput"
-        className="custom-select"
-        value={audioInput}
-        onChange={onChange}
-        disabled={audioInputDevices.length === 0}
-      >
+    <FormGroup className="form-inline" controlId="audioInput">
+      <FormLabel>audioInput:</FormLabel>
+      <FormSelect name="audioInput" value={audioInput} onChange={onChange} disabled={audioInputDevices.length === 0}>
         {audioInputDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
@@ -30,7 +23,7 @@ export const AudioInput: React.FC = () => {
             </option>
           );
         })}
-      </select>
-    </div>
+      </FormSelect>
+    </FormGroup>
   );
 };

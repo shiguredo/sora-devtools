@@ -15,43 +15,18 @@ const Description: React.FC<DescriptionProps> = (props) => {
   if (typeof description !== "object") {
     return (
       <div className="debug-message">
-        <div className="pl-0 col-sm-12">
+        <div className="col-sm-12">
           <pre>{description}</pre>
         </div>
       </div>
     );
   }
-  if (description === null) {
-    return (
-      <div className="debug-message">
-        <div className="pl-0 col-sm-12">
-          <pre>null</pre>
-        </div>
-      </div>
-    );
-  }
   return (
-    <>
-      {Object.keys(description).map((key) => {
-        const message = ((m) => {
-          if (key === "sdp") {
-            return `"\r\n${m}"`;
-          }
-          if (typeof m === "string") {
-            return JSON.stringify(m);
-          }
-          return JSON.stringify(m, null, 2);
-        })(description[key]);
-        return (
-          <div key={key} className="debug-message">
-            <div className="pl-0 col-4 text-break">{key}</div>
-            <div className="col-8">
-              <pre>{message}</pre>
-            </div>
-          </div>
-        );
-      })}
-    </>
+    <div className="debug-message">
+      <div className="col-sm-12">
+        <pre>{JSON.stringify(description, null, 2)}</pre>
+      </div>
+    </div>
   );
 };
 
@@ -77,7 +52,7 @@ export const Message: React.FC<Props> = (props) => {
           aria-expanded={show}
         >
           <i className={`${show ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`} />{" "}
-          {timestamp ? <span className="text-white-50 mr-1">[{formatUnixtime(timestamp)}]</span> : null}
+          {timestamp ? <span className="text-white-50 me-1">[{formatUnixtime(timestamp)}]</span> : null}
           {label}
           <span>{title}</span>
         </a>
@@ -89,7 +64,7 @@ export const Message: React.FC<Props> = (props) => {
         </div>
       </div>
       <Collapse in={show}>
-        <div className="border-top pl-4 py-1">
+        <div className="border-top">
           <Description description={description} />
         </div>
       </Collapse>

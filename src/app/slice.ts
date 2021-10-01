@@ -766,6 +766,9 @@ function setSoraCallbacks(
       logType: event.logType,
     };
     dispatch(slice.actions.setTimelineMessage(message));
+    if (event.data && typeof event.data === "object" && "sdp" in event.data) {
+      dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage(`${event.type}-sdp`, event.data.sdp)));
+    }
   });
   sora.on("signaling", (event) => {
     const message = {

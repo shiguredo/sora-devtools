@@ -15,7 +15,7 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
 
 const WebSocketLabel: React.FC = () => {
   return (
-    <span className="mr-1" style={{ color: "#00ff00" }}>
+    <span className="me-1" style={{ color: "#00ff00" }}>
       [websocket]
     </span>
   );
@@ -23,7 +23,7 @@ const WebSocketLabel: React.FC = () => {
 
 const PeerConnectionLabel: React.FC = () => {
   return (
-    <span className="mr-1" style={{ color: "#ff8c00" }}>
+    <span className="me-1" style={{ color: "#ff8c00" }}>
       [peerconnection]
     </span>
   );
@@ -31,7 +31,7 @@ const PeerConnectionLabel: React.FC = () => {
 
 const SoraLabel: React.FC = () => {
   return (
-    <span className="mr-1" style={{ color: "#bce2e8" }}>
+    <span className="me-1" style={{ color: "#bce2e8" }}>
       [sora]
     </span>
   );
@@ -39,7 +39,7 @@ const SoraLabel: React.FC = () => {
 
 const SoraDemoLabel: React.FC = () => {
   return (
-    <span className="mr-1" style={{ color: "#73b8e2" }}>
+    <span className="me-1" style={{ color: "#73b8e2" }}>
       [sora-demo]
     </span>
   );
@@ -53,7 +53,7 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
   const { label, id } = props;
   const color = label && Object.keys(DATA_CHANNEL_COLORS).includes(label) ? DATA_CHANNEL_COLORS[label] : undefined;
   return (
-    <span className="mr-1" style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color: color } : {}}>
       [datachannel]{label ? `[${label}]` : ""}
       {typeof id === "number" ? `[${id}]` : ""}
     </span>

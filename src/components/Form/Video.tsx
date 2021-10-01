@@ -1,29 +1,18 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setVideo, SoraDemoState } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setVideo } from "@/app/slice";
 
-export const Video: React.FC = () => {
-  const { video } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormVideo: React.FC = () => {
+  const video = useAppSelector((state) => state.video);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setVideo(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="form-check">
-        <input
-          id="video"
-          name="video"
-          className="form-check-input"
-          type="checkbox"
-          checked={video}
-          onChange={onChange}
-        />
-        <label className="form-check-label" htmlFor="video">
-          video
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="video">
+      <FormCheck type="switch" name="video" label="video" checked={video} onChange={onChange} />
+    </FormGroup>
   );
 };

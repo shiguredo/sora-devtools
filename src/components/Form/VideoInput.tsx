@@ -1,28 +1,21 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setVideoInput, SoraDemoState, updateMediaStream } from "@/app/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setVideoInput, updateMediaStream } from "@/app/slice";
 
-export const VideoInput: React.FC = () => {
-  const { videoInput, videoInputDevices } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormVideoInput: React.FC = () => {
+  const videoInput = useAppSelector((state) => state.videoInput);
+  const videoInputDevices = useAppSelector((state) => state.videoInputDevices);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     dispatch(setVideoInput(event.target.value));
     dispatch(updateMediaStream());
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="videoInput">
-        videoInput:
-      </label>
-      <select
-        id="videoInput"
-        name="videoInput"
-        className="custom-select"
-        value={videoInput}
-        onChange={onChange}
-        disabled={videoInputDevices.length === 0}
-      >
+    <FormGroup className="form-inline" controlId="videoInput">
+      <FormLabel>videoInput:</FormLabel>
+      <FormSelect name="videoInput" value={videoInput} onChange={onChange} disabled={videoInputDevices.length === 0}>
         {videoInputDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
@@ -30,7 +23,7 @@ export const VideoInput: React.FC = () => {
             </option>
           );
         })}
-      </select>
-    </div>
+      </FormSelect>
+    </FormGroup>
   );
 };
