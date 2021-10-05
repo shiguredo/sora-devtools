@@ -6,7 +6,7 @@ import { FormCameraDevice } from "@/components/Form/CameraDevice";
 import { FormDisplayResolution } from "@/components/Form/DisplayResolution";
 import { FormMicDevice } from "@/components/Form/MicDevice";
 import { FormVideoTrack } from "@/components/Form/VideoTrack";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type FormMediaDevicesProps = {
   enabledParameters: EnabledParameters;

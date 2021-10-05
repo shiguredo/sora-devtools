@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { RTCMediaStreamTrackStats } from "@/utils";
+import type { RTCMediaStreamTrackStats } from "@/types";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],

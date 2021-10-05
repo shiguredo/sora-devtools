@@ -2,7 +2,7 @@ import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
-import { LogMessage } from "@/utils";
+import type { LogMessage } from "@/types";
 
 const Collapse: React.FC<LogMessage> = (props) => {
   const { message, timestamp } = props;

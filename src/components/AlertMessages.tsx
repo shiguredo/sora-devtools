@@ -3,7 +3,7 @@ import { Toast } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { deleteAlertMessage } from "@/app/slice";
-import { AlertMessage } from "@/utils";
+import type { AlertMessage } from "@/types";
 
 const Alert: React.FC<AlertMessage> = (props) => {
   const dispatch = useAppDispatch();

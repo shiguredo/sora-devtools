@@ -4,7 +4,7 @@ import { Col, Row } from "react-bootstrap";
 import { FormSpotlightFocusRid } from "@/components/Form/SpotlightFocusRid";
 import { FormSpotlightNumber } from "@/components/Form/SpotlightNumber";
 import { FormSpotlightUnfocusRid } from "@/components/Form/SpotlightUnfocusRid";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type FormSpotlightProps = {
   enabledParameters: EnabledParameters;

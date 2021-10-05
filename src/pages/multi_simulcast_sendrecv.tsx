@@ -7,7 +7,8 @@ import { ColDemo } from "@/components/ColDemo";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
+import type { EnabledParameters } from "@/types";
+import { getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -46,12 +47,15 @@ const MultiSimulcastSendrecv: React.FC = () => {
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        role: "sendrecv",
+        multistream: true,
+        simulcast: true,
+        spotlight: false,
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "3000",
         resolution: "HD",
         simulcastRid: "r0",
-        role: "sendrecv",
       })
     );
     dispatch(setMediaDevices());
@@ -67,7 +71,7 @@ const MultiSimulcastSendrecv: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

@@ -3,7 +3,7 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 
 import { CopyURL } from "@/components/Button/CopyURL";
 import { DownloadReport } from "@/components/Button/DownloadReport";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type Props = {
   enabledParameters: EnabledParameters;

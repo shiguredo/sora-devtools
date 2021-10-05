@@ -7,7 +7,7 @@ import { ColDemo } from "@/components/ColDemo";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -32,6 +32,9 @@ const SpotlightRecvonly: React.FC = () => {
     dispatch(
       setInitialParameter({
         role: "recvonly",
+        multistream: true,
+        simulcast: true,
+        spotlight: true,
       })
     );
     dispatch(setMediaDevices());
@@ -47,7 +50,7 @@ const SpotlightRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

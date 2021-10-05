@@ -7,7 +7,7 @@ import { ColDemo } from "@/components/ColDemo";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -26,7 +26,14 @@ const ENABLED_PARAMETERS: EnabledParameters = {
 const MultiRecvonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter({ role: "recvonly" }));
+    dispatch(
+      setInitialParameter({
+        multistream: true,
+        spotlight: false,
+        simulcast: false,
+        role: "recvonly",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -40,7 +47,7 @@ const MultiRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo multistream enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

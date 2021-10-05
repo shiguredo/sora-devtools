@@ -1,5 +1,4 @@
 import queryString from "query-string";
-import type { TimelineEventLogType, TransportType } from "sora-js-sdk";
 
 import {
   AUDIO_BIT_RATES,
@@ -14,190 +13,10 @@ import {
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  SPOTLIGHTS,
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
 } from "@/constants";
-
-// HTMLCanvasElement interface に captureStream を追加
-interface CustomHTMLCanvasElement extends HTMLCanvasElement {
-  captureStream(fps?: number): MediaStream;
-}
-
-// MediaTrackConstraints interface に echoCancellationType を追加
-interface SoraDemoMediaTrackConstraints extends MediaTrackConstraintSet {
-  autoGainControl?: boolean;
-  noiseSuppression?: boolean;
-  echoCancellationType?: "system" | "browser";
-}
-
-export type Json =
-  | null
-  | boolean
-  | number
-  | string
-  | Json[]
-  | {
-      [prop: string]: Json | undefined;
-    };
-
-// HTMLVideoElement interface に setSinkId を追加
-export interface CustomHTMLVideoElement extends HTMLVideoElement {
-  setSinkId(audioId: string): void;
-}
-
-// MediaDevices interface に getDisplayMedia を追加
-export interface SoraDemoMediaDevices extends MediaDevices {
-  getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
-}
-
-// RTCMediaStreamTrackStats に jitterBuffer 関連を追加
-export interface RTCMediaStreamTrackStats extends RTCStats {
-  ssrc: number;
-  kind: string;
-  trackId: string;
-  trackIdentifier: string;
-  transportId: string;
-  codecId: string;
-  mediaType: string;
-  jitter: number;
-  packetsLost: number;
-  remoteId: string;
-  packetsReceived: number;
-  fecPacketsReceived: number;
-  fecPacketsDiscarded: number;
-  bytesReceived: number;
-  headerBytesReceived: number;
-  lastPacketReceivedTimestamp: number;
-  jitterBufferDelay: number;
-  jitterBufferEmittedCount: number;
-  totalSamplesReceived: number;
-  concealedSamples: number;
-  silentConcealedSamples: number;
-  concealmentEvents: number;
-  insertedSamplesForDeceleration: number;
-  removedSamplesForAcceleration: number;
-  audioLevel: number;
-  totalAudioEnergy: number;
-  totalSamplesDuration: number;
-  estimatedPlayoutTimestamp: number;
-  prevJitterBufferDelay: number;
-  prevJitterBufferEmittedCount: number;
-}
-
-// 各 page で有効にするパラメーターを指定するための Type
-export type EnabledParameters = {
-  audio?: boolean;
-  audioBitRate?: boolean;
-  audioCodecType?: boolean;
-  audioInput?: boolean;
-  audioOutput?: boolean;
-  audioTrack?: boolean;
-  autoGainControl?: boolean;
-  cameraDevice?: boolean;
-  channelId?: boolean;
-  clientId?: boolean;
-  dataChannel?: boolean;
-  displayResolution?: boolean;
-  e2ee?: boolean;
-  echoCancellation?: boolean;
-  echoCancellationType?: boolean;
-  frameRate?: boolean;
-  mediaType?: boolean;
-  metadata?: boolean;
-  micDevice?: boolean;
-  noiseSuppression?: boolean;
-  resolution?: boolean;
-  signalingNotifyMetadata?: boolean;
-  signalingUrlCandidates?: boolean;
-  simulcastRid?: boolean;
-  spotlight?: boolean;
-  spotlightFocusRid?: boolean;
-  spotlightNumber?: boolean;
-  spotlightUnfocusRid?: boolean;
-  video?: boolean;
-  videoBitRate?: boolean;
-  videoCodecType?: boolean;
-  videoInput?: boolean;
-  videoTrack?: boolean;
-};
-
-// Debug log message の Type
-export type LogMessage = {
-  timestamp: number;
-  message: {
-    title: string;
-    description: string;
-  };
-};
-
-// Sora on notify callback の引数 Type
-export type SoraNotifyMessage = {
-  type: "notify";
-  event_type: string;
-  [x: string]: unknown;
-};
-
-// Debug notify message の Type
-export type NotifyMessage = {
-  timestamp: number;
-  message: SoraNotifyMessage;
-  transportType: TransportType;
-};
-
-// Sora on push callback の引数 Type
-export type SoraPushMessage = {
-  type: "push";
-  data: {
-    [x: string]: unknown;
-  };
-};
-
-// Debug push message の Type
-export type PushMessage = {
-  timestamp: number;
-  message: SoraPushMessage;
-  transportType: TransportType;
-};
-
-// Debug timeline message の Type
-export type TimelineMessage = {
-  timestamp: number;
-  type: string;
-  logType: TimelineEventLogType | "sora-demo";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
-  dataChannelId?: number | null;
-  dataChannelLabel?: string | null;
-};
-
-// Debug signaling message の Type
-export type SignalingMessage = {
-  timestamp: number;
-  type: string;
-  transportType: TransportType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
-};
-
-// Debug data channel message の Type
-export type DataChannelMessage = {
-  timestamp: number;
-  label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
-};
-
-// 画面表示する message の Type
-export type AlertMessage = {
-  timestamp: number;
-  type: "error" | "info";
-  title: string;
-  message: string;
-};
-
-// Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "push" | "stats" | "timeline" | "signaling";
+import type { CustomHTMLCanvasElement, Json, QueryStringParameters, SoraDemoMediaTrackConstraints } from "@/types";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -282,11 +101,6 @@ export function isSpotlightNumber(spotlightNumber: string): spotlightNumber is t
   return (SPOTLIGHT_NUMBERS as readonly string[]).indexOf(spotlightNumber) >= 0;
 }
 
-// Spotlight の Type Guard
-export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[number] {
-  return (SPOTLIGHTS as readonly string[]).indexOf(spotlight) >= 0;
-}
-
 // SpotlightFocusRid / SpotlightUnfocusRid の Type Guard
 export function isSpotlightFocusRid(
   spotlightFocusRid: string
@@ -317,50 +131,6 @@ export function isIgnoreDisconnectWebSocket(
 ): ignoreDisconnectWebSocket is typeof IGNORE_DISCONNECT_WEBSOCKET[number] {
   return (IGNORE_DISCONNECT_WEBSOCKET as readonly string[]).indexOf(ignoreDisconnectWebSocket) >= 0;
 }
-
-// クエリ文字列から取得する parameter の Type
-export type QueryStringParameters = {
-  audio: boolean;
-  audioBitRate: typeof AUDIO_BIT_RATES[number];
-  audioCodecType: typeof AUDIO_CODEC_TYPES[number];
-  audioInput: string;
-  audioOutput: string;
-  audioTrack: boolean;
-  autoGainControl: boolean;
-  cameraDevice: boolean;
-  channelId: string;
-  clientId: string;
-  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  dataChannelMessaging: string;
-  debug: boolean;
-  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
-  e2ee: boolean;
-  echoCancellation: boolean;
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
-  fakeVolume: string;
-  frameRate: typeof FRAME_RATES[number];
-  googCpuOveruseDetection: boolean;
-  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
-  mediaType: typeof MEDIA_TYPES[number];
-  metadata: string;
-  micDevice: boolean;
-  mute: boolean;
-  noiseSuppression: boolean;
-  resolution: typeof RESOLUTIONS[number];
-  showStats: boolean;
-  signalingNotifyMetadata: string;
-  signalingUrlCandidates: string[];
-  simulcastRid: typeof SIMULCAST_RID[number];
-  spotlight: typeof SPOTLIGHTS[number];
-  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  video: boolean;
-  videoBitRate: typeof VIDEO_BIT_RATES[number];
-  videoCodecType: typeof VIDEO_CODEC_TYPES[number];
-  videoInput: string;
-  videoTrack: boolean;
-};
 
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
@@ -396,7 +166,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     signalingNotifyMetadata,
     signalingUrlCandidates,
     simulcastRid,
-    spotlight,
     spotlightFocusRid,
     spotlightNumber,
     spotlightUnfocusRid,
@@ -472,9 +241,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;
-  }
-  if (typeof spotlight === "string" && isSpotlight(spotlight)) {
-    queryStringParameters.spotlight = spotlight;
   }
   if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
     queryStringParameters.spotlightNumber = spotlightNumber;

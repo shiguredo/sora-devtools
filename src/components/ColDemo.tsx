@@ -18,17 +18,16 @@ import { FormRowSpotlightSettings } from "@/components/Form/RowSpotlightSettings
 import { FormRowVideoSettings } from "@/components/Form/RowVideoSettings";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type Props = {
-  multistream?: boolean;
-  simulcast?: boolean;
-  spotlight?: boolean;
   enabledParameters: EnabledParameters;
 };
 export const ColDemo: React.FC<Props> = (props) => {
   const debug = useAppSelector((state) => state.debug);
   const role = useAppSelector((state) => state.role);
+  const spotlight = useAppSelector((state) => state.spotlight);
+  const simulcast = useAppSelector((state) => state.simulcast);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
@@ -44,22 +43,18 @@ export const ColDemo: React.FC<Props> = (props) => {
       <FormRowOptions enabledParameters={props.enabledParameters} />
 
       <div className="row">
-        <Connect
-          multistream={props.multistream ? true : false}
-          spotlight={props.spotlight ? true : false}
-          simulcast={props.simulcast ? true : false}
-        />
+        <Connect />
         <Disconnect />
         <StartRecording />
         <StopRecording />
-        {!props.spotlight && props.simulcast && role !== "sendonly" ? (
+        {!spotlight && simulcast && role !== "sendonly" ? (
           <>
             <RequestRtpStream rid={"r0"} />
             <RequestRtpStream rid={"r1"} />
             <RequestRtpStream rid={"r2"} />
           </>
         ) : null}
-        {props.spotlight && props.simulcast && role !== "sendonly" ? (
+        {spotlight && simulcast && role !== "sendonly" ? (
           <>
             <RequestRtpStream rid={"r0"} />
             <RequestRtpStream rid={"r1"} />
@@ -69,13 +64,7 @@ export const ColDemo: React.FC<Props> = (props) => {
         ) : null}
       </div>
       <LocalVideo />
-      {role === "recvonly" || role === "sendrecv" ? (
-        <RemoteVideos
-          multistream={props.multistream === true}
-          simulcast={props.simulcast === true}
-          spotlight={props.spotlight === true}
-        />
-      ) : null}
+      {role === "recvonly" || role === "sendrecv" ? <RemoteVideos /> : null}
     </div>
   );
 };

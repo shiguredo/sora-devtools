@@ -7,7 +7,8 @@ import { ColDemo } from "@/components/ColDemo";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
+import type { EnabledParameters } from "@/types";
+import { getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -45,10 +46,13 @@ const Sendonly: React.FC = () => {
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        role: "sendonly",
+        multistream: false,
+        simulcast: false,
+        spotlight: false,
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
         videoBitRate: "500",
-        role: "sendonly",
       })
     );
     dispatch(setMediaDevices());

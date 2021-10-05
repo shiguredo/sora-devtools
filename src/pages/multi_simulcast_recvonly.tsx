@@ -7,7 +7,8 @@ import { ColDemo } from "@/components/ColDemo";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
+import type { EnabledParameters } from "@/types";
+import { getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -29,9 +30,12 @@ const MultiSimulcastRecvonly: React.FC = () => {
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        role: "recvonly",
+        multistream: true,
+        simulcast: true,
+        spotlight: false,
         videoCodecType: getDefaultVideoCodecType("VP9"),
         simulcastRid: "r0",
-        role: "recvonly",
       })
     );
     dispatch(setMediaDevices());
@@ -47,7 +51,7 @@ const MultiSimulcastRecvonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo multistream simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo enabledParameters={ENABLED_PARAMETERS} />
             <ColDebug />
           </div>
         </div>

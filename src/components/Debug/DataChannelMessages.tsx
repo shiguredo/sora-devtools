@@ -2,7 +2,7 @@ import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
 import { Message } from "@/components/Debug/Message";
-import { DataChannelMessage } from "@/utils";
+import type { DataChannelMessage } from "@/types";
 
 const Collapse: React.FC<DataChannelMessage> = (props) => {
   const { data, label, timestamp } = props;

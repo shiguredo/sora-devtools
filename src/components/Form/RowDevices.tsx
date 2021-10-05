@@ -5,7 +5,7 @@ import { ReloadDevices } from "@/components/Button/ReloadDevices";
 import { FormAudioInput } from "@/components/Form/AudioInput";
 import { FormAudioOutput } from "@/components/Form/AudioOutput";
 import { FormVideoInput } from "@/components/Form/VideoInput";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type FormDevicesProps = {
   enabledParameters: EnabledParameters;

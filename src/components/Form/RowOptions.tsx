@@ -9,7 +9,7 @@ import { FormE2EE } from "@/components/Form/E2EE";
 import { FormMetadata } from "@/components/Form/Metadata";
 import { FormSignalingNotifyMetadata } from "@/components/Form/SignalingNotifyMetadata";
 import { FormSignalingUrlCandidates } from "@/components/Form/SignalingUrlCandidates";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type FormOptionsProps = {
   enabledParameters: EnabledParameters;

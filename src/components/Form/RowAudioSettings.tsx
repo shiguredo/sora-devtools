@@ -8,7 +8,7 @@ import { FormAutoGainControl } from "@/components/Form/AutoGainControl";
 import { FormEchoCancellation } from "@/components/Form/EchoCancellation";
 import { FormEchoCancellationType } from "@/components/Form/EchoCancellationType";
 import { FormNoiseSuppression } from "@/components/Form/NoiseSuppression";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type FormRowAudioSettingsProps = {
   enabledParameters: EnabledParameters;

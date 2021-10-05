@@ -7,7 +7,8 @@ import { ColDemo } from "@/components/ColDemo";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
+import type { EnabledParameters } from "@/types";
+import { getDefaultVideoCodecType } from "@/utils";
 
 const ENABLED_PARAMETERS: EnabledParameters = {
   audio: true,
@@ -30,9 +31,12 @@ const Recvonly: React.FC = () => {
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        role: "recvonly",
+        multistream: false,
+        simulcast: false,
+        spotlight: false,
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
-        role: "recvonly",
       })
     );
     dispatch(setMediaDevices());

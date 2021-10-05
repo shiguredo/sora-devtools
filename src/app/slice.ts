@@ -19,110 +19,36 @@ import {
   VIDEO_CODEC_TYPES,
   WORKER_SCRIPT,
 } from "@/constants";
-import {
+import type {
   AlertMessage,
+  ConnectionOptionsState,
+  DataChannelMessage,
+  DebugType,
+  Json,
+  LogMessage,
+  NotifyMessage,
+  PageInitialParameters,
+  PushMessage,
+  SignalingMessage,
+  SoraDemoMediaDevices,
+  SoraDemoState,
+  SoraNotifyMessage,
+  SoraPushMessage,
+  TimelineMessage,
+} from "@/types";
+import {
   createAudioConstraints,
   createFakeMediaConstraints,
   createFakeMediaStream,
   createSignalingURL,
   createVideoConstraints,
-  DataChannelMessage,
-  DebugType,
   drawFakeCanvas,
   getDevices,
-  Json,
-  LogMessage,
-  NotifyMessage,
   parseMetadata,
   parseQueryString,
-  PushMessage,
-  SignalingMessage,
-  SoraDemoMediaDevices,
-  SoraNotifyMessage,
-  SoraPushMessage,
-  TimelineMessage,
 } from "@/utils";
 
 import packageJSON from "../../package.json";
-
-export type SoraDemoState = {
-  alertMessages: AlertMessage[];
-  audio: boolean;
-  audioBitRate: typeof AUDIO_BIT_RATES[number];
-  audioCodecType: typeof AUDIO_CODEC_TYPES[number];
-  audioInput: string;
-  audioInputDevices: MediaDeviceInfo[];
-  audioOutput: string;
-  audioOutputDevices: MediaDeviceInfo[];
-  autoGainControl: boolean;
-  channelId: string;
-  clientId: string;
-  googCpuOveruseDetection: boolean | null;
-  timelineMessages: TimelineMessage[];
-  debug: boolean;
-  debugType: DebugType;
-  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  dataChannelMessaging: string;
-  dataChannelMessages: DataChannelMessage[];
-  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
-  echoCancellation: boolean;
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
-  e2ee: boolean;
-  enabledClientId: boolean;
-  enabledDataChannelMessaging: boolean;
-  enabledDataChannel: boolean;
-  enabledMetadata: boolean;
-  enabledSignalingNotifyMetadata: boolean;
-  enabledSignalingUrlCandidates: boolean;
-  fakeContents: {
-    worker: Worker | null;
-    colorCode: number;
-    gainNode: GainNode | null;
-  };
-  fakeVolume: string;
-  frameRate: typeof FRAME_RATES[number];
-  soraContents: {
-    connectionStatus: "disconnected" | "disconnecting" | "connected" | "connecting";
-    sora: ConnectionPublisher | ConnectionSubscriber | null;
-    connectionId: string | null;
-    clientId: string | null;
-    localMediaStream: MediaStream | null;
-    remoteMediaStreams: MediaStream[];
-    prevStatsReport: RTCStats[];
-    statsReport: RTCStats[];
-  };
-  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
-  logMessages: LogMessage[];
-  mediaType: typeof MEDIA_TYPES[number];
-  metadata: string;
-  mute: boolean;
-  noiseSuppression: boolean;
-  notifyMessages: NotifyMessage[];
-  pushMessages: PushMessage[];
-  resolution: typeof RESOLUTIONS[number];
-  showStats: boolean;
-  signalingNotifyMetadata: string;
-  signalingUrlCandidates: string[];
-  signalingMessages: SignalingMessage[];
-  simulcastRid: typeof SIMULCAST_RID[number];
-  focusedSpotlightConnectionIds: {
-    [key: string]: boolean;
-  };
-  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  video: boolean;
-  videoBitRate: typeof VIDEO_BIT_RATES[number];
-  videoCodecType: typeof VIDEO_CODEC_TYPES[number];
-  videoInput: string;
-  videoInputDevices: MediaDeviceInfo[];
-  version: string;
-  cameraDevice: boolean;
-  videoTrack: boolean;
-  micDevice: boolean;
-  audioTrack: boolean;
-  role: Role;
-};
 
 const initialState: SoraDemoState = {
   alertMessages: [],
@@ -174,12 +100,15 @@ const initialState: SoraDemoState = {
   logMessages: [],
   mediaType: "getUserMedia",
   metadata: "",
+  multistream: false,
   mute: false,
   noiseSuppression: true,
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
   showStats: false,
+  simulcast: false,
+  spotlight: false,
   signalingMessages: [],
   signalingNotifyMetadata: "",
   signalingUrlCandidates: [],
@@ -500,6 +429,15 @@ const slice = createSlice({
     setRole: (state, action: PayloadAction<Role>) => {
       state.role = action.payload;
     },
+    setMultistream: (state, action: PayloadAction<boolean>) => {
+      state.multistream = action.payload;
+    },
+    setSimulcast: (state, action: PayloadAction<boolean>) => {
+      state.simulcast = action.payload;
+    },
+    setSpotlight: (state, action: PayloadAction<boolean>) => {
+      state.spotlight = action.payload;
+    },
   },
 });
 
@@ -790,98 +728,72 @@ function setSoraCallbacks(
 }
 
 // Sora の connectOptions を生成する
-function createConnectOptions(
-  pickedState: Pick<
-    SoraDemoState,
-    | "audio"
-    | "audioBitRate"
-    | "audioCodecType"
-    | "clientId"
-    | "dataChannelSignaling"
-    | "dataChannelMessaging"
-    | "enabledClientId"
-    | "e2ee"
-    | "enabledDataChannel"
-    | "enabledSignalingNotifyMetadata"
-    | "ignoreDisconnectWebSocket"
-    | "signalingNotifyMetadata"
-    | "simulcastRid"
-    | "spotlightFocusRid"
-    | "spotlightNumber"
-    | "spotlightUnfocusRid"
-    | "video"
-    | "videoBitRate"
-    | "videoCodecType"
-  >,
-  multistream: boolean,
-  spotlight: boolean,
-  simulcast: boolean
-): ConnectionOptions {
+function createConnectOptions(connectionOptionsState: ConnectionOptionsState): ConnectionOptions {
   const connectionOptions: ConnectionOptions = {
-    audio: pickedState.audio,
-    video: pickedState.video,
+    audio: connectionOptionsState.audio,
+    video: connectionOptionsState.video,
   };
-  if (pickedState.audioCodecType) {
-    connectionOptions.audioCodecType = pickedState.audioCodecType;
+  if (connectionOptionsState.audioCodecType) {
+    connectionOptions.audioCodecType = connectionOptionsState.audioCodecType;
   }
-  const parsedAudioBitRate = parseInt(pickedState.audioBitRate, 10);
+  const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10);
   if (parsedAudioBitRate) {
     connectionOptions.audioBitRate = parsedAudioBitRate;
   }
-  if (pickedState.videoCodecType) {
-    connectionOptions.videoCodecType = pickedState.videoCodecType;
+  if (connectionOptionsState.videoCodecType) {
+    connectionOptions.videoCodecType = connectionOptionsState.videoCodecType;
   }
-  const parsedVideoBitRate = parseInt(pickedState.videoBitRate, 10);
+  const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10);
   if (parsedVideoBitRate) {
     connectionOptions.videoBitRate = parsedVideoBitRate;
   }
-  if (multistream) {
+  if (connectionOptionsState.multistream) {
     connectionOptions.multistream = true;
   }
-  if (pickedState.e2ee) {
+  if (connectionOptionsState.e2ee) {
     connectionOptions.e2ee = true;
   }
-  if (spotlight) {
+  if (connectionOptionsState.spotlight) {
     connectionOptions.spotlight = true;
-    if (pickedState.spotlightNumber) {
-      connectionOptions.spotlightNumber = parseInt(pickedState.spotlightNumber);
+    if (connectionOptionsState.spotlightNumber) {
+      connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber);
     }
-    if (connectionOptions.spotlight === true && pickedState.spotlightFocusRid) {
-      connectionOptions.spotlightFocusRid = pickedState.spotlightFocusRid;
+    if (connectionOptions.spotlight === true && connectionOptionsState.spotlightFocusRid) {
+      connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid;
     }
-    if (connectionOptions.spotlight === true && pickedState.spotlightUnfocusRid) {
-      connectionOptions.spotlightUnfocusRid = pickedState.spotlightUnfocusRid;
+    if (connectionOptions.spotlight === true && connectionOptionsState.spotlightUnfocusRid) {
+      connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid;
     }
   }
-  if (simulcast) {
+  if (connectionOptionsState.simulcast) {
     connectionOptions.simulcast = true;
-    if (pickedState.simulcastRid) {
-      connectionOptions.simulcastRid = pickedState.simulcastRid;
+    if (connectionOptionsState.simulcastRid) {
+      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid;
     }
   }
-  if (pickedState.enabledSignalingNotifyMetadata) {
-    connectionOptions.signalingNotifyMetadata = parseMetadata(true, pickedState.signalingNotifyMetadata);
+  if (connectionOptionsState.enabledSignalingNotifyMetadata) {
+    connectionOptions.signalingNotifyMetadata = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
   }
-  if (pickedState.enabledClientId) {
-    connectionOptions.clientId = pickedState.clientId;
+  if (connectionOptionsState.enabledClientId) {
+    connectionOptions.clientId = connectionOptionsState.clientId;
   }
-  if (pickedState.enabledDataChannel) {
-    if (pickedState.dataChannelSignaling === "true") {
+  if (connectionOptionsState.enabledDataChannel) {
+    if (connectionOptionsState.dataChannelSignaling === "true") {
       connectionOptions.dataChannelSignaling = true;
-    } else if (pickedState.dataChannelSignaling === "false") {
+    } else if (connectionOptionsState.dataChannelSignaling === "false") {
       connectionOptions.dataChannelSignaling = false;
     }
 
-    if (pickedState.ignoreDisconnectWebSocket === "true") {
+    if (connectionOptionsState.ignoreDisconnectWebSocket === "true") {
       connectionOptions.ignoreDisconnectWebSocket = true;
-    } else if (pickedState.ignoreDisconnectWebSocket === "false") {
+    } else if (connectionOptionsState.ignoreDisconnectWebSocket === "false") {
       connectionOptions.ignoreDisconnectWebSocket = false;
     }
   }
-  if (pickedState.dataChannelMessaging !== "") {
+  if (connectionOptionsState.dataChannelMessaging !== "") {
     let dataChannelMessaging = [];
     try {
-      dataChannelMessaging = JSON.parse(pickedState.dataChannelMessaging);
+      dataChannelMessaging = JSON.parse(connectionOptionsState.dataChannelMessaging);
     } catch (_) {
       // サンプル実装なので warning で回避
       console.warn("Illegal format DataChannelMessaging");
@@ -891,6 +803,34 @@ function createConnectOptions(
     }
   }
   return connectionOptions;
+}
+
+// SoraDemoState から ConnectionOptionsState を生成する
+function pickConnectionOptionsState(state: SoraDemoState): ConnectionOptionsState {
+  return {
+    audio: state.audio,
+    audioBitRate: state.audioBitRate,
+    audioCodecType: state.audioCodecType,
+    clientId: state.clientId,
+    dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
+    dataChannelSignaling: state.dataChannelSignaling,
+    e2ee: state.e2ee,
+    enabledClientId: state.enabledClientId,
+    enabledDataChannel: state.enabledDataChannel,
+    enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
+    multistream: state.multistream,
+    signalingNotifyMetadata: state.signalingNotifyMetadata,
+    simulcast: state.simulcast,
+    simulcastRid: "",
+    spotlight: state.spotlight,
+    spotlightFocusRid: state.spotlightFocusRid,
+    spotlightNumber: state.spotlightNumber,
+    spotlightUnfocusRid: state.spotlightUnfocusRid,
+    video: state.video,
+    videoBitRate: state.videoBitRate,
+    videoCodecType: state.videoCodecType,
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -915,26 +855,17 @@ async function setStatsReport(dispatch: Dispatch, sora: ConnectionPublisher | Co
   }
 }
 
-// Sora との配信のみ接続
-type SendonlyOption = {
-  multistream?: boolean;
-  spotlight?: boolean;
-  simulcast?: boolean;
-};
-export const sendonlyConnectSora =
-  (options?: SendonlyOption) =>
+export const connectSora =
+  () =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("start-connection")));
     dispatch(slice.actions.setSoraConnectionStatus("connecting"));
     const state = getState();
+    // 接続中の場合は切断する
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect();
     }
-    const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-      dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      throw error;
-    });
+    // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
       state.enabledSignalingUrlCandidates,
       state.signalingUrlCandidates
@@ -943,52 +874,55 @@ export const sendonlyConnectSora =
       slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
     );
     const connection = Sora.connection(signalingUrlCandidates, state.debug);
-    const connectionOptions = createConnectOptions(
-      {
-        audio: state.audio,
-        audioBitRate: state.audioBitRate,
-        audioCodecType: state.audioCodecType,
-        clientId: state.clientId,
-        dataChannelSignaling: state.dataChannelSignaling,
-        dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
-        enabledClientId: state.enabledClientId,
-        enabledDataChannel: state.enabledDataChannel,
-        e2ee: state.e2ee,
-        enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
-        ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-        signalingNotifyMetadata: state.signalingNotifyMetadata,
-        simulcastRid: "",
-        spotlightNumber: state.spotlightNumber,
-        spotlightFocusRid: state.spotlightFocusRid,
-        spotlightUnfocusRid: state.spotlightUnfocusRid,
-        video: state.video,
-        videoBitRate: state.videoBitRate,
-        videoCodecType: state.videoCodecType,
-      },
-      options?.multistream === true,
-      options?.spotlight === true,
-      options?.simulcast === true
-    );
-    const sora = connection.sendonly(state.channelId, null, connectionOptions);
-    sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    if (typeof state.googCpuOveruseDetection === "boolean") {
-      sora.constraints = {
-        optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
-      };
-    }
-    setSoraCallbacks(dispatch, getState, sora);
+    const connectionOptionsState = pickConnectionOptionsState(state);
+    const connectionOptions = createConnectOptions(connectionOptionsState);
+    const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+    let sora, mediaStream, gainNode;
     try {
-      await sora.connect(mediaStream);
-      dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
+      if (state.role === "sendonly") {
+        sora = connection.sendonly(state.channelId, metadata, connectionOptions);
+        // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
+        if (typeof state.googCpuOveruseDetection === "boolean") {
+          sora.constraints = {
+            optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
+          };
+        }
+        setSoraCallbacks(dispatch, getState, sora);
+        [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
+          dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
+          throw error;
+        });
+        await sora.connect(mediaStream);
+      } else if (state.role === "sendrecv") {
+        sora = connection.sendrecv(state.channelId, metadata, connectionOptions);
+        // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
+        if (typeof state.googCpuOveruseDetection === "boolean") {
+          sora.constraints = {
+            optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
+          };
+        }
+        setSoraCallbacks(dispatch, getState, sora);
+        [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
+          dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
+          throw error;
+        });
+        await sora.connect(mediaStream);
+      } else if (state.role === "recvonly") {
+        sora = connection.recvonly(state.channelId, metadata, connectionOptions);
+        setSoraCallbacks(dispatch, getState, sora);
+        await sora.connect();
+      }
     } catch (error) {
-      mediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
       }
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
+    }
+    if (sora === undefined) {
+      throw new Error("Failed to connect Sora. Connection object is 'undefined'");
     }
     await setStatsReport(dispatch, sora);
     const timerId = setInterval(async () => {
@@ -1000,174 +934,12 @@ export const sendonlyConnectSora =
       }
     }, 1000);
     dispatch(slice.actions.setSora(sora));
-    dispatch(slice.actions.setLocalMediaStream(mediaStream));
-    dispatch(slice.actions.setFakeContentsGainNode(gainNode));
-    dispatch(slice.actions.setSoraConnectionStatus("connected"));
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("connected")));
-  };
-
-// Sora との視聴のみ接続
-type RecvonlyOption = {
-  multistream?: boolean;
-  spotlight?: boolean;
-  simulcast?: boolean;
-};
-export const recvonlyConnectSora =
-  (options?: RecvonlyOption) =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("start-connection")));
-    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
-    const state = getState();
-    if (state.soraContents.sora) {
-      await state.soraContents.sora.disconnect();
+    if (mediaStream) {
+      dispatch(slice.actions.setLocalMediaStream(mediaStream));
     }
-    const signalingUrlCandidates = createSignalingURL(
-      state.enabledSignalingUrlCandidates,
-      state.signalingUrlCandidates
-    );
-    dispatch(
-      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
-    );
-    const connection = Sora.connection(signalingUrlCandidates, state.debug);
-    const connectionOptions = createConnectOptions(
-      {
-        audio: state.audio,
-        audioBitRate: state.audioBitRate,
-        audioCodecType: state.audioCodecType,
-        clientId: state.clientId,
-        dataChannelSignaling: state.dataChannelSignaling,
-        dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
-        enabledClientId: state.enabledClientId,
-        enabledDataChannel: state.enabledDataChannel,
-        e2ee: state.e2ee,
-        enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
-        ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-        signalingNotifyMetadata: state.signalingNotifyMetadata,
-        simulcastRid: state.simulcastRid,
-        spotlightNumber: state.spotlightNumber,
-        spotlightFocusRid: state.spotlightFocusRid,
-        spotlightUnfocusRid: state.spotlightUnfocusRid,
-        video: state.video,
-        videoBitRate: state.videoBitRate,
-        videoCodecType: state.videoCodecType,
-      },
-      options?.multistream === true,
-      options?.spotlight === true,
-      options?.simulcast === true
-    );
-    const sora = connection.recvonly(state.channelId, null, connectionOptions);
-    sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    setSoraCallbacks(dispatch, getState, sora);
-    try {
-      await sora.connect();
-      dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
-      }
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      throw error;
+    if (gainNode) {
+      dispatch(slice.actions.setFakeContentsGainNode(gainNode));
     }
-    await setStatsReport(dispatch, sora);
-    const timerId = setInterval(async () => {
-      const { soraContents } = getState();
-      if (soraContents.sora) {
-        await setStatsReport(dispatch, soraContents.sora);
-      } else {
-        clearInterval(timerId);
-      }
-    }, 1000);
-    dispatch(slice.actions.setSora(sora));
-    dispatch(slice.actions.setSoraConnectionStatus("connected"));
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("connected")));
-  };
-
-// Sora との配信/視聴接続
-type SendrecvOption = {
-  spotlight?: boolean;
-  simulcast?: boolean;
-};
-export const sendrecvConnectSora =
-  (options?: SendrecvOption) =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("start-connection")));
-    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
-    const state = getState();
-    if (state.soraContents.sora) {
-      await state.soraContents.sora.disconnect();
-    }
-    const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-      dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      throw error;
-    });
-    const signalingUrlCandidates = createSignalingURL(
-      state.enabledSignalingUrlCandidates,
-      state.signalingUrlCandidates
-    );
-    dispatch(
-      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
-    );
-    const connection = Sora.connection(signalingUrlCandidates, state.debug);
-    const connectionOptions = createConnectOptions(
-      {
-        audio: state.audio,
-        audioBitRate: state.audioBitRate,
-        audioCodecType: state.audioCodecType,
-        clientId: state.clientId,
-        dataChannelSignaling: state.dataChannelSignaling,
-        dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
-        enabledClientId: state.enabledClientId,
-        enabledDataChannel: state.enabledDataChannel,
-        e2ee: state.e2ee,
-        enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
-        ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-        signalingNotifyMetadata: state.signalingNotifyMetadata,
-        simulcastRid: state.simulcastRid,
-        spotlightNumber: state.spotlightNumber,
-        spotlightFocusRid: state.spotlightFocusRid,
-        spotlightUnfocusRid: state.spotlightUnfocusRid,
-        video: state.video,
-        videoBitRate: state.videoBitRate,
-        videoCodecType: state.videoCodecType,
-      },
-      true,
-      options?.spotlight === true,
-      options?.simulcast === true
-    );
-    const sora = connection.sendrecv(state.channelId, null, connectionOptions);
-    sora.metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    if (typeof state.googCpuOveruseDetection === "boolean") {
-      sora.constraints = {
-        optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
-      };
-    }
-    setSoraCallbacks(dispatch, getState, sora);
-    try {
-      await sora.connect(mediaStream);
-      dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
-    } catch (error) {
-      mediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-      if (error instanceof Error) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
-      }
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      throw error;
-    }
-    await setStatsReport(dispatch, sora);
-    const timerId = setInterval(async () => {
-      const { soraContents } = getState();
-      if (soraContents.sora) {
-        await setStatsReport(dispatch, soraContents.sora);
-      } else {
-        clearInterval(timerId);
-      }
-    }, 1000);
-    dispatch(slice.actions.setSora(sora));
-    dispatch(slice.actions.setLocalMediaStream(mediaStream));
-    dispatch(slice.actions.setFakeContentsGainNode(gainNode));
     dispatch(slice.actions.setSoraConnectionStatus("connected"));
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("connected")));
   };
@@ -1366,49 +1138,7 @@ function setInitialState<T>(
     dispatch(action(queryStringValue));
   }
 }
-// component レンダリング後に画面初期状態を更新
-type PageInitialParameters = {
-  role: SoraDemoState["role"];
-  audio?: SoraDemoState["audio"];
-  audioBitRate?: SoraDemoState["audioBitRate"];
-  audioCodecType?: SoraDemoState["audioCodecType"];
-  audioInput?: SoraDemoState["audioInput"];
-  audioOutput?: SoraDemoState["audioOutput"];
-  autoGainControl?: SoraDemoState["autoGainControl"];
-  channelId?: SoraDemoState["channelId"];
-  clientId?: SoraDemoState["clientId"];
-  googCpuOveruseDetection?: SoraDemoState["googCpuOveruseDetection"];
-  debug?: SoraDemoState["debug"];
-  dataChannelSignaling?: SoraDemoState["dataChannelSignaling"];
-  dataChannelMessaging?: SoraDemoState["dataChannelMessaging"];
-  displayResolution?: SoraDemoState["displayResolution"];
-  echoCancellation?: SoraDemoState["echoCancellation"];
-  echoCancellationType?: SoraDemoState["echoCancellationType"];
-  e2ee?: SoraDemoState["e2ee"];
-  fakeVolume?: SoraDemoState["fakeVolume"];
-  frameRate?: SoraDemoState["frameRate"];
-  ignoreDisconnectWebSocket?: SoraDemoState["ignoreDisconnectWebSocket"];
-  mediaType?: SoraDemoState["mediaType"];
-  metadata?: SoraDemoState["metadata"];
-  mute?: SoraDemoState["mute"];
-  noiseSuppression?: SoraDemoState["noiseSuppression"];
-  resolution?: SoraDemoState["resolution"];
-  showStats?: SoraDemoState["showStats"];
-  signalingNotifyMetadata?: SoraDemoState["signalingNotifyMetadata"];
-  signalingUrlCandidates?: SoraDemoState["signalingUrlCandidates"];
-  simulcastRid?: SoraDemoState["simulcastRid"];
-  spotlightNumber?: SoraDemoState["spotlightNumber"];
-  spotlightFocusRid?: SoraDemoState["spotlightFocusRid"];
-  spotlightUnfocusRid?: SoraDemoState["spotlightUnfocusRid"];
-  video?: SoraDemoState["video"];
-  videoBitRate?: SoraDemoState["videoBitRate"];
-  videoCodecType?: SoraDemoState["videoCodecType"];
-  videoInput?: SoraDemoState["videoInput"];
-  cameraDevice?: SoraDemoState["cameraDevice"];
-  videoTrack?: SoraDemoState["videoTrack"];
-  micDevice?: SoraDemoState["micDevice"];
-  audioTrack?: SoraDemoState["audioTrack"];
-};
+
 export const setInitialParameter =
   (pageInitialParameters: PageInitialParameters) =>
   async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
@@ -1689,10 +1419,29 @@ export const setInitialParameter =
       );
     }
     dispatch(slice.actions.setInitialFakeContents());
+    // role
     if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {
       dispatch(slice.actions.setRole(pageInitialParameters.role));
     } else {
       throw new Error(`Failed to initialize. Invalid role parameter '${pageInitialParameters.role}'.`);
+    }
+    // multistream
+    if (typeof pageInitialParameters.multistream === "boolean") {
+      dispatch(slice.actions.setMultistream(pageInitialParameters.multistream));
+    } else {
+      throw new Error(`Failed to initialize. Invalid multistream parameter '${pageInitialParameters.multistream}'.`);
+    }
+    // simulcast
+    if (typeof pageInitialParameters.simulcast === "boolean") {
+      dispatch(slice.actions.setSimulcast(pageInitialParameters.simulcast));
+    } else {
+      throw new Error(`Failed to initialize. Invalid simulcast parameter '${pageInitialParameters.simulcast}'.`);
+    }
+    // spotlight
+    if (typeof pageInitialParameters.spotlight === "boolean") {
+      dispatch(slice.actions.setSpotlight(pageInitialParameters.spotlight));
+    } else {
+      throw new Error(`Failed to initialize. Invalid spotlight parameter '${pageInitialParameters.spotlight}'.`);
     }
     // e2ee が有効な場合は e2ee 初期化処理をする
     const { e2ee } = getState();

@@ -1,8 +1,8 @@
 import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
+import type { EnabledParameters } from "@/types";
 import { copy2clipboard } from "@/utils";
-import { EnabledParameters } from "@/utils";
 
 type Props = {
   enabledParameters: EnabledParameters;

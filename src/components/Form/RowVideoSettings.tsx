@@ -7,7 +7,7 @@ import { FormSimulcastRid } from "@/components/Form/SimulcastRid";
 import { FormVideo } from "@/components/Form/Video";
 import { FormVideoBitRate } from "@/components/Form/VideoBitRate";
 import { FormVideoCodecType } from "@/components/Form/VideoCodecType";
-import { EnabledParameters } from "@/utils";
+import type { EnabledParameters } from "@/types";
 
 type FormRowVideoSettingsProps = {
   enabledParameters: EnabledParameters;

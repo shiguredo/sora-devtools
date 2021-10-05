@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useAppSelector } from "@/app/hooks";
 import { RequestRtpStreamBySendConnectionId } from "@/components/Button/RequestRtpStreamBySendConnectionId";
 import { ResetRtpStreamBySendConnectionId } from "@/components/Button/ResetRtpStreamBySendConnectionId";
-import { RTCMediaStreamTrackStats } from "@/utils";
+import type { RTCMediaStreamTrackStats } from "@/types";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
 import { JitterButter } from "./JitterBuffer";
@@ -82,22 +82,15 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   );
 };
 
-type RemoteVideoProps = {
-  stream: MediaStream;
-  multistream: boolean;
-  simulcast: boolean;
-  spotlight: boolean;
-};
-const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
-  useEffect(() => {
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   const [height, setHeight] = useState<number>(0);
   const audioOutput = useAppSelector((state) => state.audioOutput);
   const displayResolution = useAppSelector((state) => state.displayResolution);
-  const mute = useAppSelector((state) => state.mute);
   const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
+  const multistream = useAppSelector((state) => state.multistream);
+  const mute = useAppSelector((state) => state.mute);
+  const simulcast = useAppSelector((state) => state.simulcast);
+  const spotlight = useAppSelector((state) => state.spotlight);
   const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id];
   return (
     <div className="col-auto">
@@ -106,14 +99,14 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
         <div className="d-flex align-items-center mb-1 video-status-inner">
           <JitterButter type="audio" stream={props.stream} />
           <JitterButter type="video" stream={props.stream} />
-          {!props.spotlight && props.multistream && props.simulcast ? (
+          {!spotlight && multistream && simulcast ? (
             <>
               <RequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
               <RequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
               <RequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
             </>
           ) : null}
-          {props.spotlight && props.multistream && props.simulcast ? (
+          {spotlight && multistream && simulcast ? (
             <>
               <RequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
               <RequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
@@ -140,25 +133,12 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   );
 };
 
-type RemoteVideosProps = {
-  multistream: boolean;
-  simulcast: boolean;
-  spotlight: boolean;
-};
-export const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
+export const RemoteVideos: React.FC = () => {
   const remoteMediaStreams = useAppSelector((state) => state.soraContents.remoteMediaStreams);
   return (
     <div className="row my-2">
       {remoteMediaStreams.map((mediaStream) => {
-        return (
-          <RemoteVideo
-            key={mediaStream.id}
-            stream={mediaStream}
-            multistream={props.multistream}
-            simulcast={props.simulcast}
-            spotlight={props.spotlight}
-          />
-        );
+        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />;
       })}
     </div>
   );
