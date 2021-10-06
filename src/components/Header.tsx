@@ -20,10 +20,10 @@ export const Header: React.FC<Props> = (props) => {
           <Navbar.Collapse id="navbar-collapse">
             <Nav className="me-auto" />
             <Nav>
-              <Navbar.Text className="mx-1">
+              <Navbar.Text className="py-0 my-1">
                 <DownloadReport pageName={props.pageName} />
               </Navbar.Text>
-              <Navbar.Text className="mx-1">
+              <Navbar.Text className="py-0 my-1">
                 <CopyURL />
               </Navbar.Text>
             </Nav>
