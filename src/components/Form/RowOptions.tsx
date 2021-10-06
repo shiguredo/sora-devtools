@@ -9,12 +9,8 @@ import { FormE2EE } from "@/components/Form/E2EE";
 import { FormMetadata } from "@/components/Form/Metadata";
 import { FormSignalingNotifyMetadata } from "@/components/Form/SignalingNotifyMetadata";
 import { FormSignalingUrlCandidates } from "@/components/Form/SignalingUrlCandidates";
-import type { EnabledParameters } from "@/types";
 
-type FormOptionsProps = {
-  enabledParameters: EnabledParameters;
-};
-export const FormRowOptions: React.FC<FormOptionsProps> = (props) => {
+export const FormRowOptions: React.FC = () => {
   const e2ee = useAppSelector((state) => state.e2ee);
   const enabledClientId = useAppSelector((state) => state.enabledClientId);
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel);
@@ -50,18 +46,16 @@ export const FormRowOptions: React.FC<FormOptionsProps> = (props) => {
       </Col>
       <Collapse in={!collapsed}>
         <div>
-          {props.enabledParameters.e2ee ? (
-            <Row className="form-row">
-              <Col>
-                <FormE2EE />
-              </Col>
-            </Row>
-          ) : null}
-          {props.enabledParameters.clientId ? <FormClientId /> : null}
-          {props.enabledParameters.metadata ? <FormMetadata /> : null}
-          {props.enabledParameters.signalingNotifyMetadata ? <FormSignalingNotifyMetadata /> : null}
-          {props.enabledParameters.dataChannel ? <FormDataChannel /> : null}
-          {props.enabledParameters.signalingUrlCandidates ? <FormSignalingUrlCandidates /> : null}
+          <Row className="form-row">
+            <Col>
+              <FormE2EE />
+            </Col>
+          </Row>
+          <FormClientId />
+          <FormMetadata />
+          <FormSignalingNotifyMetadata />
+          <FormDataChannel />
+          <FormSignalingUrlCandidates />
           <FormDataChannelMessaging />
         </div>
       </Collapse>

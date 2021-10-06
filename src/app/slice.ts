@@ -24,11 +24,13 @@ import type {
   ConnectionOptionsState,
   DataChannelMessage,
   DebugType,
+  DisplaySettings,
   Json,
   LogMessage,
   NotifyMessage,
   PageInitialParameters,
   PushMessage,
+  QueryStringParameters,
   SignalingMessage,
   SoraDemoMediaDevices,
   SoraDemoState,
@@ -37,7 +39,9 @@ import type {
   TimelineMessage,
 } from "@/types";
 import {
+  copy2clipboard,
   createAudioConstraints,
+  createDisplaySettings,
   createFakeMediaConstraints,
   createFakeMediaStream,
   createSignalingURL,
@@ -70,6 +74,27 @@ const initialState: SoraDemoState = {
   dataChannelMessaging: "",
   dataChannelMessages: [],
   displayResolution: "",
+  displaySettings: {
+    audioBitRate: false,
+    audioCodecType: false,
+    audioConstraints: false,
+    audioInput: false,
+    audioOutput: false,
+    audioTrack: false,
+    cameraDevice: false,
+    clientId: false,
+    mediaType: false,
+    micDevice: false,
+    simulcastRid: false,
+    spotlightFocusRid: false,
+    spotlightNumber: false,
+    spotlightUnfocusRid: false,
+    videoBitRate: false,
+    videoCodecType: false,
+    videoConstraints: false,
+    videoInput: false,
+    videoTrack: false,
+  },
   e2ee: false,
   echoCancellation: true,
   echoCancellationType: "",
@@ -234,6 +259,9 @@ const slice = createSlice({
       // Fake canvas を表示しているブラウザタブがバックグラウンドへ移動しても canvas のレンダリングを続けるために worker を生成
       const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
       state.fakeContents.worker = new Worker(url);
+    },
+    setInitialDisplaySettings: (state, action: PayloadAction<DisplaySettings>) => {
+      state.displaySettings = action.payload;
     },
     setFrameRate: (state, action: PayloadAction<typeof FRAME_RATES[number]>) => {
       state.frameRate = action.payload;
@@ -1443,6 +1471,16 @@ export const setInitialParameter =
     } else {
       throw new Error(`Failed to initialize. Invalid spotlight parameter '${pageInitialParameters.spotlight}'.`);
     }
+    dispatch(
+      slice.actions.setInitialDisplaySettings(
+        createDisplaySettings(
+          pageInitialParameters.role,
+          pageInitialParameters.multistream,
+          pageInitialParameters.simulcast,
+          pageInitialParameters.spotlight
+        )
+      )
+    );
     // e2ee が有効な場合は e2ee 初期化処理をする
     const { e2ee } = getState();
     if (e2ee) {
@@ -1459,6 +1497,163 @@ export const setInitialParameter =
         return;
       }
     }
+  };
+
+// state から query string 付きの URL を生成する
+function queryStringValue<T>(stateValue: T, enabled: boolean): T | undefined {
+  if (enabled) {
+    return stateValue;
+  }
+  return undefined;
+}
+
+export const copyURL =
+  () =>
+  async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+    const state = getState();
+    const parameters: Partial<QueryStringParameters> = {
+      // mediaType
+      mediaType: queryStringValue<QueryStringParameters["mediaType"]>(state.mediaType, state.displaySettings.mediaType),
+      // channelId
+      channelId: state.channelId,
+      // audio
+      audio: state.audio,
+      audioBitRate: queryStringValue<QueryStringParameters["audioBitRate"]>(
+        state.audioBitRate,
+        state.displaySettings.audioBitRate
+      ),
+      audioCodecType: queryStringValue<QueryStringParameters["audioCodecType"]>(
+        state.audioCodecType,
+        state.displaySettings.audioCodecType
+      ),
+      // audio constraints
+      autoGainControl: queryStringValue<QueryStringParameters["autoGainControl"]>(
+        state.autoGainControl,
+        state.displaySettings.audioConstraints
+      ),
+      noiseSuppression: queryStringValue<QueryStringParameters["noiseSuppression"]>(
+        state.noiseSuppression,
+        state.displaySettings.audioConstraints
+      ),
+      echoCancellation: queryStringValue<QueryStringParameters["echoCancellation"]>(
+        state.echoCancellation,
+        state.displaySettings.audioConstraints
+      ),
+      echoCancellationType: queryStringValue<QueryStringParameters["echoCancellationType"]>(
+        state.echoCancellationType,
+        state.displaySettings.audioConstraints
+      ),
+      // video
+      video: state.video,
+      videoBitRate: queryStringValue<QueryStringParameters["videoBitRate"]>(
+        state.videoBitRate,
+        state.displaySettings.videoBitRate
+      ),
+      videoCodecType: queryStringValue<QueryStringParameters["videoCodecType"]>(
+        state.videoCodecType,
+        state.displaySettings.videoCodecType
+      ),
+      // video constraints
+      resolution: queryStringValue<QueryStringParameters["resolution"]>(
+        state.resolution,
+        state.displaySettings.videoConstraints
+      ),
+      frameRate: queryStringValue<QueryStringParameters["frameRate"]>(
+        state.frameRate,
+        state.displaySettings.videoConstraints
+      ),
+      // simulcast
+      simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
+        state.simulcastRid,
+        state.displaySettings.simulcastRid
+      ),
+      // devices
+      audioInput: queryStringValue<QueryStringParameters["audioInput"]>(
+        state.audioInput,
+        state.displaySettings.audioInput
+      ),
+      audioOutput: queryStringValue<QueryStringParameters["audioOutput"]>(
+        state.audioOutput,
+        state.displaySettings.audioOutput
+      ),
+      videoInput: queryStringValue<QueryStringParameters["videoInput"]>(
+        state.videoInput,
+        state.displaySettings.videoInput
+      ),
+      // device settings
+      displayResolution: state.displayResolution,
+      micDevice: queryStringValue<QueryStringParameters["micDevice"]>(state.micDevice, state.displaySettings.micDevice),
+      cameraDevice: queryStringValue<QueryStringParameters["cameraDevice"]>(
+        state.cameraDevice,
+        state.displaySettings.cameraDevice
+      ),
+      audioTrack: queryStringValue<QueryStringParameters["audioTrack"]>(
+        state.audioTrack,
+        state.displaySettings.audioTrack
+      ),
+      videoTrack: queryStringValue<QueryStringParameters["videoTrack"]>(
+        state.videoTrack,
+        state.displaySettings.videoTrack
+      ),
+      // spotlight
+      spotlightNumber: queryStringValue<QueryStringParameters["spotlightNumber"]>(
+        state.spotlightNumber,
+        state.displaySettings.spotlightNumber
+      ),
+      spotlightFocusRid: queryStringValue<QueryStringParameters["spotlightFocusRid"]>(
+        state.spotlightFocusRid,
+        state.displaySettings.spotlightFocusRid
+      ),
+      spotlightUnfocusRid: queryStringValue<QueryStringParameters["spotlightUnfocusRid"]>(
+        state.spotlightUnfocusRid,
+        state.displaySettings.spotlightUnfocusRid
+      ),
+      // options
+      e2ee: state.e2ee,
+      clientId: queryStringValue<QueryStringParameters["clientId"]>(state.clientId, state.enabledClientId),
+      metadata: queryStringValue<QueryStringParameters["metadata"]>(state.metadata, state.enabledMetadata),
+      signalingNotifyMetadata: queryStringValue<QueryStringParameters["signalingNotifyMetadata"]>(
+        state.signalingNotifyMetadata,
+        state.enabledSignalingNotifyMetadata
+      ),
+      dataChannelSignaling: queryStringValue<QueryStringParameters["dataChannelSignaling"]>(
+        state.dataChannelSignaling,
+        state.enabledDataChannel
+      ),
+      ignoreDisconnectWebSocket: queryStringValue<QueryStringParameters["ignoreDisconnectWebSocket"]>(
+        state.ignoreDisconnectWebSocket,
+        state.enabledDataChannel
+      ),
+      signalingUrlCandidates: queryStringValue<QueryStringParameters["signalingUrlCandidates"]>(
+        state.signalingUrlCandidates,
+        state.enabledSignalingUrlCandidates
+      ),
+      dataChannelMessaging: queryStringValue<QueryStringParameters["dataChannelMessaging"]>(
+        state.dataChannelMessaging,
+        state.enabledDataChannelMessaging
+      ),
+      // debug
+      debug: state.debug,
+      // その他
+      mute: state.mute,
+      fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
+    };
+    const queryStrings = Object.keys(parameters).map((key) => {
+      const value = (parameters as Record<string, unknown>)[key];
+      if (value === undefined) {
+        return;
+      }
+      // signalingUrlCandidates は Array なので JSON.stringify する
+      if (key === "signalingUrlCandidates") {
+        return `${key}=${JSON.stringify(value)}`;
+      }
+      // dataChannelMessaging は encodeURIComponent する
+      if (key === "dataChannelMessaging") {
+        return `${key}=${encodeURIComponent((value as string))}`;
+      }
+      return `${key}=${value}`;
+    }).filter((value) => (value !== undefined));
+    copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join("&")}`);
   };
 
 export const {

@@ -1,4 +1,5 @@
 import queryString from "query-string";
+import type { Role } from "sora-js-sdk";
 
 import {
   AUDIO_BIT_RATES,
@@ -16,7 +17,13 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
 } from "@/constants";
-import type { CustomHTMLCanvasElement, Json, QueryStringParameters, SoraDemoMediaTrackConstraints } from "@/types";
+import type {
+  CustomHTMLCanvasElement,
+  DisplaySettings,
+  Json,
+  QueryStringParameters,
+  SoraDemoMediaTrackConstraints,
+} from "@/types";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -36,19 +43,6 @@ export function copy2clipboard(text: string): Promise<void> {
   if (navigator.clipboard) {
     return navigator.clipboard.writeText(text);
   }
-
-  const textarea = document.createElement("textarea");
-  textarea.style.position = "absolute";
-  textarea.style.top = "-1000px";
-  textarea.innerText = text;
-  document.body.appendChild(textarea);
-  textarea.select();
-  try {
-    document.execCommand("copy");
-  } catch (error) {
-    Promise.reject(error);
-  }
-  document.body.removeChild(textarea);
   return Promise.resolve();
 }
 
@@ -563,4 +557,72 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
     // 例外が起きた場合は何もしない
   }
   return [];
+}
+
+export function createDisplaySettings(
+  role: Role,
+  multistream: boolean,
+  simulcast: boolean,
+  spotlight: boolean
+): DisplaySettings {
+  const displaySettings: DisplaySettings = {
+    audioCodecType: false,
+    audioBitRate: false,
+    audioConstraints: false,
+    audioInput: false,
+    audioOutput: false,
+    audioTrack: false,
+    cameraDevice: false,
+    clientId: false,
+    mediaType: false,
+    micDevice: false,
+    simulcastRid: false,
+    spotlightFocusRid: false,
+    spotlightNumber: false,
+    spotlightUnfocusRid: false,
+    videoBitRate: false,
+    videoCodecType: false,
+    videoConstraints: false,
+    videoInput: false,
+    videoTrack: false,
+  };
+  if (role === "sendonly" || role === "sendrecv") {
+    displaySettings.mediaType = true;
+    displaySettings.audioCodecType = true;
+    displaySettings.audioBitRate = true;
+    displaySettings.audioConstraints = true;
+    displaySettings.videoCodecType = true;
+    displaySettings.videoBitRate = true;
+    displaySettings.videoConstraints = true;
+    displaySettings.audioInput = true;
+    displaySettings.audioOutput = true;
+    displaySettings.videoInput = true;
+    displaySettings.cameraDevice = true;
+    displaySettings.micDevice = true;
+    displaySettings.audioTrack = true;
+    displaySettings.videoTrack = true;
+  } else if (role === "recvonly") {
+    displaySettings.audioCodecType = true;
+    displaySettings.videoCodecType = true;
+    displaySettings.audioOutput = true;
+  }
+  // multistream recvonly は codec type を表示しない
+  if (role === "recvonly" && multistream) {
+    displaySettings.audioCodecType = false;
+    displaySettings.videoCodecType = false;
+  }
+  // simulcast  sendrecv/recvnoly では simulcastRid を表示する
+  if ((role === "recvonly" || role === "sendrecv") && simulcast && !spotlight) {
+    displaySettings.simulcastRid = true;
+  }
+  // spotlight の場合は spotlightNumber を表示する
+  if (spotlight) {
+    displaySettings.spotlightNumber = true;
+  }
+  // spotlight,  sendrecv/recvnoly では spotlightFocusRid, spotlightUnfocusRid を表示する
+  if ((role === "recvonly" || role === "sendrecv") && simulcast) {
+    displaySettings.spotlightFocusRid = true;
+    displaySettings.spotlightUnfocusRid = true;
+  }
+  return displaySettings;
 }

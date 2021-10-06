@@ -18,29 +18,24 @@ import { FormRowSpotlightSettings } from "@/components/Form/RowSpotlightSettings
 import { FormRowVideoSettings } from "@/components/Form/RowVideoSettings";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
-import type { EnabledParameters } from "@/types";
 
-type Props = {
-  enabledParameters: EnabledParameters;
-};
-export const ColDemo: React.FC<Props> = (props) => {
+export const ColDemo: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);
   const role = useAppSelector((state) => state.role);
   const spotlight = useAppSelector((state) => state.spotlight);
   const simulcast = useAppSelector((state) => state.simulcast);
+  const displaySettings = useAppSelector((state) => state.displaySettings);
   return (
     <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
       <AlertMessages />
-      {props.enabledParameters.mediaType ? <FormRowMediaType /> : null}
-      {props.enabledParameters.channelId ? <FormRowChannelId /> : null}
-      {props.enabledParameters.audio ? <FormRowAudioSettings enabledParameters={props.enabledParameters} /> : null}
-      {props.enabledParameters.video ? <FormRowVideoSettings enabledParameters={props.enabledParameters} /> : null}
-      {props.enabledParameters.spotlightNumber ? (
-        <FormRowSpotlightSettings enabledParameters={props.enabledParameters} />
-      ) : null}
-      <FormRowDevices enabledParameters={props.enabledParameters} />
-      <FormRowMediaDevices enabledParameters={props.enabledParameters} />
-      <FormRowOptions enabledParameters={props.enabledParameters} />
+      {displaySettings.mediaType ? <FormRowMediaType /> : null}
+      <FormRowChannelId />
+      <FormRowAudioSettings />
+      <FormRowVideoSettings />
+      <FormRowSpotlightSettings />
+      <FormRowDevices />
+      <FormRowMediaDevices />
+      <FormRowOptions />
 
       <div className="row">
         <Connect />

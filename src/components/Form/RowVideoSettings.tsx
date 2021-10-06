@@ -1,46 +1,42 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 
+import { useAppSelector } from "@/app/hooks";
 import { FormFrameRate } from "@/components/Form/FrameRate";
 import { FormResolution } from "@/components/Form/Resolution";
 import { FormSimulcastRid } from "@/components/Form/SimulcastRid";
 import { FormVideo } from "@/components/Form/Video";
 import { FormVideoBitRate } from "@/components/Form/VideoBitRate";
 import { FormVideoCodecType } from "@/components/Form/VideoCodecType";
-import type { EnabledParameters } from "@/types";
 
-type FormRowVideoSettingsProps = {
-  enabledParameters: EnabledParameters;
-};
-export const FormRowVideoSettings: React.FC<FormRowVideoSettingsProps> = (props) => {
+export const FormRowVideoSettings: React.FC = () => {
+  const displaySettings = useAppSelector((state) => state.displaySettings);
   return (
     <Row className="form-row" xs="auto">
-      {props.enabledParameters.video ? (
-        <Col>
-          <FormVideo />
-        </Col>
-      ) : null}
-      {props.enabledParameters.videoCodecType ? (
+      <Col>
+        <FormVideo />
+      </Col>
+      {displaySettings.videoCodecType ? (
         <Col>
           <FormVideoCodecType />
         </Col>
       ) : null}
-      {props.enabledParameters.videoBitRate ? (
+      {displaySettings.videoBitRate ? (
         <Col>
           <FormVideoBitRate />
         </Col>
       ) : null}
-      {props.enabledParameters.resolution ? (
-        <Col>
-          <FormResolution />
-        </Col>
+      {displaySettings.videoConstraints ? (
+        <>
+          <Col>
+            <FormResolution />
+          </Col>
+          <Col>
+            <FormFrameRate />
+          </Col>
+        </>
       ) : null}
-      {props.enabledParameters.frameRate ? (
-        <Col>
-          <FormFrameRate />
-        </Col>
-      ) : null}
-      {props.enabledParameters.simulcastRid ? (
+      {displaySettings.simulcastRid ? (
         <Col>
           <FormSimulcastRid />
         </Col>

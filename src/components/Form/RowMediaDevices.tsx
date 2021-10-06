@@ -1,40 +1,36 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 
+import { useAppSelector } from "@/app/hooks";
 import { FormAudioTrack } from "@/components/Form/AudioTrack";
 import { FormCameraDevice } from "@/components/Form/CameraDevice";
 import { FormDisplayResolution } from "@/components/Form/DisplayResolution";
 import { FormMicDevice } from "@/components/Form/MicDevice";
 import { FormVideoTrack } from "@/components/Form/VideoTrack";
-import type { EnabledParameters } from "@/types";
 
-type FormMediaDevicesProps = {
-  enabledParameters: EnabledParameters;
-};
-export const FormRowMediaDevices: React.FC<FormMediaDevicesProps> = (props) => {
+export const FormRowMediaDevices: React.FC = () => {
+  const displaySettings = useAppSelector((state) => state.displaySettings);
   return (
     <Row className="form-row" xs="auto">
-      {props.enabledParameters.displayResolution ? (
-        <Col>
-          <FormDisplayResolution />
-        </Col>
-      ) : null}
-      {props.enabledParameters.micDevice ? (
+      <Col>
+        <FormDisplayResolution />
+      </Col>
+      {displaySettings.micDevice ? (
         <Col>
           <FormMicDevice />
         </Col>
       ) : null}
-      {props.enabledParameters.cameraDevice ? (
+      {displaySettings.cameraDevice ? (
         <Col>
           <FormCameraDevice />
         </Col>
       ) : null}
-      {props.enabledParameters.audioTrack ? (
+      {displaySettings.audioTrack ? (
         <Col>
           <FormAudioTrack />
         </Col>
       ) : null}
-      {props.enabledParameters.videoTrack ? (
+      {displaySettings.videoTrack ? (
         <Col>
           <FormVideoTrack />
         </Col>

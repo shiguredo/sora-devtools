@@ -36,6 +36,7 @@ export type SoraDemoState = {
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   dataChannelMessaging: string;
   dataChannelMessages: DataChannelMessage[];
+  displaySettings: DisplaySettings;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: boolean;
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
@@ -394,4 +395,27 @@ export type PageInitialParameters = {
   videoTrack?: SoraDemoState["videoTrack"];
   micDevice?: SoraDemoState["micDevice"];
   audioTrack?: SoraDemoState["audioTrack"];
+};
+
+// 画面表示に使用する設定
+export type DisplaySettings = {
+  audioBitRate: boolean;
+  audioCodecType: boolean;
+  audioInput: boolean;
+  audioOutput: boolean;
+  audioTrack: boolean;
+  audioConstraints: boolean;
+  cameraDevice: boolean;
+  clientId: boolean;
+  mediaType: boolean;
+  micDevice: boolean;
+  simulcastRid: boolean;
+  spotlightFocusRid: boolean;
+  spotlightNumber: boolean;
+  spotlightUnfocusRid: boolean;
+  videoBitRate: boolean;
+  videoCodecType: boolean;
+  videoConstraints: boolean;
+  videoInput: boolean;
+  videoTrack: boolean;
 };

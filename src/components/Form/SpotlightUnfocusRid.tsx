@@ -2,7 +2,7 @@ import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setSpotlightFocusRid } from "@/app/slice";
+import { setSpotlightUnfocusRid } from "@/app/slice";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 import { isSpotlightFocusRid } from "@/utils";
 
@@ -11,7 +11,7 @@ export const FormSpotlightUnfocusRid: React.FC = () => {
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isSpotlightFocusRid(event.target.value)) {
-      dispatch(setSpotlightFocusRid(event.target.value));
+      dispatch(setSpotlightUnfocusRid(event.target.value));
     }
   };
   return (

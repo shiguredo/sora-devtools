@@ -3,10 +3,8 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 
 import { CopyURL } from "@/components/Button/CopyURL";
 import { DownloadReport } from "@/components/Button/DownloadReport";
-import type { EnabledParameters } from "@/types";
 
 type Props = {
-  enabledParameters: EnabledParameters;
   pageName: string;
 };
 export const Header: React.FC<Props> = (props) => {
@@ -26,7 +24,7 @@ export const Header: React.FC<Props> = (props) => {
                 <DownloadReport pageName={props.pageName} />
               </Navbar.Text>
               <Navbar.Text className="mx-1">
-                <CopyURL enabledParameters={props.enabledParameters} />
+                <CopyURL />
               </Navbar.Text>
             </Nav>
           </Navbar.Collapse>
