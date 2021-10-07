@@ -3,6 +3,7 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 
 import { CopyURL } from "@/components/Button/CopyURL";
 import { DownloadReport } from "@/components/Button/DownloadReport";
+import { ButtonHeaderDebugMode } from "@/components/Button/HeaderDebugMode";
 
 type Props = {
   pageName: string;
@@ -20,6 +21,9 @@ export const Header: React.FC<Props> = (props) => {
           <Navbar.Collapse id="navbar-collapse">
             <Nav className="me-auto" />
             <Nav>
+              <Navbar.Text className="py-0 my-1 me-4">
+                <ButtonHeaderDebugMode />
+              </Navbar.Text>
               <Navbar.Text className="py-0 my-1">
                 <DownloadReport pageName={props.pageName} />
               </Navbar.Text>

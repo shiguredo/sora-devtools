@@ -3,15 +3,16 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDebug } from "@/app/slice";
 
-export const DebugMode: React.FC = () => {
+export const ButtonFooterDebugMode: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);
   const dispatch = useAppDispatch();
-  const disconnect = (): void => {
+  const onClick = (): void => {
     dispatch(setDebug(!debug));
   };
+  const className = debug ? "btn btn-footer-debug-mode active" : "btn btn-footer-debug-mode";
   return (
     <div>
-      <button className={debug ? "btn btn-debug-mode active" : "btn btn-debug-mode"} onClick={disconnect}>
+      <button className={className} onClick={onClick}>
         debug
       </button>
     </div>

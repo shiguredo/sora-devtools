@@ -1,6 +1,6 @@
 body {
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-top: 56px;
+  padding-bottom: 56px;
 }
 
 label {
@@ -97,10 +97,11 @@ video {
   background-color: #222222;
   height: calc(100vh - 56px - 56px);
   min-height: calc(100vh - 56px - 56px);
+  display: flex;
+  flex-direction: column;
 }
 
 .col-debug > .tab-content {
-  height: calc(100vh - 56px - 56px - 100px);
   overflow-y: scroll;
 }
 
@@ -254,29 +255,40 @@ video {
   cursor: initial !important;
 }
 
-.btn-debug-mode {
+.btn-header-debug-mode {
+  color: #000;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+.btn-header-debug-mode.active {
+  background-color: #ff4c93;
+  color: #ffffff;
+}
+
+.btn-footer-debug-mode {
+  display: none;
   width: 65px;
   height: 65px;
   border-radius: 100%;
   position: fixed;
-  bottom: 50px;
-  right: 50px;
-  z-index: 10;
+  bottom: 25px;
+  right: 25px;
   background-color: #6c757d;
   color: #ffffff;
   opacity: 0.9;
 }
 
-.btn-debug-mode:hover {
+.btn-footer-debug-mode:hover {
   background-color: #5a6268;
   color: #ffffff;
 }
 
-.btn-debug-mode.active {
+.btn-footer-debug-mode.active {
   background-color: #ff4c93;
 }
 
-.btn-debug-mode.active:hover {
+.btn-footer-debug-mode.active:hover {
   background-color: #ff0066;
   outline: 0;
 }
@@ -332,7 +344,6 @@ video {
   .col-demo {
     flex: none;
     max-width: none;
-    height: calc(100vh - 56px);
   }
 
   .col-demo.col-6 {
@@ -341,14 +352,14 @@ video {
 
   .col-debug {
     width: 100%;
-    height: calc(100vh - 56px);
+    height: calc(100vh - 56px - 10px);
   }
 
-  .col-debug > .tab-content {
-    height: calc(100vh - 56px - 56px - 50px);
+  .btn-footer-debug-mode {
+    display: block;
   }
 
-  .debug-checkbox {
+  .btn-header-debug-mode {
     display: none;
   }
 }
