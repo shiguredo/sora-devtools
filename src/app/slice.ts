@@ -1638,21 +1638,23 @@ export const copyURL =
       mute: state.mute,
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
     };
-    const queryStrings = Object.keys(parameters).map((key) => {
-      const value = (parameters as Record<string, unknown>)[key];
-      if (value === undefined) {
-        return;
-      }
-      // signalingUrlCandidates は Array なので JSON.stringify する
-      if (key === "signalingUrlCandidates") {
-        return `${key}=${JSON.stringify(value)}`;
-      }
-      // dataChannelMessaging は encodeURIComponent する
-      if (key === "dataChannelMessaging") {
-        return `${key}=${encodeURIComponent((value as string))}`;
-      }
-      return `${key}=${value}`;
-    }).filter((value) => (value !== undefined));
+    const queryStrings = Object.keys(parameters)
+      .map((key) => {
+        const value = (parameters as Record<string, unknown>)[key];
+        if (value === undefined) {
+          return;
+        }
+        // signalingUrlCandidates は Array なので JSON.stringify する
+        if (key === "signalingUrlCandidates") {
+          return `${key}=${JSON.stringify(value)}`;
+        }
+        // dataChannelMessaging は encodeURIComponent する
+        if (key === "dataChannelMessaging") {
+          return `${key}=${encodeURIComponent(value as string)}`;
+        }
+        return `${key}=${value}`;
+      })
+      .filter((value) => value !== undefined);
     copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join("&")}`);
   };
 
