@@ -952,6 +952,7 @@ export const connectSora =
     if (sora === undefined) {
       throw new Error("Failed to connect Sora. Connection object is 'undefined'");
     }
+    dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
     await setStatsReport(dispatch, sora);
     const timerId = setInterval(async () => {
       const { soraContents } = getState();
