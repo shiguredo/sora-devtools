@@ -908,7 +908,8 @@ export const connectSora =
     let sora, mediaStream, gainNode;
     try {
       if (state.role === "sendonly") {
-        sora = connection.sendonly(state.channelId, metadata, connectionOptions);
+        sora = connection.sendonly(state.channelId, null, connectionOptions);
+        sora.metadata = metadata;
         // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
         if (typeof state.googCpuOveruseDetection === "boolean") {
           sora.constraints = {
@@ -923,7 +924,8 @@ export const connectSora =
         });
         await sora.connect(mediaStream);
       } else if (state.role === "sendrecv") {
-        sora = connection.sendrecv(state.channelId, metadata, connectionOptions);
+        sora = connection.sendrecv(state.channelId, null, connectionOptions);
+        sora.metadata = metadata;
         // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
         if (typeof state.googCpuOveruseDetection === "boolean") {
           sora.constraints = {
@@ -938,7 +940,8 @@ export const connectSora =
         });
         await sora.connect(mediaStream);
       } else if (state.role === "recvonly") {
-        sora = connection.recvonly(state.channelId, metadata, connectionOptions);
+        sora = connection.recvonly(state.channelId, null, connectionOptions);
+        sora.metadata = metadata;
         setSoraCallbacks(dispatch, getState, sora);
         await sora.connect();
       }
