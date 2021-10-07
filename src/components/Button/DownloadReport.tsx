@@ -1,62 +1,89 @@
 import React, { useRef } from "react";
 import Sora from "sora-js-sdk";
 
-import { useAppSelector } from "@/app/hooks";
+import { store } from "@/app/store";
+import { DownloadReport, DownloadReportParameters } from "@/types";
+
+function createDownloadReport(pageName: string): DownloadReport {
+  const state = store.getState();
+  const parameters: DownloadReportParameters = {
+    audio: state.audio,
+    audioBitRate: state.audioBitRate,
+    audioCodecType: state.audioCodecType,
+    audioInput: state.audioInput,
+    audioInputDevices: state.audioInputDevices,
+    audioOutput: state.audioOutput,
+    audioOutputDevices: state.audioOutputDevices,
+    autoGainControl: state.autoGainControl,
+    clientId: state.clientId,
+    channelId: state.channelId,
+    googCpuOveruseDetection: state.googCpuOveruseDetection,
+    debug: state.debug,
+    dataChannelSignaling: state.dataChannelSignaling,
+    dataChannelMessaging: state.dataChannelMessaging,
+    displayResolution: state.displayResolution,
+    e2ee: state.e2ee,
+    echoCancellation: state.echoCancellation,
+    echoCancellationType: state.echoCancellationType,
+    enabledClientId: state.enabledClientId,
+    enabledDataChannel: state.enabledDataChannel,
+    enabledDataChannelMessaging: state.enabledDataChannelMessaging,
+    enabledMetadata: state.enabledMetadata,
+    enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    enabledSignalingUrlCandidates: state.enabledSignalingUrlCandidates,
+    fakeVolume: state.fakeVolume,
+    frameRate: state.frameRate,
+    ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
+    mediaType: state.mediaType,
+    metadata: state.metadata,
+    multistream: state.multistream,
+    noiseSuppression: state.noiseSuppression,
+    resolution: state.resolution,
+    simulcast: state.simulcast,
+    spotlight: state.spotlight,
+    signalingNotifyMetadata: state.signalingNotifyMetadata,
+    signalingUrlCandidates: state.signalingUrlCandidates,
+    simulcastRid: state.simulcastRid,
+    spotlightNumber: state.spotlightNumber,
+    spotlightFocusRid: state.spotlightFocusRid,
+    spotlightUnfocusRid: state.spotlightUnfocusRid,
+    video: state.video,
+    videoBitRate: state.videoBitRate,
+    videoCodecType: state.videoCodecType,
+    videoInput: state.videoInput,
+    videoInputDevices: state.videoInputDevices,
+    cameraDevice: state.cameraDevice,
+    videoTrack: state.videoTrack,
+    micDevice: state.micDevice,
+    audioTrack: state.audioTrack,
+    role: state.role,
+  };
+  const report = {
+    userAgent: navigator.userAgent,
+    pageName: pageName,
+    "sora-demo": state.version,
+    "sora-js-sdk": Sora.version(),
+    parameters: parameters,
+    timeline: state.timelineMessages.map((message) => {
+      // Redux non-serializable value 対応で log を string にして保存してあるため parse する
+      return {
+        timestamp: message.timestamp,
+        message: message,
+      };
+    }),
+    notify: state.notifyMessages,
+    stats: state.soraContents.statsReport,
+  };
+  return report;
+}
 
 type Props = {
   pageName: string;
 };
-export const DownloadReport: React.FC<Props> = (props) => {
+export const ButtonDownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const onClick = async (): Promise<void> => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const state = useAppSelector((state) => state);
-    const { statsReport } = state.soraContents;
-    const parametersReport = {
-      audio: state.audio,
-      audioBitRate: state.audioBitRate,
-      audioCodecType: state.audioCodecType,
-      audioInput: state.audioInput,
-      audioInputDevices: state.audioInputDevices,
-      audioOutput: state.audioOutput,
-      audioOutputDevices: state.audioOutputDevices,
-      autoGainControl: state.autoGainControl,
-      channelId: state.channelId,
-      debug: state.debug,
-      googCpuOveruseDetection: state.googCpuOveruseDetection,
-      echoCancellation: state.echoCancellation,
-      echoCancellationType: state.echoCancellationType,
-      frameRate: state.frameRate,
-      mediaType: state.mediaType,
-      noiseSuppression: state.noiseSuppression,
-      resolution: state.resolution,
-      simulcastRid: state.simulcastRid,
-      spotlightNumber: state.spotlightNumber,
-      video: state.video,
-      videoBitRate: state.videoBitRate,
-      videoCodecType: state.videoCodecType,
-      videoInput: state.videoInput,
-      videoInputDevices: state.videoInputDevices,
-    };
-    const report = {
-      userAgent: navigator.userAgent,
-      pageName: props.pageName,
-      "sora-demo": state.version,
-      "sora-js-sdk": Sora.version(),
-      parameters: parametersReport,
-      log: state.logMessages.map((logMessage) => {
-        // Redux non-serializable value 対応で log を string にして保存してあるため parse する
-        return {
-          timestamp: logMessage.timestamp,
-          message: {
-            title: logMessage.message.title,
-            description: JSON.parse(logMessage.message.description),
-          },
-        };
-      }),
-      notify: state.notifyMessages,
-      stats: statsReport,
-    };
+    const report = createDownloadReport(props.pageName);
     const data = JSON.stringify(report);
     const blob = new Blob([data], { type: "text/plain" });
     window.URL = window.URL || window.webkitURL;

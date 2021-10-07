@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 
 import { CopyURL } from "@/components/Button/CopyURL";
-import { DownloadReport } from "@/components/Button/DownloadReport";
+import { ButtonDownloadReport } from "@/components/Button/DownloadReport";
 import { ButtonHeaderDebugMode } from "@/components/Button/HeaderDebugMode";
 
 type Props = {
@@ -25,7 +25,7 @@ export const Header: React.FC<Props> = (props) => {
                 <ButtonHeaderDebugMode />
               </Navbar.Text>
               <Navbar.Text className="py-0 my-1">
-                <DownloadReport pageName={props.pageName} />
+                <ButtonDownloadReport pageName={props.pageName} />
               </Navbar.Text>
               <Navbar.Text className="py-0 my-1">
                 <CopyURL />

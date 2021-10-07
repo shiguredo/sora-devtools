@@ -419,3 +419,34 @@ export type DisplaySettings = {
   videoInput: boolean;
   videoTrack: boolean;
 };
+
+// ダウンロードレポートに使用するパラメーター
+export type DownloadReportParameters = Omit<
+  SoraDemoState,
+  | "alertMessages"
+  | "dataChannelMessages"
+  | "debugType"
+  | "displaySettings"
+  | "fakeContents"
+  | "focusedSpotlightConnectionIds"
+  | "logMessages"
+  | "mute"
+  | "notifyMessages"
+  | "pushMessages"
+  | "showStats"
+  | "signalingMessages"
+  | "soraContents"
+  | "timelineMessages"
+  | "version"
+>;
+
+export type DownloadReport = {
+  userAgent: string;
+  pageName: string;
+  "sora-demo": string;
+  "sora-js-sdk": string;
+  parameters: DownloadReportParameters;
+  timeline: unknown[];
+  notify: unknown[];
+  stats: unknown[];
+};

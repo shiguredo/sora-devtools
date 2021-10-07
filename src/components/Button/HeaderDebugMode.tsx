@@ -13,7 +13,5 @@ export const ButtonHeaderDebugMode: React.FC = () => {
   if (debug) {
     classNames.push("active");
   }
-  return (
-    <input className={classNames.join(" ")} type="button" name="debug" defaultValue="debug" onClick={onClick} />
-  );
+  return <input className={classNames.join(" ")} type="button" name="debug" defaultValue="debug" onClick={onClick} />;
 };

@@ -1509,7 +1509,7 @@ function queryStringValue<T>(stateValue: T, enabled: boolean): T | undefined {
 
 export const copyURL =
   () =>
-  async (_: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  (_: Dispatch, getState: () => SoraDemoState): void => {
     const state = getState();
     const parameters: Partial<QueryStringParameters> = {
       // mediaType
