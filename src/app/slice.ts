@@ -850,7 +850,7 @@ function pickConnectionOptionsState(state: SoraDemoState): ConnectionOptionsStat
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     simulcast: state.simulcast,
-    simulcastRid: "",
+    simulcastRid: state.simulcastRid,
     spotlight: state.spotlight,
     spotlightFocusRid: state.spotlightFocusRid,
     spotlightNumber: state.spotlightNumber,
