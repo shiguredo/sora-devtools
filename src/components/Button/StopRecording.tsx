@@ -1,18 +1,20 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { stopRec } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
-const StopRecording: React.FC = () => {
-  const { channelId } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const StopRecording: React.FC = () => {
+  const channelId = useAppSelector((state) => state.channelId);
+  const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     try {
       const response = await stopRec(channelId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
-      dispatch(setAPIErrorAlertMessage(error.message));
+      if (error instanceof Error) {
+        dispatch(setAPIErrorAlertMessage(error.message));
+      }
     }
   };
   return (
@@ -21,5 +23,3 @@ const StopRecording: React.FC = () => {
     </div>
   );
 };
-
-export default StopRecording;

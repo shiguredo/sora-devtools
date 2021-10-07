@@ -1,38 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setVideoCodecType, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setVideoCodecType } from "@/app/slice";
+import { VIDEO_CODEC_TYPES } from "@/constants";
 import { isVideoCodecType } from "@/utils";
 
-const VideoCodecType: React.FC = () => {
-  const { videoCodecType } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormVideoCodecType: React.FC = () => {
+  const videoCodecType = useAppSelector((state) => state.videoCodecType);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isVideoCodecType(event.target.value)) {
       dispatch(setVideoCodecType(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="videoCodecType">
-        videoCodecType:
-      </label>
-      <select
-        id="videoCodecType"
-        name="videoCodecType"
-        className="custom-select"
-        value={videoCodecType}
-        onChange={onChange}
-      >
-        <option value="">未指定</option>
-        <option value="VP8">VP8</option>
-        <option value="VP9">VP9</option>
-        <option value="AV1">AV1</option>
-        <option value="H264">H.264</option>
-        <option value="H265">H.265</option>
-      </select>
-    </div>
+    <FormGroup className="form-inline" controlId="videoCodecType">
+      <FormLabel>videoCodecType:</FormLabel>
+      <FormSelect name="videoCodecType" value={videoCodecType} onChange={onChange}>
+        {VIDEO_CODEC_TYPES.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default VideoCodecType;

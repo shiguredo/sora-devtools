@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { TimelineMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { TimelineMessage } from "@/types";
 
 const DATA_CHANNEL_COLORS: { [key: string]: string } = {
   signaling: "#ff00ff",
@@ -14,11 +13,35 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
 };
 
 const WebSocketLabel: React.FC = () => {
-  return <span style={{ color: "#00ff00" }}>[websocket]</span>;
+  return (
+    <span className="me-1" style={{ color: "#00ff00" }}>
+      [websocket]
+    </span>
+  );
 };
 
-const PeerConnectionLable: React.FC = () => {
-  return <span style={{ color: "#ff8c00" }}>[peerconnection]</span>;
+const PeerConnectionLabel: React.FC = () => {
+  return (
+    <span className="me-1" style={{ color: "#ff8c00" }}>
+      [peerconnection]
+    </span>
+  );
+};
+
+const SoraLabel: React.FC = () => {
+  return (
+    <span className="me-1" style={{ color: "#bce2e8" }}>
+      [sora]
+    </span>
+  );
+};
+
+const SoraDemoLabel: React.FC = () => {
+  return (
+    <span className="me-1" style={{ color: "#73b8e2" }}>
+      [sora-demo]
+    </span>
+  );
 };
 
 type DataChannelLabelProps = {
@@ -29,7 +52,7 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
   const { label, id } = props;
   const color = label && Object.keys(DATA_CHANNEL_COLORS).includes(label) ? DATA_CHANNEL_COLORS[label] : undefined;
   return (
-    <span style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color: color } : {}}>
       [datachannel]{label ? `[${label}]` : ""}
       {typeof id === "number" ? `[${id}]` : ""}
     </span>
@@ -37,15 +60,19 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
 };
 
 const Collapse: React.FC<TimelineMessage> = (props) => {
-  const { timestamp, transportType, dataChannelId, dataChannelLabel, type, data } = props;
+  const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
   const title = `${type}`;
   let labelComponent;
-  if (transportType === "websocket") {
+  if (logType === "websocket") {
     labelComponent = <WebSocketLabel />;
-  } else if (transportType === "datachannel") {
+  } else if (logType === "datachannel") {
     labelComponent = <DataChannelLabel id={dataChannelId} label={dataChannelLabel} />;
-  } else if (transportType === "peerconnection") {
-    labelComponent = <PeerConnectionLable />;
+  } else if (logType === "peerconnection") {
+    labelComponent = <PeerConnectionLabel />;
+  } else if (logType === "sora") {
+    labelComponent = <SoraLabel />;
+  } else if (logType === "sora-demo") {
+    labelComponent = <SoraDemoLabel />;
   }
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
 };
@@ -54,8 +81,8 @@ const Log = React.memo((props: TimelineMessage) => {
   return <Collapse {...props} />;
 });
 
-const TimelineMessages: React.FC = () => {
-  const timelineMessages = useSelector((state: SoraDemoState) => state.timelineMessages);
+export const TimelineMessages: React.FC = () => {
+  const timelineMessages = useAppSelector((state) => state.timelineMessages);
   return (
     <>
       {timelineMessages.map((message) => {
@@ -65,5 +92,3 @@ const TimelineMessages: React.FC = () => {
     </>
   );
 };
-
-export default TimelineMessages;

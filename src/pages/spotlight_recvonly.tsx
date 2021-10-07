@@ -1,34 +1,24 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
-import ColDebug from "@/components/ColDebug";
-import ColDemo from "@/components/ColDemo";
-import Footer from "@/components/Footer";
-import Head from "@/components/Head";
-import Header from "@/components/Header";
-import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters } from "@/utils";
-
-const ENABLED_PARAMETERS: EnabledParameters = {
-  audio: true,
-  audioOutput: true,
-  channelId: true,
-  clientId: true,
-  dataChannel: true,
-  displayResolution: true,
-  e2ee: true,
-  metadata: true,
-  signalingNotifyMetadata: true,
-  video: true,
-  spotlightNumber: true,
-  spotlightFocusRid: true,
-  spotlightUnfocusRid: true,
-};
+import { useAppDispatch } from "@/app/hooks";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
+import { ColDebug } from "@/components/ColDebug";
+import { ColDemo } from "@/components/ColDemo";
+import { Footer } from "@/components/Footer";
+import { Head } from "@/components/Head";
+import { Header } from "@/components/Header";
 
 const SpotlightRecvonly: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter({ spotlight: "true" }));
+    dispatch(
+      setInitialParameter({
+        role: "recvonly",
+        multistream: true,
+        simulcast: true,
+        spotlight: true,
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -38,11 +28,11 @@ const SpotlightRecvonly: React.FC = () => {
   return (
     <>
       <Head title={"spotlight recvonly"} />
-      <Header pageName="spotlight recvonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Header pageName="spotlight recvonly" />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo />
             <ColDebug />
           </div>
         </div>
@@ -52,4 +42,5 @@ const SpotlightRecvonly: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default SpotlightRecvonly;

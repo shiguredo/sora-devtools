@@ -1,6 +1,6 @@
 {
   "name": "sora-demo",
-  "version": "2021.1.2",
+  "version": "2021.2.0-canary.10",
   "description": "WebRTC SFU Sora Demo",
   "repository": {
     "type": "git",
@@ -17,35 +17,36 @@
     "build": "next build",
     "dist": "yarn cleanup && next build && next export -o ./dist",
     "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && npx tsc --noemit",
-    "fmt": "prettier --write ./src && eslint --fix --ext .ts,tsx ./src",
+    "fmt": "eslint --fix --ext .ts,tsx ./src; prettier --write ./src",
     "cleanup": "rimraf ./.next ./dist/*"
   },
   "devDependencies": {
-    "@types/node": "^15.6.1",
-    "@types/react": "^17.0.8",
-    "@types/react-redux": "^7.1.16",
-    "@types/redux-logger": "^3.0.8",
-    "@types/resize-observer-browser": "^0.1.5",
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
-    "eslint": "^7.27.0",
-    "eslint-plugin-react": "^7.24.0",
+    "@types/node": "^16.10.2",
+    "@types/react": "^17.0.26",
+    "@types/react-redux": "^7.1.18",
+    "@types/redux-logger": "^3.0.9",
+    "@types/resize-observer-browser": "^0.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "next": "^10.2.3",
+    "next": "^11.1.2",
     "nextjs": "^0.0.3",
-    "prettier": "^2.3.0",
-    "typescript": "^4.3.2"
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.1",
-    "bootstrap": "^4.5.3",
-    "query-string": "^7.0.0",
+    "@reduxjs/toolkit": "^1.6.1",
+    "bootstrap": "5.1.1",
+    "query-string": "^7.0.1",
     "react": "^17.0.2",
-    "react-bootstrap": "^1.6.0",
+    "react-bootstrap": "^2.0.0-beta.6",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.4",
+    "react-redux": "^7.2.5",
     "redux-logger": "^3.0.6",
-    "sora-js-sdk": "^2021.1.1"
+    "sora-js-sdk": "2021.2.0-canary.2"
   }
 }

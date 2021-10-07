@@ -1,20 +1,20 @@
 import React from "react";
 import { Toast } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 
-import { deleteAlertMessage, SoraDemoState } from "@/slice";
-import { AlertMessage } from "@/utils";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { deleteAlertMessage } from "@/app/slice";
+import type { AlertMessage } from "@/types";
 
 const Alert: React.FC<AlertMessage> = (props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onClose = (): void => {
     dispatch(deleteAlertMessage(props.timestamp));
   };
   const bgClassName = props.type === "error" ? "bg-danger" : "bg-info";
   return (
-    <Toast autohide delay={5000} onClose={onClose}>
+    <Toast autohide delay={20000} onClose={onClose}>
       <Toast.Header className={`${bgClassName} text-white`}>
-        <strong className="mr-auto">{props.title}</strong>
+        <strong className="me-auto">{props.title}</strong>
       </Toast.Header>
       <Toast.Body className="bg-light">
         <p className="text-break font-weight-bold mb-0">{props.message}</p>
@@ -23,8 +23,8 @@ const Alert: React.FC<AlertMessage> = (props) => {
   );
 };
 
-const AlertMessages: React.FC = () => {
-  const { alertMessages } = useSelector((state: SoraDemoState) => state);
+export const AlertMessages: React.FC = () => {
+  const alertMessages = useAppSelector((state) => state.alertMessages);
   return (
     <div className="alert-messages">
       {alertMessages.map((alertMessage) => {
@@ -33,5 +33,3 @@ const AlertMessages: React.FC = () => {
     </div>
   );
 };
-
-export default AlertMessages;

@@ -1,30 +1,13 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { recvonlyConnectSora, sendonlyConnectSora, sendrecvConnectSora, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { connectSora } from "@/app/slice";
 
-type Props = {
-  connectType: "sendonly" | "sendrecv" | "recvonly";
-  multistream: boolean;
-  spotlight: boolean;
-  simulcast: boolean;
-};
-const Connect: React.FC<Props> = (props) => {
-  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
-  const dispatch = useDispatch();
+export const Connect: React.FC = () => {
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const dispatch = useAppDispatch();
   const connect = (): void => {
-    const connectOptions = {
-      multistream: props.multistream,
-      spotlight: props.spotlight,
-      simulcast: props.simulcast,
-    };
-    if (props.connectType === "sendonly") {
-      dispatch(sendonlyConnectSora(connectOptions));
-    } else if (props.connectType === "recvonly") {
-      dispatch(recvonlyConnectSora(connectOptions));
-    } else if (props.connectType === "sendrecv") {
-      dispatch(sendrecvConnectSora(connectOptions));
-    }
+    dispatch(connectSora());
   };
   return (
     <div className="col-auto mb-1">
@@ -39,5 +22,3 @@ const Connect: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default Connect;

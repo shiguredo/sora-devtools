@@ -1,55 +1,27 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
-import ColDebug from "@/components/ColDebug";
-import ColDemo from "@/components/ColDemo";
-import Footer from "@/components/Footer";
-import Head from "@/components/Head";
-import Header from "@/components/Header";
-import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
-
-const ENABLED_PARAMETERS: EnabledParameters = {
-  audio: true,
-  audioBitRate: true,
-  audioCodecType: true,
-  audioInput: true,
-  audioOutput: true,
-  audioTrack: true,
-  autoGainControl: true,
-  cameraDevice: true,
-  channelId: true,
-  clientId: true,
-  dataChannel: true,
-  displayResolution: true,
-  e2ee: true,
-  echoCancellation: true,
-  echoCancellationType: true,
-  frameRate: true,
-  mediaType: true,
-  metadata: true,
-  micDevice: true,
-  noiseSuppression: true,
-  resolution: true,
-  signalingNotifyMetadata: true,
-  spotlightNumber: true,
-  video: true,
-  videoBitRate: true,
-  videoCodecType: true,
-  videoInput: true,
-  videoTrack: true,
-};
+import { useAppDispatch } from "@/app/hooks";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
+import { ColDebug } from "@/components/ColDebug";
+import { ColDemo } from "@/components/ColDemo";
+import { Footer } from "@/components/Footer";
+import { Head } from "@/components/Head";
+import { Header } from "@/components/Header";
+import { getDefaultVideoCodecType } from "@/utils";
 
 const SpotlightSendonly: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        role: "sendonly",
+        multistream: true,
+        simulcast: true,
+        spotlight: true,
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "500",
         resolution: "VGA",
-        spotlight: "true",
       })
     );
     dispatch(setMediaDevices());
@@ -61,11 +33,11 @@ const SpotlightSendonly: React.FC = () => {
   return (
     <>
       <Head title={"spotlight sendonly"} />
-      <Header pageName="spotlight sendonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Header pageName="spotlight sendonly" />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" multistream spotlight simulcast enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo />
             <ColDebug />
           </div>
         </div>
@@ -75,4 +47,5 @@ const SpotlightSendonly: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default SpotlightSendonly;

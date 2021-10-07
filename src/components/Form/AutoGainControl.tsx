@@ -1,31 +1,24 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setAutoGainControl, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAutoGainControl } from "@/app/slice";
 
-const AutoGainControl: React.FC = () => {
-  const { autoGainControl } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormAutoGainControl: React.FC = () => {
+  const autoGainControl = useAppSelector((state) => state.autoGainControl);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setAutoGainControl(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="form-check">
-        <input
-          id="autoGainControl"
-          name="autoGainControl"
-          className="form-check-input"
-          type="checkbox"
-          checked={autoGainControl}
-          onChange={onChange}
-        />
-        <label className="form-check-label" htmlFor="autoGainControl">
-          autoGainControl
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="autoGainControl">
+      <FormCheck
+        type="switch"
+        name="autoGainControl"
+        label="autoGainControl"
+        checked={autoGainControl}
+        onChange={onChange}
+      />
+    </FormGroup>
   );
 };
-
-export default AutoGainControl;

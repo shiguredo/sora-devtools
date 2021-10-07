@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup, Spinner } from "react-bootstrap";
 
-import { setE2EE, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setE2EE } from "@/app/slice";
 
-const E2EE: React.FC = () => {
+export const FormE2EE: React.FC = () => {
   const [displaySpinner, setDisplaySpinner] = useState(false);
-  const { e2ee } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+  const e2ee = useAppSelector((state) => state.e2ee);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (event.target.checked) {
       setDisplaySpinner(true);
@@ -20,18 +20,11 @@ const E2EE: React.FC = () => {
     }
   }, [e2ee]);
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="form-check">
-        <input id="e2ee" name="e2ee" className="form-check-input" type="checkbox" checked={e2ee} onChange={onChange} />
-        <label className="form-check-label" htmlFor="e2ee">
-          e2ee
-        </label>
-        {displaySpinner ? (
-          <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
-        ) : null}
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="e2ee">
+      <FormCheck type="switch" name="e2ee" label="e2ee" checked={e2ee} onChange={onChange} />
+      {displaySpinner ? (
+        <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
+      ) : null}
+    </FormGroup>
   );
 };
-
-export default E2EE;

@@ -1,30 +1,18 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
-import { setAudioTrack, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAudioTrack } from "@/app/slice";
 
-const AudioTrack: React.FC = () => {
-  const audioTrack = useSelector((state: SoraDemoState) => state.audioTrack);
-  const dispatch = useDispatch();
+export const FormAudioTrack: React.FC = () => {
+  const audioTrack = useAppSelector((state) => state.audioTrack);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setAudioTrack(event.target.checked));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="custom-control custom-switch">
-        <input
-          type="checkbox"
-          className="custom-control-input"
-          id="audioTrack"
-          checked={audioTrack}
-          onChange={onChange}
-        />
-        <label className="custom-control-label" htmlFor="audioTrack">
-          audioTrack on/off
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="audioTrack">
+      <FormCheck type="switch" name="audioTrack" label="Enable audio track" checked={audioTrack} onChange={onChange} />
+    </FormGroup>
   );
 };
-
-export default AudioTrack;

@@ -1,21 +1,19 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 
-import { SoraDemoState } from "@/slice";
-import { ConnectType } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
 
-import ConnectionStatusBar from "./ConnectionStatusBar";
-import Video from "./Video";
-import VolumeVisualizer from "./VolumeVisualizer";
+import { ConnectionStatusBar } from "./ConnectionStatusBar";
+import { Video } from "./Video";
+import { VolumeVisualizer } from "./VolumeVisualizer";
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
-  const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
-  const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
-  const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
-  const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
-  const localMediaStream = useSelector((state: SoraDemoState) => state.soraContents.localMediaStream);
-  const micDevice = useSelector((state: SoraDemoState) => state.micDevice);
+  const audioOutput = useAppSelector((state) => state.audioOutput);
+  const displayResolution = useAppSelector((state) => state.displayResolution);
+  const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
+  const connectionId = useAppSelector((state) => state.soraContents.connectionId);
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
+  const micDevice = useAppSelector((state) => state.micDevice);
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
   return (
     <>
@@ -37,12 +35,10 @@ const VideoBox: React.FC = () => {
   );
 };
 
-type LocalVideoProps = {
-  connectType: ConnectType;
-};
-const LocalVideo: React.FC<LocalVideoProps> = (props) => {
-  const connectionId = useSelector((state: SoraDemoState) => state.soraContents.connectionId);
-  const clientId = useSelector((state: SoraDemoState) => state.soraContents.clientId);
+export const LocalVideo: React.FC = () => {
+  const connectionId = useAppSelector((state) => state.soraContents.connectionId);
+  const clientId = useAppSelector((state) => state.soraContents.clientId);
+  const role = useAppSelector((state) => state.role);
   return (
     <div className="row my-1">
       <div className="col-auto">
@@ -51,10 +47,8 @@ const LocalVideo: React.FC<LocalVideoProps> = (props) => {
             <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           ) : null}
         </div>
-        {props.connectType !== "recvonly" ? <VideoBox /> : null}
+        {role !== "recvonly" ? <VideoBox /> : null}
       </div>
     </div>
   );
 };
-
-export default LocalVideo;

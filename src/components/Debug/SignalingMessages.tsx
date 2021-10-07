@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { SignalingMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { SignalingMessage } from "@/types";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
   websocket: "#00ff00",
@@ -13,7 +12,11 @@ const SIGNALING_COLORS: { [key: string]: string } = {
 const Label: React.FC<{ text: string }> = (props) => {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
-  return <span style={color ? { color: color } : {}}>[{text}]</span>;
+  return (
+    <span className="me-1" style={color ? { color: color } : {}}>
+      [{text}]
+    </span>
+  );
 };
 
 const Collapse: React.FC<SignalingMessage> = (props) => {
@@ -26,8 +29,8 @@ const Log = React.memo((props: SignalingMessage) => {
   return <Collapse {...props} />;
 });
 
-const SignalingMessages: React.FC = () => {
-  const signalingMessages = useSelector((state: SoraDemoState) => state.signalingMessages);
+export const SignalingMessages: React.FC = () => {
+  const signalingMessages = useAppSelector((state) => state.signalingMessages);
   return (
     <>
       {signalingMessages.map((message) => {
@@ -37,5 +40,3 @@ const SignalingMessages: React.FC = () => {
     </>
   );
 };
-
-export default SignalingMessages;

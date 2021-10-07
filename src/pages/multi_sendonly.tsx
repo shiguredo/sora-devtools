@@ -1,49 +1,23 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
-import ColDebug from "@/components/ColDebug";
-import ColDemo from "@/components/ColDemo";
-import Footer from "@/components/Footer";
-import Head from "@/components/Head";
-import Header from "@/components/Header";
-import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters, getDefaultVideoCodecType } from "@/utils";
-
-const ENABLED_PARAMETERS: EnabledParameters = {
-  audio: true,
-  audioBitRate: true,
-  audioCodecType: true,
-  audioInput: true,
-  audioOutput: true,
-  audioTrack: true,
-  autoGainControl: true,
-  cameraDevice: true,
-  channelId: true,
-  clientId: true,
-  dataChannel: true,
-  displayResolution: true,
-  e2ee: true,
-  echoCancellation: true,
-  echoCancellationType: true,
-  frameRate: true,
-  mediaType: true,
-  metadata: true,
-  micDevice: true,
-  noiseSuppression: true,
-  resolution: true,
-  signalingNotifyMetadata: true,
-  video: true,
-  videoBitRate: true,
-  videoCodecType: true,
-  videoInput: true,
-  videoTrack: true,
-};
+import { useAppDispatch } from "@/app/hooks";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
+import { ColDebug } from "@/components/ColDebug";
+import { ColDemo } from "@/components/ColDemo";
+import { Footer } from "@/components/Footer";
+import { Head } from "@/components/Head";
+import { Header } from "@/components/Header";
+import { getDefaultVideoCodecType } from "@/utils";
 
 const MultiSendonly: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(
       setInitialParameter({
+        role: "sendonly",
+        multistream: true,
+        simulcast: false,
+        spotlight: false,
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP9"),
         videoBitRate: "1000",
@@ -58,11 +32,11 @@ const MultiSendonly: React.FC = () => {
   return (
     <>
       <Head title={"multi sendonly"} />
-      <Header pageName="multi sendonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Header pageName="multi sendonly" />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="sendonly" multistream enabledParameters={ENABLED_PARAMETERS} />
+            <ColDemo />
             <ColDebug />
           </div>
         </div>
@@ -72,4 +46,5 @@ const MultiSendonly: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default MultiSendonly;

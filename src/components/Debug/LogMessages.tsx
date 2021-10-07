@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { LogMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { LogMessage } from "@/types";
 
 const Collapse: React.FC<LogMessage> = (props) => {
   const { message, timestamp } = props;
@@ -14,8 +13,8 @@ const Log = React.memo((props: LogMessage) => {
   return <Collapse {...props} />;
 });
 
-const LogMessages: React.FC = () => {
-  const { logMessages } = useSelector((state: SoraDemoState) => state);
+export const LogMessages: React.FC = () => {
+  const logMessages = useAppSelector((state) => state.logMessages);
   return (
     <>
       {logMessages.map((log) => {
@@ -24,5 +23,3 @@ const LogMessages: React.FC = () => {
     </>
   );
 };
-
-export default LogMessages;

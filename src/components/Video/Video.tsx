@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-import { SoraDemoState } from "@/slice";
-import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
+import type { CustomHTMLVideoElement, SoraDemoState } from "@/types";
+import { getVideoSizeByResolution } from "@/utils";
 
 type VideoProps = {
   displayResolution: SoraDemoState["displayResolution"];
@@ -82,8 +82,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   );
 };
 
-const Video = React.memo((props: VideoProps) => {
+export const Video = React.memo((props: VideoProps) => {
   return <VideoElement {...props} />;
 });
-
-export default Video;

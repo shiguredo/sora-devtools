@@ -48,8 +48,6 @@ export const ECHO_CANCELLATION_TYPES = ["", "browser", "system"] as const;
 
 export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia"] as const;
 
-export const SPOTLIGHTS = ["1", "2", "3", "4", "5", "6", "7", "8", "true"] as const;
-
 export const SPOTLIGHT_NUMBERS = ["", "1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
 export const SPOTLIGHT_FOCUS_RIDS = ["", "none", "r0", "r1", "r2"] as const;

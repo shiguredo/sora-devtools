@@ -5,7 +5,7 @@ import { AppProps } from "next/app";
 import { ReactElement } from "react";
 import { Provider } from "react-redux";
 
-import store from "../store";
+import { store } from "@/app/store";
 
 const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
@@ -15,4 +15,5 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default MyApp;

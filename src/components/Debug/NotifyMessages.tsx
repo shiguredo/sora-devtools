@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { NotifyMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { NotifyMessage } from "@/types";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
   websocket: "#00ff00",
@@ -36,8 +35,8 @@ const Log = React.memo((props: CollapseNotifyProps) => {
   return <CollapseNotify {...props} />;
 });
 
-const NotifyMessages: React.FC = () => {
-  const { notifyMessages } = useSelector((state: SoraDemoState) => state);
+export const NotifyMessages: React.FC = () => {
+  const notifyMessages = useAppSelector((state) => state.notifyMessages);
   return (
     <>
       {notifyMessages.map((notify) => {
@@ -46,5 +45,3 @@ const NotifyMessages: React.FC = () => {
     </>
   );
 };
-
-export default NotifyMessages;
