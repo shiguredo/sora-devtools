@@ -12,6 +12,9 @@
 ## develop
 
 - [UPDATE] package を更新する
+    - debug mode 切り替えボタンをモバイルとデスクトップで表示位置を変える
+    - ダウンロードレポートのレポート内容を修正する
+- [UPDATE] package を更新する
     - react-bootstrap: 1.6.1, -> 2.0.0-beta.6
     - bootstrap: 4.5.3 -> 5.1.1
     - typescript: 4.3.5 -> 4.4.3
