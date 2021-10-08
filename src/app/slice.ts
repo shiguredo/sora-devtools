@@ -2,23 +2,7 @@ import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "
 import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber, Role, TransportType } from "sora-js-sdk";
 import Sora from "sora-js-sdk";
 
-import {
-  AUDIO_BIT_RATES,
-  AUDIO_CODEC_TYPES,
-  DATA_CHANNEL_SIGNALING,
-  DISPLAY_RESOLUTIONS,
-  ECHO_CANCELLATION_TYPES,
-  FRAME_RATES,
-  IGNORE_DISCONNECT_WEBSOCKET,
-  MEDIA_TYPES,
-  RESOLUTIONS,
-  SIMULCAST_RID,
-  SPOTLIGHT_FOCUS_RIDS,
-  SPOTLIGHT_NUMBERS,
-  VIDEO_BIT_RATES,
-  VIDEO_CODEC_TYPES,
-  WORKER_SCRIPT,
-} from "@/constants";
+import { WORKER_SCRIPT } from "@/constants";
 import type {
   AlertMessage,
   ConnectionOptionsState,
@@ -63,7 +47,7 @@ const initialState: SoraDemoState = {
   audioInputDevices: [],
   audioOutput: "",
   audioOutputDevices: [],
-  autoGainControl: true,
+  autoGainControl: "",
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
@@ -96,7 +80,7 @@ const initialState: SoraDemoState = {
     videoTrack: false,
   },
   e2ee: false,
-  echoCancellation: true,
+  echoCancellation: "",
   echoCancellationType: "",
   enabledClientId: false,
   enabledDataChannel: false,
@@ -127,7 +111,7 @@ const initialState: SoraDemoState = {
   metadata: "",
   multistream: false,
   mute: false,
-  noiseSuppression: true,
+  noiseSuppression: "",
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
@@ -171,13 +155,13 @@ const slice = createSlice({
     setAudioOutput: (state, action: PayloadAction<string>) => {
       state.audioOutput = action.payload;
     },
-    setAudioBitRate: (state, action: PayloadAction<typeof AUDIO_BIT_RATES[number]>) => {
+    setAudioBitRate: (state, action: PayloadAction<SoraDemoState["audioBitRate"]>) => {
       state.audioBitRate = action.payload;
     },
-    setAudioCodecType: (state, action: PayloadAction<typeof AUDIO_CODEC_TYPES[number]>) => {
+    setAudioCodecType: (state, action: PayloadAction<SoraDemoState["audioCodecType"]>) => {
       state.audioCodecType = action.payload;
     },
-    setAutoGainControl: (state, action: PayloadAction<boolean>) => {
+    setAutoGainControl: (state, action: PayloadAction<SoraDemoState["autoGainControl"]>) => {
       state.autoGainControl = action.payload;
     },
     setClientId: (state, action: PayloadAction<string>) => {
@@ -189,7 +173,7 @@ const slice = createSlice({
     setTimelineMessage: (state, action: PayloadAction<TimelineMessage>) => {
       state.timelineMessages.push(action.payload);
     },
-    setDataChannelSignaling: (state, action: PayloadAction<typeof DATA_CHANNEL_SIGNALING[number]>) => {
+    setDataChannelSignaling: (state, action: PayloadAction<SoraDemoState["dataChannelSignaling"]>) => {
       state.dataChannelSignaling = action.payload;
     },
     setDataChannelMessaging: (state, action: PayloadAction<string>) => {
@@ -201,16 +185,16 @@ const slice = createSlice({
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
     },
-    setDisplayResolution: (state, action: PayloadAction<typeof DISPLAY_RESOLUTIONS[number]>) => {
+    setDisplayResolution: (state, action: PayloadAction<SoraDemoState["displayResolution"]>) => {
       state.displayResolution = action.payload;
     },
     setE2EE: (state, action: PayloadAction<boolean>) => {
       state.e2ee = action.payload;
     },
-    setEchoCancellation: (state, action: PayloadAction<boolean>) => {
+    setEchoCancellation: (state, action: PayloadAction<SoraDemoState["echoCancellation"]>) => {
       state.echoCancellation = action.payload;
     },
-    setEchoCancellationType: (state, action: PayloadAction<typeof ECHO_CANCELLATION_TYPES[number]>) => {
+    setEchoCancellationType: (state, action: PayloadAction<SoraDemoState["echoCancellationType"]>) => {
       state.echoCancellationType = action.payload;
     },
     setEnabledClientId: (state, action: PayloadAction<boolean>) => {
@@ -225,7 +209,7 @@ const slice = createSlice({
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
     },
-    setIgnoreDisconnectWebSocket: (state, action: PayloadAction<typeof IGNORE_DISCONNECT_WEBSOCKET[number]>) => {
+    setIgnoreDisconnectWebSocket: (state, action: PayloadAction<SoraDemoState["ignoreDisconnectWebSocket"]>) => {
       state.ignoreDisconnectWebSocket = action.payload;
     },
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
@@ -263,22 +247,22 @@ const slice = createSlice({
     setInitialDisplaySettings: (state, action: PayloadAction<DisplaySettings>) => {
       state.displaySettings = action.payload;
     },
-    setFrameRate: (state, action: PayloadAction<typeof FRAME_RATES[number]>) => {
+    setFrameRate: (state, action: PayloadAction<SoraDemoState["frameRate"]>) => {
       state.frameRate = action.payload;
     },
     setMute: (state, action: PayloadAction<boolean>) => {
       state.mute = action.payload;
     },
-    setNoiseSuppression: (state, action: PayloadAction<boolean>) => {
+    setNoiseSuppression: (state, action: PayloadAction<SoraDemoState["noiseSuppression"]>) => {
       state.noiseSuppression = action.payload;
     },
-    setMediaType: (state, action: PayloadAction<typeof MEDIA_TYPES[number]>) => {
+    setMediaType: (state, action: PayloadAction<SoraDemoState["mediaType"]>) => {
       state.mediaType = action.payload;
     },
     setMetadata: (state, action: PayloadAction<string>) => {
       state.metadata = action.payload;
     },
-    setResolution: (state, action: PayloadAction<typeof RESOLUTIONS[number]>) => {
+    setResolution: (state, action: PayloadAction<SoraDemoState["resolution"]>) => {
       state.resolution = action.payload;
     },
     setSignalingNotifyMetadata: (state, action: PayloadAction<string>) => {
@@ -287,16 +271,16 @@ const slice = createSlice({
     setSignalingUrlCandidates: (state, action: PayloadAction<string[]>) => {
       state.signalingUrlCandidates = action.payload;
     },
-    setSimulcastRid: (state, action: PayloadAction<typeof SIMULCAST_RID[number]>) => {
+    setSimulcastRid: (state, action: PayloadAction<SoraDemoState["simulcastRid"]>) => {
       state.simulcastRid = action.payload;
     },
-    setSpotlightNumber: (state, action: PayloadAction<typeof SPOTLIGHT_NUMBERS[number]>) => {
+    setSpotlightNumber: (state, action: PayloadAction<SoraDemoState["spotlightNumber"]>) => {
       state.spotlightNumber = action.payload;
     },
-    setSpotlightFocusRid: (state, action: PayloadAction<typeof SPOTLIGHT_FOCUS_RIDS[number]>) => {
+    setSpotlightFocusRid: (state, action: PayloadAction<SoraDemoState["spotlightFocusRid"]>) => {
       state.spotlightFocusRid = action.payload;
     },
-    setSpotlightUnfocusRid: (state, action: PayloadAction<typeof SPOTLIGHT_FOCUS_RIDS[number]>) => {
+    setSpotlightUnfocusRid: (state, action: PayloadAction<SoraDemoState["spotlightUnfocusRid"]>) => {
       state.spotlightUnfocusRid = action.payload;
     },
     setVideo: (state, action: PayloadAction<boolean>) => {
@@ -305,10 +289,10 @@ const slice = createSlice({
     setVideoInput: (state, action: PayloadAction<string>) => {
       state.videoInput = action.payload;
     },
-    setVideoBitRate: (state, action: PayloadAction<typeof VIDEO_BIT_RATES[number]>) => {
+    setVideoBitRate: (state, action: PayloadAction<SoraDemoState["videoBitRate"]>) => {
       state.videoBitRate = action.payload;
     },
-    setVideoCodecType: (state, action: PayloadAction<typeof VIDEO_CODEC_TYPES[number]>) => {
+    setVideoCodecType: (state, action: PayloadAction<SoraDemoState["videoCodecType"]>) => {
       state.videoCodecType = action.payload;
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {

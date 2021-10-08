@@ -3,12 +3,15 @@ import type { ConnectionPublisher, ConnectionSubscriber, Role, TimelineEventLogT
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
+  ECHO_CANCELLATIONS,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
+  NOISE_SUPPRESSIONS,
   RESOLUTIONS,
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
@@ -26,7 +29,7 @@ export type SoraDemoState = {
   audioInputDevices: MediaDeviceInfo[];
   audioOutput: string;
   audioOutputDevices: MediaDeviceInfo[];
-  autoGainControl: boolean;
+  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
@@ -38,7 +41,7 @@ export type SoraDemoState = {
   dataChannelMessages: DataChannelMessage[];
   displaySettings: DisplaySettings;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
-  echoCancellation: boolean;
+  echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
   enabledClientId: boolean;
@@ -70,7 +73,7 @@ export type SoraDemoState = {
   metadata: string;
   multistream: boolean;
   mute: boolean;
-  noiseSuppression: boolean;
+  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
   notifyMessages: NotifyMessage[];
   pushMessages: PushMessage[];
   resolution: typeof RESOLUTIONS[number];
@@ -185,43 +188,6 @@ export interface RTCMediaStreamTrackStats extends RTCStats {
   prevJitterBufferEmittedCount: number;
 }
 
-// 各 page で有効にするパラメーターを指定するための Type
-export type EnabledParameters = {
-  audio?: boolean;
-  audioBitRate?: boolean;
-  audioCodecType?: boolean;
-  audioInput?: boolean;
-  audioOutput?: boolean;
-  audioTrack?: boolean;
-  autoGainControl?: boolean;
-  cameraDevice?: boolean;
-  channelId?: boolean;
-  clientId?: boolean;
-  dataChannel?: boolean;
-  displayResolution?: boolean;
-  e2ee?: boolean;
-  echoCancellation?: boolean;
-  echoCancellationType?: boolean;
-  frameRate?: boolean;
-  mediaType?: boolean;
-  metadata?: boolean;
-  micDevice?: boolean;
-  noiseSuppression?: boolean;
-  resolution?: boolean;
-  signalingNotifyMetadata?: boolean;
-  signalingUrlCandidates?: boolean;
-  simulcastRid?: boolean;
-  spotlight?: boolean;
-  spotlightFocusRid?: boolean;
-  spotlightNumber?: boolean;
-  spotlightUnfocusRid?: boolean;
-  video?: boolean;
-  videoBitRate?: boolean;
-  videoCodecType?: boolean;
-  videoInput?: boolean;
-  videoTrack?: boolean;
-};
-
 // Debug log message の Type
 export type LogMessage = {
   timestamp: number;
@@ -288,7 +254,7 @@ export type QueryStringParameters = {
   audioInput: string;
   audioOutput: string;
   audioTrack: boolean;
-  autoGainControl: boolean;
+  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
   cameraDevice: boolean;
   channelId: string;
   clientId: string;
@@ -297,7 +263,7 @@ export type QueryStringParameters = {
   debug: boolean;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   e2ee: boolean;
-  echoCancellation: boolean;
+  echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
@@ -307,7 +273,7 @@ export type QueryStringParameters = {
   metadata: string;
   micDevice: boolean;
   mute: boolean;
-  noiseSuppression: boolean;
+  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;

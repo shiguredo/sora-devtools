@@ -4,12 +4,15 @@ import type { Role } from "sora-js-sdk";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
+  ECHO_CANCELLATIONS,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
+  NOISE_SUPPRESSIONS,
   RESOLUTIONS,
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
@@ -81,6 +84,21 @@ export function isDisplayResolution(
 // FrameRate の Type Guard
 export function isFrameRate(frameRate: string): frameRate is typeof FRAME_RATES[number] {
   return (FRAME_RATES as readonly string[]).indexOf(frameRate) >= 0;
+}
+
+// AutoGainControl の Type Guard
+export function isAutoGainControl(autoGainControl: string): autoGainControl is typeof AUTO_GAIN_CONTROLS[number] {
+  return (AUTO_GAIN_CONTROLS as readonly string[]).indexOf(autoGainControl) >= 0;
+}
+
+// NoiseSuppression の Type Guard
+export function isNoiseSuppression(noiseSuppression: string): noiseSuppression is typeof NOISE_SUPPRESSIONS[number] {
+  return (NOISE_SUPPRESSIONS as readonly string[]).indexOf(noiseSuppression) >= 0;
+}
+
+// EchoCancellation の Type Guard
+export function isEchoCancellation(echoCancellation: string): echoCancellation is typeof ECHO_CANCELLATIONS[number] {
+  return (ECHO_CANCELLATIONS as readonly string[]).indexOf(echoCancellation) >= 0;
 }
 
 // EchoCancellationType の Type Guard
@@ -179,8 +197,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof audioCodecType === "string" && isAudioCodecType(audioCodecType)) {
     queryStringParameters.audioCodecType = audioCodecType;
   }
-  if (typeof autoGainControl === "boolean") {
-    queryStringParameters.autoGainControl = autoGainControl;
+  const stringAutoGainControl = String(autoGainControl);
+  if (isAutoGainControl(stringAutoGainControl)) {
+    queryStringParameters.autoGainControl = stringAutoGainControl;
   }
   if (channelId !== undefined) {
     queryStringParameters.channelId = String(channelId);
@@ -200,14 +219,16 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof e2ee === "boolean") {
     queryStringParameters.e2ee = e2ee;
   }
-  if (typeof echoCancellation === "boolean") {
-    queryStringParameters.echoCancellation = echoCancellation;
+  const stringEchoCancellation = String(echoCancellation);
+  if (isEchoCancellation(stringEchoCancellation)) {
+    queryStringParameters.echoCancellation = stringEchoCancellation;
   }
   if (typeof echoCancellationType === "string" && isEchoCancellationType(echoCancellationType)) {
     queryStringParameters.echoCancellationType = echoCancellationType;
   }
-  if (typeof noiseSuppression === "boolean") {
-    queryStringParameters.noiseSuppression = noiseSuppression;
+  const stringNoiseSuppression = String(noiseSuppression);
+  if (isNoiseSuppression(stringNoiseSuppression)) {
+    queryStringParameters.noiseSuppression = stringNoiseSuppression;
   }
   if (fakeVolume) {
     queryStringParameters.fakeVolume = String(fakeVolume);
@@ -345,9 +366,9 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
 // getUserMedia の audio constraints を生成
 type CreateAudioConstraintsParameters = {
   audio: boolean;
-  autoGainControl: boolean;
-  noiseSuppression: boolean;
-  echoCancellation: boolean;
+  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
+  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
+  echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   audioInput: string;
 };
@@ -356,13 +377,25 @@ export function createAudioConstraints(parameters: CreateAudioConstraintsParamet
   if (!audio) {
     return false;
   }
+  if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType && !audioInput) {
+    return audio;
+  }
   const audioConstraints: SoraDemoMediaTrackConstraints = {};
   if (audioInput) {
     audioConstraints.deviceId = { exact: audioInput };
   }
-  audioConstraints.autoGainControl = autoGainControl;
-  audioConstraints.noiseSuppression = noiseSuppression;
-  audioConstraints.echoCancellation = echoCancellation;
+  const parsedAutoGainControl = parseBooleanString(autoGainControl);
+  if (parsedAutoGainControl !== undefined) {
+    audioConstraints.autoGainControl = parsedAutoGainControl;
+  }
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression);
+  if (parsedNoiseSuppression !== undefined) {
+    audioConstraints.noiseSuppression = parsedNoiseSuppression;
+  }
+  const parsedEchoCancellation = parseBooleanString(echoCancellation);
+  if (parsedEchoCancellation !== undefined) {
+    audioConstraints.echoCancellation = parsedEchoCancellation;
+  }
   if (echoCancellationType) {
     audioConstraints.echoCancellationType = echoCancellationType;
   }
@@ -500,6 +533,15 @@ export function drawFakeCanvas(
   const margin = (fontSize / 4) * (text.length - 1);
   const y = canvas.height / 2 + fontSize / 2.5;
   context.fillText(text, x - margin, y);
+}
+
+export function parseBooleanString(value: string): boolean | undefined {
+  if (value === "true") {
+    return true;
+  } else if (value === "false") {
+    return false;
+  }
+  return;
 }
 
 export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {

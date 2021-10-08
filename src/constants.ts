@@ -44,6 +44,12 @@ export const DISPLAY_RESOLUTIONS = ["", "VGA", "QVGA"] as const;
 
 export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10"] as const;
 
+export const AUTO_GAIN_CONTROLS = ["", "true", "false"] as const;
+
+export const NOISE_SUPPRESSIONS = ["", "true", "false"] as const;
+
+export const ECHO_CANCELLATIONS = ["", "true", "false"] as const;
+
 export const ECHO_CANCELLATION_TYPES = ["", "browser", "system"] as const;
 
 export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia"] as const;
