@@ -5,6 +5,7 @@ import {
   AUDIO_CODEC_TYPES,
   AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
+  DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
@@ -35,6 +36,7 @@ export type SoraDemoState = {
   googCpuOveruseDetection: boolean | null;
   timelineMessages: TimelineMessage[];
   debug: boolean;
+  debugFilterText: string;
   debugType: DebugType;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   dataChannelMessaging: string;
@@ -244,7 +246,7 @@ export type DataChannelMessage = {
 };
 
 // Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "push" | "stats" | "timeline" | "signaling";
+export type DebugType = typeof DEBUG_TYPES[number];
 
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = {
@@ -391,6 +393,7 @@ export type DownloadReportParameters = Omit<
   SoraDemoState,
   | "alertMessages"
   | "dataChannelMessages"
+  | "debugFilterText"
   | "debugType"
   | "displaySettings"
   | "fakeContents"

@@ -53,6 +53,7 @@ const initialState: SoraDemoState = {
   googCpuOveruseDetection: null,
   timelineMessages: [],
   debug: false,
+  debugFilterText: "",
   debugType: "timeline",
   dataChannelSignaling: "",
   dataChannelMessaging: "",
@@ -386,7 +387,11 @@ const slice = createSlice({
     setDebug: (state, action: PayloadAction<boolean>) => {
       state.debug = action.payload;
     },
+    setDebugFilterText: (state, action: PayloadAction<string>) => {
+      state.debugFilterText = action.payload;
+    },
     setDebugType: (state, action: PayloadAction<DebugType>) => {
+      state.debugFilterText = "";
       state.debugType = action.payload;
     },
     setLogMessages: (state, action: PayloadAction<LogMessage["message"]>) => {
@@ -1662,6 +1667,7 @@ export const {
   setDataChannelMessaging,
   setDataChannelSignaling,
   setDebug,
+  setDebugFilterText,
   setDebugType,
   setDisplayResolution,
   setEchoCancellation,

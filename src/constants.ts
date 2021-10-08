@@ -64,6 +64,8 @@ export const DATA_CHANNEL_SIGNALING = ["", "true", "false"] as const;
 
 export const IGNORE_DISCONNECT_WEBSOCKET = ["", "true", "false"] as const;
 
+export const DEBUG_TYPES = ["log", "notify", "push", "stats", "timeline", "signaling", "messaging"];
+
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
   const data = event.data;

@@ -336,6 +336,20 @@ video {
   padding-bottom: 0.5rem;
 }
 
+.form-debug-filter {
+  margin-top: 1rem;
+}
+
+.form-debug-filter input {
+  background-color: #222222;
+  color: #ffffff;
+}
+
+.form-debug-filter input:focus {
+  background-color: #222222;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;

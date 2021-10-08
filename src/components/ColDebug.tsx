@@ -4,6 +4,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDebugType } from "@/app/slice";
 import { DataChannelMessages } from "@/components/Debug/DataChannelMessages";
+import { Filter } from "@/components/Debug/Filter";
 import { LogMessages } from "@/components/Debug/LogMessages";
 import { NotifyMessages } from "@/components/Debug/NotifyMessages";
 import { PushMessages } from "@/components/Debug/PushMessages";
@@ -20,14 +21,23 @@ export const ColDebug: React.FC = () => {
     return null;
   }
   const onSelect = (key: string | null): void => {
-    if (key === "log" || key === "notify" || key === "push" || key === "stats" || key === "timeline") {
+    if (
+      key === "log" ||
+      key === "notify" ||
+      key === "push" ||
+      key === "stats" ||
+      key === "timeline" ||
+      key === "signaling" ||
+      key === "messaging"
+    ) {
       dispatch(setDebugType(key));
     }
   };
   return (
     <div className="col-debug col-6">
       <SignalingURL />
-      <Tabs id="debug-tab" className="mt-2" defaultActiveKey={debugType} onSelect={onSelect}>
+      <Filter />
+      <Tabs id="debug-tab" className="mt-2" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <TimelineMessages />
         </Tab>

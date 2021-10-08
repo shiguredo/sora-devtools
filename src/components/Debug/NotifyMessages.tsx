@@ -12,7 +12,11 @@ const SIGNALING_COLORS: { [key: string]: string } = {
 const Label: React.FC<{ text: string }> = (props) => {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
-  return <span style={color ? { color: color } : {}}>[{text}]</span>;
+  return (
+    <span className="me-1" style={color ? { color: color } : {}}>
+      [{text}]
+    </span>
+  );
 };
 
 type CollapseNotifyProps = {
