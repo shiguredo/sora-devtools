@@ -350,6 +350,11 @@ video {
   color: #ffffff;
 }
 
+.form-debug-filter input:disabled {
+  background-color: #666666;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;
