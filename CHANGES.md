@@ -26,7 +26,7 @@
     - @yuitowest
 - [ADD] 複数シグナリング URL 対応を追加する
     - signalingUrlCandidates を設定できるようにする
-    - デバッグモード時に現在接続中のシグナリング URL を表示する機能を追加する
+    - 現在接続中のシグナリング URL をヘッダーに表示する機能を追加する
     - @yuitowest
 - [UPDATE] navigator.mediaDevices が undefined の場合の例外メッセージをわかりやすくする
     - @yuitowest
