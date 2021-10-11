@@ -31,9 +31,18 @@ const Log = React.memo((props: SignalingMessage) => {
 
 export const SignalingMessages: React.FC = () => {
   const signalingMessages = useAppSelector((state) => state.signalingMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = signalingMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
     <>
-      {signalingMessages.map((message) => {
+      {filteredMessages.map((message) => {
         const key = message.type + message.timestamp;
         return <Log key={key} {...message} />;
       })}

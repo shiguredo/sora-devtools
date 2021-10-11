@@ -31,9 +31,18 @@ const Log = React.memo((props: CollapsePushProps) => {
 
 export const PushMessages: React.FC = () => {
   const pushMessages = useAppSelector((state) => state.pushMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = pushMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
     <>
-      {pushMessages.map((pushMessage, index) => {
+      {filteredMessages.map((pushMessage, index) => {
         const key = `${pushMessage.timestamp}-${index}`;
         return <Log key={key} ariaControls={key} push={pushMessage} />;
       })}

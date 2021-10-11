@@ -41,9 +41,18 @@ const Log = React.memo((props: CollapseNotifyProps) => {
 
 export const NotifyMessages: React.FC = () => {
   const notifyMessages = useAppSelector((state) => state.notifyMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = notifyMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
     <>
-      {notifyMessages.map((notify) => {
+      {filteredMessages.map((notify) => {
         return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
       })}
     </>

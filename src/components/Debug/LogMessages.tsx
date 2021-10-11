@@ -15,9 +15,18 @@ const Log = React.memo((props: LogMessage) => {
 
 export const LogMessages: React.FC = () => {
   const logMessages = useAppSelector((state) => state.logMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = logMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
     <>
-      {logMessages.map((log) => {
+      {filteredMessages.map((log) => {
         return <Log key={log.message.title + log.timestamp} {...log} />;
       })}
     </>

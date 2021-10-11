@@ -15,9 +15,18 @@ const Log = React.memo((props: DataChannelMessage) => {
 
 export const DataChannelMessages: React.FC = () => {
   const dataChannelMessages = useAppSelector((state) => state.dataChannelMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = dataChannelMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
     <>
-      {dataChannelMessages.map((message) => {
+      {filteredMessages.map((message) => {
         const key = message.label + message.timestamp;
         return <Log key={key} {...message} />;
       })}

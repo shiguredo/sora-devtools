@@ -84,18 +84,17 @@ const Log = React.memo((props: TimelineMessage) => {
 export const TimelineMessages: React.FC = () => {
   const timelineMessages = useAppSelector((state) => state.timelineMessages);
   const debugFilterText = useAppSelector((state) => state.debugFilterText);
-  const filterdTimelineMessages = timelineMessages.filter((message) => {
+  const filteredMessages = timelineMessages.filter((message) => {
     return debugFilterText.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
-      const regex = RegExp(filterText, "g");
-      return regex.exec(JSON.stringify(message));
+      return 0 <= JSON.stringify(message).indexOf(filterText);
     });
   });
   return (
     <>
-      {filterdTimelineMessages.map((message) => {
+      {filteredMessages.map((message) => {
         const key = `${message.timestamp}-${message.type}`;
         return <Log key={key} {...message} />;
       })}

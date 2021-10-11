@@ -4,12 +4,11 @@ import { Tab, Tabs } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDebugType } from "@/app/slice";
 import { DataChannelMessages } from "@/components/Debug/DataChannelMessages";
-import { Filter } from "@/components/Debug/Filter";
+import { DebugFilter } from "@/components/Debug/Filter";
 import { LogMessages } from "@/components/Debug/LogMessages";
 import { NotifyMessages } from "@/components/Debug/NotifyMessages";
 import { PushMessages } from "@/components/Debug/PushMessages";
 import { SignalingMessages } from "@/components/Debug/SignalingMessages";
-import { SignalingURL } from "@/components/Debug/SignalingURL";
 import { Stats } from "@/components/Debug/Stats";
 import { TimelineMessages } from "@/components/Debug/TimelineMessages";
 
@@ -35,8 +34,7 @@ export const ColDebug: React.FC = () => {
   };
   return (
     <div className="col-debug col-6">
-      <SignalingURL />
-      <Filter />
+      <DebugFilter />
       <Tabs id="debug-tab" className="mt-2" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <TimelineMessages />

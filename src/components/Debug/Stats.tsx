@@ -17,9 +17,18 @@ const Log = React.memo((props: RTCStatsWithIndexSignature) => {
 
 export const Stats: React.FC = () => {
   const statsReport = useAppSelector((state) => state.soraContents.statsReport);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = statsReport.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
     <>
-      {statsReport.map((stats) => {
+      {filteredMessages.map((stats) => {
         return <Log key={stats.id} {...(stats as RTCStatsWithIndexSignature)} />;
       })}
     </>
