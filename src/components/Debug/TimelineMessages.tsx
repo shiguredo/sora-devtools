@@ -85,20 +85,13 @@ export const TimelineMessages: React.FC = () => {
   const timelineMessages = useAppSelector((state) => state.timelineMessages);
   const debugFilterText = useAppSelector((state) => state.debugFilterText);
   const filterdTimelineMessages = timelineMessages.filter((message) => {
-    let result = true;
-    for (const filterText of debugFilterText.split(" ")) {
+    return debugFilterText.split(" ").every((filterText) => {
       if (filterText === "") {
-        continue;
-      } else if (/^label:.+/.exec(filterText)) {
-        const regex = RegExp(filterText.replace("label:", ""), "g");
-        result = !!regex.exec(message.logType);
-      } else {
-        const regex = RegExp(filterText, "g");
-        result = !!regex.exec(message.type);
-        result = !!regex.exec(JSON.stringify(message.data));
+        return true;
       }
-    }
-    return result;
+      const regex = RegExp(filterText, "g");
+      return regex.exec(JSON.stringify(message));
+    });
   });
   return (
     <>
