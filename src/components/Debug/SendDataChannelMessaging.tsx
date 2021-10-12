@@ -50,7 +50,7 @@ export const DebugSendDataChannelMessaging: React.FC = () => {
           <Button
             variant="secondary"
             onClick={handleSendMessage}
-            disabled={selectRef.current === null || !selectRef.current.value}
+            disabled={sora === null || sora.messagingDataChannels.length === 0}
           >
             send
           </Button>
