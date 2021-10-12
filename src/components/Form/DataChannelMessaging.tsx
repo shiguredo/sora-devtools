@@ -1,61 +1,29 @@
-import React, { useRef } from "react";
-import { Button, Col, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
+import React from "react";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDataChannelMessaging, setEnabledDataChannelMessaging } from "@/app/slice";
-
-const FormSendDataChannelMessaging: React.FC = () => {
-  const selectRef = useRef<HTMLSelectElement>(null);
-  const textareaRef = useRef<HTMLInputElement>(null);
-  const sora = useAppSelector((state) => state.soraContents.sora);
-  if (!sora) {
-    return null;
-  }
-  const handleSendMessage = (): void => {
-    if (selectRef.current === null || textareaRef.current === null) {
-      return;
-    }
-    const label = selectRef.current.value;
-    let text = textareaRef.current.value;
-    try {
-      text = JSON.parse(textareaRef.current.value);
-    } catch (_) {
-      // JSON parse に失敗しても何もしない
-    }
-    sora.sendMessage(label, text);
-  };
-  return (
-    <Row xs="auto" className="form-row">
-      <Col>
-        <FormGroup className="form-inline" controlId="sendDataChannelMessaging">
-          <FormLabel>sendDataChannelMessaging:</FormLabel>
-          <FormSelect name="sendDataChannelMessaging" ref={selectRef}>
-            {sora.messagingDataChannels.map((messagingDataChannel) => {
-              return (
-                <option key={messagingDataChannel.label} value={messagingDataChannel.label}>
-                  {messagingDataChannel.label}
-                </option>
-              );
-            })}
-          </FormSelect>
-        </FormGroup>
-      </Col>
-      <Col xs="6">
-        <FormControl className="flex-fill" placeholder="sendDataChannelMessagingを指定" type="text" ref={textareaRef} />
-      </Col>
-      <Col>
-        <Button variant="secondary" onClick={handleSendMessage}>
-          sendDataChannelMessaging
-        </Button>
-      </Col>
-    </Row>
-  );
-};
 
 export const FormDataChannelMessaging: React.FC = () => {
   const enabledDataChannelMessaging = useAppSelector((state) => state.enabledDataChannelMessaging);
   const dataChannelMessaging = useAppSelector((state) => state.dataChannelMessaging);
   const dispatch = useAppDispatch();
+  const textareaPlaceholder =
+    "dataChannelMessagingを指定\n(例)\n" +
+    JSON.stringify(
+      [
+        {
+          label: "#spam",
+          maxPacketLifeTime: 10,
+          ordered: true,
+          protocol: "efg",
+          compress: false,
+          direction: "sendrecv",
+        },
+      ],
+      null,
+      2
+    );
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledDataChannelMessaging(event.target.checked));
   };
@@ -85,15 +53,14 @@ export const FormDataChannelMessaging: React.FC = () => {
                 <FormControl
                   className="flex-fill"
                   as="textarea"
-                  placeholder="dataChannelMessagingを指定"
+                  placeholder={textareaPlaceholder}
                   value={dataChannelMessaging}
                   onChange={onChangeText}
-                  rows={10}
+                  rows={12}
                 />
               </FormGroup>
             </Col>
           </Row>
-          <FormSendDataChannelMessaging />
         </>
       ) : null}
     </>

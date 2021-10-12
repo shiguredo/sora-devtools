@@ -8,6 +8,7 @@ import { DebugFilter } from "@/components/Debug/Filter";
 import { LogMessages } from "@/components/Debug/LogMessages";
 import { NotifyMessages } from "@/components/Debug/NotifyMessages";
 import { PushMessages } from "@/components/Debug/PushMessages";
+import { DebugSendDataChannelMessaging } from "@/components/Debug/SendDataChannelMessaging";
 import { SignalingMessages } from "@/components/Debug/SignalingMessages";
 import { Stats } from "@/components/Debug/Stats";
 import { TimelineMessages } from "@/components/Debug/TimelineMessages";
@@ -35,6 +36,7 @@ export const ColDebug: React.FC = () => {
   return (
     <div className="col-debug col-6">
       <DebugFilter />
+      <DebugSendDataChannelMessaging />
       <Tabs id="debug-tab" className="mt-2" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <TimelineMessages />

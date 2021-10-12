@@ -6,7 +6,7 @@ import type { DataChannelMessage } from "@/types";
 
 const Collapse: React.FC<DataChannelMessage> = (props) => {
   const { data, label, timestamp } = props;
-  return <Message title={label} timestamp={timestamp} description={data} />;
+  return <Message title={label} timestamp={timestamp} description={data} defaultShow />;
 };
 
 const Log = React.memo((props: DataChannelMessage) => {

@@ -93,11 +93,11 @@ export const TimelineMessages: React.FC = () => {
     });
   });
   return (
-    <>
+    <div className="debug-messages">
       {filteredMessages.map((message) => {
         const key = `${message.timestamp}-${message.type}`;
         return <Log key={key} {...message} />;
       })}
-    </>
+    </div>
   );
 };

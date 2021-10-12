@@ -24,9 +24,7 @@ export const Header: React.FC<Props> = (props) => {
             <Nav className="me-auto" />
             <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
-                <p className="navbar-signaling-url border rounded">
-                  {sora ? sora.connectedSignalingUrl: "未接続"}
-                </p>
+                <p className="navbar-signaling-url border rounded">{sora ? sora.connectedSignalingUrl : "未接続"}</p>
               </Navbar.Text>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <ButtonHeaderDebugMode />
