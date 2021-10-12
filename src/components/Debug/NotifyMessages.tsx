@@ -51,10 +51,10 @@ export const NotifyMessages: React.FC = () => {
     });
   });
   return (
-    <>
+    <div className="debug-messages">
       {filteredMessages.map((notify) => {
         return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
       })}
-    </>
+    </div>
   );
 };

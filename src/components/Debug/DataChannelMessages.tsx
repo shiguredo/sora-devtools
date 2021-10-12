@@ -25,11 +25,11 @@ export const DataChannelMessages: React.FC = () => {
     });
   });
   return (
-    <>
+    <div className="debug-messages">
       {filteredMessages.map((message) => {
         const key = message.label + message.timestamp;
         return <Log key={key} {...message} />;
       })}
-    </>
+    </div>
   );
 };

@@ -11,7 +11,7 @@ export const DebugFilter: React.FC = () => {
     dispatch(setDebugFilterText(event.target.value));
   };
   return (
-    <FormGroup className="form-inline form-debug-filter" controlId="channelId">
+    <FormGroup className="form-inline debug-filter" controlId="channelId">
       <FormControl type="text" placeholder="Filter" value={debugFilterText} onChange={onChange} autoComplete="off" />
     </FormGroup>
   );

@@ -27,10 +27,10 @@ export const Stats: React.FC = () => {
     });
   });
   return (
-    <>
+    <div className="debug-messages">
       {filteredMessages.map((stats) => {
         return <Log key={stats.id} {...(stats as RTCStatsWithIndexSignature)} />;
       })}
-    </>
+    </div>
   );
 };

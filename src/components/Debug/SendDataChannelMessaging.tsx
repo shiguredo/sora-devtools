@@ -6,7 +6,6 @@ import { useAppSelector } from "@/app/hooks";
 export const DebugSendDataChannelMessaging: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
   const textareaRef = useRef<HTMLInputElement>(null);
-  const debugType = useAppSelector((state) => state.debugType);
   const sora = useAppSelector((state) => state.soraContents.sora);
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
@@ -23,12 +22,9 @@ export const DebugSendDataChannelMessaging: React.FC = () => {
       sora.sendMessage(label, text);
     }
   };
-  if (debugType !== "messaging") {
-    return null;
-  }
   return (
     <>
-      <div className="d-flex mt-2">
+      <div className="d-flex">
         <FormGroup className="me-1" controlId="sendDataChannelMessaging">
           <FormSelect name="sendDataChannelMessaging" ref={selectRef}>
             {sora
@@ -61,28 +57,7 @@ export const DebugSendDataChannelMessaging: React.FC = () => {
         </FormGroup>
       </div>
       <pre className="form-control mt-2" style={{ color: "#fff", backgroundColor: "#222222", maxHeight: "250px" }}>
-        {JSON.stringify(
-          [
-            {
-              label: "#spam",
-              direction: "sendrecv",
-            },
-            {
-              label: "#egg",
-              direction: "recvonly",
-            },
-            {
-              label: "#egg",
-              direction: "recvonly",
-            },
-            {
-              label: "#egg",
-              direction: "recvonly",
-            },
-          ],
-          null,
-          2
-        )}
+        {sora ? JSON.stringify(sora.messagingDataChannels, null, 2) : "\r\n"}
       </pre>
     </>
   );

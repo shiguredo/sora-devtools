@@ -35,28 +35,34 @@ export const ColDebug: React.FC = () => {
   };
   return (
     <div className="col-debug col-6">
-      <DebugFilter />
-      <DebugSendDataChannelMessaging />
-      <Tabs id="debug-tab" className="mt-2" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
+      <Tabs id="debug-tab" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
+          <DebugFilter />
           <TimelineMessages />
         </Tab>
         <Tab eventKey="signaling" title="Signaling">
+          <DebugFilter />
           <SignalingMessages />
         </Tab>
         <Tab eventKey="notify" title="Notfiy">
+          <DebugFilter />
           <NotifyMessages />
         </Tab>
         <Tab eventKey="push" title="Push">
+          <DebugFilter />
           <PushMessages />
         </Tab>
         <Tab eventKey="stats" title="Stats">
+          <DebugFilter />
           <Stats />
         </Tab>
         <Tab eventKey="log" title="Log">
+          <DebugFilter />
           <LogMessages />
         </Tab>
         <Tab eventKey="messaging" title="Messaging">
+          <DebugFilter />
+          <DebugSendDataChannelMessaging />
           <DataChannelMessages />
         </Tab>
       </Tabs>

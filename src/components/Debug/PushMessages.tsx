@@ -41,11 +41,11 @@ export const PushMessages: React.FC = () => {
     });
   });
   return (
-    <>
+    <div className="debug-messages">
       {filteredMessages.map((pushMessage, index) => {
         const key = `${pushMessage.timestamp}-${index}`;
         return <Log key={key} ariaControls={key} push={pushMessage} />;
       })}
-    </>
+    </div>
   );
 };

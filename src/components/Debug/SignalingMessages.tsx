@@ -41,11 +41,11 @@ export const SignalingMessages: React.FC = () => {
     });
   });
   return (
-    <>
+    <div className="debug-messages">
       {filteredMessages.map((message) => {
         const key = message.type + message.timestamp;
         return <Log key={key} {...message} />;
       })}
-    </>
+    </div>
   );
 };
