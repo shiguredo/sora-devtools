@@ -10,6 +10,8 @@
     - バグ修正
 
 ## develop
+- [ADD] MediaStreamTrack Content Hints 実装を追加する
+    - @yuitowest
 - [ADD] DataChannel Messaging only ページを作成する
     - @yuitowest
 - [ADD] Debug モードにフィルター機能を追加する
