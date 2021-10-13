@@ -263,6 +263,7 @@ export type QueryStringParameters = {
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   dataChannelMessaging: string;
   debug: boolean;
+  debugType: typeof DEBUG_TYPES[number];
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   e2ee: boolean;
   echoCancellation: typeof ECHO_CANCELLATIONS[number];
@@ -324,6 +325,8 @@ export type PageInitialParameters = {
   multistream: SoraDemoState["multistream"];
   spotlight: SoraDemoState["spotlight"];
   simulcast: SoraDemoState["simulcast"];
+  // DataChannelMessaging page 専用のオプション
+  dataChannelMessagingOnly?: boolean;
   audio?: SoraDemoState["audio"];
   audioBitRate?: SoraDemoState["audioBitRate"];
   audioCodecType?: SoraDemoState["audioCodecType"];
@@ -334,6 +337,7 @@ export type PageInitialParameters = {
   clientId?: SoraDemoState["clientId"];
   googCpuOveruseDetection?: SoraDemoState["googCpuOveruseDetection"];
   debug?: SoraDemoState["debug"];
+  debugType?: SoraDemoState["debugType"];
   dataChannelSignaling?: SoraDemoState["dataChannelSignaling"];
   dataChannelMessaging?: SoraDemoState["dataChannelMessaging"];
   displayResolution?: SoraDemoState["displayResolution"];
@@ -367,6 +371,7 @@ export type PageInitialParameters = {
 
 // 画面表示に使用する設定
 export type DisplaySettings = {
+  audio: boolean;
   audioBitRate: boolean;
   audioCodecType: boolean;
   audioInput: boolean;
@@ -374,13 +379,14 @@ export type DisplaySettings = {
   audioTrack: boolean;
   audioConstraints: boolean;
   cameraDevice: boolean;
-  clientId: boolean;
+  displayResolution: boolean;
   mediaType: boolean;
   micDevice: boolean;
   simulcastRid: boolean;
   spotlightFocusRid: boolean;
   spotlightNumber: boolean;
   spotlightUnfocusRid: boolean;
+  video: boolean;
   videoBitRate: boolean;
   videoCodecType: boolean;
   videoConstraints: boolean;

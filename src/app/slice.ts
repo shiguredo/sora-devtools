@@ -60,6 +60,7 @@ const initialState: SoraDemoState = {
   dataChannelMessages: [],
   displayResolution: "",
   displaySettings: {
+    audio: false,
     audioBitRate: false,
     audioCodecType: false,
     audioConstraints: false,
@@ -67,13 +68,14 @@ const initialState: SoraDemoState = {
     audioOutput: false,
     audioTrack: false,
     cameraDevice: false,
-    clientId: false,
+    displayResolution: false,
     mediaType: false,
     micDevice: false,
     simulcastRid: false,
     spotlightFocusRid: false,
     spotlightNumber: false,
     spotlightUnfocusRid: false,
+    video: false,
     videoBitRate: false,
     videoCodecType: false,
     videoConstraints: false,
@@ -1336,6 +1338,12 @@ export const setInitialParameter =
       pageInitialParameters.debug,
       queryStringParameters.debug
     );
+    setInitialState<SoraDemoState["debugType"]>(
+      dispatch,
+      slice.actions.setDebugType,
+      pageInitialParameters.debugType,
+      queryStringParameters.debugType
+    );
     setInitialState<SoraDemoState["mute"]>(
       dispatch,
       slice.actions.setMute,
@@ -1382,63 +1390,36 @@ export const setInitialParameter =
     if (queryStringParameters.googCpuOveruseDetection !== undefined) {
       dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
     }
-    // clientId が存在した場合は enabledClientId と clientId 両方をセットする
-    if (queryStringParameters.clientId !== undefined) {
-      dispatch(slice.actions.setEnabledClientId(true));
-      setInitialState<SoraDemoState["clientId"]>(
-        dispatch,
-        slice.actions.setClientId,
-        pageInitialParameters.clientId,
-        queryStringParameters.clientId
-      );
-    }
-    // metadata が存在した場合は enabledMetadata と metadata 両方をセットする
-    if (queryStringParameters.metadata !== undefined) {
-      dispatch(slice.actions.setEnabledMetadata(true));
-      setInitialState<SoraDemoState["metadata"]>(
-        dispatch,
-        slice.actions.setMetadata,
-        pageInitialParameters.metadata,
-        queryStringParameters.metadata
-      );
-    }
-    // signalingNotifyMetadata が存在した場合は enabledSignalingNotifyMetadata と signalingNotifyMetadata 両方をセットする
-    if (queryStringParameters.signalingNotifyMetadata !== undefined) {
-      dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true));
-      setInitialState<SoraDemoState["signalingNotifyMetadata"]>(
-        dispatch,
-        slice.actions.setSignalingNotifyMetadata,
-        pageInitialParameters.signalingNotifyMetadata,
-        queryStringParameters.signalingNotifyMetadata
-      );
-    }
-    // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates と signalingUrlCandidates 両方をセットする
-    if (queryStringParameters.signalingUrlCandidates !== undefined) {
-      dispatch(slice.actions.setEnabledSignalingUrlCandidates(true));
-      setInitialState<SoraDemoState["signalingUrlCandidates"]>(
-        dispatch,
-        slice.actions.setSignalingUrlCandidates,
-        pageInitialParameters.signalingUrlCandidates,
-        queryStringParameters.signalingUrlCandidates
-      );
-    }
-    // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
-    if (
-      queryStringParameters.dataChannelSignaling !== undefined ||
-      queryStringParameters.ignoreDisconnectWebSocket !== undefined
-    ) {
-      dispatch(slice.actions.setEnabledDataChannel(true));
-    }
-    // dataChannelMessaging が存在した場合は enabledDataChannelMessaging をセットする
-    if (queryStringParameters.dataChannelMessaging !== undefined) {
-      dispatch(slice.actions.setEnabledDataChannelMessaging(true));
-      setInitialState<SoraDemoState["dataChannelMessaging"]>(
-        dispatch,
-        slice.actions.setDataChannelMessaging,
-        pageInitialParameters.dataChannelMessaging,
-        queryStringParameters.dataChannelMessaging
-      );
-    }
+    setInitialState<SoraDemoState["clientId"]>(
+      dispatch,
+      slice.actions.setClientId,
+      pageInitialParameters.clientId,
+      queryStringParameters.clientId
+    );
+    setInitialState<SoraDemoState["metadata"]>(
+      dispatch,
+      slice.actions.setMetadata,
+      pageInitialParameters.metadata,
+      queryStringParameters.metadata
+    );
+    setInitialState<SoraDemoState["signalingNotifyMetadata"]>(
+      dispatch,
+      slice.actions.setSignalingNotifyMetadata,
+      pageInitialParameters.signalingNotifyMetadata,
+      queryStringParameters.signalingNotifyMetadata
+    );
+    setInitialState<SoraDemoState["signalingUrlCandidates"]>(
+      dispatch,
+      slice.actions.setSignalingUrlCandidates,
+      pageInitialParameters.signalingUrlCandidates,
+      queryStringParameters.signalingUrlCandidates
+    );
+    setInitialState<SoraDemoState["dataChannelMessaging"]>(
+      dispatch,
+      slice.actions.setDataChannelMessaging,
+      pageInitialParameters.dataChannelMessaging,
+      queryStringParameters.dataChannelMessaging
+    );
     dispatch(slice.actions.setInitialFakeContents());
     // role
     if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {
@@ -1470,12 +1451,22 @@ export const setInitialParameter =
           pageInitialParameters.role,
           pageInitialParameters.multistream,
           pageInitialParameters.simulcast,
-          pageInitialParameters.spotlight
+          pageInitialParameters.spotlight,
+          !!pageInitialParameters.dataChannelMessagingOnly
         )
       )
     );
     // e2ee が有効な場合は e2ee 初期化処理をする
-    const { e2ee } = getState();
+    const {
+      clientId,
+      dataChannelMessaging,
+      dataChannelSignaling,
+      e2ee,
+      ignoreDisconnectWebSocket,
+      metadata,
+      signalingNotifyMetadata,
+      signalingUrlCandidates,
+    } = getState();
     if (e2ee) {
       const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
       // wasm url が存在する場合は e2ee の初期化処理をする
@@ -1489,6 +1480,31 @@ export const setInitialParameter =
         dispatch(slice.actions.setSoraErrorAlertMessage(message));
         return;
       }
+    }
+
+    // clientId が存在した場合は enabledClientId をセットする
+    if (clientId !== "") {
+      dispatch(slice.actions.setEnabledClientId(true));
+    }
+    // metadata が存在した場合は enabledMetadata をセットする
+    if (metadata !== "") {
+      dispatch(slice.actions.setEnabledMetadata(true));
+    }
+    // signalingNotifyMetadata が存在した場合は enabledSignalingNotifyMetadata をセットする
+    if (signalingNotifyMetadata !== "") {
+      dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true));
+    }
+    // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
+    if (0 < signalingUrlCandidates.length) {
+      dispatch(slice.actions.setEnabledSignalingUrlCandidates(true));
+    }
+    // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
+    if (dataChannelSignaling !== "" || ignoreDisconnectWebSocket !== "") {
+      dispatch(slice.actions.setEnabledDataChannel(true));
+    }
+    // dataChannelMessaging が存在した場合は enabledDataChannelMessaging をセットする
+    if (dataChannelMessaging !== "") {
+      dispatch(slice.actions.setEnabledDataChannelMessaging(true));
     }
   };
 
@@ -1510,7 +1526,7 @@ export const copyURL =
       // channelId
       channelId: state.channelId,
       // audio
-      audio: state.audio,
+      audio: queryStringValue<QueryStringParameters["audio"]>(state.audio, state.displaySettings.audio),
       audioBitRate: queryStringValue<QueryStringParameters["audioBitRate"]>(
         state.audioBitRate,
         state.displaySettings.audioBitRate
@@ -1537,7 +1553,7 @@ export const copyURL =
         state.displaySettings.audioConstraints
       ),
       // video
-      video: state.video,
+      video: queryStringValue<QueryStringParameters["video"]>(state.video, state.displaySettings.video),
       videoBitRate: queryStringValue<QueryStringParameters["videoBitRate"]>(
         state.videoBitRate,
         state.displaySettings.videoBitRate
@@ -1627,8 +1643,6 @@ export const copyURL =
       ),
       // debug
       debug: state.debug,
-      // その他
-      mute: state.mute,
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
     };
     const queryStrings = Object.keys(parameters)

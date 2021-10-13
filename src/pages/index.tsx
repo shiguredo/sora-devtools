@@ -51,6 +51,8 @@ const Index: React.FC = () => {
             <Link pageName="spotlight_sendrecv" />
             <Link pageName="spotlight_sendonly" />
             <Link pageName="spotlight_recvonly" />
+            <li className="separator">データチャネルメッセージング</li>
+            <Link pageName="data_channel_messaging_only" />
           </ul>
         </div>
       </div>

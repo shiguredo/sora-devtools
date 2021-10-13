@@ -6,6 +6,7 @@ import {
   AUDIO_CODEC_TYPES,
   AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
+  DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
@@ -144,6 +145,11 @@ export function isIgnoreDisconnectWebSocket(
   return (IGNORE_DISCONNECT_WEBSOCKET as readonly string[]).indexOf(ignoreDisconnectWebSocket) >= 0;
 }
 
+// DebugType の Type Guard
+export function isDebugType(debugType: string): debugType is typeof DEBUG_TYPES[number] {
+  return (DEBUG_TYPES as readonly string[]).indexOf(debugType) >= 0;
+}
+
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
   const {
@@ -160,6 +166,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     dataChannelSignaling,
     dataChannelMessaging,
     debug,
+    debugType,
     displayResolution,
     e2ee,
     echoCancellation,
@@ -212,6 +219,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof debug === "boolean") {
     queryStringParameters.debug = debug;
+  }
+  if (typeof debugType === "string" && isDebugType(debugType)) {
+    queryStringParameters.debugType = debugType;
   }
   if (typeof displayResolution === "string" && isDisplayResolution(displayResolution)) {
     queryStringParameters.displayResolution = displayResolution;
@@ -605,9 +615,11 @@ export function createDisplaySettings(
   role: Role,
   multistream: boolean,
   simulcast: boolean,
-  spotlight: boolean
+  spotlight: boolean,
+  dataChannelMessagingOnly: boolean
 ): DisplaySettings {
   const displaySettings: DisplaySettings = {
+    audio: false,
     audioCodecType: false,
     audioBitRate: false,
     audioConstraints: false,
@@ -615,19 +627,26 @@ export function createDisplaySettings(
     audioOutput: false,
     audioTrack: false,
     cameraDevice: false,
-    clientId: false,
+    displayResolution: false,
     mediaType: false,
     micDevice: false,
     simulcastRid: false,
     spotlightFocusRid: false,
     spotlightNumber: false,
     spotlightUnfocusRid: false,
+    video: false,
     videoBitRate: false,
     videoCodecType: false,
     videoConstraints: false,
     videoInput: false,
     videoTrack: false,
   };
+  if (dataChannelMessagingOnly) {
+    return displaySettings;
+  }
+  displaySettings.audio = true;
+  displaySettings.video = true;
+  displaySettings.displayResolution = true;
   if (role === "sendonly" || role === "sendrecv") {
     displaySettings.mediaType = true;
     displaySettings.audioCodecType = true;
