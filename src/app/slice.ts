@@ -43,6 +43,7 @@ const initialState: SoraDemoState = {
   audio: true,
   audioBitRate: "",
   audioCodecType: "",
+  audioContentHint: "",
   audioInput: "",
   audioInputDevices: [],
   audioOutput: "",
@@ -63,6 +64,7 @@ const initialState: SoraDemoState = {
     audio: false,
     audioBitRate: false,
     audioCodecType: false,
+    audioContentHint: false,
     audioConstraints: false,
     audioInput: false,
     audioOutput: false,
@@ -78,6 +80,7 @@ const initialState: SoraDemoState = {
     video: false,
     videoBitRate: false,
     videoCodecType: false,
+    videoContentHint: false,
     videoConstraints: false,
     videoInput: false,
     videoTrack: false,
@@ -132,6 +135,7 @@ const initialState: SoraDemoState = {
   video: true,
   videoBitRate: "",
   videoCodecType: "",
+  videoContentHint: "",
   videoInput: "",
   videoInputDevices: [],
   version: packageJSON.version,
@@ -163,6 +167,14 @@ const slice = createSlice({
     },
     setAudioCodecType: (state, action: PayloadAction<SoraDemoState["audioCodecType"]>) => {
       state.audioCodecType = action.payload;
+    },
+    setAudioContentHint: (state, action: PayloadAction<SoraDemoState["audioContentHint"]>) => {
+      state.audioContentHint = action.payload;
+      if (state.soraContents.localMediaStream) {
+        for (const track of state.soraContents.localMediaStream.getAudioTracks()) {
+          track.contentHint = state.audioContentHint;
+        }
+      }
     },
     setAutoGainControl: (state, action: PayloadAction<SoraDemoState["autoGainControl"]>) => {
       state.autoGainControl = action.payload;
@@ -297,6 +309,14 @@ const slice = createSlice({
     },
     setVideoCodecType: (state, action: PayloadAction<SoraDemoState["videoCodecType"]>) => {
       state.videoCodecType = action.payload;
+    },
+    setVideoContentHint: (state, action: PayloadAction<SoraDemoState["videoContentHint"]>) => {
+      state.videoContentHint = action.payload;
+      if (state.soraContents.localMediaStream) {
+        for (const track of state.soraContents.localMediaStream.getVideoTracks()) {
+          track.contentHint = state.videoContentHint;
+        }
+      }
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       // `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
@@ -491,6 +511,7 @@ type craeteMediaStreamPickedSttate = Pick<
   | "audio"
   | "audioInput"
   | "audioTrack"
+  | "audioContentHint"
   | "autoGainControl"
   | "cameraDevice"
   | "echoCancellation"
@@ -503,6 +524,7 @@ type craeteMediaStreamPickedSttate = Pick<
   | "noiseSuppression"
   | "resolution"
   | "video"
+  | "videoContentHint"
   | "videoInput"
   | "videoTrack"
 >;
@@ -526,6 +548,9 @@ async function createMediaStream(
     const stream = await (navigator.mediaDevices as SoraDemoMediaDevices).getDisplayMedia(constraints);
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-get-display-media")));
     for (const track of stream.getVideoTracks()) {
+      if (track.contentHint !== undefined) {
+        track.contentHint = state.videoContentHint;
+      }
       track.enabled = state.videoTrack;
     }
     return [stream, null];
@@ -553,9 +578,15 @@ async function createMediaStream(
       state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
     }
     for (const track of mediaStream.getVideoTracks()) {
+      if (track.contentHint !== undefined) {
+        track.contentHint = state.videoContentHint;
+      }
       track.enabled = state.videoTrack;
     }
     for (const track of mediaStream.getAudioTracks()) {
+      if (track.contentHint !== undefined) {
+        track.contentHint = state.audioContentHint;
+      }
       track.enabled = state.audioTrack;
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-create-fake-media")));
@@ -606,9 +637,15 @@ async function createMediaStream(
     mediaStream.addTrack(videoMediaStream.getVideoTracks()[0]);
   }
   for (const track of mediaStream.getVideoTracks()) {
+    if (track.contentHint !== undefined) {
+      track.contentHint = state.videoContentHint;
+    }
     track.enabled = state.videoTrack;
   }
   for (const track of mediaStream.getAudioTracks()) {
+    if (track.contentHint !== undefined) {
+      track.contentHint = state.audioContentHint;
+    }
     track.enabled = state.audioTrack;
   }
   return [mediaStream, null];
@@ -1071,6 +1108,7 @@ export const setMicDevice =
     if (micDevice) {
       const pickedState = {
         audio: state.audio,
+        audioContentHint: state.audioContentHint,
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
@@ -1085,6 +1123,7 @@ export const setMicDevice =
         noiseSuppression: state.noiseSuppression,
         resolution: state.resolution,
         video: false,
+        videoContentHint: state.videoContentHint,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
       };
@@ -1116,6 +1155,7 @@ export const setCameraDevice =
     if (cameraDevice) {
       const pickedState = {
         audio: false,
+        audioContentHint: state.audioContentHint,
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
@@ -1130,6 +1170,7 @@ export const setCameraDevice =
         noiseSuppression: state.noiseSuppression,
         resolution: state.resolution,
         video: state.video,
+        videoContentHint: state.videoContentHint,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
       };
@@ -1420,6 +1461,18 @@ export const setInitialParameter =
       pageInitialParameters.dataChannelMessaging,
       queryStringParameters.dataChannelMessaging
     );
+    setInitialState<SoraDemoState["audioContentHint"]>(
+      dispatch,
+      slice.actions.setAudioContentHint,
+      pageInitialParameters.audioContentHint,
+      queryStringParameters.audioContentHint
+    );
+    setInitialState<SoraDemoState["videoContentHint"]>(
+      dispatch,
+      slice.actions.setVideoContentHint,
+      pageInitialParameters.videoContentHint,
+      queryStringParameters.videoContentHint
+    );
     dispatch(slice.actions.setInitialFakeContents());
     // role
     if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {
@@ -1535,6 +1588,10 @@ export const copyURL =
         state.audioCodecType,
         state.displaySettings.audioCodecType
       ),
+      audioContentHint: queryStringValue<QueryStringParameters["audioContentHint"]>(
+        state.audioContentHint,
+        state.displaySettings.audioContentHint
+      ),
       // audio constraints
       autoGainControl: queryStringValue<QueryStringParameters["autoGainControl"]>(
         state.autoGainControl,
@@ -1561,6 +1618,10 @@ export const copyURL =
       videoCodecType: queryStringValue<QueryStringParameters["videoCodecType"]>(
         state.videoCodecType,
         state.displaySettings.videoCodecType
+      ),
+      videoContentHint: queryStringValue<QueryStringParameters["videoContentHint"]>(
+        state.videoContentHint,
+        state.displaySettings.videoContentHint
       ),
       // video constraints
       resolution: queryStringValue<QueryStringParameters["resolution"]>(
@@ -1672,6 +1733,7 @@ export const {
   setAudio,
   setAudioBitRate,
   setAudioCodecType,
+  setAudioContentHint,
   setAudioInput,
   setAudioOutput,
   setAudioTrack,
@@ -1714,6 +1776,7 @@ export const {
   setVideo,
   setVideoBitRate,
   setVideoCodecType,
+  setVideoContentHint,
   setVideoInput,
   setVideoTrack,
 } = slice.actions;

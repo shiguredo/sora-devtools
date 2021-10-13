@@ -4,6 +4,7 @@ import type { Role } from "sora-js-sdk";
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
@@ -20,6 +21,7 @@ import {
   SPOTLIGHT_NUMBERS,
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
+  VIDEO_CONTENT_HINTS,
 } from "@/constants";
 import type {
   CustomHTMLCanvasElement,
@@ -148,6 +150,16 @@ export function isIgnoreDisconnectWebSocket(
 // DebugType の Type Guard
 export function isDebugType(debugType: string): debugType is typeof DEBUG_TYPES[number] {
   return (DEBUG_TYPES as readonly string[]).indexOf(debugType) >= 0;
+}
+
+// AudioContentHint の Type Guard
+export function isAudioContentHint(audioContentHint: string): audioContentHint is typeof AUDIO_CONTENT_HINTS[number] {
+  return (AUDIO_CONTENT_HINTS as readonly string[]).indexOf(audioContentHint) >= 0;
+}
+
+// VideoContentHint の Type Guard
+export function isVideoContentHint(videoContentHint: string): videoContentHint is typeof VIDEO_CONTENT_HINTS[number] {
+  return (VIDEO_CONTENT_HINTS as readonly string[]).indexOf(videoContentHint) >= 0;
 }
 
 // クエリ文字列パーサー
@@ -620,8 +632,9 @@ export function createDisplaySettings(
 ): DisplaySettings {
   const displaySettings: DisplaySettings = {
     audio: false,
-    audioCodecType: false,
     audioBitRate: false,
+    audioCodecType: false,
+    audioContentHint: false,
     audioConstraints: false,
     audioInput: false,
     audioOutput: false,
@@ -637,6 +650,7 @@ export function createDisplaySettings(
     video: false,
     videoBitRate: false,
     videoCodecType: false,
+    videoContentHint: false,
     videoConstraints: false,
     videoInput: false,
     videoTrack: false,
@@ -648,19 +662,21 @@ export function createDisplaySettings(
   displaySettings.video = true;
   displaySettings.displayResolution = true;
   if (role === "sendonly" || role === "sendrecv") {
-    displaySettings.mediaType = true;
-    displaySettings.audioCodecType = true;
     displaySettings.audioBitRate = true;
+    displaySettings.audioCodecType = true;
+    displaySettings.audioContentHint = true;
     displaySettings.audioConstraints = true;
-    displaySettings.videoCodecType = true;
-    displaySettings.videoBitRate = true;
-    displaySettings.videoConstraints = true;
     displaySettings.audioInput = true;
     displaySettings.audioOutput = true;
-    displaySettings.videoInput = true;
-    displaySettings.cameraDevice = true;
-    displaySettings.micDevice = true;
     displaySettings.audioTrack = true;
+    displaySettings.cameraDevice = true;
+    displaySettings.mediaType = true;
+    displaySettings.micDevice = true;
+    displaySettings.videoBitRate = true;
+    displaySettings.videoCodecType = true;
+    displaySettings.videoContentHint = true;
+    displaySettings.videoConstraints = true;
+    displaySettings.videoInput = true;
     displaySettings.videoTrack = true;
   } else if (role === "recvonly") {
     displaySettings.audioCodecType = true;

@@ -66,6 +66,10 @@ export const IGNORE_DISCONNECT_WEBSOCKET = ["", "true", "false"] as const;
 
 export const DEBUG_TYPES = ["log", "notify", "push", "stats", "timeline", "signaling", "messaging"];
 
+export const AUDIO_CONTENT_HINTS = ["", "speech", "speech-recognition", "music"];
+
+export const VIDEO_CONTENT_HINTS = ["", "motion", "detail", "text"];
+
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
   const data = event.data;

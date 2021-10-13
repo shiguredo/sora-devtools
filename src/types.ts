@@ -3,6 +3,7 @@ import type { ConnectionPublisher, ConnectionSubscriber, Role, TimelineEventLogT
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
@@ -19,6 +20,7 @@ import {
   SPOTLIGHT_NUMBERS,
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
+  VIDEO_CONTENT_HINTS,
 } from "@/constants";
 
 export type SoraDemoState = {
@@ -26,6 +28,7 @@ export type SoraDemoState = {
   audio: boolean;
   audioBitRate: typeof AUDIO_BIT_RATES[number];
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];
+  audioContentHint: typeof AUDIO_CONTENT_HINTS[number];
   audioInput: string;
   audioInputDevices: MediaDeviceInfo[];
   audioOutput: string;
@@ -95,6 +98,7 @@ export type SoraDemoState = {
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
+  videoContentHint: typeof VIDEO_CONTENT_HINTS[number];
   videoInput: string;
   videoInputDevices: MediaDeviceInfo[];
   version: string;
@@ -253,6 +257,7 @@ export type QueryStringParameters = {
   audio: boolean;
   audioBitRate: typeof AUDIO_BIT_RATES[number];
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];
+  audioContentHint: typeof AUDIO_CONTENT_HINTS[number];
   audioInput: string;
   audioOutput: string;
   audioTrack: boolean;
@@ -288,6 +293,7 @@ export type QueryStringParameters = {
   video: boolean;
   videoBitRate: typeof VIDEO_BIT_RATES[number];
   videoCodecType: typeof VIDEO_CODEC_TYPES[number];
+  videoContentHint: typeof VIDEO_CONTENT_HINTS[number];
   videoInput: string;
   videoTrack: boolean;
 };
@@ -330,6 +336,7 @@ export type PageInitialParameters = {
   audio?: SoraDemoState["audio"];
   audioBitRate?: SoraDemoState["audioBitRate"];
   audioCodecType?: SoraDemoState["audioCodecType"];
+  audioContentHint?: SoraDemoState["audioContentHint"];
   audioInput?: SoraDemoState["audioInput"];
   audioOutput?: SoraDemoState["audioOutput"];
   autoGainControl?: SoraDemoState["autoGainControl"];
@@ -362,6 +369,7 @@ export type PageInitialParameters = {
   video?: SoraDemoState["video"];
   videoBitRate?: SoraDemoState["videoBitRate"];
   videoCodecType?: SoraDemoState["videoCodecType"];
+  videoContentHint?: SoraDemoState["videoContentHint"];
   videoInput?: SoraDemoState["videoInput"];
   cameraDevice?: SoraDemoState["cameraDevice"];
   videoTrack?: SoraDemoState["videoTrack"];
@@ -374,6 +382,7 @@ export type DisplaySettings = {
   audio: boolean;
   audioBitRate: boolean;
   audioCodecType: boolean;
+  audioContentHint: boolean;
   audioInput: boolean;
   audioOutput: boolean;
   audioTrack: boolean;
@@ -390,6 +399,7 @@ export type DisplaySettings = {
   videoBitRate: boolean;
   videoCodecType: boolean;
   videoConstraints: boolean;
+  videoContentHint: boolean;
   videoInput: boolean;
   videoTrack: boolean;
 };
