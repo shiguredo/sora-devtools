@@ -38,7 +38,7 @@ export const FormMediaType: React.FC = () => {
     }
   };
   return (
-    <FormGroup className="form-inline">
+    <FormGroup className="form-inline flex-wrap">
       <FormLabel>mediaType:</FormLabel>
       <FormRadio label="getUserMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="getDisplayMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
