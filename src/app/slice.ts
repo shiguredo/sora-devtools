@@ -1714,13 +1714,9 @@ export const copyURL =
         }
         // signalingUrlCandidates は Array なので JSON.stringify する
         if (key === "signalingUrlCandidates") {
-          return `${key}=${JSON.stringify(value)}`;
+          return `${key}=${encodeURIComponent(JSON.stringify(value))}`;
         }
-        // dataChannelMessaging は encodeURIComponent する
-        if (key === "dataChannelMessaging") {
-          return `${key}=${encodeURIComponent(value as string)}`;
-        }
-        return `${key}=${value}`;
+        return `${key}=${encodeURIComponent(value as string)}`;
       })
       .filter((value) => value !== undefined);
     copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join("&")}`);
