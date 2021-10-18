@@ -3,7 +3,7 @@ import { Button, FormControl, FormGroup, FormSelect } from "react-bootstrap";
 
 import { useAppSelector } from "@/app/hooks";
 
-export const DebugSendDataChannelMessaging: React.FC = () => {
+export const DebugSendDataChannelMessage: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
   const textareaRef = useRef<HTMLInputElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);
@@ -25,8 +25,8 @@ export const DebugSendDataChannelMessaging: React.FC = () => {
   return (
     <>
       <div className="d-flex">
-        <FormGroup className="me-1" controlId="sendDataChannelMessaging">
-          <FormSelect name="sendDataChannelMessaging" ref={selectRef}>
+        <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
+          <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
             {sora
               ? sora.messagingDataChannels.map((messagingDataChannel) => {
                   return (
@@ -38,27 +38,22 @@ export const DebugSendDataChannelMessaging: React.FC = () => {
               : null}
           </FormSelect>
         </FormGroup>
-        <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessaging">
-          <FormControl
-            className="flex-fill"
-            placeholder="sendDataChannelMessagingを指定"
-            type="text"
-            ref={textareaRef}
-          />
+        <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
+          <FormControl className="flex-fill" placeholder="sendDataChannelMessageを指定" type="text" ref={textareaRef} />
         </FormGroup>
-        <FormGroup className="" controlId="sendDataChannelMessaging">
-          <Button
-            variant="secondary"
-            onClick={handleSendMessage}
-            disabled={sora === null || sora.messagingDataChannels.length === 0}
-          >
-            send
-          </Button>
-        </FormGroup>
+        <Button
+          variant="secondary"
+          onClick={handleSendMessage}
+          disabled={sora === null || sora.messagingDataChannels.length === 0}
+        >
+          send
+        </Button>
       </div>
-      <pre className="form-control mt-2" style={{ color: "#fff", backgroundColor: "#222222", maxHeight: "250px" }}>
-        {sora ? JSON.stringify(sora.messagingDataChannels, null, 2) : "\r\n"}
-      </pre>
+      {sora && 0 < sora.messagingDataChannels.length ? (
+        <pre className="form-control mt-2" style={{ color: "#fff", backgroundColor: "#222222", maxHeight: "250px" }}>
+          {JSON.stringify(sora.messagingDataChannels, null, 2)}
+        </pre>
+      ) : null}
     </>
   );
 };

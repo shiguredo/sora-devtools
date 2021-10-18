@@ -21,8 +21,8 @@ const DataChannelMessagingOnly: React.FC = () => {
     dispatch(
       setInitialParameter({
         debug: true,
-        debugType: "messaging",
-        role: "recvonly",
+        debugType: "message",
+        role: "sendrecv",
         multistream: true,
         simulcast: false,
         spotlight: false,

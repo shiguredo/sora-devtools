@@ -772,7 +772,7 @@ function setSoraCallbacks(
     };
     dispatch(slice.actions.setSignalingMessage(message));
   });
-  sora.on("messaging", (event) => {
+  sora.on("message", (event) => {
     dispatch(
       slice.actions.setDataChannelMessage({
         timestamp: new Date().getTime(),
@@ -855,7 +855,7 @@ function createConnectOptions(connectionOptionsState: ConnectionOptionsState): C
       console.warn("Illegal format DataChannelMessaging");
     }
     if (Array.isArray(dataChannelMessaging)) {
-      connectionOptions.messagingDataChannels = dataChannelMessaging;
+      connectionOptions.dataChannels = dataChannelMessaging;
     }
   }
   return connectionOptions;

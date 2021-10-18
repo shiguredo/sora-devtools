@@ -8,7 +8,7 @@ import { DebugFilter } from "@/components/Debug/Filter";
 import { LogMessages } from "@/components/Debug/LogMessages";
 import { NotifyMessages } from "@/components/Debug/NotifyMessages";
 import { PushMessages } from "@/components/Debug/PushMessages";
-import { DebugSendDataChannelMessaging } from "@/components/Debug/SendDataChannelMessaging";
+import { DebugSendDataChannelMessage } from "@/components/Debug/SendDataChannelMessage";
 import { SignalingMessages } from "@/components/Debug/SignalingMessages";
 import { Stats } from "@/components/Debug/Stats";
 import { TimelineMessages } from "@/components/Debug/TimelineMessages";
@@ -28,7 +28,7 @@ export const ColDebug: React.FC = () => {
       key === "stats" ||
       key === "timeline" ||
       key === "signaling" ||
-      key === "messaging"
+      key === "message"
     ) {
       dispatch(setDebugType(key));
     }
@@ -60,9 +60,9 @@ export const ColDebug: React.FC = () => {
           <DebugFilter />
           <LogMessages />
         </Tab>
-        <Tab eventKey="messaging" title="Messaging">
+        <Tab eventKey="message" title="Message">
           <DebugFilter />
-          <DebugSendDataChannelMessaging />
+          <DebugSendDataChannelMessage />
           <DataChannelMessages />
         </Tab>
       </Tabs>
