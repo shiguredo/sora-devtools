@@ -4,6 +4,7 @@ import type { CustomHTMLVideoElement, SoraDemoState } from "@/types";
 import { getVideoSizeByResolution } from "@/utils";
 
 type VideoProps = {
+  localVideo?: boolean;
   displayResolution: SoraDemoState["displayResolution"];
   stream: MediaStream | null;
   mute: boolean;
@@ -71,6 +72,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   }
   return (
     <video
+      id={props.localVideo ? "local-video" : undefined}
       autoPlay
       playsInline
       controls

@@ -24,6 +24,7 @@ const VideoBox: React.FC = () => {
             setHeight={setHeight}
             audioOutput={audioOutput}
             displayResolution={displayResolution}
+            localVideo
             mute
           />
           {localMediaStream !== null ? (
@@ -44,7 +45,7 @@ export const LocalVideo: React.FC = () => {
       <div className="col-auto">
         <div className="video-status mb-1">
           {connectionId !== null || clientId !== null ? (
-            <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
+            <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />
           ) : null}
         </div>
         {role !== "recvonly" ? <VideoBox /> : null}
