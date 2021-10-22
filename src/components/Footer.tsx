@@ -13,8 +13,8 @@ export const Footer: React.FC = () => {
         <Nav className="me-auto" />
         <Nav>
           <Navbar.Collapse id="navbar-collapse">
-            <a href="https://github.com/shiguredo/sora-demo" className="btn btn-outline-light m-1">
-              GitHub: shiguredo/sora-demo: {version}
+            <a href="https://github.com/shiguredo/sora-devtools" className="btn btn-outline-light m-1">
+              GitHub: shiguredo/sora-devtools: {version}
             </a>
             <a href="https://github.com/shiguredo/sora-js-sdk" className="btn btn-outline-light m-1">
               GitHub: shiguredo/sora-js-sdk: {Sora.version()}

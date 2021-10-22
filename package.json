@@ -1,17 +1,17 @@
 {
-  "name": "sora-demo",
+  "name": "sora-devtools",
   "version": "2021.2.0-canary.19",
-  "description": "WebRTC SFU Sora Demo",
+  "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shiguredo/sora-demo.git"
+    "url": "git+https://github.com/shiguredo/sora-devtools.git"
   },
   "author": "Shiguredo Inc.",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://discord.gg/shiguredo"
   },
-  "homepage": "https://github.com/shiguredo/sora-demo#readme",
+  "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "scripts": {
     "start": "next -p 3333",
     "build": "next build",

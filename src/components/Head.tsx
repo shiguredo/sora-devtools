@@ -8,7 +8,7 @@ type Props = {
 export const Head: React.FC<Props> = (props) => {
   return (
     <NextHead>
-      <title>Sora DEMO {props.title}</title>
+      <title>Sora DevTools {props.title}</title>
     </NextHead>
   );
 };

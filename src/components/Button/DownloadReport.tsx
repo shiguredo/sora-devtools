@@ -63,7 +63,7 @@ function createDownloadReport(pageName: string): DownloadReport {
   const report = {
     userAgent: navigator.userAgent,
     pageName: pageName,
-    "sora-demo": state.version,
+    "sora-devtools": state.version,
     "sora-js-sdk": Sora.version(),
     parameters: parameters,
     timeline: state.timelineMessages.map((message) => {
@@ -91,7 +91,7 @@ export const ButtonDownloadReport: React.FC<Props> = (props) => {
     window.URL = window.URL || window.webkitURL;
     if (anchorRef.current) {
       const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
-      anchorRef.current.download = `sora-demo-report-${datetimeString}.json`;
+      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
       anchorRef.current.href = window.URL.createObjectURL(blob);
       anchorRef.current.click();
     }

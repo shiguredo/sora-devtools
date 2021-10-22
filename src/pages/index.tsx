@@ -25,7 +25,7 @@ const Index: React.FC = () => {
       <header>
         <Navbar variant="dark" bg="sora" expand="md" fixed="top">
           <Container>
-            <Navbar.Brand href="/">Sora DEMO</Navbar.Brand>
+            <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbar-collapse" />
           </Container>
         </Navbar>

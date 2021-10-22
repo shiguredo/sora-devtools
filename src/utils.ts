@@ -28,7 +28,7 @@ import type {
   DisplaySettings,
   Json,
   QueryStringParameters,
-  SoraDemoMediaTrackConstraints,
+  SoraDevtoolsMediaTrackConstraints,
 } from "@/types";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
@@ -402,7 +402,7 @@ export function createAudioConstraints(parameters: CreateAudioConstraintsParamet
   if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType && !audioInput) {
     return audio;
   }
-  const audioConstraints: SoraDemoMediaTrackConstraints = {};
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (audioInput) {
     audioConstraints.deviceId = { exact: audioInput };
   }

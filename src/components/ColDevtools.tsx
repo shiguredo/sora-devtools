@@ -19,14 +19,14 @@ import { FormRowVideoSettings } from "@/components/Form/RowVideoSettings";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
 
-export const ColDemo: React.FC = () => {
+export const ColDevtools: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);
   const role = useAppSelector((state) => state.role);
   const spotlight = useAppSelector((state) => state.spotlight);
   const simulcast = useAppSelector((state) => state.simulcast);
   const displaySettings = useAppSelector((state) => state.displaySettings);
   return (
-    <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
+    <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
       <AlertMessages />
       {displaySettings.mediaType ? <FormRowMediaType /> : null}
       <FormRowChannelId />

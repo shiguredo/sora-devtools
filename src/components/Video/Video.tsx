@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-import type { CustomHTMLVideoElement, SoraDemoState } from "@/types";
+import type { CustomHTMLVideoElement, SoraDevtoolsState } from "@/types";
 import { getVideoSizeByResolution } from "@/utils";
 
 type VideoProps = {
   localVideo?: boolean;
-  displayResolution: SoraDemoState["displayResolution"];
+  displayResolution: SoraDevtoolsState["displayResolution"];
   stream: MediaStream | null;
   mute: boolean;
   audioOutput: string;
