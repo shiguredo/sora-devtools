@@ -1,4 +1,4 @@
-# WebRTC SFU Sora デモアプリ
+# WebRTC SFU Sora DevTools
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-demo.svg)](https://github.com/shiguredo/sora-demo)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
