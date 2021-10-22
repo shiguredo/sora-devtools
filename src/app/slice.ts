@@ -16,8 +16,8 @@ import type {
   PushMessage,
   QueryStringParameters,
   SignalingMessage,
-  SoraDemoMediaDevices,
-  SoraDemoState,
+  SoraDevtoolsMediaDevices,
+  SoraDevtoolsState,
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
@@ -38,7 +38,7 @@ import {
 
 import packageJSON from "../../package.json";
 
-const initialState: SoraDemoState = {
+const initialState: SoraDevtoolsState = {
   alertMessages: [],
   audio: true,
   audioBitRate: "",
@@ -147,7 +147,7 @@ const initialState: SoraDemoState = {
 };
 
 const slice = createSlice({
-  name: "soraDemo",
+  name: "soraDevtools",
   initialState,
   reducers: {
     resetState: (state) => {
@@ -162,13 +162,13 @@ const slice = createSlice({
     setAudioOutput: (state, action: PayloadAction<string>) => {
       state.audioOutput = action.payload;
     },
-    setAudioBitRate: (state, action: PayloadAction<SoraDemoState["audioBitRate"]>) => {
+    setAudioBitRate: (state, action: PayloadAction<SoraDevtoolsState["audioBitRate"]>) => {
       state.audioBitRate = action.payload;
     },
-    setAudioCodecType: (state, action: PayloadAction<SoraDemoState["audioCodecType"]>) => {
+    setAudioCodecType: (state, action: PayloadAction<SoraDevtoolsState["audioCodecType"]>) => {
       state.audioCodecType = action.payload;
     },
-    setAudioContentHint: (state, action: PayloadAction<SoraDemoState["audioContentHint"]>) => {
+    setAudioContentHint: (state, action: PayloadAction<SoraDevtoolsState["audioContentHint"]>) => {
       state.audioContentHint = action.payload;
       if (state.soraContents.localMediaStream) {
         for (const track of state.soraContents.localMediaStream.getAudioTracks()) {
@@ -176,7 +176,7 @@ const slice = createSlice({
         }
       }
     },
-    setAutoGainControl: (state, action: PayloadAction<SoraDemoState["autoGainControl"]>) => {
+    setAutoGainControl: (state, action: PayloadAction<SoraDevtoolsState["autoGainControl"]>) => {
       state.autoGainControl = action.payload;
     },
     setClientId: (state, action: PayloadAction<string>) => {
@@ -188,7 +188,7 @@ const slice = createSlice({
     setTimelineMessage: (state, action: PayloadAction<TimelineMessage>) => {
       state.timelineMessages.push(action.payload);
     },
-    setDataChannelSignaling: (state, action: PayloadAction<SoraDemoState["dataChannelSignaling"]>) => {
+    setDataChannelSignaling: (state, action: PayloadAction<SoraDevtoolsState["dataChannelSignaling"]>) => {
       state.dataChannelSignaling = action.payload;
     },
     setDataChannelMessaging: (state, action: PayloadAction<string>) => {
@@ -200,16 +200,16 @@ const slice = createSlice({
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
     },
-    setDisplayResolution: (state, action: PayloadAction<SoraDemoState["displayResolution"]>) => {
+    setDisplayResolution: (state, action: PayloadAction<SoraDevtoolsState["displayResolution"]>) => {
       state.displayResolution = action.payload;
     },
     setE2EE: (state, action: PayloadAction<boolean>) => {
       state.e2ee = action.payload;
     },
-    setEchoCancellation: (state, action: PayloadAction<SoraDemoState["echoCancellation"]>) => {
+    setEchoCancellation: (state, action: PayloadAction<SoraDevtoolsState["echoCancellation"]>) => {
       state.echoCancellation = action.payload;
     },
-    setEchoCancellationType: (state, action: PayloadAction<SoraDemoState["echoCancellationType"]>) => {
+    setEchoCancellationType: (state, action: PayloadAction<SoraDevtoolsState["echoCancellationType"]>) => {
       state.echoCancellationType = action.payload;
     },
     setEnabledClientId: (state, action: PayloadAction<boolean>) => {
@@ -224,7 +224,7 @@ const slice = createSlice({
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
     },
-    setIgnoreDisconnectWebSocket: (state, action: PayloadAction<SoraDemoState["ignoreDisconnectWebSocket"]>) => {
+    setIgnoreDisconnectWebSocket: (state, action: PayloadAction<SoraDevtoolsState["ignoreDisconnectWebSocket"]>) => {
       state.ignoreDisconnectWebSocket = action.payload;
     },
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
@@ -262,22 +262,22 @@ const slice = createSlice({
     setInitialDisplaySettings: (state, action: PayloadAction<DisplaySettings>) => {
       state.displaySettings = action.payload;
     },
-    setFrameRate: (state, action: PayloadAction<SoraDemoState["frameRate"]>) => {
+    setFrameRate: (state, action: PayloadAction<SoraDevtoolsState["frameRate"]>) => {
       state.frameRate = action.payload;
     },
     setMute: (state, action: PayloadAction<boolean>) => {
       state.mute = action.payload;
     },
-    setNoiseSuppression: (state, action: PayloadAction<SoraDemoState["noiseSuppression"]>) => {
+    setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState["noiseSuppression"]>) => {
       state.noiseSuppression = action.payload;
     },
-    setMediaType: (state, action: PayloadAction<SoraDemoState["mediaType"]>) => {
+    setMediaType: (state, action: PayloadAction<SoraDevtoolsState["mediaType"]>) => {
       state.mediaType = action.payload;
     },
     setMetadata: (state, action: PayloadAction<string>) => {
       state.metadata = action.payload;
     },
-    setResolution: (state, action: PayloadAction<SoraDemoState["resolution"]>) => {
+    setResolution: (state, action: PayloadAction<SoraDevtoolsState["resolution"]>) => {
       state.resolution = action.payload;
     },
     setSignalingNotifyMetadata: (state, action: PayloadAction<string>) => {
@@ -286,16 +286,16 @@ const slice = createSlice({
     setSignalingUrlCandidates: (state, action: PayloadAction<string[]>) => {
       state.signalingUrlCandidates = action.payload;
     },
-    setSimulcastRid: (state, action: PayloadAction<SoraDemoState["simulcastRid"]>) => {
+    setSimulcastRid: (state, action: PayloadAction<SoraDevtoolsState["simulcastRid"]>) => {
       state.simulcastRid = action.payload;
     },
-    setSpotlightNumber: (state, action: PayloadAction<SoraDemoState["spotlightNumber"]>) => {
+    setSpotlightNumber: (state, action: PayloadAction<SoraDevtoolsState["spotlightNumber"]>) => {
       state.spotlightNumber = action.payload;
     },
-    setSpotlightFocusRid: (state, action: PayloadAction<SoraDemoState["spotlightFocusRid"]>) => {
+    setSpotlightFocusRid: (state, action: PayloadAction<SoraDevtoolsState["spotlightFocusRid"]>) => {
       state.spotlightFocusRid = action.payload;
     },
-    setSpotlightUnfocusRid: (state, action: PayloadAction<SoraDemoState["spotlightUnfocusRid"]>) => {
+    setSpotlightUnfocusRid: (state, action: PayloadAction<SoraDevtoolsState["spotlightUnfocusRid"]>) => {
       state.spotlightUnfocusRid = action.payload;
     },
     setVideo: (state, action: PayloadAction<boolean>) => {
@@ -304,13 +304,13 @@ const slice = createSlice({
     setVideoInput: (state, action: PayloadAction<string>) => {
       state.videoInput = action.payload;
     },
-    setVideoBitRate: (state, action: PayloadAction<SoraDemoState["videoBitRate"]>) => {
+    setVideoBitRate: (state, action: PayloadAction<SoraDevtoolsState["videoBitRate"]>) => {
       state.videoBitRate = action.payload;
     },
-    setVideoCodecType: (state, action: PayloadAction<SoraDemoState["videoCodecType"]>) => {
+    setVideoCodecType: (state, action: PayloadAction<SoraDevtoolsState["videoCodecType"]>) => {
       state.videoCodecType = action.payload;
     },
-    setVideoContentHint: (state, action: PayloadAction<SoraDemoState["videoContentHint"]>) => {
+    setVideoContentHint: (state, action: PayloadAction<SoraDevtoolsState["videoContentHint"]>) => {
       state.videoContentHint = action.payload;
       if (state.soraContents.localMediaStream) {
         for (const track of state.soraContents.localMediaStream.getVideoTracks()) {
@@ -330,7 +330,7 @@ const slice = createSlice({
         state.soraContents.clientId = null;
       }
     },
-    setSoraConnectionStatus: (state, action: PayloadAction<SoraDemoState["soraContents"]["connectionStatus"]>) => {
+    setSoraConnectionStatus: (state, action: PayloadAction<SoraDevtoolsState["soraContents"]["connectionStatus"]>) => {
       state.soraContents.connectionStatus = action.payload;
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
@@ -481,8 +481,8 @@ const slice = createSlice({
 });
 
 function setAlertMessagesAndLogMessages(
-  alertMessages: SoraDemoState["alertMessages"],
-  logMessages: SoraDemoState["logMessages"],
+  alertMessages: SoraDevtoolsState["alertMessages"],
+  logMessages: SoraDevtoolsState["logMessages"],
   alertMessage: AlertMessage
 ): void {
   if (5 <= alertMessages.length) {
@@ -507,7 +507,7 @@ function setAlertMessagesAndLogMessages(
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
 type craeteMediaStreamPickedSttate = Pick<
-  SoraDemoState,
+  SoraDevtoolsState,
   | "audio"
   | "audioInput"
   | "audioTrack"
@@ -544,9 +544,9 @@ async function createMediaStream(
       video: true,
     };
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("media-constraints", constraints)));
-    const stream = await (navigator.mediaDevices as SoraDemoMediaDevices).getDisplayMedia(constraints);
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-get-display-media")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
+    const stream = await (navigator.mediaDevices as SoraDevtoolsMediaDevices).getDisplayMedia(constraints);
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media")));
     for (const track of stream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
         track.contentHint = state.videoContentHint;
@@ -564,7 +564,7 @@ async function createMediaStream(
       volume: state.fakeVolume,
     });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("media-constraints", constraints)));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
     const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints);
     if (canvas !== null) {
       state.fakeContents.worker.onmessage = (event) => {
@@ -589,7 +589,7 @@ async function createMediaStream(
       }
       track.enabled = state.audioTrack;
     }
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-create-fake-media")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-create-fake-media")));
     return [mediaStream, gainNode];
   }
   if (navigator.mediaDevices === undefined) {
@@ -610,11 +610,11 @@ async function createMediaStream(
     );
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDemoTimelineMessage("audio-media-constraints", { audio: audioConstraints })
+        createSoraDevtoolsTimelineMessage("audio-media-constraints", { audio: audioConstraints })
       )
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-audio-get-user-media")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
     mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
   }
   const videoConstraints = createVideoConstraints({
@@ -629,11 +629,11 @@ async function createMediaStream(
     );
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDemoTimelineMessage("video-media-constraints", { video: videoConstraints })
+        createSoraDevtoolsTimelineMessage("video-media-constraints", { video: videoConstraints })
       )
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("succeed-video-get-user-media")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
     mediaStream.addTrack(videoMediaStream.getVideoTracks()[0]);
   }
   for (const track of mediaStream.getVideoTracks()) {
@@ -654,7 +654,7 @@ async function createMediaStream(
 // Sora connection オブジェクトに callback をセットする
 function setSoraCallbacks(
   dispatch: Dispatch,
-  getState: () => SoraDemoState,
+  getState: () => SoraDevtoolsState,
   sora: ConnectionPublisher | ConnectionSubscriber
 ): void {
   sora.on("log", (title: string, description: Json) => {
@@ -693,7 +693,7 @@ function setSoraCallbacks(
     );
   });
   sora.on("track", (event: RTCTrackEvent) => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("event-on-track")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-track")));
     const { soraContents } = getState();
     const mediaStream = soraContents.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
     if (!mediaStream) {
@@ -701,7 +701,7 @@ function setSoraCallbacks(
     }
   });
   sora.on("removetrack", (event: MediaStreamTrackEvent) => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("event-on-removetrack")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-removetrack")));
     const { soraContents } = getState();
     const mediaStream = soraContents.remoteMediaStreams.find((stream) => {
       if (event?.target) {
@@ -726,7 +726,7 @@ function setSoraCallbacks(
     if (event.params !== undefined) {
       message["params"] = event.params;
     }
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("event-on-disconnect", message)));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
     const { fakeContents, soraContents } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
 
@@ -747,7 +747,7 @@ function setSoraCallbacks(
     dispatch(slice.actions.setLocalMediaStream(null));
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("disconnected")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected")));
   });
   sora.on("timeline", (event) => {
     const message = {
@@ -760,7 +760,9 @@ function setSoraCallbacks(
     };
     dispatch(slice.actions.setTimelineMessage(message));
     if (event.data && typeof event.data === "object" && "sdp" in event.data) {
-      dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage(`${event.type}-sdp`, event.data.sdp)));
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage(`${event.type}-sdp`, event.data.sdp))
+      );
     }
   });
   sora.on("signaling", (event) => {
@@ -861,8 +863,8 @@ function createConnectOptions(connectionOptionsState: ConnectionOptionsState): C
   return connectionOptions;
 }
 
-// SoraDemoState から ConnectionOptionsState を生成する
-function pickConnectionOptionsState(state: SoraDemoState): ConnectionOptionsState {
+// SoraDevtoolsState から ConnectionOptionsState を生成する
+function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptionsState {
   return {
     audio: state.audio,
     audioBitRate: state.audioBitRate,
@@ -890,7 +892,7 @@ function pickConnectionOptionsState(state: SoraDemoState): ConnectionOptionsStat
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createSoraDemoTimelineMessage(type: string, data?: any): TimelineMessage {
+function createSoraDevtoolsTimelineMessage(type: string, data?: any): TimelineMessage {
   return {
     type: type,
     logType: "sora-devtools",
@@ -913,8 +915,8 @@ async function setStatsReport(dispatch: Dispatch, sora: ConnectionPublisher | Co
 
 export const connectSora =
   () =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("start-connection")));
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-connection")));
     dispatch(slice.actions.setSoraConnectionStatus("connecting"));
     const state = getState();
     // 接続中の場合は切断する
@@ -1001,13 +1003,13 @@ export const connectSora =
       dispatch(slice.actions.setFakeContentsGainNode(gainNode));
     }
     dispatch(slice.actions.setSoraConnectionStatus("connected"));
-    dispatch(slice.actions.setTimelineMessage(createSoraDemoTimelineMessage("connected")));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected")));
   };
 
 // Sora との切断処理
 export const disconnectSora =
   () =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const { soraContents } = getState();
     if (soraContents.sora) {
       dispatch(slice.actions.setSoraConnectionStatus("disconnecting"));
@@ -1019,7 +1021,7 @@ export const disconnectSora =
 // デバイス一覧を取得
 export const setMediaDevices =
   () =>
-  async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
     const deviceInfos = await getDevices();
     const audioInputDevices: MediaDeviceInfo[] = [];
     const videoInputDevices: MediaDeviceInfo[] = [];
@@ -1044,7 +1046,7 @@ export const setMediaDevices =
 // デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新
 export const updateMediaStream =
   () =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState();
     if (!state.soraContents.sora) {
       return;
@@ -1079,7 +1081,7 @@ export const updateMediaStream =
 
 export const setE2EE =
   (e2ee: boolean) =>
-  async (dispatch: Dispatch, _getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
     if (e2ee) {
       const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
       // wasm url が存在する場合は e2ee の初期化処理をする
@@ -1099,7 +1101,7 @@ export const setE2EE =
 
 export const setMicDevice =
   (micDevice: boolean) =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState();
     if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
       dispatch(slice.actions.setMicDevice(micDevice));
@@ -1146,7 +1148,7 @@ export const setMicDevice =
 
 export const setCameraDevice =
   (cameraDevice: boolean) =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState();
     if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
       dispatch(slice.actions.setCameraDevice(cameraDevice));
@@ -1205,22 +1207,22 @@ function setInitialState<T>(
 
 export const setInitialParameter =
   (pageInitialParameters: PageInitialParameters) =>
-  async (dispatch: Dispatch, getState: () => SoraDemoState): Promise<void> => {
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.resetState());
     const queryStringParameters = parseQueryString();
-    setInitialState<SoraDemoState["audio"]>(
+    setInitialState<SoraDevtoolsState["audio"]>(
       dispatch,
       slice.actions.setAudio,
       pageInitialParameters.audio,
       queryStringParameters.audio
     );
-    setInitialState<SoraDemoState["audioBitRate"]>(
+    setInitialState<SoraDevtoolsState["audioBitRate"]>(
       dispatch,
       slice.actions.setAudioBitRate,
       pageInitialParameters.audioBitRate,
       queryStringParameters.audioBitRate
     );
-    setInitialState<SoraDemoState["audioCodecType"]>(
+    setInitialState<SoraDevtoolsState["audioCodecType"]>(
       dispatch,
       slice.actions.setAudioCodecType,
       pageInitialParameters.audioCodecType,
@@ -1231,7 +1233,7 @@ export const setInitialParameter =
     if (
       deviceInfos.find((d) => d.kind === "audioinput" && d.deviceId === queryStringParameters.audioInput) !== undefined
     ) {
-      setInitialState<SoraDemoState["audioInput"]>(
+      setInitialState<SoraDevtoolsState["audioInput"]>(
         dispatch,
         slice.actions.setAudioInput,
         pageInitialParameters.audioInput,
@@ -1242,7 +1244,7 @@ export const setInitialParameter =
       deviceInfos.find((d) => d.kind === "audiooutput" && d.deviceId === queryStringParameters.audioOutput) !==
       undefined
     ) {
-      setInitialState<SoraDemoState["audioOutput"]>(
+      setInitialState<SoraDevtoolsState["audioOutput"]>(
         dispatch,
         slice.actions.setAudioOutput,
         pageInitialParameters.audioOutput,
@@ -1252,176 +1254,176 @@ export const setInitialParameter =
     if (
       deviceInfos.find((d) => d.kind === "videoinput" && d.deviceId === queryStringParameters.videoInput) !== undefined
     ) {
-      setInitialState<SoraDemoState["videoInput"]>(
+      setInitialState<SoraDevtoolsState["videoInput"]>(
         dispatch,
         slice.actions.setVideoInput,
         pageInitialParameters.videoInput,
         queryStringParameters.videoInput
       );
     }
-    setInitialState<SoraDemoState["autoGainControl"]>(
+    setInitialState<SoraDevtoolsState["autoGainControl"]>(
       dispatch,
       slice.actions.setAutoGainControl,
       pageInitialParameters.autoGainControl,
       queryStringParameters.autoGainControl
     );
-    setInitialState<SoraDemoState["channelId"]>(
+    setInitialState<SoraDevtoolsState["channelId"]>(
       dispatch,
       slice.actions.setChannelId,
       pageInitialParameters.channelId,
       queryStringParameters.channelId
     );
-    setInitialState<SoraDemoState["displayResolution"]>(
+    setInitialState<SoraDevtoolsState["displayResolution"]>(
       dispatch,
       slice.actions.setDisplayResolution,
       pageInitialParameters.displayResolution,
       queryStringParameters.displayResolution
     );
-    setInitialState<SoraDemoState["e2ee"]>(
+    setInitialState<SoraDevtoolsState["e2ee"]>(
       dispatch,
       slice.actions.setE2EE,
       pageInitialParameters.e2ee,
       queryStringParameters.e2ee
     );
-    setInitialState<SoraDemoState["echoCancellation"]>(
+    setInitialState<SoraDevtoolsState["echoCancellation"]>(
       dispatch,
       slice.actions.setEchoCancellation,
       pageInitialParameters.echoCancellation,
       queryStringParameters.echoCancellation
     );
-    setInitialState<SoraDemoState["echoCancellationType"]>(
+    setInitialState<SoraDevtoolsState["echoCancellationType"]>(
       dispatch,
       slice.actions.setEchoCancellationType,
       pageInitialParameters.echoCancellationType,
       queryStringParameters.echoCancellationType
     );
-    setInitialState<SoraDemoState["mediaType"]>(
+    setInitialState<SoraDevtoolsState["mediaType"]>(
       dispatch,
       slice.actions.setMediaType,
       pageInitialParameters.mediaType,
       queryStringParameters.mediaType
     );
-    setInitialState<SoraDemoState["fakeVolume"]>(
+    setInitialState<SoraDevtoolsState["fakeVolume"]>(
       dispatch,
       slice.actions.setFakeVolume,
       pageInitialParameters.fakeVolume,
       queryStringParameters.fakeVolume
     );
-    setInitialState<SoraDemoState["frameRate"]>(
+    setInitialState<SoraDevtoolsState["frameRate"]>(
       dispatch,
       slice.actions.setFrameRate,
       pageInitialParameters.frameRate,
       queryStringParameters.frameRate
     );
-    setInitialState<SoraDemoState["noiseSuppression"]>(
+    setInitialState<SoraDevtoolsState["noiseSuppression"]>(
       dispatch,
       slice.actions.setNoiseSuppression,
       pageInitialParameters.noiseSuppression,
       queryStringParameters.noiseSuppression
     );
-    setInitialState<SoraDemoState["resolution"]>(
+    setInitialState<SoraDevtoolsState["resolution"]>(
       dispatch,
       slice.actions.setResolution,
       pageInitialParameters.resolution,
       queryStringParameters.resolution
     );
-    setInitialState<SoraDemoState["showStats"]>(
+    setInitialState<SoraDevtoolsState["showStats"]>(
       dispatch,
       slice.actions.setShowStats,
       pageInitialParameters.showStats,
       queryStringParameters.showStats
     );
-    setInitialState<SoraDemoState["simulcastRid"]>(
+    setInitialState<SoraDevtoolsState["simulcastRid"]>(
       dispatch,
       slice.actions.setSimulcastRid,
       pageInitialParameters.simulcastRid,
       queryStringParameters.simulcastRid
     );
-    setInitialState<SoraDemoState["spotlightNumber"]>(
+    setInitialState<SoraDevtoolsState["spotlightNumber"]>(
       dispatch,
       slice.actions.setSpotlightNumber,
       pageInitialParameters.spotlightNumber,
       queryStringParameters.spotlightNumber
     );
-    setInitialState<SoraDemoState["spotlightFocusRid"]>(
+    setInitialState<SoraDevtoolsState["spotlightFocusRid"]>(
       dispatch,
       slice.actions.setSpotlightFocusRid,
       pageInitialParameters.spotlightFocusRid,
       queryStringParameters.spotlightFocusRid
     );
-    setInitialState<SoraDemoState["spotlightUnfocusRid"]>(
+    setInitialState<SoraDevtoolsState["spotlightUnfocusRid"]>(
       dispatch,
       slice.actions.setSpotlightUnfocusRid,
       pageInitialParameters.spotlightUnfocusRid,
       queryStringParameters.spotlightUnfocusRid
     );
-    setInitialState<SoraDemoState["video"]>(
+    setInitialState<SoraDevtoolsState["video"]>(
       dispatch,
       slice.actions.setVideo,
       pageInitialParameters.video,
       queryStringParameters.video
     );
-    setInitialState<SoraDemoState["videoBitRate"]>(
+    setInitialState<SoraDevtoolsState["videoBitRate"]>(
       dispatch,
       slice.actions.setVideoBitRate,
       pageInitialParameters.videoBitRate,
       queryStringParameters.videoBitRate
     );
-    setInitialState<SoraDemoState["videoCodecType"]>(
+    setInitialState<SoraDevtoolsState["videoCodecType"]>(
       dispatch,
       slice.actions.setVideoCodecType,
       pageInitialParameters.videoCodecType,
       queryStringParameters.videoCodecType
     );
-    setInitialState<SoraDemoState["debug"]>(
+    setInitialState<SoraDevtoolsState["debug"]>(
       dispatch,
       slice.actions.setDebug,
       pageInitialParameters.debug,
       queryStringParameters.debug
     );
-    setInitialState<SoraDemoState["debugType"]>(
+    setInitialState<SoraDevtoolsState["debugType"]>(
       dispatch,
       slice.actions.setDebugType,
       pageInitialParameters.debugType,
       queryStringParameters.debugType
     );
-    setInitialState<SoraDemoState["mute"]>(
+    setInitialState<SoraDevtoolsState["mute"]>(
       dispatch,
       slice.actions.setMute,
       pageInitialParameters.mute,
       queryStringParameters.mute
     );
-    setInitialState<SoraDemoState["dataChannelSignaling"]>(
+    setInitialState<SoraDevtoolsState["dataChannelSignaling"]>(
       dispatch,
       slice.actions.setDataChannelSignaling,
       pageInitialParameters.dataChannelSignaling,
       queryStringParameters.dataChannelSignaling
     );
-    setInitialState<SoraDemoState["ignoreDisconnectWebSocket"]>(
+    setInitialState<SoraDevtoolsState["ignoreDisconnectWebSocket"]>(
       dispatch,
       slice.actions.setIgnoreDisconnectWebSocket,
       pageInitialParameters.ignoreDisconnectWebSocket,
       queryStringParameters.ignoreDisconnectWebSocket
     );
-    setInitialState<SoraDemoState["micDevice"]>(
+    setInitialState<SoraDevtoolsState["micDevice"]>(
       dispatch,
       slice.actions.setMicDevice,
       pageInitialParameters.micDevice,
       queryStringParameters.micDevice
     );
-    setInitialState<SoraDemoState["cameraDevice"]>(
+    setInitialState<SoraDevtoolsState["cameraDevice"]>(
       dispatch,
       slice.actions.setCameraDevice,
       pageInitialParameters.cameraDevice,
       queryStringParameters.cameraDevice
     );
-    setInitialState<SoraDemoState["audioTrack"]>(
+    setInitialState<SoraDevtoolsState["audioTrack"]>(
       dispatch,
       slice.actions.setAudioTrack,
       pageInitialParameters.audioTrack,
       queryStringParameters.audioTrack
     );
-    setInitialState<SoraDemoState["videoTrack"]>(
+    setInitialState<SoraDevtoolsState["videoTrack"]>(
       dispatch,
       slice.actions.setVideoTrack,
       pageInitialParameters.videoTrack,
@@ -1431,43 +1433,43 @@ export const setInitialParameter =
     if (queryStringParameters.googCpuOveruseDetection !== undefined) {
       dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
     }
-    setInitialState<SoraDemoState["clientId"]>(
+    setInitialState<SoraDevtoolsState["clientId"]>(
       dispatch,
       slice.actions.setClientId,
       pageInitialParameters.clientId,
       queryStringParameters.clientId
     );
-    setInitialState<SoraDemoState["metadata"]>(
+    setInitialState<SoraDevtoolsState["metadata"]>(
       dispatch,
       slice.actions.setMetadata,
       pageInitialParameters.metadata,
       queryStringParameters.metadata
     );
-    setInitialState<SoraDemoState["signalingNotifyMetadata"]>(
+    setInitialState<SoraDevtoolsState["signalingNotifyMetadata"]>(
       dispatch,
       slice.actions.setSignalingNotifyMetadata,
       pageInitialParameters.signalingNotifyMetadata,
       queryStringParameters.signalingNotifyMetadata
     );
-    setInitialState<SoraDemoState["signalingUrlCandidates"]>(
+    setInitialState<SoraDevtoolsState["signalingUrlCandidates"]>(
       dispatch,
       slice.actions.setSignalingUrlCandidates,
       pageInitialParameters.signalingUrlCandidates,
       queryStringParameters.signalingUrlCandidates
     );
-    setInitialState<SoraDemoState["dataChannelMessaging"]>(
+    setInitialState<SoraDevtoolsState["dataChannelMessaging"]>(
       dispatch,
       slice.actions.setDataChannelMessaging,
       pageInitialParameters.dataChannelMessaging,
       queryStringParameters.dataChannelMessaging
     );
-    setInitialState<SoraDemoState["audioContentHint"]>(
+    setInitialState<SoraDevtoolsState["audioContentHint"]>(
       dispatch,
       slice.actions.setAudioContentHint,
       pageInitialParameters.audioContentHint,
       queryStringParameters.audioContentHint
     );
-    setInitialState<SoraDemoState["videoContentHint"]>(
+    setInitialState<SoraDevtoolsState["videoContentHint"]>(
       dispatch,
       slice.actions.setVideoContentHint,
       pageInitialParameters.videoContentHint,
@@ -1571,7 +1573,7 @@ function queryStringValue<T>(stateValue: T, enabled: boolean): T | undefined {
 
 export const copyURL =
   () =>
-  (_: Dispatch, getState: () => SoraDemoState): void => {
+  (_: Dispatch, getState: () => SoraDevtoolsState): void => {
     const state = getState();
     const parameters: Partial<QueryStringParameters> = {
       // mediaType

@@ -12,10 +12,10 @@ export const store = configureStore({
     const middleware = getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [
-          "soraDemo/setSora",
-          "soraDemo/setLocalMediaStream",
-          "soraDemo/setRemoteMediaStream",
-          "soraDemo/setFakeContentsGainNode",
+          "soraDevtools/setSora",
+          "soraDevtools/setLocalMediaStream",
+          "soraDevtools/setRemoteMediaStream",
+          "soraDevtools/setFakeContentsGainNode",
         ],
         ignoredPaths: [
           "soraContents",

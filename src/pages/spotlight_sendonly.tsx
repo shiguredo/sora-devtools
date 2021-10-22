@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useAppDispatch } from "@/app/hooks";
 import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
 import { ColDebug } from "@/components/ColDebug";
-import { ColDemo } from "@/components/ColDemo";
+import { ColDevtools } from "@/components/ColDevtools";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
@@ -37,7 +37,7 @@ const SpotlightSendonly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo />
+            <ColDevtools />
             <ColDebug />
           </div>
         </div>
