@@ -14,7 +14,7 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 概要
 
-これは WebRTC SFU Sora にデモ機能として組み込まれているデモアプリです。
+これは WebRTC SFU Sora に開発者ツール機能として組み込まれているツールです。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
@@ -86,7 +86,7 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 - スポットライト
     - 直近で発話した N 人にスポットライトを当てるような仕組みです
 
-## デモ一覧
+## 機能一覧
 
 以下の最新のブラウザで動作します。
 
