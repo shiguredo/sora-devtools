@@ -1,7 +1,7 @@
 {
   "name": "sora-devtools",
   "version": "2021.2.0-canary.19",
-  "description": "WebRTC SFU Sora Demo",
+  "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shiguredo/sora-devtools.git"
