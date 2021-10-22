@@ -893,7 +893,7 @@ function pickConnectionOptionsState(state: SoraDemoState): ConnectionOptionsStat
 function createSoraDemoTimelineMessage(type: string, data?: any): TimelineMessage {
   return {
     type: type,
-    logType: "sora-demo",
+    logType: "sora-devtools",
     timestamp: new Date().getTime(),
     data: data,
   };

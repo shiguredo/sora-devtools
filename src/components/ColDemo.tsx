@@ -26,7 +26,7 @@ export const ColDemo: React.FC = () => {
   const simulcast = useAppSelector((state) => state.simulcast);
   const displaySettings = useAppSelector((state) => state.displaySettings);
   return (
-    <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
+    <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
       <AlertMessages />
       {displaySettings.mediaType ? <FormRowMediaType /> : null}
       <FormRowChannelId />

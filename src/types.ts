@@ -121,7 +121,7 @@ export type AlertMessage = {
 export type TimelineMessage = {
   timestamp: number;
   type: string;
-  logType: TimelineEventLogType | "sora-demo";
+  logType: TimelineEventLogType | "sora-devtools";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   dataChannelId?: number | null;
@@ -428,7 +428,7 @@ export type DownloadReportParameters = Omit<
 export type DownloadReport = {
   userAgent: string;
   pageName: string;
-  "sora-demo": string;
+  "sora-devtools": string;
   "sora-js-sdk": string;
   parameters: DownloadReportParameters;
   timeline: unknown[];

@@ -39,7 +39,7 @@ const SoraLabel: React.FC = () => {
 const SoraDemoLabel: React.FC = () => {
   return (
     <span className="me-1" style={{ color: "#73b8e2" }}>
-      [sora-demo]
+      [sora-devtools]
     </span>
   );
 };
@@ -71,7 +71,7 @@ const Collapse: React.FC<TimelineMessage> = (props) => {
     labelComponent = <PeerConnectionLabel />;
   } else if (logType === "sora") {
     labelComponent = <SoraLabel />;
-  } else if (logType === "sora-demo") {
+  } else if (logType === "sora-devtools") {
     labelComponent = <SoraDemoLabel />;
   }
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;

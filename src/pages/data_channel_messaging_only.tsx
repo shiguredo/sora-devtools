@@ -30,7 +30,7 @@ const DataChannelMessagingOnly: React.FC = () => {
         dataChannelMessaging: JSON.stringify(
           [
             {
-              label: "#sora-demo",
+              label: "#sora-devtools",
               direction: "sendrecv",
             },
           ],
@@ -56,7 +56,7 @@ const DataChannelMessagingOnly: React.FC = () => {
       <main role="main">
         <div className="container">
           <div className="row">
-            <div className={debug ? "col-demo col-6" : "col-demo col-12"}>
+            <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
               <AlertMessages />
               <FormRowChannelId />
               <FormRowOptions />

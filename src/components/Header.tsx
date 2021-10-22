@@ -15,7 +15,7 @@ export const Header: React.FC<Props> = (props) => {
     <header>
       <Navbar variant="dark" bg="sora" expand="md" fixed="top">
         <Container>
-          <Navbar.Brand href="/">Sora DEMO</Navbar.Brand>
+          <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
           <Nav>
             <Navbar.Text>{props.pageName}</Navbar.Text>
           </Nav>

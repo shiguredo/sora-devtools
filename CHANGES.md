@@ -10,6 +10,9 @@
     - バグ修正
 
 ## develop
+
+- [CHANGE] sora-demo を sora-devtools へ変更する
+    - @voluntas
 - [ADD] MediaStreamTrack Content Hints 実装を追加する
     - @yuitowest
 - [ADD] DataChannel Messaging only ページを作成する

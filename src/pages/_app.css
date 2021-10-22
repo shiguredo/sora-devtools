@@ -92,7 +92,7 @@ video {
   margin-top: 1rem;
 }
 
-.col-demo {
+.col-devtools {
   padding-top: 10px;
   overflow-x: auto;
   height: calc(100vh - 56px - 56px);
@@ -382,12 +382,12 @@ video {
     padding-bottom: 0;
   }
 
-  .col-demo {
+  .col-devtools {
     flex: none;
     max-width: none;
   }
 
-  .col-demo.col-6 {
+  .col-devtools.col-6 {
     display: none;
   }
 
