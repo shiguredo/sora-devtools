@@ -165,16 +165,11 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 - スポットライト受信のみ
     - spotlight_recvonly.html
 
-### スポットライトレガシー
+### データチャネルメッセージング
 
-*2020.1 までにスポットライトとして存在していた機能です*
+データチャネルメッセージングのみを利用するします。
 
-直近で発話した N 人のみの音声と映像を配信する仕組みです。
-
-- スポットライトレガシー送受信
-    - spotlight_legacy_sendrecv.html
-- スポットライトレガシー受信のみ
-    - spotlight_legacy_recvonly.html
+- data_channel_messaging_only.html
 
 ## ライセンス
 
