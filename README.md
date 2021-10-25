@@ -28,7 +28,7 @@ https://sora-devtools.shiguredo.jp/
 
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/7ce71c257433e6f7af6031213db6df6f.png)](https://gyazo.com/7ce71c257433e6f7af6031213db6df6f)
+[![Image from Gyazo](https://i.gyazo.com/02a408f5ed0b4cc8d9fad8f94d9b0bf9.png)](https://gyazo.com/02a408f5ed0b4cc8d9fad8f94d9b0bf9)
 
 ## 利用技術
 
