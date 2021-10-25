@@ -5,8 +5,9 @@
 
 ## About Support
 
-We check PRs or Issues only when written in JAPANESE.
-In other languages, we won't be able to deal with them. Thank you for your understanding.
+We will not respond to PRs or issues that have not been discussed on Discord. Also, Discord is only available in Japanese.
+
+Please read https://github.com/shiguredo/oss/blob/master/README.en.md before use.
 
 ## 時雨堂のオープンソースソフトウェアについて
 
@@ -18,6 +19,12 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
+
+## デモサイト
+
+**このサイトだけでは WebRTC SFU を試すことはできません。WebRTC SFU Sora を別途用意してください**
+
+https://sora-devtools.shiguredo.jp/
 
 ## スクリーンショット
 
