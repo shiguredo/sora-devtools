@@ -54,7 +54,7 @@ https://sora-devtools.shiguredo.jp/
 getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
 
-[![Image from Gyazo](https://i.gyazo.com/f0d8c457809565ebd527eeca0b761a53.png)](https://gyazo.com/f0d8c457809565ebd527eeca0b761a53)
+[![Image from Gyazo](https://i.gyazo.com/1e2c0a926eacf707777dadab4f87b833.png)](https://gyazo.com/1e2c0a926eacf707777dadab4f87b833)
 
 ### レポート機能
 
@@ -64,16 +64,17 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 
 デバッグを有効にすると、ログ、通知、統計が有効になります。
 
-[![Image from Gyazo](https://i.gyazo.com/09bf59d3ef7a6f380f24bb525942d335.png)](https://gyazo.com/09bf59d3ef7a6f380f24bb525942d335)
-
+[![Image from Gyazo](https://i.gyazo.com/47c9658ba8b87f6b40022337edec79cd.png)](https://gyazo.com/47c9658ba8b87f6b40022337edec79cd)
 ### コピー URL 機能
 
 現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。
 
+[![Image from Gyazo](https://i.gyazo.com/e2e4ca62ccf6fb7a84023e26a6e2d878.png)](https://gyazo.com/e2e4ca62ccf6fb7a84023e26a6e2d878)
+
 例えば multi_sendrecv で設定を弄らなかった場合は以下のような値になります。
 
 ```
-https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=OPUS&audioInput=&audioOutput=&autoGainControl=true&channelId=sora&echoCancellation=true&echoCancellationType=&frameRate=&mediaType=getUserMedia&noiseSuppression=true&resolution=&video=true&videoBitRate=1000&videoCodecType=VP9&videoInput=&debug=true
+https://example.com/multi_sendrecv.html?mediaType=getUserMedia&channelId=sora&audio=true&audioBitRate=&audioCodecType=OPUS&audioContentHint=&autoGainControl=&noiseSuppression=&echoCancellation=&echoCancellationType=&video=true&videoBitRate=1000&videoCodecType=VP9&videoContentHint=&resolution=&frameRate=&audioInput=&audioOutput=&videoInput=&displayResolution=&micDevice=true&cameraDevice=true&audioTrack=true&videoTrack=true&e2ee=false&debug=false
 ```
 
 ## 用語集
@@ -167,7 +168,7 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 
 ### データチャネルメッセージング
 
-データチャネルメッセージングのみを利用するします。
+データチャネルメッセージングのみを利用します。
 
 - data_channel_messaging_only.html
 
