@@ -255,7 +255,7 @@ video {
 }
 
 .spotlight-focused {
-  border: 5px solid var(--primary);
+  border: 5px solid var(--bs-primary);
   border-radius: 5px;
 }
 
@@ -267,32 +267,32 @@ video {
 .normal-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--dark);
+  border-color: var(--bs-dark);
   cursor: initial !important;
 }
 
 .warning-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--yellow);
+  border-color: var(--bs-yellow);
   cursor: initial !important;
 }
 
 .danger-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--orange);
-  background-color: var(--orange);
-  color: var(--light);
+  border-color: var(--bs-orange);
+  background-color: var(--bs-orange);
+  color: var(--bs-light);
   cursor: initial !important;
 }
 
 .critical-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--red);
-  background-color: var(--red);
-  color: var(--light);
+  border-color: var(--bs-red);
+  background-color: var(--bs-red);
+  color: var(--bs-light);
   cursor: initial !important;
 }
 
