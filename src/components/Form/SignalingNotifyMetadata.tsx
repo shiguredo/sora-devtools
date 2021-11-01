@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
+import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from "@/app/slice";
@@ -16,35 +16,26 @@ export const FormSignalingNotifyMetadata: React.FC = () => {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col>
-          <FormGroup className="form-inline" controlId="enabledSignalingNotifyMetadata">
-            <FormCheck
-              type="switch"
-              name="enabledSignalingNotifyMetadata"
-              label="signalingNotifyMetadata"
-              checked={enabledSignalingNotifyMetadata}
-              onChange={onChangeSwitch}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
-      {enabledSignalingNotifyMetadata ? (
-        <Row>
-          <Col>
-            <FormGroup className="form-inline w-50" controlId="signalingNotifyMetadata">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder="signalingNotifyMetadataを指定"
-                value={signalingNotifyMetadata}
-                onChange={onChangeText}
-                rows={10}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-      ) : null}
+      <FormGroup className="form-inline" controlId="enabledSignalingNotifyMetadata">
+        <FormCheck
+          type="switch"
+          name="enabledSignalingNotifyMetadata"
+          label="signalingNotifyMetadata"
+          checked={enabledSignalingNotifyMetadata}
+          onChange={onChangeSwitch}
+        />
+      </FormGroup>
+      <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
+        <FormControl
+          className="flex-fill w-500"
+          as="textarea"
+          placeholder="signalingNotifyMetadataを指定"
+          value={signalingNotifyMetadata}
+          onChange={onChangeText}
+          rows={10}
+          disabled={!enabledSignalingNotifyMetadata}
+        />
+      </FormGroup>
     </>
   );
 };

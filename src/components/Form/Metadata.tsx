@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
+import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledMetadata, setMetadata } from "@/app/slice";
@@ -16,35 +16,26 @@ export const FormMetadata: React.FC = () => {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col>
-          <FormGroup className="form-inline" controlId="enabledMetadata">
-            <FormCheck
-              type="switch"
-              name="enabledMetadata"
-              label="metadata"
-              checked={enabledMetadata}
-              onChange={onChangeSwitch}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
-      {enabledMetadata ? (
-        <Row>
-          <Col>
-            <FormGroup className="form-inline w-50" controlId="metadata">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder="Metadataを指定"
-                value={metadata}
-                onChange={onChangeText}
-                rows={10}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-      ) : null}
+      <FormGroup className="form-inline" controlId="enabledMetadata">
+        <FormCheck
+          type="switch"
+          name="enabledMetadata"
+          label="metadata"
+          checked={enabledMetadata}
+          onChange={onChangeSwitch}
+        />
+      </FormGroup>
+      <FormGroup className="form-inline" controlId="metadata">
+        <FormControl
+          className="flex-fill w-500"
+          as="textarea"
+          placeholder="Metadataを指定"
+          value={metadata}
+          onChange={onChangeText}
+          rows={10}
+          disabled={!enabledMetadata}
+        />
+      </FormGroup>
     </>
   );
 };

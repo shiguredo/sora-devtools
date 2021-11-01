@@ -6,7 +6,7 @@ import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebS
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
 import { isDataChannelSignaling, isIgnoreDisconnectWebSocket } from "@/utils";
 
-const FormIgnoreDisconnectWebSocket: React.FC = () => {
+const FormIgnoreDisconnectWebSocket: React.FC<{disabled: boolean}> = (props) => {
   const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -17,7 +17,7 @@ const FormIgnoreDisconnectWebSocket: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
       <FormLabel>ignoreDisconnectWebSocket:</FormLabel>
-      <FormSelect name="ignoreDisconnectWebSocket" value={ignoreDisconnectWebSocket} onChange={onChange}>
+      <FormSelect name="ignoreDisconnectWebSocket" value={ignoreDisconnectWebSocket} onChange={onChange} disabled={props.disabled}>
         {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
           return (
             <option key={value} value={value}>
@@ -30,7 +30,7 @@ const FormIgnoreDisconnectWebSocket: React.FC = () => {
   );
 };
 
-const FormDataChannelSignaling: React.FC = () => {
+const FormDataChannelSignaling: React.FC<{disabled: boolean}> = (props) => {
   const dataChannelSignaling = useAppSelector((state) => state.dataChannelSignaling);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -41,7 +41,7 @@ const FormDataChannelSignaling: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="dataChannelSignaling">
       <FormLabel>dataChannelSignaling:</FormLabel>
-      <FormSelect name="dataChannelSignaling" value={dataChannelSignaling} onChange={onChange}>
+      <FormSelect name="dataChannelSignaling" value={dataChannelSignaling} onChange={onChange} disabled={props.disabled}>
         {DATA_CHANNEL_SIGNALING.map((value) => {
           return (
             <option key={value} value={value}>
@@ -62,29 +62,23 @@ export const FormDataChannel: React.FC = () => {
   };
   return (
     <>
-      <Row className="form-row">
+      <FormGroup className="form-inline" controlId="enabledDataChannel">
+        <FormCheck
+          type="switch"
+          name="enabledDataChannel"
+          label="dataChannel"
+          checked={enabledDataChannel}
+          onChange={onChangeSwitch}
+        />
+      </FormGroup>
+      <Row xs="auto">
         <Col>
-          <FormGroup className="form-inline" controlId="enabledDataChannel">
-            <FormCheck
-              type="switch"
-              name="enabledDataChannel"
-              label="dataChannel"
-              checked={enabledDataChannel}
-              onChange={onChangeSwitch}
-            />
-          </FormGroup>
+          <FormDataChannelSignaling disabled={!enabledDataChannel} />
+        </Col>
+        <Col>
+          <FormIgnoreDisconnectWebSocket disabled={!enabledDataChannel} />
         </Col>
       </Row>
-      {enabledDataChannel ? (
-        <Row xs="auto">
-          <Col>
-            <FormDataChannelSignaling />
-          </Col>
-          <Col>
-            <FormIgnoreDisconnectWebSocket />
-          </Col>
-        </Row>
-      ) : null}
     </>
   );
 };

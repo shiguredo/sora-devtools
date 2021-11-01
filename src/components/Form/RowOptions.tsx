@@ -47,16 +47,32 @@ export const FormRowOptions: React.FC = () => {
       <Collapse in={!collapsed}>
         <div>
           <Row className="form-row">
-            <Col>
+            <Col className="col-auto d-flex flex-column align-items-start">
               <FormE2EE />
             </Col>
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormClientId />
+            </Col>
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormDataChannel />
+            </Col>
           </Row>
-          <FormClientId />
-          <FormMetadata />
-          <FormSignalingNotifyMetadata />
-          <FormDataChannel />
-          <FormSignalingUrlCandidates />
-          <FormDataChannelMessaging />
+          <Row className="form-row">
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormMetadata />
+            </Col>
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormSignalingNotifyMetadata />
+            </Col>
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormSignalingUrlCandidates />
+            </Col>
+          </Row>
+          <Row className="form-row">
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormDataChannelMessaging />
+            </Col>
+          </Row>
         </div>
       </Collapse>
     </Row>
