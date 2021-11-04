@@ -12,14 +12,8 @@ export const DebugSendDataChannelMessage: React.FC = () => {
       return;
     }
     const label = selectRef.current.value;
-    let text = textareaRef.current.value;
-    try {
-      text = JSON.parse(textareaRef.current.value);
-    } catch (_) {
-      // JSON parse に失敗しても何もしない
-    }
     if (sora) {
-      sora.sendMessage(label, text);
+      sora.sendMessage(label, new TextEncoder().encode(textareaRef.current.value));
     }
   };
   return (

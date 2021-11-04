@@ -6,6 +6,7 @@ import { formatUnixtime } from "@/utils";
 
 type DescriptionProps = {
   description: string | number | Record<string, unknown>;
+  wordBreak?: boolean;
 };
 const Description: React.FC<DescriptionProps> = (props) => {
   const { description } = props;
@@ -16,7 +17,7 @@ const Description: React.FC<DescriptionProps> = (props) => {
     return (
       <div className="debug-message">
         <div className="col-sm-12">
-          <pre>{description}</pre>
+          <pre className={props.wordBreak ? "word-break" : ""}>{description}</pre>
         </div>
       </div>
     );
@@ -24,7 +25,7 @@ const Description: React.FC<DescriptionProps> = (props) => {
   return (
     <div className="debug-message">
       <div className="col-sm-12">
-        <pre>{JSON.stringify(description, null, 2)}</pre>
+        <pre className={props.wordBreak ? "word-break" : ""}>{JSON.stringify(description, null, 2)}</pre>
       </div>
     </div>
   );
@@ -36,6 +37,7 @@ type Props = {
   description: string | number | Record<string, unknown>;
   defaultShow?: boolean;
   label?: JSX.Element | null;
+  wordBreak?: boolean;
 };
 export const Message: React.FC<Props> = (props) => {
   const { defaultShow, description, title, timestamp, label } = props;
@@ -65,7 +67,7 @@ export const Message: React.FC<Props> = (props) => {
       </div>
       <Collapse in={show}>
         <div className="border-top">
-          <Description description={description} />
+          <Description description={description} wordBreak={props.wordBreak} />
         </div>
       </Collapse>
     </div>

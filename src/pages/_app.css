@@ -201,6 +201,11 @@ video {
   margin: 0;
 }
 
+.debug-message pre.word-break {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 #debug:checked ~ .custom-control-label::before {
   background-color: #ff0066;
 }
