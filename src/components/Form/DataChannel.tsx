@@ -6,7 +6,7 @@ import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebS
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
 import { isDataChannelSignaling, isIgnoreDisconnectWebSocket } from "@/utils";
 
-const FormIgnoreDisconnectWebSocket: React.FC<{disabled: boolean}> = (props) => {
+const FormIgnoreDisconnectWebSocket: React.FC<{ disabled: boolean }> = (props) => {
   const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -17,7 +17,12 @@ const FormIgnoreDisconnectWebSocket: React.FC<{disabled: boolean}> = (props) => 
   return (
     <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
       <FormLabel>ignoreDisconnectWebSocket:</FormLabel>
-      <FormSelect name="ignoreDisconnectWebSocket" value={ignoreDisconnectWebSocket} onChange={onChange} disabled={props.disabled}>
+      <FormSelect
+        name="ignoreDisconnectWebSocket"
+        value={ignoreDisconnectWebSocket}
+        onChange={onChange}
+        disabled={props.disabled}
+      >
         {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
           return (
             <option key={value} value={value}>
@@ -30,7 +35,7 @@ const FormIgnoreDisconnectWebSocket: React.FC<{disabled: boolean}> = (props) => 
   );
 };
 
-const FormDataChannelSignaling: React.FC<{disabled: boolean}> = (props) => {
+const FormDataChannelSignaling: React.FC<{ disabled: boolean }> = (props) => {
   const dataChannelSignaling = useAppSelector((state) => state.dataChannelSignaling);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -41,7 +46,12 @@ const FormDataChannelSignaling: React.FC<{disabled: boolean}> = (props) => {
   return (
     <FormGroup className="form-inline" controlId="dataChannelSignaling">
       <FormLabel>dataChannelSignaling:</FormLabel>
-      <FormSelect name="dataChannelSignaling" value={dataChannelSignaling} onChange={onChange} disabled={props.disabled}>
+      <FormSelect
+        name="dataChannelSignaling"
+        value={dataChannelSignaling}
+        onChange={onChange}
+        disabled={props.disabled}
+      >
         {DATA_CHANNEL_SIGNALING.map((value) => {
           return (
             <option key={value} value={value}>
