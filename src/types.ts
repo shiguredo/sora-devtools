@@ -64,6 +64,8 @@ export type SoraDevtoolsState = {
   frameRate: typeof FRAME_RATES[number];
   soraContents: {
     connectionStatus: "disconnected" | "disconnecting" | "connected" | "connecting";
+    reconnecting: boolean;
+    reconnectingTrials: number;
     sora: ConnectionPublisher | ConnectionSubscriber | null;
     connectionId: string | null;
     clientId: string | null;
@@ -107,6 +109,7 @@ export type SoraDevtoolsState = {
   micDevice: boolean;
   audioTrack: boolean;
   role: Role;
+  reconnect: boolean;
 };
 
 // 画面表示する message の Type
@@ -282,6 +285,7 @@ export type QueryStringParameters = {
   micDevice: boolean;
   mute: boolean;
   noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
+  reconnect: boolean;
   resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingNotifyMetadata: string;
@@ -358,6 +362,7 @@ export type PageInitialParameters = {
   metadata?: SoraDevtoolsState["metadata"];
   mute?: SoraDevtoolsState["mute"];
   noiseSuppression?: SoraDevtoolsState["noiseSuppression"];
+  reconnect?: SoraDevtoolsState["reconnect"];
   resolution?: SoraDevtoolsState["resolution"];
   showStats?: SoraDevtoolsState["showStats"];
   signalingNotifyMetadata?: SoraDevtoolsState["signalingNotifyMetadata"];

@@ -103,6 +103,8 @@ const initialState: SoraDevtoolsState = {
   frameRate: "",
   soraContents: {
     connectionStatus: "disconnected",
+    reconnecting: false,
+    reconnectingTrials: 0,
     sora: null,
     connectionId: null,
     clientId: null,
@@ -144,6 +146,7 @@ const initialState: SoraDevtoolsState = {
   micDevice: true,
   audioTrack: true,
   role: "sendonly",
+  reconnect: false,
 };
 
 const slice = createSlice({
@@ -333,6 +336,18 @@ const slice = createSlice({
     setSoraConnectionStatus: (state, action: PayloadAction<SoraDevtoolsState["soraContents"]["connectionStatus"]>) => {
       state.soraContents.connectionStatus = action.payload;
     },
+    setSoraReconnecting: (state, action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnecting"]>) => {
+      state.soraContents.reconnecting = action.payload;
+      if (state.soraContents.reconnecting === false) {
+        state.soraContents.reconnectingTrials = 0;
+      }
+    },
+    setSoraReconnectingTrials: (
+      state,
+      action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnectingTrials"]>
+    ) => {
+      state.soraContents.reconnectingTrials = action.payload;
+    },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
         state.soraContents.localMediaStream.getTracks().forEach((track) => {
@@ -477,6 +492,9 @@ const slice = createSlice({
     setSpotlight: (state, action: PayloadAction<boolean>) => {
       state.spotlight = action.payload;
     },
+    setReconnect: (state, action: PayloadAction<boolean>) => {
+      state.reconnect = action.payload;
+    },
   },
 });
 
@@ -485,7 +503,7 @@ function setAlertMessagesAndLogMessages(
   logMessages: SoraDevtoolsState["logMessages"],
   alertMessage: AlertMessage
 ): void {
-  if (5 <= alertMessages.length) {
+  if (10 <= alertMessages.length) {
     for (let i = 0; i <= alertMessages.length - 5; i++) {
       alertMessages.pop();
     }
@@ -727,7 +745,7 @@ function setSoraCallbacks(
       message["params"] = event.params;
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
-    const { fakeContents, soraContents } = getState();
+    const { fakeContents, soraContents, reconnect } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
 
     if (localMediaStream) {
@@ -748,6 +766,10 @@ function setSoraCallbacks(
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected")));
+    if (event.type === "abend" && reconnect) {
+      // 再接続処理開始フラグ
+      dispatch(slice.actions.setSoraReconnecting(true));
+    }
   });
   sora.on("timeline", (event) => {
     const message = {
@@ -1004,6 +1026,110 @@ export const connectSora =
     }
     dispatch(slice.actions.setSoraConnectionStatus("connected"));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected")));
+  };
+
+export const reconnectSora =
+  () =>
+  async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect")));
+    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
+    const state = getState();
+    // 接続中の場合は切断する
+    if (state.soraContents.sora) {
+      await state.soraContents.sora.disconnect();
+    }
+    // シグナリング候補のURLリストを作成する
+    const signalingUrlCandidates = createSignalingURL(
+      state.enabledSignalingUrlCandidates,
+      state.signalingUrlCandidates
+    );
+    dispatch(
+      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
+    );
+    const connection = Sora.connection(signalingUrlCandidates, state.debug);
+    const connectionOptionsState = pickConnectionOptionsState(state);
+    const connectionOptions = createConnectOptions(connectionOptionsState);
+    const metadata = parseMetadata(state.enabledMetadata, state.metadata);
+    let sora, mediaStream, gainNode;
+    if (state.role === "sendonly" || state.role === "sendrecv") {
+      [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+        dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
+        dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
+        throw error;
+      });
+    }
+    for (let i = 1; i <= 10; i++) {
+      dispatch(slice.actions.setSoraReconnectingTrials(i));
+      try {
+        if (state.role === "sendonly") {
+          sora = connection.sendonly(state.channelId, null, connectionOptions);
+          sora.metadata = metadata;
+          // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
+          if (typeof state.googCpuOveruseDetection === "boolean") {
+            sora.constraints = {
+              optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
+            };
+          }
+          setSoraCallbacks(dispatch, getState, sora);
+          if (mediaStream) {
+            await sora.connect(mediaStream);
+          }
+        } else if (state.role === "sendrecv") {
+          sora = connection.sendrecv(state.channelId, null, connectionOptions);
+          sora.metadata = metadata;
+          // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
+          if (typeof state.googCpuOveruseDetection === "boolean") {
+            sora.constraints = {
+              optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
+            };
+          }
+          setSoraCallbacks(dispatch, getState, sora);
+          if (mediaStream) {
+            await sora.connect(mediaStream);
+          }
+        } else if (state.role === "recvonly") {
+          sora = connection.recvonly(state.channelId, null, connectionOptions);
+          sora.metadata = metadata;
+          setSoraCallbacks(dispatch, getState, sora);
+          await sora.connect();
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          dispatch(slice.actions.setSoraErrorAlertMessage(`(trials ${i}) Failed to connect Sora. ${error.message}`));
+        }
+        dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
+        sora = undefined;
+      }
+      if (sora !== undefined) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, i * 500 + 500));
+    }
+    if (sora === undefined) {
+      dispatch(slice.actions.setSoraErrorAlertMessage("Failed to reconnect Sora."));
+      dispatch(slice.actions.setSoraReconnecting(false));
+      return;
+    }
+    dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to reconnect Sora."));
+    await setStatsReport(dispatch, sora);
+    const timerId = setInterval(async () => {
+      const { soraContents } = getState();
+      if (soraContents.sora) {
+        await setStatsReport(dispatch, soraContents.sora);
+      } else {
+        clearInterval(timerId);
+      }
+    }, 1000);
+    dispatch(slice.actions.setSora(sora));
+    if (mediaStream) {
+      dispatch(slice.actions.setLocalMediaStream(mediaStream));
+    }
+    if (gainNode) {
+      dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+    }
+    dispatch(slice.actions.setSoraConnectionStatus("connected"));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected")));
+    dispatch(slice.actions.setSoraReconnecting(false));
   };
 
 // Sora との切断処理
@@ -1475,6 +1601,12 @@ export const setInitialParameter =
       pageInitialParameters.videoContentHint,
       queryStringParameters.videoContentHint
     );
+    setInitialState<SoraDevtoolsState["reconnect"]>(
+      dispatch,
+      slice.actions.setReconnect,
+      pageInitialParameters.reconnect,
+      queryStringParameters.reconnect
+    );
     dispatch(slice.actions.setInitialFakeContents());
     // role
     if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {
@@ -1762,6 +1894,7 @@ export const {
   setNoiseSuppression,
   setNotifyMessages,
   setResolution,
+  setReconnect,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
   setSimulcastRid,

@@ -192,6 +192,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     micDevice,
     mute,
     noiseSuppression,
+    reconnect,
     resolution,
     showStats,
     signalingNotifyMetadata,
@@ -334,6 +335,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof dataChannelMessaging === "string") {
     queryStringParameters.dataChannelMessaging = dataChannelMessaging;
+  }
+  if (typeof reconnect === "boolean") {
+    queryStringParameters.reconnect = reconnect;
   }
   return queryStringParameters;
 }

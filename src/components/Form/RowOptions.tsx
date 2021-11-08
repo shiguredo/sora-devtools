@@ -7,6 +7,7 @@ import { FormDataChannel } from "@/components/Form/DataChannel";
 import { FormDataChannelMessaging } from "@/components/Form/DataChannelMessaging";
 import { FormE2EE } from "@/components/Form/E2EE";
 import { FormMetadata } from "@/components/Form/Metadata";
+import { FormReconnect } from "@/components/Form/Reconnect";
 import { FormSignalingNotifyMetadata } from "@/components/Form/SignalingNotifyMetadata";
 import { FormSignalingUrlCandidates } from "@/components/Form/SignalingUrlCandidates";
 
@@ -51,10 +52,10 @@ export const FormRowOptions: React.FC = () => {
               <FormE2EE />
             </Col>
             <Col className="col-auto d-flex flex-column align-items-start">
-              <FormClientId />
+              <FormReconnect />
             </Col>
             <Col className="col-auto d-flex flex-column align-items-start">
-              <FormDataChannel />
+              <FormClientId />
             </Col>
           </Row>
           <Row className="form-row">
@@ -71,6 +72,9 @@ export const FormRowOptions: React.FC = () => {
           <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormDataChannelMessaging />
+            </Col>
+            <Col className="col-auto d-flex flex-column align-items-start">
+              <FormDataChannel />
             </Col>
           </Row>
         </div>
