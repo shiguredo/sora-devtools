@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] 再接続処理を実装する
+    - @yuitowest
 - [CHANGE] sora-demo を sora-devtools へ変更する
     - @voluntas
 - [ADD] MediaStreamTrack Content Hints 実装を追加する
