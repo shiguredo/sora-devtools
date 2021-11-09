@@ -1840,6 +1840,7 @@ export const copyURL =
         state.dataChannelMessaging,
         state.enabledDataChannelMessaging
       ),
+      reconnect: state.reconnect,
       // debug
       debug: state.debug,
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
