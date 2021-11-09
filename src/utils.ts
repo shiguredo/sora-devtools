@@ -32,7 +32,7 @@ import type {
 } from "@/types";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
-export function formatUnixtime(time: number, display?: {millisecond: boolean}): string {
+export function formatUnixtime(time: number, display?: { millisecond: boolean }): string {
   const date = new Date(time);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
