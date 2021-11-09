@@ -32,7 +32,7 @@ import type {
 } from "@/types";
 
 // UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
-export function formatUnixtime(time: number): string {
+export function formatUnixtime(time: number, display?: { millisecond: boolean }): string {
   const date = new Date(time);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -40,8 +40,11 @@ export function formatUnixtime(time: number): string {
   const hour = date.getHours().toString().padStart(2, "0");
   const minute = date.getMinutes().toString().padStart(2, "0");
   const second = date.getSeconds().toString().padStart(2, "0");
-  const millisecond = date.getMilliseconds().toString().padStart(3, "0");
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
+  if (display && display.millisecond === true) {
+    const millisecond = date.getMilliseconds().toString().padStart(3, "0");
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
+  }
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
 // OS の Clipboard にテキストを書き込む
@@ -192,6 +195,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     micDevice,
     mute,
     noiseSuppression,
+    reconnect,
     resolution,
     showStats,
     signalingNotifyMetadata,
@@ -334,6 +338,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof dataChannelMessaging === "string") {
     queryStringParameters.dataChannelMessaging = dataChannelMessaging;
+  }
+  if (typeof reconnect === "boolean") {
+    queryStringParameters.reconnect = reconnect;
   }
   return queryStringParameters;
 }
