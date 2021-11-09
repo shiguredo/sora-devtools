@@ -1059,6 +1059,10 @@ export const reconnectSora =
       });
     }
     for (let i = 1; i <= 10; i++) {
+      const { soraContents } = getState();
+      if (soraContents.reconnecting === false) {
+        break;
+      }
       dispatch(slice.actions.setSoraReconnectingTrials(i));
       try {
         if (state.role === "sendonly") {
@@ -1097,7 +1101,6 @@ export const reconnectSora =
         if (error instanceof Error) {
           dispatch(slice.actions.setSoraErrorAlertMessage(`(trials ${i}) Failed to connect Sora. ${error.message}`));
         }
-        dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
         sora = undefined;
       }
       if (sora !== undefined) {
@@ -1107,6 +1110,7 @@ export const reconnectSora =
     }
     if (sora === undefined) {
       dispatch(slice.actions.setSoraErrorAlertMessage("Failed to reconnect Sora."));
+      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       dispatch(slice.actions.setSoraReconnecting(false));
       return;
     }
@@ -1899,6 +1903,7 @@ export const {
   setSignalingUrlCandidates,
   setSimulcastRid,
   setSora,
+  setSoraReconnecting,
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,
   setSpotlightFocusRid,
