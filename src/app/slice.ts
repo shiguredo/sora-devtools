@@ -1713,7 +1713,10 @@ export const copyURL =
     const state = getState();
     const parameters: Partial<QueryStringParameters> = {
       // mediaType
-      mediaType: queryStringValue<QueryStringParameters["mediaType"]>(state.mediaType, state.displaySettings.mediaType),
+      mediaType: queryStringValue<QueryStringParameters["mediaType"]>(
+        state.mediaType,
+        state.mediaType !== "getUserMedia" && state.displaySettings.mediaType
+      ),
       // channelId
       channelId: state.channelId,
       // audio
@@ -1728,24 +1731,24 @@ export const copyURL =
       ),
       audioContentHint: queryStringValue<QueryStringParameters["audioContentHint"]>(
         state.audioContentHint,
-        state.displaySettings.audioContentHint
+        state.audioContentHint !== "" && state.displaySettings.audioContentHint
       ),
       // audio constraints
       autoGainControl: queryStringValue<QueryStringParameters["autoGainControl"]>(
         state.autoGainControl,
-        state.displaySettings.audioConstraints
+        state.autoGainControl !== "" && state.displaySettings.audioConstraints
       ),
       noiseSuppression: queryStringValue<QueryStringParameters["noiseSuppression"]>(
         state.noiseSuppression,
-        state.displaySettings.audioConstraints
+        state.noiseSuppression !== "" && state.displaySettings.audioConstraints
       ),
       echoCancellation: queryStringValue<QueryStringParameters["echoCancellation"]>(
         state.echoCancellation,
-        state.displaySettings.audioConstraints
+        state.echoCancellation !== "" && state.displaySettings.audioConstraints
       ),
       echoCancellationType: queryStringValue<QueryStringParameters["echoCancellationType"]>(
         state.echoCancellationType,
-        state.displaySettings.audioConstraints
+        state.echoCancellationType !== "" && state.displaySettings.audioConstraints
       ),
       // video
       video: queryStringValue<QueryStringParameters["video"]>(state.video, state.displaySettings.video),
@@ -1759,7 +1762,7 @@ export const copyURL =
       ),
       videoContentHint: queryStringValue<QueryStringParameters["videoContentHint"]>(
         state.videoContentHint,
-        state.displaySettings.videoContentHint
+        state.videoContentHint !== "" && state.displaySettings.videoContentHint
       ),
       // video constraints
       resolution: queryStringValue<QueryStringParameters["resolution"]>(
@@ -1768,7 +1771,7 @@ export const copyURL =
       ),
       frameRate: queryStringValue<QueryStringParameters["frameRate"]>(
         state.frameRate,
-        state.displaySettings.videoConstraints
+        state.frameRate !== "" && state.displaySettings.videoConstraints
       ),
       // simulcast
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
@@ -1778,30 +1781,36 @@ export const copyURL =
       // devices
       audioInput: queryStringValue<QueryStringParameters["audioInput"]>(
         state.audioInput,
-        state.displaySettings.audioInput
+        state.audioInput !== "" && state.displaySettings.audioInput
       ),
       audioOutput: queryStringValue<QueryStringParameters["audioOutput"]>(
         state.audioOutput,
-        state.displaySettings.audioOutput
+        state.audioOutput !== "" && state.displaySettings.audioOutput
       ),
       videoInput: queryStringValue<QueryStringParameters["videoInput"]>(
         state.videoInput,
-        state.displaySettings.videoInput
+        state.videoInput !== "" && state.displaySettings.videoInput
       ),
       // device settings
-      displayResolution: state.displayResolution,
-      micDevice: queryStringValue<QueryStringParameters["micDevice"]>(state.micDevice, state.displaySettings.micDevice),
+      displayResolution: queryStringValue<QueryStringParameters["displayResolution"]>(
+        state.displayResolution,
+        state.displayResolution !== ""
+      ),
+      micDevice: queryStringValue<QueryStringParameters["micDevice"]>(
+        state.micDevice,
+        !state.micDevice && state.displaySettings.micDevice
+      ),
       cameraDevice: queryStringValue<QueryStringParameters["cameraDevice"]>(
         state.cameraDevice,
-        state.displaySettings.cameraDevice
+        !state.cameraDevice && state.displaySettings.cameraDevice
       ),
       audioTrack: queryStringValue<QueryStringParameters["audioTrack"]>(
         state.audioTrack,
-        state.displaySettings.audioTrack
+        !state.audioTrack && state.displaySettings.audioTrack
       ),
       videoTrack: queryStringValue<QueryStringParameters["videoTrack"]>(
         state.videoTrack,
-        state.displaySettings.videoTrack
+        !state.videoTrack && state.displaySettings.videoTrack
       ),
       // spotlight
       spotlightNumber: queryStringValue<QueryStringParameters["spotlightNumber"]>(
@@ -1817,7 +1826,7 @@ export const copyURL =
         state.displaySettings.spotlightUnfocusRid
       ),
       // options
-      e2ee: state.e2ee,
+      e2ee: queryStringValue<QueryStringParameters["e2ee"]>(state.e2ee, state.e2ee),
       clientId: queryStringValue<QueryStringParameters["clientId"]>(state.clientId, state.enabledClientId),
       metadata: queryStringValue<QueryStringParameters["metadata"]>(state.metadata, state.enabledMetadata),
       signalingNotifyMetadata: queryStringValue<QueryStringParameters["signalingNotifyMetadata"]>(
@@ -1840,7 +1849,7 @@ export const copyURL =
         state.dataChannelMessaging,
         state.enabledDataChannelMessaging
       ),
-      reconnect: state.reconnect,
+      reconnect: queryStringValue<QueryStringParameters["reconnect"]>(state.reconnect, state.reconnect),
       // debug
       debug: state.debug,
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
