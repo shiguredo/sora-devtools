@@ -19,6 +19,7 @@ export const FormRowOptions: React.FC = () => {
   const enabledMetadata = useAppSelector((state) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useAppSelector((state) => state.enabledSignalingNotifyMetadata);
   const enabledSignalingUrlCandidates = useAppSelector((state) => state.enabledSignalingUrlCandidates);
+  const reconnect = useAppSelector((state) => state.reconnect);
   const enabledOptions = [
     e2ee,
     enabledClientId,
@@ -27,6 +28,7 @@ export const FormRowOptions: React.FC = () => {
     enabledMetadata,
     enabledSignalingNotifyMetadata,
     enabledSignalingUrlCandidates,
+    reconnect,
   ].some((e) => e);
   const [collapsed, setCollapsed] = useState(true);
   useEffect(() => {
