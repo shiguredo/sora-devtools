@@ -171,6 +171,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audio,
     audioBitRate,
     audioCodecType,
+    audioContentHint,
     audioInput,
     audioOutput,
     audioTrack,
@@ -207,6 +208,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     video,
     videoBitRate,
     videoCodecType,
+    videoContentHint,
     videoInput,
     videoTrack,
   } = queryString.parse(location.search, { parseBooleans: true });
@@ -341,6 +343,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   if (typeof reconnect === "boolean") {
     queryStringParameters.reconnect = reconnect;
+  }
+  const stringAudioContentHint = String(audioContentHint);
+  if (isAudioContentHint(stringAudioContentHint)) {
+    queryStringParameters.audioContentHint = stringAudioContentHint;
+  }
+  const stringVideoContentHint = String(videoContentHint);
+  if (isVideoContentHint(stringVideoContentHint)) {
+    queryStringParameters.videoContentHint = stringVideoContentHint;
   }
   return queryStringParameters;
 }
