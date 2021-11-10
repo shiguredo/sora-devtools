@@ -6,8 +6,17 @@ import type { DataChannelMessage } from "@/types";
 
 const Collapse: React.FC<DataChannelMessage> = (props) => {
   const { data, label, timestamp } = props;
-  const binaryData = new Uint8Array(data);
-  const description = binaryData.toString() + `\n(${new TextDecoder().decode(binaryData)})`;
+  const headText = new TextDecoder().decode(data.slice(0, 6));
+  if (headText === "ZAKURO") {
+    const view = new DataView(data);
+    const unixTimeMicro = view.getBigInt64(6);
+    const counter = view.getBigInt64(14);
+    const byteLength = data.byteLength;
+    const description = `UnixTimeMicro: ${unixTimeMicro}\nCounter: ${counter}\nByteLength: ${byteLength}`;
+    return <Message title={label + " ZAKURO"} timestamp={timestamp} description={description} defaultShow wordBreak />;
+  }
+  const uint8array = new Uint8Array(data);
+  const description = uint8array.toString() + `\n(${new TextDecoder().decode(data)})`;
   return <Message title={label} timestamp={timestamp} description={description} defaultShow wordBreak />;
 };
 
