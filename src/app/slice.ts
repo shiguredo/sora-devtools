@@ -1,5 +1,12 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
-import type { ConnectionOptions, ConnectionPublisher, ConnectionSubscriber, Role, TransportType } from "sora-js-sdk";
+import type {
+  ConnectionOptions,
+  ConnectionPublisher,
+  ConnectionSubscriber,
+  DataChannelConfiguration,
+  Role,
+  TransportType,
+} from "sora-js-sdk";
 import Sora from "sora-js-sdk";
 
 import { WORKER_SCRIPT } from "@/constants";
@@ -112,6 +119,7 @@ const initialState: SoraDevtoolsState = {
     remoteMediaStreams: [],
     prevStatsReport: [],
     statsReport: [],
+    datachannels: [],
   },
   ignoreDisconnectWebSocket: "",
   logMessages: [],
@@ -331,6 +339,7 @@ const slice = createSlice({
       } else {
         state.soraContents.connectionId = null;
         state.soraContents.clientId = null;
+        state.soraContents.datachannels = [];
       }
     },
     setSoraConnectionStatus: (state, action: PayloadAction<SoraDevtoolsState["soraContents"]["connectionStatus"]>) => {
@@ -347,6 +356,9 @@ const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnectingTrials"]>
     ) => {
       state.soraContents.reconnectingTrials = action.payload;
+    },
+    setSoraDataChannels: (state, action: PayloadAction<DataChannelConfiguration>) => {
+      state.soraContents.datachannels.push(action.payload);
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
@@ -804,6 +816,9 @@ function setSoraCallbacks(
         data: event.data,
       })
     );
+  });
+  sora.on("datachannel", (event) => {
+    dispatch(slice.actions.setSoraDataChannels(event.datachannel));
   });
 }
 

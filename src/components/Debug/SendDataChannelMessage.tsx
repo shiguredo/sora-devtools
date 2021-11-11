@@ -7,6 +7,7 @@ export const DebugSendDataChannelMessage: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
   const textareaRef = useRef<HTMLInputElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);
+  const datachannels = useAppSelector((state) => state.soraContents.datachannels);
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
       return;
@@ -21,31 +22,25 @@ export const DebugSendDataChannelMessage: React.FC = () => {
       <div className="d-flex">
         <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
           <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
-            {sora
-              ? sora.messagingDataChannels.map((messagingDataChannel) => {
-                  return (
-                    <option key={messagingDataChannel.label} value={messagingDataChannel.label}>
-                      {messagingDataChannel.label}
-                    </option>
-                  );
-                })
-              : null}
+            {datachannels.map((datachannel) => {
+              return (
+                <option key={datachannel.label} value={datachannel.label}>
+                  {datachannel.label}
+                </option>
+              );
+            })}
           </FormSelect>
         </FormGroup>
         <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
           <FormControl className="flex-fill" placeholder="sendDataChannelMessageを指定" type="text" ref={textareaRef} />
         </FormGroup>
-        <Button
-          variant="secondary"
-          onClick={handleSendMessage}
-          disabled={sora === null || sora.messagingDataChannels.length === 0}
-        >
+        <Button variant="secondary" onClick={handleSendMessage} disabled={datachannels.length === 0}>
           send
         </Button>
       </div>
-      {sora && 0 < sora.messagingDataChannels.length ? (
+      {0 < datachannels.length ? (
         <pre className="form-control mt-2" style={{ color: "#fff", backgroundColor: "#222222", maxHeight: "250px" }}>
-          {JSON.stringify(sora.messagingDataChannels, null, 2)}
+          {JSON.stringify(datachannels, null, 2)}
         </pre>
       ) : null}
     </>

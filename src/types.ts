@@ -1,4 +1,11 @@
-import type { ConnectionPublisher, ConnectionSubscriber, Role, TimelineEventLogType, TransportType } from "sora-js-sdk";
+import type {
+  ConnectionPublisher,
+  ConnectionSubscriber,
+  DataChannelConfiguration,
+  Role,
+  TimelineEventLogType,
+  TransportType,
+} from "sora-js-sdk";
 
 import {
   AUDIO_BIT_RATES,
@@ -73,6 +80,7 @@ export type SoraDevtoolsState = {
     remoteMediaStreams: MediaStream[];
     prevStatsReport: RTCStats[];
     statsReport: RTCStats[];
+    datachannels: DataChannelConfiguration[];
   };
   ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   logMessages: LogMessage[];
