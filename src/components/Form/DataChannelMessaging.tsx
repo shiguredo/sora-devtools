@@ -45,17 +45,19 @@ export const FormDataChannelMessaging: React.FC = () => {
           disabled={disabled}
         />
       </FormGroup>
-      <FormGroup className="form-inline" controlId="dataChannelMessaging">
-        <FormControl
-          className="flex-fill w-500"
-          as="textarea"
-          placeholder={textareaPlaceholder}
-          value={dataChannelMessaging}
-          onChange={onChangeText}
-          rows={12}
-          disabled={!enabledDataChannelMessaging || disabled}
-        />
-      </FormGroup>
+      {enabledDataChannelMessaging ? (
+        <FormGroup className="form-inline" controlId="dataChannelMessaging">
+          <FormControl
+            className="flex-fill w-500"
+            as="textarea"
+            placeholder={textareaPlaceholder}
+            value={dataChannelMessaging}
+            onChange={onChangeText}
+            rows={12}
+            disabled={disabled}
+          />
+        </FormGroup>
+      ) : null}
     </>
   );
 };

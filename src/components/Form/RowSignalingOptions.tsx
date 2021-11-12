@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Collapse, Row } from "react-bootstrap";
 
 import { useAppSelector } from "@/app/hooks";
@@ -11,7 +11,8 @@ import { FormReconnect } from "@/components/Form/Reconnect";
 import { FormSignalingNotifyMetadata } from "@/components/Form/SignalingNotifyMetadata";
 import { FormSignalingUrlCandidates } from "@/components/Form/SignalingUrlCandidates";
 
-export const FormRowOptions: React.FC = () => {
+export const FormRowSignalingOptions: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(true);
   const e2ee = useAppSelector((state) => state.e2ee);
   const enabledClientId = useAppSelector((state) => state.enabledClientId);
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel);
@@ -30,12 +31,13 @@ export const FormRowOptions: React.FC = () => {
     enabledSignalingUrlCandidates,
     reconnect,
   ].some((e) => e);
-  const [collapsed, setCollapsed] = useState(true);
-  useEffect(() => {
-    if (enabledOptions) {
-      setCollapsed(false);
-    }
-  }, [enabledOptions]);
+  const linkClassNames = ["btn-collapse-options"];
+  if (collapsed) {
+    linkClassNames.push("collapsed");
+  }
+  if (enabledOptions) {
+    linkClassNames.push("fw-bold");
+  }
   const onClick = (event: React.MouseEvent): void => {
     event.preventDefault();
     setCollapsed(!collapsed);
@@ -43,8 +45,8 @@ export const FormRowOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        <a href="#" className={collapsed ? "btn-collapse-options collapsed" : "btn-collapse-options"} onClick={onClick}>
-          Options
+        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+          Signaling options
         </a>
       </Col>
       <Collapse in={!collapsed}>
@@ -53,9 +55,13 @@ export const FormRowOptions: React.FC = () => {
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormE2EE />
             </Col>
+          </Row>
+          <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormReconnect />
             </Col>
+          </Row>
+          <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormClientId />
             </Col>
@@ -64,9 +70,13 @@ export const FormRowOptions: React.FC = () => {
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormMetadata />
             </Col>
+          </Row>
+          <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormSignalingNotifyMetadata />
             </Col>
+          </Row>
+          <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormSignalingUrlCandidates />
             </Col>
@@ -75,6 +85,8 @@ export const FormRowOptions: React.FC = () => {
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormDataChannelMessaging />
             </Col>
+          </Row>
+          <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
               <FormDataChannel />
             </Col>

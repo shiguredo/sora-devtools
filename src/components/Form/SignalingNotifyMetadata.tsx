@@ -29,17 +29,19 @@ export const FormSignalingNotifyMetadata: React.FC = () => {
           disabled={disabled}
         />
       </FormGroup>
-      <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-        <FormControl
-          className="flex-fill w-500"
-          as="textarea"
-          placeholder="signalingNotifyMetadataを指定"
-          value={signalingNotifyMetadata}
-          onChange={onChangeText}
-          rows={10}
-          disabled={!enabledSignalingNotifyMetadata || disabled}
-        />
-      </FormGroup>
+      {enabledSignalingNotifyMetadata ? (
+        <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
+          <FormControl
+            className="flex-fill w-500"
+            as="textarea"
+            placeholder="signalingNotifyMetadataを指定"
+            value={signalingNotifyMetadata}
+            onChange={onChangeText}
+            rows={10}
+            disabled={disabled}
+          />
+        </FormGroup>
+      ) : null}
     </>
   );
 };

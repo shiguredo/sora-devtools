@@ -84,14 +84,16 @@ export const FormDataChannel: React.FC = () => {
           disabled={disabled}
         />
       </FormGroup>
-      <Row xs="auto">
-        <Col>
-          <FormDataChannelSignaling disabled={!enabledDataChannel || disabled} />
-        </Col>
-        <Col>
-          <FormIgnoreDisconnectWebSocket disabled={!enabledDataChannel || disabled} />
-        </Col>
-      </Row>
+      {enabledDataChannel ? (
+        <Row xs="auto">
+          <Col>
+            <FormDataChannelSignaling disabled={disabled} />
+          </Col>
+          <Col>
+            <FormIgnoreDisconnectWebSocket disabled={disabled} />
+          </Col>
+        </Row>
+      ) : null}
     </>
   );
 };

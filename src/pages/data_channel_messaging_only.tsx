@@ -9,7 +9,7 @@ import { Disconnect } from "@/components/Button/Disconnect";
 import { ColDebug } from "@/components/ColDebug";
 import { Footer } from "@/components/Footer";
 import { FormRowChannelId } from "@/components/Form/RowChannelId";
-import { FormRowOptions } from "@/components/Form/RowOptions";
+import { FormRowSignalingOptions } from "@/components/Form/RowSignalingOptions";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
 
@@ -59,7 +59,7 @@ const DataChannelMessagingOnly: React.FC = () => {
             <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
               <AlertMessages />
               <FormRowChannelId />
-              <FormRowOptions />
+              <FormRowSignalingOptions />
 
               <div className="row">
                 <Connect />

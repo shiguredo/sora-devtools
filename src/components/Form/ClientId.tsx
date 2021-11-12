@@ -29,16 +29,18 @@ export const FormClientId: React.FC = () => {
           disabled={disabled}
         />
       </FormGroup>
-      <FormGroup className="form-inline" controlId="clientId">
-        <FormControl
-          className="flex-fill w-500"
-          type="text"
-          placeholder="ClientIdを指定"
-          value={clientId}
-          onChange={onChangeText}
-          disabled={!enabledClientId || disabled}
-        />
-      </FormGroup>
+      {enabledClientId ? (
+        <FormGroup className="form-inline" controlId="clientId">
+          <FormControl
+            className="flex-fill w-500"
+            type="text"
+            placeholder="ClientIdを指定"
+            value={clientId}
+            onChange={onChangeText}
+            disabled={disabled}
+          />
+        </FormGroup>
+      ) : null}
     </>
   );
 };

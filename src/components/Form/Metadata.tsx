@@ -29,17 +29,19 @@ export const FormMetadata: React.FC = () => {
           disabled={disabled}
         />
       </FormGroup>
-      <FormGroup className="form-inline" controlId="metadata">
-        <FormControl
-          className="flex-fill w-500"
-          as="textarea"
-          placeholder="Metadataを指定"
-          value={metadata}
-          onChange={onChangeText}
-          rows={10}
-          disabled={!enabledMetadata || disabled}
-        />
-      </FormGroup>
+      {enabledMetadata ? (
+        <FormGroup className="form-inline" controlId="metadata">
+          <FormControl
+            className="flex-fill w-500"
+            as="textarea"
+            placeholder="Metadataを指定"
+            value={metadata}
+            onChange={onChangeText}
+            rows={10}
+            disabled={disabled}
+          />
+        </FormGroup>
+      ) : null}
     </>
   );
 };

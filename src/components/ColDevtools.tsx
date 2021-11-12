@@ -12,8 +12,10 @@ import { FormRowAudioSettings } from "@/components/Form/RowAudioSettings";
 import { FormRowChannelId } from "@/components/Form/RowChannelId";
 import { FormRowDevices } from "@/components/Form/RowDevices";
 import { FormRowMediaDevices } from "@/components/Form/RowMediaDevices";
+import { FormRowMediaOptions } from "@/components/Form/RowMediaOptions";
 import { FormRowMediaType } from "@/components/Form/RowMediaType";
-import { FormRowOptions } from "@/components/Form/RowOptions";
+import { FormRowSignalingOptions } from "@/components/Form/RowSignalingOptions";
+import { FormRowSimulcastSettings } from "@/components/Form/RowSimulcastSettings";
 import { FormRowSpotlightSettings } from "@/components/Form/RowSpotlightSettings";
 import { FormRowVideoSettings } from "@/components/Form/RowVideoSettings";
 import { LocalVideo } from "@/components/Video/LocalVideo";
@@ -24,19 +26,23 @@ export const ColDevtools: React.FC = () => {
   const role = useAppSelector((state) => state.role);
   const spotlight = useAppSelector((state) => state.spotlight);
   const simulcast = useAppSelector((state) => state.simulcast);
-  const displaySettings = useAppSelector((state) => state.displaySettings);
   return (
     <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
       <AlertMessages />
-      {displaySettings.mediaType ? <FormRowMediaType /> : null}
       <FormRowChannelId />
+      <hr className="hr-form" />
       <FormRowAudioSettings />
       <FormRowVideoSettings />
       <FormRowSpotlightSettings />
+      <FormRowSimulcastSettings />
+      <FormRowSignalingOptions />
+      <hr className="hr-form" />
+      <FormRowMediaType />
+      <FormRowMediaOptions />
+      <hr className="hr-form" />
       <FormRowDevices />
       <FormRowMediaDevices />
-      <FormRowOptions />
-
+      <hr className="hr-form" />
       <div className="row">
         <Connect />
         <Disconnect />
@@ -58,6 +64,7 @@ export const ColDevtools: React.FC = () => {
           </>
         ) : null}
       </div>
+      <hr className="hr-form" />
       <LocalVideo />
       {role === "recvonly" || role === "sendrecv" ? <RemoteVideos /> : null}
     </div>

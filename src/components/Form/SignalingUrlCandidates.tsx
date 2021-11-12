@@ -29,17 +29,19 @@ export const FormSignalingUrlCandidates: React.FC = () => {
           disabled={disabled}
         />
       </FormGroup>
-      <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-        <FormControl
-          className="flex-fill w-500"
-          as="textarea"
-          placeholder="signalingUrlCandidatesを指定"
-          value={signalingUrlCandidates.join("\n")}
-          onChange={onChangeText}
-          rows={5}
-          disabled={!enabledSignalingUrlCandidates || disabled}
-        />
-      </FormGroup>
+      {enabledSignalingUrlCandidates ? (
+        <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
+          <FormControl
+            className="flex-fill w-500"
+            as="textarea"
+            placeholder="signalingUrlCandidatesを指定"
+            value={signalingUrlCandidates.join("\n")}
+            onChange={onChangeText}
+            rows={5}
+            disabled={disabled}
+          />
+        </FormGroup>
+      ) : null}
     </>
   );
 };
