@@ -715,7 +715,7 @@ export function createDisplaySettings(
     displaySettings.spotlightNumber = true;
   }
   // spotlight,  sendrecv/recvnoly では spotlightFocusRid, spotlightUnfocusRid を表示する
-  if ((role === "recvonly" || role === "sendrecv") && simulcast) {
+  if ((role === "recvonly" || role === "sendrecv") && spotlight) {
     displaySettings.spotlightFocusRid = true;
     displaySettings.spotlightUnfocusRid = true;
   }
