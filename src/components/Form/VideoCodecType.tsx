@@ -4,10 +4,12 @@ import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setVideoCodecType } from "@/app/slice";
 import { VIDEO_CODEC_TYPES } from "@/constants";
-import { isVideoCodecType } from "@/utils";
+import { isFormDisabled, isVideoCodecType } from "@/utils";
 
 export const FormVideoCodecType: React.FC = () => {
   const videoCodecType = useAppSelector((state) => state.videoCodecType);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isVideoCodecType(event.target.value)) {
@@ -17,7 +19,7 @@ export const FormVideoCodecType: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="videoCodecType">
       <FormLabel>videoCodecType:</FormLabel>
-      <FormSelect name="videoCodecType" value={videoCodecType} onChange={onChange}>
+      <FormSelect name="videoCodecType" value={videoCodecType} onChange={onChange} disabled={disabled}>
         {VIDEO_CODEC_TYPES.map((value) => {
           return (
             <option key={value} value={value}>

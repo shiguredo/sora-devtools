@@ -3,10 +3,13 @@ import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDataChannelMessaging, setEnabledDataChannelMessaging } from "@/app/slice";
+import { isFormDisabled } from "@/utils";
 
 export const FormDataChannelMessaging: React.FC = () => {
   const enabledDataChannelMessaging = useAppSelector((state) => state.enabledDataChannelMessaging);
   const dataChannelMessaging = useAppSelector((state) => state.dataChannelMessaging);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const textareaPlaceholder =
     "dataChannelMessagingを指定\n(例)\n" +
@@ -39,6 +42,7 @@ export const FormDataChannelMessaging: React.FC = () => {
           label="dataChannelMessaging"
           checked={enabledDataChannelMessaging}
           onChange={onChangeSwitch}
+          disabled={disabled}
         />
       </FormGroup>
       <FormGroup className="form-inline" controlId="dataChannelMessaging">
@@ -49,7 +53,7 @@ export const FormDataChannelMessaging: React.FC = () => {
           value={dataChannelMessaging}
           onChange={onChangeText}
           rows={12}
-          disabled={!enabledDataChannelMessaging}
+          disabled={!enabledDataChannelMessaging || disabled}
         />
       </FormGroup>
     </>

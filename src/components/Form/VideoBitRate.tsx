@@ -4,7 +4,7 @@ import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setVideoBitRate } from "@/app/slice";
 import { VIDEO_BIT_RATES } from "@/constants";
-import { isVideoBitRate } from "@/utils";
+import { isFormDisabled, isVideoBitRate } from "@/utils";
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
 const DISPLAY_VIDEO_BIT_RATE: string[] = VIDEO_BIT_RATES.slice();
@@ -12,6 +12,8 @@ DISPLAY_VIDEO_BIT_RATE.splice(VIDEO_BIT_RATES.indexOf("15000") + 1, 0, "support-
 
 export const FormVideoBitRate: React.FC = () => {
   const videoBitRate = useAppSelector((state) => state.videoBitRate);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isVideoBitRate(event.target.value)) {
@@ -21,7 +23,7 @@ export const FormVideoBitRate: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="videoBitRate">
       <FormLabel>videoBitRate:</FormLabel>
-      <FormSelect name="videoBitRate" value={videoBitRate} onChange={onChange}>
+      <FormSelect name="videoBitRate" value={videoBitRate} onChange={onChange} disabled={disabled}>
         {DISPLAY_VIDEO_BIT_RATE.map((value) => {
           let text = value;
           if (value === "") {

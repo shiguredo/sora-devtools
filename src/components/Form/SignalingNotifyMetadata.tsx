@@ -3,10 +3,13 @@ import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from "@/app/slice";
+import { isFormDisabled } from "@/utils";
 
 export const FormSignalingNotifyMetadata: React.FC = () => {
   const enabledSignalingNotifyMetadata = useAppSelector((state) => state.enabledSignalingNotifyMetadata);
   const signalingNotifyMetadata = useAppSelector((state) => state.signalingNotifyMetadata);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledSignalingNotifyMetadata(event.target.checked));
@@ -23,6 +26,7 @@ export const FormSignalingNotifyMetadata: React.FC = () => {
           label="signalingNotifyMetadata"
           checked={enabledSignalingNotifyMetadata}
           onChange={onChangeSwitch}
+          disabled={disabled}
         />
       </FormGroup>
       <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
@@ -33,7 +37,7 @@ export const FormSignalingNotifyMetadata: React.FC = () => {
           value={signalingNotifyMetadata}
           onChange={onChangeText}
           rows={10}
-          disabled={!enabledSignalingNotifyMetadata}
+          disabled={!enabledSignalingNotifyMetadata || disabled}
         />
       </FormGroup>
     </>

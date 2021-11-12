@@ -3,10 +3,13 @@ import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/slice";
+import { isFormDisabled } from "@/utils";
 
 export const FormSignalingUrlCandidates: React.FC = () => {
   const enabledSignalingUrlCandidates = useAppSelector((state) => state.enabledSignalingUrlCandidates);
   const signalingUrlCandidates = useAppSelector((state) => state.signalingUrlCandidates);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledSignalingUrlCandidates(event.target.checked));
@@ -23,6 +26,7 @@ export const FormSignalingUrlCandidates: React.FC = () => {
           label="signalingUrlCandidates"
           checked={enabledSignalingUrlCandidates}
           onChange={onChangeSwitch}
+          disabled={disabled}
         />
       </FormGroup>
       <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
@@ -33,7 +37,7 @@ export const FormSignalingUrlCandidates: React.FC = () => {
           value={signalingUrlCandidates.join("\n")}
           onChange={onChangeText}
           rows={5}
-          disabled={!enabledSignalingUrlCandidates}
+          disabled={!enabledSignalingUrlCandidates || disabled}
         />
       </FormGroup>
     </>

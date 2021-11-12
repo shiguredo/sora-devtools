@@ -4,7 +4,7 @@ import { Col, FormCheck, FormGroup, FormLabel, FormSelect, Row } from "react-boo
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebSocket } from "@/app/slice";
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
-import { isDataChannelSignaling, isIgnoreDisconnectWebSocket } from "@/utils";
+import { isDataChannelSignaling, isFormDisabled, isIgnoreDisconnectWebSocket } from "@/utils";
 
 const FormIgnoreDisconnectWebSocket: React.FC<{ disabled: boolean }> = (props) => {
   const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket);
@@ -66,6 +66,8 @@ const FormDataChannelSignaling: React.FC<{ disabled: boolean }> = (props) => {
 
 export const FormDataChannel: React.FC = () => {
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledDataChannel(event.target.checked));
@@ -79,14 +81,15 @@ export const FormDataChannel: React.FC = () => {
           label="dataChannel"
           checked={enabledDataChannel}
           onChange={onChangeSwitch}
+          disabled={disabled}
         />
       </FormGroup>
       <Row xs="auto">
         <Col>
-          <FormDataChannelSignaling disabled={!enabledDataChannel} />
+          <FormDataChannelSignaling disabled={!enabledDataChannel || disabled} />
         </Col>
         <Col>
-          <FormIgnoreDisconnectWebSocket disabled={!enabledDataChannel} />
+          <FormIgnoreDisconnectWebSocket disabled={!enabledDataChannel || disabled} />
         </Col>
       </Row>
     </>

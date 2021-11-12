@@ -3,7 +3,7 @@ import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setMediaType } from "@/app/slice";
-import { isMediaType } from "@/utils";
+import { isFormDisabled, isMediaType } from "@/utils";
 
 type FormRadioProps = {
   label: string;
@@ -28,9 +28,9 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
 };
 
 export const FormMediaType: React.FC = () => {
-  const soraContents = useAppSelector((state) => state.soraContents);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const mediaType = useAppSelector((state) => state.mediaType);
-  const disabled = soraContents.sora !== null;
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (isMediaType(event.target.value)) {

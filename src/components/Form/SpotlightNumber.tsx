@@ -4,10 +4,12 @@ import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setSpotlightNumber } from "@/app/slice";
 import { SPOTLIGHT_NUMBERS } from "@/constants";
-import { isSpotlightNumber } from "@/utils";
+import { isFormDisabled, isSpotlightNumber } from "@/utils";
 
 export const FormSpotlightNumber: React.FC = () => {
   const spotlightNumber = useAppSelector((state) => state.spotlightNumber);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isSpotlightNumber(event.target.value)) {
@@ -17,7 +19,7 @@ export const FormSpotlightNumber: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="spotlightNumber">
       <FormLabel>spotlightNumber:</FormLabel>
-      <FormSelect value={spotlightNumber} onChange={onChange}>
+      <FormSelect value={spotlightNumber} onChange={onChange} disabled={disabled}>
         {SPOTLIGHT_NUMBERS.map((value) => {
           return (
             <option key={value} value={value}>
