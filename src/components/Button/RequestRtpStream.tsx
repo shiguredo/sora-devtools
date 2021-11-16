@@ -26,7 +26,7 @@ export const RequestRtpStream: React.FC<Props> = (props) => {
     }
   };
   return (
-    <div className="col-auto mb-1">
+    <div className="mx-1">
       <input
         className="btn btn-secondary"
         type="button"

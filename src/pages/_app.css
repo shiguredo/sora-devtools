@@ -222,10 +222,6 @@ video {
   white-space: nowrap;
 }
 
-.video-status .btn {
-  padding: 0.5rem 0.5rem;
-}
-
 .video-status p {
   margin: 0;
 }

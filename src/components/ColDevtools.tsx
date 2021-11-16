@@ -4,8 +4,6 @@ import { useAppSelector } from "@/app/hooks";
 import { AlertMessages } from "@/components/AlertMessages";
 import { Connect } from "@/components/Button/Connect";
 import { Disconnect } from "@/components/Button/Disconnect";
-import { RequestRtpStream } from "@/components/Button/RequestRtpStream";
-import { ResetRtpStream } from "@/components/Button/ResetRtpStream";
 import { StartRecording } from "@/components/Button/StartRecording";
 import { StopRecording } from "@/components/Button/StopRecording";
 import { FormRowAudioSettings } from "@/components/Form/RowAudioSettings";
@@ -24,8 +22,6 @@ import { RemoteVideos } from "@/components/Video/RemoteVideos";
 export const ColDevtools: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);
   const role = useAppSelector((state) => state.role);
-  const spotlight = useAppSelector((state) => state.spotlight);
-  const simulcast = useAppSelector((state) => state.simulcast);
   return (
     <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
       <AlertMessages />
@@ -48,21 +44,6 @@ export const ColDevtools: React.FC = () => {
         <Disconnect />
         <StartRecording />
         <StopRecording />
-        {!spotlight && simulcast && role !== "sendonly" ? (
-          <>
-            <RequestRtpStream rid={"r0"} />
-            <RequestRtpStream rid={"r1"} />
-            <RequestRtpStream rid={"r2"} />
-          </>
-        ) : null}
-        {spotlight && simulcast && role !== "sendonly" ? (
-          <>
-            <RequestRtpStream rid={"r0"} />
-            <RequestRtpStream rid={"r1"} />
-            <RequestRtpStream rid={"r2"} />
-            <ResetRtpStream />
-          </>
-        ) : null}
       </div>
       <hr className="hr-form" />
       <LocalVideo />

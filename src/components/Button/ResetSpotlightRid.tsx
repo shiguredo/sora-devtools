@@ -1,10 +1,10 @@
 import React from "react";
 
-import { resetRtpStream } from "@/api";
+import { resetSpotlightRid } from "@/api";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
-export const ResetRtpStream: React.FC = () => {
+export const ResetSpotlightRid: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
   const dispatch = useAppDispatch();
@@ -13,7 +13,7 @@ export const ResetRtpStream: React.FC = () => {
       return;
     }
     try {
-      const response = await resetRtpStream(channelId, sora.connectionId);
+      const response = await resetSpotlightRid(channelId, sora.connectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
@@ -26,8 +26,8 @@ export const ResetRtpStream: React.FC = () => {
       <input
         className="btn btn-secondary"
         type="button"
-        name="resetAllSimulcastRid"
-        defaultValue="reset rid"
+        name="resetAllSpotlightRid"
+        defaultValue="resetSpotlightRid"
         onClick={onClick}
       />
     </div>
