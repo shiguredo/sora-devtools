@@ -2,7 +2,9 @@ import React, { useState } from "react";
 
 import { useAppSelector } from "@/app/hooks";
 import { RequestRtpStreamBySendConnectionId } from "@/components/Button/RequestRtpStreamBySendConnectionId";
+import { RequestSpotlightRidBySendConnectionId } from "@/components/Button/RequestSpotlightRidBySendConnectionId";
 import { ResetRtpStreamBySendConnectionId } from "@/components/Button/ResetRtpStreamBySendConnectionId";
+import { ResetSpotlightRidBySendConnectionId } from "@/components/Button/ResetSpotlightRidBySendConnectionId";
 import type { RTCMediaStreamTrackStats } from "@/types";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
@@ -95,23 +97,24 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   return (
     <div className="col-auto">
       <div className="video-status">
-        <ConnectionStatusBar connectionId={props.stream.id} />
         <div className="d-flex align-items-center mb-1 video-status-inner">
+          <ConnectionStatusBar connectionId={props.stream.id} />
           <JitterButter type="audio" stream={props.stream} />
           <JitterButter type="video" stream={props.stream} />
+        </div>
+        <div className="d-flex align-items-center mb-1 video-status-inner">
           {!spotlight && multistream && simulcast ? (
             <>
               <RequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
               <RequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
               <RequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
+              <ResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
             </>
           ) : null}
           {spotlight && multistream && simulcast ? (
             <>
-              <RequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
-              <RequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
-              <RequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
-              <ResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
+              <RequestSpotlightRidBySendConnectionId sendConnectionId={props.stream.id} />
+              <ResetSpotlightRidBySendConnectionId sendConnectionId={props.stream.id} />
             </>
           ) : null}
         </div>

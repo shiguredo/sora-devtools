@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 import { useAppSelector } from "@/app/hooks";
+import { RequestSpotlightRid } from "@/components/Button/RequestSpotlightRid";
+import { ResetSpotlightRid } from "@/components/Button/ResetSpotlightRid";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
 import { Video } from "./Video";
@@ -39,13 +41,22 @@ const VideoBox: React.FC = () => {
 export const LocalVideo: React.FC = () => {
   const connectionId = useAppSelector((state) => state.soraContents.connectionId);
   const clientId = useAppSelector((state) => state.soraContents.clientId);
+  const spotlight = useAppSelector((state) => state.spotlight);
   const role = useAppSelector((state) => state.role);
   return (
     <div className="row my-1">
       <div className="col-auto">
         <div className="video-status mb-1">
           {connectionId !== null || clientId !== null ? (
-            <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />
+            <div className="d-flex align-items-center mb-1 video-status-inner">
+              <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />
+            </div>
+          ) : null}
+          {connectionId !== null && spotlight ? (
+            <div className="d-flex align-items-center mb-1 video-status-inner">
+              <RequestSpotlightRid />
+              <ResetSpotlightRid />
+            </div>
           ) : null}
         </div>
         {role !== "recvonly" ? <VideoBox /> : null}

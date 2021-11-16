@@ -34,11 +34,11 @@ type Props = {
 export const ConnectionStatusBar: React.FC<Props> = (props) => {
   const { localVideo, connectionId, clientId } = props;
   return (
-    <div className="d-flex align-items-center mb-1 video-status-inner">
+    <>
       {connectionId ? <TextBox id={localVideo ? "local-video-connection-id" : undefined} text={connectionId} /> : null}
       {clientId !== null && clientId !== undefined && connectionId !== clientId ? (
         <TextBox id={localVideo ? "local-video-client-id" : undefined} text={clientId} />
       ) : null}
-    </div>
+    </>
   );
 };

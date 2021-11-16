@@ -1,4 +1,4 @@
-import { SimulcastRid } from "sora-js-sdk";
+import { SimulcastRid, SpotlightFocusRid } from "sora-js-sdk";
 
 async function post(version: string, path: string, params: Record<string, unknown>): Promise<Record<string, unknown>> {
   const protocol = window.location.protocol;
@@ -64,4 +64,44 @@ export function resetRtpStream(channelId: string, connectionId: string, sendConn
     params["send_connection_id"] = sendConnectionId;
   }
   return post("20201005", "ResetRtpStream", params);
+}
+
+export function requestSpotlightRid(
+  channelId: string,
+  recvConnectionId: string,
+  spotlightFocursRid: SpotlightFocusRid,
+  spotlightUnfocursRid: SpotlightFocusRid,
+  sendConnectionId?: string
+): Promise<unknown> {
+  const params: {
+    channel_id: string;
+    recv_connection_id: string;
+    send_connection_id?: string;
+    spotlight_focus_rid: SpotlightFocusRid;
+    spotlight_unfocus_rid: SpotlightFocusRid;
+  } = {
+    channel_id: channelId,
+    recv_connection_id: recvConnectionId,
+    spotlight_focus_rid: spotlightFocursRid,
+    spotlight_unfocus_rid: spotlightUnfocursRid,
+  };
+  if (sendConnectionId) {
+    params["send_connection_id"] = sendConnectionId;
+  }
+  return post("20211215", "RequestSpotlightRid", params);
+}
+
+export function resetSpotlightRid(
+  channelId: string,
+  connectionId: string,
+  sendConnectionId?: string
+): Promise<unknown> {
+  const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
+    channel_id: channelId,
+    recv_connection_id: connectionId,
+  };
+  if (sendConnectionId) {
+    params["send_connection_id"] = sendConnectionId;
+  }
+  return post("20211215", "ResetSpotlightRid", params);
 }
