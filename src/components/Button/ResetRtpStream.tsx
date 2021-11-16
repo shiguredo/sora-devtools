@@ -22,7 +22,7 @@ export const ResetRtpStream: React.FC = () => {
     }
   };
   return (
-    <div className="col-auto mb-1">
+    <div className="mx-1">
       <input
         className="btn btn-secondary"
         type="button"
