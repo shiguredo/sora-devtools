@@ -53,13 +53,6 @@ export const ColDevtools: React.FC = () => {
             <RequestRtpStream rid={"r0"} />
             <RequestRtpStream rid={"r1"} />
             <RequestRtpStream rid={"r2"} />
-          </>
-        ) : null}
-        {spotlight && simulcast && role !== "sendonly" ? (
-          <>
-            <RequestRtpStream rid={"r0"} />
-            <RequestRtpStream rid={"r1"} />
-            <RequestRtpStream rid={"r2"} />
             <ResetRtpStream />
           </>
         ) : null}
