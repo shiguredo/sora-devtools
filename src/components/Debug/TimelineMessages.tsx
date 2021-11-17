@@ -95,7 +95,11 @@ export const TimelineMessages: React.FC = () => {
   return (
     <div className="debug-messages">
       {filteredMessages.map((message) => {
-        const key = `${message.timestamp}-${message.type}`;
+        let key = `${message.timestamp}-${message.type}`;
+        // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する
+        if (message.dataChannelLabel) {
+          key += `-${message.dataChannelLabel}`
+        }
         return <Log key={key} {...message} />;
       })}
     </div>
