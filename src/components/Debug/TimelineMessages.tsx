@@ -98,7 +98,7 @@ export const TimelineMessages: React.FC = () => {
         let key = `${message.timestamp}-${message.type}`;
         // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する
         if (message.dataChannelLabel) {
-          key += `-${message.dataChannelLabel}`
+          key += `-${message.dataChannelLabel}`;
         }
         return <Log key={key} {...message} />;
       })}
