@@ -1875,7 +1875,10 @@ export const copyURL =
       reconnect: queryStringValue<QueryStringParameters["reconnect"]>(state.reconnect, state.reconnect),
       // debug
       debug: state.debug,
+      // fakeVolume
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
+      // apiUrl
+      apiUrl: state.apiUrl !== null ? state.apiUrl : undefined,
     };
     const queryStrings = Object.keys(parameters)
       .map((key) => {
