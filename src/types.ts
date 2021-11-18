@@ -423,6 +423,7 @@ export type DisplaySettings = {
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
   | "alertMessages"
+  | "apiUrl"
   | "dataChannelMessages"
   | "debugFilterText"
   | "debugType"
