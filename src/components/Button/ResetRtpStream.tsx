@@ -7,13 +7,14 @@ import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 export const ResetRtpStream: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return;
     }
     try {
-      const response = await resetRtpStream(channelId, sora.connectionId);
+      const response = await resetRtpStream(apiUrl, channelId, sora.connectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {

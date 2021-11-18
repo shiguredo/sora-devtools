@@ -169,6 +169,7 @@ export function isVideoContentHint(videoContentHint: string): videoContentHint i
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
   const {
+    apiUrl,
     audio,
     audioBitRate,
     audioCodecType,
@@ -214,6 +215,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     videoTrack,
   } = queryString.parse(location.search, { parseBooleans: true });
   const queryStringParameters: Partial<QueryStringParameters> = {};
+  if (typeof apiUrl === "string") {
+    queryStringParameters.apiUrl = apiUrl;
+  }
   if (typeof audio === "boolean") {
     queryStringParameters.audio = audio;
   }

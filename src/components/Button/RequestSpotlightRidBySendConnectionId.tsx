@@ -15,6 +15,7 @@ export const RequestSpotlightRidBySendConnectionId: React.FC<Props> = (props) =>
   const unfocusRidRef = useRef<HTMLSelectElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   if (!sora?.connectionId) {
     return null;
@@ -30,6 +31,7 @@ export const RequestSpotlightRidBySendConnectionId: React.FC<Props> = (props) =>
     const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid;
     try {
       const response = await requestSpotlightRid(
+        apiUrl,
         channelId,
         sora.connectionId,
         focusRid,

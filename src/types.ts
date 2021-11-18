@@ -118,6 +118,7 @@ export type SoraDevtoolsState = {
   audioTrack: boolean;
   role: Role;
   reconnect: boolean;
+  apiUrl: null | string;
 };
 
 // 画面表示する message の Type
@@ -265,6 +266,7 @@ export type DebugType = typeof DEBUG_TYPES[number];
 
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = {
+  apiUrl: string;
   audio: boolean;
   audioBitRate: typeof AUDIO_BIT_RATES[number];
   audioCodecType: typeof AUDIO_CODEC_TYPES[number];

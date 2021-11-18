@@ -155,6 +155,7 @@ const initialState: SoraDevtoolsState = {
   audioTrack: true,
   role: "sendonly",
   reconnect: false,
+  apiUrl: null,
 };
 
 const slice = createSlice({
@@ -506,6 +507,9 @@ const slice = createSlice({
     },
     setReconnect: (state, action: PayloadAction<boolean>) => {
       state.reconnect = action.payload;
+    },
+    setApiUrl: (state, action: PayloadAction<string>) => {
+      state.apiUrl = action.payload;
     },
   },
 });
@@ -1626,6 +1630,10 @@ export const setInitialParameter =
       pageInitialParameters.reconnect,
       queryStringParameters.reconnect
     );
+    // apiUrl は query string からのみ受け付ける
+    if (queryStringParameters.apiUrl !== undefined) {
+      dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
+    }
     dispatch(slice.actions.setInitialFakeContents());
     // role
     if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {

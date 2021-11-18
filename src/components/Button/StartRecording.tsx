@@ -6,10 +6,11 @@ import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
 export const StartRecording: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     try {
-      const response = await startRec(channelId);
+      const response = await startRec(apiUrl, channelId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {

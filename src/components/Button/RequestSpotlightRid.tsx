@@ -12,6 +12,7 @@ export const RequestSpotlightRid: React.FC = () => {
   const unfocusRidRef = useRef<HTMLSelectElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   if (!sora?.connectionId) {
     return null;
@@ -26,7 +27,7 @@ export const RequestSpotlightRid: React.FC = () => {
     const focusRid = focusRidRef.current.value as SpotlightFocusRid;
     const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid;
     try {
-      const response = await requestSpotlightRid(channelId, sora.connectionId, focusRid, unfocusRid);
+      const response = await requestSpotlightRid(apiUrl, channelId, sora.connectionId, focusRid, unfocusRid);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {

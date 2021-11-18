@@ -10,6 +10,7 @@ type Props = {
 };
 export const RequestRtpStream: React.FC<Props> = (props) => {
   const sora = useAppSelector((state) => state.soraContents.sora);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
   const channelId = useAppSelector((state) => state.channelId);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
@@ -17,7 +18,7 @@ export const RequestRtpStream: React.FC<Props> = (props) => {
       return;
     }
     try {
-      const response = await requestRtpStream(channelId, sora.connectionId, props.rid);
+      const response = await requestRtpStream(apiUrl, channelId, sora.connectionId, props.rid);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
