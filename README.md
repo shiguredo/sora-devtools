@@ -1,4 +1,4 @@
-# WebRTC SFU Sora DevTools
+# Sora DevTools
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-devtools.svg)](https://github.com/shiguredo/sora-devtools)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -15,7 +15,7 @@ Please read https://github.com/shiguredo/oss/blob/master/README.en.md before use
 
 ## 概要
 
-これは WebRTC SFU Sora に開発者ツール機能として組み込まれているツールです。
+これは WebRTC SFU Sora に開発者ツールとして組み込まれている機能のオープンソース版です。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
