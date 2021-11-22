@@ -28,7 +28,7 @@ https://sora-devtools.shiguredo.jp/
 
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/b04aba37d0e3014b4c145cfb58b1ab62.png)](https://gyazo.com/b04aba37d0e3014b4c145cfb58b1ab62)
+[![Image from Gyazo](https://i.gyazo.com/2f64f58a25a7d7c92803981f6e42bb8c.png)](https://gyazo.com/2f64f58a25a7d7c92803981f6e42bb8c)
 
 ## 利用技術
 
@@ -54,27 +54,30 @@ https://sora-devtools.shiguredo.jp/
 getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
 
-[![Image from Gyazo](https://i.gyazo.com/1e2c0a926eacf707777dadab4f87b833.png)](https://gyazo.com/1e2c0a926eacf707777dadab4f87b833)
+[![Image from Gyazo](https://i.gyazo.com/dc61a5268efaad4252f0c903e57926dd.png)](https://gyazo.com/dc61a5268efaad4252f0c903e57926dd)
 
 ### レポート機能
 
 現在のクライアントのクライアントのログ、Sora からの通知、クライアント統計情報などをファイル化してダウンロードできます。
 
+[![Image from Gyazo](https://i.gyazo.com/ceda3e4085bec52cbf410f8510840e89.png)](https://gyazo.com/ceda3e4085bec52cbf410f8510840e89)
+
 ### デバッグ機能
 
 デバッグを有効にすると、ログ、通知、統計が有効になります。
 
-[![Image from Gyazo](https://i.gyazo.com/47c9658ba8b87f6b40022337edec79cd.png)](https://gyazo.com/47c9658ba8b87f6b40022337edec79cd)
+[![Image from Gyazo](https://i.gyazo.com/da165797092105d22e327df390b90e19.png)](https://gyazo.com/da165797092105d22e327df390b90e19)
+
 ### コピー URL 機能
 
 現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。
 
-[![Image from Gyazo](https://i.gyazo.com/e2e4ca62ccf6fb7a84023e26a6e2d878.png)](https://gyazo.com/e2e4ca62ccf6fb7a84023e26a6e2d878)
+[![Image from Gyazo](https://i.gyazo.com/d66245ee9e5bf89bb69309dc909aff69.png)](https://gyazo.com/d66245ee9e5bf89bb69309dc909aff69)
 
 例えば multi_sendrecv で設定を弄らなかった場合は以下のような値になります。
 
 ```
-https://example.com/multi_sendrecv.html?mediaType=getUserMedia&channelId=sora&audio=true&audioBitRate=&audioCodecType=OPUS&audioContentHint=&autoGainControl=&noiseSuppression=&echoCancellation=&echoCancellationType=&video=true&videoBitRate=1000&videoCodecType=VP9&videoContentHint=&resolution=&frameRate=&audioInput=&audioOutput=&videoInput=&displayResolution=&micDevice=true&cameraDevice=true&audioTrack=true&videoTrack=true&e2ee=false&debug=false
+https://example.com/multi_sendrecv.html?channelId=sora&audio=true&audioBitRate=&audioCodecType=OPUS&video=true&videoBitRate=1000&videoCodecType=VP9&resolution=&debug=false
 ```
 
 ## 用語集
