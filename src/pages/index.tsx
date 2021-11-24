@@ -1,3 +1,4 @@
+import NextHead from "next/head";
 import NextLink from "next/link";
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
@@ -22,6 +23,9 @@ const Link: React.FC<{ pageName: string }> = (props) => {
 const Index: React.FC = () => {
   return (
     <>
+      <NextHead>
+        <title>Sora DevTools</title>
+      </NextHead>
       <header>
         <Navbar variant="dark" bg="sora" expand="md" fixed="top">
           <Container>
