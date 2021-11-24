@@ -38,7 +38,7 @@ const Alert: React.FC<AlertMessage> = (props) => {
     <Toast autohide delay={20000} onClose={onClose}>
       <Toast.Header className={`${bgClassName} text-white`}>
         <strong className="me-auto">{props.title}</strong>
-        <span>{formatUnixtime(props.timestamp, { millisecond: false })}</span>
+        <span>{formatUnixtime(props.timestamp)}</span>
       </Toast.Header>
       <Toast.Body className="bg-light">
         <p className="text-break font-weight-bold mb-0">{props.message}</p>

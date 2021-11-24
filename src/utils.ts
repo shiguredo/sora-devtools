@@ -32,8 +32,8 @@ import type {
   SoraDevtoolsState,
 } from "@/types";
 
-// UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
-export function formatUnixtime(time: number, display?: { millisecond: boolean }): string {
+// UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
+export function formatUnixtime(time: number): string {
   const date = new Date(time);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -41,11 +41,8 @@ export function formatUnixtime(time: number, display?: { millisecond: boolean })
   const hour = date.getHours().toString().padStart(2, "0");
   const minute = date.getMinutes().toString().padStart(2, "0");
   const second = date.getSeconds().toString().padStart(2, "0");
-  if (display && display.millisecond === true) {
-    const millisecond = date.getMilliseconds().toString().padStart(3, "0");
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
-  }
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+  const millisecond = date.getMilliseconds().toString().padStart(3, "0");
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
 // OS の Clipboard にテキストを書き込む
