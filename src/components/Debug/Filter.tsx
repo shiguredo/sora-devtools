@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, FormGroup } from "react-bootstrap";
+import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDebugFilterText } from "@/app/slice";
@@ -12,6 +12,7 @@ export const DebugFilter: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline debug-filter" controlId="channelId">
+      <FormLabel className="text-white">Filter:</FormLabel>
       <FormControl type="text" placeholder="Filter" value={debugFilterText} onChange={onChange} autoComplete="off" />
     </FormGroup>
   );
