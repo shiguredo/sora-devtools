@@ -13,7 +13,7 @@ export const CopyLog: React.FC<Props> = (props) => {
     event.currentTarget.blur();
   };
   if (props.disabled) {
-    return null;
+    return <div style={{height: "31px"}}></div>;
   }
   return (
     <button className="btn btn-sm btn-dark" onClick={onClick}>
