@@ -18,7 +18,8 @@
     "dist": "yarn cleanup && next build && next export -o ./dist",
     "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && npx tsc --noemit",
     "fmt": "eslint --fix --ext .ts,tsx ./src; prettier --write ./src",
-    "cleanup": "rimraf ./.next ./dist/*"
+    "cleanup": "rimraf ./.next ./dist/*",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/node": "^16.10.2",
@@ -33,6 +34,7 @@
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^7.0.4",
     "next": "^11.1.2",
     "nextjs": "^0.0.3",
     "prettier": "^2.4.1",
