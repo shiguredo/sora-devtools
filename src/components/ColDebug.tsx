@@ -61,7 +61,6 @@ export const ColDebug: React.FC = () => {
           <LogMessages />
         </Tab>
         <Tab eventKey="messaging" title="Messaging">
-          <DebugFilter />
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
         </Tab>

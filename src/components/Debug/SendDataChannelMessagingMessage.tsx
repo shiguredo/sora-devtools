@@ -19,7 +19,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
   };
   return (
     <>
-      <div className="d-flex">
+      <div className="d-flex mt-2">
         <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
           <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
             {datachannels.map((datachannel) => {
