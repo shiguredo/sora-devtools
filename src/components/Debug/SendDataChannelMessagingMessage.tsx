@@ -39,7 +39,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
         </Button>
       </div>
       {0 < datachannels.length ? (
-        <pre className="form-control mt-2" style={{ color: "#fff", backgroundColor: "#222222", maxHeight: "250px" }}>
+        <pre className="form-control mt-2" style={{ color: "#fff", backgroundColor: "#222222", maxHeight: "250px", minHeight: "250px" }}>
           {JSON.stringify(datachannels, null, 2)}
         </pre>
       ) : null}
