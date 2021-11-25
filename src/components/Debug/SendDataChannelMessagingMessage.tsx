@@ -3,7 +3,7 @@ import { Button, FormControl, FormGroup, FormSelect } from "react-bootstrap";
 
 import { useAppSelector } from "@/app/hooks";
 
-export const DebugSendDataChannelMessage: React.FC = () => {
+export const SendDataChannelMessagingMessage: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
   const textareaRef = useRef<HTMLInputElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);

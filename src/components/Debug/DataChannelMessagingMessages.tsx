@@ -24,7 +24,7 @@ const Log = React.memo((props: DataChannelMessage) => {
   return <Collapse {...props} />;
 });
 
-export const DataChannelMessages: React.FC = () => {
+export const DataChannelMessagingMessages: React.FC = () => {
   const dataChannelMessages = useAppSelector((state) => state.dataChannelMessages);
   const debugFilterText = useAppSelector((state) => state.debugFilterText);
   const filteredMessages = dataChannelMessages.filter((message) => {

@@ -3,12 +3,12 @@ import { Tab, Tabs } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDebugType } from "@/app/slice";
-import { DataChannelMessages } from "@/components/Debug/DataChannelMessages";
+import { DataChannelMessagingMessages } from "@/components/Debug/DataChannelMessagingMessages";
 import { DebugFilter } from "@/components/Debug/Filter";
 import { LogMessages } from "@/components/Debug/LogMessages";
 import { NotifyMessages } from "@/components/Debug/NotifyMessages";
 import { PushMessages } from "@/components/Debug/PushMessages";
-import { DebugSendDataChannelMessage } from "@/components/Debug/SendDataChannelMessage";
+import { SendDataChannelMessagingMessage } from "@/components/Debug/SendDataChannelMessagingMessage";
 import { SignalingMessages } from "@/components/Debug/SignalingMessages";
 import { Stats } from "@/components/Debug/Stats";
 import { TimelineMessages } from "@/components/Debug/TimelineMessages";
@@ -60,10 +60,10 @@ export const ColDebug: React.FC = () => {
           <DebugFilter />
           <LogMessages />
         </Tab>
-        <Tab eventKey="message" title="Message">
+        <Tab eventKey="messaging" title="Messaging">
           <DebugFilter />
-          <DebugSendDataChannelMessage />
-          <DataChannelMessages />
+          <SendDataChannelMessagingMessage />
+          <DataChannelMessagingMessages />
         </Tab>
       </Tabs>
     </div>
