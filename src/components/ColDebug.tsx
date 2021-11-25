@@ -28,7 +28,7 @@ export const ColDebug: React.FC = () => {
       key === "stats" ||
       key === "timeline" ||
       key === "signaling" ||
-      key === "message"
+      key === "messaging"
     ) {
       dispatch(setDebugType(key));
     }
