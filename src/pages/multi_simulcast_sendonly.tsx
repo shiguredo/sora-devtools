@@ -21,7 +21,7 @@ const MultiSimulcastSendonly: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "3000",
-        resolution: "HD",
+        resolution: "720p (1280x720)",
       })
     );
     dispatch(setMediaDevices());

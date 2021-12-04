@@ -28,19 +28,17 @@ export const VIDEO_BIT_RATES = [
 
 export const RESOLUTIONS = [
   "",
-  "UHD 4096x2160",
-  "UHD 3840x2160",
-  "3840x1920",
-  "FHD",
-  "HD",
-  "VGA",
-  "QVGA",
-  "HQVGA",
-  "QCIF",
-  "QQVGA",
+  "2160p (3840x2160)",
+  "1080p (1920x1080)",
+  "720p (1280x720)",
+  "480p (640x480)",
+  "360p (640x360)",
+  "240p (320x240)",
+  "180p (320x180)",
+  "120p (160x120)",
 ] as const;
 
-export const DISPLAY_RESOLUTIONS = ["", "VGA", "QVGA"] as const;
+export const DISPLAY_RESOLUTIONS = ["", "480p (640x480)", "240p (320x240)"] as const;
 
 export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10"] as const;
 
