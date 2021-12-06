@@ -21,7 +21,7 @@ const SpotlightSendonly: React.FC = () => {
         audioCodecType: "OPUS",
         videoCodecType: getDefaultVideoCodecType("VP8"),
         videoBitRate: "500",
-        resolution: "VGA",
+        resolution: "480p (640x480)",
       })
     );
     dispatch(setMediaDevices());
