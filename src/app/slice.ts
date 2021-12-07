@@ -511,6 +511,9 @@ const slice = createSlice({
     setApiUrl: (state, action: PayloadAction<string>) => {
       state.apiUrl = action.payload;
     },
+    clearDataChannelMessages: (state) => {
+      state.dataChannelMessages = [];
+    },
   },
 });
 
@@ -1897,6 +1900,7 @@ export const copyURL =
   };
 
 export const {
+  clearDataChannelMessages,
   deleteAlertMessage,
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,

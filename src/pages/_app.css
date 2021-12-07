@@ -116,6 +116,10 @@ video {
   height: 100%;
 }
 
+.col-debug > .tab-content > .tab-pane {
+  padding: 0.25rem;
+}
+
 .col-debug > .tab-content > .active {
   display: flex;
   flex-direction: column;
@@ -148,6 +152,7 @@ video {
 
 .col-debug .debug-messages {
   overflow-y: scroll;
+  height: 100%;
 }
 
 .arrow-bottom {

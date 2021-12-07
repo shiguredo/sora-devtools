@@ -1,8 +1,17 @@
 import React from "react";
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { clearDataChannelMessages } from "@/app/slice";
 import { Message } from "@/components/Debug/Message";
 import type { DataChannelMessage } from "@/types";
+
+const ButtonClear: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const onClick = (): void => {
+    dispatch(clearDataChannelMessages());
+  };
+  return <input className="btn btn-secondary" type="button" name="clear" defaultValue="clear" onClick={onClick} />;
+};
 
 const Collapse: React.FC<DataChannelMessage> = (props) => {
   const { data, label, timestamp } = props;
@@ -26,21 +35,17 @@ const Log = React.memo((props: DataChannelMessage) => {
 
 export const DataChannelMessagingMessages: React.FC = () => {
   const dataChannelMessages = useAppSelector((state) => state.dataChannelMessages);
-  const debugFilterText = useAppSelector((state) => state.debugFilterText);
-  const filteredMessages = dataChannelMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
-      if (filterText === "") {
-        return true;
-      }
-      return 0 <= JSON.stringify(message).indexOf(filterText);
-    });
-  });
   return (
-    <div className="debug-messages">
-      {filteredMessages.map((message) => {
-        const key = message.label + message.timestamp;
-        return <Log key={key} {...message} />;
-      })}
-    </div>
+    <>
+      <div className="py-1">
+        <ButtonClear />
+      </div>
+      <div className="debug-messages">
+        {dataChannelMessages.map((message) => {
+          const key = message.label + message.timestamp;
+          return <Log key={key} {...message} />;
+        })}
+      </div>
+    </>
   );
 };
