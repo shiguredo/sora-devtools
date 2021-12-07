@@ -17,11 +17,12 @@ const Collapse: React.FC<DataChannelMessage> = (props) => {
   const { data, label, timestamp } = props;
   const headText = new TextDecoder().decode(data.slice(0, 6));
   if (headText === "ZAKURO") {
+    const connectionId = new TextDecoder().decode(data.slice(22, 48));
     const view = new DataView(data);
     const unixTimeMicro = view.getBigInt64(6);
     const counter = view.getBigInt64(14);
     const byteLength = data.byteLength;
-    const description = `UnixTimeMicro: ${unixTimeMicro}\nCounter: ${counter}\nByteLength: ${byteLength}`;
+    const description = `connectionId: ${connectionId}\nUnixTimeMicro: ${unixTimeMicro}\nCounter: ${counter}\nByteLength: ${byteLength}`;
     return <Message title={label + " ZAKURO"} timestamp={timestamp} description={description} defaultShow wordBreak />;
   }
   const uint8array = new Uint8Array(data);
