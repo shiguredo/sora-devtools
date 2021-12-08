@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] Debug モードに messaging タブを追加する
+    - @yuitowest
 - [CHANGE] 再接続処理を実装する
     - @yuitowest
 - [CHANGE] sora-demo を sora-devtools へ変更する
@@ -22,7 +24,7 @@
 - [ADD] Debug モードにフィルター機能を追加する
     - @yuitowest
 - [UPDATE] package を更新する
-    - debug mode 切り替えボタンをモバイルとデスクトップで表示位置を変える
+    - Debug モード切り替えボタンをモバイルとデスクトップで表示位置を変える
     - ダウンロードレポートのレポート内容を修正する
     - @yuitowest
 - [UPDATE] package を更新する
