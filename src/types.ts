@@ -49,7 +49,7 @@ export type SoraDevtoolsState = {
   debugFilterText: string;
   debugType: DebugType;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  dataChannelMessaging: string;
+  dataChannels: string;
   dataChannelMessages: DataChannelMessage[];
   displaySettings: DisplaySettings;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
@@ -57,7 +57,7 @@ export type SoraDevtoolsState = {
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
   enabledClientId: boolean;
-  enabledDataChannelMessaging: boolean;
+  enabledDataChannels: boolean;
   enabledDataChannel: boolean;
   enabledMetadata: boolean;
   enabledSignalingNotifyMetadata: boolean;
@@ -279,7 +279,7 @@ export type QueryStringParameters = {
   channelId: string;
   clientId: string;
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  dataChannelMessaging: string;
+  dataChannels: string;
   debug: boolean;
   debugType: typeof DEBUG_TYPES[number];
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
@@ -319,7 +319,7 @@ export type ConnectionOptionsState = Pick<
   | "audioBitRate"
   | "audioCodecType"
   | "clientId"
-  | "dataChannelMessaging"
+  | "dataChannels"
   | "dataChannelSignaling"
   | "e2ee"
   | "enabledClientId"
@@ -360,7 +360,7 @@ export type PageInitialParameters = {
   debug?: SoraDevtoolsState["debug"];
   debugType?: SoraDevtoolsState["debugType"];
   dataChannelSignaling?: SoraDevtoolsState["dataChannelSignaling"];
-  dataChannelMessaging?: SoraDevtoolsState["dataChannelMessaging"];
+  dataChannels?: SoraDevtoolsState["dataChannels"];
   displayResolution?: SoraDevtoolsState["displayResolution"];
   echoCancellation?: SoraDevtoolsState["echoCancellation"];
   echoCancellationType?: SoraDevtoolsState["echoCancellationType"];

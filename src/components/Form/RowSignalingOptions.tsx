@@ -4,7 +4,7 @@ import { Col, Collapse, Row } from "react-bootstrap";
 import { useAppSelector } from "@/app/hooks";
 import { FormClientId } from "@/components/Form/ClientId";
 import { FormDataChannel } from "@/components/Form/DataChannel";
-import { FormDataChannelMessaging } from "@/components/Form/DataChannelMessaging";
+import { FormDataChannels } from "@/components/Form/DataChannels";
 import { FormE2EE } from "@/components/Form/E2EE";
 import { FormMetadata } from "@/components/Form/Metadata";
 import { FormReconnect } from "@/components/Form/Reconnect";
@@ -16,7 +16,7 @@ export const FormRowSignalingOptions: React.FC = () => {
   const e2ee = useAppSelector((state) => state.e2ee);
   const enabledClientId = useAppSelector((state) => state.enabledClientId);
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel);
-  const enabledDataChannelMessaging = useAppSelector((state) => state.enabledDataChannelMessaging);
+  const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels);
   const enabledMetadata = useAppSelector((state) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useAppSelector((state) => state.enabledSignalingNotifyMetadata);
   const enabledSignalingUrlCandidates = useAppSelector((state) => state.enabledSignalingUrlCandidates);
@@ -25,7 +25,7 @@ export const FormRowSignalingOptions: React.FC = () => {
     e2ee,
     enabledClientId,
     enabledDataChannel,
-    enabledDataChannelMessaging,
+    enabledDataChannels,
     enabledMetadata,
     enabledSignalingNotifyMetadata,
     enabledSignalingUrlCandidates,
@@ -83,7 +83,7 @@ export const FormRowSignalingOptions: React.FC = () => {
           </Row>
           <Row className="form-row">
             <Col className="col-auto d-flex flex-column align-items-start">
-              <FormDataChannelMessaging />
+              <FormDataChannels />
             </Col>
           </Row>
           <Row className="form-row">

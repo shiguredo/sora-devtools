@@ -179,7 +179,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     channelId,
     clientId,
     dataChannelSignaling,
-    dataChannelMessaging,
+    dataChannels,
     debug,
     debugType,
     displayResolution,
@@ -340,8 +340,8 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof videoTrack === "boolean") {
     queryStringParameters.videoTrack = videoTrack;
   }
-  if (typeof dataChannelMessaging === "string") {
-    queryStringParameters.dataChannelMessaging = dataChannelMessaging;
+  if (typeof dataChannels === "string") {
+    queryStringParameters.dataChannels = dataChannels;
   }
   if (typeof reconnect === "boolean") {
     queryStringParameters.reconnect = reconnect;

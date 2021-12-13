@@ -64,7 +64,7 @@ const initialState: SoraDevtoolsState = {
   debugFilterText: "",
   debugType: "timeline",
   dataChannelSignaling: "",
-  dataChannelMessaging: "",
+  dataChannels: "",
   dataChannelMessages: [],
   displayResolution: "",
   displaySettings: {
@@ -97,7 +97,7 @@ const initialState: SoraDevtoolsState = {
   echoCancellationType: "",
   enabledClientId: false,
   enabledDataChannel: false,
-  enabledDataChannelMessaging: false,
+  enabledDataChannels: false,
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
   enabledSignalingUrlCandidates: false,
@@ -203,8 +203,8 @@ const slice = createSlice({
     setDataChannelSignaling: (state, action: PayloadAction<SoraDevtoolsState["dataChannelSignaling"]>) => {
       state.dataChannelSignaling = action.payload;
     },
-    setDataChannelMessaging: (state, action: PayloadAction<string>) => {
-      state.dataChannelMessaging = action.payload;
+    setDataChannels: (state, action: PayloadAction<string>) => {
+      state.dataChannels = action.payload;
     },
     setDataChannelMessage: (state, action: PayloadAction<DataChannelMessage>) => {
       state.dataChannelMessages.push(action.payload);
@@ -227,8 +227,8 @@ const slice = createSlice({
     setEnabledClientId: (state, action: PayloadAction<boolean>) => {
       state.enabledClientId = action.payload;
     },
-    setEnabledDataChannelMessaging: (state, action: PayloadAction<boolean>) => {
-      state.enabledDataChannelMessaging = action.payload;
+    setEnabledDataChannels: (state, action: PayloadAction<boolean>) => {
+      state.enabledDataChannels = action.payload;
     },
     setEnabledDataChannel: (state, action: PayloadAction<boolean>) => {
       state.enabledDataChannel = action.payload;
@@ -892,16 +892,16 @@ function createConnectOptions(connectionOptionsState: ConnectionOptionsState): C
       connectionOptions.ignoreDisconnectWebSocket = false;
     }
   }
-  if (connectionOptionsState.dataChannelMessaging !== "") {
-    let dataChannelMessaging = [];
+  if (connectionOptionsState.dataChannels !== "") {
+    let dataChannels = [];
     try {
-      dataChannelMessaging = JSON.parse(connectionOptionsState.dataChannelMessaging);
+      dataChannels = JSON.parse(connectionOptionsState.dataChannels);
     } catch (_) {
       // サンプル実装なので warning で回避
-      console.warn("Illegal format DataChannelMessaging");
+      console.warn("Illegal format DataChannels");
     }
-    if (Array.isArray(dataChannelMessaging)) {
-      connectionOptions.dataChannels = dataChannelMessaging;
+    if (Array.isArray(dataChannels)) {
+      connectionOptions.dataChannels = dataChannels;
     }
   }
   return connectionOptions;
@@ -914,7 +914,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     audioBitRate: state.audioBitRate,
     audioCodecType: state.audioCodecType,
     clientId: state.clientId,
-    dataChannelMessaging: state.enabledDataChannelMessaging ? state.dataChannelMessaging : "",
+    dataChannels: state.enabledDataChannels ? state.dataChannels : "",
     dataChannelSignaling: state.dataChannelSignaling,
     e2ee: state.e2ee,
     enabledClientId: state.enabledClientId,
@@ -1609,11 +1609,11 @@ export const setInitialParameter =
       pageInitialParameters.signalingUrlCandidates,
       queryStringParameters.signalingUrlCandidates
     );
-    setInitialState<SoraDevtoolsState["dataChannelMessaging"]>(
+    setInitialState<SoraDevtoolsState["dataChannels"]>(
       dispatch,
-      slice.actions.setDataChannelMessaging,
-      pageInitialParameters.dataChannelMessaging,
-      queryStringParameters.dataChannelMessaging
+      slice.actions.setDataChannels,
+      pageInitialParameters.dataChannels,
+      queryStringParameters.dataChannels
     );
     setInitialState<SoraDevtoolsState["audioContentHint"]>(
       dispatch,
@@ -1676,7 +1676,7 @@ export const setInitialParameter =
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
       clientId,
-      dataChannelMessaging,
+      dataChannels,
       dataChannelSignaling,
       e2ee,
       ignoreDisconnectWebSocket,
@@ -1719,9 +1719,9 @@ export const setInitialParameter =
     if (dataChannelSignaling !== "" || ignoreDisconnectWebSocket !== "") {
       dispatch(slice.actions.setEnabledDataChannel(true));
     }
-    // dataChannelMessaging が存在した場合は enabledDataChannelMessaging をセットする
-    if (dataChannelMessaging !== "") {
-      dispatch(slice.actions.setEnabledDataChannelMessaging(true));
+    // dataChannels が存在した場合は enabledDataChannels をセットする
+    if (dataChannels !== "") {
+      dispatch(slice.actions.setEnabledDataChannels(true));
     }
   };
 
@@ -1871,9 +1871,9 @@ export const copyURL =
         state.signalingUrlCandidates,
         state.enabledSignalingUrlCandidates
       ),
-      dataChannelMessaging: queryStringValue<QueryStringParameters["dataChannelMessaging"]>(
-        state.dataChannelMessaging,
-        state.enabledDataChannelMessaging
+      dataChannels: queryStringValue<QueryStringParameters["dataChannels"]>(
+        state.dataChannels,
+        state.enabledDataChannels
       ),
       reconnect: queryStringValue<QueryStringParameters["reconnect"]>(state.reconnect, state.reconnect),
       // debug
@@ -1914,7 +1914,7 @@ export const {
   setAutoGainControl,
   setChannelId,
   setClientId,
-  setDataChannelMessaging,
+  setDataChannels,
   setDataChannelSignaling,
   setDebug,
   setDebugFilterText,
@@ -1923,7 +1923,7 @@ export const {
   setEchoCancellation,
   setEchoCancellationType,
   setEnabledClientId,
-  setEnabledDataChannelMessaging,
+  setEnabledDataChannels,
   setEnabledDataChannel,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,

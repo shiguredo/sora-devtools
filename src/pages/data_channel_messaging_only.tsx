@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useAppSelector } from "@/app/hooks";
 import { useAppDispatch } from "@/app/hooks";
-import { disconnectSora, setEnabledDataChannelMessaging, setInitialParameter, setMediaDevices } from "@/app/slice";
+import { disconnectSora, setEnabledDataChannels, setInitialParameter, setMediaDevices } from "@/app/slice";
 import { AlertMessages } from "@/components/AlertMessages";
 import { Connect } from "@/components/Button/Connect";
 import { Disconnect } from "@/components/Button/Disconnect";
@@ -27,7 +27,7 @@ const DataChannelMessagingOnly: React.FC = () => {
         simulcast: false,
         spotlight: false,
         dataChannelSignaling: "true",
-        dataChannelMessaging: JSON.stringify(
+        dataChannels: JSON.stringify(
           [
             {
               label: "#sora-devtools",
@@ -43,7 +43,7 @@ const DataChannelMessagingOnly: React.FC = () => {
       })
     );
     dispatch(setMediaDevices());
-    dispatch(setEnabledDataChannelMessaging(true));
+    dispatch(setEnabledDataChannels(true));
     return () => {
       dispatch(disconnectSora());
     };
