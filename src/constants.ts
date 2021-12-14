@@ -28,27 +28,29 @@ export const VIDEO_BIT_RATES = [
 
 export const RESOLUTIONS = [
   "",
-  "UHD 4096x2160",
-  "UHD 3840x2160",
-  "3840x1920",
-  "FHD",
-  "HD",
-  "VGA",
-  "QVGA",
-  "HQVGA",
-  "QCIF",
-  "QQVGA",
+  "2160p (3840x2160)",
+  "1080p (1920x1080)",
+  "720p (1280x720)",
+  "480p (640x480)",
+  "360p (640x360)",
+  "240p (320x240)",
+  "180p (320x180)",
+  "120p (160x120)",
 ] as const;
 
-export const DISPLAY_RESOLUTIONS = ["", "VGA", "QVGA"] as const;
+export const DISPLAY_RESOLUTIONS = ["", "480p (640x480)", "240p (320x240)"] as const;
 
 export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10"] as const;
+
+export const AUTO_GAIN_CONTROLS = ["", "true", "false"] as const;
+
+export const NOISE_SUPPRESSIONS = ["", "true", "false"] as const;
+
+export const ECHO_CANCELLATIONS = ["", "true", "false"] as const;
 
 export const ECHO_CANCELLATION_TYPES = ["", "browser", "system"] as const;
 
 export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia"] as const;
-
-export const SPOTLIGHTS = ["1", "2", "3", "4", "5", "6", "7", "8", "true"] as const;
 
 export const SPOTLIGHT_NUMBERS = ["", "1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
@@ -59,6 +61,12 @@ export const SIMULCAST_RID = ["", "r0", "r1", "r2"] as const;
 export const DATA_CHANNEL_SIGNALING = ["", "true", "false"] as const;
 
 export const IGNORE_DISCONNECT_WEBSOCKET = ["", "true", "false"] as const;
+
+export const DEBUG_TYPES = ["log", "notify", "push", "stats", "timeline", "signaling", "messaging"];
+
+export const AUDIO_CONTENT_HINTS = ["", "speech", "speech-recognition", "music"];
+
+export const VIDEO_CONTENT_HINTS = ["", "motion", "detail", "text"];
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {

@@ -1,30 +1,47 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
 
-import { setMetadata, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setEnabledMetadata, setMetadata } from "@/app/slice";
+import { isFormDisabled } from "@/utils";
 
-const Metadata: React.FC = () => {
-  const { metadata } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+export const FormMetadata: React.FC = () => {
+  const enabledMetadata = useAppSelector((state) => state.enabledMetadata);
+  const metadata = useAppSelector((state) => state.metadata);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
+  const dispatch = useAppDispatch();
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setEnabledMetadata(event.target.checked));
+  };
+  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setMetadata(event.target.value));
   };
   return (
-    <div className="col-10 form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="channelId">
-        metadata:
-      </label>
-      <input
-        id="metadata"
-        name="metadata"
-        className="form-control flex-fill"
-        type="text"
-        placeholder="Metadataを指定"
-        value={metadata}
-        onChange={onChange}
-      />
-    </div>
+    <>
+      <FormGroup className="form-inline" controlId="enabledMetadata">
+        <FormCheck
+          type="switch"
+          name="enabledMetadata"
+          label="metadata"
+          checked={enabledMetadata}
+          onChange={onChangeSwitch}
+          disabled={disabled}
+        />
+      </FormGroup>
+      {enabledMetadata ? (
+        <FormGroup className="form-inline" controlId="metadata">
+          <FormControl
+            className="flex-fill w-500"
+            as="textarea"
+            placeholder="Metadataを指定"
+            value={metadata}
+            onChange={onChangeText}
+            rows={10}
+            disabled={disabled}
+          />
+        </FormGroup>
+      ) : null}
+    </>
   );
 };
-
-export default Metadata;

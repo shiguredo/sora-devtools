@@ -1,11 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { disconnectSora, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { disconnectSora } from "@/app/slice";
 
-const Disconnect: React.FC = () => {
-  const connectionStatus = useSelector((state: SoraDemoState) => state.soraContents.connectionStatus);
-  const dispatch = useDispatch();
+export const Disconnect: React.FC = () => {
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const dispatch = useAppDispatch();
   const disconnect = (): void => {
     dispatch(disconnectSora());
   };
@@ -22,5 +22,3 @@ const Disconnect: React.FC = () => {
     </div>
   );
 };
-
-export default Disconnect;

@@ -1,31 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setAutoGainControl, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAutoGainControl } from "@/app/slice";
+import { AUTO_GAIN_CONTROLS } from "@/constants";
+import { isAutoGainControl } from "@/utils";
 
-const AutoGainControl: React.FC = () => {
-  const { autoGainControl } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setAutoGainControl(event.target.checked));
+export const FormAutoGainControl: React.FC = () => {
+  const autoGainControl = useAppSelector((state) => state.autoGainControl);
+  const dispatch = useAppDispatch();
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    if (isAutoGainControl(event.target.value)) {
+      dispatch(setAutoGainControl(event.target.value));
+    }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <div className="form-check">
-        <input
-          id="autoGainControl"
-          name="autoGainControl"
-          className="form-check-input"
-          type="checkbox"
-          checked={autoGainControl}
-          onChange={onChange}
-        />
-        <label className="form-check-label" htmlFor="autoGainControl">
-          autoGainControl
-        </label>
-      </div>
-    </div>
+    <FormGroup className="form-inline" controlId="autoGainControl">
+      <FormLabel>autoGainControl:</FormLabel>
+      <FormSelect name="autoGainControl" value={autoGainControl} onChange={onChange}>
+        {AUTO_GAIN_CONTROLS.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default AutoGainControl;

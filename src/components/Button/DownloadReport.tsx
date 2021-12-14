@@ -1,69 +1,98 @@
 import React, { useRef } from "react";
-import { useSelector } from "react-redux";
 import Sora from "sora-js-sdk";
 
-import { SoraDemoState } from "@/slice";
+import { store } from "@/app/store";
+import { DownloadReport, DownloadReportParameters } from "@/types";
+
+function createDownloadReport(pageName: string): DownloadReport {
+  const state = store.getState();
+  const parameters: DownloadReportParameters = {
+    audio: state.audio,
+    audioBitRate: state.audioBitRate,
+    audioCodecType: state.audioCodecType,
+    audioContentHint: state.audioContentHint,
+    audioInput: state.audioInput,
+    audioInputDevices: state.audioInputDevices,
+    audioOutput: state.audioOutput,
+    audioOutputDevices: state.audioOutputDevices,
+    autoGainControl: state.autoGainControl,
+    clientId: state.clientId,
+    channelId: state.channelId,
+    googCpuOveruseDetection: state.googCpuOveruseDetection,
+    debug: state.debug,
+    dataChannelSignaling: state.dataChannelSignaling,
+    dataChannels: state.dataChannels,
+    displayResolution: state.displayResolution,
+    e2ee: state.e2ee,
+    echoCancellation: state.echoCancellation,
+    echoCancellationType: state.echoCancellationType,
+    enabledClientId: state.enabledClientId,
+    enabledDataChannel: state.enabledDataChannel,
+    enabledDataChannels: state.enabledDataChannels,
+    enabledMetadata: state.enabledMetadata,
+    enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    enabledSignalingUrlCandidates: state.enabledSignalingUrlCandidates,
+    fakeVolume: state.fakeVolume,
+    frameRate: state.frameRate,
+    ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
+    mediaType: state.mediaType,
+    metadata: state.metadata,
+    multistream: state.multistream,
+    noiseSuppression: state.noiseSuppression,
+    reconnect: state.reconnect,
+    resolution: state.resolution,
+    simulcast: state.simulcast,
+    spotlight: state.spotlight,
+    signalingNotifyMetadata: state.signalingNotifyMetadata,
+    signalingUrlCandidates: state.signalingUrlCandidates,
+    simulcastRid: state.simulcastRid,
+    spotlightNumber: state.spotlightNumber,
+    spotlightFocusRid: state.spotlightFocusRid,
+    spotlightUnfocusRid: state.spotlightUnfocusRid,
+    video: state.video,
+    videoBitRate: state.videoBitRate,
+    videoCodecType: state.videoCodecType,
+    videoContentHint: state.videoContentHint,
+    videoInput: state.videoInput,
+    videoInputDevices: state.videoInputDevices,
+    cameraDevice: state.cameraDevice,
+    videoTrack: state.videoTrack,
+    micDevice: state.micDevice,
+    audioTrack: state.audioTrack,
+    role: state.role,
+  };
+  const report = {
+    userAgent: navigator.userAgent,
+    pageName: pageName,
+    "sora-devtools": state.version,
+    "sora-js-sdk": Sora.version(),
+    parameters: parameters,
+    timeline: state.timelineMessages.map((message) => {
+      // Redux non-serializable value 対応で log を string にして保存してあるため parse する
+      return {
+        timestamp: message.timestamp,
+        message: message,
+      };
+    }),
+    notify: state.notifyMessages,
+    stats: state.soraContents.statsReport,
+  };
+  return report;
+}
 
 type Props = {
   pageName: string;
 };
-const DownloadReport: React.FC<Props> = (props) => {
+export const ButtonDownloadReport: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
-  const state = useSelector((state: SoraDemoState) => state);
-  const { statsReport } = state.soraContents;
   const onClick = async (): Promise<void> => {
-    const parametersReport = {
-      audio: state.audio,
-      audioBitRate: state.audioBitRate,
-      audioCodecType: state.audioCodecType,
-      audioInput: state.audioInput,
-      audioInputDevices: state.audioInputDevices,
-      audioOutput: state.audioOutput,
-      audioOutputDevices: state.audioOutputDevices,
-      autoGainControl: state.autoGainControl,
-      channelId: state.channelId,
-      debug: state.debug,
-      googCpuOveruseDetection: state.googCpuOveruseDetection,
-      echoCancellation: state.echoCancellation,
-      echoCancellationType: state.echoCancellationType,
-      frameRate: state.frameRate,
-      mediaType: state.mediaType,
-      noiseSuppression: state.noiseSuppression,
-      resolution: state.resolution,
-      simulcastRid: state.simulcastRid,
-      spotlight: state.spotlight,
-      spotlightNumber: state.spotlightNumber,
-      video: state.video,
-      videoBitRate: state.videoBitRate,
-      videoCodecType: state.videoCodecType,
-      videoInput: state.videoInput,
-      videoInputDevices: state.videoInputDevices,
-    };
-    const report = {
-      userAgent: navigator.userAgent,
-      pageName: props.pageName,
-      "sora-demo": state.version,
-      "sora-js-sdk": Sora.version(),
-      parameters: parametersReport,
-      log: state.logMessages.map((logMessage) => {
-        // Redux non-serializable value 対応で log を string にして保存してあるため parse する
-        return {
-          timestamp: logMessage.timestamp,
-          message: {
-            title: logMessage.message.title,
-            description: JSON.parse(logMessage.message.description),
-          },
-        };
-      }),
-      notify: state.notifyMessages,
-      stats: statsReport,
-    };
+    const report = createDownloadReport(props.pageName);
     const data = JSON.stringify(report);
     const blob = new Blob([data], { type: "text/plain" });
     window.URL = window.URL || window.webkitURL;
     if (anchorRef.current) {
       const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
-      anchorRef.current.download = `sora-demo-report-${datetimeString}.json`;
+      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
       anchorRef.current.href = window.URL.createObjectURL(blob);
       anchorRef.current.click();
     }
@@ -71,7 +100,7 @@ const DownloadReport: React.FC<Props> = (props) => {
   return (
     <>
       <input
-        className="btn btn-light btn-sm ml-1"
+        className="btn btn-light btn-sm ms-1"
         type="button"
         name="downloadReport"
         defaultValue="Download report"
@@ -81,5 +110,3 @@ const DownloadReport: React.FC<Props> = (props) => {
     </>
   );
 };
-
-export default DownloadReport;

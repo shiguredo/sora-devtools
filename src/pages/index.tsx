@@ -1,6 +1,7 @@
+import NextHead from "next/head";
 import NextLink from "next/link";
 import React from "react";
-import { Navbar } from "react-bootstrap";
+import { Container, Navbar } from "react-bootstrap";
 
 const createAs = (pageName: string): string => {
   if (process.env.NODE_ENV === "production") {
@@ -22,10 +23,15 @@ const Link: React.FC<{ pageName: string }> = (props) => {
 const Index: React.FC = () => {
   return (
     <>
+      <NextHead>
+        <title>Sora DevTools</title>
+      </NextHead>
       <header>
         <Navbar variant="dark" bg="sora" expand="md" fixed="top">
-          <Navbar.Brand href="/">Sora DEMO</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-collapse" />
+          <Container>
+            <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
+            <Navbar.Toggle aria-controls="navbar-collapse" />
+          </Container>
         </Navbar>
       </header>
       <div className="container">
@@ -49,9 +55,8 @@ const Index: React.FC = () => {
             <Link pageName="spotlight_sendrecv" />
             <Link pageName="spotlight_sendonly" />
             <Link pageName="spotlight_recvonly" />
-            <li className="separator">スポットライトレガシー</li>
-            <Link pageName="spotlight_legacy_sendrecv" />
-            <Link pageName="spotlight_legacy_recvonly" />
+            <li className="separator">データチャネルメッセージング</li>
+            <Link pageName="data_channel_messaging_only" />
           </ul>
         </div>
       </div>
@@ -59,4 +64,5 @@ const Index: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default Index;

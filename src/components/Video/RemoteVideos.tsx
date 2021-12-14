@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 
-import ButtonRequestRtpStreamBySendConnectionId from "@/components/Button/RequestRtpStreamBySendConnectionId";
-import ButtonResetRtpStreamBySendConnectionId from "@/components/Button/ResetRtpStreamBySendConnectionId";
-import { SoraDemoState } from "@/slice";
-import { ExpansionRTCMediaStreamTrackStats } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { RequestRtpStreamBySendConnectionId } from "@/components/Button/RequestRtpStreamBySendConnectionId";
+import { RequestSpotlightRidBySendConnectionId } from "@/components/Button/RequestSpotlightRidBySendConnectionId";
+import { ResetRtpStreamBySendConnectionId } from "@/components/Button/ResetRtpStreamBySendConnectionId";
+import { ResetSpotlightRidBySendConnectionId } from "@/components/Button/ResetSpotlightRidBySendConnectionId";
+import type { RTCMediaStreamTrackStats } from "@/types";
 
-import ConnectionStatusBar from "./ConnectionStatusBar";
-import JitterButter from "./JitterBuffer";
-import Video from "./Video";
-import VolumeVisualizer from "./VolumeVisualizer";
+import { ConnectionStatusBar } from "./ConnectionStatusBar";
+import { JitterButter } from "./JitterBuffer";
+import { Video } from "./Video";
+import { VolumeVisualizer } from "./VolumeVisualizer";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
@@ -21,33 +22,36 @@ function mediaStreamStatsReportFilter(
   const trackIds = mediaStream.getTracks().map((t) => {
     return t.id;
   });
-  return statsReport.filter((stats) => {
+  const result: RTCMediaStreamTrackStats[] = [];
+  for (const stats of statsReport) {
     if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
-      return false;
+      continue;
     }
     if ("trackIdentifier" in stats) {
       const mediaStreamStats = stats as RTCMediaStreamTrackStats;
-      return mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier);
+      if (mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier)) {
+        result.push(mediaStreamStats);
+      }
     }
-    return false;
-  });
+  }
+  return result;
 }
 
 const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
-  const showStats = useSelector((state: SoraDemoState) => state.showStats);
-  const statsReport = useSelector((state: SoraDemoState) => state.soraContents.statsReport);
-  const prevStatsReport = useSelector((state: SoraDemoState) => state.soraContents.prevStatsReport);
+  const showStats = useAppSelector((state) => state.showStats);
+  const statsReport = useAppSelector((state) => state.soraContents.statsReport);
+  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport);
   if (!showStats) {
     return null;
   }
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport,
     props.stream
-  ) as ExpansionRTCMediaStreamTrackStats[];
+  ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport,
     props.stream
-  ) as ExpansionRTCMediaStreamTrackStats[];
+  ) as RTCMediaStreamTrackStats[];
   return (
     <>
       {currentMediaStreamTrackStatsReport.map((s) => {
@@ -80,58 +84,42 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   );
 };
 
-type RemoteVideoProps = {
-  stream: MediaStream;
-  multistream: boolean;
-  simulcast: boolean;
-  spotlight: boolean;
-};
-const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
-  useEffect(() => {
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   const [height, setHeight] = useState<number>(0);
-  const audioOutput = useSelector((state: SoraDemoState) => state.audioOutput);
-  const displayResolution = useSelector((state: SoraDemoState) => state.displayResolution);
-  const mute = useSelector((state: SoraDemoState) => state.mute);
-  const spotlightConnectionIds = useSelector((state: SoraDemoState) => state.spotlightConnectionIds);
-  const focusedSpotlightConnectionIds = useSelector((state: SoraDemoState) => state.focusedSpotlightConnectionIds);
+  const audioOutput = useAppSelector((state) => state.audioOutput);
+  const displayResolution = useAppSelector((state) => state.displayResolution);
+  const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
+  const multistream = useAppSelector((state) => state.multistream);
+  const mute = useAppSelector((state) => state.mute);
+  const simulcast = useAppSelector((state) => state.simulcast);
+  const spotlight = useAppSelector((state) => state.spotlight);
   const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id];
   return (
     <div className="col-auto">
       <div className="video-status">
-        {/** spotlight legacy の場合とそれ以外で表示方法を変える **/}
-        {props.stream.id in spotlightConnectionIds ? (
-          <ConnectionStatusBar
-            connectionId={spotlightConnectionIds[props.stream.id]}
-            clientId={null}
-            spotlightId={props.stream.id}
-          />
-        ) : (
-          <ConnectionStatusBar connectionId={props.stream.id} />
-        )}
         <div className="d-flex align-items-center mb-1 video-status-inner">
+          <ConnectionStatusBar connectionId={props.stream.id} />
           <JitterButter type="audio" stream={props.stream} />
           <JitterButter type="video" stream={props.stream} />
-          {!props.spotlight && props.multistream && props.simulcast ? (
+        </div>
+        <div className="d-flex align-items-center mb-1 video-status-inner">
+          {!spotlight && multistream && simulcast ? (
             <>
-              <ButtonRequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid="r0" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid="r1" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionId rid="r2" sendConnectionId={props.stream.id} />
+              <ResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
             </>
           ) : null}
-          {props.spotlight && props.multistream && props.simulcast ? (
+          {spotlight && multistream && simulcast ? (
             <>
-              <ButtonRequestRtpStreamBySendConnectionId rid={"r0"} sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid={"r1"} sendConnectionId={props.stream.id} />
-              <ButtonRequestRtpStreamBySendConnectionId rid={"r2"} sendConnectionId={props.stream.id} />
-              <ButtonResetRtpStreamBySendConnectionId sendConnectionId={props.stream.id} />
+              <RequestSpotlightRidBySendConnectionId sendConnectionId={props.stream.id} />
+              <ResetSpotlightRidBySendConnectionId sendConnectionId={props.stream.id} />
             </>
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start overflow-hidden">
+      <div className="d-flex flex-wrap align-items-start">
         <div className={"d-flex flex-nowrap align-items-start video-wrapper" + (focused ? " spotlight-focused" : "")}>
           <Video
             stream={props.stream}
@@ -148,28 +136,13 @@ const RemoteVideo: React.FC<RemoteVideoProps> = (props) => {
   );
 };
 
-type RemoteVideosProps = {
-  multistream: boolean;
-  simulcast: boolean;
-  spotlight: boolean;
-};
-const RemoteVideos: React.FC<RemoteVideosProps> = (props) => {
-  const remoteMediaStreams = useSelector((state: SoraDemoState) => state.soraContents.remoteMediaStreams);
+export const RemoteVideos: React.FC = () => {
+  const remoteMediaStreams = useAppSelector((state) => state.soraContents.remoteMediaStreams);
   return (
     <div className="row my-2">
       {remoteMediaStreams.map((mediaStream) => {
-        return (
-          <RemoteVideo
-            key={mediaStream.id}
-            stream={mediaStream}
-            multistream={props.multistream}
-            simulcast={props.simulcast}
-            spotlight={props.spotlight}
-          />
-        );
+        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />;
       })}
     </div>
   );
 };
-
-export default RemoteVideos;

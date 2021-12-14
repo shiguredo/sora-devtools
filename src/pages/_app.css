@@ -1,6 +1,6 @@
 body {
   padding-top: 56px;
-  padding-bottom: 41px;
+  padding-bottom: 56px;
 }
 
 label {
@@ -61,6 +61,14 @@ video {
   color: #ffffff;
 }
 
+.navbar-signaling-url {
+  min-width: 250px;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
 .container {
   max-width: none;
 }
@@ -84,22 +92,67 @@ video {
   margin-top: 1rem;
 }
 
-.col-demo {
-  padding-top: 10px;
+.col-devtools {
+  padding-top: 1rem;
   overflow-x: auto;
-  height: calc(100vh - 56px - 41px);
+  height: calc(100vh - 56px - 56px);
   overflow-y: scroll;
 }
 
 .col-debug {
   padding: 10px;
   background-color: #222222;
-  min-height: calc(100vh - 56px - 41px);
+  height: calc(100vh - 56px - 56px);
+  min-height: calc(100vh - 56px - 56px);
+  display: flex;
+  flex-direction: column;
 }
 
 .col-debug > .tab-content {
-  height: calc(100vh - 56px - 41px - 65px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 100%;
+}
+
+.col-debug > .tab-content > .tab-pane {
+  padding: 0.25rem;
+}
+
+.col-debug > .tab-content > .active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.col-debug input {
+  background-color: #222222;
+  color: #ffffff;
+}
+
+.col-debug input:focus {
+  background-color: #222222;
+  color: #ffffff;
+}
+
+.col-debug input:disabled {
+  background-color: #666666;
+  color: #ffffff;
+}
+
+.col-debug input:disabled {
+  background-color: #666666;
+  color: #ffffff;
+}
+
+.col-debug .debug-filter {
+  margin: 0.5rem 0;
+}
+
+.col-debug .debug-messages {
   overflow-y: scroll;
+  height: 100%;
 }
 
 .arrow-bottom {
@@ -129,6 +182,8 @@ video {
 .debug-title {
   cursor: pointer;
   color: #ffffff !important;
+  width: 100%;
+  text-decoration: none;
 }
 
 .debug-title.disabled {
@@ -141,18 +196,23 @@ video {
   color: #ffffff !important;
 }
 
+.debug-message > div {
+  padding: 0.25rem 1rem;
+}
+
 .debug-message pre {
   font-size: 100%;
   color: #ffffff;
   margin: 0;
 }
 
-#debug:checked ~ .custom-control-label::before {
-  background-color: #ff0066;
+.debug-message pre.word-break {
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
-.fake-volume-range {
-  width: 240px;
+#debug:checked ~ .custom-control-label::before {
+  background-color: #ff0066;
 }
 
 .volume-visualizer {
@@ -167,10 +227,6 @@ video {
   white-space: nowrap;
 }
 
-.video-status .btn {
-  padding: 0.5rem 0.5rem;
-}
-
 .video-status p {
   margin: 0;
 }
@@ -181,8 +237,8 @@ video {
 
 .alert-messages {
   position: absolute;
-  top: 0;
-  right: 1px;
+  top: 50px;
+  right: 20px;
   z-index: 1;
 }
 
@@ -190,6 +246,7 @@ video {
   flex-basis: 450px;
   width: 450px;
   max-width: 450px;
+  margin-top: 10px;
 }
 
 .spinner-status {
@@ -204,7 +261,7 @@ video {
 }
 
 .spotlight-focused {
-  border: 5px solid var(--primary);
+  border: 5px solid var(--bs-primary);
   border-radius: 5px;
 }
 
@@ -216,53 +273,148 @@ video {
 .normal-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--dark);
+  border-color: var(--bs-dark);
   cursor: initial !important;
 }
 
 .warning-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--yellow);
+  border-color: var(--bs-yellow);
   cursor: initial !important;
 }
 
 .danger-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--orange);
-  background-color: var(--orange);
-  color: var(--light);
+  border-color: var(--bs-orange);
+  background-color: var(--bs-orange);
+  color: var(--bs-light);
   cursor: initial !important;
 }
 
 .critical-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--red);
-  background-color: var(--red);
-  color: var(--light);
+  border-color: var(--bs-red);
+  background-color: var(--bs-red);
+  color: var(--bs-light);
   cursor: initial !important;
 }
 
-.form-sora {
-  margin-bottom: 0.25rem;
-  padding-left: 2rem !important;
-  padding-right: 0 !important;
+.btn-header-debug-mode {
+  color: #000;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
 }
 
-.form-sora:after {
+.btn-header-debug-mode.active {
+  background-color: #ff4c93;
+  color: #ffffff;
+}
+
+.btn-footer-debug-mode {
+  display: none;
+  width: 65px;
+  height: 65px;
+  border-radius: 100%;
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: #6c757d;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.btn-footer-debug-mode:hover {
+  background-color: #5a6268;
+  color: #ffffff;
+}
+
+.btn-footer-debug-mode.active {
+  background-color: #ff4c93;
+}
+
+.btn-footer-debug-mode.active:hover {
+  background-color: #ff0066;
+  outline: 0;
+}
+
+.btn-collapse-options {
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #212529;
+  border: 0;
+  border-radius: 0;
+}
+
+.btn-collapse-options:hover {
+  text-decoration: underline;
+  color: #212529;
+}
+
+.btn-collapse-options:not(.collapsed)::after {
+  transform: rotate(-180deg);
+}
+
+.hr-form {
+  margin: 0.5rem 0 1rem 0;
+}
+
+.btn-collapse-options::after {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 10px;
   content: "";
-  position: absolute;
-  border-left: 1px solid var(--gray);
-  right: -1rem;
-  height: 70%;
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 
-.form-sora:first-child {
-  padding-left: 0.5rem !important;
+.form-label {
+  margin: 0 0.5rem 0 0;
 }
 
-.form-sora:last-child:after {
-  border: none;
+.form-inline {
+  display: flex;
+  align-items: center;
+}
+
+.form-row .col {
+  display: flex;
+  padding-bottom: 0.5rem;
+}
+
+.form-row .w-500 {
+  width: 500px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 0;
+  }
+
+  .col-devtools {
+    flex: none;
+    max-width: none;
+  }
+
+  .col-devtools.col-6 {
+    display: none;
+  }
+
+  .col-debug {
+    width: 100%;
+    height: calc(100vh - 56px - 10px);
+  }
+
+  .btn-footer-debug-mode {
+    display: block;
+  }
+
+  .btn-header-debug-mode {
+    display: none;
+  }
 }

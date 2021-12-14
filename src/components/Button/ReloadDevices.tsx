@@ -1,10 +1,10 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { setMediaDevices } from "@/slice";
+import { useAppDispatch } from "@/app/hooks";
+import { setMediaDevices } from "@/app/slice";
 
-const ReloadDevices: React.FC = () => {
-  const dispatch = useDispatch();
+export const ReloadDevices: React.FC = () => {
+  const dispatch = useAppDispatch();
   const onClick = (): void => {
     dispatch(setMediaDevices());
   };
@@ -20,5 +20,3 @@ const ReloadDevices: React.FC = () => {
     </div>
   );
 };
-
-export default ReloadDevices;

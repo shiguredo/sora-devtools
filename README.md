@@ -1,12 +1,13 @@
-# WebRTC SFU Sora デモアプリ
+# Sora DevTools
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-demo.svg)](https://github.com/shiguredo/sora-demo)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-devtools.svg)](https://github.com/shiguredo/sora-devtools)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## About Support
 
-We check PRs or Issues only when written in JAPANESE.
-In other languages, we won't be able to deal with them. Thank you for your understanding.
+We will not respond to PRs or issues that have not been discussed on Discord. Also, Discord is only available in Japanese.
+
+Please read https://github.com/shiguredo/oss/blob/master/README.en.md before use.
 
 ## 時雨堂のオープンソースソフトウェアについて
 
@@ -14,14 +15,20 @@ In other languages, we won't be able to deal with them. Thank you for your under
 
 ## 概要
 
-これは WebRTC SFU Sora にデモ機能として組み込まれているデモアプリです。
+これは WebRTC SFU Sora に開発者ツールとして組み込まれている機能のオープンソース版です。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
 
+## デモサイト
+
+**このサイトだけでは WebRTC SFU を試すことはできません。WebRTC SFU Sora を別途用意してください**
+
+https://sora-devtools.shiguredo.jp/
+
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/433fb2be3b46d4f59f59e94ef0096945.png)](https://gyazo.com/433fb2be3b46d4f59f59e94ef0096945)
+[![Image from Gyazo](https://i.gyazo.com/2f64f58a25a7d7c92803981f6e42bb8c.png)](https://gyazo.com/2f64f58a25a7d7c92803981f6e42bb8c)
 
 ## 利用技術
 
@@ -47,26 +54,30 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
 
-[![Image from Gyazo](https://i.gyazo.com/f0d8c457809565ebd527eeca0b761a53.png)](https://gyazo.com/f0d8c457809565ebd527eeca0b761a53)
+[![Image from Gyazo](https://i.gyazo.com/dc61a5268efaad4252f0c903e57926dd.png)](https://gyazo.com/dc61a5268efaad4252f0c903e57926dd)
 
 ### レポート機能
 
 現在のクライアントのクライアントのログ、Sora からの通知、クライアント統計情報などをファイル化してダウンロードできます。
 
+[![Image from Gyazo](https://i.gyazo.com/ceda3e4085bec52cbf410f8510840e89.png)](https://gyazo.com/ceda3e4085bec52cbf410f8510840e89)
+
 ### デバッグ機能
 
 デバッグを有効にすると、ログ、通知、統計が有効になります。
 
-[![Image from Gyazo](https://i.gyazo.com/09bf59d3ef7a6f380f24bb525942d335.png)](https://gyazo.com/09bf59d3ef7a6f380f24bb525942d335)
+[![Image from Gyazo](https://i.gyazo.com/da165797092105d22e327df390b90e19.png)](https://gyazo.com/da165797092105d22e327df390b90e19)
 
 ### コピー URL 機能
 
 現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。
 
+[![Image from Gyazo](https://i.gyazo.com/d66245ee9e5bf89bb69309dc909aff69.png)](https://gyazo.com/d66245ee9e5bf89bb69309dc909aff69)
+
 例えば multi_sendrecv で設定を弄らなかった場合は以下のような値になります。
 
 ```
-https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=OPUS&audioInput=&audioOutput=&autoGainControl=true&channelId=sora&echoCancellation=true&echoCancellationType=&frameRate=&mediaType=getUserMedia&noiseSuppression=true&resolution=&video=true&videoBitRate=1000&videoCodecType=VP9&videoInput=&debug=true
+https://example.com/multi_sendrecv.html?channelId=sora&audio=true&audioBitRate=&audioCodecType=OPUS&video=true&videoBitRate=1000&videoCodecType=VP9&resolution=&debug=false
 ```
 
 ## 用語集
@@ -86,7 +97,7 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 - スポットライト
     - 直近で発話した N 人にスポットライトを当てるような仕組みです
 
-## デモ一覧
+## 機能一覧
 
 以下の最新のブラウザで動作します。
 
@@ -158,18 +169,11 @@ https://example.com/multi_sendrecv.html?audio=true&audioBitRate=&audioCodecType=
 - スポットライト受信のみ
     - spotlight_recvonly.html
 
-### スポットライトレガシー
+### データチャネルメッセージング
 
-*2020.1 までにスポットライトとして存在していた機能です*
+データチャネルメッセージングのみを利用します。
 
-直近で発話した N 人のみの音声と映像を配信する仕組みです。
-
-- スポットライトレガシー送受信
-    - spotlight_legacy_sendrecv.html
-- スポットライトレガシー送信のみ
-    - spotlight_legacy_sendonly.html
-- スポットライトレガシー受信のみ
-    - spotlight_legacy_recvonly.html
+- data_channel_messaging_only.html
 
 ## ライセンス
 

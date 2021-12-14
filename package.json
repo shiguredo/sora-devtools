@@ -1,51 +1,54 @@
 {
-  "name": "sora-demo",
-  "version": "2021.1.6",
-  "description": "WebRTC SFU Sora Demo",
+  "name": "sora-devtools",
+  "version": "2021.2.0",
+  "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shiguredo/sora-demo.git"
+    "url": "git+https://github.com/shiguredo/sora-devtools.git"
   },
   "author": "Shiguredo Inc.",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://discord.gg/wYqeSyF"
+    "url": "https://discord.gg/shiguredo"
   },
-  "homepage": "https://github.com/shiguredo/sora-demo#readme",
+  "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "scripts": {
     "start": "next -p 3333",
     "build": "next build",
     "dist": "yarn cleanup && next build && next export -o ./dist",
     "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && npx tsc --noemit",
-    "fmt": "prettier --write ./src && eslint --fix --ext .ts,tsx ./src",
-    "cleanup": "rimraf ./.next ./dist/*"
+    "fmt": "eslint --fix --ext .ts,tsx ./src; prettier --write ./src",
+    "cleanup": "rimraf ./.next ./dist/*",
+    "prepare": "husky install"
   },
   "devDependencies": {
-    "@types/node": "^15.6.1",
-    "@types/react": "^17.0.8",
-    "@types/react-redux": "^7.1.16",
-    "@types/redux-logger": "^3.0.8",
-    "@types/resize-observer-browser": "^0.1.5",
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
-    "eslint": "^7.27.0",
-    "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "@types/node": "^16.11.12",
+    "@types/react": "^17.0.37",
+    "@types/react-redux": "^7.1.20",
+    "@types/redux-logger": "^3.0.9",
+    "@types/resize-observer-browser": "^0.1.6",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint": "^8.4.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "next": "^10.2.3",
+    "husky": "^7.0.4",
+    "next": "^12.0.7",
     "nextjs": "^0.0.3",
-    "prettier": "^2.3.0",
-    "typescript": "^4.3.2"
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.1",
-    "bootstrap": "^4.5.3",
-    "query-string": "^7.0.0",
+    "@reduxjs/toolkit": "^1.6.2",
+    "bootstrap": "5.1.3",
+    "query-string": "^7.0.1",
     "react": "^17.0.2",
-    "react-bootstrap": "^1.6.0",
+    "react-bootstrap": "^2.0.3",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.4",
+    "react-redux": "^7.2.6",
     "redux-logger": "^3.0.6",
-    "sora-js-sdk": "^2021.1.6"
+    "sora-js-sdk": "2021.2.0"
   }
 }

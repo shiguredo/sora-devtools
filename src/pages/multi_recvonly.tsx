@@ -1,31 +1,24 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
-import ColDebug from "@/components/ColDebug";
-import ColDemo from "@/components/ColDemo";
-import Footer from "@/components/Footer";
-import Head from "@/components/Head";
-import Header from "@/components/Header";
-import { disconnectSora, setInitialParameter, setMediaDevices } from "@/slice";
-import { EnabledParameters } from "@/utils";
-
-const ENABLED_PARAMETERS: EnabledParameters = {
-  audio: true,
-  audioOutput: true,
-  channelId: true,
-  clientId: true,
-  dataChannel: true,
-  displayResolution: true,
-  e2ee: true,
-  metadata: true,
-  signalingNotifyMetadata: true,
-  video: true,
-};
+import { useAppDispatch } from "@/app/hooks";
+import { disconnectSora, setInitialParameter, setMediaDevices } from "@/app/slice";
+import { ColDebug } from "@/components/ColDebug";
+import { ColDevtools } from "@/components/ColDevtools";
+import { Footer } from "@/components/Footer";
+import { Head } from "@/components/Head";
+import { Header } from "@/components/Header";
 
 const MultiRecvonly: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter({}));
+    dispatch(
+      setInitialParameter({
+        multistream: true,
+        spotlight: false,
+        simulcast: false,
+        role: "recvonly",
+      })
+    );
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
@@ -35,11 +28,11 @@ const MultiRecvonly: React.FC = () => {
   return (
     <>
       <Head title={"multi recvonly"} />
-      <Header pageName="multi recvonly" enabledParameters={ENABLED_PARAMETERS} />
+      <Header pageName="multi recvonly" />
       <main role="main">
         <div className="container">
           <div className="row">
-            <ColDemo connectType="recvonly" multistream enabledParameters={ENABLED_PARAMETERS} />
+            <ColDevtools />
             <ColDebug />
           </div>
         </div>
@@ -49,4 +42,5 @@ const MultiRecvonly: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default MultiRecvonly;

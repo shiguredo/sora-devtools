@@ -1,35 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setEchoCancellationType, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setEchoCancellationType } from "@/app/slice";
+import { ECHO_CANCELLATION_TYPES } from "@/constants";
 import { isEchoCancellationType } from "@/utils";
 
-const EchoCancellationType: React.FC = () => {
-  const { echoCancellationType } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormEchoCancellationType: React.FC = () => {
+  const echoCancellationType = useAppSelector((state) => state.echoCancellationType);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isEchoCancellationType(event.target.value)) {
       dispatch(setEchoCancellationType(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="echoCancellationType">
-        echoCancellationType:
-      </label>
-      <select
-        id="echoCancellationType"
-        name="echoCancellationType"
-        className="custom-select"
-        value={echoCancellationType}
-        onChange={onChange}
-      >
-        <option value="">未指定</option>
-        <option value="browser">browser</option>
-        <option value="system">system</option>
-      </select>
-    </div>
+    <FormGroup className="form-inline" controlId="echoCancellationType">
+      <FormLabel>echoCancellationType:</FormLabel>
+      <FormSelect name="echoCancellationType" value={echoCancellationType} onChange={onChange}>
+        {ECHO_CANCELLATION_TYPES.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default EchoCancellationType;

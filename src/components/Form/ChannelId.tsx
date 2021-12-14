@@ -1,30 +1,28 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
-import { setChannelId, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setChannelId } from "@/app/slice";
+import { isFormDisabled } from "@/utils";
 
-const ChannelId: React.FC = () => {
-  const { channelId } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormChannelId: React.FC = () => {
+  const channelId = useAppSelector((state) => state.channelId);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setChannelId(event.target.value));
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="channelId">
-        channelId:
-      </label>
-      <input
-        id="channelId"
-        name="channelId"
-        className="form-control"
+    <FormGroup className="form-inline" controlId="channelId">
+      <FormLabel>channelId:</FormLabel>
+      <FormControl
         type="text"
         placeholder="ChannelIdを指定"
         value={channelId}
         onChange={onChange}
+        disabled={disabled}
       />
-    </div>
+    </FormGroup>
   );
 };
-
-export default ChannelId;

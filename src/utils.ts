@@ -1,171 +1,38 @@
 import queryString from "query-string";
-import type { TimelineEventLogType, TransportType } from "sora-js-sdk";
+import type { Role } from "sora-js-sdk";
 
 import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
+  AUDIO_CONTENT_HINTS,
+  AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
+  DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
+  ECHO_CANCELLATIONS,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
+  NOISE_SUPPRESSIONS,
   RESOLUTIONS,
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  SPOTLIGHTS,
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
+  VIDEO_CONTENT_HINTS,
 } from "@/constants";
+import type {
+  CustomHTMLCanvasElement,
+  DisplaySettings,
+  Json,
+  QueryStringParameters,
+  SoraDevtoolsMediaTrackConstraints,
+  SoraDevtoolsState,
+} from "@/types";
 
-// HTMLCanvasElement interface に captureStream を追加
-interface CustomHTMLCanvasElement extends HTMLCanvasElement {
-  captureStream(fps?: number): MediaStream;
-}
-
-// MediaTrackConstraints interface に echoCancellationType を追加
-interface SoraDemoMediaTrackConstraints extends MediaTrackConstraints {
-  echoCancellationType?: "system" | "browser";
-}
-
-export type Json =
-  | null
-  | boolean
-  | number
-  | string
-  | Json[]
-  | {
-      [prop: string]: Json | undefined;
-    };
-
-// Sora demo の接続種類
-export type ConnectType = "sendonly" | "sendrecv" | "recvonly";
-
-// HTMLVideoElement interface に setSinkId を追加
-export interface CustomHTMLVideoElement extends HTMLVideoElement {
-  setSinkId(audioId: string): void;
-}
-
-// MediaDevices interface に getDisplayMedia を追加
-export interface SoraDemoMediaDevices extends MediaDevices {
-  getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
-}
-
-// RTCMediaStreamTrackStats に jitterBuffer 関連を追加
-export interface ExpansionRTCMediaStreamTrackStats extends RTCMediaStreamTrackStats {
-  jitterBufferDelay: number;
-  jitterBufferEmittedCount: number;
-  prevJitterBufferDelay: number;
-  prevJitterBufferEmittedCount: number;
-}
-
-// 各 page で有効にするパラメーターを指定するための Type
-export type EnabledParameters = {
-  audio?: boolean;
-  audioBitRate?: boolean;
-  audioCodecType?: boolean;
-  audioInput?: boolean;
-  audioOutput?: boolean;
-  audioTrack?: boolean;
-  autoGainControl?: boolean;
-  cameraDevice?: boolean;
-  channelId?: boolean;
-  clientId?: boolean;
-  dataChannel?: boolean;
-  displayResolution?: boolean;
-  e2ee?: boolean;
-  echoCancellation?: boolean;
-  echoCancellationType?: boolean;
-  frameRate?: boolean;
-  mediaType?: boolean;
-  metadata?: boolean;
-  micDevice?: boolean;
-  noiseSuppression?: boolean;
-  resolution?: boolean;
-  signalingNotifyMetadata?: boolean;
-  simulcastRid?: boolean;
-  spotlight?: boolean;
-  spotlightFocusRid?: boolean;
-  spotlightNumber?: boolean;
-  spotlightUnfocusRid?: boolean;
-  video?: boolean;
-  videoBitRate?: boolean;
-  videoCodecType?: boolean;
-  videoInput?: boolean;
-  videoTrack?: boolean;
-};
-
-// Debug log message の Type
-export type LogMessage = {
-  timestamp: number;
-  message: {
-    title: string;
-    description: string;
-  };
-};
-
-// Sora on notify callback の引数 Type
-export type SoraNotifyMessage = {
-  type: "notify";
-  event_type: string;
-  [x: string]: unknown;
-};
-
-// Debug notify message の Type
-export type NotifyMessage = {
-  timestamp: number;
-  message: SoraNotifyMessage;
-  transportType: TransportType;
-};
-
-// Sora on push callback の引数 Type
-export type SoraPushMessage = {
-  type: "push";
-  data: {
-    [x: string]: unknown;
-  };
-};
-
-// Debug push message の Type
-export type PushMessage = {
-  timestamp: number;
-  message: SoraPushMessage;
-  transportType: TransportType;
-};
-
-// Debug timeline message の Type
-export type TimelineMessage = {
-  timestamp: number;
-  type: string;
-  logType: TimelineEventLogType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
-  dataChannelId?: number | null;
-  dataChannelLabel?: string | null;
-};
-
-// Debug signaling message の Type
-export type SignalingMessage = {
-  timestamp: number;
-  type: string;
-  transportType: TransportType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
-};
-
-// 画面表示する message の Type
-export type AlertMessage = {
-  timestamp: number;
-  type: "error" | "info";
-  title: string;
-  message: string;
-};
-
-// Debug 表示タブ選択状態用の Type
-export type DebugType = "log" | "notify" | "push" | "stats" | "datachannel" | "signaling";
-
-// UNIX time を 年-月-日 時:分:秒:ミリ秒 形式に変換
+// UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
   const date = new Date(time);
   const year = date.getFullYear();
@@ -183,19 +50,6 @@ export function copy2clipboard(text: string): Promise<void> {
   if (navigator.clipboard) {
     return navigator.clipboard.writeText(text);
   }
-
-  const textarea = document.createElement("textarea");
-  textarea.style.position = "absolute";
-  textarea.style.top = "-1000px";
-  textarea.innerText = text;
-  document.body.appendChild(textarea);
-  textarea.select();
-  try {
-    document.execCommand("copy");
-  } catch (error) {
-    Promise.reject(error);
-  }
-  document.body.removeChild(textarea);
   return Promise.resolve();
 }
 
@@ -236,6 +90,21 @@ export function isFrameRate(frameRate: string): frameRate is typeof FRAME_RATES[
   return (FRAME_RATES as readonly string[]).indexOf(frameRate) >= 0;
 }
 
+// AutoGainControl の Type Guard
+export function isAutoGainControl(autoGainControl: string): autoGainControl is typeof AUTO_GAIN_CONTROLS[number] {
+  return (AUTO_GAIN_CONTROLS as readonly string[]).indexOf(autoGainControl) >= 0;
+}
+
+// NoiseSuppression の Type Guard
+export function isNoiseSuppression(noiseSuppression: string): noiseSuppression is typeof NOISE_SUPPRESSIONS[number] {
+  return (NOISE_SUPPRESSIONS as readonly string[]).indexOf(noiseSuppression) >= 0;
+}
+
+// EchoCancellation の Type Guard
+export function isEchoCancellation(echoCancellation: string): echoCancellation is typeof ECHO_CANCELLATIONS[number] {
+  return (ECHO_CANCELLATIONS as readonly string[]).indexOf(echoCancellation) >= 0;
+}
+
 // EchoCancellationType の Type Guard
 export function isEchoCancellationType(
   echoCancellationType: string
@@ -246,11 +115,6 @@ export function isEchoCancellationType(
 // SpotlightNumber の Type Guard
 export function isSpotlightNumber(spotlightNumber: string): spotlightNumber is typeof SPOTLIGHT_NUMBERS[number] {
   return (SPOTLIGHT_NUMBERS as readonly string[]).indexOf(spotlightNumber) >= 0;
-}
-
-// Spotlight の Type Guard
-export function isSpotlight(spotlight: string): spotlight is typeof SPOTLIGHTS[number] {
-  return (SPOTLIGHTS as readonly string[]).indexOf(spotlight) >= 0;
 }
 
 // SpotlightFocusRid / SpotlightUnfocusRid の Type Guard
@@ -284,54 +148,29 @@ export function isIgnoreDisconnectWebSocket(
   return (IGNORE_DISCONNECT_WEBSOCKET as readonly string[]).indexOf(ignoreDisconnectWebSocket) >= 0;
 }
 
-// クエリ文字列から取得する parameter の Type
-export type QueryStringParameters = {
-  audio: boolean;
-  audioBitRate: typeof AUDIO_BIT_RATES[number];
-  audioCodecType: typeof AUDIO_CODEC_TYPES[number];
-  audioInput: string;
-  audioOutput: string;
-  audioTrack: boolean;
-  autoGainControl: boolean;
-  cameraDevice: boolean;
-  channelId: string;
-  clientId: string;
-  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  debug: boolean;
-  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
-  e2ee: boolean;
-  echoCancellation: boolean;
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
-  fakeVolume: string;
-  frameRate: typeof FRAME_RATES[number];
-  googCpuOveruseDetection: boolean;
-  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
-  mediaType: typeof MEDIA_TYPES[number];
-  metadata: string;
-  micDevice: boolean;
-  mute: boolean;
-  noiseSuppression: boolean;
-  resolution: typeof RESOLUTIONS[number];
-  showStats: boolean;
-  signalingNotifyMetadata: string;
-  simulcastRid: typeof SIMULCAST_RID[number];
-  spotlight: typeof SPOTLIGHTS[number];
-  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  video: boolean;
-  videoBitRate: typeof VIDEO_BIT_RATES[number];
-  videoCodecType: typeof VIDEO_CODEC_TYPES[number];
-  videoInput: string;
-  videoTrack: boolean;
-};
+// DebugType の Type Guard
+export function isDebugType(debugType: string): debugType is typeof DEBUG_TYPES[number] {
+  return (DEBUG_TYPES as readonly string[]).indexOf(debugType) >= 0;
+}
+
+// AudioContentHint の Type Guard
+export function isAudioContentHint(audioContentHint: string): audioContentHint is typeof AUDIO_CONTENT_HINTS[number] {
+  return (AUDIO_CONTENT_HINTS as readonly string[]).indexOf(audioContentHint) >= 0;
+}
+
+// VideoContentHint の Type Guard
+export function isVideoContentHint(videoContentHint: string): videoContentHint is typeof VIDEO_CONTENT_HINTS[number] {
+  return (VIDEO_CONTENT_HINTS as readonly string[]).indexOf(videoContentHint) >= 0;
+}
 
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
   const {
+    apiUrl,
     audio,
     audioBitRate,
     audioCodecType,
+    audioContentHint,
     audioInput,
     audioOutput,
     audioTrack,
@@ -340,7 +179,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     channelId,
     clientId,
     dataChannelSignaling,
+    dataChannels,
     debug,
+    debugType,
     displayResolution,
     e2ee,
     echoCancellation,
@@ -354,21 +195,26 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     micDevice,
     mute,
     noiseSuppression,
+    reconnect,
     resolution,
     showStats,
     signalingNotifyMetadata,
+    signalingUrlCandidates,
     simulcastRid,
-    spotlight,
     spotlightFocusRid,
     spotlightNumber,
     spotlightUnfocusRid,
     video,
     videoBitRate,
     videoCodecType,
+    videoContentHint,
     videoInput,
     videoTrack,
   } = queryString.parse(location.search, { parseBooleans: true });
   const queryStringParameters: Partial<QueryStringParameters> = {};
+  if (typeof apiUrl === "string") {
+    queryStringParameters.apiUrl = apiUrl;
+  }
   if (typeof audio === "boolean") {
     queryStringParameters.audio = audio;
   }
@@ -378,8 +224,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof audioCodecType === "string" && isAudioCodecType(audioCodecType)) {
     queryStringParameters.audioCodecType = audioCodecType;
   }
-  if (typeof autoGainControl === "boolean") {
-    queryStringParameters.autoGainControl = autoGainControl;
+  const stringAutoGainControl = String(autoGainControl);
+  if (isAutoGainControl(stringAutoGainControl)) {
+    queryStringParameters.autoGainControl = stringAutoGainControl;
   }
   if (channelId !== undefined) {
     queryStringParameters.channelId = String(channelId);
@@ -393,20 +240,25 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof debug === "boolean") {
     queryStringParameters.debug = debug;
   }
+  if (typeof debugType === "string" && isDebugType(debugType)) {
+    queryStringParameters.debugType = debugType;
+  }
   if (typeof displayResolution === "string" && isDisplayResolution(displayResolution)) {
     queryStringParameters.displayResolution = displayResolution;
   }
   if (typeof e2ee === "boolean") {
     queryStringParameters.e2ee = e2ee;
   }
-  if (typeof echoCancellation === "boolean") {
-    queryStringParameters.echoCancellation = echoCancellation;
+  const stringEchoCancellation = String(echoCancellation);
+  if (isEchoCancellation(stringEchoCancellation)) {
+    queryStringParameters.echoCancellation = stringEchoCancellation;
   }
   if (typeof echoCancellationType === "string" && isEchoCancellationType(echoCancellationType)) {
     queryStringParameters.echoCancellationType = echoCancellationType;
   }
-  if (typeof noiseSuppression === "boolean") {
-    queryStringParameters.noiseSuppression = noiseSuppression;
+  const stringNoiseSuppression = String(noiseSuppression);
+  if (isNoiseSuppression(stringNoiseSuppression)) {
+    queryStringParameters.noiseSuppression = stringNoiseSuppression;
   }
   if (fakeVolume) {
     queryStringParameters.fakeVolume = String(fakeVolume);
@@ -426,11 +278,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (signalingNotifyMetadata) {
     queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
   }
+  if (signalingUrlCandidates && typeof signalingUrlCandidates === "string") {
+    const parsedSignalingUrlCandidates = JSON.parse(signalingUrlCandidates);
+    if (Array.isArray(parsedSignalingUrlCandidates)) {
+      queryStringParameters.signalingUrlCandidates = parsedSignalingUrlCandidates;
+    }
+  }
   if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;
-  }
-  if (typeof spotlight === "string" && isSpotlight(spotlight)) {
-    queryStringParameters.spotlight = spotlight;
   }
   if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
     queryStringParameters.spotlightNumber = spotlightNumber;
@@ -485,11 +340,32 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (typeof videoTrack === "boolean") {
     queryStringParameters.videoTrack = videoTrack;
   }
+  if (typeof dataChannels === "string") {
+    queryStringParameters.dataChannels = dataChannels;
+  }
+  if (typeof reconnect === "boolean") {
+    queryStringParameters.reconnect = reconnect;
+  }
+  const stringAudioContentHint = String(audioContentHint);
+  if (isAudioContentHint(stringAudioContentHint)) {
+    queryStringParameters.audioContentHint = stringAudioContentHint;
+  }
+  const stringVideoContentHint = String(videoContentHint);
+  if (isVideoContentHint(stringVideoContentHint)) {
+    queryStringParameters.videoContentHint = stringVideoContentHint;
+  }
   return queryStringParameters;
 }
 
 // Sora のシグナリングURLを生成
-export function createSignalingURL(): string {
+export function createSignalingURL(
+  enabledSignalingUrlCandidates: boolean,
+  signalingUrlCandidates: string[]
+): string | string[] {
+  if (enabledSignalingUrlCandidates) {
+    // 空文字列は取り除く
+    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== "");
+  }
   if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
     return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL;
   }
@@ -501,28 +377,22 @@ export function createSignalingURL(): string {
 // 解像度に対応する width と height を返す
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
-    case "QQVGA":
+    case "120p (160x120)":
       return { width: 160, height: 120 };
-    case "QCIF":
-      return { width: 176, height: 144 };
-    case "HQVGA":
-      return { width: 240, height: 160 };
-    case "QVGA":
+    case "180p (320x180)":
+      return { width: 320, height: 180 };
+    case "240p (320x240)":
       return { width: 320, height: 240 };
-    case "VGA":
+    case "360p (640x360)":
+      return { width: 640, height: 360 };
+    case "480p (640x480)":
       return { width: 640, height: 480 };
-    case "SD":
-      return { width: 720, height: 480 };
-    case "HD":
+    case "720p (1280x720)":
       return { width: 1280, height: 720 };
-    case "FHD":
+    case "1080p (1920x1080)":
       return { width: 1920, height: 1080 };
-    case "UHD 3840x2160":
+    case "2160p (3840x2160)":
       return { width: 3840, height: 2160 };
-    case "UHD 4096x2160":
-      return { width: 4096, height: 2160 };
-    case "3840x1920":
-      return { width: 3840, height: 1920 };
     default:
       return { width: 0, height: 0 };
   }
@@ -531,9 +401,9 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
 // getUserMedia の audio constraints を生成
 type CreateAudioConstraintsParameters = {
   audio: boolean;
-  autoGainControl: boolean;
-  noiseSuppression: boolean;
-  echoCancellation: boolean;
+  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
+  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
+  echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   audioInput: string;
 };
@@ -542,13 +412,25 @@ export function createAudioConstraints(parameters: CreateAudioConstraintsParamet
   if (!audio) {
     return false;
   }
-  const audioConstraints: SoraDemoMediaTrackConstraints = {};
+  if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType && !audioInput) {
+    return audio;
+  }
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (audioInput) {
     audioConstraints.deviceId = { exact: audioInput };
   }
-  audioConstraints.autoGainControl = autoGainControl;
-  audioConstraints.noiseSuppression = noiseSuppression;
-  audioConstraints.echoCancellation = echoCancellation;
+  const parsedAutoGainControl = parseBooleanString(autoGainControl);
+  if (parsedAutoGainControl !== undefined) {
+    audioConstraints.autoGainControl = parsedAutoGainControl;
+  }
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression);
+  if (parsedNoiseSuppression !== undefined) {
+    audioConstraints.noiseSuppression = parsedNoiseSuppression;
+  }
+  const parsedEchoCancellation = parseBooleanString(echoCancellation);
+  if (parsedEchoCancellation !== undefined) {
+    audioConstraints.echoCancellation = parsedEchoCancellation;
+  }
   if (echoCancellationType) {
     audioConstraints.echoCancellationType = echoCancellationType;
   }
@@ -688,16 +570,13 @@ export function drawFakeCanvas(
   context.fillText(text, x - margin, y);
 }
 
-// 新/旧 spotlight の互換性を保つための parser
-export function parseSpotlight(spotlight: string): boolean | number {
-  if (spotlight === "true") {
+export function parseBooleanString(value: string): boolean | undefined {
+  if (value === "true") {
     return true;
-  }
-  const numberSpotlight = parseInt(spotlight, 10);
-  if (isNaN(numberSpotlight)) {
+  } else if (value === "false") {
     return false;
   }
-  return numberSpotlight;
+  return;
 }
 
 export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
@@ -735,7 +614,7 @@ export function getDefaultVideoCodecType(
   if (codecs.includes("H264")) {
     return "H264";
   }
-  if (codecs.includes("AV1X")) {
+  if (codecs.includes("AV1")) {
     return "AV1";
   }
   if (codecs.includes("H265")) {
@@ -755,4 +634,90 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
     // 例外が起きた場合は何もしない
   }
   return [];
+}
+
+export function createDisplaySettings(
+  role: Role,
+  multistream: boolean,
+  simulcast: boolean,
+  spotlight: boolean,
+  dataChannelMessagingOnly: boolean
+): DisplaySettings {
+  const displaySettings: DisplaySettings = {
+    audio: false,
+    audioBitRate: false,
+    audioCodecType: false,
+    audioContentHint: false,
+    audioConstraints: false,
+    audioInput: false,
+    audioOutput: false,
+    audioTrack: false,
+    cameraDevice: false,
+    displayResolution: false,
+    mediaType: false,
+    micDevice: false,
+    simulcastRid: false,
+    spotlightFocusRid: false,
+    spotlightNumber: false,
+    spotlightUnfocusRid: false,
+    video: false,
+    videoBitRate: false,
+    videoCodecType: false,
+    videoContentHint: false,
+    videoConstraints: false,
+    videoInput: false,
+    videoTrack: false,
+  };
+  if (dataChannelMessagingOnly) {
+    return displaySettings;
+  }
+  displaySettings.audio = true;
+  displaySettings.video = true;
+  displaySettings.displayResolution = true;
+  if (role === "sendonly" || role === "sendrecv") {
+    displaySettings.audioBitRate = true;
+    displaySettings.audioCodecType = true;
+    displaySettings.audioContentHint = true;
+    displaySettings.audioConstraints = true;
+    displaySettings.audioInput = true;
+    displaySettings.audioOutput = true;
+    displaySettings.audioTrack = true;
+    displaySettings.cameraDevice = true;
+    displaySettings.mediaType = true;
+    displaySettings.micDevice = true;
+    displaySettings.videoBitRate = true;
+    displaySettings.videoCodecType = true;
+    displaySettings.videoContentHint = true;
+    displaySettings.videoConstraints = true;
+    displaySettings.videoInput = true;
+    displaySettings.videoTrack = true;
+  } else if (role === "recvonly") {
+    displaySettings.audioCodecType = true;
+    displaySettings.videoCodecType = true;
+    displaySettings.audioOutput = true;
+  }
+  // multistream recvonly は codec type を表示しない
+  if (role === "recvonly" && multistream) {
+    displaySettings.audioCodecType = false;
+    displaySettings.videoCodecType = false;
+  }
+  // simulcast  sendrecv/recvnoly では simulcastRid を表示する
+  if ((role === "recvonly" || role === "sendrecv") && simulcast && !spotlight) {
+    displaySettings.simulcastRid = true;
+  }
+  // spotlight の場合は spotlightNumber を表示する
+  if (spotlight) {
+    displaySettings.spotlightNumber = true;
+  }
+  // spotlight,  sendrecv/recvnoly では spotlightFocusRid, spotlightUnfocusRid を表示する
+  if ((role === "recvonly" || role === "sendrecv") && spotlight) {
+    displaySettings.spotlightFocusRid = true;
+    displaySettings.spotlightUnfocusRid = true;
+  }
+  return displaySettings;
+}
+
+//
+export function isFormDisabled(connectionStatus: SoraDevtoolsState["soraContents"]["connectionStatus"]): boolean {
+  return connectionStatus === "connected" || connectionStatus === "connecting";
 }

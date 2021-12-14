@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { TimelineMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { TimelineMessage } from "@/types";
 
 const DATA_CHANNEL_COLORS: { [key: string]: string } = {
   signaling: "#ff00ff",
@@ -14,15 +13,35 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
 };
 
 const WebSocketLabel: React.FC = () => {
-  return <span style={{ color: "#00ff00" }}>[websocket]</span>;
+  return (
+    <span className="me-1" style={{ color: "#00ff00" }}>
+      [websocket]
+    </span>
+  );
 };
 
 const PeerConnectionLabel: React.FC = () => {
-  return <span style={{ color: "#ff8c00" }}>[peerconnection]</span>;
+  return (
+    <span className="me-1" style={{ color: "#ff8c00" }}>
+      [peerconnection]
+    </span>
+  );
 };
 
 const SoraLabel: React.FC = () => {
-  return <span style={{ color: "#73b8e2" }}>[sora]</span>;
+  return (
+    <span className="me-1" style={{ color: "#bce2e8" }}>
+      [sora]
+    </span>
+  );
+};
+
+const SoraDevtoolsLabel: React.FC = () => {
+  return (
+    <span className="me-1" style={{ color: "#73b8e2" }}>
+      [sora-devtools]
+    </span>
+  );
 };
 
 type DataChannelLabelProps = {
@@ -33,7 +52,7 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
   const { label, id } = props;
   const color = label && Object.keys(DATA_CHANNEL_COLORS).includes(label) ? DATA_CHANNEL_COLORS[label] : undefined;
   return (
-    <span style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color: color } : {}}>
       [datachannel]{label ? `[${label}]` : ""}
       {typeof id === "number" ? `[${id}]` : ""}
     </span>
@@ -52,6 +71,8 @@ const Collapse: React.FC<TimelineMessage> = (props) => {
     labelComponent = <PeerConnectionLabel />;
   } else if (logType === "sora") {
     labelComponent = <SoraLabel />;
+  } else if (logType === "sora-devtools") {
+    labelComponent = <SoraDevtoolsLabel />;
   }
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
 };
@@ -60,16 +81,27 @@ const Log = React.memo((props: TimelineMessage) => {
   return <Collapse {...props} />;
 });
 
-const TimelineMessages: React.FC = () => {
-  const timelineMessages = useSelector((state: SoraDemoState) => state.timelineMessages);
+export const TimelineMessages: React.FC = () => {
+  const timelineMessages = useAppSelector((state) => state.timelineMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = timelineMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
-    <>
-      {timelineMessages.map((message) => {
-        const key = `${message.timestamp}-${message.type}`;
+    <div className="debug-messages">
+      {filteredMessages.map((message) => {
+        let key = `${message.timestamp}-${message.type}`;
+        // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する
+        if (message.dataChannelLabel) {
+          key += `-${message.dataChannelLabel}`;
+        }
         return <Log key={key} {...message} />;
       })}
-    </>
+    </div>
   );
 };
-
-export default TimelineMessages;

@@ -1,10 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-import { SoraDemoState } from "@/slice";
-import { CustomHTMLVideoElement, getVideoSizeByResolution } from "@/utils";
+import type { CustomHTMLVideoElement, SoraDevtoolsState } from "@/types";
+import { getVideoSizeByResolution } from "@/utils";
 
 type VideoProps = {
-  displayResolution: SoraDemoState["displayResolution"];
+  localVideo?: boolean;
+  displayResolution: SoraDevtoolsState["displayResolution"];
   stream: MediaStream | null;
   mute: boolean;
   audioOutput: string;
@@ -71,6 +72,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   }
   return (
     <video
+      id={props.localVideo ? "local-video" : undefined}
       autoPlay
       playsInline
       controls
@@ -82,8 +84,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   );
 };
 
-const Video = React.memo((props: VideoProps) => {
+export const Video = React.memo((props: VideoProps) => {
   return <VideoElement {...props} />;
 });
-
-export default Video;

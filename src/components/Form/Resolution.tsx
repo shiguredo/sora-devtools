@@ -1,37 +1,31 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
-import { setResolution, SoraDemoState } from "@/slice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setResolution } from "@/app/slice";
+import { RESOLUTIONS } from "@/constants";
 import { isResolution } from "@/utils";
 
-const Resolution: React.FC = () => {
-  const { resolution } = useSelector((state: SoraDemoState) => state);
-  const dispatch = useDispatch();
+export const FormResolution: React.FC = () => {
+  const resolution = useAppSelector((state) => state.resolution);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isResolution(event.target.value)) {
       dispatch(setResolution(event.target.value));
     }
   };
   return (
-    <div className="col-auto form-inline flex-nowrap form-sora">
-      <label className="mr-1" htmlFor="resolution">
-        resolution:
-      </label>
-      <select id="resolution" name="resolution" className="custom-select" value={resolution} onChange={onChange}>
-        <option value="">未指定</option>
-        <option value="UHD 4096x2160">UHD 4096x2160</option>
-        <option value="UHD 3840x2160">UHD 3840x2160</option>
-        <option value="3840x1920">3840x1920</option>
-        <option value="FHD">FHD</option>
-        <option value="HD">HD</option>
-        <option value="VGA">VGA</option>
-        <option value="QVGA">QVGA</option>
-        <option value="HQVGA">HQVGA</option>
-        <option value="QCIF">QCIF</option>
-        <option value="QQVGA">QQVGA</option>
-      </select>
-    </div>
+    <FormGroup className="form-inline" controlId="resolution">
+      <FormLabel>resolution:</FormLabel>
+      <FormSelect name="resolution" value={resolution} onChange={onChange}>
+        {RESOLUTIONS.map((value) => {
+          return (
+            <option key={value} value={value}>
+              {value === "" ? "未指定" : value}
+            </option>
+          );
+        })}
+      </FormSelect>
+    </FormGroup>
   );
 };
-
-export default Resolution;

@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { PushMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { PushMessage } from "@/types";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
   websocket: "#00ff00",
@@ -30,16 +29,23 @@ const Log = React.memo((props: CollapsePushProps) => {
   return <Collapse {...props} />;
 });
 
-const PushMessages: React.FC = () => {
-  const { pushMessages } = useSelector((state: SoraDemoState) => state);
+export const PushMessages: React.FC = () => {
+  const pushMessages = useAppSelector((state) => state.pushMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = pushMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
-    <>
-      {pushMessages.map((pushMessage, index) => {
+    <div className="debug-messages">
+      {filteredMessages.map((pushMessage, index) => {
         const key = `${pushMessage.timestamp}-${index}`;
         return <Log key={key} ariaControls={key} push={pushMessage} />;
       })}
-    </>
+    </div>
   );
 };
-
-export default PushMessages;

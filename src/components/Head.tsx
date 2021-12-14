@@ -5,12 +5,10 @@ type Props = {
   title: string;
 };
 
-const Head: React.FC<Props> = (props) => {
+export const Head: React.FC<Props> = (props) => {
   return (
     <NextHead>
-      <title>Sora DEMO {props.title}</title>
+      <title>Sora DevTools {props.title}</title>
     </NextHead>
   );
 };
-
-export default Head;

@@ -9,6 +9,44 @@
 - FIX
     - バグ修正
 
+## 2021.2.0
+
+- [ADD] Debug モードに messaging タブを追加する
+    - @yuitowest
+- [CHANGE] 再接続処理を実装する
+    - @yuitowest
+- [CHANGE] sora-demo を sora-devtools へ変更する
+    - @voluntas
+- [ADD] MediaStreamTrack Content Hints 実装を追加する
+    - @yuitowest
+- [ADD] DataChannel Messaging only ページを作成する
+    - @yuitowest
+- [ADD] Debug モードにフィルター機能を追加する
+    - @yuitowest
+- [UPDATE] package を更新する
+    - Debug モード切り替えボタンをモバイルとデスクトップで表示位置を変える
+    - ダウンロードレポートのレポート内容を修正する
+    - @yuitowest
+- [UPDATE] package を更新する
+    - react-bootstrap: 1.6.1, -> 2.0.0-beta.6
+    - bootstrap: 4.5.3 -> 5.1.1
+    - typescript: 4.3.5 -> 4.4.3
+    - @yuitowest
+- [UPDATE] モバイル表示でも画面タイトルが表示されるように修正する
+    - @yuitowest
+- [ADD] 複数シグナリング URL 対応を追加する
+    - signalingUrlCandidates を設定できるようにする
+    - 現在接続中のシグナリング URL をヘッダーに表示する機能を追加する
+    - @yuitowest
+- [UPDATE] navigator.mediaDevices が undefined の場合の例外メッセージをわかりやすくする
+    - @yuitowest
+- [UPDATE] Debug 関連の UI/UX を変更する
+    - header の debug checkbox を削除して右下に常駐のボタンを設置する
+    - width がモバイルサイズの場合、通常表示とデバッグ表示はトグル切り替えになるように修正する
+    - @yuitowest
+- [CHANGE] spotlight_legacy を削除する
+    - @yuitowest
+
 ## 2021.1.6
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.6 に更新する

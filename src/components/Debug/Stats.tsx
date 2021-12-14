@@ -1,8 +1,7 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
   [x: string]: string | number | undefined;
@@ -16,15 +15,22 @@ const Log = React.memo((props: RTCStatsWithIndexSignature) => {
   return <Collapse {...props} />;
 });
 
-const DebugGetStats: React.FC = () => {
-  const { statsReport } = useSelector((state: SoraDemoState) => state.soraContents);
+export const Stats: React.FC = () => {
+  const statsReport = useAppSelector((state) => state.soraContents.statsReport);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = statsReport.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
-    <>
-      {statsReport.map((stats) => {
+    <div className="debug-messages">
+      {filteredMessages.map((stats) => {
         return <Log key={stats.id} {...(stats as RTCStatsWithIndexSignature)} />;
       })}
-    </>
+    </div>
   );
 };
-
-export default DebugGetStats;

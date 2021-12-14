@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Message from "@/components/Debug/Message";
-import { SoraDemoState } from "@/slice";
-import { NotifyMessage } from "@/utils";
+import { useAppSelector } from "@/app/hooks";
+import { Message } from "@/components/Debug/Message";
+import type { NotifyMessage } from "@/types";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
   websocket: "#00ff00",
@@ -13,7 +12,11 @@ const SIGNALING_COLORS: { [key: string]: string } = {
 const Label: React.FC<{ text: string }> = (props) => {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
-  return <span style={color ? { color: color } : {}}>[{text}]</span>;
+  return (
+    <span className="me-1" style={color ? { color: color } : {}}>
+      [{text}]
+    </span>
+  );
 };
 
 type CollapseNotifyProps = {
@@ -36,15 +39,22 @@ const Log = React.memo((props: CollapseNotifyProps) => {
   return <CollapseNotify {...props} />;
 });
 
-const NotifyMessages: React.FC = () => {
-  const { notifyMessages } = useSelector((state: SoraDemoState) => state);
+export const NotifyMessages: React.FC = () => {
+  const notifyMessages = useAppSelector((state) => state.notifyMessages);
+  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const filteredMessages = notifyMessages.filter((message) => {
+    return debugFilterText.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
+      }
+      return 0 <= JSON.stringify(message).indexOf(filterText);
+    });
+  });
   return (
-    <>
-      {notifyMessages.map((notify) => {
+    <div className="debug-messages">
+      {filteredMessages.map((notify) => {
         return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
       })}
-    </>
+    </div>
   );
 };
-
-export default NotifyMessages;
