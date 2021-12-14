@@ -2730,10 +2730,10 @@ slash@^3.0.0:
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
-sora-js-sdk@2021.2.0-canary.11:
-  version "2021.2.0-canary.11"
-  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2021.2.0-canary.11.tgz#3e7b9164bf74f39c55bb5898d26f34bfbdfa7024"
-  integrity sha512-jpH3PDi9eCa2fOsTCeCbKcjEM5Xp3AFhapFF5g368l3ScXm3ZrXbWMtrWm+Z1WY0hfUPLR31hRfxh6O1l0qMMA==
+sora-js-sdk@2021.2.0:
+  version "2021.2.0"
+  resolved "https://registry.yarnpkg.com/sora-js-sdk/-/sora-js-sdk-2021.2.0.tgz#5c34b1560bde7d538b5f7d2143fd828d28d1c848"
+  integrity sha512-iIsOF+l90Qf6osCQQPq0O0TEyLHZJ7MyiZtp9opfIFF1QAWLJ/ThB4AAOsJQAK/xjmYBqZ10GU1LEiZhVobt5w==
 
 source-map@0.7.3:
   version "0.7.3"
