@@ -23,7 +23,6 @@ import type {
   PushMessage,
   QueryStringParameters,
   SignalingMessage,
-  SoraDevtoolsMediaDevices,
   SoraDevtoolsState,
   SoraNotifyMessage,
   SoraPushMessage,
@@ -35,6 +34,7 @@ import {
   createDisplaySettings,
   createFakeMediaConstraints,
   createFakeMediaStream,
+  createGetDisplayMediaConstraints,
   createSignalingURL,
   createVideoConstraints,
   drawFakeCanvas,
@@ -577,12 +577,10 @@ async function createMediaStream(
     if (navigator.mediaDevices === undefined) {
       throw new Error("Failed to call getUserMedia. Make sure domain is secure");
     }
-    const constraints = {
-      video: true,
-    };
+    const constraints = createGetDisplayMediaConstraints({ frameRate: state.frameRate, resolution: state.resolution });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
-    const stream = await (navigator.mediaDevices as SoraDevtoolsMediaDevices).getDisplayMedia(constraints);
+    const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media")));
     for (const track of stream.getVideoTracks()) {
       if (track.contentHint !== undefined) {

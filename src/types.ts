@@ -167,11 +167,6 @@ export interface CustomHTMLVideoElement extends HTMLVideoElement {
   setSinkId(audioId: string): void;
 }
 
-// MediaDevices interface に getDisplayMedia を追加
-export interface SoraDevtoolsMediaDevices extends MediaDevices {
-  getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
-}
-
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加
 export interface RTCMediaStreamTrackStats extends RTCStats {
   ssrc: number;

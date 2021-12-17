@@ -507,6 +507,34 @@ export function createFakeMediaConstraints(
   };
 }
 
+// getDisplayMedia の video constraints を生成
+type CreateGetDisplayMediaConstraintsParameters = {
+  frameRate: string;
+  resolution: string;
+};
+export function createGetDisplayMediaConstraints(
+  parameters: CreateGetDisplayMediaConstraintsParameters
+): MediaStreamConstraints {
+  const { frameRate, resolution } = parameters;
+  if (!frameRate && !resolution) {
+    return { video: true };
+  }
+  const videoConstraints: MediaTrackConstraints = {};
+  if (frameRate) {
+    videoConstraints.frameRate = parseInt(frameRate, 10);
+  }
+  if (resolution) {
+    const { width, height } = getVideoSizeByResolution(resolution);
+    if (0 < width && 0 < height) {
+      videoConstraints.width = width;
+      videoConstraints.height = height;
+    }
+  }
+  return {
+    video: videoConstraints,
+  };
+}
+
 // Fake 用の MediaStream を生成
 export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   canvas: CustomHTMLCanvasElement | null;
