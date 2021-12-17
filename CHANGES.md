@@ -9,6 +9,10 @@
 - FIX
     - バグ修正
 
+## develop
+- [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
+    - @yuitowest
+
 ## 2021.2.0
 
 - [ADD] Debug モードに messaging タブを追加する
