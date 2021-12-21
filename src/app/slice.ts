@@ -39,6 +39,7 @@ import {
   createVideoConstraints,
   drawFakeCanvas,
   getDevices,
+  getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
 } from "@/utils";
@@ -604,12 +605,10 @@ async function createMediaStream(
       track.enabled = state.videoTrack;
       dispatch(
         slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
-        )
-      );
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+          createSoraDevtoolsTimelineMessage(
+            `${track.kind}-mediastream-track-properties`,
+            getMediaStreamTrackProperties(track)
+          )
         )
       );
     }
@@ -644,12 +643,10 @@ async function createMediaStream(
       track.enabled = state.videoTrack;
       dispatch(
         slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
-        )
-      );
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+          createSoraDevtoolsTimelineMessage(
+            `${track.kind}-mediastream-track-properties`,
+            getMediaStreamTrackProperties(track)
+          )
         )
       );
     }
@@ -660,12 +657,10 @@ async function createMediaStream(
       track.enabled = state.audioTrack;
       dispatch(
         slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
-        )
-      );
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+          createSoraDevtoolsTimelineMessage(
+            `${track.kind}-mediastream-track-properties`,
+            getMediaStreamTrackProperties(track)
+          )
         )
       );
     }
@@ -723,12 +718,10 @@ async function createMediaStream(
     track.enabled = state.videoTrack;
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
-      )
-    );
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+        createSoraDevtoolsTimelineMessage(
+          `${track.kind}-mediastream-track-properties`,
+          getMediaStreamTrackProperties(track)
+        )
       )
     );
   }
@@ -739,12 +732,10 @@ async function createMediaStream(
     track.enabled = state.audioTrack;
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
-      )
-    );
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+        createSoraDevtoolsTimelineMessage(
+          `${track.kind}-mediastream-track-properties`,
+          getMediaStreamTrackProperties(track)
+        )
       )
     );
   }
@@ -797,6 +788,13 @@ function setSoraCallbacks(
     const { soraContents } = getState();
     const mediaStream = soraContents.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
     if (!mediaStream) {
+      for (const track of event.streams[0].getTracks()) {
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsTimelineMessage(`mediastream-track-properties`, getMediaStreamTrackProperties(track))
+          )
+        );
+      }
       dispatch(slice.actions.setRemoteMediaStream(event.streams[0]));
     }
   });

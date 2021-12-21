@@ -779,7 +779,35 @@ export function createDisplaySettings(
   return displaySettings;
 }
 
-//
+// Sora との接続状態に応じて特定の Form を表示するかしないかを返す
 export function isFormDisabled(connectionStatus: SoraDevtoolsState["soraContents"]["connectionStatus"]): boolean {
   return connectionStatus === "connected" || connectionStatus === "connecting";
+}
+
+// track の設定情報を返す
+type GetMediaStreamTrackProperties = {
+  id: MediaStreamTrack["id"];
+  label: MediaStreamTrack["label"];
+  kind: MediaStreamTrack["kind"];
+  enabled: MediaStreamTrack["enabled"];
+  muted: MediaStreamTrack["muted"];
+  readyState: MediaStreamTrack["readyState"];
+  contentHint: MediaStreamTrack["contentHint"];
+  getConstraints: MediaTrackConstraints;
+  getCapabilities: MediaTrackCapabilities;
+  getSettings: MediaTrackSettings;
+};
+export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMediaStreamTrackProperties {
+  return {
+    id: track.id,
+    label: track.label,
+    kind: track.kind,
+    enabled: track.enabled,
+    muted: track.muted,
+    readyState: track.readyState,
+    contentHint: track.contentHint,
+    getConstraints: track.getConstraints(),
+    getCapabilities: track.getCapabilities(),
+    getSettings: track.getSettings(),
+  };
 }
