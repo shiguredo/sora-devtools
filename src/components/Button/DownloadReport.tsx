@@ -41,6 +41,7 @@ function createDownloadReport(pageName: string): DownloadReport {
     multistream: state.multistream,
     noiseSuppression: state.noiseSuppression,
     reconnect: state.reconnect,
+    resizeMode: state.resizeMode,
     resolution: state.resolution,
     simulcast: state.simulcast,
     spotlight: state.spotlight,

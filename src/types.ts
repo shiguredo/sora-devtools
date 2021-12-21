@@ -8,6 +8,7 @@ import type {
 } from "sora-js-sdk";
 
 import {
+  ASPECT_RATIO_TYPES,
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
@@ -21,6 +22,7 @@ import {
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
+  RESIZE_MODE_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
@@ -119,7 +121,8 @@ export type SoraDevtoolsState = {
   role: Role;
   reconnect: boolean;
   apiUrl: null | string;
-  aspectRatio: string;
+  aspectRatio: typeof ASPECT_RATIO_TYPES[number];
+  resizeMode: typeof RESIZE_MODE_TYPES[number];
 };
 
 // 画面表示する message の Type
@@ -146,11 +149,10 @@ export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
   captureStream(fps?: number): MediaStream;
 }
 
-// MediaTrackConstraints interface に echoCancellationType を追加
+// MediaTrackConstraints interface に property を追加
 export interface SoraDevtoolsMediaTrackConstraints extends MediaTrackConstraintSet {
-  autoGainControl?: boolean;
-  noiseSuppression?: boolean;
   echoCancellationType?: "system" | "browser";
+  resizeMode?: "none" | "crop-and-scale";
 }
 
 export type Json =

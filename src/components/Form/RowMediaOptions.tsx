@@ -10,6 +10,7 @@ import { FormEchoCancellation } from "@/components/Form/EchoCancellation";
 import { FormEchoCancellationType } from "@/components/Form/EchoCancellationType";
 import { FormFrameRate } from "@/components/Form/FrameRate";
 import { FormNoiseSuppression } from "@/components/Form/NoiseSuppression";
+import { FormResizeMode } from "@/components/Form/ResizeMode";
 import { FormResolution } from "@/components/Form/Resolution";
 import { FormVideoContentHint } from "@/components/Form/VideoContentHint";
 
@@ -91,6 +92,9 @@ export const FormRowMediaOptions: React.FC = () => {
             <Row className="form-row">
               <Col className="col-auto d-flex flex-column align-items-start">
                 <FormAspectRatio />
+              </Col>
+              <Col className="col-auto d-flex flex-column align-items-start">
+                <FormResizeMode />
               </Col>
             </Row>
           ) : null}

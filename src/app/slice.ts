@@ -157,6 +157,7 @@ const initialState: SoraDevtoolsState = {
   reconnect: false,
   apiUrl: null,
   aspectRatio: "",
+  resizeMode: "",
 };
 
 const slice = createSlice({
@@ -515,8 +516,11 @@ const slice = createSlice({
     clearDataChannelMessages: (state) => {
       state.dataChannelMessages = [];
     },
-    setAspectRatio: (state, action: PayloadAction<string>) => {
+    setAspectRatio: (state, action: PayloadAction<SoraDevtoolsState["aspectRatio"]>) => {
       state.aspectRatio = action.payload;
+    },
+    setResizeMode: (state, action: PayloadAction<SoraDevtoolsState["resizeMode"]>) => {
+      state.resizeMode = action.payload;
     },
   },
 });
@@ -564,6 +568,7 @@ type craeteMediaStreamPickedSttate = Pick<
   | "mediaType"
   | "micDevice"
   | "noiseSuppression"
+  | "resizeMode"
   | "resolution"
   | "video"
   | "videoContentHint"
@@ -586,6 +591,7 @@ async function createMediaStream(
       frameRate: state.frameRate,
       resolution: state.resolution,
       aspectRatio: state.aspectRatio,
+      resizeMode: state.resizeMode,
     });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
@@ -596,6 +602,16 @@ async function createMediaStream(
         track.contentHint = state.videoContentHint;
       }
       track.enabled = state.videoTrack;
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
+        )
+      );
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+        )
+      );
     }
     return [stream, null];
   }
@@ -626,12 +642,32 @@ async function createMediaStream(
         track.contentHint = state.videoContentHint;
       }
       track.enabled = state.videoTrack;
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
+        )
+      );
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+        )
+      );
     }
     for (const track of mediaStream.getAudioTracks()) {
       if (track.contentHint !== undefined) {
         track.contentHint = state.audioContentHint;
       }
       track.enabled = state.audioTrack;
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
+        )
+      );
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+        )
+      );
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-create-fake-media")));
     return [mediaStream, gainNode];
@@ -685,12 +721,32 @@ async function createMediaStream(
       track.contentHint = state.videoContentHint;
     }
     track.enabled = state.videoTrack;
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
+      )
+    );
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+      )
+    );
   }
   for (const track of mediaStream.getAudioTracks()) {
     if (track.contentHint !== undefined) {
       track.contentHint = state.audioContentHint;
     }
     track.enabled = state.audioTrack;
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-constraints`, track.getConstraints())
+      )
+    );
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(`${track.kind}-track-get-capabilities`, track.getCapabilities())
+      )
+    );
   }
   return [mediaStream, null];
 }
@@ -1283,6 +1339,7 @@ export const setMicDevice =
         mediaType: state.mediaType,
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
+        resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: false,
         videoContentHint: state.videoContentHint,
@@ -1331,6 +1388,7 @@ export const setCameraDevice =
         mediaType: state.mediaType,
         micDevice: state.micDevice,
         noiseSuppression: state.noiseSuppression,
+        resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: state.video,
         videoContentHint: state.videoContentHint,
@@ -1947,8 +2005,9 @@ export const {
   setMetadata,
   setNoiseSuppression,
   setNotifyMessages,
-  setResolution,
   setReconnect,
+  setResizeMode,
+  setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
   setSimulcastRid,

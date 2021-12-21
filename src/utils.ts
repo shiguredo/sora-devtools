@@ -16,6 +16,7 @@ import {
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
+  RESIZE_MODE_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
@@ -167,6 +168,11 @@ export function isVideoContentHint(videoContentHint: string): videoContentHint i
 // AspectRatio の Type Guard
 export function isAspectRatio(aspectRatio: string): aspectRatio is typeof ASPECT_RATIO_TYPES[number] {
   return (ASPECT_RATIO_TYPES as readonly string[]).indexOf(aspectRatio) >= 0;
+}
+
+// ResizeMode の Type Guard
+export function isResizeMode(resizeMode: string): resizeMode is typeof RESIZE_MODE_TYPES[number] {
+  return (RESIZE_MODE_TYPES as readonly string[]).indexOf(resizeMode) >= 0;
 }
 
 // クエリ文字列パーサー
@@ -529,18 +535,19 @@ export function createFakeMediaConstraints(
 
 // getDisplayMedia の video constraints を生成
 type CreateGetDisplayMediaConstraintsParameters = {
-  frameRate: string;
-  resolution: string;
-  aspectRatio: string;
+  frameRate: SoraDevtoolsState["frameRate"];
+  resolution: SoraDevtoolsState["resolution"];
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
 };
 export function createGetDisplayMediaConstraints(
   parameters: CreateGetDisplayMediaConstraintsParameters
 ): MediaStreamConstraints {
-  const { aspectRatio, frameRate, resolution } = parameters;
-  if (!frameRate && !resolution && !aspectRatio) {
+  const { aspectRatio, frameRate, resizeMode, resolution } = parameters;
+  if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
     return { video: true };
   }
-  const videoConstraints: MediaTrackConstraints = {};
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
     videoConstraints.frameRate = parseInt(frameRate, 10);
   }
@@ -553,6 +560,9 @@ export function createGetDisplayMediaConstraints(
   }
   if (aspectRatio) {
     videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
+  }
+  if (resizeMode) {
+    videoConstraints.resizeMode = resizeMode;
   }
   return {
     video: videoConstraints,
