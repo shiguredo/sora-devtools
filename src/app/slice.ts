@@ -156,6 +156,7 @@ const initialState: SoraDevtoolsState = {
   role: "sendonly",
   reconnect: false,
   apiUrl: null,
+  aspectRatio: "",
 };
 
 const slice = createSlice({
@@ -514,6 +515,9 @@ const slice = createSlice({
     clearDataChannelMessages: (state) => {
       state.dataChannelMessages = [];
     },
+    setAspectRatio: (state, action: PayloadAction<string>) => {
+      state.aspectRatio = action.payload;
+    },
   },
 });
 
@@ -545,6 +549,7 @@ function setAlertMessagesAndLogMessages(
 // Fake の場合には volume control 用の GainNode も同時に生成する
 type craeteMediaStreamPickedSttate = Pick<
   SoraDevtoolsState,
+  | "aspectRatio"
   | "audio"
   | "audioInput"
   | "audioTrack"
@@ -577,7 +582,11 @@ async function createMediaStream(
     if (navigator.mediaDevices === undefined) {
       throw new Error("Failed to call getUserMedia. Make sure domain is secure");
     }
-    const constraints = createGetDisplayMediaConstraints({ frameRate: state.frameRate, resolution: state.resolution });
+    const constraints = createGetDisplayMediaConstraints({
+      frameRate: state.frameRate,
+      resolution: state.resolution,
+      aspectRatio: state.aspectRatio,
+    });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
     const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -1259,6 +1268,7 @@ export const setMicDevice =
     }
     if (micDevice) {
       const pickedState = {
+        aspectRatio: state.aspectRatio,
         audio: state.audio,
         audioContentHint: state.audioContentHint,
         audioInput: state.audioInput,
@@ -1306,6 +1316,7 @@ export const setCameraDevice =
     }
     if (cameraDevice) {
       const pickedState = {
+        aspectRatio: state.aspectRatio,
         audio: false,
         audioContentHint: state.audioContentHint,
         audioInput: state.audioInput,
@@ -1580,7 +1591,7 @@ export const setInitialParameter =
       queryStringParameters.videoTrack
     );
     // googCpuOveruseDetection は query string からのみ受け付ける
-    if (queryStringParameters.googCpuOveruseDetection !== undefined) {
+    if (typeof queryStringParameters.googCpuOveruseDetection === "boolean") {
       dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
     }
     setInitialState<SoraDevtoolsState["clientId"]>(
@@ -1632,7 +1643,7 @@ export const setInitialParameter =
       queryStringParameters.reconnect
     );
     // apiUrl は query string からのみ受け付ける
-    if (queryStringParameters.apiUrl !== undefined) {
+    if (typeof queryStringParameters.apiUrl === "string") {
       dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
     }
     dispatch(slice.actions.setInitialFakeContents());
@@ -1902,6 +1913,7 @@ export const {
   deleteAlertMessage,
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,
+  setAspectRatio,
   setAudio,
   setAudioBitRate,
   setAudioCodecType,

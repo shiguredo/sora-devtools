@@ -119,6 +119,7 @@ export type SoraDevtoolsState = {
   role: Role;
   reconnect: boolean;
   apiUrl: null | string;
+  aspectRatio: string;
 };
 
 // 画面表示する message の Type
@@ -260,52 +261,22 @@ export type DataChannelMessage = {
 export type DebugType = typeof DEBUG_TYPES[number];
 
 // クエリ文字列から取得する parameter の Type
-export type QueryStringParameters = {
-  apiUrl: string;
-  audio: boolean;
-  audioBitRate: typeof AUDIO_BIT_RATES[number];
-  audioCodecType: typeof AUDIO_CODEC_TYPES[number];
-  audioContentHint: typeof AUDIO_CONTENT_HINTS[number];
-  audioInput: string;
-  audioOutput: string;
-  audioTrack: boolean;
-  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
-  cameraDevice: boolean;
-  channelId: string;
-  clientId: string;
-  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  dataChannels: string;
-  debug: boolean;
-  debugType: typeof DEBUG_TYPES[number];
-  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
-  e2ee: boolean;
-  echoCancellation: typeof ECHO_CANCELLATIONS[number];
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
-  fakeVolume: string;
-  frameRate: typeof FRAME_RATES[number];
-  googCpuOveruseDetection: boolean;
-  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
-  mediaType: typeof MEDIA_TYPES[number];
-  metadata: string;
-  micDevice: boolean;
-  mute: boolean;
-  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
-  reconnect: boolean;
-  resolution: typeof RESOLUTIONS[number];
-  showStats: boolean;
-  signalingNotifyMetadata: string;
-  signalingUrlCandidates: string[];
-  simulcastRid: typeof SIMULCAST_RID[number];
-  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  video: boolean;
-  videoBitRate: typeof VIDEO_BIT_RATES[number];
-  videoCodecType: typeof VIDEO_CODEC_TYPES[number];
-  videoContentHint: typeof VIDEO_CONTENT_HINTS[number];
-  videoInput: string;
-  videoTrack: boolean;
-};
+export type QueryStringParameters = Omit<
+  SoraDevtoolsState,
+  | "alertMessages"
+  | "dataChannelMessages"
+  | "debugFilterText"
+  | "displaySettings"
+  | "fakeContents"
+  | "focusedSpotlightConnectionIds"
+  | "logMessages"
+  | "notifyMessages"
+  | "pushMessages"
+  | "signalingMessages"
+  | "soraContents"
+  | "timelineMessages"
+  | "version"
+>;
 
 // sora-js-sdk の接続オプションで使用する state
 export type ConnectionOptionsState = Pick<

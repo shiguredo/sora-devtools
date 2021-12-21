@@ -7,6 +7,7 @@ import { DownloadReport, DownloadReportParameters } from "@/types";
 function createDownloadReport(pageName: string): DownloadReport {
   const state = store.getState();
   const parameters: DownloadReportParameters = {
+    aspectRatio: state.aspectRatio,
     audio: state.audio,
     audioBitRate: state.audioBitRate,
     audioCodecType: state.audioCodecType,

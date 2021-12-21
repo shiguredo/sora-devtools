@@ -2,6 +2,7 @@ import queryString from "query-string";
 import type { Role } from "sora-js-sdk";
 
 import {
+  ASPECT_RATIO_TYPES,
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
@@ -161,6 +162,11 @@ export function isAudioContentHint(audioContentHint: string): audioContentHint i
 // VideoContentHint の Type Guard
 export function isVideoContentHint(videoContentHint: string): videoContentHint is typeof VIDEO_CONTENT_HINTS[number] {
   return (VIDEO_CONTENT_HINTS as readonly string[]).indexOf(videoContentHint) >= 0;
+}
+
+// AspectRatio の Type Guard
+export function isAspectRatio(aspectRatio: string): aspectRatio is typeof ASPECT_RATIO_TYPES[number] {
+  return (ASPECT_RATIO_TYPES as readonly string[]).indexOf(aspectRatio) >= 0;
 }
 
 // クエリ文字列パーサー
@@ -398,6 +404,20 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
   }
 }
 
+// アスペクト比に対応する数値を返す
+export function getValueByAspectRatio(aspectRatio: string): number {
+  switch (aspectRatio) {
+    case "4:3":
+      return 4 / 3;
+    case "16:9":
+      return 16 / 9;
+    case "20:9":
+      return 20 / 9;
+    default:
+      return NaN;
+  }
+}
+
 // getUserMedia の audio constraints を生成
 type CreateAudioConstraintsParameters = {
   audio: boolean;
@@ -511,12 +531,13 @@ export function createFakeMediaConstraints(
 type CreateGetDisplayMediaConstraintsParameters = {
   frameRate: string;
   resolution: string;
+  aspectRatio: string;
 };
 export function createGetDisplayMediaConstraints(
   parameters: CreateGetDisplayMediaConstraintsParameters
 ): MediaStreamConstraints {
-  const { frameRate, resolution } = parameters;
-  if (!frameRate && !resolution) {
+  const { aspectRatio, frameRate, resolution } = parameters;
+  if (!frameRate && !resolution && !aspectRatio) {
     return { video: true };
   }
   const videoConstraints: MediaTrackConstraints = {};
@@ -529,6 +550,9 @@ export function createGetDisplayMediaConstraints(
       videoConstraints.width = width;
       videoConstraints.height = height;
     }
+  }
+  if (aspectRatio) {
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
   }
   return {
     video: videoConstraints,
