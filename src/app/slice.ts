@@ -39,6 +39,7 @@ import {
   createVideoConstraints,
   drawFakeCanvas,
   getDevices,
+  getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
 } from "@/utils";
@@ -156,6 +157,8 @@ const initialState: SoraDevtoolsState = {
   role: "sendonly",
   reconnect: false,
   apiUrl: null,
+  aspectRatio: "",
+  resizeMode: "",
 };
 
 const slice = createSlice({
@@ -514,6 +517,12 @@ const slice = createSlice({
     clearDataChannelMessages: (state) => {
       state.dataChannelMessages = [];
     },
+    setAspectRatio: (state, action: PayloadAction<SoraDevtoolsState["aspectRatio"]>) => {
+      state.aspectRatio = action.payload;
+    },
+    setResizeMode: (state, action: PayloadAction<SoraDevtoolsState["resizeMode"]>) => {
+      state.resizeMode = action.payload;
+    },
   },
 });
 
@@ -545,6 +554,7 @@ function setAlertMessagesAndLogMessages(
 // Fake の場合には volume control 用の GainNode も同時に生成する
 type craeteMediaStreamPickedSttate = Pick<
   SoraDevtoolsState,
+  | "aspectRatio"
   | "audio"
   | "audioInput"
   | "audioTrack"
@@ -559,6 +569,7 @@ type craeteMediaStreamPickedSttate = Pick<
   | "mediaType"
   | "micDevice"
   | "noiseSuppression"
+  | "resizeMode"
   | "resolution"
   | "video"
   | "videoContentHint"
@@ -577,7 +588,12 @@ async function createMediaStream(
     if (navigator.mediaDevices === undefined) {
       throw new Error("Failed to call getUserMedia. Make sure domain is secure");
     }
-    const constraints = createGetDisplayMediaConstraints({ frameRate: state.frameRate, resolution: state.resolution });
+    const constraints = createGetDisplayMediaConstraints({
+      frameRate: state.frameRate,
+      resolution: state.resolution,
+      aspectRatio: state.aspectRatio,
+      resizeMode: state.resizeMode,
+    });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
     const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -587,6 +603,14 @@ async function createMediaStream(
         track.contentHint = state.videoContentHint;
       }
       track.enabled = state.videoTrack;
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(
+            `${track.kind}-mediastream-track-properties`,
+            getMediaStreamTrackProperties(track)
+          )
+        )
+      );
     }
     return [stream, null];
   }
@@ -597,6 +621,8 @@ async function createMediaStream(
       frameRate: state.frameRate,
       resolution: state.resolution,
       volume: state.fakeVolume,
+      aspectRatio: state.aspectRatio,
+      resizeMode: state.resizeMode,
     });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
@@ -617,12 +643,28 @@ async function createMediaStream(
         track.contentHint = state.videoContentHint;
       }
       track.enabled = state.videoTrack;
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(
+            `${track.kind}-mediastream-track-properties`,
+            getMediaStreamTrackProperties(track)
+          )
+        )
+      );
     }
     for (const track of mediaStream.getAudioTracks()) {
       if (track.contentHint !== undefined) {
         track.contentHint = state.audioContentHint;
       }
       track.enabled = state.audioTrack;
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(
+            `${track.kind}-mediastream-track-properties`,
+            getMediaStreamTrackProperties(track)
+          )
+        )
+      );
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-create-fake-media")));
     return [mediaStream, gainNode];
@@ -653,9 +695,11 @@ async function createMediaStream(
     mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
   }
   const videoConstraints = createVideoConstraints({
-    video: state.video && state.cameraDevice,
+    aspectRatio: state.aspectRatio,
     frameRate: state.frameRate,
+    resizeMode: state.resizeMode,
     resolution: state.resolution,
+    video: state.video && state.cameraDevice,
     videoInput: state.videoInput,
   });
   if (videoConstraints) {
@@ -676,12 +720,28 @@ async function createMediaStream(
       track.contentHint = state.videoContentHint;
     }
     track.enabled = state.videoTrack;
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(
+          `${track.kind}-mediastream-track-properties`,
+          getMediaStreamTrackProperties(track)
+        )
+      )
+    );
   }
   for (const track of mediaStream.getAudioTracks()) {
     if (track.contentHint !== undefined) {
       track.contentHint = state.audioContentHint;
     }
     track.enabled = state.audioTrack;
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(
+          `${track.kind}-mediastream-track-properties`,
+          getMediaStreamTrackProperties(track)
+        )
+      )
+    );
   }
   return [mediaStream, null];
 }
@@ -732,6 +792,13 @@ function setSoraCallbacks(
     const { soraContents } = getState();
     const mediaStream = soraContents.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
     if (!mediaStream) {
+      for (const track of event.streams[0].getTracks()) {
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsTimelineMessage(`mediastream-track-properties`, getMediaStreamTrackProperties(track))
+          )
+        );
+      }
       dispatch(slice.actions.setRemoteMediaStream(event.streams[0]));
     }
   });
@@ -1259,6 +1326,7 @@ export const setMicDevice =
     }
     if (micDevice) {
       const pickedState = {
+        aspectRatio: state.aspectRatio,
         audio: state.audio,
         audioContentHint: state.audioContentHint,
         audioInput: state.audioInput,
@@ -1273,6 +1341,7 @@ export const setMicDevice =
         mediaType: state.mediaType,
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
+        resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: false,
         videoContentHint: state.videoContentHint,
@@ -1306,6 +1375,7 @@ export const setCameraDevice =
     }
     if (cameraDevice) {
       const pickedState = {
+        aspectRatio: state.aspectRatio,
         audio: false,
         audioContentHint: state.audioContentHint,
         audioInput: state.audioInput,
@@ -1320,6 +1390,7 @@ export const setCameraDevice =
         mediaType: state.mediaType,
         micDevice: state.micDevice,
         noiseSuppression: state.noiseSuppression,
+        resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: state.video,
         videoContentHint: state.videoContentHint,
@@ -1580,7 +1651,7 @@ export const setInitialParameter =
       queryStringParameters.videoTrack
     );
     // googCpuOveruseDetection は query string からのみ受け付ける
-    if (queryStringParameters.googCpuOveruseDetection !== undefined) {
+    if (typeof queryStringParameters.googCpuOveruseDetection === "boolean") {
       dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
     }
     setInitialState<SoraDevtoolsState["clientId"]>(
@@ -1631,8 +1702,20 @@ export const setInitialParameter =
       pageInitialParameters.reconnect,
       queryStringParameters.reconnect
     );
+    setInitialState<SoraDevtoolsState["aspectRatio"]>(
+      dispatch,
+      slice.actions.setAspectRatio,
+      pageInitialParameters.aspectRatio,
+      queryStringParameters.aspectRatio
+    );
+    setInitialState<SoraDevtoolsState["resizeMode"]>(
+      dispatch,
+      slice.actions.setResizeMode,
+      pageInitialParameters.resizeMode,
+      queryStringParameters.resizeMode
+    );
     // apiUrl は query string からのみ受け付ける
-    if (queryStringParameters.apiUrl !== undefined) {
+    if (typeof queryStringParameters.apiUrl === "string") {
       dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
     }
     dispatch(slice.actions.setInitialFakeContents());
@@ -1797,6 +1880,14 @@ export const copyURL =
         state.frameRate,
         state.frameRate !== "" && state.displaySettings.videoConstraints
       ),
+      aspectRatio: queryStringValue<QueryStringParameters["aspectRatio"]>(
+        state.aspectRatio,
+        state.aspectRatio !== "" && state.displaySettings.videoConstraints
+      ),
+      resizeMode: queryStringValue<QueryStringParameters["resizeMode"]>(
+        state.resizeMode,
+        state.resizeMode !== "" && state.displaySettings.videoConstraints
+      ),
       // simulcast
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
         state.simulcastRid,
@@ -1902,6 +1993,7 @@ export const {
   deleteAlertMessage,
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,
+  setAspectRatio,
   setAudio,
   setAudioBitRate,
   setAudioCodecType,
@@ -1935,8 +2027,9 @@ export const {
   setMetadata,
   setNoiseSuppression,
   setNotifyMessages,
-  setResolution,
   setReconnect,
+  setResizeMode,
+  setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
   setSimulcastRid,

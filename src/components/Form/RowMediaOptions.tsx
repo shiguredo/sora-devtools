@@ -3,12 +3,14 @@ import { Col, Collapse, Row } from "react-bootstrap";
 
 import { useAppSelector } from "@/app/hooks";
 import { ButtonUpdateMediaStream } from "@/components/Button/UpdateMediaStream";
+import { FormAspectRatio } from "@/components/Form/AspectRatio";
 import { FormAudioContentHint } from "@/components/Form/AudioContentHint";
 import { FormAutoGainControl } from "@/components/Form/AutoGainControl";
 import { FormEchoCancellation } from "@/components/Form/EchoCancellation";
 import { FormEchoCancellationType } from "@/components/Form/EchoCancellationType";
 import { FormFrameRate } from "@/components/Form/FrameRate";
 import { FormNoiseSuppression } from "@/components/Form/NoiseSuppression";
+import { FormResizeMode } from "@/components/Form/ResizeMode";
 import { FormResolution } from "@/components/Form/Resolution";
 import { FormVideoContentHint } from "@/components/Form/VideoContentHint";
 
@@ -82,6 +84,12 @@ export const FormRowMediaOptions: React.FC = () => {
               </Col>
               <Col className="col-auto d-flex flex-column align-items-start">
                 <FormFrameRate />
+              </Col>
+              <Col className="col-auto d-flex flex-column align-items-start">
+                <FormAspectRatio />
+              </Col>
+              <Col className="col-auto d-flex flex-column align-items-start">
+                <FormResizeMode />
               </Col>
             </Row>
           ) : null}

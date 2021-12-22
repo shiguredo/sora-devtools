@@ -2,6 +2,7 @@ import queryString from "query-string";
 import type { Role } from "sora-js-sdk";
 
 import {
+  ASPECT_RATIO_TYPES,
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
@@ -15,6 +16,7 @@ import {
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
+  RESIZE_MODE_TYPES,
   RESOLUTIONS,
   SIMULCAST_RID,
   SPOTLIGHT_FOCUS_RIDS,
@@ -163,10 +165,21 @@ export function isVideoContentHint(videoContentHint: string): videoContentHint i
   return (VIDEO_CONTENT_HINTS as readonly string[]).indexOf(videoContentHint) >= 0;
 }
 
+// AspectRatio の Type Guard
+export function isAspectRatio(aspectRatio: string): aspectRatio is typeof ASPECT_RATIO_TYPES[number] {
+  return (ASPECT_RATIO_TYPES as readonly string[]).indexOf(aspectRatio) >= 0;
+}
+
+// ResizeMode の Type Guard
+export function isResizeMode(resizeMode: string): resizeMode is typeof RESIZE_MODE_TYPES[number] {
+  return (RESIZE_MODE_TYPES as readonly string[]).indexOf(resizeMode) >= 0;
+}
+
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
   const {
     apiUrl,
+    aspectRatio,
     audio,
     audioBitRate,
     audioCodecType,
@@ -196,6 +209,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mute,
     noiseSuppression,
     reconnect,
+    resizeMode,
     resolution,
     showStats,
     signalingNotifyMetadata,
@@ -354,6 +368,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (isVideoContentHint(stringVideoContentHint)) {
     queryStringParameters.videoContentHint = stringVideoContentHint;
   }
+  const stringAspectRatio = String(aspectRatio);
+  if (isAspectRatio(stringAspectRatio)) {
+    queryStringParameters.aspectRatio = stringAspectRatio;
+  }
+  const stringResizeMode = String(resizeMode);
+  if (isResizeMode(stringResizeMode)) {
+    queryStringParameters.resizeMode = stringResizeMode;
+  }
   return queryStringParameters;
 }
 
@@ -398,6 +420,20 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
   }
 }
 
+// アスペクト比に対応する数値を返す
+export function getValueByAspectRatio(aspectRatio: string): number {
+  switch (aspectRatio) {
+    case "4:3":
+      return 4 / 3;
+    case "16:9":
+      return 16 / 9;
+    case "21:9":
+      return 20 / 9;
+    default:
+      return NaN;
+  }
+}
+
 // getUserMedia の audio constraints を生成
 type CreateAudioConstraintsParameters = {
   audio: boolean;
@@ -439,20 +475,22 @@ export function createAudioConstraints(parameters: CreateAudioConstraintsParamet
 
 // getUserMedia の video constraints を生成
 type CreateVideoConstraintsParameters = {
-  video: boolean;
-  frameRate: string;
-  resolution: string;
-  videoInput: string;
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  frameRate: SoraDevtoolsState["frameRate"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
+  resolution: SoraDevtoolsState["resolution"];
+  video: SoraDevtoolsState["video"];
+  videoInput: SoraDevtoolsState["videoInput"];
 };
 export function createVideoConstraints(parameters: CreateVideoConstraintsParameters): boolean | MediaTrackConstraints {
-  const { video, frameRate, resolution, videoInput } = parameters;
+  const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode } = parameters;
   if (!video) {
     return false;
   }
-  if (!frameRate && !resolution && !videoInput) {
+  if (!frameRate && !resolution && !videoInput && !aspectRatio && !resizeMode) {
     return video;
   }
-  const videoConstraints: MediaTrackConstraints = {};
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
     videoConstraints.frameRate = { min: parseInt(frameRate, 10), max: parseInt(frameRate, 10) };
   }
@@ -466,16 +504,24 @@ export function createVideoConstraints(parameters: CreateVideoConstraintsParamet
   if (videoInput) {
     videoConstraints.deviceId = { exact: videoInput };
   }
+  if (aspectRatio) {
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
+  }
+  if (resizeMode) {
+    videoConstraints.resizeMode = resizeMode;
+  }
   return videoConstraints;
 }
 
 // Fake 用の constraints を生成
 type CreateFakeMediaConstraintsParameters = {
-  audio: boolean;
-  video: boolean;
-  frameRate: string;
-  resolution: string;
-  volume: string;
+  audio: SoraDevtoolsState["audio"];
+  video: SoraDevtoolsState["video"];
+  frameRate: SoraDevtoolsState["frameRate"];
+  resolution: SoraDevtoolsState["resolution"];
+  volume: SoraDevtoolsState["fakeVolume"];
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
 };
 type FakeMediaStreamConstraints = {
   audio: boolean;
@@ -485,41 +531,55 @@ type FakeMediaStreamConstraints = {
   height: number;
   fontSize: number;
   volume: number;
+  videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints;
 };
 export function createFakeMediaConstraints(
   parameters: CreateFakeMediaConstraintsParameters
 ): FakeMediaStreamConstraints {
+  const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters;
   // fake の default frameRate は 30 fps
-  const frameRate = parseInt(parameters.frameRate, 10) || 30;
+  const parsedFrameRate = parseInt(frameRate, 10) || 30;
   // width, height の default はそれぞれ 240 / 160
-  const resolutionSize = getVideoSizeByResolution(parameters.resolution);
+  const resolutionSize = getVideoSizeByResolution(resolution);
   const width = resolutionSize.width || 240;
   const height = resolutionSize.height || 160;
   const fontSize = Math.floor(width / 5);
-  return {
-    audio: parameters.audio,
-    video: parameters.video,
-    frameRate: frameRate,
+  const constraints: FakeMediaStreamConstraints = {
+    audio: audio,
+    video: video,
+    frameRate: parsedFrameRate,
     width: width,
     height: height,
     fontSize: fontSize,
-    volume: parseFloat(parameters.volume),
+    volume: parseFloat(volume),
   };
+  if (video && (aspectRatio || resizeMode)) {
+    constraints.videoTrackConstraints = {};
+    if (aspectRatio) {
+      constraints.videoTrackConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
+    }
+    if (resizeMode) {
+      constraints.videoTrackConstraints.resizeMode = resizeMode;
+    }
+  }
+  return constraints;
 }
 
 // getDisplayMedia の video constraints を生成
 type CreateGetDisplayMediaConstraintsParameters = {
-  frameRate: string;
-  resolution: string;
+  frameRate: SoraDevtoolsState["frameRate"];
+  resolution: SoraDevtoolsState["resolution"];
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
 };
 export function createGetDisplayMediaConstraints(
   parameters: CreateGetDisplayMediaConstraintsParameters
 ): MediaStreamConstraints {
-  const { frameRate, resolution } = parameters;
-  if (!frameRate && !resolution) {
+  const { aspectRatio, frameRate, resizeMode, resolution } = parameters;
+  if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
     return { video: true };
   }
-  const videoConstraints: MediaTrackConstraints = {};
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
     videoConstraints.frameRate = parseInt(frameRate, 10);
   }
@@ -529,6 +589,12 @@ export function createGetDisplayMediaConstraints(
       videoConstraints.width = width;
       videoConstraints.height = height;
     }
+  }
+  if (aspectRatio) {
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
+  }
+  if (resizeMode) {
+    videoConstraints.resizeMode = resizeMode;
   }
   return {
     video: videoConstraints,
@@ -550,8 +616,11 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     canvas.width = parameters.width;
     canvas.height = parameters.height;
     const cancasStream = canvas.captureStream(parameters.frameRate);
-    const videoTracks = cancasStream.getTracks();
-    mediaStream.addTrack(videoTracks[0]);
+    const videoTrack = cancasStream.getTracks()[0];
+    if (parameters.videoTrackConstraints) {
+      videoTrack.applyConstraints(parameters.videoTrackConstraints);
+    }
+    mediaStream.addTrack(videoTrack);
   }
   let gainNode = null;
   if (parameters.audio) {
@@ -745,7 +814,35 @@ export function createDisplaySettings(
   return displaySettings;
 }
 
-//
+// Sora との接続状態に応じて特定の Form を表示するかしないかを返す
 export function isFormDisabled(connectionStatus: SoraDevtoolsState["soraContents"]["connectionStatus"]): boolean {
   return connectionStatus === "connected" || connectionStatus === "connecting";
+}
+
+// track の設定情報を返す
+type GetMediaStreamTrackProperties = {
+  id: MediaStreamTrack["id"];
+  label: MediaStreamTrack["label"];
+  kind: MediaStreamTrack["kind"];
+  enabled: MediaStreamTrack["enabled"];
+  muted: MediaStreamTrack["muted"];
+  readyState: MediaStreamTrack["readyState"];
+  contentHint: MediaStreamTrack["contentHint"];
+  getConstraints: MediaTrackConstraints;
+  getCapabilities: MediaTrackCapabilities | null;
+  getSettings: MediaTrackSettings;
+};
+export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMediaStreamTrackProperties {
+  return {
+    id: track.id,
+    label: track.label,
+    kind: track.kind,
+    enabled: track.enabled,
+    muted: track.muted,
+    readyState: track.readyState,
+    contentHint: track.contentHint,
+    getConstraints: track.getConstraints(),
+    getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
+    getSettings: track.getSettings(),
+  };
 }
