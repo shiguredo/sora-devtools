@@ -179,6 +179,7 @@ export function isResizeMode(resizeMode: string): resizeMode is typeof RESIZE_MO
 export function parseQueryString(): Partial<QueryStringParameters> {
   const {
     apiUrl,
+    aspectRatio,
     audio,
     audioBitRate,
     audioCodecType,
@@ -208,6 +209,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mute,
     noiseSuppression,
     reconnect,
+    resizeMode,
     resolution,
     showStats,
     signalingNotifyMetadata,
@@ -365,6 +367,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const stringVideoContentHint = String(videoContentHint);
   if (isVideoContentHint(stringVideoContentHint)) {
     queryStringParameters.videoContentHint = stringVideoContentHint;
+  }
+  const stringAspectRatio = String(aspectRatio);
+  if (isAspectRatio(stringAspectRatio)) {
+    queryStringParameters.aspectRatio = stringAspectRatio;
+  }
+  const stringResizeMode = String(resizeMode);
+  if (isResizeMode(stringResizeMode)) {
+    queryStringParameters.resizeMode = stringResizeMode;
   }
   return queryStringParameters;
 }

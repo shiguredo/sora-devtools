@@ -315,6 +315,7 @@ export type PageInitialParameters = {
   simulcast: SoraDevtoolsState["simulcast"];
   // DataChannelMessaging page 専用のオプション
   dataChannelMessagingOnly?: boolean;
+  aspectRatio?: SoraDevtoolsState["aspectRatio"];
   audio?: SoraDevtoolsState["audio"];
   audioBitRate?: SoraDevtoolsState["audioBitRate"];
   audioCodecType?: SoraDevtoolsState["audioCodecType"];
@@ -341,6 +342,7 @@ export type PageInitialParameters = {
   mute?: SoraDevtoolsState["mute"];
   noiseSuppression?: SoraDevtoolsState["noiseSuppression"];
   reconnect?: SoraDevtoolsState["reconnect"];
+  resizeMode?: SoraDevtoolsState["resizeMode"];
   resolution?: SoraDevtoolsState["resolution"];
   showStats?: SoraDevtoolsState["showStats"];
   signalingNotifyMetadata?: SoraDevtoolsState["signalingNotifyMetadata"];

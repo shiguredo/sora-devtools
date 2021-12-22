@@ -1702,6 +1702,18 @@ export const setInitialParameter =
       pageInitialParameters.reconnect,
       queryStringParameters.reconnect
     );
+    setInitialState<SoraDevtoolsState["aspectRatio"]>(
+      dispatch,
+      slice.actions.setAspectRatio,
+      pageInitialParameters.aspectRatio,
+      queryStringParameters.aspectRatio
+    );
+    setInitialState<SoraDevtoolsState["resizeMode"]>(
+      dispatch,
+      slice.actions.setResizeMode,
+      pageInitialParameters.resizeMode,
+      queryStringParameters.resizeMode
+    );
     // apiUrl は query string からのみ受け付ける
     if (typeof queryStringParameters.apiUrl === "string") {
       dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
@@ -1867,6 +1879,14 @@ export const copyURL =
       frameRate: queryStringValue<QueryStringParameters["frameRate"]>(
         state.frameRate,
         state.frameRate !== "" && state.displaySettings.videoConstraints
+      ),
+      aspectRatio: queryStringValue<QueryStringParameters["aspectRatio"]>(
+        state.aspectRatio,
+        state.aspectRatio !== "" && state.displaySettings.videoConstraints
+      ),
+      resizeMode: queryStringValue<QueryStringParameters["resizeMode"]>(
+        state.resizeMode,
+        state.resizeMode !== "" && state.displaySettings.videoConstraints
       ),
       // simulcast
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
