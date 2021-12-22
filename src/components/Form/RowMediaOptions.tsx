@@ -16,7 +16,6 @@ import { FormVideoContentHint } from "@/components/Form/VideoContentHint";
 
 export const FormRowMediaOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
-  const mediaType = useAppSelector((state) => state.mediaType);
   const displaySettings = useAppSelector((state) => state.displaySettings);
   const audioContentHint = useAppSelector((state) => state.audioContentHint);
   const autoGainControl = useAppSelector((state) => state.autoGainControl);
@@ -86,10 +85,6 @@ export const FormRowMediaOptions: React.FC = () => {
               <Col className="col-auto d-flex flex-column align-items-start">
                 <FormFrameRate />
               </Col>
-            </Row>
-          ) : null}
-          {mediaType === "getDisplayMedia" ? (
-            <Row className="form-row">
               <Col className="col-auto d-flex flex-column align-items-start">
                 <FormAspectRatio />
               </Col>

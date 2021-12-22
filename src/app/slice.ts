@@ -621,6 +621,8 @@ async function createMediaStream(
       frameRate: state.frameRate,
       resolution: state.resolution,
       volume: state.fakeVolume,
+      aspectRatio: state.aspectRatio,
+      resizeMode: state.resizeMode,
     });
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
@@ -693,9 +695,11 @@ async function createMediaStream(
     mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
   }
   const videoConstraints = createVideoConstraints({
-    video: state.video && state.cameraDevice,
+    aspectRatio: state.aspectRatio,
     frameRate: state.frameRate,
+    resizeMode: state.resizeMode,
     resolution: state.resolution,
+    video: state.video && state.cameraDevice,
     videoInput: state.videoInput,
   });
   if (videoConstraints) {

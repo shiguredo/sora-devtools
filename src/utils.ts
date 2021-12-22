@@ -417,7 +417,7 @@ export function getValueByAspectRatio(aspectRatio: string): number {
       return 4 / 3;
     case "16:9":
       return 16 / 9;
-    case "20:9":
+    case "21:9":
       return 20 / 9;
     default:
       return NaN;
@@ -465,20 +465,22 @@ export function createAudioConstraints(parameters: CreateAudioConstraintsParamet
 
 // getUserMedia の video constraints を生成
 type CreateVideoConstraintsParameters = {
-  video: boolean;
-  frameRate: string;
-  resolution: string;
-  videoInput: string;
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  frameRate: SoraDevtoolsState["frameRate"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
+  resolution: SoraDevtoolsState["resolution"];
+  video: SoraDevtoolsState["video"];
+  videoInput: SoraDevtoolsState["videoInput"];
 };
 export function createVideoConstraints(parameters: CreateVideoConstraintsParameters): boolean | MediaTrackConstraints {
-  const { video, frameRate, resolution, videoInput } = parameters;
+  const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode } = parameters;
   if (!video) {
     return false;
   }
-  if (!frameRate && !resolution && !videoInput) {
+  if (!frameRate && !resolution && !videoInput && !aspectRatio && !resizeMode) {
     return video;
   }
-  const videoConstraints: MediaTrackConstraints = {};
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
     videoConstraints.frameRate = { min: parseInt(frameRate, 10), max: parseInt(frameRate, 10) };
   }
@@ -492,16 +494,24 @@ export function createVideoConstraints(parameters: CreateVideoConstraintsParamet
   if (videoInput) {
     videoConstraints.deviceId = { exact: videoInput };
   }
+  if (aspectRatio) {
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
+  }
+  if (resizeMode) {
+    videoConstraints.resizeMode = resizeMode;
+  }
   return videoConstraints;
 }
 
 // Fake 用の constraints を生成
 type CreateFakeMediaConstraintsParameters = {
-  audio: boolean;
-  video: boolean;
-  frameRate: string;
-  resolution: string;
-  volume: string;
+  audio: SoraDevtoolsState["audio"];
+  video: SoraDevtoolsState["video"];
+  frameRate: SoraDevtoolsState["frameRate"];
+  resolution: SoraDevtoolsState["resolution"];
+  volume: SoraDevtoolsState["fakeVolume"];
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
 };
 type FakeMediaStreamConstraints = {
   audio: boolean;
@@ -511,26 +521,38 @@ type FakeMediaStreamConstraints = {
   height: number;
   fontSize: number;
   volume: number;
+  videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints;
 };
 export function createFakeMediaConstraints(
   parameters: CreateFakeMediaConstraintsParameters
 ): FakeMediaStreamConstraints {
+  const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters;
   // fake の default frameRate は 30 fps
-  const frameRate = parseInt(parameters.frameRate, 10) || 30;
+  const parsedFrameRate = parseInt(frameRate, 10) || 30;
   // width, height の default はそれぞれ 240 / 160
-  const resolutionSize = getVideoSizeByResolution(parameters.resolution);
+  const resolutionSize = getVideoSizeByResolution(resolution);
   const width = resolutionSize.width || 240;
   const height = resolutionSize.height || 160;
   const fontSize = Math.floor(width / 5);
-  return {
-    audio: parameters.audio,
-    video: parameters.video,
-    frameRate: frameRate,
+  const constraints: FakeMediaStreamConstraints = {
+    audio: audio,
+    video: video,
+    frameRate: parsedFrameRate,
     width: width,
     height: height,
     fontSize: fontSize,
-    volume: parseFloat(parameters.volume),
+    volume: parseFloat(volume),
   };
+  if (video && (aspectRatio || resizeMode)) {
+    constraints.videoTrackConstraints = {};
+    if (aspectRatio) {
+      constraints.videoTrackConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
+    }
+    if (resizeMode) {
+      constraints.videoTrackConstraints.resizeMode = resizeMode;
+    }
+  }
+  return constraints;
 }
 
 // getDisplayMedia の video constraints を生成
@@ -584,8 +606,11 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     canvas.width = parameters.width;
     canvas.height = parameters.height;
     const cancasStream = canvas.captureStream(parameters.frameRate);
-    const videoTracks = cancasStream.getTracks();
-    mediaStream.addTrack(videoTracks[0]);
+    const videoTrack = cancasStream.getTracks()[0];
+    if (parameters.videoTrackConstraints) {
+      videoTrack.applyConstraints(parameters.videoTrackConstraints);
+    }
+    mediaStream.addTrack(videoTrack);
   }
   let gainNode = null;
   if (parameters.audio) {
@@ -794,7 +819,7 @@ type GetMediaStreamTrackProperties = {
   readyState: MediaStreamTrack["readyState"];
   contentHint: MediaStreamTrack["contentHint"];
   getConstraints: MediaTrackConstraints;
-  getCapabilities: MediaTrackCapabilities;
+  getCapabilities: MediaTrackCapabilities | null;
   getSettings: MediaTrackSettings;
 };
 export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMediaStreamTrackProperties {
@@ -807,7 +832,7 @@ export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMedia
     readyState: track.readyState,
     contentHint: track.contentHint,
     getConstraints: track.getConstraints(),
-    getCapabilities: track.getCapabilities(),
+    getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
     getSettings: track.getSettings(),
   };
 }
