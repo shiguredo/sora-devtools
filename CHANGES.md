@@ -10,6 +10,8 @@
     - バグ修正
 
 ## develop
+- [UPDATE] MediaStream オプションに aspectRatio と resizeMode を追加する
+    - @yuitowest
 - [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
     - @yuitowest
 
