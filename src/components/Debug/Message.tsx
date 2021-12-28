@@ -45,7 +45,7 @@ export const Message: React.FC<Props> = (props) => {
   const ariaControls = timestamp ? title + timestamp : title;
   const disabled = description === undefined;
   return (
-    <div className="border border-light rounded mb-1 bg-dark">
+    <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="d-flex justify-content-between align-items-center text-break">
         <a
           className={`debug-title ${disabled ? "disabled" : ""}`}
