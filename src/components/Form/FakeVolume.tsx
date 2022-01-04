@@ -17,7 +17,7 @@ export const FormFakeVolume: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="fakeVolume">
       <FormLabel>fakeVolume:</FormLabel>
-      <Form.Range min="0" max="1" step="0.1" value={fakeVolume} onChange={onChange} />
+      <Form.Range min="0" max="1" step="0.25" value={fakeVolume} onChange={onChange} />
     </FormGroup>
   );
 };
