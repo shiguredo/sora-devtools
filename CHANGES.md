@@ -10,6 +10,8 @@
     - バグ修正
 
 ## develop
+- [UPDATE] fakeVolume の step を 0.1 から 0.25 に変更する
+    - @yuitowest
 - [UPDATE] MediaStream オプションに aspectRatio と resizeMode を追加する
     - @yuitowest
 - [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
