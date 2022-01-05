@@ -10,11 +10,16 @@
     - バグ修正
 
 ## develop
+
 - [UPDATE] fakeVolume の step を 0.1 から 0.25 に変更する
     - @yuitowest
 - [UPDATE] MediaStream オプションに aspectRatio と resizeMode を追加する
     - @yuitowest
 - [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
+
+## 2021.2.1
+
+- [FIX] サーバからの正常切断時に devtools の connectionStatate が 'disconnect' にならない場合がある問題を修正する
     - @yuitowest
 
 ## 2021.2.0
