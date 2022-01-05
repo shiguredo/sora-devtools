@@ -9,6 +9,10 @@
 - FIX
     - バグ修正
 
+## 2021.2.1
+- [FIX] サーバからの正常切断時に devtools の connectionStatate が 'disconnect' にならない場合がある問題を修正する
+    - @yuitowest
+
 ## 2021.2.0
 
 - [ADD] Debug モードに messaging タブを追加する

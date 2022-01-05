@@ -781,6 +781,7 @@ function setSoraCallbacks(
       fakeContents.worker.postMessage({ type: "stop" });
     }
     dispatch(slice.actions.setSora(null));
+    dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
     dispatch(slice.actions.setLocalMediaStream(null));
     dispatch(slice.actions.removeAllRemoteMediaStreams());
     dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
