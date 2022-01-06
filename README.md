@@ -196,4 +196,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-このリポジトリに含まれる `favicon.ico` のライセンスは [CC BY\-ND 3\.0](https://creativecommons.org/licenses/by-nd/3.0/deed.ja) です。
+このリポジトリに含まれる `favicon.ico` のライセンスは [CC BY\-ND 4\.0](https://creativecommons.org/licenses/by-nd/4.0/deed.ja) です。
