@@ -6,6 +6,7 @@ import { ButtonUpdateMediaStream } from "@/components/Button/UpdateMediaStream";
 import { FormAspectRatio } from "@/components/Form/AspectRatio";
 import { FormAudioContentHint } from "@/components/Form/AudioContentHint";
 import { FormAutoGainControl } from "@/components/Form/AutoGainControl";
+import { FormBlurRadius } from "@/components/Form/BlurRadius";
 import { FormEchoCancellation } from "@/components/Form/EchoCancellation";
 import { FormEchoCancellationType } from "@/components/Form/EchoCancellationType";
 import { FormFrameRate } from "@/components/Form/FrameRate";
@@ -90,6 +91,9 @@ export const FormRowMediaOptions: React.FC = () => {
               </Col>
               <Col className="col-auto d-flex flex-column align-items-start">
                 <FormResizeMode />
+              </Col>
+              <Col className="col-auto d-flex flex-column align-items-start">
+                <FormBlurRadius />
               </Col>
             </Row>
           ) : null}

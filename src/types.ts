@@ -13,6 +13,7 @@ import {
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
+  BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
@@ -43,6 +44,7 @@ export type SoraDevtoolsState = {
   audioOutput: string;
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
+  blurRadius: typeof BLUR_RADIUS[number];
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
@@ -323,6 +325,7 @@ export type PageInitialParameters = {
   audioInput?: SoraDevtoolsState["audioInput"];
   audioOutput?: SoraDevtoolsState["audioOutput"];
   autoGainControl?: SoraDevtoolsState["autoGainControl"];
+  blurRadius?: SoraDevtoolsState["blurRadius"];
   channelId?: SoraDevtoolsState["channelId"];
   clientId?: SoraDevtoolsState["clientId"];
   googCpuOveruseDetection?: SoraDevtoolsState["googCpuOveruseDetection"];
@@ -394,6 +397,7 @@ export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
   | "alertMessages"
   | "apiUrl"
+  | "blurRadius"
   | "dataChannelMessages"
   | "debugFilterText"
   | "debugType"

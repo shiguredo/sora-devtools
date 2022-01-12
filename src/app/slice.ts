@@ -1,4 +1,5 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
+import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionOptions,
   ConnectionPublisher,
@@ -38,6 +39,7 @@ import {
   createSignalingURL,
   createVideoConstraints,
   drawFakeCanvas,
+  getBlurRadiusNumber,
   getDevices,
   getMediaStreamTrackProperties,
   parseMetadata,
@@ -57,6 +59,7 @@ const initialState: SoraDevtoolsState = {
   audioOutput: "",
   audioOutputDevices: [],
   autoGainControl: "",
+  blurRadius: "",
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
@@ -523,6 +526,9 @@ const slice = createSlice({
     setResizeMode: (state, action: PayloadAction<SoraDevtoolsState["resizeMode"]>) => {
       state.resizeMode = action.payload;
     },
+    setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState["blurRadius"]>) => {
+      state.blurRadius = action.payload;
+    },
   },
 });
 
@@ -560,6 +566,7 @@ type craeteMediaStreamPickedSttate = Pick<
   | "audioTrack"
   | "audioContentHint"
   | "autoGainControl"
+  | "blurRadius"
   | "cameraDevice"
   | "echoCancellation"
   | "echoCancellationType"
@@ -712,8 +719,17 @@ async function createMediaStream(
       )
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
+    let videoTrack = videoMediaStream.getVideoTracks()[0];
+    if (state.blurRadius !== "") {
+      const options = {
+        blurRadius: getBlurRadiusNumber(state.blurRadius),
+        assetsPath: process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH,
+      };
+      const processor = new VirtualBackgroundProcessor(videoTrack, options);
+      videoTrack = await processor.startProcessing();
+    }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
-    mediaStream.addTrack(videoMediaStream.getVideoTracks()[0]);
+    mediaStream.addTrack(videoTrack);
   }
   for (const track of mediaStream.getVideoTracks()) {
     if (track.contentHint !== undefined) {
@@ -1333,6 +1349,7 @@ export const setMicDevice =
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
+        blurRadius: state.blurRadius,
         cameraDevice: state.cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
@@ -1382,6 +1399,7 @@ export const setCameraDevice =
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
+        blurRadius: state.blurRadius,
         cameraDevice: cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
@@ -1715,6 +1733,12 @@ export const setInitialParameter =
       pageInitialParameters.resizeMode,
       queryStringParameters.resizeMode
     );
+    setInitialState<SoraDevtoolsState["blurRadius"]>(
+      dispatch,
+      slice.actions.setBlurRadius,
+      pageInitialParameters.blurRadius,
+      queryStringParameters.blurRadius
+    );
     // apiUrl は query string からのみ受け付ける
     if (typeof queryStringParameters.apiUrl === "string") {
       dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
@@ -1889,6 +1913,10 @@ export const copyURL =
         state.resizeMode,
         state.resizeMode !== "" && state.displaySettings.videoConstraints
       ),
+      blurRadius: queryStringValue<QueryStringParameters["blurRadius"]>(
+        state.blurRadius,
+        state.blurRadius !== "" && state.displaySettings.videoConstraints
+      ),
       // simulcast
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
         state.simulcastRid,
@@ -2003,6 +2031,7 @@ export const {
   setAudioOutput,
   setAudioTrack,
   setAutoGainControl,
+  setBlurRadius,
   setChannelId,
   setClientId,
   setDataChannels,
