@@ -8,6 +8,7 @@ import { isBlurRadius } from "@/utils";
 
 export const FormBlurRadius: React.FC = () => {
   const blurRadius = useAppSelector((state) => state.blurRadius);
+  const mediaType = useAppSelector((state) => state.mediaType);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (isBlurRadius(event.target.value)) {
@@ -17,7 +18,7 @@ export const FormBlurRadius: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="spotlightNumber">
       <FormLabel>blurRadius:</FormLabel>
-      <FormSelect value={blurRadius} onChange={onChange}>
+      <FormSelect value={blurRadius} onChange={onChange} disabled={mediaType !== "getUserMedia"}>
         {BLUR_RADIUS.map((value) => {
           return (
             <option key={value} value={value}>

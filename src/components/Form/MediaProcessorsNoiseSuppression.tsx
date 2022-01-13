@@ -6,6 +6,7 @@ import { setMediaProcessorsNoiseSuppression } from "@/app/slice";
 
 export const FormMediaProcessorsNoiseSuppression: React.FC = () => {
   const mediaProcessorsNoiseSuppression = useAppSelector((state) => state.mediaProcessorsNoiseSuppression);
+  const mediaType = useAppSelector((state) => state.mediaType);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setMediaProcessorsNoiseSuppression(event.target.checked));
@@ -18,6 +19,7 @@ export const FormMediaProcessorsNoiseSuppression: React.FC = () => {
         label="mediaProcessorsNoiseSuppression"
         checked={mediaProcessorsNoiseSuppression}
         onChange={onChange}
+        disabled={mediaType !== "getUserMedia"}
       />
     </FormGroup>
   );
