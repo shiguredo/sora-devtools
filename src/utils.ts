@@ -214,6 +214,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     metadata,
     micDevice,
     mute,
+    mediaProcessorsNoiseSuppression,
     noiseSuppression,
     reconnect,
     resizeMode,
@@ -386,6 +387,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const stringBlurRadius = String(blurRadius);
   if (isBlurRadius(stringBlurRadius)) {
     queryStringParameters.blurRadius = stringBlurRadius;
+  }
+  if (typeof mediaProcessorsNoiseSuppression === "boolean") {
+    queryStringParameters.mediaProcessorsNoiseSuppression = mediaProcessorsNoiseSuppression;
   }
   return queryStringParameters;
 }

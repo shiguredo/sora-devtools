@@ -88,6 +88,7 @@ export type SoraDevtoolsState = {
   };
   ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   logMessages: LogMessage[];
+  mediaProcessorsNoiseSuppression: boolean;
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
   multistream: boolean;
@@ -340,6 +341,7 @@ export type PageInitialParameters = {
   fakeVolume?: SoraDevtoolsState["fakeVolume"];
   frameRate?: SoraDevtoolsState["frameRate"];
   ignoreDisconnectWebSocket?: SoraDevtoolsState["ignoreDisconnectWebSocket"];
+  mediaProcessorsNoiseSuppression?: SoraDevtoolsState["mediaProcessorsNoiseSuppression"];
   mediaType?: SoraDevtoolsState["mediaType"];
   metadata?: SoraDevtoolsState["metadata"];
   mute?: SoraDevtoolsState["mute"];
@@ -405,6 +407,7 @@ export type DownloadReportParameters = Omit<
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
   | "logMessages"
+  | "mediaProcessorsNoiseSuppression"
   | "mute"
   | "notifyMessages"
   | "pushMessages"

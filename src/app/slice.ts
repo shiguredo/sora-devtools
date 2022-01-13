@@ -1,4 +1,5 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
+import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionOptions,
@@ -127,6 +128,7 @@ const initialState: SoraDevtoolsState = {
   },
   ignoreDisconnectWebSocket: "",
   logMessages: [],
+  mediaProcessorsNoiseSuppression: false,
   mediaType: "getUserMedia",
   metadata: "",
   multistream: false,
@@ -529,6 +531,12 @@ const slice = createSlice({
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState["blurRadius"]>) => {
       state.blurRadius = action.payload;
     },
+    setMediaProcessorsNoiseSuppression: (
+      state,
+      action: PayloadAction<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>
+    ) => {
+      state.mediaProcessorsNoiseSuppression = action.payload;
+    },
   },
 });
 
@@ -573,6 +581,7 @@ type craeteMediaStreamPickedSttate = Pick<
   | "fakeContents"
   | "fakeVolume"
   | "frameRate"
+  | "mediaProcessorsNoiseSuppression"
   | "mediaType"
   | "micDevice"
   | "noiseSuppression"
@@ -698,8 +707,16 @@ async function createMediaStream(
       )
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
+    let audioTrack = audioMediaStream.getAudioTracks()[0];
+    if (state.mediaProcessorsNoiseSuppression) {
+      const options = {
+        assetsPath: process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH,
+      };
+      const processor = new NoiseSuppressionProcessor(audioTrack, options);
+      audioTrack = await processor.startProcessing();
+    }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
-    mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
+    mediaStream.addTrack(audioTrack);
   }
   const videoConstraints = createVideoConstraints({
     aspectRatio: state.aspectRatio,
@@ -1356,6 +1373,7 @@ export const setMicDevice =
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
@@ -1406,6 +1424,7 @@ export const setCameraDevice =
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
         noiseSuppression: state.noiseSuppression,
@@ -1739,6 +1758,12 @@ export const setInitialParameter =
       pageInitialParameters.blurRadius,
       queryStringParameters.blurRadius
     );
+    setInitialState<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>(
+      dispatch,
+      slice.actions.setMediaProcessorsNoiseSuppression,
+      pageInitialParameters.mediaProcessorsNoiseSuppression,
+      queryStringParameters.mediaProcessorsNoiseSuppression
+    );
     // apiUrl は query string からのみ受け付ける
     if (typeof queryStringParameters.apiUrl === "string") {
       dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
@@ -1917,6 +1942,10 @@ export const copyURL =
         state.blurRadius,
         state.blurRadius !== "" && state.displaySettings.videoConstraints
       ),
+      mediaProcessorsNoiseSuppression: queryStringValue<QueryStringParameters["mediaProcessorsNoiseSuppression"]>(
+        state.mediaProcessorsNoiseSuppression,
+        state.mediaProcessorsNoiseSuppression
+      ),
       // simulcast
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
         state.simulcastRid,
@@ -2053,6 +2082,7 @@ export const {
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
   setLogMessages,
+  setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,
   setNoiseSuppression,
