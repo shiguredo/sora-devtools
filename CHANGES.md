@@ -11,6 +11,10 @@
 
 ## develop
 
+- [UPDATE] media-processors を追加する
+    - @shiguredo/noise-suppression パッケージを使用した mediaProcessorsNoiseSuppression を設定項目に追加する
+    - @shiguredo/virtual-background パッケージを使用した blurRadius を設定項目に追加する
+    - @yuitowest
 - [UPDATE] fakeVolume の step を 0.1 から 0.25 に変更する
     - @yuitowest
 - [UPDATE] MediaStream オプションに aspectRatio と resizeMode を追加する
