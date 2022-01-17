@@ -7,6 +7,7 @@ import {
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
+  BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
@@ -175,6 +176,11 @@ export function isResizeMode(resizeMode: string): resizeMode is typeof RESIZE_MO
   return (RESIZE_MODE_TYPES as readonly string[]).indexOf(resizeMode) >= 0;
 }
 
+// BlurRadius の Type Guard
+export function isBlurRadius(blurRadius: string): blurRadius is typeof BLUR_RADIUS[number] {
+  return (BLUR_RADIUS as readonly string[]).indexOf(blurRadius) >= 0;
+}
+
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
   const {
@@ -188,6 +194,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioOutput,
     audioTrack,
     autoGainControl,
+    blurRadius,
     cameraDevice,
     channelId,
     clientId,
@@ -207,6 +214,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     metadata,
     micDevice,
     mute,
+    mediaProcessorsNoiseSuppression,
     noiseSuppression,
     reconnect,
     resizeMode,
@@ -376,6 +384,13 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   if (isResizeMode(stringResizeMode)) {
     queryStringParameters.resizeMode = stringResizeMode;
   }
+  const stringBlurRadius = String(blurRadius);
+  if (isBlurRadius(stringBlurRadius)) {
+    queryStringParameters.blurRadius = stringBlurRadius;
+  }
+  if (typeof mediaProcessorsNoiseSuppression === "boolean") {
+    queryStringParameters.mediaProcessorsNoiseSuppression = mediaProcessorsNoiseSuppression;
+  }
   return queryStringParameters;
 }
 
@@ -431,6 +446,20 @@ export function getValueByAspectRatio(aspectRatio: string): number {
       return 20 / 9;
     default:
       return NaN;
+  }
+}
+
+// devtools の blurRadius 文字列に対する数値を返す
+export function getBlurRadiusNumber(blurRadius: typeof BLUR_RADIUS[number]): number {
+  switch (blurRadius) {
+    case "weak":
+      return 5;
+    case "midium":
+      return 10;
+    case "strong":
+      return 15;
+    default:
+      return 0;
   }
 }
 

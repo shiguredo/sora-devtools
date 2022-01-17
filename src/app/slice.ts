@@ -1,4 +1,6 @@
 import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
+import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionOptions,
   ConnectionPublisher,
@@ -38,6 +40,7 @@ import {
   createSignalingURL,
   createVideoConstraints,
   drawFakeCanvas,
+  getBlurRadiusNumber,
   getDevices,
   getMediaStreamTrackProperties,
   parseMetadata,
@@ -57,6 +60,7 @@ const initialState: SoraDevtoolsState = {
   audioOutput: "",
   audioOutputDevices: [],
   autoGainControl: "",
+  blurRadius: "",
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
@@ -124,6 +128,7 @@ const initialState: SoraDevtoolsState = {
   },
   ignoreDisconnectWebSocket: "",
   logMessages: [],
+  mediaProcessorsNoiseSuppression: false,
   mediaType: "getUserMedia",
   metadata: "",
   multistream: false,
@@ -159,6 +164,8 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: "",
   resizeMode: "",
+  noiseSuppressionProcessor: null,
+  virtualBackgroundProcessor: null,
 };
 
 const slice = createSlice({
@@ -523,6 +530,25 @@ const slice = createSlice({
     setResizeMode: (state, action: PayloadAction<SoraDevtoolsState["resizeMode"]>) => {
       state.resizeMode = action.payload;
     },
+    setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState["blurRadius"]>) => {
+      if (action.payload !== "" && state.virtualBackgroundProcessor === null) {
+        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || "";
+        const processor = new VirtualBackgroundProcessor(assetsPath);
+        state.virtualBackgroundProcessor = processor;
+      }
+      state.blurRadius = action.payload;
+    },
+    setMediaProcessorsNoiseSuppression: (
+      state,
+      action: PayloadAction<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>
+    ) => {
+      if (action.payload && state.noiseSuppressionProcessor === null) {
+        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || "";
+        const processor = new NoiseSuppressionProcessor(assetsPath);
+        state.noiseSuppressionProcessor = processor;
+      }
+      state.mediaProcessorsNoiseSuppression = action.payload;
+    },
   },
 });
 
@@ -560,21 +586,25 @@ type craeteMediaStreamPickedSttate = Pick<
   | "audioTrack"
   | "audioContentHint"
   | "autoGainControl"
+  | "blurRadius"
   | "cameraDevice"
   | "echoCancellation"
   | "echoCancellationType"
   | "fakeContents"
   | "fakeVolume"
   | "frameRate"
+  | "mediaProcessorsNoiseSuppression"
   | "mediaType"
   | "micDevice"
   | "noiseSuppression"
+  | "noiseSuppressionProcessor"
   | "resizeMode"
   | "resolution"
   | "video"
   | "videoContentHint"
   | "videoInput"
   | "videoTrack"
+  | "virtualBackgroundProcessor"
 >;
 async function createMediaStream(
   dispatch: Dispatch,
@@ -691,8 +721,16 @@ async function createMediaStream(
       )
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
+    let audioTrack = audioMediaStream.getAudioTracks()[0];
+    if (state.mediaProcessorsNoiseSuppression) {
+      if (state.noiseSuppressionProcessor === null) {
+        throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
+      }
+      state.noiseSuppressionProcessor.stopProcessing();
+      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
+    }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
-    mediaStream.addTrack(audioMediaStream.getAudioTracks()[0]);
+    mediaStream.addTrack(audioTrack);
   }
   const videoConstraints = createVideoConstraints({
     aspectRatio: state.aspectRatio,
@@ -712,8 +750,19 @@ async function createMediaStream(
       )
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
+    let videoTrack = videoMediaStream.getVideoTracks()[0];
+    if (state.blurRadius !== "") {
+      if (state.virtualBackgroundProcessor === null) {
+        throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
+      }
+      const options = {
+        blurRadius: getBlurRadiusNumber(state.blurRadius),
+      };
+      state.virtualBackgroundProcessor.stopProcessing();
+      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
+    }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
-    mediaStream.addTrack(videoMediaStream.getVideoTracks()[0]);
+    mediaStream.addTrack(videoTrack);
   }
   for (const track of mediaStream.getVideoTracks()) {
     if (track.contentHint !== undefined) {
@@ -829,9 +878,14 @@ function setSoraCallbacks(
       message["params"] = event.params;
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
-    const { fakeContents, soraContents, reconnect } = getState();
+    const { fakeContents, soraContents, reconnect, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
-
+    if (virtualBackgroundProcessor) {
+      virtualBackgroundProcessor.stopProcessing();
+    }
+    if (noiseSuppressionProcessor) {
+      noiseSuppressionProcessor.stopProcessing();
+    }
     if (localMediaStream) {
       localMediaStream.getTracks().forEach((track) => {
         track.stop();
@@ -1333,21 +1387,25 @@ export const setMicDevice =
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
+        blurRadius: state.blurRadius,
         cameraDevice: state.cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
+        noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: false,
         videoContentHint: state.videoContentHint,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
+        virtualBackgroundProcessor: state.virtualBackgroundProcessor,
       };
       const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
@@ -1382,21 +1440,25 @@ export const setCameraDevice =
         audioInput: state.audioInput,
         audioTrack: state.audioTrack,
         autoGainControl: state.autoGainControl,
+        blurRadius: state.blurRadius,
         cameraDevice: cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
         noiseSuppression: state.noiseSuppression,
+        noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: state.video,
         videoContentHint: state.videoContentHint,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
+        virtualBackgroundProcessor: state.virtualBackgroundProcessor,
       };
       const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
@@ -1715,6 +1777,18 @@ export const setInitialParameter =
       pageInitialParameters.resizeMode,
       queryStringParameters.resizeMode
     );
+    setInitialState<SoraDevtoolsState["blurRadius"]>(
+      dispatch,
+      slice.actions.setBlurRadius,
+      pageInitialParameters.blurRadius,
+      queryStringParameters.blurRadius
+    );
+    setInitialState<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>(
+      dispatch,
+      slice.actions.setMediaProcessorsNoiseSuppression,
+      pageInitialParameters.mediaProcessorsNoiseSuppression,
+      queryStringParameters.mediaProcessorsNoiseSuppression
+    );
     // apiUrl は query string からのみ受け付ける
     if (typeof queryStringParameters.apiUrl === "string") {
       dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
@@ -1889,6 +1963,14 @@ export const copyURL =
         state.resizeMode,
         state.resizeMode !== "" && state.displaySettings.videoConstraints
       ),
+      blurRadius: queryStringValue<QueryStringParameters["blurRadius"]>(
+        state.blurRadius,
+        state.blurRadius !== "" && state.displaySettings.videoConstraints
+      ),
+      mediaProcessorsNoiseSuppression: queryStringValue<QueryStringParameters["mediaProcessorsNoiseSuppression"]>(
+        state.mediaProcessorsNoiseSuppression,
+        state.mediaProcessorsNoiseSuppression
+      ),
       // simulcast
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
         state.simulcastRid,
@@ -2003,6 +2085,7 @@ export const {
   setAudioOutput,
   setAudioTrack,
   setAutoGainControl,
+  setBlurRadius,
   setChannelId,
   setClientId,
   setDataChannels,
@@ -2024,6 +2107,7 @@ export const {
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
   setLogMessages,
+  setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,
   setNoiseSuppression,

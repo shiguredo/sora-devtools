@@ -26,6 +26,8 @@ export const store = configureStore({
           "notifyMessages",
           "pushMessages",
           "signalingMessages",
+          "virtualBackgroundProcessor",
+          "noiseSuppressionProcessor",
         ],
       },
       immutableCheck: {
@@ -37,6 +39,7 @@ export const store = configureStore({
           "notifyMessages",
           "pushMessages",
           "signalingMessages",
+          "noiseSuppressionProcessor",
         ],
       },
     });

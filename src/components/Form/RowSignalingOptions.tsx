@@ -52,42 +52,42 @@ export const FormRowSignalingOptions: React.FC = () => {
       <Collapse in={!collapsed}>
         <div>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormE2EE />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormReconnect />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormClientId />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormMetadata />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormSignalingNotifyMetadata />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormSignalingUrlCandidates />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormDataChannels />
             </Col>
           </Row>
           <Row className="form-row">
-            <Col className="col-auto d-flex flex-column align-items-start">
+            <Col className="col-auto">
               <FormDataChannel />
             </Col>
           </Row>

@@ -1,3 +1,5 @@
+import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import type { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -13,6 +15,7 @@ import {
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
+  BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
@@ -43,6 +46,7 @@ export type SoraDevtoolsState = {
   audioOutput: string;
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
+  blurRadius: typeof BLUR_RADIUS[number];
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
@@ -86,6 +90,7 @@ export type SoraDevtoolsState = {
   };
   ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   logMessages: LogMessage[];
+  mediaProcessorsNoiseSuppression: boolean;
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
   multistream: boolean;
@@ -123,6 +128,8 @@ export type SoraDevtoolsState = {
   apiUrl: null | string;
   aspectRatio: typeof ASPECT_RATIO_TYPES[number];
   resizeMode: typeof RESIZE_MODE_TYPES[number];
+  noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
+  virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
 };
 
 // 画面表示する message の Type
@@ -323,6 +330,7 @@ export type PageInitialParameters = {
   audioInput?: SoraDevtoolsState["audioInput"];
   audioOutput?: SoraDevtoolsState["audioOutput"];
   autoGainControl?: SoraDevtoolsState["autoGainControl"];
+  blurRadius?: SoraDevtoolsState["blurRadius"];
   channelId?: SoraDevtoolsState["channelId"];
   clientId?: SoraDevtoolsState["clientId"];
   googCpuOveruseDetection?: SoraDevtoolsState["googCpuOveruseDetection"];
@@ -337,6 +345,7 @@ export type PageInitialParameters = {
   fakeVolume?: SoraDevtoolsState["fakeVolume"];
   frameRate?: SoraDevtoolsState["frameRate"];
   ignoreDisconnectWebSocket?: SoraDevtoolsState["ignoreDisconnectWebSocket"];
+  mediaProcessorsNoiseSuppression?: SoraDevtoolsState["mediaProcessorsNoiseSuppression"];
   mediaType?: SoraDevtoolsState["mediaType"];
   metadata?: SoraDevtoolsState["metadata"];
   mute?: SoraDevtoolsState["mute"];
@@ -394,6 +403,7 @@ export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
   | "alertMessages"
   | "apiUrl"
+  | "blurRadius"
   | "dataChannelMessages"
   | "debugFilterText"
   | "debugType"
@@ -401,7 +411,9 @@ export type DownloadReportParameters = Omit<
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
   | "logMessages"
+  | "mediaProcessorsNoiseSuppression"
   | "mute"
+  | "noiseSuppressionProcessor"
   | "notifyMessages"
   | "pushMessages"
   | "showStats"
@@ -409,6 +421,7 @@ export type DownloadReportParameters = Omit<
   | "soraContents"
   | "timelineMessages"
   | "version"
+  | "virtualBackgroundProcessor"
 >;
 
 export type DownloadReport = {

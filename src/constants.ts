@@ -72,6 +72,8 @@ export const ASPECT_RATIO_TYPES = ["", "4:3", "16:9", "21:9"] as const;
 
 export const RESIZE_MODE_TYPES = ["", "none", "crop-and-scale"] as const;
 
+export const BLUR_RADIUS = ["", "weak", "midium", "strong"] as const;
+
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
   const data = event.data;
