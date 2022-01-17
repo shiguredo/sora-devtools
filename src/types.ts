@@ -1,3 +1,5 @@
+import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import type { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -126,6 +128,8 @@ export type SoraDevtoolsState = {
   apiUrl: null | string;
   aspectRatio: typeof ASPECT_RATIO_TYPES[number];
   resizeMode: typeof RESIZE_MODE_TYPES[number];
+  noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
+  virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
 };
 
 // 画面表示する message の Type
@@ -409,6 +413,7 @@ export type DownloadReportParameters = Omit<
   | "logMessages"
   | "mediaProcessorsNoiseSuppression"
   | "mute"
+  | "noiseSuppressionProcessor"
   | "notifyMessages"
   | "pushMessages"
   | "showStats"
@@ -416,6 +421,7 @@ export type DownloadReportParameters = Omit<
   | "soraContents"
   | "timelineMessages"
   | "version"
+  | "virtualBackgroundProcessor"
 >;
 
 export type DownloadReport = {

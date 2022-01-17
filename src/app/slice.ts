@@ -164,6 +164,8 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: "",
   resizeMode: "",
+  noiseSuppressionProcessor: null,
+  virtualBackgroundProcessor: null,
 };
 
 const slice = createSlice({
@@ -529,12 +531,22 @@ const slice = createSlice({
       state.resizeMode = action.payload;
     },
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState["blurRadius"]>) => {
+      if (action.payload !== "" && state.virtualBackgroundProcessor === null) {
+        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || "";
+        const processor = new VirtualBackgroundProcessor(assetsPath);
+        state.virtualBackgroundProcessor = processor;
+      }
       state.blurRadius = action.payload;
     },
     setMediaProcessorsNoiseSuppression: (
       state,
       action: PayloadAction<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>
     ) => {
+      if (action.payload && state.noiseSuppressionProcessor === null) {
+        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || "";
+        const processor = new NoiseSuppressionProcessor(assetsPath);
+        state.noiseSuppressionProcessor = processor;
+      }
       state.mediaProcessorsNoiseSuppression = action.payload;
     },
   },
@@ -585,12 +597,14 @@ type craeteMediaStreamPickedSttate = Pick<
   | "mediaType"
   | "micDevice"
   | "noiseSuppression"
+  | "noiseSuppressionProcessor"
   | "resizeMode"
   | "resolution"
   | "video"
   | "videoContentHint"
   | "videoInput"
   | "videoTrack"
+  | "virtualBackgroundProcessor"
 >;
 async function createMediaStream(
   dispatch: Dispatch,
@@ -709,11 +723,11 @@ async function createMediaStream(
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
     let audioTrack = audioMediaStream.getAudioTracks()[0];
     if (state.mediaProcessorsNoiseSuppression) {
-      const options = {
-        assetsPath: process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH,
-      };
-      const processor = new NoiseSuppressionProcessor(audioTrack, options);
-      audioTrack = await processor.startProcessing();
+      if (state.noiseSuppressionProcessor === null) {
+        throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
+      }
+      state.noiseSuppressionProcessor.stopProcessing();
+      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
     mediaStream.addTrack(audioTrack);
@@ -738,12 +752,14 @@ async function createMediaStream(
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
     let videoTrack = videoMediaStream.getVideoTracks()[0];
     if (state.blurRadius !== "") {
+      if (state.virtualBackgroundProcessor === null) {
+        throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
+      }
       const options = {
         blurRadius: getBlurRadiusNumber(state.blurRadius),
-        assetsPath: process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH,
       };
-      const processor = new VirtualBackgroundProcessor(videoTrack, options);
-      videoTrack = await processor.startProcessing();
+      state.virtualBackgroundProcessor.stopProcessing();
+      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
     mediaStream.addTrack(videoTrack);
@@ -862,9 +878,14 @@ function setSoraCallbacks(
       message["params"] = event.params;
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
-    const { fakeContents, soraContents, reconnect } = getState();
+    const { fakeContents, soraContents, reconnect, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
-
+    if (virtualBackgroundProcessor) {
+      virtualBackgroundProcessor.stopProcessing();
+    }
+    if (noiseSuppressionProcessor) {
+      noiseSuppressionProcessor.stopProcessing();
+    }
     if (localMediaStream) {
       localMediaStream.getTracks().forEach((track) => {
         track.stop();
@@ -1377,12 +1398,14 @@ export const setMicDevice =
         mediaType: state.mediaType,
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
+        noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: false,
         videoContentHint: state.videoContentHint,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
+        virtualBackgroundProcessor: state.virtualBackgroundProcessor,
       };
       const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
@@ -1428,12 +1451,14 @@ export const setCameraDevice =
         mediaType: state.mediaType,
         micDevice: state.micDevice,
         noiseSuppression: state.noiseSuppression,
+        noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
         resolution: state.resolution,
         video: state.video,
         videoContentHint: state.videoContentHint,
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
+        virtualBackgroundProcessor: state.virtualBackgroundProcessor,
       };
       const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
