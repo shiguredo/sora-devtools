@@ -726,7 +726,6 @@ async function createMediaStream(
       if (state.noiseSuppressionProcessor === null) {
         throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
       }
-      state.noiseSuppressionProcessor.stopProcessing();
       audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
@@ -758,7 +757,6 @@ async function createMediaStream(
       const options = {
         blurRadius: getBlurRadiusNumber(state.blurRadius),
       };
-      state.virtualBackgroundProcessor.stopProcessing();
       videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
@@ -1322,6 +1320,12 @@ export const updateMediaStream =
     const state = getState();
     if (!state.soraContents.sora) {
       return;
+    }
+    if (state.virtualBackgroundProcessor) {
+      state.virtualBackgroundProcessor.stopProcessing();
+    }
+    if (state.noiseSuppressionProcessor) {
+      state.noiseSuppressionProcessor.stopProcessing();
     }
     if (state.soraContents.localMediaStream) {
       state.soraContents.localMediaStream.getTracks().forEach((track) => {
