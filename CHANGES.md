@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## 2021.2.2
+- [FIX] sora-js-sdk のバージョンを 2021.2.1 に更新する
+    - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1
+    - @yuitowest
+
 ## 2021.2.1
 - [FIX] サーバからの正常切断時に devtools の connectionStatate が 'disconnect' にならない場合がある問題を修正する
     - @yuitowest
