@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## 2021.2.3
+- [FIX] sora-js-sdk のバージョンを 2021.2.2 に更新する
+    - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.2
+    - @yuitowest
+
 ## 2021.2.2
 - [FIX] sora-js-sdk のバージョンを 2021.2.1 に更新する
     - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1
