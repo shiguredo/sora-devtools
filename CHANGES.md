@@ -11,6 +11,11 @@
 
 ## develop
 
+- [UPDATE] package を更新する
+    - @reduxjs/toolkit: 1.6.2, -> 1.7.2
+    - query-string: 7.0.1 -> 7.1.1
+    - react-bootstrap: 2.0.3 -> 2.1.2
+    - @yuitowest
 - [UPDATE] media-processors を追加する
     - @shiguredo/noise-suppression パッケージを使用した mediaProcessorsNoiseSuppression を設定項目に追加する
     - @shiguredo/virtual-background パッケージを使用した blurRadius を設定項目に追加する
@@ -22,6 +27,7 @@
 - [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
 
 ## 2021.2.4
+
 - [FIX] replace track 後に volume visualizer が動作しない問題を修正する
     - @yuitowest
 
