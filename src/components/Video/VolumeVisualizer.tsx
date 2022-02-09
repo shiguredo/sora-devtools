@@ -86,7 +86,7 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.stream]);
   return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
 };
 
