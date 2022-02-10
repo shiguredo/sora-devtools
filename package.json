@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2021.2.4",
+  "version": "2021.2.5",
   "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
@@ -49,6 +49,6 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
     "redux-logger": "^3.0.6",
-    "sora-js-sdk": "^2021.2.2"
+    "sora-js-sdk": "^2021.2.3"
   }
 }
