@@ -26,6 +26,12 @@
     - @yuitowest
 - [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
 
+## 2021.2.5
+
+- [FIX] sora-js-sdk のバージョンを 2021.2.3 に更新する
+    - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.3
+    - @yuitowest
+
 ## 2021.2.4
 
 - [FIX] replace track 後に volume visualizer が動作しない問題を修正する
