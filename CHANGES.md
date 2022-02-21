@@ -15,6 +15,7 @@
     - @reduxjs/toolkit: 1.6.2, -> 1.7.2
     - query-string: 7.0.1 -> 7.1.1
     - react-bootstrap: 2.0.3 -> 2.1.2
+    - next: 12.0.10 -> 12.1.0
     - @yuitowest
 - [UPDATE] media-processors を追加する
     - @shiguredo/noise-suppression パッケージを使用した mediaProcessorsNoiseSuppression を設定項目に追加する

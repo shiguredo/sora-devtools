@@ -36,7 +36,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.4",
-    "next": "^12.0.10",
+    "next": "^12.1.0",
     "nextjs": "^0.0.3",
     "prettier": "^2.5.1",
     "typescript": "^4.5.5"
