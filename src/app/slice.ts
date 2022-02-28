@@ -722,7 +722,7 @@ async function createMediaStream(
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
     let audioTrack = audioMediaStream.getAudioTracks()[0];
-    if (state.mediaProcessorsNoiseSuppression) {
+    if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
       if (state.noiseSuppressionProcessor === null) {
         throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
       }
@@ -750,7 +750,7 @@ async function createMediaStream(
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
     let videoTrack = videoMediaStream.getVideoTracks()[0];
-    if (state.blurRadius !== "") {
+    if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
       if (state.virtualBackgroundProcessor === null) {
         throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
       }
