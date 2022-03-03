@@ -16,6 +16,7 @@ export const FormVideoInput: React.FC = () => {
     <FormGroup className="form-inline" controlId="videoInput">
       <FormLabel>videoInput:</FormLabel>
       <FormSelect name="videoInput" value={videoInput} onChange={onChange} disabled={videoInputDevices.length === 0}>
+        <option value="">未指定</option>
         {videoInputDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>

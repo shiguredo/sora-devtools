@@ -15,6 +15,7 @@ export const FormAudioOutput: React.FC = () => {
     <FormGroup className="form-inline" controlId="audioOutput">
       <FormLabel>audioOutput:</FormLabel>
       <FormSelect name="audioOutput" value={audioOutput} onChange={onChange} disabled={audioOutputDevices.length === 0}>
+        <option value="">未指定</option>
         {audioOutputDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
