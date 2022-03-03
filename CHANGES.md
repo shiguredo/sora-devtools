@@ -10,7 +10,8 @@
     - バグ修正
 
 ## develop
-
+- [UPDATE] audioInput, audioOutput, videoInput に未指定のオプションを追加する
+    - @yuitowest
 - [UPDATE] package を更新する
     - @reduxjs/toolkit: 1.6.2, -> 1.7.2
     - query-string: 7.0.1 -> 7.1.1
