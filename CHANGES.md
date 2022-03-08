@@ -10,6 +10,8 @@
     - バグ修正
 
 ## develop
+- [UPDATE] スポットライトページで simulcast フラグを選択可能にする
+    - @yuitowest
 - [UPDATE] audioInput, audioOutput, videoInput に未指定のオプションを追加する
     - @yuitowest
 - [UPDATE] package を更新する
