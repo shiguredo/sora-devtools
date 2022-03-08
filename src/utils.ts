@@ -222,6 +222,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     showStats,
     signalingNotifyMetadata,
     signalingUrlCandidates,
+    simulcast,
     simulcastRid,
     spotlightFocusRid,
     spotlightNumber,
@@ -305,6 +306,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     if (Array.isArray(parsedSignalingUrlCandidates)) {
       queryStringParameters.signalingUrlCandidates = parsedSignalingUrlCandidates;
     }
+  }
+  if (typeof simulcast === "boolean") {
+    queryStringParameters.simulcast = simulcast;
   }
   if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
     queryStringParameters.simulcastRid = simulcastRid;

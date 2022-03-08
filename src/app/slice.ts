@@ -1820,6 +1820,10 @@ export const setInitialParameter =
     // spotlight
     if (typeof pageInitialParameters.spotlight === "boolean") {
       dispatch(slice.actions.setSpotlight(pageInitialParameters.spotlight));
+      // spotlight フラグが有効な画面では simulcast パラメーターを query string から取得する
+      if (pageInitialParameters.spotlight === true && queryStringParameters.simulcast !== undefined) {
+        dispatch(slice.actions.setSimulcast(queryStringParameters.simulcast));
+      }
     } else {
       throw new Error(`Failed to initialize. Invalid spotlight parameter '${pageInitialParameters.spotlight}'.`);
     }
