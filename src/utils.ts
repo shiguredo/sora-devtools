@@ -782,6 +782,7 @@ export function createDisplaySettings(
     displayResolution: false,
     mediaType: false,
     micDevice: false,
+    simulcast: false,
     simulcastRid: false,
     spotlightFocusRid: false,
     spotlightNumber: false,
@@ -833,6 +834,7 @@ export function createDisplaySettings(
   }
   // spotlight の場合は spotlightNumber を表示する
   if (spotlight) {
+    displaySettings.simulcast = true;
     displaySettings.spotlightNumber = true;
   }
   // spotlight,  sendrecv/recvnoly では spotlightFocusRid, spotlightUnfocusRid を表示する

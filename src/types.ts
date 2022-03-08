@@ -385,6 +385,7 @@ export type DisplaySettings = {
   displayResolution: boolean;
   mediaType: boolean;
   micDevice: boolean;
+  simulcast: boolean;
   simulcastRid: boolean;
   spotlightFocusRid: boolean;
   spotlightNumber: boolean;

@@ -85,6 +85,7 @@ const initialState: SoraDevtoolsState = {
     displayResolution: false,
     mediaType: false,
     micDevice: false,
+    simulcast: false,
     simulcastRid: false,
     spotlightFocusRid: false,
     spotlightNumber: false,
@@ -1976,6 +1977,8 @@ export const copyURL =
         state.mediaProcessorsNoiseSuppression
       ),
       // simulcast
+      simulcast: queryStringValue<QueryStringParameters["simulcast"]>(state.simulcast, state.displaySettings.simulcast),
+      // simulcastRid
       simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
         state.simulcastRid,
         state.displaySettings.simulcastRid
@@ -2121,6 +2124,7 @@ export const {
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
+  setSimulcast,
   setSimulcastRid,
   setSora,
   setSoraReconnecting,
