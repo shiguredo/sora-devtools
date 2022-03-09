@@ -12,6 +12,8 @@ import { VolumeVisualizer } from "./VolumeVisualizer";
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
+  const audio = useAppSelector((state) => state.audio);
+  const video = useAppSelector((state) => state.video);
   const audioOutput = useAppSelector((state) => state.audioOutput);
   const displayResolution = useAppSelector((state) => state.displayResolution);
   const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
@@ -19,6 +21,9 @@ const VideoBox: React.FC = () => {
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
   const micDevice = useAppSelector((state) => state.micDevice);
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
+  if (audio === false && video === false) {
+    return null;
+  }
   return (
     <>
       <div className="d-flex">
