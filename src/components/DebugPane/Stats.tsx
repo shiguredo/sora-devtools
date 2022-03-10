@@ -1,7 +1,8 @@
 import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { Message } from "@/components/Debug/Message";
+
+import { Message } from "./Message";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
   [x: string]: string | number | undefined;

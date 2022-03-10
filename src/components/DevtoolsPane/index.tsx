@@ -19,7 +19,7 @@ import { FormRowVideoSettings } from "@/components/Form/RowVideoSettings";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
 
-export const ColDevtools: React.FC = () => {
+export const DevtoolsPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);
   const role = useAppSelector((state) => state.role);
   return (

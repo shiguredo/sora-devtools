@@ -2,8 +2,9 @@ import React from "react";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { clearDataChannelMessages } from "@/app/slice";
-import { Message } from "@/components/Debug/Message";
 import type { DataChannelMessage } from "@/types";
+
+import { Message } from "./Message";
 
 const ButtonClear: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -3,17 +3,18 @@ import { Tab, Tabs } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDebugType } from "@/app/slice";
-import { DataChannelMessagingMessages } from "@/components/Debug/DataChannelMessagingMessages";
-import { DebugFilter } from "@/components/Debug/Filter";
-import { LogMessages } from "@/components/Debug/LogMessages";
-import { NotifyMessages } from "@/components/Debug/NotifyMessages";
-import { PushMessages } from "@/components/Debug/PushMessages";
-import { SendDataChannelMessagingMessage } from "@/components/Debug/SendDataChannelMessagingMessage";
-import { SignalingMessages } from "@/components/Debug/SignalingMessages";
-import { Stats } from "@/components/Debug/Stats";
-import { TimelineMessages } from "@/components/Debug/TimelineMessages";
 
-export const ColDebug: React.FC = () => {
+import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages";
+import { DebugFilter } from "./Filter";
+import { LogMessages } from "./LogMessages";
+import { NotifyMessages } from "./NotifyMessages";
+import { PushMessages } from "./PushMessages";
+import { SendDataChannelMessagingMessage } from "./SendDataChannelMessagingMessage";
+import { SignalingMessages } from "./SignalingMessages";
+import { Stats } from "./Stats";
+import { TimelineMessages } from "./TimelineMessages";
+
+export const DebugPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);
   const debugType = useAppSelector((state) => state.debugType);
   const dispatch = useAppDispatch();

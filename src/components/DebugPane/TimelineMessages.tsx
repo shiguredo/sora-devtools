@@ -1,8 +1,9 @@
 import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { Message } from "@/components/Debug/Message";
 import type { TimelineMessage } from "@/types";
+
+import { Message } from "./Message";
 
 const DATA_CHANNEL_COLORS: { [key: string]: string } = {
   signaling: "#ff00ff",

@@ -1,8 +1,9 @@
 import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { Message } from "@/components/Debug/Message";
 import type { SignalingMessage } from "@/types";
+
+import { Message } from "./Message";
 
 const SIGNALING_COLORS: { [key: string]: string } = {
   websocket: "#00ff00",
