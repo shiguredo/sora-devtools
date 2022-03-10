@@ -18,7 +18,6 @@ import { FormVideoContentHint } from "@/components/Form/VideoContentHint";
 
 export const FormRowMediaOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
-  const displaySettings = useAppSelector((state) => state.displaySettings);
   const audioContentHint = useAppSelector((state) => state.audioContentHint);
   const autoGainControl = useAppSelector((state) => state.autoGainControl);
   const noiseSuppression = useAppSelector((state) => state.noiseSuppression);
@@ -61,50 +60,46 @@ export const FormRowMediaOptions: React.FC = () => {
       </Col>
       <Collapse in={!collapsed}>
         <div>
-          {displaySettings.audioConstraints ? (
-            <Row className="form-row">
-              <Col className="col-auto">
-                <FormAudioContentHint />
-              </Col>
-              <Col className="col-auto">
-                <FormAutoGainControl />
-              </Col>
-              <Col className="col-auto">
-                <FormNoiseSuppression />
-              </Col>
-              <Col className="col-auto">
-                <FormEchoCancellation />
-              </Col>
-              <Col className="col-auto">
-                <FormEchoCancellationType />
-              </Col>
-              <Col className="col-auto">
-                <FormMediaProcessorsNoiseSuppression />
-              </Col>
-            </Row>
-          ) : null}
-          {displaySettings.videoConstraints ? (
-            <Row className="form-row">
-              <Col className="col-auto">
-                <FormVideoContentHint />
-              </Col>
-              <Col className="col-auto">
-                <FormResolution />
-              </Col>
-              <Col className="col-auto">
-                <FormFrameRate />
-              </Col>
-              <Col className="col-auto">
-                <FormAspectRatio />
-              </Col>
-              <Col className="col-auto">
-                <FormResizeMode />
-              </Col>
-              <Col className="col-auto">
-                <FormBlurRadius />
-              </Col>
-            </Row>
-          ) : null}
+          <Row className="form-row">
+            <Col className="col-auto">
+              <FormAudioContentHint />
+            </Col>
+            <Col className="col-auto">
+              <FormAutoGainControl />
+            </Col>
+            <Col className="col-auto">
+              <FormNoiseSuppression />
+            </Col>
+            <Col className="col-auto">
+              <FormEchoCancellation />
+            </Col>
+            <Col className="col-auto">
+              <FormEchoCancellationType />
+            </Col>
+            <Col className="col-auto">
+              <FormMediaProcessorsNoiseSuppression />
+            </Col>
+          </Row>
+          <Row className="form-row">
+            <Col className="col-auto">
+              <FormVideoContentHint />
+            </Col>
+            <Col className="col-auto">
+              <FormResolution />
+            </Col>
+            <Col className="col-auto">
+              <FormFrameRate />
+            </Col>
+            <Col className="col-auto">
+              <FormAspectRatio />
+            </Col>
+            <Col className="col-auto">
+              <FormResizeMode />
+            </Col>
+            <Col className="col-auto">
+              <FormBlurRadius />
+            </Col>
+          </Row>
           <ButtonUpdateMediaStream />
         </div>
       </Collapse>

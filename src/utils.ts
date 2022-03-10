@@ -1,5 +1,4 @@
 import queryString from "query-string";
-import type { Role } from "sora-js-sdk";
 
 import {
   ASPECT_RATIO_TYPES,
@@ -28,7 +27,6 @@ import {
 } from "@/constants";
 import type {
   CustomHTMLCanvasElement,
-  DisplaySettings,
   Json,
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
@@ -764,89 +762,6 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
     // 例外が起きた場合は何もしない
   }
   return [];
-}
-
-export function createDisplaySettings(
-  role: Role,
-  multistream: boolean,
-  simulcast: boolean,
-  spotlight: boolean,
-  dataChannelMessagingOnly: boolean
-): DisplaySettings {
-  const displaySettings: DisplaySettings = {
-    audio: false,
-    audioBitRate: false,
-    audioCodecType: false,
-    audioContentHint: false,
-    audioConstraints: false,
-    audioInput: false,
-    audioOutput: false,
-    audioTrack: false,
-    cameraDevice: false,
-    displayResolution: false,
-    mediaType: false,
-    micDevice: false,
-    simulcast: false,
-    simulcastRid: false,
-    spotlightFocusRid: false,
-    spotlightNumber: false,
-    spotlightUnfocusRid: false,
-    video: false,
-    videoBitRate: false,
-    videoCodecType: false,
-    videoContentHint: false,
-    videoConstraints: false,
-    videoInput: false,
-    videoTrack: false,
-  };
-  if (dataChannelMessagingOnly) {
-    return displaySettings;
-  }
-  displaySettings.audio = true;
-  displaySettings.video = true;
-  displaySettings.displayResolution = true;
-  if (role === "sendonly" || role === "sendrecv") {
-    displaySettings.audioBitRate = true;
-    displaySettings.audioCodecType = true;
-    displaySettings.audioContentHint = true;
-    displaySettings.audioConstraints = true;
-    displaySettings.audioInput = true;
-    displaySettings.audioOutput = true;
-    displaySettings.audioTrack = true;
-    displaySettings.cameraDevice = true;
-    displaySettings.mediaType = true;
-    displaySettings.micDevice = true;
-    displaySettings.videoBitRate = true;
-    displaySettings.videoCodecType = true;
-    displaySettings.videoContentHint = true;
-    displaySettings.videoConstraints = true;
-    displaySettings.videoInput = true;
-    displaySettings.videoTrack = true;
-  } else if (role === "recvonly") {
-    displaySettings.audioCodecType = true;
-    displaySettings.videoCodecType = true;
-    displaySettings.audioOutput = true;
-  }
-  // multistream recvonly は codec type を表示しない
-  if (role === "recvonly" && multistream) {
-    displaySettings.audioCodecType = false;
-    displaySettings.videoCodecType = false;
-  }
-  // simulcast  sendrecv/recvnoly では simulcastRid を表示する
-  if ((role === "recvonly" || role === "sendrecv") && simulcast && !spotlight) {
-    displaySettings.simulcastRid = true;
-  }
-  // spotlight の場合は spotlightNumber を表示する
-  if (spotlight) {
-    displaySettings.simulcast = true;
-    displaySettings.spotlightNumber = true;
-  }
-  // spotlight,  sendrecv/recvnoly では spotlightFocusRid, spotlightUnfocusRid を表示する
-  if ((role === "recvonly" || role === "sendrecv") && spotlight) {
-    displaySettings.spotlightFocusRid = true;
-    displaySettings.spotlightUnfocusRid = true;
-  }
-  return displaySettings;
 }
 
 // Sora との接続状態に応じて特定の Form を表示するかしないかを返す

@@ -1,4 +1,4 @@
-import { ActionCreatorWithPayload, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
@@ -17,11 +17,9 @@ import type {
   ConnectionOptionsState,
   DataChannelMessage,
   DebugType,
-  DisplaySettings,
   Json,
   LogMessage,
   NotifyMessage,
-  PageInitialParameters,
   PushMessage,
   QueryStringParameters,
   SignalingMessage,
@@ -33,7 +31,6 @@ import type {
 import {
   copy2clipboard,
   createAudioConstraints,
-  createDisplaySettings,
   createFakeMediaConstraints,
   createFakeMediaStream,
   createGetDisplayMediaConstraints,
@@ -41,6 +38,7 @@ import {
   createVideoConstraints,
   drawFakeCanvas,
   getBlurRadiusNumber,
+  // getDefaultVideoCodecType,
   getDevices,
   getMediaStreamTrackProperties,
   parseMetadata,
@@ -72,32 +70,6 @@ const initialState: SoraDevtoolsState = {
   dataChannels: "",
   dataChannelMessages: [],
   displayResolution: "",
-  displaySettings: {
-    audio: false,
-    audioBitRate: false,
-    audioCodecType: false,
-    audioContentHint: false,
-    audioConstraints: false,
-    audioInput: false,
-    audioOutput: false,
-    audioTrack: false,
-    cameraDevice: false,
-    displayResolution: false,
-    mediaType: false,
-    micDevice: false,
-    simulcast: false,
-    simulcastRid: false,
-    spotlightFocusRid: false,
-    spotlightNumber: false,
-    spotlightUnfocusRid: false,
-    video: false,
-    videoBitRate: false,
-    videoCodecType: false,
-    videoContentHint: false,
-    videoConstraints: false,
-    videoInput: false,
-    videoTrack: false,
-  },
   e2ee: false,
   echoCancellation: "",
   echoCancellationType: "",
@@ -281,9 +253,6 @@ const slice = createSlice({
       // Fake canvas を表示しているブラウザタブがバックグラウンドへ移動しても canvas のレンダリングを続けるために worker を生成
       const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
       state.fakeContents.worker = new Worker(url);
-    },
-    setInitialDisplaySettings: (state, action: PayloadAction<DisplaySettings>) => {
-      state.displaySettings = action.payload;
     },
     setFrameRate: (state, action: PayloadAction<SoraDevtoolsState["frameRate"]>) => {
       state.frameRate = action.payload;
@@ -1479,365 +1448,164 @@ export const setCameraDevice =
     dispatch(slice.actions.setCameraDevice(cameraDevice));
   };
 
-// QueryString の値とページから渡されたパラメーターを適切に action に渡すためのメソッド
-function setInitialState<T>(
-  dispatch: Dispatch,
-  action: ActionCreatorWithPayload<T, string>,
-  pageValue: T | undefined,
-  queryStringValue: T | undefined
-): void {
-  if (pageValue !== undefined) {
-    dispatch(action(pageValue));
-  }
-  if (queryStringValue !== undefined) {
-    dispatch(action(queryStringValue));
-  }
-}
-
 export const setInitialParameter =
-  (pageInitialParameters: PageInitialParameters) =>
+  () =>
   async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.resetState());
-    const queryStringParameters = parseQueryString();
-    setInitialState<SoraDevtoolsState["audio"]>(
-      dispatch,
-      slice.actions.setAudio,
-      pageInitialParameters.audio,
-      queryStringParameters.audio
-    );
-    setInitialState<SoraDevtoolsState["audioBitRate"]>(
-      dispatch,
-      slice.actions.setAudioBitRate,
-      pageInitialParameters.audioBitRate,
-      queryStringParameters.audioBitRate
-    );
-    setInitialState<SoraDevtoolsState["audioCodecType"]>(
-      dispatch,
-      slice.actions.setAudioCodecType,
-      pageInitialParameters.audioCodecType,
-      queryStringParameters.audioCodecType
-    );
+    const qsParams = parseQueryString();
+    if (qsParams.audio !== undefined) {
+      dispatch(slice.actions.setAudio(qsParams.audio));
+    }
+    if (qsParams.audioBitRate !== undefined) {
+      dispatch(slice.actions.setAudioBitRate(qsParams.audioBitRate));
+    }
+    if (qsParams.audioCodecType !== undefined) {
+      dispatch(slice.actions.setAudioCodecType(qsParams.audioCodecType));
+    }
     // 存在しない Device の場合はセットしない
     const deviceInfos = await getDevices();
-    if (
-      deviceInfos.find((d) => d.kind === "audioinput" && d.deviceId === queryStringParameters.audioInput) !== undefined
-    ) {
-      setInitialState<SoraDevtoolsState["audioInput"]>(
-        dispatch,
-        slice.actions.setAudioInput,
-        pageInitialParameters.audioInput,
-        queryStringParameters.audioInput
-      );
+    // audioinput
+    const audioInputDevice = deviceInfos.find((d) => d.kind === "audioinput" && d.deviceId === qsParams.audioInput);
+    if (audioInputDevice !== undefined) {
+      dispatch(slice.actions.setAudioInput(audioInputDevice.deviceId));
     }
-    if (
-      deviceInfos.find((d) => d.kind === "audiooutput" && d.deviceId === queryStringParameters.audioOutput) !==
-      undefined
-    ) {
-      setInitialState<SoraDevtoolsState["audioOutput"]>(
-        dispatch,
-        slice.actions.setAudioOutput,
-        pageInitialParameters.audioOutput,
-        queryStringParameters.audioOutput
-      );
+    // audiooutput
+    const audioOutputDevice = deviceInfos.find((d) => d.kind === "audiooutput" && d.deviceId === qsParams.audioOutput);
+    if (audioOutputDevice !== undefined) {
+      dispatch(slice.actions.setAudioOutput(audioOutputDevice.deviceId));
     }
-    if (
-      deviceInfos.find((d) => d.kind === "videoinput" && d.deviceId === queryStringParameters.videoInput) !== undefined
-    ) {
-      setInitialState<SoraDevtoolsState["videoInput"]>(
-        dispatch,
-        slice.actions.setVideoInput,
-        pageInitialParameters.videoInput,
-        queryStringParameters.videoInput
-      );
+    // videoinput
+    const videoInputDevice = deviceInfos.find((d) => d.kind === "videoinput" && d.deviceId === qsParams.videoInput);
+    if (videoInputDevice !== undefined) {
+      dispatch(slice.actions.setVideoInput(videoInputDevice.deviceId));
     }
-    setInitialState<SoraDevtoolsState["autoGainControl"]>(
-      dispatch,
-      slice.actions.setAutoGainControl,
-      pageInitialParameters.autoGainControl,
-      queryStringParameters.autoGainControl
-    );
-    setInitialState<SoraDevtoolsState["channelId"]>(
-      dispatch,
-      slice.actions.setChannelId,
-      pageInitialParameters.channelId,
-      queryStringParameters.channelId
-    );
-    setInitialState<SoraDevtoolsState["displayResolution"]>(
-      dispatch,
-      slice.actions.setDisplayResolution,
-      pageInitialParameters.displayResolution,
-      queryStringParameters.displayResolution
-    );
-    setInitialState<SoraDevtoolsState["e2ee"]>(
-      dispatch,
-      slice.actions.setE2EE,
-      pageInitialParameters.e2ee,
-      queryStringParameters.e2ee
-    );
-    setInitialState<SoraDevtoolsState["echoCancellation"]>(
-      dispatch,
-      slice.actions.setEchoCancellation,
-      pageInitialParameters.echoCancellation,
-      queryStringParameters.echoCancellation
-    );
-    setInitialState<SoraDevtoolsState["echoCancellationType"]>(
-      dispatch,
-      slice.actions.setEchoCancellationType,
-      pageInitialParameters.echoCancellationType,
-      queryStringParameters.echoCancellationType
-    );
-    setInitialState<SoraDevtoolsState["mediaType"]>(
-      dispatch,
-      slice.actions.setMediaType,
-      pageInitialParameters.mediaType,
-      queryStringParameters.mediaType
-    );
-    setInitialState<SoraDevtoolsState["fakeVolume"]>(
-      dispatch,
-      slice.actions.setFakeVolume,
-      pageInitialParameters.fakeVolume,
-      queryStringParameters.fakeVolume
-    );
-    setInitialState<SoraDevtoolsState["frameRate"]>(
-      dispatch,
-      slice.actions.setFrameRate,
-      pageInitialParameters.frameRate,
-      queryStringParameters.frameRate
-    );
-    setInitialState<SoraDevtoolsState["noiseSuppression"]>(
-      dispatch,
-      slice.actions.setNoiseSuppression,
-      pageInitialParameters.noiseSuppression,
-      queryStringParameters.noiseSuppression
-    );
-    setInitialState<SoraDevtoolsState["resolution"]>(
-      dispatch,
-      slice.actions.setResolution,
-      pageInitialParameters.resolution,
-      queryStringParameters.resolution
-    );
-    setInitialState<SoraDevtoolsState["showStats"]>(
-      dispatch,
-      slice.actions.setShowStats,
-      pageInitialParameters.showStats,
-      queryStringParameters.showStats
-    );
-    setInitialState<SoraDevtoolsState["simulcastRid"]>(
-      dispatch,
-      slice.actions.setSimulcastRid,
-      pageInitialParameters.simulcastRid,
-      queryStringParameters.simulcastRid
-    );
-    setInitialState<SoraDevtoolsState["spotlightNumber"]>(
-      dispatch,
-      slice.actions.setSpotlightNumber,
-      pageInitialParameters.spotlightNumber,
-      queryStringParameters.spotlightNumber
-    );
-    setInitialState<SoraDevtoolsState["spotlightFocusRid"]>(
-      dispatch,
-      slice.actions.setSpotlightFocusRid,
-      pageInitialParameters.spotlightFocusRid,
-      queryStringParameters.spotlightFocusRid
-    );
-    setInitialState<SoraDevtoolsState["spotlightUnfocusRid"]>(
-      dispatch,
-      slice.actions.setSpotlightUnfocusRid,
-      pageInitialParameters.spotlightUnfocusRid,
-      queryStringParameters.spotlightUnfocusRid
-    );
-    setInitialState<SoraDevtoolsState["video"]>(
-      dispatch,
-      slice.actions.setVideo,
-      pageInitialParameters.video,
-      queryStringParameters.video
-    );
-    setInitialState<SoraDevtoolsState["videoBitRate"]>(
-      dispatch,
-      slice.actions.setVideoBitRate,
-      pageInitialParameters.videoBitRate,
-      queryStringParameters.videoBitRate
-    );
-    setInitialState<SoraDevtoolsState["videoCodecType"]>(
-      dispatch,
-      slice.actions.setVideoCodecType,
-      pageInitialParameters.videoCodecType,
-      queryStringParameters.videoCodecType
-    );
-    setInitialState<SoraDevtoolsState["debug"]>(
-      dispatch,
-      slice.actions.setDebug,
-      pageInitialParameters.debug,
-      queryStringParameters.debug
-    );
-    setInitialState<SoraDevtoolsState["debugType"]>(
-      dispatch,
-      slice.actions.setDebugType,
-      pageInitialParameters.debugType,
-      queryStringParameters.debugType
-    );
-    setInitialState<SoraDevtoolsState["mute"]>(
-      dispatch,
-      slice.actions.setMute,
-      pageInitialParameters.mute,
-      queryStringParameters.mute
-    );
-    setInitialState<SoraDevtoolsState["dataChannelSignaling"]>(
-      dispatch,
-      slice.actions.setDataChannelSignaling,
-      pageInitialParameters.dataChannelSignaling,
-      queryStringParameters.dataChannelSignaling
-    );
-    setInitialState<SoraDevtoolsState["ignoreDisconnectWebSocket"]>(
-      dispatch,
-      slice.actions.setIgnoreDisconnectWebSocket,
-      pageInitialParameters.ignoreDisconnectWebSocket,
-      queryStringParameters.ignoreDisconnectWebSocket
-    );
-    setInitialState<SoraDevtoolsState["micDevice"]>(
-      dispatch,
-      slice.actions.setMicDevice,
-      pageInitialParameters.micDevice,
-      queryStringParameters.micDevice
-    );
-    setInitialState<SoraDevtoolsState["cameraDevice"]>(
-      dispatch,
-      slice.actions.setCameraDevice,
-      pageInitialParameters.cameraDevice,
-      queryStringParameters.cameraDevice
-    );
-    setInitialState<SoraDevtoolsState["audioTrack"]>(
-      dispatch,
-      slice.actions.setAudioTrack,
-      pageInitialParameters.audioTrack,
-      queryStringParameters.audioTrack
-    );
-    setInitialState<SoraDevtoolsState["videoTrack"]>(
-      dispatch,
-      slice.actions.setVideoTrack,
-      pageInitialParameters.videoTrack,
-      queryStringParameters.videoTrack
-    );
-    // googCpuOveruseDetection は query string からのみ受け付ける
-    if (typeof queryStringParameters.googCpuOveruseDetection === "boolean") {
-      dispatch(slice.actions.setGoogCpuOveruseDetection(queryStringParameters.googCpuOveruseDetection));
+    if (qsParams.autoGainControl !== undefined) {
+      dispatch(slice.actions.setAutoGainControl(qsParams.autoGainControl));
     }
-    setInitialState<SoraDevtoolsState["clientId"]>(
-      dispatch,
-      slice.actions.setClientId,
-      pageInitialParameters.clientId,
-      queryStringParameters.clientId
-    );
-    setInitialState<SoraDevtoolsState["metadata"]>(
-      dispatch,
-      slice.actions.setMetadata,
-      pageInitialParameters.metadata,
-      queryStringParameters.metadata
-    );
-    setInitialState<SoraDevtoolsState["signalingNotifyMetadata"]>(
-      dispatch,
-      slice.actions.setSignalingNotifyMetadata,
-      pageInitialParameters.signalingNotifyMetadata,
-      queryStringParameters.signalingNotifyMetadata
-    );
-    setInitialState<SoraDevtoolsState["signalingUrlCandidates"]>(
-      dispatch,
-      slice.actions.setSignalingUrlCandidates,
-      pageInitialParameters.signalingUrlCandidates,
-      queryStringParameters.signalingUrlCandidates
-    );
-    setInitialState<SoraDevtoolsState["dataChannels"]>(
-      dispatch,
-      slice.actions.setDataChannels,
-      pageInitialParameters.dataChannels,
-      queryStringParameters.dataChannels
-    );
-    setInitialState<SoraDevtoolsState["audioContentHint"]>(
-      dispatch,
-      slice.actions.setAudioContentHint,
-      pageInitialParameters.audioContentHint,
-      queryStringParameters.audioContentHint
-    );
-    setInitialState<SoraDevtoolsState["videoContentHint"]>(
-      dispatch,
-      slice.actions.setVideoContentHint,
-      pageInitialParameters.videoContentHint,
-      queryStringParameters.videoContentHint
-    );
-    setInitialState<SoraDevtoolsState["reconnect"]>(
-      dispatch,
-      slice.actions.setReconnect,
-      pageInitialParameters.reconnect,
-      queryStringParameters.reconnect
-    );
-    setInitialState<SoraDevtoolsState["aspectRatio"]>(
-      dispatch,
-      slice.actions.setAspectRatio,
-      pageInitialParameters.aspectRatio,
-      queryStringParameters.aspectRatio
-    );
-    setInitialState<SoraDevtoolsState["resizeMode"]>(
-      dispatch,
-      slice.actions.setResizeMode,
-      pageInitialParameters.resizeMode,
-      queryStringParameters.resizeMode
-    );
-    setInitialState<SoraDevtoolsState["blurRadius"]>(
-      dispatch,
-      slice.actions.setBlurRadius,
-      pageInitialParameters.blurRadius,
-      queryStringParameters.blurRadius
-    );
-    setInitialState<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>(
-      dispatch,
-      slice.actions.setMediaProcessorsNoiseSuppression,
-      pageInitialParameters.mediaProcessorsNoiseSuppression,
-      queryStringParameters.mediaProcessorsNoiseSuppression
-    );
-    // apiUrl は query string からのみ受け付ける
-    if (typeof queryStringParameters.apiUrl === "string") {
-      dispatch(slice.actions.setApiUrl(queryStringParameters.apiUrl));
+    if (qsParams.channelId !== undefined) {
+      dispatch(slice.actions.setChannelId(qsParams.channelId));
+    }
+    if (qsParams.displayResolution !== undefined) {
+      dispatch(slice.actions.setDisplayResolution(qsParams.displayResolution));
+    }
+    if (qsParams.e2ee !== undefined) {
+      dispatch(slice.actions.setE2EE(qsParams.e2ee));
+    }
+    if (qsParams.echoCancellation !== undefined) {
+      dispatch(slice.actions.setEchoCancellation(qsParams.echoCancellation));
+    }
+    if (qsParams.echoCancellationType !== undefined) {
+      dispatch(slice.actions.setEchoCancellationType(qsParams.echoCancellationType));
+    }
+    if (qsParams.mediaType !== undefined) {
+      dispatch(slice.actions.setMediaType(qsParams.mediaType));
+    }
+    if (qsParams.fakeVolume !== undefined) {
+      dispatch(slice.actions.setFakeVolume(qsParams.fakeVolume));
+    }
+    if (qsParams.frameRate !== undefined) {
+      dispatch(slice.actions.setFrameRate(qsParams.frameRate));
+    }
+    if (qsParams.noiseSuppression !== undefined) {
+      dispatch(slice.actions.setNoiseSuppression(qsParams.noiseSuppression));
+    }
+    if (qsParams.resolution !== undefined) {
+      dispatch(slice.actions.setResolution(qsParams.resolution));
+    }
+    if (qsParams.showStats !== undefined) {
+      dispatch(slice.actions.setShowStats(qsParams.showStats));
+    }
+    if (qsParams.simulcastRid !== undefined) {
+      dispatch(slice.actions.setSimulcastRid(qsParams.simulcastRid));
+    }
+    if (qsParams.spotlightNumber !== undefined) {
+      dispatch(slice.actions.setSpotlightNumber(qsParams.spotlightNumber));
+    }
+    if (qsParams.spotlightFocusRid !== undefined) {
+      dispatch(slice.actions.setSpotlightFocusRid(qsParams.spotlightFocusRid));
+    }
+    if (qsParams.spotlightUnfocusRid !== undefined) {
+      dispatch(slice.actions.setSpotlightUnfocusRid(qsParams.spotlightUnfocusRid));
+    }
+    if (qsParams.video !== undefined) {
+      dispatch(slice.actions.setVideo(qsParams.video));
+    }
+    if (qsParams.videoBitRate !== undefined) {
+      dispatch(slice.actions.setVideoBitRate(qsParams.videoBitRate));
+    }
+    if (qsParams.videoCodecType !== undefined) {
+      dispatch(slice.actions.setVideoCodecType(qsParams.videoCodecType));
+    }
+    if (qsParams.debug !== undefined) {
+      dispatch(slice.actions.setDebug(qsParams.debug));
+    }
+    if (qsParams.debugType !== undefined) {
+      dispatch(slice.actions.setDebugType(qsParams.debugType));
+    }
+    if (qsParams.mute !== undefined) {
+      dispatch(slice.actions.setMute(qsParams.mute));
+    }
+    if (qsParams.dataChannelSignaling !== undefined) {
+      dispatch(slice.actions.setDataChannelSignaling(qsParams.dataChannelSignaling));
+    }
+    if (qsParams.ignoreDisconnectWebSocket !== undefined) {
+      dispatch(slice.actions.setIgnoreDisconnectWebSocket(qsParams.ignoreDisconnectWebSocket));
+    }
+    if (qsParams.micDevice !== undefined) {
+      dispatch(slice.actions.setMicDevice(qsParams.micDevice));
+    }
+    if (qsParams.cameraDevice !== undefined) {
+      dispatch(slice.actions.setCameraDevice(qsParams.cameraDevice));
+    }
+    if (qsParams.audioTrack !== undefined) {
+      dispatch(slice.actions.setAudioTrack(qsParams.audioTrack));
+    }
+    if (qsParams.videoTrack !== undefined) {
+      dispatch(slice.actions.setVideoTrack(qsParams.videoTrack));
+    }
+    if (qsParams.googCpuOveruseDetection !== undefined && qsParams.googCpuOveruseDetection !== null) {
+      dispatch(slice.actions.setGoogCpuOveruseDetection(qsParams.googCpuOveruseDetection));
+    }
+    if (qsParams.clientId !== undefined) {
+      dispatch(slice.actions.setClientId(qsParams.clientId));
+    }
+    if (qsParams.metadata !== undefined) {
+      dispatch(slice.actions.setMetadata(qsParams.metadata));
+    }
+    if (qsParams.signalingNotifyMetadata !== undefined) {
+      dispatch(slice.actions.setSignalingNotifyMetadata(qsParams.signalingNotifyMetadata));
+    }
+    if (qsParams.signalingUrlCandidates !== undefined) {
+      dispatch(slice.actions.setSignalingUrlCandidates(qsParams.signalingUrlCandidates));
+    }
+    if (qsParams.dataChannels !== undefined) {
+      dispatch(slice.actions.setDataChannels(qsParams.dataChannels));
+    }
+    if (qsParams.audioContentHint !== undefined) {
+      dispatch(slice.actions.setAudioContentHint(qsParams.audioContentHint));
+    }
+    if (qsParams.videoContentHint !== undefined) {
+      dispatch(slice.actions.setVideoContentHint(qsParams.videoContentHint));
+    }
+    if (qsParams.reconnect !== undefined) {
+      dispatch(slice.actions.setReconnect(qsParams.reconnect));
+    }
+    if (qsParams.aspectRatio !== undefined) {
+      dispatch(slice.actions.setAspectRatio(qsParams.aspectRatio));
+    }
+    if (qsParams.resizeMode !== undefined) {
+      dispatch(slice.actions.setResizeMode(qsParams.resizeMode));
+    }
+    if (qsParams.blurRadius !== undefined) {
+      dispatch(slice.actions.setBlurRadius(qsParams.blurRadius));
+    }
+    if (qsParams.mediaProcessorsNoiseSuppression !== undefined) {
+      dispatch(slice.actions.setMediaProcessorsNoiseSuppression(qsParams.mediaProcessorsNoiseSuppression));
+    }
+    if (qsParams.apiUrl !== undefined && qsParams.apiUrl !== null) {
+      dispatch(slice.actions.setApiUrl(qsParams.apiUrl));
     }
     dispatch(slice.actions.setInitialFakeContents());
-    // role
-    if (pageInitialParameters.role !== null && pageInitialParameters.role !== undefined) {
-      dispatch(slice.actions.setRole(pageInitialParameters.role));
-    } else {
-      throw new Error(`Failed to initialize. Invalid role parameter '${pageInitialParameters.role}'.`);
-    }
-    // multistream
-    if (typeof pageInitialParameters.multistream === "boolean") {
-      dispatch(slice.actions.setMultistream(pageInitialParameters.multistream));
-    } else {
-      throw new Error(`Failed to initialize. Invalid multistream parameter '${pageInitialParameters.multistream}'.`);
-    }
-    // simulcast
-    if (typeof pageInitialParameters.simulcast === "boolean") {
-      dispatch(slice.actions.setSimulcast(pageInitialParameters.simulcast));
-    } else {
-      throw new Error(`Failed to initialize. Invalid simulcast parameter '${pageInitialParameters.simulcast}'.`);
-    }
-    // spotlight
-    if (typeof pageInitialParameters.spotlight === "boolean") {
-      dispatch(slice.actions.setSpotlight(pageInitialParameters.spotlight));
-      // spotlight フラグが有効な画面では simulcast パラメーターを query string から取得する
-      if (pageInitialParameters.spotlight === true && queryStringParameters.simulcast !== undefined) {
-        dispatch(slice.actions.setSimulcast(queryStringParameters.simulcast));
-      }
-    } else {
-      throw new Error(`Failed to initialize. Invalid spotlight parameter '${pageInitialParameters.spotlight}'.`);
-    }
-    dispatch(
-      slice.actions.setInitialDisplaySettings(
-        createDisplaySettings(
-          pageInitialParameters.role,
-          pageInitialParameters.multistream,
-          pageInitialParameters.simulcast,
-          pageInitialParameters.spotlight,
-          !!pageInitialParameters.dataChannelMessagingOnly
-        )
-      )
-    );
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
       clientId,
@@ -1863,6 +1631,8 @@ export const setInitialParameter =
         return;
       }
     }
+
+    // TODO(yuito): multistream, simulcat, spotlight フラグを qs から受け取るようにする
 
     // clientId が存在した場合は enabledClientId をセットする
     if (clientId !== "") {
@@ -1904,136 +1674,136 @@ export const copyURL =
     const state = getState();
     const parameters: Partial<QueryStringParameters> = {
       // mediaType
-      mediaType: queryStringValue<QueryStringParameters["mediaType"]>(
-        state.mediaType,
-        state.mediaType !== "getUserMedia" && state.displaySettings.mediaType
-      ),
-      // channelId
-      channelId: state.channelId,
-      // audio
-      audio: queryStringValue<QueryStringParameters["audio"]>(state.audio, state.displaySettings.audio),
-      audioBitRate: queryStringValue<QueryStringParameters["audioBitRate"]>(
-        state.audioBitRate,
-        state.displaySettings.audioBitRate
-      ),
-      audioCodecType: queryStringValue<QueryStringParameters["audioCodecType"]>(
-        state.audioCodecType,
-        state.displaySettings.audioCodecType
-      ),
-      audioContentHint: queryStringValue<QueryStringParameters["audioContentHint"]>(
-        state.audioContentHint,
-        state.audioContentHint !== "" && state.displaySettings.audioContentHint
-      ),
-      // audio constraints
-      autoGainControl: queryStringValue<QueryStringParameters["autoGainControl"]>(
-        state.autoGainControl,
-        state.autoGainControl !== "" && state.displaySettings.audioConstraints
-      ),
-      noiseSuppression: queryStringValue<QueryStringParameters["noiseSuppression"]>(
-        state.noiseSuppression,
-        state.noiseSuppression !== "" && state.displaySettings.audioConstraints
-      ),
-      echoCancellation: queryStringValue<QueryStringParameters["echoCancellation"]>(
-        state.echoCancellation,
-        state.echoCancellation !== "" && state.displaySettings.audioConstraints
-      ),
-      echoCancellationType: queryStringValue<QueryStringParameters["echoCancellationType"]>(
-        state.echoCancellationType,
-        state.echoCancellationType !== "" && state.displaySettings.audioConstraints
-      ),
-      // video
-      video: queryStringValue<QueryStringParameters["video"]>(state.video, state.displaySettings.video),
-      videoBitRate: queryStringValue<QueryStringParameters["videoBitRate"]>(
-        state.videoBitRate,
-        state.displaySettings.videoBitRate
-      ),
-      videoCodecType: queryStringValue<QueryStringParameters["videoCodecType"]>(
-        state.videoCodecType,
-        state.displaySettings.videoCodecType
-      ),
-      videoContentHint: queryStringValue<QueryStringParameters["videoContentHint"]>(
-        state.videoContentHint,
-        state.videoContentHint !== "" && state.displaySettings.videoContentHint
-      ),
-      // video constraints
-      resolution: queryStringValue<QueryStringParameters["resolution"]>(
-        state.resolution,
-        state.displaySettings.videoConstraints
-      ),
-      frameRate: queryStringValue<QueryStringParameters["frameRate"]>(
-        state.frameRate,
-        state.frameRate !== "" && state.displaySettings.videoConstraints
-      ),
-      aspectRatio: queryStringValue<QueryStringParameters["aspectRatio"]>(
-        state.aspectRatio,
-        state.aspectRatio !== "" && state.displaySettings.videoConstraints
-      ),
-      resizeMode: queryStringValue<QueryStringParameters["resizeMode"]>(
-        state.resizeMode,
-        state.resizeMode !== "" && state.displaySettings.videoConstraints
-      ),
-      blurRadius: queryStringValue<QueryStringParameters["blurRadius"]>(
-        state.blurRadius,
-        state.blurRadius !== "" && state.displaySettings.videoConstraints
-      ),
-      mediaProcessorsNoiseSuppression: queryStringValue<QueryStringParameters["mediaProcessorsNoiseSuppression"]>(
-        state.mediaProcessorsNoiseSuppression,
-        state.mediaProcessorsNoiseSuppression
-      ),
-      // simulcast
-      simulcast: queryStringValue<QueryStringParameters["simulcast"]>(state.simulcast, state.displaySettings.simulcast),
-      // simulcastRid
-      simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
-        state.simulcastRid,
-        state.displaySettings.simulcastRid
-      ),
-      // devices
-      audioInput: queryStringValue<QueryStringParameters["audioInput"]>(
-        state.audioInput,
-        state.audioInput !== "" && state.displaySettings.audioInput
-      ),
-      audioOutput: queryStringValue<QueryStringParameters["audioOutput"]>(
-        state.audioOutput,
-        state.audioOutput !== "" && state.displaySettings.audioOutput
-      ),
-      videoInput: queryStringValue<QueryStringParameters["videoInput"]>(
-        state.videoInput,
-        state.videoInput !== "" && state.displaySettings.videoInput
-      ),
-      // device settings
-      displayResolution: queryStringValue<QueryStringParameters["displayResolution"]>(
-        state.displayResolution,
-        state.displayResolution !== ""
-      ),
-      micDevice: queryStringValue<QueryStringParameters["micDevice"]>(
-        state.micDevice,
-        !state.micDevice && state.displaySettings.micDevice
-      ),
-      cameraDevice: queryStringValue<QueryStringParameters["cameraDevice"]>(
-        state.cameraDevice,
-        !state.cameraDevice && state.displaySettings.cameraDevice
-      ),
-      audioTrack: queryStringValue<QueryStringParameters["audioTrack"]>(
-        state.audioTrack,
-        !state.audioTrack && state.displaySettings.audioTrack
-      ),
-      videoTrack: queryStringValue<QueryStringParameters["videoTrack"]>(
-        state.videoTrack,
-        !state.videoTrack && state.displaySettings.videoTrack
-      ),
-      // spotlight
-      spotlightNumber: queryStringValue<QueryStringParameters["spotlightNumber"]>(
-        state.spotlightNumber,
-        state.displaySettings.spotlightNumber
-      ),
-      spotlightFocusRid: queryStringValue<QueryStringParameters["spotlightFocusRid"]>(
-        state.spotlightFocusRid,
-        state.displaySettings.spotlightFocusRid
-      ),
-      spotlightUnfocusRid: queryStringValue<QueryStringParameters["spotlightUnfocusRid"]>(
-        state.spotlightUnfocusRid,
-        state.displaySettings.spotlightUnfocusRid
-      ),
+      // mediaType: queryStringValue<QueryStringParameters["mediaType"]>(
+      //   state.mediaType,
+      //   state.mediaType !== "getUserMedia" && state.displaySettings.mediaType
+      // ),
+      // // channelId
+      // channelId: state.channelId,
+      // // audio
+      // audio: queryStringValue<QueryStringParameters["audio"]>(state.audio, state.displaySettings.audio),
+      // audioBitRate: queryStringValue<QueryStringParameters["audioBitRate"]>(
+      //   state.audioBitRate,
+      //   state.displaySettings.audioBitRate
+      // ),
+      // audioCodecType: queryStringValue<QueryStringParameters["audioCodecType"]>(
+      //   state.audioCodecType,
+      //   state.displaySettings.audioCodecType
+      // ),
+      // audioContentHint: queryStringValue<QueryStringParameters["audioContentHint"]>(
+      //   state.audioContentHint,
+      //   state.audioContentHint !== "" && state.displaySettings.audioContentHint
+      // ),
+      // // audio constraints
+      // autoGainControl: queryStringValue<QueryStringParameters["autoGainControl"]>(
+      //   state.autoGainControl,
+      //   state.autoGainControl !== "" && state.displaySettings.audioConstraints
+      // ),
+      // noiseSuppression: queryStringValue<QueryStringParameters["noiseSuppression"]>(
+      //   state.noiseSuppression,
+      //   state.noiseSuppression !== "" && state.displaySettings.audioConstraints
+      // ),
+      // echoCancellation: queryStringValue<QueryStringParameters["echoCancellation"]>(
+      //   state.echoCancellation,
+      //   state.echoCancellation !== "" && state.displaySettings.audioConstraints
+      // ),
+      // echoCancellationType: queryStringValue<QueryStringParameters["echoCancellationType"]>(
+      //   state.echoCancellationType,
+      //   state.echoCancellationType !== "" && state.displaySettings.audioConstraints
+      // ),
+      // // video
+      // video: queryStringValue<QueryStringParameters["video"]>(state.video, state.displaySettings.video),
+      // videoBitRate: queryStringValue<QueryStringParameters["videoBitRate"]>(
+      //   state.videoBitRate,
+      //   state.displaySettings.videoBitRate
+      // ),
+      // videoCodecType: queryStringValue<QueryStringParameters["videoCodecType"]>(
+      //   state.videoCodecType,
+      //   state.displaySettings.videoCodecType
+      // ),
+      // videoContentHint: queryStringValue<QueryStringParameters["videoContentHint"]>(
+      //   state.videoContentHint,
+      //   state.videoContentHint !== "" && state.displaySettings.videoContentHint
+      // ),
+      // // video constraints
+      // resolution: queryStringValue<QueryStringParameters["resolution"]>(
+      //   state.resolution,
+      //   state.displaySettings.videoConstraints
+      // ),
+      // frameRate: queryStringValue<QueryStringParameters["frameRate"]>(
+      //   state.frameRate,
+      //   state.frameRate !== "" && state.displaySettings.videoConstraints
+      // ),
+      // aspectRatio: queryStringValue<QueryStringParameters["aspectRatio"]>(
+      //   state.aspectRatio,
+      //   state.aspectRatio !== "" && state.displaySettings.videoConstraints
+      // ),
+      // resizeMode: queryStringValue<QueryStringParameters["resizeMode"]>(
+      //   state.resizeMode,
+      //   state.resizeMode !== "" && state.displaySettings.videoConstraints
+      // ),
+      // blurRadius: queryStringValue<QueryStringParameters["blurRadius"]>(
+      //   state.blurRadius,
+      //   state.blurRadius !== "" && state.displaySettings.videoConstraints
+      // ),
+      // mediaProcessorsNoiseSuppression: queryStringValue<QueryStringParameters["mediaProcessorsNoiseSuppression"]>(
+      //   state.mediaProcessorsNoiseSuppression,
+      //   state.mediaProcessorsNoiseSuppression
+      // ),
+      // // simulcast
+      // simulcast: queryStringValue<QueryStringParameters["simulcast"]>(state.simulcast, state.displaySettings.simulcast),
+      // // simulcastRid
+      // simulcastRid: queryStringValue<QueryStringParameters["simulcastRid"]>(
+      //   state.simulcastRid,
+      //   state.displaySettings.simulcastRid
+      // ),
+      // // devices
+      // audioInput: queryStringValue<QueryStringParameters["audioInput"]>(
+      //   state.audioInput,
+      //   state.audioInput !== "" && state.displaySettings.audioInput
+      // ),
+      // audioOutput: queryStringValue<QueryStringParameters["audioOutput"]>(
+      //   state.audioOutput,
+      //   state.audioOutput !== "" && state.displaySettings.audioOutput
+      // ),
+      // videoInput: queryStringValue<QueryStringParameters["videoInput"]>(
+      //   state.videoInput,
+      //   state.videoInput !== "" && state.displaySettings.videoInput
+      // ),
+      // // device settings
+      // displayResolution: queryStringValue<QueryStringParameters["displayResolution"]>(
+      //   state.displayResolution,
+      //   state.displayResolution !== ""
+      // ),
+      // micDevice: queryStringValue<QueryStringParameters["micDevice"]>(
+      //   state.micDevice,
+      //   !state.micDevice && state.displaySettings.micDevice
+      // ),
+      // cameraDevice: queryStringValue<QueryStringParameters["cameraDevice"]>(
+      //   state.cameraDevice,
+      //   !state.cameraDevice && state.displaySettings.cameraDevice
+      // ),
+      // audioTrack: queryStringValue<QueryStringParameters["audioTrack"]>(
+      //   state.audioTrack,
+      //   !state.audioTrack && state.displaySettings.audioTrack
+      // ),
+      // videoTrack: queryStringValue<QueryStringParameters["videoTrack"]>(
+      //   state.videoTrack,
+      //   !state.videoTrack && state.displaySettings.videoTrack
+      // ),
+      // // spotlight
+      // spotlightNumber: queryStringValue<QueryStringParameters["spotlightNumber"]>(
+      //   state.spotlightNumber,
+      //   state.displaySettings.spotlightNumber
+      // ),
+      // spotlightFocusRid: queryStringValue<QueryStringParameters["spotlightFocusRid"]>(
+      //   state.spotlightFocusRid,
+      //   state.displaySettings.spotlightFocusRid
+      // ),
+      // spotlightUnfocusRid: queryStringValue<QueryStringParameters["spotlightUnfocusRid"]>(
+      //   state.spotlightUnfocusRid,
+      //   state.displaySettings.spotlightUnfocusRid
+      // ),
       // options
       e2ee: queryStringValue<QueryStringParameters["e2ee"]>(state.e2ee, state.e2ee),
       clientId: queryStringValue<QueryStringParameters["clientId"]>(state.clientId, state.enabledClientId),

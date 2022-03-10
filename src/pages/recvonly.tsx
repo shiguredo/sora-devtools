@@ -7,21 +7,11 @@ import { ColDevtools } from "@/components/ColDevtools";
 import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
-import { getDefaultVideoCodecType } from "@/utils";
 
 const Recvonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(
-      setInitialParameter({
-        role: "recvonly",
-        multistream: false,
-        simulcast: false,
-        spotlight: false,
-        audioCodecType: "OPUS",
-        videoCodecType: getDefaultVideoCodecType("VP9"),
-      })
-    );
+    dispatch(setInitialParameter());
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
