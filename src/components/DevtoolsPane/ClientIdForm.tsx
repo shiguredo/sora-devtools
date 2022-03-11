@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setClientId, setEnabledClientId } from "@/app/slice";
@@ -19,27 +19,35 @@ export const ClientIdForm: React.FC = () => {
   };
   return (
     <>
-      <FormGroup className="form-inline" controlId="enabledClientId">
-        <FormCheck
-          type="switch"
-          name="enabledClientId"
-          label="clientId"
-          checked={enabledClientId}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        />
-      </FormGroup>
+      <Row className="form-row">
+        <Col className="col-auto">
+          <FormGroup className="form-inline" controlId="enabledClientId">
+            <FormCheck
+              type="switch"
+              name="enabledClientId"
+              label="clientId"
+              checked={enabledClientId}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       {enabledClientId ? (
-        <FormGroup className="form-inline" controlId="clientId">
-          <FormControl
-            className="flex-fill w-500"
-            type="text"
-            placeholder="ClientIdを指定"
-            value={clientId}
-            onChange={onChangeText}
-            disabled={disabled}
-          />
-        </FormGroup>
+        <Row className="form-row">
+          <Col className="col-auto">
+            <FormGroup className="form-inline" controlId="clientId">
+              <FormControl
+                className="flex-fill w-500"
+                type="text"
+                placeholder="ClientIdを指定"
+                value={clientId}
+                onChange={onChangeText}
+                disabled={disabled}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
       ) : null}
     </>
   );

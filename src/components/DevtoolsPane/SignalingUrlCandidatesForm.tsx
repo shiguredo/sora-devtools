@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/slice";
@@ -19,28 +19,36 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
   };
   return (
     <>
-      <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
-        <FormCheck
-          type="switch"
-          name="enabledSignalingUrlCandidates"
-          label="signalingUrlCandidates"
-          checked={enabledSignalingUrlCandidates}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        />
-      </FormGroup>
+      <Row className="form-row" xs="auto">
+        <Col className="col-auto">
+          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
+            <FormCheck
+              type="switch"
+              name="enabledSignalingUrlCandidates"
+              label="signalingUrlCandidates"
+              checked={enabledSignalingUrlCandidates}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       {enabledSignalingUrlCandidates ? (
-        <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-          <FormControl
-            className="flex-fill w-500"
-            as="textarea"
-            placeholder="signalingUrlCandidatesを指定"
-            value={signalingUrlCandidates.join("\n")}
-            onChange={onChangeText}
-            rows={5}
-            disabled={disabled}
-          />
-        </FormGroup>
+        <Row className="form-row" xs="auto">
+          <Col className="col-auto">
+            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
+              <FormControl
+                className="flex-fill w-500"
+                as="textarea"
+                placeholder="signalingUrlCandidatesを指定"
+                value={signalingUrlCandidates.join("\n")}
+                onChange={onChangeText}
+                rows={5}
+                disabled={disabled}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
       ) : null}
     </>
   );

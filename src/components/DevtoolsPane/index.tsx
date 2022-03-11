@@ -110,6 +110,10 @@ const RowGetUserMediaConstraints: React.FC = () => {
 };
 
 const RowSimulcastOptions: React.FC = () => {
+  const simulcast = useAppSelector((state) => state.simulcast);
+  if (simulcast !== "true") {
+    return null;
+  }
   return (
     <Row className="form-row" xs="auto">
       <Col>
@@ -120,6 +124,10 @@ const RowSimulcastOptions: React.FC = () => {
 };
 
 const RowSpotlightOptions: React.FC = () => {
+  const spotlight = useAppSelector((state) => state.spotlight);
+  if (spotlight !== "true") {
+    return null;
+  }
   return (
     <Row className="form-row" xs="auto">
       <Col>
@@ -130,9 +138,6 @@ const RowSpotlightOptions: React.FC = () => {
       </Col>
       <Col>
         <SpotlightUnfocusRidForm />
-      </Col>
-      <Col>
-        <SimulcastForm />
       </Col>
     </Row>
   );
@@ -178,46 +183,14 @@ const RowSignalingOptions: React.FC = () => {
       </Col>
       <Collapse in={!collapsed}>
         <div>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <E2EEForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <ReconnectForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <ClientIdForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <MetadataForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <SignalingNotifyMetadataForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <SignalingUrlCandidatesForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <DataChannelsForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <DataChannelForm />
-            </Col>
-          </Row>
+          <E2EEForm />
+          <ReconnectForm />
+          <ClientIdForm />
+          <MetadataForm />
+          <SignalingNotifyMetadataForm />
+          <SignalingUrlCandidatesForm />
+          <DataChannelsForm />
+          <DataChannelForm />
         </div>
       </Collapse>
     </Row>

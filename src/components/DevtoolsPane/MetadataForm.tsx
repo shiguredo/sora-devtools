@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledMetadata, setMetadata } from "@/app/slice";
@@ -19,28 +19,36 @@ export const MetadataForm: React.FC = () => {
   };
   return (
     <>
-      <FormGroup className="form-inline" controlId="enabledMetadata">
-        <FormCheck
-          type="switch"
-          name="enabledMetadata"
-          label="metadata"
-          checked={enabledMetadata}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        />
-      </FormGroup>
+      <Row className="form-row">
+        <Col className="col-auto">
+          <FormGroup className="form-inline" controlId="enabledMetadata">
+            <FormCheck
+              type="switch"
+              name="enabledMetadata"
+              label="metadata"
+              checked={enabledMetadata}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       {enabledMetadata ? (
-        <FormGroup className="form-inline" controlId="metadata">
-          <FormControl
-            className="flex-fill w-500"
-            as="textarea"
-            placeholder="Metadataを指定"
-            value={metadata}
-            onChange={onChangeText}
-            rows={10}
-            disabled={disabled}
-          />
-        </FormGroup>
+        <Row className="form-row">
+          <Col className="col-auto">
+            <FormGroup className="form-inline" controlId="metadata">
+              <FormControl
+                className="flex-fill w-500"
+                as="textarea"
+                placeholder="Metadataを指定"
+                value={metadata}
+                onChange={onChangeText}
+                rows={10}
+                disabled={disabled}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
       ) : null}
     </>
   );

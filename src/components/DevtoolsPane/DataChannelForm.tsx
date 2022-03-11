@@ -74,23 +74,31 @@ export const DataChannelForm: React.FC = () => {
   };
   return (
     <>
-      <FormGroup className="form-inline" controlId="enabledDataChannel">
-        <FormCheck
-          type="switch"
-          name="enabledDataChannel"
-          label="dataChannel"
-          checked={enabledDataChannel}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        />
-      </FormGroup>
+      <Row className="form-row">
+        <Col className="col-auto">
+          <FormGroup className="form-inline" controlId="enabledDataChannel">
+            <FormCheck
+              type="switch"
+              name="enabledDataChannel"
+              label="dataChannel"
+              checked={enabledDataChannel}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       {enabledDataChannel ? (
-        <Row xs="auto">
-          <Col>
-            <DataChannelSignalingForm disabled={disabled} />
-          </Col>
-          <Col>
-            <IgnoreDisconnectWebSocketForm disabled={disabled} />
+        <Row className="form-row">
+          <Col className="col-auto">
+            <Row xs="auto">
+              <Col>
+                <DataChannelSignalingForm disabled={disabled} />
+              </Col>
+              <Col>
+                <IgnoreDisconnectWebSocketForm disabled={disabled} />
+              </Col>
+            </Row>
           </Col>
         </Row>
       ) : null}

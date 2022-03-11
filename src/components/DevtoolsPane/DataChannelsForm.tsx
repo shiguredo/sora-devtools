@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setDataChannels, setEnabledDataChannels } from "@/app/slice";
@@ -35,28 +35,36 @@ export const DataChannelsForm: React.FC = () => {
   };
   return (
     <>
-      <FormGroup className="form-inline" controlId="enabledDataChannels">
-        <FormCheck
-          type="switch"
-          name="enabledDataChannels"
-          label="dataChannels"
-          checked={enabledDataChannels}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        />
-      </FormGroup>
+      <Row className="form-row">
+        <Col className="col-auto">
+          <FormGroup className="form-inline" controlId="enabledDataChannels">
+            <FormCheck
+              type="switch"
+              name="enabledDataChannels"
+              label="dataChannels"
+              checked={enabledDataChannels}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       {enabledDataChannels ? (
-        <FormGroup className="form-inline" controlId="dataChannels">
-          <FormControl
-            className="flex-fill w-500"
-            as="textarea"
-            placeholder={textareaPlaceholder}
-            value={dataChannels}
-            onChange={onChangeText}
-            rows={12}
-            disabled={disabled}
-          />
-        </FormGroup>
+        <Row className="form-row">
+          <Col className="col-auto">
+            <FormGroup className="form-inline" controlId="dataChannels">
+              <FormControl
+                className="flex-fill w-500"
+                as="textarea"
+                placeholder={textareaPlaceholder}
+                value={dataChannels}
+                onChange={onChangeText}
+                rows={12}
+                disabled={disabled}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
       ) : null}
     </>
   );

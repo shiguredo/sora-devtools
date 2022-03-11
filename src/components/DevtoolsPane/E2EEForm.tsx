@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormCheck, FormGroup, Spinner } from "react-bootstrap";
+import { Col, FormCheck, FormGroup, Row, Spinner } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setE2EE } from "@/app/slice";
@@ -23,11 +23,15 @@ export const E2EEForm: React.FC = () => {
     }
   }, [e2ee]);
   return (
-    <FormGroup className="form-inline" controlId="e2ee">
-      <FormCheck type="switch" name="e2ee" label="e2ee" checked={e2ee} onChange={onChange} disabled={disabled} />
-      {displaySpinner ? (
-        <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
-      ) : null}
-    </FormGroup>
+    <Row className="form-row">
+      <Col className="col-auto">
+        <FormGroup className="form-inline" controlId="e2ee">
+          <FormCheck type="switch" name="e2ee" label="e2ee" checked={e2ee} onChange={onChange} disabled={disabled} />
+          {displaySpinner ? (
+            <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
+          ) : null}
+        </FormGroup>
+      </Col>
+    </Row>
   );
 };

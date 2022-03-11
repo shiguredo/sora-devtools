@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { Col, FormCheck, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setReconnect } from "@/app/slice";
@@ -14,15 +14,19 @@ export const ReconnectForm: React.FC = () => {
     dispatch(setReconnect(event.target.checked));
   };
   return (
-    <FormGroup className="form-inline" controlId="reconnect">
-      <FormCheck
-        type="switch"
-        name="reconnect"
-        label="reconnect"
-        checked={reconnect}
-        onChange={onChange}
-        disabled={disabled}
-      />
-    </FormGroup>
+    <Row className="form-row">
+      <Col className="col-auto">
+        <FormGroup className="form-inline" controlId="reconnect">
+          <FormCheck
+            type="switch"
+            name="reconnect"
+            label="reconnect"
+            checked={reconnect}
+            onChange={onChange}
+            disabled={disabled}
+          />
+        </FormGroup>
+      </Col>
+    </Row>
   );
 };

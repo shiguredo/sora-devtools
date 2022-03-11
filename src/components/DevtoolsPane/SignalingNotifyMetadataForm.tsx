@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck, FormControl, FormGroup } from "react-bootstrap";
+import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from "@/app/slice";
@@ -19,28 +19,36 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
   };
   return (
     <>
-      <FormGroup className="form-inline" controlId="enabledSignalingNotifyMetadata">
-        <FormCheck
-          type="switch"
-          name="enabledSignalingNotifyMetadata"
-          label="signalingNotifyMetadata"
-          checked={enabledSignalingNotifyMetadata}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        />
-      </FormGroup>
+      <Row className="form-row">
+        <Col className="col-auto">
+          <FormGroup className="form-inline" controlId="enabledSignalingNotifyMetadata">
+            <FormCheck
+              type="switch"
+              name="enabledSignalingNotifyMetadata"
+              label="signalingNotifyMetadata"
+              checked={enabledSignalingNotifyMetadata}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       {enabledSignalingNotifyMetadata ? (
-        <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-          <FormControl
-            className="flex-fill w-500"
-            as="textarea"
-            placeholder="signalingNotifyMetadataを指定"
-            value={signalingNotifyMetadata}
-            onChange={onChangeText}
-            rows={10}
-            disabled={disabled}
-          />
-        </FormGroup>
+        <Row className="form-row">
+          <Col className="col-auto">
+            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
+              <FormControl
+                className="flex-fill w-500"
+                as="textarea"
+                placeholder="signalingNotifyMetadataを指定"
+                value={signalingNotifyMetadata}
+                onChange={onChangeText}
+                rows={10}
+                disabled={disabled}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
       ) : null}
     </>
   );
