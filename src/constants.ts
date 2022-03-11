@@ -1,3 +1,9 @@
+export const MULTISTREAM = ["", "true", "false"] as const;
+
+export const SIMULCAST = ["", "true", "false"] as const;
+
+export const SPOTLIGHT = ["", "true", "false"] as const;
+
 export const AUDIO_CODEC_TYPES = ["", "OPUS"] as const;
 
 export const AUDIO_BIT_RATES = ["", "8", "16", "24", "32", "64", "96", "128", "256"] as const;

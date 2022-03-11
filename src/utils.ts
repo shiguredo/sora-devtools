@@ -1,29 +1,32 @@
-import queryString from "query-string";
+// import queryString from "query-string";
 
 import {
-  ASPECT_RATIO_TYPES,
-  AUDIO_BIT_RATES,
-  AUDIO_CODEC_TYPES,
-  AUDIO_CONTENT_HINTS,
+  // ASPECT_RATIO_TYPES,
+  // AUDIO_BIT_RATES,
+  // AUDIO_CODEC_TYPES,
+  // AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
-  DATA_CHANNEL_SIGNALING,
-  DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
+  // DATA_CHANNEL_SIGNALING,
+  // DEBUG_TYPES,
+  // DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
-  FRAME_RATES,
-  IGNORE_DISCONNECT_WEBSOCKET,
-  MEDIA_TYPES,
+  // FRAME_RATES,
+  // IGNORE_DISCONNECT_WEBSOCKET,
+  // MEDIA_TYPES,
+  // MULTISTREAM,
   NOISE_SUPPRESSIONS,
-  RESIZE_MODE_TYPES,
-  RESOLUTIONS,
-  SIMULCAST_RID,
-  SPOTLIGHT_FOCUS_RIDS,
-  SPOTLIGHT_NUMBERS,
-  VIDEO_BIT_RATES,
+  // RESIZE_MODE_TYPES,
+  // RESOLUTIONS,
+  // SIMULCAST,
+  // SIMULCAST_RID,
+  // SPOTLIGHT,
+  // SPOTLIGHT_FOCUS_RIDS,
+  // SPOTLIGHT_NUMBERS,
+  // VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
-  VIDEO_CONTENT_HINTS,
+  // VIDEO_CONTENT_HINTS,
 } from "@/constants";
 import type {
   CustomHTMLCanvasElement,
@@ -54,345 +57,228 @@ export function copy2clipboard(text: string): Promise<void> {
   return Promise.resolve();
 }
 
-// AudioCodecType の Type Guard
-export function isAudioCodecType(audioCodecType: string): audioCodecType is typeof AUDIO_CODEC_TYPES[number] {
-  return (AUDIO_CODEC_TYPES as readonly string[]).indexOf(audioCodecType) >= 0;
-}
-
-// AudioBitRate の Type Guard
-export function isAudioBitRate(audioBitRate: string): audioBitRate is typeof AUDIO_BIT_RATES[number] {
-  return (AUDIO_BIT_RATES as readonly string[]).indexOf(audioBitRate) >= 0;
-}
-
-// VideoCodecType の Type Guard
-export function isVideoCodecType(videoCodecType: string): videoCodecType is typeof VIDEO_CODEC_TYPES[number] {
-  return (VIDEO_CODEC_TYPES as readonly string[]).indexOf(videoCodecType) >= 0;
-}
-
-// VideoBitRate の Type Guard
-export function isVideoBitRate(videoBitRate: string): videoBitRate is typeof VIDEO_BIT_RATES[number] {
-  return (VIDEO_BIT_RATES as readonly string[]).indexOf(videoBitRate) >= 0;
-}
-
-// Resolution の Type Guard
-export function isResolution(resolution: string): resolution is typeof RESOLUTIONS[number] {
-  return (RESOLUTIONS as readonly string[]).indexOf(resolution) >= 0;
-}
-
-// DisplayResolution の Type Guard
-export function isDisplayResolution(
-  displayResolution: string
-): displayResolution is typeof DISPLAY_RESOLUTIONS[number] {
-  return (DISPLAY_RESOLUTIONS as readonly string[]).indexOf(displayResolution) >= 0;
-}
-
-// FrameRate の Type Guard
-export function isFrameRate(frameRate: string): frameRate is typeof FRAME_RATES[number] {
-  return (FRAME_RATES as readonly string[]).indexOf(frameRate) >= 0;
-}
-
-// AutoGainControl の Type Guard
-export function isAutoGainControl(autoGainControl: string): autoGainControl is typeof AUTO_GAIN_CONTROLS[number] {
-  return (AUTO_GAIN_CONTROLS as readonly string[]).indexOf(autoGainControl) >= 0;
-}
-
-// NoiseSuppression の Type Guard
-export function isNoiseSuppression(noiseSuppression: string): noiseSuppression is typeof NOISE_SUPPRESSIONS[number] {
-  return (NOISE_SUPPRESSIONS as readonly string[]).indexOf(noiseSuppression) >= 0;
-}
-
-// EchoCancellation の Type Guard
-export function isEchoCancellation(echoCancellation: string): echoCancellation is typeof ECHO_CANCELLATIONS[number] {
-  return (ECHO_CANCELLATIONS as readonly string[]).indexOf(echoCancellation) >= 0;
-}
-
-// EchoCancellationType の Type Guard
-export function isEchoCancellationType(
-  echoCancellationType: string
-): echoCancellationType is typeof ECHO_CANCELLATION_TYPES[number] {
-  return (ECHO_CANCELLATION_TYPES as readonly string[]).indexOf(echoCancellationType) >= 0;
-}
-
-// SpotlightNumber の Type Guard
-export function isSpotlightNumber(spotlightNumber: string): spotlightNumber is typeof SPOTLIGHT_NUMBERS[number] {
-  return (SPOTLIGHT_NUMBERS as readonly string[]).indexOf(spotlightNumber) >= 0;
-}
-
-// SpotlightFocusRid / SpotlightUnfocusRid の Type Guard
-export function isSpotlightFocusRid(
-  spotlightFocusRid: string
-): spotlightFocusRid is typeof SPOTLIGHT_FOCUS_RIDS[number] {
-  return (SPOTLIGHT_FOCUS_RIDS as readonly string[]).indexOf(spotlightFocusRid) >= 0;
-}
-
-// SimulcastQuality の Type Guard
-export function isSimulcastRid(simulcastRid: string): simulcastRid is typeof SIMULCAST_RID[number] {
-  return (SIMULCAST_RID as readonly string[]).indexOf(simulcastRid) >= 0;
-}
-
-// MediaType の Type Guard
-export function isMediaType(mediaType: string): mediaType is typeof MEDIA_TYPES[number] {
-  return (MEDIA_TYPES as readonly string[]).indexOf(mediaType) >= 0;
-}
-
-// DataChannelSignaling の Type Guard
-export function isDataChannelSignaling(
-  dataChannelSignaling: string
-): dataChannelSignaling is typeof DATA_CHANNEL_SIGNALING[number] {
-  return (DATA_CHANNEL_SIGNALING as readonly string[]).indexOf(dataChannelSignaling) >= 0;
-}
-
-// IgnoreDisconnectWebSocket の Type Guard
-export function isIgnoreDisconnectWebSocket(
-  ignoreDisconnectWebSocket: string
-): ignoreDisconnectWebSocket is typeof IGNORE_DISCONNECT_WEBSOCKET[number] {
-  return (IGNORE_DISCONNECT_WEBSOCKET as readonly string[]).indexOf(ignoreDisconnectWebSocket) >= 0;
-}
-
-// DebugType の Type Guard
-export function isDebugType(debugType: string): debugType is typeof DEBUG_TYPES[number] {
-  return (DEBUG_TYPES as readonly string[]).indexOf(debugType) >= 0;
-}
-
-// AudioContentHint の Type Guard
-export function isAudioContentHint(audioContentHint: string): audioContentHint is typeof AUDIO_CONTENT_HINTS[number] {
-  return (AUDIO_CONTENT_HINTS as readonly string[]).indexOf(audioContentHint) >= 0;
-}
-
-// VideoContentHint の Type Guard
-export function isVideoContentHint(videoContentHint: string): videoContentHint is typeof VIDEO_CONTENT_HINTS[number] {
-  return (VIDEO_CONTENT_HINTS as readonly string[]).indexOf(videoContentHint) >= 0;
-}
-
-// AspectRatio の Type Guard
-export function isAspectRatio(aspectRatio: string): aspectRatio is typeof ASPECT_RATIO_TYPES[number] {
-  return (ASPECT_RATIO_TYPES as readonly string[]).indexOf(aspectRatio) >= 0;
-}
-
-// ResizeMode の Type Guard
-export function isResizeMode(resizeMode: string): resizeMode is typeof RESIZE_MODE_TYPES[number] {
-  return (RESIZE_MODE_TYPES as readonly string[]).indexOf(resizeMode) >= 0;
-}
-
-// BlurRadius の Type Guard
-export function isBlurRadius(blurRadius: string): blurRadius is typeof BLUR_RADIUS[number] {
-  return (BLUR_RADIUS as readonly string[]).indexOf(blurRadius) >= 0;
+// Form の Type Guard
+export function checkFormValue<T extends readonly string[]>(
+  value: string,
+  candidates: T
+): value is typeof candidates[number] {
+  return candidates.indexOf(value) >= 0;
 }
 
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
-  const {
-    apiUrl,
-    aspectRatio,
-    audio,
-    audioBitRate,
-    audioCodecType,
-    audioContentHint,
-    audioInput,
-    audioOutput,
-    audioTrack,
-    autoGainControl,
-    blurRadius,
-    cameraDevice,
-    channelId,
-    clientId,
-    dataChannelSignaling,
-    dataChannels,
-    debug,
-    debugType,
-    displayResolution,
-    e2ee,
-    echoCancellation,
-    echoCancellationType,
-    fakeVolume,
-    frameRate,
-    googCpuOveruseDetection,
-    ignoreDisconnectWebSocket,
-    mediaType,
-    metadata,
-    micDevice,
-    mute,
-    mediaProcessorsNoiseSuppression,
-    noiseSuppression,
-    reconnect,
-    resizeMode,
-    resolution,
-    showStats,
-    signalingNotifyMetadata,
-    signalingUrlCandidates,
-    simulcast,
-    simulcastRid,
-    spotlightFocusRid,
-    spotlightNumber,
-    spotlightUnfocusRid,
-    video,
-    videoBitRate,
-    videoCodecType,
-    videoContentHint,
-    videoInput,
-    videoTrack,
-  } = queryString.parse(location.search, { parseBooleans: true });
+  // const {
+  //   apiUrl,
+  //   aspectRatio,
+  //   audio,
+  //   audioBitRate,
+  //   audioCodecType,
+  //   audioContentHint,
+  //   audioInput,
+  //   audioOutput,
+  //   audioTrack,
+  //   autoGainControl,
+  //   blurRadius,
+  //   cameraDevice,
+  //   channelId,
+  //   clientId,
+  //   dataChannelSignaling,
+  //   dataChannels,
+  //   debug,
+  //   debugType,
+  //   displayResolution,
+  //   e2ee,
+  //   echoCancellation,
+  //   echoCancellationType,
+  //   fakeVolume,
+  //   frameRate,
+  //   googCpuOveruseDetection,
+  //   ignoreDisconnectWebSocket,
+  //   mediaType,
+  //   metadata,
+  //   micDevice,
+  //   mute,
+  //   mediaProcessorsNoiseSuppression,
+  //   noiseSuppression,
+  //   reconnect,
+  //   resizeMode,
+  //   resolution,
+  //   showStats,
+  //   signalingNotifyMetadata,
+  //   signalingUrlCandidates,
+  //   simulcast,
+  //   simulcastRid,
+  //   spotlightFocusRid,
+  //   spotlightNumber,
+  //   spotlightUnfocusRid,
+  //   video,
+  //   videoBitRate,
+  //   videoCodecType,
+  //   videoContentHint,
+  //   videoInput,
+  //   videoTrack,
+  // } = queryString.parse(location.search, { parseBooleans: true });
   const queryStringParameters: Partial<QueryStringParameters> = {};
-  if (typeof apiUrl === "string") {
-    queryStringParameters.apiUrl = apiUrl;
-  }
-  if (typeof audio === "boolean") {
-    queryStringParameters.audio = audio;
-  }
-  if (typeof audioBitRate === "string" && isAudioBitRate(audioBitRate)) {
-    queryStringParameters.audioBitRate = audioBitRate;
-  }
-  if (typeof audioCodecType === "string" && isAudioCodecType(audioCodecType)) {
-    queryStringParameters.audioCodecType = audioCodecType;
-  }
-  const stringAutoGainControl = String(autoGainControl);
-  if (isAutoGainControl(stringAutoGainControl)) {
-    queryStringParameters.autoGainControl = stringAutoGainControl;
-  }
-  if (channelId !== undefined) {
-    queryStringParameters.channelId = String(channelId);
-  }
-  if (clientId !== undefined) {
-    queryStringParameters.clientId = String(clientId);
-  }
-  if (typeof googCpuOveruseDetection === "boolean") {
-    queryStringParameters.googCpuOveruseDetection = googCpuOveruseDetection;
-  }
-  if (typeof debug === "boolean") {
-    queryStringParameters.debug = debug;
-  }
-  if (typeof debugType === "string" && isDebugType(debugType)) {
-    queryStringParameters.debugType = debugType;
-  }
-  if (typeof displayResolution === "string" && isDisplayResolution(displayResolution)) {
-    queryStringParameters.displayResolution = displayResolution;
-  }
-  if (typeof e2ee === "boolean") {
-    queryStringParameters.e2ee = e2ee;
-  }
-  const stringEchoCancellation = String(echoCancellation);
-  if (isEchoCancellation(stringEchoCancellation)) {
-    queryStringParameters.echoCancellation = stringEchoCancellation;
-  }
-  if (typeof echoCancellationType === "string" && isEchoCancellationType(echoCancellationType)) {
-    queryStringParameters.echoCancellationType = echoCancellationType;
-  }
-  const stringNoiseSuppression = String(noiseSuppression);
-  if (isNoiseSuppression(stringNoiseSuppression)) {
-    queryStringParameters.noiseSuppression = stringNoiseSuppression;
-  }
-  if (fakeVolume) {
-    queryStringParameters.fakeVolume = String(fakeVolume);
-  }
-  if (typeof frameRate === "string" && isFrameRate(frameRate)) {
-    queryStringParameters.frameRate = frameRate;
-  }
-  if (typeof mediaType === "string" && isMediaType(mediaType)) {
-    queryStringParameters.mediaType = mediaType;
-  }
-  if (metadata) {
-    queryStringParameters.metadata = String(metadata);
-  }
-  if (typeof showStats === "boolean") {
-    queryStringParameters.showStats = showStats;
-  }
-  if (signalingNotifyMetadata) {
-    queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
-  }
-  if (signalingUrlCandidates && typeof signalingUrlCandidates === "string") {
-    const parsedSignalingUrlCandidates = JSON.parse(signalingUrlCandidates);
-    if (Array.isArray(parsedSignalingUrlCandidates)) {
-      queryStringParameters.signalingUrlCandidates = parsedSignalingUrlCandidates;
-    }
-  }
-  if (typeof simulcast === "boolean") {
-    queryStringParameters.simulcast = simulcast;
-  }
-  if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
-    queryStringParameters.simulcastRid = simulcastRid;
-  }
-  if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
-    queryStringParameters.spotlightNumber = spotlightNumber;
-  }
-  if (typeof spotlightFocusRid === "string" && isSpotlightFocusRid(spotlightFocusRid)) {
-    queryStringParameters.spotlightFocusRid = spotlightFocusRid;
-  }
-  if (typeof spotlightUnfocusRid === "string" && isSpotlightFocusRid(spotlightUnfocusRid)) {
-    queryStringParameters.spotlightUnfocusRid = spotlightUnfocusRid;
-  }
-  if (typeof resolution === "string" && isResolution(resolution)) {
-    queryStringParameters.resolution = resolution;
-  }
-  if (typeof video === "boolean") {
-    queryStringParameters.video = video;
-  }
-  if (typeof videoBitRate === "string" && isVideoBitRate(videoBitRate)) {
-    queryStringParameters.videoBitRate = videoBitRate;
-  }
-  if (typeof videoCodecType === "string" && isVideoCodecType(videoCodecType)) {
-    queryStringParameters.videoCodecType = videoCodecType;
-  }
-  if (audioInput) {
-    queryStringParameters.audioInput = String(audioInput);
-  }
-  if (videoInput) {
-    queryStringParameters.videoInput = String(videoInput);
-  }
-  if (audioOutput) {
-    queryStringParameters.audioOutput = String(audioOutput);
-  }
-  if (typeof mute === "boolean") {
-    queryStringParameters.mute = mute;
-  }
-  const stringDataChannelSignaling = String(dataChannelSignaling);
-  if (isDataChannelSignaling(stringDataChannelSignaling)) {
-    queryStringParameters.dataChannelSignaling = stringDataChannelSignaling;
-  }
-  const stringIgnoreDisconnectWebSocket = String(ignoreDisconnectWebSocket);
-  if (isIgnoreDisconnectWebSocket(stringIgnoreDisconnectWebSocket)) {
-    queryStringParameters.ignoreDisconnectWebSocket = stringIgnoreDisconnectWebSocket;
-  }
-  if (typeof micDevice === "boolean") {
-    queryStringParameters.micDevice = micDevice;
-  }
-  if (typeof cameraDevice === "boolean") {
-    queryStringParameters.cameraDevice = cameraDevice;
-  }
-  if (typeof audioTrack === "boolean") {
-    queryStringParameters.audioTrack = audioTrack;
-  }
-  if (typeof videoTrack === "boolean") {
-    queryStringParameters.videoTrack = videoTrack;
-  }
-  if (typeof dataChannels === "string") {
-    queryStringParameters.dataChannels = dataChannels;
-  }
-  if (typeof reconnect === "boolean") {
-    queryStringParameters.reconnect = reconnect;
-  }
-  const stringAudioContentHint = String(audioContentHint);
-  if (isAudioContentHint(stringAudioContentHint)) {
-    queryStringParameters.audioContentHint = stringAudioContentHint;
-  }
-  const stringVideoContentHint = String(videoContentHint);
-  if (isVideoContentHint(stringVideoContentHint)) {
-    queryStringParameters.videoContentHint = stringVideoContentHint;
-  }
-  const stringAspectRatio = String(aspectRatio);
-  if (isAspectRatio(stringAspectRatio)) {
-    queryStringParameters.aspectRatio = stringAspectRatio;
-  }
-  const stringResizeMode = String(resizeMode);
-  if (isResizeMode(stringResizeMode)) {
-    queryStringParameters.resizeMode = stringResizeMode;
-  }
-  const stringBlurRadius = String(blurRadius);
-  if (isBlurRadius(stringBlurRadius)) {
-    queryStringParameters.blurRadius = stringBlurRadius;
-  }
-  if (typeof mediaProcessorsNoiseSuppression === "boolean") {
-    queryStringParameters.mediaProcessorsNoiseSuppression = mediaProcessorsNoiseSuppression;
-  }
+  // if (typeof apiUrl === "string") {
+  //   queryStringParameters.apiUrl = apiUrl;
+  // }
+  // if (typeof audio === "boolean") {
+  //   queryStringParameters.audio = audio;
+  // }
+  // if (typeof audioBitRate === "string" && isAudioBitRate(audioBitRate)) {
+  //   queryStringParameters.audioBitRate = audioBitRate;
+  // }
+  // if (typeof audioCodecType === "string" && isAudioCodecType(audioCodecType)) {
+  //   queryStringParameters.audioCodecType = audioCodecType;
+  // }
+  // const stringAutoGainControl = String(autoGainControl);
+  // if (isAutoGainControl(stringAutoGainControl)) {
+  //   queryStringParameters.autoGainControl = stringAutoGainControl;
+  // }
+  // if (channelId !== undefined) {
+  //   queryStringParameters.channelId = String(channelId);
+  // }
+  // if (clientId !== undefined) {
+  //   queryStringParameters.clientId = String(clientId);
+  // }
+  // if (typeof googCpuOveruseDetection === "boolean") {
+  //   queryStringParameters.googCpuOveruseDetection = googCpuOveruseDetection;
+  // }
+  // if (typeof debug === "boolean") {
+  //   queryStringParameters.debug = debug;
+  // }
+  // if (typeof debugType === "string" && isDebugType(debugType)) {
+  //   queryStringParameters.debugType = debugType;
+  // }
+  // if (typeof displayResolution === "string" && isDisplayResolution(displayResolution)) {
+  //   queryStringParameters.displayResolution = displayResolution;
+  // }
+  // if (typeof e2ee === "boolean") {
+  //   queryStringParameters.e2ee = e2ee;
+  // }
+  // const stringEchoCancellation = String(echoCancellation);
+  // if (isEchoCancellation(stringEchoCancellation)) {
+  //   queryStringParameters.echoCancellation = stringEchoCancellation;
+  // }
+  // if (typeof echoCancellationType === "string" && isEchoCancellationType(echoCancellationType)) {
+  //   queryStringParameters.echoCancellationType = echoCancellationType;
+  // }
+  // const stringNoiseSuppression = String(noiseSuppression);
+  // if (isNoiseSuppression(stringNoiseSuppression)) {
+  //   queryStringParameters.noiseSuppression = stringNoiseSuppression;
+  // }
+  // if (fakeVolume) {
+  //   queryStringParameters.fakeVolume = String(fakeVolume);
+  // }
+  // if (typeof frameRate === "string" && isFrameRate(frameRate)) {
+  //   queryStringParameters.frameRate = frameRate;
+  // }
+  // if (typeof mediaType === "string" && isMediaType(mediaType)) {
+  //   queryStringParameters.mediaType = mediaType;
+  // }
+  // if (metadata) {
+  //   queryStringParameters.metadata = String(metadata);
+  // }
+  // if (typeof showStats === "boolean") {
+  //   queryStringParameters.showStats = showStats;
+  // }
+  // if (signalingNotifyMetadata) {
+  //   queryStringParameters.signalingNotifyMetadata = String(signalingNotifyMetadata);
+  // }
+  // if (signalingUrlCandidates && typeof signalingUrlCandidates === "string") {
+  //   const parsedSignalingUrlCandidates = JSON.parse(signalingUrlCandidates);
+  //   if (Array.isArray(parsedSignalingUrlCandidates)) {
+  //     queryStringParameters.signalingUrlCandidates = parsedSignalingUrlCandidates;
+  //   }
+  // }
+  // if (typeof simulcast === "boolean") {
+  //   queryStringParameters.simulcast = simulcast;
+  // }
+  // if (typeof simulcastRid === "string" && isSimulcastRid(simulcastRid)) {
+  //   queryStringParameters.simulcastRid = simulcastRid;
+  // }
+  // if (typeof spotlightNumber === "string" && isSpotlightNumber(spotlightNumber)) {
+  //   queryStringParameters.spotlightNumber = spotlightNumber;
+  // }
+  // if (typeof spotlightFocusRid === "string" && isSpotlightFocusRid(spotlightFocusRid)) {
+  //   queryStringParameters.spotlightFocusRid = spotlightFocusRid;
+  // }
+  // if (typeof spotlightUnfocusRid === "string" && isSpotlightFocusRid(spotlightUnfocusRid)) {
+  //   queryStringParameters.spotlightUnfocusRid = spotlightUnfocusRid;
+  // }
+  // if (typeof resolution === "string" && isResolution(resolution)) {
+  //   queryStringParameters.resolution = resolution;
+  // }
+  // if (typeof video === "boolean") {
+  //   queryStringParameters.video = video;
+  // }
+  // if (typeof videoBitRate === "string" && isVideoBitRate(videoBitRate)) {
+  //   queryStringParameters.videoBitRate = videoBitRate;
+  // }
+  // if (typeof videoCodecType === "string" && isVideoCodecType(videoCodecType)) {
+  //   queryStringParameters.videoCodecType = videoCodecType;
+  // }
+  // if (audioInput) {
+  //   queryStringParameters.audioInput = String(audioInput);
+  // }
+  // if (videoInput) {
+  //   queryStringParameters.videoInput = String(videoInput);
+  // }
+  // if (audioOutput) {
+  //   queryStringParameters.audioOutput = String(audioOutput);
+  // }
+  // if (typeof mute === "boolean") {
+  //   queryStringParameters.mute = mute;
+  // }
+  // const stringDataChannelSignaling = String(dataChannelSignaling);
+  // if (isDataChannelSignaling(stringDataChannelSignaling)) {
+  //   queryStringParameters.dataChannelSignaling = stringDataChannelSignaling;
+  // }
+  // const stringIgnoreDisconnectWebSocket = String(ignoreDisconnectWebSocket);
+  // if (isIgnoreDisconnectWebSocket(stringIgnoreDisconnectWebSocket)) {
+  //   queryStringParameters.ignoreDisconnectWebSocket = stringIgnoreDisconnectWebSocket;
+  // }
+  // if (typeof micDevice === "boolean") {
+  //   queryStringParameters.micDevice = micDevice;
+  // }
+  // if (typeof cameraDevice === "boolean") {
+  //   queryStringParameters.cameraDevice = cameraDevice;
+  // }
+  // if (typeof audioTrack === "boolean") {
+  //   queryStringParameters.audioTrack = audioTrack;
+  // }
+  // if (typeof videoTrack === "boolean") {
+  //   queryStringParameters.videoTrack = videoTrack;
+  // }
+  // if (typeof dataChannels === "string") {
+  //   queryStringParameters.dataChannels = dataChannels;
+  // }
+  // if (typeof reconnect === "boolean") {
+  //   queryStringParameters.reconnect = reconnect;
+  // }
+  // const stringAudioContentHint = String(audioContentHint);
+  // if (isAudioContentHint(stringAudioContentHint)) {
+  //   queryStringParameters.audioContentHint = stringAudioContentHint;
+  // }
+  // const stringVideoContentHint = String(videoContentHint);
+  // if (isVideoContentHint(stringVideoContentHint)) {
+  //   queryStringParameters.videoContentHint = stringVideoContentHint;
+  // }
+  // const stringAspectRatio = String(aspectRatio);
+  // if (isAspectRatio(stringAspectRatio)) {
+  //   queryStringParameters.aspectRatio = stringAspectRatio;
+  // }
+  // const stringResizeMode = String(resizeMode);
+  // if (isResizeMode(stringResizeMode)) {
+  //   queryStringParameters.resizeMode = stringResizeMode;
+  // }
+  // const stringBlurRadius = String(blurRadius);
+  // if (isBlurRadius(stringBlurRadius)) {
+  //   queryStringParameters.blurRadius = stringBlurRadius;
+  // }
+  // if (typeof mediaProcessorsNoiseSuppression === "boolean") {
+  //   queryStringParameters.mediaProcessorsNoiseSuppression = mediaProcessorsNoiseSuppression;
+  // }
   return queryStringParameters;
 }
 

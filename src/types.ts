@@ -24,10 +24,13 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
+  MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   RESOLUTIONS,
+  SIMULCAST,
   SIMULCAST_RID,
+  SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   VIDEO_BIT_RATES,
@@ -92,7 +95,7 @@ export type SoraDevtoolsState = {
   mediaProcessorsNoiseSuppression: boolean;
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
-  multistream: boolean;
+  multistream: typeof MULTISTREAM[number];
   mute: boolean;
   noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
   notifyMessages: NotifyMessage[];
@@ -102,9 +105,9 @@ export type SoraDevtoolsState = {
   signalingMessages: SignalingMessage[];
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
-  simulcast: boolean;
+  simulcast: typeof SIMULCAST[number];
   simulcastRid: typeof SIMULCAST_RID[number];
-  spotlight: boolean;
+  spotlight: typeof SPOTLIGHT[number];
   focusedSpotlightConnectionIds: {
     [key: string]: boolean;
   };

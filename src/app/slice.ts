@@ -104,15 +104,15 @@ const initialState: SoraDevtoolsState = {
   mediaProcessorsNoiseSuppression: false,
   mediaType: "getUserMedia",
   metadata: "",
-  multistream: false,
+  multistream: "",
   mute: false,
   noiseSuppression: "",
   notifyMessages: [],
   pushMessages: [],
   resolution: "",
   showStats: false,
-  simulcast: false,
-  spotlight: false,
+  simulcast: "",
+  spotlight: "",
   signalingMessages: [],
   signalingNotifyMetadata: "",
   signalingUrlCandidates: [],
@@ -476,13 +476,13 @@ const slice = createSlice({
     setRole: (state, action: PayloadAction<Role>) => {
       state.role = action.payload;
     },
-    setMultistream: (state, action: PayloadAction<boolean>) => {
+    setMultistream: (state, action: PayloadAction<SoraDevtoolsState["multistream"]>) => {
       state.multistream = action.payload;
     },
-    setSimulcast: (state, action: PayloadAction<boolean>) => {
+    setSimulcast: (state, action: PayloadAction<SoraDevtoolsState["simulcast"]>) => {
       state.simulcast = action.payload;
     },
-    setSpotlight: (state, action: PayloadAction<boolean>) => {
+    setSpotlight: (state, action: PayloadAction<SoraDevtoolsState["spotlight"]>) => {
       state.spotlight = action.payload;
     },
     setReconnect: (state, action: PayloadAction<boolean>) => {
@@ -1891,6 +1891,7 @@ export const {
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,
+  setMultistream,
   setNoiseSuppression,
   setNotifyMessages,
   setReconnect,
@@ -1904,6 +1905,7 @@ export const {
   setSoraReconnecting,
   setSoraErrorAlertMessage,
   setSoraInfoAlertMessage,
+  setSpotlight,
   setSpotlightFocusRid,
   setSpotlightNumber,
   setSpotlightUnfocusRid,
