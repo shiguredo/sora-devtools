@@ -27,8 +27,8 @@ export const LogMessages: React.FC = () => {
   });
   return (
     <div className="debug-messages">
-      {filteredMessages.map((log) => {
-        return <Log key={log.message.title + log.timestamp} {...log} />;
+      {filteredMessages.map((log, index) => {
+        return <Log key={log.message.title + String(index) + log.timestamp} {...log} />;
       })}
     </div>
   );

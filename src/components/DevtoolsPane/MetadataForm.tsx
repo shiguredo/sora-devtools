@@ -38,12 +38,13 @@ export const MetadataForm: React.FC = () => {
           <Col className="col-auto">
             <FormGroup className="form-inline" controlId="metadata">
               <FormControl
-                className="flex-fill w-500"
+                className="flex-fill"
                 as="textarea"
                 placeholder="Metadataを指定"
                 value={metadata}
                 onChange={onChangeText}
                 rows={10}
+                cols={100}
                 disabled={disabled}
               />
             </FormGroup>

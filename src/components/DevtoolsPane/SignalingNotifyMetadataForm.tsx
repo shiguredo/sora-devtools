@@ -38,12 +38,13 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
           <Col className="col-auto">
             <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
               <FormControl
-                className="flex-fill w-500"
+                className="flex-fill"
                 as="textarea"
                 placeholder="signalingNotifyMetadataを指定"
                 value={signalingNotifyMetadata}
                 onChange={onChangeText}
                 rows={10}
+                cols={100}
                 disabled={disabled}
               />
             </FormGroup>

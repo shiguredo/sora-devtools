@@ -54,12 +54,13 @@ export const DataChannelsForm: React.FC = () => {
           <Col className="col-auto">
             <FormGroup className="form-inline" controlId="dataChannels">
               <FormControl
-                className="flex-fill w-500"
+                className="flex-fill"
                 as="textarea"
                 placeholder={textareaPlaceholder}
                 value={dataChannels}
                 onChange={onChangeText}
                 rows={12}
+                cols={100}
                 disabled={disabled}
               />
             </FormGroup>
