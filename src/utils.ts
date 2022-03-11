@@ -1,4 +1,5 @@
 // import queryString from "query-string";
+import type { ConnectionOptions } from "sora-js-sdk";
 
 import {
   // ASPECT_RATIO_TYPES,
@@ -29,6 +30,7 @@ import {
   // VIDEO_CONTENT_HINTS,
 } from "@/constants";
 import type {
+  ConnectionOptionsState,
   CustomHTMLCanvasElement,
   Json,
   QueryStringParameters,
@@ -681,4 +683,96 @@ export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMedia
     getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
     getSettings: track.getSettings(),
   };
+}
+
+// Sora の connectOptions を生成する
+export function createConnectOptions(connectionOptionsState: ConnectionOptionsState): ConnectionOptions {
+  const connectionOptions: ConnectionOptions = {
+    audio: connectionOptionsState.audio,
+    video: connectionOptionsState.video,
+  };
+  // audioCodecType
+  if (connectionOptionsState.audioCodecType) {
+    connectionOptions.audioCodecType = connectionOptionsState.audioCodecType;
+  }
+  // audioBitRate
+  const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10);
+  if (parsedAudioBitRate) {
+    connectionOptions.audioBitRate = parsedAudioBitRate;
+  }
+  // videoCodecType
+  if (connectionOptionsState.videoCodecType) {
+    connectionOptions.videoCodecType = connectionOptionsState.videoCodecType;
+  }
+  // videoBitRate
+  const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10);
+  if (parsedVideoBitRate) {
+    connectionOptions.videoBitRate = parsedVideoBitRate;
+  }
+  // multistream
+  const parsedMultistream = parseBooleanString(connectionOptionsState.multistream);
+  if (parsedMultistream !== undefined) {
+    connectionOptions.multistream = parsedMultistream;
+  }
+  // e2ee
+  if (connectionOptionsState.e2ee) {
+    connectionOptions.e2ee = true;
+  }
+  // spotlight
+  const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight);
+  if (parsedSpotlight !== undefined) {
+    connectionOptions.spotlight = parsedSpotlight;
+    if (parsedSpotlight === true) {
+      if (connectionOptionsState.spotlightNumber) {
+        connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber);
+      }
+      if (connectionOptionsState.spotlightFocusRid) {
+        connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid;
+      }
+      if (connectionOptionsState.spotlightUnfocusRid) {
+        connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid;
+      }
+    }
+  }
+  // simulcast
+  const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast);
+  if (parsedSimulcast !== undefined) {
+    connectionOptions.simulcast = parsedSimulcast;
+    if (parsedSimulcast === true && connectionOptionsState.simulcastRid) {
+      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid;
+    }
+  }
+  // signalingNotifyMetadata
+  if (connectionOptionsState.enabledSignalingNotifyMetadata) {
+    connectionOptions.signalingNotifyMetadata = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
+  }
+  // clientId
+  if (connectionOptionsState.enabledClientId) {
+    connectionOptions.clientId = connectionOptionsState.clientId;
+  }
+  // dataChannelSignaling, ignoreDisconnectWebSocket
+  if (connectionOptionsState.enabledDataChannel) {
+    const parsedDataChannelSignaling = parseBooleanString(connectionOptionsState.dataChannelSignaling);
+    if (parsedDataChannelSignaling !== undefined) {
+      connectionOptions.dataChannelSignaling = parsedDataChannelSignaling;
+    }
+    const parsedIgnoreDisconnectWebSocket = parseBooleanString(connectionOptionsState.ignoreDisconnectWebSocket);
+    if (parsedIgnoreDisconnectWebSocket !== undefined) {
+      connectionOptions.ignoreDisconnectWebSocket = parsedIgnoreDisconnectWebSocket;
+    }
+  }
+  // dataChannels
+  if (connectionOptionsState.dataChannels !== "") {
+    let dataChannels = [];
+    try {
+      dataChannels = JSON.parse(connectionOptionsState.dataChannels);
+    } catch (_) {
+      // サンプル実装なので warning で回避
+      console.warn("Illegal format DataChannels");
+    }
+    if (Array.isArray(dataChannels)) {
+      connectionOptions.dataChannels = dataChannels;
+    }
+  }
+  return connectionOptions;
 }

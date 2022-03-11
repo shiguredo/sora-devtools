@@ -2,7 +2,6 @@ import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
-  ConnectionOptions,
   ConnectionPublisher,
   ConnectionSubscriber,
   DataChannelConfiguration,
@@ -31,6 +30,7 @@ import type {
 import {
   copy2clipboard,
   createAudioConstraints,
+  createConnectOptions,
   createFakeMediaConstraints,
   createFakeMediaStream,
   createGetDisplayMediaConstraints,
@@ -915,84 +915,6 @@ function setSoraCallbacks(
   sora.on("datachannel", (event) => {
     dispatch(slice.actions.setSoraDataChannels(event.datachannel));
   });
-}
-
-// Sora の connectOptions を生成する
-function createConnectOptions(connectionOptionsState: ConnectionOptionsState): ConnectionOptions {
-  const connectionOptions: ConnectionOptions = {
-    audio: connectionOptionsState.audio,
-    video: connectionOptionsState.video,
-  };
-  if (connectionOptionsState.audioCodecType) {
-    connectionOptions.audioCodecType = connectionOptionsState.audioCodecType;
-  }
-  const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10);
-  if (parsedAudioBitRate) {
-    connectionOptions.audioBitRate = parsedAudioBitRate;
-  }
-  if (connectionOptionsState.videoCodecType) {
-    connectionOptions.videoCodecType = connectionOptionsState.videoCodecType;
-  }
-  const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10);
-  if (parsedVideoBitRate) {
-    connectionOptions.videoBitRate = parsedVideoBitRate;
-  }
-  if (connectionOptionsState.multistream) {
-    connectionOptions.multistream = true;
-  }
-  if (connectionOptionsState.e2ee) {
-    connectionOptions.e2ee = true;
-  }
-  if (connectionOptionsState.spotlight) {
-    connectionOptions.spotlight = true;
-    if (connectionOptionsState.spotlightNumber) {
-      connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber);
-    }
-    if (connectionOptions.spotlight === true && connectionOptionsState.spotlightFocusRid) {
-      connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid;
-    }
-    if (connectionOptions.spotlight === true && connectionOptionsState.spotlightUnfocusRid) {
-      connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid;
-    }
-  }
-  if (connectionOptionsState.simulcast) {
-    connectionOptions.simulcast = true;
-    if (connectionOptionsState.simulcastRid) {
-      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid;
-    }
-  }
-  if (connectionOptionsState.enabledSignalingNotifyMetadata) {
-    connectionOptions.signalingNotifyMetadata = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
-  }
-  if (connectionOptionsState.enabledClientId) {
-    connectionOptions.clientId = connectionOptionsState.clientId;
-  }
-  if (connectionOptionsState.enabledDataChannel) {
-    if (connectionOptionsState.dataChannelSignaling === "true") {
-      connectionOptions.dataChannelSignaling = true;
-    } else if (connectionOptionsState.dataChannelSignaling === "false") {
-      connectionOptions.dataChannelSignaling = false;
-    }
-
-    if (connectionOptionsState.ignoreDisconnectWebSocket === "true") {
-      connectionOptions.ignoreDisconnectWebSocket = true;
-    } else if (connectionOptionsState.ignoreDisconnectWebSocket === "false") {
-      connectionOptions.ignoreDisconnectWebSocket = false;
-    }
-  }
-  if (connectionOptionsState.dataChannels !== "") {
-    let dataChannels = [];
-    try {
-      dataChannels = JSON.parse(connectionOptionsState.dataChannels);
-    } catch (_) {
-      // サンプル実装なので warning で回避
-      console.warn("Illegal format DataChannels");
-    }
-    if (Array.isArray(dataChannels)) {
-      connectionOptions.dataChannels = dataChannels;
-    }
-  }
-  return connectionOptions;
 }
 
 // SoraDevtoolsState から ConnectionOptionsState を生成する
