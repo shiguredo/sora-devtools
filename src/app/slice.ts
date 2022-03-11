@@ -1371,10 +1371,11 @@ export const setCameraDevice =
   };
 
 export const setInitialParameter =
-  () =>
+  (role: SoraDevtoolsState["role"]) =>
   async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.resetState());
     const qsParams = parseQueryString();
+    dispatch(slice.actions.setRole(role));
     if (qsParams.audio !== undefined) {
       dispatch(slice.actions.setAudio(qsParams.audio));
     }

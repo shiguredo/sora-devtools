@@ -11,7 +11,7 @@ import { Header } from "@/components/Header";
 const Sendonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(setInitialParameter("sendonly"));
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());

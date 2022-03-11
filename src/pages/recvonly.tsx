@@ -11,7 +11,7 @@ import { Header } from "@/components/Header";
 const Recvonly: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter());
+    dispatch(setInitialParameter("recvonly"));
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
