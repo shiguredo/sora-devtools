@@ -1429,6 +1429,9 @@ export const setInitialParameter =
     if (qsParams.frameRate !== undefined) {
       dispatch(slice.actions.setFrameRate(qsParams.frameRate));
     }
+    if (qsParams.multistream !== undefined) {
+      dispatch(slice.actions.setMultistream(qsParams.multistream));
+    }
     if (qsParams.noiseSuppression !== undefined) {
       dispatch(slice.actions.setNoiseSuppression(qsParams.noiseSuppression));
     }
@@ -1438,8 +1441,14 @@ export const setInitialParameter =
     if (qsParams.showStats !== undefined) {
       dispatch(slice.actions.setShowStats(qsParams.showStats));
     }
+    if (qsParams.simulcast !== undefined) {
+      dispatch(slice.actions.setSimulcast(qsParams.simulcast));
+    }
     if (qsParams.simulcastRid !== undefined) {
       dispatch(slice.actions.setSimulcastRid(qsParams.simulcastRid));
+    }
+    if (qsParams.spotlight !== undefined) {
+      dispatch(slice.actions.setSpotlight(qsParams.spotlight));
     }
     if (qsParams.spotlightNumber !== undefined) {
       dispatch(slice.actions.setSpotlightNumber(qsParams.spotlightNumber));

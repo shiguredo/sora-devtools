@@ -64,15 +64,39 @@ export function checkFormValue<T extends readonly string[]>(
   value: unknown,
   candidates: T
 ): value is typeof candidates[number] {
-  if (typeof value !== "string") {
-    return false;
+  if (typeof value === "string") {
+    return candidates.indexOf(value) >= 0;
   }
-  return candidates.indexOf(value) >= 0;
+  return false;
 }
 
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
-  const qs = queryString.parse(location.search, { parseBooleans: true });
+  // パラメーターが文字列かどうかを判定して string | undefined を返す
+  const parseStringParameter = (parameter: string | (string | null)[] | null): string | undefined => {
+    if (typeof parameter === "string") {
+      return parameter;
+    }
+    return;
+  };
+  // パラメーターが boolean かどうかを判定して boolean | undefined を返す
+  const parseBooleanParameter = (parameter: string | (string | null)[] | null): boolean | undefined => {
+    if (typeof parameter === "string") {
+      return parseBooleanString(parameter);
+    }
+    return;
+  };
+  // パラメーターが特定の文字列かどうかを判定して string | undefined を返す
+  const parseSpecifiedStringParameter = <T extends readonly string[]>(
+    parameter: string | (string | null)[] | null,
+    candidates: T
+  ): typeof candidates[number] | undefined => {
+    if (checkFormValue(parameter, candidates)) {
+      return parameter;
+    }
+    return;
+  };
+  const qs = queryString.parse(location.search);
   // signalingUrlCandidates のパース
   let signalingUrlCandidates;
   if (typeof qs.signalingUrlCandidates === "string") {
@@ -83,66 +107,57 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     }
   }
   const result: Partial<QueryStringParameters> = {
-    apiUrl: typeof qs.apiUrl === "string" ? qs.apiUrl : undefined,
-    audio: typeof qs.audio === "boolean" ? qs.audio : undefined,
-    audioBitRate: checkFormValue(qs.audioBitRate, AUDIO_BIT_RATES) ? qs.audioBitRate : undefined,
-    audioCodecType: checkFormValue(qs.audioCodecType, AUDIO_CODEC_TYPES) ? qs.audioCodecType : undefined,
-    autoGainControl: checkFormValue(qs.autoGainControl, AUTO_GAIN_CONTROLS) ? qs.autoGainControl : undefined,
-    channelId: typeof qs.channelId === "string" ? qs.channelId : undefined,
-    clientId: typeof qs.clientId === "string" ? qs.clientId : undefined,
-    googCpuOveruseDetection: typeof qs.googCpuOveruseDetection === "boolean" ? qs.googCpuOveruseDetection : undefined,
-    debug: typeof qs.debug === "boolean" ? qs.debug : undefined,
-    debugType: checkFormValue(qs.debugType, DEBUG_TYPES) ? qs.debugType : undefined,
-    displayResolution: checkFormValue(qs.displayResolution, DISPLAY_RESOLUTIONS) ? qs.displayResolution : undefined,
-    e2ee: typeof qs.e2ee === "boolean" ? qs.e2ee : undefined,
-    echoCancellation: checkFormValue(qs.echoCancellation, ECHO_CANCELLATIONS) ? qs.echoCancellation : undefined,
-    echoCancellationType: checkFormValue(qs.echoCancellationType, ECHO_CANCELLATION_TYPES)
-      ? qs.echoCancellationType
-      : undefined,
-    noiseSuppression: checkFormValue(qs.noiseSuppression, NOISE_SUPPRESSIONS) ? qs.noiseSuppression : undefined,
-    fakeVolume: typeof qs.fakeVolume === "string" ? qs.fakeVolume : undefined,
-    frameRate: checkFormValue(qs.frameRate, FRAME_RATES) ? qs.frameRate : undefined,
-    mediaType: checkFormValue(qs.mediaType, MEDIA_TYPES) ? qs.mediaType : undefined,
-    metadata: typeof qs.metadata === "string" ? qs.metadata : undefined,
-    showStats: typeof qs.showStats === "boolean" ? qs.showStats : undefined,
-    signalingNotifyMetadata: typeof qs.signalingNotifyMetadata === "string" ? qs.signalingNotifyMetadata : undefined,
+    apiUrl: parseStringParameter(qs.apiUrl),
+    audio: parseBooleanParameter(qs.audio),
+    audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
+    audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
+    autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
+    channelId: parseStringParameter(qs.channelId),
+    clientId: parseStringParameter(qs.clientId),
+    googCpuOveruseDetection: parseBooleanParameter(qs.googCpuOveruseDetection),
+    debug: parseBooleanParameter(qs.debug),
+    debugType: parseSpecifiedStringParameter(qs.debugType, DEBUG_TYPES),
+    displayResolution: parseSpecifiedStringParameter(qs.displayResolution, DISPLAY_RESOLUTIONS),
+    e2ee: parseBooleanParameter(qs.e2ee),
+    echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
+    echoCancellationType: parseSpecifiedStringParameter(qs.echoCancellationType, ECHO_CANCELLATION_TYPES),
+    noiseSuppression: parseSpecifiedStringParameter(qs.noiseSuppression, NOISE_SUPPRESSIONS),
+    fakeVolume: parseStringParameter(qs.fakeVolume),
+    frameRate: parseSpecifiedStringParameter(qs.frameRate, FRAME_RATES),
+    mediaType: parseSpecifiedStringParameter(qs.mediaType, MEDIA_TYPES),
+    metadata: parseStringParameter(qs.metadata),
+    showStats: parseBooleanParameter(qs.showStats),
+    signalingNotifyMetadata: parseStringParameter(qs.signalingNotifyMetadata),
     signalingUrlCandidates: Array.isArray(signalingUrlCandidates) ? signalingUrlCandidates : undefined,
-    simulcast: checkFormValue(qs.simulcast, SIMULCAST) ? qs.simulcast : undefined,
-    simulcastRid: checkFormValue(qs.simulcastRid, SIMULCAST_RID) ? qs.simulcastRid : undefined,
-    spotlight: checkFormValue(qs.spotlight, SPOTLIGHT) ? qs.spotlight : undefined,
-    spotlightNumber: checkFormValue(qs.spotlightNumber, SPOTLIGHT_NUMBERS) ? qs.spotlightNumber : undefined,
-    spotlightFocusRid: checkFormValue(qs.spotlightFocusRid, SPOTLIGHT_FOCUS_RIDS) ? qs.spotlightFocusRid : undefined,
-    spotlightUnfocusRid: checkFormValue(qs.spotlightUnfocusRid, SPOTLIGHT_FOCUS_RIDS)
-      ? qs.spotlightUnfocusRid
-      : undefined,
-    resolution: checkFormValue(qs.resolution, RESOLUTIONS) ? qs.resolution : undefined,
-    video: typeof qs.video === "boolean" ? qs.video : undefined,
-    videoBitRate: checkFormValue(qs.videoBitRate, VIDEO_BIT_RATES) ? qs.videoBitRate : undefined,
-    videoCodecType: checkFormValue(qs.videoCodecType, VIDEO_CODEC_TYPES) ? qs.videoCodecType : undefined,
-    audioInput: typeof qs.audioInput === "string" ? qs.audioInput : undefined,
-    videoInput: typeof qs.videoInput === "string" ? qs.videoInput : undefined,
-    audioOutput: typeof qs.audioOutput === "string" ? qs.audioOutput : undefined,
-    mute: typeof qs.mute === "boolean" ? qs.mute : undefined,
-    dataChannelSignaling: checkFormValue(qs.dataChannelSignaling, DATA_CHANNEL_SIGNALING)
-      ? qs.dataChannelSignaling
-      : undefined,
-    ignoreDisconnectWebSocket: checkFormValue(qs.ignoreDisconnectWebSocket, IGNORE_DISCONNECT_WEBSOCKET)
-      ? qs.ignoreDisconnectWebSocket
-      : undefined,
-    micDevice: typeof qs.micDevice === "boolean" ? qs.micDevice : undefined,
-    cameraDevice: typeof qs.cameraDevice === "boolean" ? qs.cameraDevice : undefined,
-    audioTrack: typeof qs.audioTrack === "boolean" ? qs.audioTrack : undefined,
-    videoTrack: typeof qs.videoTrack === "boolean" ? qs.videoTrack : undefined,
-    dataChannels: typeof qs.dataChannels === "string" ? qs.dataChannels : undefined,
-    reconnect: typeof qs.reconnect === "boolean" ? qs.reconnect : undefined,
-    audioContentHint: checkFormValue(qs.audioContentHint, AUDIO_CONTENT_HINTS) ? qs.audioContentHint : undefined,
-    videoContentHint: checkFormValue(qs.videoContentHint, VIDEO_CONTENT_HINTS) ? qs.videoContentHint : undefined,
-    aspectRatio: checkFormValue(qs.aspectRatio, ASPECT_RATIO_TYPES) ? qs.aspectRatio : undefined,
-    resizeMode: checkFormValue(qs.resizeMode, RESIZE_MODE_TYPES) ? qs.resizeMode : undefined,
-    blurRadius: checkFormValue(qs.blurRadius, BLUR_RADIUS) ? qs.blurRadius : undefined,
-    mediaProcessorsNoiseSuppression:
-      typeof qs.mediaProcessorsNoiseSuppression === "boolean" ? qs.mediaProcessorsNoiseSuppression : undefined,
-    multistream: checkFormValue(qs.multistream, MULTISTREAM) ? qs.multistream : undefined,
+    simulcast: parseSpecifiedStringParameter(qs.simulcast, SIMULCAST),
+    simulcastRid: parseSpecifiedStringParameter(qs.simulcastRid, SIMULCAST_RID),
+    spotlight: parseSpecifiedStringParameter(qs.spotlight, SPOTLIGHT),
+    spotlightNumber: parseSpecifiedStringParameter(qs.spotlightNumber, SPOTLIGHT_NUMBERS),
+    spotlightFocusRid: parseSpecifiedStringParameter(qs.spotlightFocusRid, SPOTLIGHT_FOCUS_RIDS),
+    spotlightUnfocusRid: parseSpecifiedStringParameter(qs.spotlightUnfocusRid, SPOTLIGHT_FOCUS_RIDS),
+    resolution: parseSpecifiedStringParameter(qs.resolution, RESOLUTIONS),
+    video: parseBooleanParameter(qs.video),
+    videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
+    videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
+    audioInput: parseStringParameter(qs.audioInput),
+    videoInput: parseStringParameter(qs.videoInput),
+    audioOutput: parseStringParameter(qs.audioOutput),
+    mute: parseBooleanParameter(qs.mute),
+    dataChannelSignaling: parseSpecifiedStringParameter(qs.dataChannelSignaling, DATA_CHANNEL_SIGNALING),
+    ignoreDisconnectWebSocket: parseSpecifiedStringParameter(qs.ignoreDisconnectWebSocket, IGNORE_DISCONNECT_WEBSOCKET),
+    micDevice: parseBooleanParameter(qs.micDevice),
+    cameraDevice: parseBooleanParameter(qs.cameraDevice),
+    audioTrack: parseBooleanParameter(qs.audioTrack),
+    videoTrack: parseBooleanParameter(qs.videoTrack),
+    dataChannels: parseStringParameter(qs.dataChannels),
+    reconnect: parseBooleanParameter(qs.reconnect),
+    audioContentHint: parseSpecifiedStringParameter(qs.audioContentHint, AUDIO_CONTENT_HINTS),
+    videoContentHint: parseSpecifiedStringParameter(qs.videoContentHint, VIDEO_CONTENT_HINTS),
+    aspectRatio: parseSpecifiedStringParameter(qs.aspectRatio, ASPECT_RATIO_TYPES),
+    resizeMode: parseSpecifiedStringParameter(qs.resizeMode, RESIZE_MODE_TYPES),
+    blurRadius: parseSpecifiedStringParameter(qs.blurRadius, BLUR_RADIUS),
+    mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
+    multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
   };
   // undefined の項目を削除する
   (Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
