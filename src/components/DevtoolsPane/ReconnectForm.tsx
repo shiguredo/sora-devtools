@@ -1,8 +1,8 @@
 import React from "react";
 import { Col, FormCheck, FormGroup, Row } from "react-bootstrap";
 
+import { setReconnect } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setReconnect } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const ReconnectForm: React.FC = () => {

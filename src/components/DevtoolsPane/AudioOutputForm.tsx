@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setAudioOutput } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAudioOutput } from "@/app/slice";
 
 export const AudioOutputForm: React.FC = () => {
   const audioOutput = useAppSelector((state) => state.audioOutput);

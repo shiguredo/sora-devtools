@@ -1,8 +1,8 @@
 import React from "react";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
+import { setChannelId } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setChannelId } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const ChannelIdForm: React.FC = () => {

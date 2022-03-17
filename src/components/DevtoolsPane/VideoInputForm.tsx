@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setVideoInput, updateMediaStream } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setVideoInput, updateMediaStream } from "@/app/slice";
 
 export const VideoInputForm: React.FC = () => {
   const videoInput = useAppSelector((state) => state.videoInput);

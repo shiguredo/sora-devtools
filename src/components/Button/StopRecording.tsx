@@ -1,8 +1,8 @@
 import React from "react";
 
 import { stopRec } from "@/api";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
 export const StopRecording: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);

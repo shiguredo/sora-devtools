@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setMultistream } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setMultistream } from "@/app/slice";
 import { MULTISTREAM } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

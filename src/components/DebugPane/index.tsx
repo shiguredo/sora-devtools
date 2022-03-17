@@ -1,8 +1,8 @@
 import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 
+import { setDebugType } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setDebugType } from "@/app/slice";
 
 import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages";
 import { DebugFilter } from "./Filter";

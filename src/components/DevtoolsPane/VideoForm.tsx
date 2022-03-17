@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
+import { setVideo } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setVideo } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const VideoForm: React.FC = () => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Col, FormCheck, FormGroup, Row, Spinner } from "react-bootstrap";
 
+import { setE2EE } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setE2EE } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const E2EEForm: React.FC = () => {

@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setVideoCodecType } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setVideoCodecType } from "@/app/slice";
 import { VIDEO_CODEC_TYPES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

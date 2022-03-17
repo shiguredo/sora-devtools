@@ -2,8 +2,8 @@ import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
+import { setMediaProcessorsNoiseSuppression } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setMediaProcessorsNoiseSuppression } from "@/app/slice";
 
 export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   const mediaProcessorsNoiseSuppression = useAppSelector((state) => state.mediaProcessorsNoiseSuppression);

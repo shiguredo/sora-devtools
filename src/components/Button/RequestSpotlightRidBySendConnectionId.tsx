@@ -3,8 +3,8 @@ import { FormGroup, FormSelect } from "react-bootstrap";
 import type { SpotlightFocusRid } from "sora-js-sdk";
 
 import { requestSpotlightRid } from "@/api";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 
 type Props = {

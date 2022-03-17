@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
+import { setAudio } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAudio } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const AudioForm: React.FC = () => {

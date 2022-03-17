@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
+import { setCameraDevice } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setCameraDevice } from "@/app/slice";
 
 export const CameraDeviceForm: React.FC = () => {
   const cameraDevice = useAppSelector((state) => state.cameraDevice);

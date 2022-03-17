@@ -1,7 +1,7 @@
 import React from "react";
 
+import { clearDataChannelMessages } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { clearDataChannelMessages } from "@/app/slice";
 import type { DataChannelMessage } from "@/types";
 
 import { Message } from "./Message";

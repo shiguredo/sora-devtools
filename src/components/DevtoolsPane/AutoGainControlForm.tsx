@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setAutoGainControl } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAutoGainControl } from "@/app/slice";
 import { AUTO_GAIN_CONTROLS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

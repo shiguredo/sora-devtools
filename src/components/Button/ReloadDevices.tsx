@@ -1,7 +1,7 @@
 import React from "react";
 
+import { setMediaDevices } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
-import { setMediaDevices } from "@/app/slice";
 
 export const ReloadDevices: React.FC = () => {
   const dispatch = useAppDispatch();

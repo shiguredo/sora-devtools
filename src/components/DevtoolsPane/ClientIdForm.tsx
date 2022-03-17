@@ -1,8 +1,8 @@
 import React from "react";
 import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
+import { setClientId, setEnabledClientId } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setClientId, setEnabledClientId } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const ClientIdForm: React.FC = () => {

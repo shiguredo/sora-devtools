@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setDisplayResolution } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setDisplayResolution } from "@/app/slice";
 import { DISPLAY_RESOLUTIONS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

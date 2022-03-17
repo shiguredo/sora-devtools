@@ -1,8 +1,8 @@
 import React from "react";
 
 import { resetRtpStream } from "@/api";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
 export const ResetRtpStream: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora);

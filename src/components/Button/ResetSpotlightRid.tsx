@@ -1,8 +1,8 @@
 import React from "react";
 
 import { resetSpotlightRid } from "@/api";
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/slice";
 
 export const ResetSpotlightRid: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora);

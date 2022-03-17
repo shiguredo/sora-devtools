@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setEchoCancellation } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setEchoCancellation } from "@/app/slice";
 import { ECHO_CANCELLATIONS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

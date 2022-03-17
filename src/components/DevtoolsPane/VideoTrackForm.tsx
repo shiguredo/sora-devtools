@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
+import { setVideoTrack } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setVideoTrack } from "@/app/slice";
 
 export const VideoTrackForm: React.FC = () => {
   const videoTrack = useAppSelector((state) => state.videoTrack);

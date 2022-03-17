@@ -1,8 +1,8 @@
 import React from "react";
 import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
+import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setDataChannels, setEnabledDataChannels } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const DataChannelsForm: React.FC = () => {

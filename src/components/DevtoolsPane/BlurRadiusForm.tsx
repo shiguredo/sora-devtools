@@ -2,8 +2,8 @@ import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setBlurRadius } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setBlurRadius } from "@/app/slice";
 import { BLUR_RADIUS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

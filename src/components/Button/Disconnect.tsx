@@ -1,7 +1,7 @@
 import React from "react";
 
+import { disconnectSora } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { disconnectSora } from "@/app/slice";
 
 export const Disconnect: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);

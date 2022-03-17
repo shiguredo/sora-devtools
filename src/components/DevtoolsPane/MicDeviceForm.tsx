@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
+import { setMicDevice } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setMicDevice } from "@/app/slice";
 
 export const MicDeviceForm: React.FC = () => {
   const micDevice = useAppSelector((state) => state.micDevice);

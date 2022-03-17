@@ -1,8 +1,8 @@
 import React from "react";
 import { Col, FormCheck, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
 
+import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebSocket } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebSocket } from "@/app/slice";
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setAudioInput, updateMediaStream } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAudioInput, updateMediaStream } from "@/app/slice";
 
 export const AudioInputForm: React.FC = () => {
   const audioInput = useAppSelector((state) => state.audioInput);

@@ -1,7 +1,7 @@
 import React from "react";
 
+import { updateMediaStream } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
-import { updateMediaStream } from "@/app/slice";
 
 export const ButtonUpdateMediaStream: React.FC = () => {
   const dispatch = useAppDispatch();

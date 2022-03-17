@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setSimulcast } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setSimulcast } from "@/app/slice";
 import { SIMULCAST } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
 
+import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/slice";
 import { isFormDisabled } from "@/utils";
 
 export const SignalingUrlCandidatesForm: React.FC = () => {

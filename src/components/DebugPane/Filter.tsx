@@ -1,8 +1,8 @@
 import React from "react";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
+import { setDebugFilterText } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setDebugFilterText } from "@/app/slice";
 
 export const DebugFilter: React.FC = () => {
   const debugFilterText = useAppSelector((state) => state.debugFilterText);

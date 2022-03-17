@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
+import { disconnectSora, setMediaDevices } from "@/app/actions";
 import { setInitialParameter } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
-import { disconnectSora, setMediaDevices } from "@/app/slice";
 import { DebugPane } from "@/components/DebugPane";
 import { DevtoolsPane } from "@/components/DevtoolsPane";
 import { Footer } from "@/components/Footer";

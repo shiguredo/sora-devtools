@@ -1,8 +1,8 @@
 import React from "react";
 import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 
+import { setMediaType } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setMediaType } from "@/app/slice";
 import { MEDIA_TYPES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

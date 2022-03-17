@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setNoiseSuppression } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setNoiseSuppression } from "@/app/slice";
 import { NOISE_SUPPRESSIONS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

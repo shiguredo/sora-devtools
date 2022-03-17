@@ -1,7 +1,7 @@
 import React from "react";
 
+import { connectSora } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { connectSora } from "@/app/slice";
 
 export const Connect: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);

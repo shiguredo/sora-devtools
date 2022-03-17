@@ -1,7 +1,7 @@
 import React from "react";
 
+import { setDebug } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setDebug } from "@/app/slice";
 
 export const ButtonHeaderDebugMode: React.FC = () => {
   const debug = useAppSelector((state) => state.debug);

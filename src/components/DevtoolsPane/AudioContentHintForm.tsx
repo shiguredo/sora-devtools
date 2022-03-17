@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setAudioContentHint } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAudioContentHint } from "@/app/slice";
 import { AUDIO_CONTENT_HINTS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setVideoBitRate } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setVideoBitRate } from "@/app/slice";
 import { VIDEO_BIT_RATES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setSpotlight } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setSpotlight } from "@/app/slice";
 import { SPOTLIGHT } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

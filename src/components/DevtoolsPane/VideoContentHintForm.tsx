@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setVideoContentHint } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setVideoContentHint } from "@/app/slice";
 import { VIDEO_CONTENT_HINTS } from "@/constants";
 import { checkFormValue } from "@/utils";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setAudioBitRate } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAudioBitRate } from "@/app/slice";
 import { AUDIO_BIT_RATES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
 

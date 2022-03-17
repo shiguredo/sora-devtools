@@ -1,8 +1,8 @@
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
+import { setAspectRatio } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setAspectRatio } from "@/app/slice";
 import { ASPECT_RATIO_TYPES } from "@/constants";
 import { checkFormValue } from "@/utils";
 

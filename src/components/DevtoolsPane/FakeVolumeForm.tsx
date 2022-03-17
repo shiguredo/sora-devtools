@@ -1,8 +1,8 @@
 import React from "react";
 import { Form, FormGroup, FormLabel } from "react-bootstrap";
 
+import { setFakeVolume } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setFakeVolume } from "@/app/slice";
 
 export const FakeVolumeForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType);
