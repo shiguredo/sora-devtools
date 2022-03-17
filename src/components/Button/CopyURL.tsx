@@ -1,7 +1,7 @@
 import React from "react";
 
+import { copyURL } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
-import { copyURL } from "@/app/slice";
 
 export const CopyURL: React.FC = () => {
   const dispatch = useAppDispatch();
