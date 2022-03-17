@@ -238,21 +238,22 @@ export const copyURL = () => {
   return (_: Dispatch, getState: () => SoraDevtoolsState): void => {
     const state = getState();
     const parameters: Partial<QueryStringParameters> = {
-      // URL の長さ短縮のため初期値と同じ場合は query string に含めない
-      mediaType: state.mediaType !== "getUserMedia" ? state.mediaType : undefined,
       channelId: state.channelId,
       audio: state.audio,
       video: state.video,
-      audioBitRate: state.audioBitRate,
-      audioCodecType: state.audioCodecType,
-      videoBitRate: state.videoBitRate,
-      videoCodecType: state.videoCodecType,
+      debug: state.debug,
+      // URL の長さ短縮のため初期値と同じ場合は query string に含めない
+      mediaType: state.mediaType !== "getUserMedia" ? state.mediaType : undefined,
       // URL の長さ短縮のため空文字列は query string に含めない
+      audioBitRate: state.audioBitRate !== "" ? state.audioBitRate : undefined,
+      audioCodecType: state.audioCodecType !== "" ? state.audioCodecType : undefined,
+      videoBitRate: state.videoBitRate !== "" ? state.videoBitRate : undefined,
+      videoCodecType: state.videoCodecType !== "" ? state.videoCodecType : undefined,
       audioContentHint: state.audioContentHint !== "" ? state.audioContentHint : undefined,
       autoGainControl: state.autoGainControl !== "" ? state.autoGainControl : undefined,
       noiseSuppression: state.noiseSuppression !== "" ? state.noiseSuppression : undefined,
       echoCancellation: state.echoCancellation !== "" ? state.echoCancellation : undefined,
-      echoCancellationType: state.echoCancellationType,
+      echoCancellationType: state.echoCancellationType !== "" ? state.echoCancellationType : undefined,
       videoContentHint: state.videoContentHint !== "" ? state.videoContentHint : undefined,
       resolution: state.resolution !== "" ? state.resolution : undefined,
       frameRate: state.frameRate !== "" ? state.frameRate : undefined,
@@ -270,27 +271,27 @@ export const copyURL = () => {
       audioOutput: state.audioOutput !== "" ? state.audioOutput : undefined,
       videoInput: state.videoInput !== "" ? state.videoInput : undefined,
       displayResolution: state.displayResolution !== "" ? state.displayResolution : undefined,
+      clientId: state.clientId !== "" ? state.clientId : undefined,
+      metadata: state.metadata !== "" ? state.metadata : undefined,
+      signalingNotifyMetadata: state.signalingNotifyMetadata !== "" ? state.signalingNotifyMetadata : undefined,
+      dataChannelSignaling: state.dataChannelSignaling !== "" ? state.dataChannelSignaling : undefined,
+      ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket !== "" ? state.ignoreDisconnectWebSocket : undefined,
+      dataChannels: state.dataChannels !== "" ? state.dataChannels : undefined,
       // URL の長さ短縮のため true 以外は query string に含めない
+      reconnect: state.reconnect === true ? true : undefined,
+      e2ee: state.e2ee === true ? true : undefined,
       mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression === true ? true : undefined,
-      micDevice: state.micDevice === true ? true : undefined,
-      cameraDevice: state.cameraDevice === true ? true : undefined,
-      audioTrack: state.audioTrack === true ? true : undefined,
-      videoTrack: state.videoTrack === true ? true : undefined,
-      // spotlight
-      // options
-      e2ee: state.e2ee,
-      clientId: state.clientId,
-      metadata: state.metadata,
-      signalingNotifyMetadata: state.signalingNotifyMetadata,
-      dataChannelSignaling: state.dataChannelSignaling,
-      ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-      signalingUrlCandidates: state.signalingUrlCandidates,
-      dataChannels: state.dataChannels,
-      reconnect: state.reconnect,
-      debug: state.debug,
-      fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
+      // URL の長さ短縮のため false 以外は query string に含めない
+      micDevice: state.micDevice === false ? false : undefined,
+      cameraDevice: state.cameraDevice === false ? true : undefined,
+      audioTrack: state.audioTrack === false ? true : undefined,
+      videoTrack: state.videoTrack === false ? false : undefined,
+      // signalingUrlCandidates
+      signalingUrlCandidates: 0 < state.signalingUrlCandidates.length ? state.signalingUrlCandidates : undefined,
       // apiUrl
       apiUrl: state.apiUrl !== null ? state.apiUrl : undefined,
+      // fakeVolume
+      fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
     };
     const queryStrings = Object.keys(parameters)
       .map((key) => {
