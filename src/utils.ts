@@ -491,20 +491,17 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
   return metadata;
 }
 
-export function getDefaultVideoCodecType(
-  initialValue: typeof VIDEO_CODEC_TYPES[number]
-): typeof VIDEO_CODEC_TYPES[number] {
+export function getDefaultVideoCodecType(): typeof VIDEO_CODEC_TYPES[number] {
+  // getCapabilities API が存在しない場合
   if (!RTCRtpSender.getCapabilities) {
-    return initialValue;
+    return "VP9";
   }
+  // getCapabilities APIから codec 一覧が取れない場合
   const capabilities = RTCRtpSender.getCapabilities("video");
   if (!capabilities || !capabilities.codecs) {
-    return initialValue;
+    return "VP9";
   }
   const codecs = capabilities.codecs.map((c) => c.mimeType.replace("video/", ""));
-  if (codecs.includes(initialValue)) {
-    return initialValue;
-  }
   if (codecs.includes("VP9")) {
     return "VP9";
   }
@@ -520,7 +517,7 @@ export function getDefaultVideoCodecType(
   if (codecs.includes("H265")) {
     return "H265";
   }
-  return initialValue;
+  return "VP9";
 }
 
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
