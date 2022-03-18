@@ -229,9 +229,6 @@ export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
         return;
       }
     }
-
-    // TODO(yuito): multistream, simulcat, spotlight フラグを qs から受け取るようにする
-
     // clientId が存在した場合は enabledClientId をセットする
     if (clientId !== "") {
       dispatch(slice.actions.setEnabledClientId(true));

@@ -222,8 +222,10 @@ export const slice = createSlice({
       // Fake canvas の背景色で使う color code を生成
       state.fakeContents.colorCode = Math.floor(Math.random() * 0xffffff);
       // Fake canvas を表示しているブラウザタブがバックグラウンドへ移動しても canvas のレンダリングを続けるために worker を生成
-      const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
-      state.fakeContents.worker = new Worker(url);
+      if (URL.createObjectURL) {
+        const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
+        state.fakeContents.worker = new Worker(url);
+      }
     },
     setFrameRate: (state, action: PayloadAction<SoraDevtoolsState["frameRate"]>) => {
       state.frameRate = action.payload;

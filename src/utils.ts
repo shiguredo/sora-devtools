@@ -493,7 +493,7 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
 
 export function getDefaultVideoCodecType(): typeof VIDEO_CODEC_TYPES[number] {
   // getCapabilities API が存在しない場合
-  if (!RTCRtpSender.getCapabilities) {
+  if (!window.RTCRtpSender || !RTCRtpSender.getCapabilities) {
     return "VP9";
   }
   // getCapabilities APIから codec 一覧が取れない場合
