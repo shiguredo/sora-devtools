@@ -4,6 +4,8 @@ import queryString from "query-string";
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
 
+import type { DebugType } from "@/types";
+
 const createAs = (pageName: string): string => {
   if (process.env.NODE_ENV === "production") {
     return `${pageName}.html`;
@@ -19,6 +21,10 @@ type LinkProps = {
     multistream?: boolean;
     simulcast?: boolean;
     spotlight?: boolean;
+    dataChannelSignaling?: boolean;
+    dataChannels?: string;
+    debug?: boolean;
+    debugType?: DebugType;
   };
 };
 const Link: React.FC<LinkProps> = (props) => {
@@ -75,7 +81,23 @@ const Index: React.FC = () => {
             <Link pageName="sendrecv" params={{ multistream: true, simulcast: true, spotlight: true }} />
             <Link pageName="recvonly" params={{ multistream: true, simulcast: true, spotlight: true }} />
             <li className="separator">データチャネルメッセージング</li>
-            <Link pageName="sendrecv" params={{ multistream: true, audio: false, video: false }} />
+            <Link
+              pageName="sendrecv"
+              params={{
+                multistream: true,
+                dataChannelSignaling: true,
+                debug: true,
+                debugType: "messaging",
+                audio: false,
+                video: false,
+                dataChannels: JSON.stringify([
+                  {
+                    label: "#sora-devtools",
+                    direction: "sendrecv",
+                  },
+                ]),
+              }}
+            />
           </ul>
         </div>
       </div>
