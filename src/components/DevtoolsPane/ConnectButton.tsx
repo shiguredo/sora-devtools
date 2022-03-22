@@ -1,22 +1,22 @@
 import React from "react";
 
-import { disconnectSora } from "@/app/actions";
+import { connectSora } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-export const Disconnect: React.FC = () => {
+export const ConnectButton: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const dispatch = useAppDispatch();
-  const disconnect = (): void => {
-    dispatch(disconnectSora());
+  const connect = (): void => {
+    dispatch(connectSora());
   };
   return (
     <div className="col-auto mb-1">
       <input
         className="btn btn-secondary"
         type="button"
-        name="disconnect"
-        defaultValue="disconnect"
-        onClick={disconnect}
+        name="connect"
+        defaultValue="connect"
+        onClick={connect}
         disabled={connectionStatus === "disconnecting" || connectionStatus === "connecting"}
       />
     </div>

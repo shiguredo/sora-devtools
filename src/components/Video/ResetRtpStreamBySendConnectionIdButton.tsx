@@ -1,10 +1,13 @@
 import React from "react";
 
-import { resetSpotlightRid } from "@/api";
+import { resetRtpStream } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-export const ResetSpotlightRid: React.FC = () => {
+type Props = {
+  sendConnectionId: string;
+};
+export const ResetRtpStreamBySendConnectionIdButton: React.FC<Props> = (props) => {
   const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
   const apiUrl = useAppSelector((state) => state.apiUrl);
@@ -14,7 +17,7 @@ export const ResetSpotlightRid: React.FC = () => {
       return;
     }
     try {
-      const response = await resetSpotlightRid(apiUrl, channelId, sora.connectionId);
+      const response = await resetRtpStream(apiUrl, channelId, sora.connectionId, props.sendConnectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
@@ -23,14 +26,12 @@ export const ResetSpotlightRid: React.FC = () => {
     }
   };
   return (
-    <div className="mx-1">
-      <input
-        className="btn btn-secondary"
-        type="button"
-        name="resetAllSpotlightRid"
-        defaultValue="resetSpotlightRid"
-        onClick={onClick}
-      />
-    </div>
+    <input
+      className="btn btn-secondary btn-sm mx-1"
+      type="button"
+      name="resetRtpStream"
+      defaultValue="reset rid"
+      onClick={onClick}
+    />
   );
 };

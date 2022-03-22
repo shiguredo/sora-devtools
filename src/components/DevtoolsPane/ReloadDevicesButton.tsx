@@ -3,7 +3,7 @@ import React from "react";
 import { setMediaDevices } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
 
-export const ReloadDevices: React.FC = () => {
+export const ReloadDevicesButton: React.FC = () => {
   const dispatch = useAppDispatch();
   const onClick = (): void => {
     dispatch(setMediaDevices());

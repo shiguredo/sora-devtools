@@ -10,7 +10,7 @@ import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 type Props = {
   sendConnectionId: string;
 };
-export const RequestSpotlightRidBySendConnectionId: React.FC<Props> = (props) => {
+export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
   const focusRidRef = useRef<HTMLSelectElement>(null);
   const unfocusRidRef = useRef<HTMLSelectElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);

@@ -1,13 +1,13 @@
 import React from "react";
 
-import { IconClipboard } from "@/components/IconClipboard";
+import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
 type Props = {
   text: string;
   disabled?: boolean;
 };
-export const CopyLog: React.FC<Props> = (props) => {
+export const CopyLogButton: React.FC<Props> = (props) => {
   const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     copy2clipboard(props.text);
     event.currentTarget.blur();
@@ -17,7 +17,7 @@ export const CopyLog: React.FC<Props> = (props) => {
   }
   return (
     <button className="btn btn-sm btn-dark" onClick={onClick}>
-      <IconClipboard />
+      <ClipboardIcon />
     </button>
   );
 };

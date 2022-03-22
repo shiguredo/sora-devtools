@@ -3,7 +3,7 @@ import React from "react";
 import { copyURL } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
 
-export const CopyURL: React.FC = () => {
+export const CopyUrlButton: React.FC = () => {
   const dispatch = useAppDispatch();
   const onClick = (): void => {
     dispatch(copyURL());

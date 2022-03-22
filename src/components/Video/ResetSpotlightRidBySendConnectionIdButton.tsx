@@ -1,16 +1,23 @@
 import React from "react";
 
-import { startRec } from "@/api";
+import { resetSpotlightRid } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-export const StartRecording: React.FC = () => {
+type Props = {
+  sendConnectionId: string;
+};
+export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
+  const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
   const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
+    if (!sora?.connectionId) {
+      return;
+    }
     try {
-      const response = await startRec(apiUrl, channelId);
+      const response = await resetSpotlightRid(apiUrl, channelId, sora.connectionId, props.sendConnectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
@@ -19,8 +26,12 @@ export const StartRecording: React.FC = () => {
     }
   };
   return (
-    <div className="col-auto mb-1">
-      <input className="btn btn-secondary" type="button" name="startRec" defaultValue="start rec" onClick={onClick} />
-    </div>
+    <input
+      className="btn btn-secondary mx-1"
+      type="button"
+      name="resetSpotlightRid"
+      defaultValue="resetSpotlightRid"
+      onClick={onClick}
+    />
   );
 };

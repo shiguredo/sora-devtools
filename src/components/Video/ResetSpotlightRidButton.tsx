@@ -1,24 +1,20 @@
 import React from "react";
-import { SimulcastRid } from "sora-js-sdk";
 
-import { requestRtpStream } from "@/api";
+import { resetSpotlightRid } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-type Props = {
-  rid: SimulcastRid;
-};
-export const RequestRtpStream: React.FC<Props> = (props) => {
+export const ResetSpotlightRidButton: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora);
-  const apiUrl = useAppSelector((state) => state.apiUrl);
   const channelId = useAppSelector((state) => state.channelId);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return;
     }
     try {
-      const response = await requestRtpStream(apiUrl, channelId, sora.connectionId, props.rid);
+      const response = await resetSpotlightRid(apiUrl, channelId, sora.connectionId);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
@@ -31,8 +27,8 @@ export const RequestRtpStream: React.FC<Props> = (props) => {
       <input
         className="btn btn-secondary"
         type="button"
-        name={`requestSimulcastRidTo${props.rid.charAt(0).toUpperCase() + props.rid.slice(1)}`}
-        defaultValue={`${props.rid} rid`}
+        name="resetAllSpotlightRid"
+        defaultValue="resetSpotlightRid"
         onClick={onClick}
       />
     </div>

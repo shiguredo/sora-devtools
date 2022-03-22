@@ -7,7 +7,7 @@ import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 
-export const RequestSpotlightRid: React.FC = () => {
+export const RequestSpotlightRidButton: React.FC = () => {
   const focusRidRef = useRef<HTMLSelectElement>(null);
   const unfocusRidRef = useRef<HTMLSelectElement>(null);
   const sora = useAppSelector((state) => state.soraContents.sora);

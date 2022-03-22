@@ -9,7 +9,7 @@ type Props = {
   rid: SimulcastRid;
   sendConnectionId: string;
 };
-export const RequestRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
+export const RequestRtpStreamBySendConnectionIdButton: React.FC<Props> = (props) => {
   const sora = useAppSelector((state) => state.soraContents.sora);
   const apiUrl = useAppSelector((state) => state.apiUrl);
   const channelId = useAppSelector((state) => state.channelId);

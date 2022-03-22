@@ -3,7 +3,8 @@ import { Nav, Navbar } from "react-bootstrap";
 import Sora from "sora-js-sdk";
 
 import { useAppSelector } from "@/app/hooks";
-import { ButtonFooterDebugMode } from "@/components/Button/FooterDebugMode";
+
+import { DebugButton } from "./DebugButton";
 
 export const Footer: React.FC = () => {
   const version = useAppSelector((state) => state.version);
@@ -22,7 +23,7 @@ export const Footer: React.FC = () => {
           </Navbar.Collapse>
         </Nav>
       </Navbar>
-      <ButtonFooterDebugMode />
+      <DebugButton />
     </footer>
   );
 };

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Collapse } from "react-bootstrap";
 
-import { CopyLog } from "@/components/Button/CopyLog";
 import { formatUnixtime } from "@/utils";
+
+import { CopyLogButton } from "./CopyLogButton";
 
 type DescriptionProps = {
   description: string | number | Record<string, unknown>;
@@ -59,7 +60,7 @@ export const Message: React.FC<Props> = (props) => {
           <span>{title}</span>
         </a>
         <div className="border-left">
-          <CopyLog
+          <CopyLogButton
             text={typeof description === "string" ? description : JSON.stringify(description, null, 2)}
             disabled={disabled}
           />

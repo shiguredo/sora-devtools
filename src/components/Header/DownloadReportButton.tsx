@@ -85,7 +85,7 @@ function createDownloadReport(pageName: string): DownloadReport {
 type Props = {
   pageName: string;
 };
-export const ButtonDownloadReport: React.FC<Props> = (props) => {
+export const DownloadReportButton: React.FC<Props> = (props) => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const onClick = async (): Promise<void> => {
     const report = createDownloadReport(props.pageName);

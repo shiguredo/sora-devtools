@@ -3,12 +3,6 @@ import { Col, Collapse, Row } from "react-bootstrap";
 
 import { useAppSelector } from "@/app/hooks";
 import { AlertMessages } from "@/components/AlertMessages";
-import { Connect } from "@/components/Button/Connect";
-import { Disconnect } from "@/components/Button/Disconnect";
-import { ReloadDevices } from "@/components/Button/ReloadDevices";
-import { StartRecording } from "@/components/Button/StartRecording";
-import { StopRecording } from "@/components/Button/StopRecording";
-import { ButtonUpdateMediaStream } from "@/components/Button/UpdateMediaStream";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
 
@@ -25,8 +19,10 @@ import { BlurRadiusForm } from "./BlurRadiusForm";
 import { CameraDeviceForm } from "./CameraDeviceForm";
 import { ChannelIdForm } from "./ChannelIdForm";
 import { ClientIdForm } from "./ClientIdForm";
+import { ConnectButton } from "./ConnectButton";
 import { DataChannelForm } from "./DataChannelForm";
 import { DataChannelsForm } from "./DataChannelsForm";
+import { DisconnectButton } from "./DisconnectButton";
 import { DisplayResolutionForm } from "./DisplayResolutionForm";
 import { E2EEForm } from "./E2EEForm";
 import { EchoCancellationForm } from "./EchoCancellationForm";
@@ -40,6 +36,7 @@ import { MicDeviceForm } from "./MicDeviceForm";
 import { MultistreamForm } from "./MultistreamForm";
 import { NoiseSuppressionForm } from "./NoiseSuppressionForm";
 import { ReconnectForm } from "./ReconnectForm";
+import { ReloadDevicesButton } from "./ReloadDevicesButton";
 import { ResizeModeForm } from "./ResizeModeForm";
 import { ResolutionForm } from "./ResolutionForm";
 import { SignalingNotifyMetadataForm } from "./SignalingNotifyMetadataForm";
@@ -50,6 +47,9 @@ import { SpotlightFocusRidForm } from "./SpotlightFocusRidForm";
 import { SpotlightForm } from "./SpotlightForm";
 import { SpotlightNumberForm } from "./SpotlightNumberForm";
 import { SpotlightUnfocusRidForm } from "./SpotlightUnfocusRidForm";
+import { StartRecordingButton } from "./StartRecordingButton";
+import { StopRecordingButton } from "./StopRecordingButton";
+import { UpdateMediaStreamButton } from "./UpdateMediaStreamButton";
 import { VideoBitRateForm } from "./VideoBitRateForm";
 import { VideoCodecTypeForm } from "./VideoCodecTypeForm";
 import { VideoContentHintForm } from "./VideoContentHintForm";
@@ -294,7 +294,7 @@ const RowMediaOptions: React.FC = () => {
               <BlurRadiusForm />
             </Col>
           </Row>
-          <ButtonUpdateMediaStream />
+          <UpdateMediaStreamButton />
         </div>
       </Collapse>
     </Row>
@@ -313,7 +313,7 @@ const RowDevices: React.FC = () => {
       <Col>
         <AudioOutputForm />
       </Col>
-      <ReloadDevices />
+      <ReloadDevicesButton />
     </Row>
   );
 };
@@ -360,10 +360,10 @@ export const DevtoolsPane: React.FC = () => {
       <RowMediaDevices />
       <hr className="hr-form" />
       <div className="row">
-        <Connect />
-        <Disconnect />
-        <StartRecording />
-        <StopRecording />
+        <ConnectButton />
+        <DisconnectButton />
+        <StartRecordingButton />
+        <StopRecordingButton />
       </div>
       <hr className="hr-form" />
       <LocalVideo />

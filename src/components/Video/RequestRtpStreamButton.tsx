@@ -1,23 +1,24 @@
 import React from "react";
+import { SimulcastRid } from "sora-js-sdk";
 
-import { resetRtpStream } from "@/api";
+import { requestRtpStream } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
 type Props = {
-  sendConnectionId: string;
+  rid: SimulcastRid;
 };
-export const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
+export const RequestRtpStreamButton: React.FC<Props> = (props) => {
   const sora = useAppSelector((state) => state.soraContents.sora);
-  const channelId = useAppSelector((state) => state.channelId);
   const apiUrl = useAppSelector((state) => state.apiUrl);
+  const channelId = useAppSelector((state) => state.channelId);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return;
     }
     try {
-      const response = await resetRtpStream(apiUrl, channelId, sora.connectionId, props.sendConnectionId);
+      const response = await requestRtpStream(apiUrl, channelId, sora.connectionId, props.rid);
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
@@ -26,12 +27,14 @@ export const ResetRtpStreamBySendConnectionId: React.FC<Props> = (props) => {
     }
   };
   return (
-    <input
-      className="btn btn-secondary btn-sm mx-1"
-      type="button"
-      name="resetRtpStream"
-      defaultValue="reset rid"
-      onClick={onClick}
-    />
+    <div className="mx-1">
+      <input
+        className="btn btn-secondary"
+        type="button"
+        name={`requestSimulcastRidTo${props.rid.charAt(0).toUpperCase() + props.rid.slice(1)}`}
+        defaultValue={`${props.rid} rid`}
+        onClick={onClick}
+      />
+    </div>
   );
 };

@@ -3,7 +3,7 @@ import React from "react";
 import { updateMediaStream } from "@/app/actions";
 import { useAppDispatch } from "@/app/hooks";
 
-export const ButtonUpdateMediaStream: React.FC = () => {
+export const UpdateMediaStreamButton: React.FC = () => {
   const dispatch = useAppDispatch();
   const onClick = (): void => {
     dispatch(updateMediaStream());

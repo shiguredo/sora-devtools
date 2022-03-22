@@ -4,7 +4,7 @@ import { stopRec } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-export const StopRecording: React.FC = () => {
+export const StopRecordingButton: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);
   const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();

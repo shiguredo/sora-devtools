@@ -4,7 +4,7 @@ import { resetRtpStream } from "@/api";
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-export const ResetRtpStream: React.FC = () => {
+export const ResetRtpStreamButton: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora);
   const channelId = useAppSelector((state) => state.channelId);
   const apiUrl = useAppSelector((state) => state.apiUrl);
