@@ -1,3 +1,9 @@
+export const MULTISTREAM = ["", "true", "false"] as const;
+
+export const SIMULCAST = ["", "true", "false"] as const;
+
+export const SPOTLIGHT = ["", "true", "false"] as const;
+
 export const AUDIO_CODEC_TYPES = ["", "OPUS"] as const;
 
 export const AUDIO_BIT_RATES = ["", "8", "16", "24", "32", "64", "96", "128", "256"] as const;
@@ -62,11 +68,11 @@ export const DATA_CHANNEL_SIGNALING = ["", "true", "false"] as const;
 
 export const IGNORE_DISCONNECT_WEBSOCKET = ["", "true", "false"] as const;
 
-export const DEBUG_TYPES = ["log", "notify", "push", "stats", "timeline", "signaling", "messaging"];
+export const DEBUG_TYPES = ["log", "notify", "push", "stats", "timeline", "signaling", "messaging"] as const;
 
-export const AUDIO_CONTENT_HINTS = ["", "speech", "speech-recognition", "music"];
+export const AUDIO_CONTENT_HINTS = ["", "speech", "speech-recognition", "music"] as const;
 
-export const VIDEO_CONTENT_HINTS = ["", "motion", "detail", "text"];
+export const VIDEO_CONTENT_HINTS = ["", "motion", "detail", "text"] as const;
 
 export const ASPECT_RATIO_TYPES = ["", "4:3", "16:9", "21:9"] as const;
 

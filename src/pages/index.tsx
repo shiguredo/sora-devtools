@@ -1,7 +1,10 @@
 import NextHead from "next/head";
 import NextLink from "next/link";
+import queryString from "query-string";
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
+
+import type { DebugType } from "@/types";
 
 const createAs = (pageName: string): string => {
   if (process.env.NODE_ENV === "production") {
@@ -10,10 +13,29 @@ const createAs = (pageName: string): string => {
   return pageName;
 };
 
-const Link: React.FC<{ pageName: string }> = (props) => {
+type LinkProps = {
+  pageName: "sendonly" | "recvonly" | "sendrecv";
+  params?: {
+    audio?: boolean;
+    video?: boolean;
+    multistream?: boolean;
+    simulcast?: boolean;
+    spotlight?: boolean;
+    dataChannelSignaling?: boolean;
+    dataChannels?: string;
+    debug?: boolean;
+    debugType?: DebugType;
+    videoBitRate?: number;
+  };
+};
+const Link: React.FC<LinkProps> = (props) => {
+  let qs = "";
+  if (props.params) {
+    qs = `?${queryString.stringify(props.params)}`;
+  }
   return (
     <li>
-      <NextLink href={`/${props.pageName}`} as={createAs(`/${props.pageName}`)}>
+      <NextLink href={`/${props.pageName}${qs}`} as={createAs(`/${props.pageName}${qs}`)}>
         <a>{props.pageName}</a>
       </NextLink>
     </li>
@@ -37,26 +59,55 @@ const Index: React.FC = () => {
       <div className="container">
         <div className="row">
           <ul className="list-url">
-            <li className="separator">片方向</li>
+            <li className="separator">片方向(サイマルキャスト無効)</li>
             <Link pageName="sendonly" />
             <Link pageName="recvonly" />
-            <li className="separator">双方向</li>
-            <Link pageName="multi_sendrecv" />
-            <Link pageName="multi_sendonly" />
-            <Link pageName="multi_recvonly" />
-            <li className="separator">片方向サイマルキャスト</li>
-            <Link pageName="simulcast_sendonly" />
-            <Link pageName="simulcast_recvonly" />
-            <li className="separator">双方向サイマルキャスト</li>
-            <Link pageName="multi_simulcast_sendrecv" />
-            <Link pageName="multi_simulcast_sendonly" />
-            <Link pageName="multi_simulcast_recvonly" />
-            <li className="separator">スポットライト</li>
-            <Link pageName="spotlight_sendrecv" />
-            <Link pageName="spotlight_sendonly" />
-            <Link pageName="spotlight_recvonly" />
+            <li className="separator">片方向(サイマルキャスト有効)</li>
+            <Link pageName="sendonly" params={{ simulcast: true, videoBitRate: 3000 }} />
+            <Link pageName="recvonly" params={{ simulcast: true, videoBitRate: 3000 }} />
+            <li className="separator">双方向 (サイマルキャスト無効)</li>
+            <Link pageName="sendonly" params={{ multistream: true }} />
+            <Link pageName="sendrecv" params={{ multistream: true }} />
+            <Link pageName="recvonly" params={{ multistream: true }} />
+            <li className="separator">双方向 (サイマルキャスト有効)</li>
+            <Link pageName="sendonly" params={{ multistream: true, simulcast: true, videoBitRate: 3000 }} />
+            <Link pageName="sendrecv" params={{ multistream: true, simulcast: true, videoBitRate: 3000 }} />
+            <Link pageName="recvonly" params={{ multistream: true, simulcast: true }} />
+            <li className="separator">スポットライト(サイマルキャスト無効)</li>
+            <Link pageName="sendonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
+            <Link pageName="sendrecv" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
+            <Link pageName="recvonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
+            <li className="separator">スポットライト(サイマルキャスト有効)</li>
+            <Link
+              pageName="sendonly"
+              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500 }}
+            />
+            <Link
+              pageName="sendrecv"
+              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500 }}
+            />
+            <Link
+              pageName="recvonly"
+              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500 }}
+            />
             <li className="separator">データチャネルメッセージング</li>
-            <Link pageName="data_channel_messaging_only" />
+            <Link
+              pageName="sendrecv"
+              params={{
+                multistream: true,
+                dataChannelSignaling: true,
+                debug: true,
+                debugType: "messaging",
+                audio: false,
+                video: false,
+                dataChannels: JSON.stringify([
+                  {
+                    label: "#sora-devtools",
+                    direction: "sendrecv",
+                  },
+                ]),
+              }}
+            />
           </ul>
         </div>
       </div>

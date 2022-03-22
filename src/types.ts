@@ -24,10 +24,13 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
+  MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   RESOLUTIONS,
+  SIMULCAST,
   SIMULCAST_RID,
+  SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   VIDEO_BIT_RATES,
@@ -57,7 +60,6 @@ export type SoraDevtoolsState = {
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   dataChannels: string;
   dataChannelMessages: DataChannelMessage[];
-  displaySettings: DisplaySettings;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
@@ -93,7 +95,7 @@ export type SoraDevtoolsState = {
   mediaProcessorsNoiseSuppression: boolean;
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
-  multistream: boolean;
+  multistream: typeof MULTISTREAM[number];
   mute: boolean;
   noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
   notifyMessages: NotifyMessage[];
@@ -103,9 +105,9 @@ export type SoraDevtoolsState = {
   signalingMessages: SignalingMessage[];
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
-  simulcast: boolean;
+  simulcast: typeof SIMULCAST[number];
   simulcastRid: typeof SIMULCAST_RID[number];
-  spotlight: boolean;
+  spotlight: typeof SPOTLIGHT[number];
   focusedSpotlightConnectionIds: {
     [key: string]: boolean;
   };
@@ -275,7 +277,6 @@ export type QueryStringParameters = Omit<
   | "alertMessages"
   | "dataChannelMessages"
   | "debugFilterText"
-  | "displaySettings"
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
   | "logMessages"
@@ -314,91 +315,6 @@ export type ConnectionOptionsState = Pick<
   | "videoCodecType"
 >;
 
-// page 初期レンダリング時に渡されるパラメーター
-export type PageInitialParameters = {
-  role: SoraDevtoolsState["role"];
-  multistream: SoraDevtoolsState["multistream"];
-  spotlight: SoraDevtoolsState["spotlight"];
-  simulcast: SoraDevtoolsState["simulcast"];
-  // DataChannelMessaging page 専用のオプション
-  dataChannelMessagingOnly?: boolean;
-  aspectRatio?: SoraDevtoolsState["aspectRatio"];
-  audio?: SoraDevtoolsState["audio"];
-  audioBitRate?: SoraDevtoolsState["audioBitRate"];
-  audioCodecType?: SoraDevtoolsState["audioCodecType"];
-  audioContentHint?: SoraDevtoolsState["audioContentHint"];
-  audioInput?: SoraDevtoolsState["audioInput"];
-  audioOutput?: SoraDevtoolsState["audioOutput"];
-  autoGainControl?: SoraDevtoolsState["autoGainControl"];
-  blurRadius?: SoraDevtoolsState["blurRadius"];
-  channelId?: SoraDevtoolsState["channelId"];
-  clientId?: SoraDevtoolsState["clientId"];
-  googCpuOveruseDetection?: SoraDevtoolsState["googCpuOveruseDetection"];
-  debug?: SoraDevtoolsState["debug"];
-  debugType?: SoraDevtoolsState["debugType"];
-  dataChannelSignaling?: SoraDevtoolsState["dataChannelSignaling"];
-  dataChannels?: SoraDevtoolsState["dataChannels"];
-  displayResolution?: SoraDevtoolsState["displayResolution"];
-  echoCancellation?: SoraDevtoolsState["echoCancellation"];
-  echoCancellationType?: SoraDevtoolsState["echoCancellationType"];
-  e2ee?: SoraDevtoolsState["e2ee"];
-  fakeVolume?: SoraDevtoolsState["fakeVolume"];
-  frameRate?: SoraDevtoolsState["frameRate"];
-  ignoreDisconnectWebSocket?: SoraDevtoolsState["ignoreDisconnectWebSocket"];
-  mediaProcessorsNoiseSuppression?: SoraDevtoolsState["mediaProcessorsNoiseSuppression"];
-  mediaType?: SoraDevtoolsState["mediaType"];
-  metadata?: SoraDevtoolsState["metadata"];
-  mute?: SoraDevtoolsState["mute"];
-  noiseSuppression?: SoraDevtoolsState["noiseSuppression"];
-  reconnect?: SoraDevtoolsState["reconnect"];
-  resizeMode?: SoraDevtoolsState["resizeMode"];
-  resolution?: SoraDevtoolsState["resolution"];
-  showStats?: SoraDevtoolsState["showStats"];
-  signalingNotifyMetadata?: SoraDevtoolsState["signalingNotifyMetadata"];
-  signalingUrlCandidates?: SoraDevtoolsState["signalingUrlCandidates"];
-  simulcastRid?: SoraDevtoolsState["simulcastRid"];
-  spotlightNumber?: SoraDevtoolsState["spotlightNumber"];
-  spotlightFocusRid?: SoraDevtoolsState["spotlightFocusRid"];
-  spotlightUnfocusRid?: SoraDevtoolsState["spotlightUnfocusRid"];
-  video?: SoraDevtoolsState["video"];
-  videoBitRate?: SoraDevtoolsState["videoBitRate"];
-  videoCodecType?: SoraDevtoolsState["videoCodecType"];
-  videoContentHint?: SoraDevtoolsState["videoContentHint"];
-  videoInput?: SoraDevtoolsState["videoInput"];
-  cameraDevice?: SoraDevtoolsState["cameraDevice"];
-  videoTrack?: SoraDevtoolsState["videoTrack"];
-  micDevice?: SoraDevtoolsState["micDevice"];
-  audioTrack?: SoraDevtoolsState["audioTrack"];
-};
-
-// 画面表示に使用する設定
-export type DisplaySettings = {
-  audio: boolean;
-  audioBitRate: boolean;
-  audioCodecType: boolean;
-  audioContentHint: boolean;
-  audioInput: boolean;
-  audioOutput: boolean;
-  audioTrack: boolean;
-  audioConstraints: boolean;
-  cameraDevice: boolean;
-  displayResolution: boolean;
-  mediaType: boolean;
-  micDevice: boolean;
-  simulcast: boolean;
-  simulcastRid: boolean;
-  spotlightFocusRid: boolean;
-  spotlightNumber: boolean;
-  spotlightUnfocusRid: boolean;
-  video: boolean;
-  videoBitRate: boolean;
-  videoCodecType: boolean;
-  videoConstraints: boolean;
-  videoContentHint: boolean;
-  videoInput: boolean;
-  videoTrack: boolean;
-};
-
 // ダウンロードレポートに使用するパラメーター
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
@@ -408,7 +324,6 @@ export type DownloadReportParameters = Omit<
   | "dataChannelMessages"
   | "debugFilterText"
   | "debugType"
-  | "displaySettings"
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
   | "logMessages"

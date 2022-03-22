@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { RequestRtpStream } from "@/components/Button/RequestRtpStream";
-import { RequestSpotlightRid } from "@/components/Button/RequestSpotlightRid";
-import { ResetRtpStream } from "@/components/Button/ResetRtpStream";
-import { ResetSpotlightRid } from "@/components/Button/ResetSpotlightRid";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
+import { RequestRtpStreamButton } from "./RequestRtpStreamButton";
+import { RequestSpotlightRidButton } from "./RequestSpotlightRidButton";
+import { ResetRtpStreamButton } from "./ResetRtpStreamButton";
+import { ResetSpotlightRidButton } from "./ResetSpotlightRidButton";
 import { Video } from "./Video";
 import { VolumeVisualizer } from "./VolumeVisualizer";
 
@@ -62,16 +62,16 @@ export const LocalVideo: React.FC = () => {
           ) : null}
           {connectionId !== null && !spotlight && simulcast && role !== "sendonly" ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
-              <RequestRtpStream rid={"r0"} />
-              <RequestRtpStream rid={"r1"} />
-              <RequestRtpStream rid={"r2"} />
-              <ResetRtpStream />
+              <RequestRtpStreamButton rid={"r0"} />
+              <RequestRtpStreamButton rid={"r1"} />
+              <RequestRtpStreamButton rid={"r2"} />
+              <ResetRtpStreamButton />
             </div>
           ) : null}
           {connectionId !== null && spotlight ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
-              <RequestSpotlightRid />
-              <ResetSpotlightRid />
+              <RequestSpotlightRidButton />
+              <ResetSpotlightRidButton />
             </div>
           ) : null}
         </div>
