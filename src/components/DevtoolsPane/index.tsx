@@ -302,14 +302,19 @@ const RowMediaOptions: React.FC = () => {
 };
 
 const RowDevices: React.FC = () => {
+  const role = useAppSelector((state) => state.role);
   return (
     <Row className="form-row" xs="auto">
-      <Col>
-        <AudioInputForm />
-      </Col>
-      <Col>
-        <VideoInputForm />
-      </Col>
+      {role !== "recvonly" ? (
+        <>
+          <Col>
+            <AudioInputForm />
+          </Col>
+          <Col>
+            <VideoInputForm />
+          </Col>
+        </>
+      ) : null}
       <Col>
         <AudioOutputForm />
       </Col>
@@ -319,23 +324,28 @@ const RowDevices: React.FC = () => {
 };
 
 export const RowMediaDevices: React.FC = () => {
+  const role = useAppSelector((state) => state.role);
   return (
     <Row className="form-row" xs="auto">
       <Col>
         <DisplayResolutionForm />
       </Col>
-      <Col>
-        <MicDeviceForm />
-      </Col>
-      <Col>
-        <CameraDeviceForm />
-      </Col>
-      <Col>
-        <AudioTrackForm />
-      </Col>
-      <Col>
-        <VideoTrackForm />
-      </Col>
+      {role !== "recvonly" ? (
+        <>
+          <Col>
+            <MicDeviceForm />
+          </Col>
+          <Col>
+            <CameraDeviceForm />
+          </Col>
+          <Col>
+            <AudioTrackForm />
+          </Col>
+          <Col>
+            <VideoTrackForm />
+          </Col>
+        </>
+      ) : null}
     </Row>
   );
 };
@@ -353,9 +363,13 @@ export const DevtoolsPane: React.FC = () => {
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
       <hr className="hr-form" />
-      <RowMediaType />
-      <RowMediaOptions />
-      <hr className="hr-form" />
+      {role !== "recvonly" ? (
+        <>
+          <RowMediaType />
+          <RowMediaOptions />
+          <hr className="hr-form" />
+        </>
+      ) : null}
       <RowDevices />
       <RowMediaDevices />
       <hr className="hr-form" />
