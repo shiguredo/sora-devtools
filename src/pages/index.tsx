@@ -10,7 +10,7 @@ const createAs = (pageName: string, queryString: string): string => {
   if (process.env.NODE_ENV === "production") {
     return `${pageName}.html${queryString}`;
   }
-  return pageName;
+  return `${pageName}${queryString}`;
 };
 
 type LinkProps = {
