@@ -87,15 +87,15 @@ const Index: React.FC = () => {
             <li className="separator">スポットライト(サイマルキャスト有効)</li>
             <Link
               pageName="sendonly"
-              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500 }}
+              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
               pageName="sendrecv"
-              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500 }}
+              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
               pageName="recvonly"
-              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500 }}
+              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <li className="separator">データチャネルメッセージング</li>
             <Link
