@@ -6,9 +6,9 @@ import { Container, Navbar } from "react-bootstrap";
 
 import type { DebugType } from "@/types";
 
-const createAs = (pageName: string): string => {
+const createAs = (pageName: string, queryString: string): string => {
   if (process.env.NODE_ENV === "production") {
-    return `${pageName}.html`;
+    return `${pageName}.html${queryString}`;
   }
   return pageName;
 };
@@ -36,7 +36,7 @@ const Link: React.FC<LinkProps> = (props) => {
   }
   return (
     <li>
-      <NextLink href={`/${props.pageName}${qs}`} as={createAs(`/${props.pageName}${qs}`)}>
+      <NextLink href={`/${props.pageName}${qs}`} as={createAs(`/${props.pageName}`, qs)}>
         <a>{props.pageName}</a>
       </NextLink>
     </li>
