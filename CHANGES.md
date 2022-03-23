@@ -10,6 +10,10 @@
     - バグ修正
 
 ## develop
+- [CHANGE] ページの統合
+    - sendonly.html / sendrecv.html / recvonly.html 以外のページを削除する
+    - multistream / simulcast / spotlight フラグをページ内で選択可能にする
+    - multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
 - [UPDATE] スポットライトページで simulcast フラグを選択可能にする
     - @yuitowest
 - [UPDATE] audioInput, audioOutput, videoInput に未指定のオプションを追加する
