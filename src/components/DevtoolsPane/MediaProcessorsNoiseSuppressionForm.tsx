@@ -1,4 +1,3 @@
-import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import React from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
@@ -12,11 +11,10 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setMediaProcessorsNoiseSuppression(event.target.checked));
   };
-  const disabled = mediaType !== "getUserMedia" || !NoiseSuppressionProcessor.isSupported();
+  const disabled = mediaType !== "getUserMedia";
   return (
     <FormGroup className="form-inline" controlId="mediaProcessorsNoiseSuppression">
       <FormCheck
-        suppressHydrationWarning
         type="switch"
         name="mediaProcessorsNoiseSuppression"
         label="mediaProcessorsNoiseSuppression"

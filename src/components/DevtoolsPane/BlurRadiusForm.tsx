@@ -1,4 +1,3 @@
-import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import React from "react";
 import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
 
@@ -16,11 +15,11 @@ export const BlurRadiusForm: React.FC = () => {
       dispatch(setBlurRadius(event.target.value));
     }
   };
-  const disabled = mediaType !== "getUserMedia" || !VirtualBackgroundProcessor.isSupported();
+  const disabled = mediaType !== "getUserMedia";
   return (
     <FormGroup className="form-inline" controlId="spotlightNumber">
       <FormLabel>blurRadius:</FormLabel>
-      <FormSelect suppressHydrationWarning value={blurRadius} onChange={onChange} disabled={disabled}>
+      <FormSelect value={blurRadius} onChange={onChange} disabled={disabled}>
         {BLUR_RADIUS.map((value) => {
           return (
             <option suppressHydrationWarning key={value} value={value}>
