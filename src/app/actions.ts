@@ -1,6 +1,4 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
-import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type { ConnectionPublisher, ConnectionSubscriber, TransportType } from "sora-js-sdk";
 import Sora from "sora-js-sdk";
 
@@ -23,7 +21,6 @@ import {
   createSignalingURL,
   createVideoConstraints,
   drawFakeCanvas,
-  getBlurRadiusNumber,
   getDefaultVideoCodecType,
   getDevices,
   getMediaStreamTrackProperties,
@@ -479,13 +476,7 @@ async function createMediaStream(
       )
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
-    let audioTrack = audioMediaStream.getAudioTracks()[0];
-    if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
-      if (state.noiseSuppressionProcessor === null) {
-        throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
-      }
-      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
-    }
+    const audioTrack = audioMediaStream.getAudioTracks()[0];
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
     mediaStream.addTrack(audioTrack);
   }
@@ -507,16 +498,7 @@ async function createMediaStream(
       )
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
-    let videoTrack = videoMediaStream.getVideoTracks()[0];
-    if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
-      if (state.virtualBackgroundProcessor === null) {
-        throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
-      }
-      const options = {
-        blurRadius: getBlurRadiusNumber(state.blurRadius),
-      };
-      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
-    }
+    const videoTrack = videoMediaStream.getVideoTracks()[0];
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
     mediaStream.addTrack(videoTrack);
   }
