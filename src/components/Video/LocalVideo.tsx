@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import { getBlurRadiusNumber } from "@/utils";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar";
 import { RequestRtpStreamButton } from "./RequestRtpStreamButton";
@@ -13,7 +12,6 @@ import { VolumeVisualizer } from "./VolumeVisualizer";
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0);
-  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const audio = useAppSelector((state) => state.audio);
   const video = useAppSelector((state) => state.video);
   const audioOutput = useAppSelector((state) => state.audioOutput);
@@ -22,39 +20,7 @@ const VideoBox: React.FC = () => {
   const connectionId = useAppSelector((state) => state.soraContents.connectionId);
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
   const micDevice = useAppSelector((state) => state.micDevice);
-  const blurRadius = useAppSelector((state) => state.blurRadius);
-  const virtualBackgroundProcessor = useAppSelector((state) => state.virtualBackgroundProcessor);
-  const mediaProcessorsNoiseSuppression = useAppSelector((state) => state.mediaProcessorsNoiseSuppression);
-  const noiseSuppressionProcessor = useAppSelector((state) => state.noiseSuppressionProcessor);
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
-  useEffect(() => {
-    (async () => {
-      const stream = new MediaStream();
-      if (localMediaStream === null) {
-        setMediaStream(null);
-        return;
-      }
-      let videoTrack = localMediaStream.getVideoTracks()[0];
-      if (blurRadius !== "" && virtualBackgroundProcessor !== null && videoTrack !== undefined) {
-        const options = {
-          blurRadius: getBlurRadiusNumber(blurRadius),
-        };
-        videoTrack = await virtualBackgroundProcessor.startProcessing(videoTrack, options);
-      }
-      let audioTrack = localMediaStream.getAudioTracks()[0];
-      if (mediaProcessorsNoiseSuppression && noiseSuppressionProcessor !== null && audioTrack !== undefined) {
-        audioTrack = await noiseSuppressionProcessor.startProcessing(audioTrack);
-      }
-      if (videoTrack) {
-        stream.addTrack(videoTrack);
-      }
-      if (audioTrack) {
-        stream.addTrack(audioTrack);
-      }
-      setMediaStream(stream);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localMediaStream, blurRadius, mediaProcessorsNoiseSuppression]);
   if (audio === false && video === false) {
     return null;
   }
@@ -63,7 +29,7 @@ const VideoBox: React.FC = () => {
       <div className="d-flex">
         <div className={"d-flex flex-nowrap align-items-start video-wrapper" + (focused ? " spotlight-focused" : "")}>
           <Video
-            stream={mediaStream}
+            stream={localMediaStream}
             setHeight={setHeight}
             audioOutput={audioOutput}
             displayResolution={displayResolution}
