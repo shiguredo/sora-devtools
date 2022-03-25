@@ -637,9 +637,13 @@ function setSoraCallbacks(
     const { fakeContents, soraContents, reconnect, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
     if (virtualBackgroundProcessor) {
+      const originalTrack = virtualBackgroundProcessor.getOriginalTrack();
+      originalTrack?.stop();
       virtualBackgroundProcessor.stopProcessing();
     }
     if (noiseSuppressionProcessor) {
+      const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
+      originalTrack?.stop();
       noiseSuppressionProcessor.stopProcessing();
     }
     if (localMediaStream) {
@@ -836,6 +840,8 @@ export const connectSora = () => {
         clearInterval(timerId);
       }
     }, 1000);
+    // disconnect 時に stream を止めないためのハック
+    sora.stream = null;
     dispatch(slice.actions.setSora(sora));
     if (mediaStream) {
       dispatch(slice.actions.setLocalMediaStream(mediaStream));
@@ -1001,9 +1007,13 @@ export const updateMediaStream = () => {
       return;
     }
     if (state.virtualBackgroundProcessor) {
+      const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
+      originalTrack?.stop();
       state.virtualBackgroundProcessor.stopProcessing();
     }
     if (state.noiseSuppressionProcessor) {
+      const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
+      originalTrack?.stop();
       state.noiseSuppressionProcessor.stopProcessing();
     }
     if (state.soraContents.localMediaStream) {
