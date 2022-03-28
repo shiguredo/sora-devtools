@@ -417,4 +417,9 @@ video {
   .btn-header-debug-mode {
     display: none;
   }
+
+  .toast {
+    width: 90vw;
+    max-width: none;
+  }
 }
