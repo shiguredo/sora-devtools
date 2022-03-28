@@ -112,6 +112,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
     audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
     autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
+    bundleId: parseStringParameter(qs.bundleId),
     channelId: parseStringParameter(qs.channelId),
     clientId: parseStringParameter(qs.clientId),
     googCpuOveruseDetection: parseBooleanParameter(qs.googCpuOveruseDetection),
@@ -626,6 +627,10 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
   // signalingNotifyMetadata
   if (connectionOptionsState.enabledSignalingNotifyMetadata) {
     connectionOptions.signalingNotifyMetadata = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
+  }
+  // bundleId
+  if (connectionOptionsState.enabledBundleId) {
+    connectionOptions.bundleId = connectionOptionsState.bundleId;
   }
   // clientId
   if (connectionOptionsState.enabledClientId) {
