@@ -19,6 +19,8 @@ on:
     branches: [ develop ]
     paths:
       - src
+    paths-ignore:
+      - dist
   schedule:
     - cron: '33 14 * * 3'
 
