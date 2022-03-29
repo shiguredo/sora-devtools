@@ -67,30 +67,30 @@ const Index: React.FC = () => {
             <Link pageName="sendonly" params={{ simulcast: true, videoBitRate: 3000, videoCodecType: "VP8" }} />
             <Link pageName="recvonly" params={{ simulcast: true, videoBitRate: 3000, videoCodecType: "VP8" }} />
             <li className="separator">双方向(サイマルキャスト無効)</li>
-            <Link pageName="sendonly" params={{ multistream: true }} />
             <Link pageName="sendrecv" params={{ multistream: true }} />
+            <Link pageName="sendonly" params={{ multistream: true }} />
             <Link pageName="recvonly" params={{ multistream: true }} />
             <li className="separator">双方向(サイマルキャスト有効)</li>
             <Link
-              pageName="sendonly"
+              pageName="sendrecv"
               params={{ multistream: true, simulcast: true, videoBitRate: 3000, videoCodecType: "VP8" }}
             />
             <Link
-              pageName="sendrecv"
+              pageName="sendonly"
               params={{ multistream: true, simulcast: true, videoBitRate: 3000, videoCodecType: "VP8" }}
             />
             <Link pageName="recvonly" params={{ multistream: true, simulcast: true, videoCodecType: "VP8" }} />
             <li className="separator">スポットライト(サイマルキャスト無効)</li>
-            <Link pageName="sendonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
             <Link pageName="sendrecv" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
+            <Link pageName="sendonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
             <Link pageName="recvonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
             <li className="separator">スポットライト(サイマルキャスト有効)</li>
             <Link
-              pageName="sendonly"
+              pageName="sendrecv"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
-              pageName="sendrecv"
+              pageName="sendonly"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
