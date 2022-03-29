@@ -50,6 +50,7 @@ export type SoraDevtoolsState = {
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
   blurRadius: typeof BLUR_RADIUS[number];
+  bundleId: string;
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
@@ -64,6 +65,7 @@ export type SoraDevtoolsState = {
   echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
+  enabledBundleId: boolean;
   enabledClientId: boolean;
   enabledDataChannels: boolean;
   enabledDataChannel: boolean;
@@ -294,10 +296,12 @@ export type ConnectionOptionsState = Pick<
   | "audio"
   | "audioBitRate"
   | "audioCodecType"
+  | "bundleId"
   | "clientId"
   | "dataChannels"
   | "dataChannelSignaling"
   | "e2ee"
+  | "enabledBundleId"
   | "enabledClientId"
   | "enabledDataChannel"
   | "enabledSignalingNotifyMetadata"

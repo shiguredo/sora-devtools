@@ -30,6 +30,8 @@ const initialState: SoraDevtoolsState = {
   audioOutputDevices: [],
   autoGainControl: "",
   blurRadius: "",
+  bundleId: "",
+  enabledBundleId: false,
   clientId: "",
   channelId: "sora",
   googCpuOveruseDetection: null,
@@ -491,6 +493,12 @@ export const slice = createSlice({
         state.noiseSuppressionProcessor = processor;
       }
       state.mediaProcessorsNoiseSuppression = action.payload;
+    },
+    setBundleId: (state, action: PayloadAction<SoraDevtoolsState["bundleId"]>) => {
+      state.bundleId = action.payload;
+    },
+    setEnabledBundleId: (state, action: PayloadAction<SoraDevtoolsState["enabledBundleId"]>) => {
+      state.enabledBundleId = action.payload;
     },
   },
 });

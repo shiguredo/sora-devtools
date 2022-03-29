@@ -164,6 +164,9 @@ export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
     if (qsParams.googCpuOveruseDetection !== undefined && qsParams.googCpuOveruseDetection !== null) {
       dispatch(slice.actions.setGoogCpuOveruseDetection(qsParams.googCpuOveruseDetection));
     }
+    if (qsParams.bundleId !== undefined) {
+      dispatch(slice.actions.setBundleId(qsParams.bundleId));
+    }
     if (qsParams.clientId !== undefined) {
       dispatch(slice.actions.setClientId(qsParams.clientId));
     }
@@ -206,6 +209,7 @@ export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
+      bundleId,
       clientId,
       dataChannels,
       dataChannelSignaling,
@@ -228,6 +232,10 @@ export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(message));
         return;
       }
+    }
+    // bundleId が存在した場合は enabledBundleId をセットする
+    if (bundleId !== "") {
+      dispatch(slice.actions.setEnabledBundleId(true));
     }
     // clientId が存在した場合は enabledClientId をセットする
     if (clientId !== "") {
@@ -295,6 +303,7 @@ export const copyURL = () => {
       audioOutput: state.audioOutput !== "" ? state.audioOutput : undefined,
       videoInput: state.videoInput !== "" ? state.videoInput : undefined,
       displayResolution: state.displayResolution !== "" ? state.displayResolution : undefined,
+      bundleId: state.bundleId !== "" ? state.bundleId : undefined,
       clientId: state.clientId !== "" ? state.clientId : undefined,
       metadata: state.metadata !== "" ? state.metadata : undefined,
       signalingNotifyMetadata: state.signalingNotifyMetadata !== "" ? state.signalingNotifyMetadata : undefined,
@@ -717,10 +726,12 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     audio: state.audio,
     audioBitRate: state.audioBitRate,
     audioCodecType: state.audioCodecType,
+    bundleId: state.bundleId,
     clientId: state.clientId,
     dataChannels: state.enabledDataChannels ? state.dataChannels : "",
     dataChannelSignaling: state.dataChannelSignaling,
     e2ee: state.e2ee,
+    enabledBundleId: state.enabledBundleId,
     enabledClientId: state.enabledClientId,
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
@@ -1185,6 +1196,7 @@ export const {
   setAudioTrack,
   setAutoGainControl,
   setBlurRadius,
+  setBundleId,
   setChannelId,
   setClientId,
   setDataChannels,
@@ -1195,6 +1207,7 @@ export const {
   setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
+  setEnabledBundleId,
   setEnabledClientId,
   setEnabledDataChannels,
   setEnabledDataChannel,

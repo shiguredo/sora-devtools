@@ -16,6 +16,7 @@ import { AudioOutputForm } from "./AudioOutputForm";
 import { AudioTrackForm } from "./AudioTrackForm";
 import { AutoGainControlForm } from "./AutoGainControlForm";
 import { BlurRadiusForm } from "./BlurRadiusForm";
+import { BundleIdForm } from "./BundleIdForm";
 import { CameraDeviceForm } from "./CameraDeviceForm";
 import { ChannelIdForm } from "./ChannelIdForm";
 import { ClientIdForm } from "./ClientIdForm";
@@ -146,6 +147,7 @@ const RowSpotlightOptions: React.FC = () => {
 const RowSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const e2ee = useAppSelector((state) => state.e2ee);
+  const enabledBundleId = useAppSelector((state) => state.enabledBundleId);
   const enabledClientId = useAppSelector((state) => state.enabledClientId);
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel);
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels);
@@ -155,6 +157,7 @@ const RowSignalingOptions: React.FC = () => {
   const reconnect = useAppSelector((state) => state.reconnect);
   const enabledOptions = [
     e2ee,
+    enabledBundleId,
     enabledClientId,
     enabledDataChannel,
     enabledDataChannels,
@@ -187,6 +190,7 @@ const RowSignalingOptions: React.FC = () => {
           <ReconnectForm />
           <ClientIdForm />
           <MetadataForm />
+          <BundleIdForm />
           <SignalingNotifyMetadataForm />
           <SignalingUrlCandidatesForm />
           <DataChannelsForm />
