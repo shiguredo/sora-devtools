@@ -19,10 +19,11 @@ on:
     branches: [ develop ]
     paths:
       - src
-    paths-ignore:
-      - dist
   schedule:
     - cron: '33 14 * * 3'
+
+paths-ignore:
+  - dist/**
 
 jobs:
   analyze:
