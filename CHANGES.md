@@ -10,6 +10,8 @@
     - バグ修正
 
 ## develop
+- [UPDATE] 接続オプションに bundleId を追加する
+    - @yuitowest
 - [CHANGE] ページの統合
     - sendonly.html / sendrecv.html / recvonly.html 以外のページを削除する
     - multistream / simulcast / spotlight フラグをページ内で選択可能にする
