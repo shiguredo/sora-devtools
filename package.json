@@ -45,8 +45,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.0",
-    "@shiguredo/noise-suppression": "^2022.4.1",
-    "@shiguredo/virtual-background": "^2022.4.1",
+    "@shiguredo/noise-suppression": "^2022.4.2",
+    "@shiguredo/virtual-background": "^2022.4.2",
     "bootstrap": "5.1.3",
     "query-string": "^7.1.1",
     "react": "^17.0.2",
