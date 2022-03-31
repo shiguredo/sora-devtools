@@ -129,12 +129,12 @@ const Index: React.FC = () => {
             />
             <Link
               type="sendonly"
-              pageName="スポットライト受信のみ (サイマルキャスト無効)"
+              pageName="スポットライト送信のみ (サイマルキャスト無効)"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
               type="recvonly"
-              pageName="スポットライト送信のみ (サイマルキャスト無効)"
+              pageName="スポットライト受信のみ (サイマルキャスト無効)"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <li className="separator">データチャネルメッセージング</li>
