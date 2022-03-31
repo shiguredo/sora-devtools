@@ -14,7 +14,8 @@ const createAs = (pageName: string, queryString: string): string => {
 };
 
 type LinkProps = {
-  pageName: "sendonly" | "recvonly" | "sendrecv";
+  pageName: string;
+  type: "sendonly" | "recvonly" | "sendrecv";
   params?: {
     audio?: boolean;
     video?: boolean;
@@ -37,7 +38,7 @@ const Link: React.FC<LinkProps> = (props) => {
   }
   return (
     <li>
-      <NextLink href={`/${props.pageName}${qs}`} as={createAs(`/${props.pageName}`, qs)}>
+      <NextLink href={`/${props.type}${qs}`} as={createAs(`/${props.type}`, qs)}>
         <a>{props.pageName}</a>
       </NextLink>
     </li>
@@ -61,22 +62,26 @@ const Index: React.FC = () => {
       <div className="container">
         <div className="row">
           <ul className="list-url">
-            <li className="separator">片方向(サイマルキャスト無効)</li>
-            <Link pageName="sendonly" />
-            <Link pageName="recvonly" />
-            <li className="separator">片方向(サイマルキャスト有効)</li>
+            <li className="separator">シングルストリーム</li>
+            <Link type="sendonly" pageName="シングルストリーム送信のみ" />
+            <Link type="recvonly" pageName="シングルストリーム受信のみ" />
             <Link
-              pageName="sendonly"
+              type="sendonly"
+              pageName="シングルストリーム送信のみ (サイマルキャスト有効)"
               params={{ simulcast: true, videoBitRate: 3000, videoCodecType: "VP8", resolution: "720p (1280x720)" }}
             />
-            <Link pageName="recvonly" params={{ simulcast: true, videoBitRate: 3000, videoCodecType: "VP8" }} />
-            <li className="separator">双方向(サイマルキャスト無効)</li>
-            <Link pageName="sendrecv" params={{ multistream: true }} />
-            <Link pageName="sendonly" params={{ multistream: true }} />
-            <Link pageName="recvonly" params={{ multistream: true }} />
-            <li className="separator">双方向(サイマルキャスト有効)</li>
             <Link
-              pageName="sendrecv"
+              type="recvonly"
+              pageName="シングルストリーム受信のみ (サイマルキャスト有効)"
+              params={{ simulcast: true, videoBitRate: 3000, videoCodecType: "VP8" }}
+            />
+            <li className="separator">マルチストリーム</li>
+            <Link type="sendrecv" pageName="マルチストリーム送受信" params={{ multistream: true }} />
+            <Link type="sendonly" pageName="マルチストリーム送信のみ" params={{ multistream: true }} />
+            <Link type="recvonly" pageName="マルチストリーム受信のみ" params={{ multistream: true }} />
+            <Link
+              type="sendrecv"
+              pageName="マルチストリーム送受信 (サイマルキャスト有効)"
               params={{
                 multistream: true,
                 simulcast: true,
@@ -86,7 +91,8 @@ const Index: React.FC = () => {
               }}
             />
             <Link
-              pageName="sendonly"
+              type="sendonly"
+              pageName="マルチストリーム送信のみ (サイマルキャスト有効)"
               params={{
                 multistream: true,
                 simulcast: true,
@@ -95,27 +101,46 @@ const Index: React.FC = () => {
                 resolution: "720p (1280x720)",
               }}
             />
-            <Link pageName="recvonly" params={{ multistream: true, simulcast: true, videoCodecType: "VP8" }} />
-            <li className="separator">スポットライト(サイマルキャスト無効)</li>
-            <Link pageName="sendrecv" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
-            <Link pageName="sendonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
-            <Link pageName="recvonly" params={{ multistream: true, spotlight: true, videoBitRate: 500 }} />
-            <li className="separator">スポットライト(サイマルキャスト有効)</li>
             <Link
-              pageName="sendrecv"
+              type="recvonly"
+              pageName="マルチストリーム受信のみ (サイマルキャスト有効)"
+              params={{ multistream: true, simulcast: true, videoCodecType: "VP8" }}
+            />
+            <li className="separator">スポットライト</li>
+            <Link
+              type="sendrecv"
+              pageName="スポットライト送受信"
+              params={{ multistream: true, spotlight: true, videoBitRate: 500 }}
+            />
+            <Link
+              type="sendonly"
+              pageName="スポットライト送信のみ"
+              params={{ multistream: true, spotlight: true, videoBitRate: 500 }}
+            />
+            <Link
+              type="recvonly"
+              pageName="スポットライト受信のみ"
+              params={{ multistream: true, spotlight: true, videoBitRate: 500 }}
+            />
+            <Link
+              type="sendrecv"
+              pageName="スポットライト送受信 (サイマルキャスト無効)"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
-              pageName="sendonly"
+              type="sendonly"
+              pageName="スポットライト受信のみ (サイマルキャスト無効)"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <Link
-              pageName="recvonly"
+              type="recvonly"
+              pageName="スポットライト送信のみ (サイマルキャスト無効)"
               params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
             />
             <li className="separator">データチャネルメッセージング</li>
             <Link
-              pageName="sendrecv"
+              type="sendrecv"
+              pageName="メッセージングのみ"
               params={{
                 multistream: true,
                 dataChannelSignaling: true,
