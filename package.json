@@ -38,13 +38,13 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
-    "next": "^12.1.2",
+    "next": "^12.1.4",
     "nextjs": "^0.0.3",
     "prettier": "^2.6.1",
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.0",
+    "@reduxjs/toolkit": "^1.8.1",
     "@shiguredo/noise-suppression": "^2022.4.2",
     "@shiguredo/virtual-background": "^2022.4.2",
     "bootstrap": "5.1.3",
