@@ -1029,11 +1029,6 @@ export const updateMediaStream = () => {
       originalTrack?.stop();
       state.noiseSuppressionProcessor.stopProcessing();
     }
-    if (state.soraContents.localMediaStream) {
-      state.soraContents.localMediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    }
     const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
       dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
@@ -1053,6 +1048,11 @@ export const updateMediaStream = () => {
         sender.replaceTrack(track);
       }
     });
+    if (state.soraContents.localMediaStream) {
+      state.soraContents.localMediaStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
     dispatch(slice.actions.setLocalMediaStream(mediaStream));
     dispatch(slice.actions.setFakeContentsGainNode(gainNode));
   };
