@@ -110,32 +110,32 @@ const Index: React.FC = () => {
             <Link
               type="sendrecv"
               pageName="スポットライト送受信"
-              params={{ multistream: true, spotlight: true, videoBitRate: 500 }}
+              params={{ multistream: true, simulcast: true, spotlight: true, videoCodecType: "VP8", videoBitRate: 500 }}
             />
             <Link
               type="sendonly"
               pageName="スポットライト送信のみ"
-              params={{ multistream: true, spotlight: true, videoBitRate: 500 }}
+              params={{ multistream: true, simulcast: true, spotlight: true, videoCodecType: "VP8", videoBitRate: 500 }}
             />
             <Link
               type="recvonly"
               pageName="スポットライト受信のみ"
-              params={{ multistream: true, spotlight: true, videoBitRate: 500 }}
+              params={{ multistream: true, simulcast: true, spotlight: true, videoCodecType: "VP8", videoBitRate: 500 }}
             />
             <Link
               type="sendrecv"
               pageName="スポットライト送受信 (サイマルキャスト無効)"
-              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
+              params={{ multistream: true, spotlight: true, videoCodecType: "VP8", videoBitRate: 500 }}
             />
             <Link
               type="sendonly"
               pageName="スポットライト送信のみ (サイマルキャスト無効)"
-              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
+              params={{ multistream: true, spotlight: true, videoCodecType: "VP8", videoBitRate: 500 }}
             />
             <Link
               type="recvonly"
               pageName="スポットライト受信のみ (サイマルキャスト無効)"
-              params={{ multistream: true, simulcast: true, spotlight: true, videoBitRate: 500, videoCodecType: "VP8" }}
+              params={{ multistream: true, spotlight: true, videoCodecType: "VP8", videoBitRate: 500 }}
             />
             <li className="separator">データチャネルメッセージング</li>
             <Link
