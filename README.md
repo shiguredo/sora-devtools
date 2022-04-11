@@ -88,9 +88,9 @@ https://example.com/multi_sendrecv.html?channelId=sora&audio=true&audioBitRate=&
     - 自分の音声や映像をのみを配信し、視聴を行わない仕組みです
 - 受信のみ
     - 自分の音声や映像を配信せず、視聴だけを行う仕組みです
-- 片方向
+- シングルストリーム
     - 配信か視聴のどちらかだけを行う仕組みです
-- 双方向
+- マルチストリーム
     - 配信と視聴の両方を行う仕組みです
 - サイマルキャスト
     - 配信時に複数の画質を同時に配信を行う仕組みです
@@ -108,72 +108,57 @@ https://example.com/multi_sendrecv.html?channelId=sora&audio=true&audioBitRate=&
 
 ただし一部の機能は特定のブラウザでのみ動作します。
 
-### 片方向
+### シングルストリーム
 
 音声と映像を配信したり視聴する仕組みです。
 
-- 片方向送信のみ
-    - sendonly.html
-- 片方向受信のみ
-    - recvonly.html
+- シングルストリーム送信のみ
+- シングルストリーム受信のみ
 
-### 双方向
+### マルチストリーム
 
 音声と映像を双方向でやり取りする仕組みです。
 
-- 双方向送受信
-    - multi_sendrecv.html
-- 双方向送信のみ
-    - multi_sendonly.html
-- 双方向受信のみ
-    - multi_recvonly.html
+- マルチストリーム送受信
+- マルチストリーム送信のみ
+- マルチストリーム受信のみ
 
-### 片方向サイマルキャスト
+### シングルストリームサイマルキャスト
 
 音声と映像を片方向で配信したり視聴する仕組みです。
 
 配信側は複数の画質を同時に配信し、視聴側は画質を選択して視聴します。
 
-**送信は Chrome と Edge のみで動作します**
+**送信は Chrome と Edge と Safari でのみで動作します**
 
-- サイマルキャスト送信のみ
-    - simulcast_sendonly.html
-- サイマルキャスト受信のみ
-    - simulcast_recvonly.html
+- シングルストリームサイマルキャスト送信のみ
+- シングルストリームサイマルキャスト受信のみ
 
-### 双方向マルチキャスト
+### マルチストリームマルチキャスト
 
 音声と映像を双方向でやり取りする仕組みです。
 
 配信側は複数の画質を同時に配信し、視聴側は画質を選択して視聴します。
 
-**送信は Chrome と Edge のみで動作します**
+**Chrome と Edge と Safari のみで動作します**
 
-- 双方向サイマルキャスト送受信
-    - multi_simulcast_sendrecv.html
-- 双方向サイマルキャスト送信のみ
-    - multi_simulcast_sendonly.html
-- 双方向サイマルキャスト受信のみ
-    - multi_simulcast_recvonly.html
+- マルチストリームサイマルキャスト送受信
+- マルチストリームサイマルキャスト送信のみ
+- マルチストリームサイマルキャスト受信のみ
 
 ### スポットライト
 
 直近で発話した N 人は高画質で配信され、それ以外は低画質で音声なしで配信される仕組みです。
 
-**Chrome と Edge のみで動作します**
+**Chrome と Edge と Safari のみで動作します**
 
 - スポットライト送受信
-    - spotlight_sendrecv.html
 - スポットライト送信のみ
-    - spotlight_sendonly.html
 - スポットライト受信のみ
-    - spotlight_recvonly.html
 
 ### データチャネルメッセージング
 
 データチャネルメッセージングのみを利用します。
-
-- data_channel_messaging_only.html
 
 ## ライセンス
 
@@ -197,3 +182,4 @@ limitations under the License.
 ```
 
 このリポジトリに含まれる `favicon.ico` のライセンスは [CC BY\-ND 4\.0](https://creativecommons.org/licenses/by-nd/4.0/deed.ja) です。
+
