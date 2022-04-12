@@ -837,6 +837,20 @@ export const connectSora = () => {
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
       }
+      if (state.virtualBackgroundProcessor) {
+        const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
+        if (originalTrack) {
+          originalTrack.stop();
+        }
+        state.virtualBackgroundProcessor.stopProcessing();
+      }
+      if (state.noiseSuppressionProcessor) {
+        const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
+        if (originalTrack) {
+          originalTrack.stop();
+        }
+        state.noiseSuppressionProcessor.stopProcessing();
+      }
       if (mediaStream) {
         mediaStream.getTracks().forEach((track) => {
           track.stop();
