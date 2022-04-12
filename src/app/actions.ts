@@ -837,6 +837,11 @@ export const connectSora = () => {
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
       }
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
     }
