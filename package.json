@@ -29,7 +29,7 @@
     "@types/react-redux": "^7.1.23",
     "@types/redux-logger": "^3.0.9",
     "@types/resize-observer-browser": "^0.1.7",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0",
     "eslint-plugin-import": "^2.25.4",
