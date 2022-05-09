@@ -16,6 +16,7 @@ import {
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
+  CONNECTION_STATUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
@@ -80,7 +81,7 @@ export type SoraDevtoolsState = {
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
   soraContents: {
-    connectionStatus: "disconnected" | "disconnecting" | "connected" | "connecting";
+    connectionStatus: typeof CONNECTION_STATUS[number];
     reconnecting: boolean;
     reconnectingTrials: number;
     sora: ConnectionPublisher | ConnectionSubscriber | null;

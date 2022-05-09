@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
 export const StartRecordingButton: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const apiUrl = useAppSelector((state) => state.apiUrl);
   const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
@@ -20,7 +21,14 @@ export const StartRecordingButton: React.FC = () => {
   };
   return (
     <div className="col-auto mb-1">
-      <input className="btn btn-secondary" type="button" name="startRec" defaultValue="start rec" onClick={onClick} />
+      <input
+        className="btn btn-secondary"
+        type="button"
+        name="startRec"
+        defaultValue="start rec"
+        onClick={onClick}
+        disabled={connectionStatus === "initializing"}
+      />
     </div>
   );
 };
