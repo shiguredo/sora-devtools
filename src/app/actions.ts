@@ -261,6 +261,7 @@ export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
     if (dataChannels !== "") {
       dispatch(slice.actions.setEnabledDataChannels(true));
     }
+    dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
   };
 };
 

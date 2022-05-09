@@ -60,7 +60,7 @@ const initialState: SoraDevtoolsState = {
   },
   frameRate: "",
   soraContents: {
-    connectionStatus: "disconnected",
+    connectionStatus: "initializing",
     reconnecting: false,
     reconnectingTrials: 0,
     sora: null,

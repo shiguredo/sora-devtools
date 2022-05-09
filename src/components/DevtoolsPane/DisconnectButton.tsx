@@ -17,7 +17,11 @@ export const DisconnectButton: React.FC = () => {
         name="disconnect"
         defaultValue="disconnect"
         onClick={disconnect}
-        disabled={connectionStatus === "disconnecting" || connectionStatus === "connecting"}
+        disabled={
+          connectionStatus === "disconnecting" ||
+          connectionStatus === "connecting" ||
+          connectionStatus === "initializing"
+        }
       />
     </div>
   );
