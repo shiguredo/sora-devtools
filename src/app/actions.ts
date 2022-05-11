@@ -479,6 +479,7 @@ async function createMediaStream(
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
     let audioTrack = audioMediaStream.getAudioTracks()[0];
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", audioTrack)));
     if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
       if (state.noiseSuppressionProcessor === null) {
         throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
@@ -508,6 +509,7 @@ async function createMediaStream(
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
     let videoTrack = videoMediaStream.getVideoTracks()[0];
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack)));
     if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
       if (state.virtualBackgroundProcessor === null) {
         throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
@@ -526,14 +528,12 @@ async function createMediaStream(
       track.contentHint = state.videoContentHint;
     }
     track.enabled = state.videoTrack;
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
   }
   for (const track of mediaStream.getAudioTracks()) {
     if (track.contentHint !== undefined) {
       track.contentHint = state.audioContentHint;
     }
     track.enabled = state.audioTrack;
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
   }
   return [mediaStream, null];
 }
