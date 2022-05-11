@@ -304,13 +304,20 @@ export const copyURL = () => {
       audioOutput: state.audioOutput !== "" ? state.audioOutput : undefined,
       videoInput: state.videoInput !== "" ? state.videoInput : undefined,
       displayResolution: state.displayResolution !== "" ? state.displayResolution : undefined,
-      bundleId: state.bundleId !== "" ? state.bundleId : undefined,
-      clientId: state.clientId !== "" ? state.clientId : undefined,
-      metadata: state.metadata !== "" ? state.metadata : undefined,
-      signalingNotifyMetadata: state.signalingNotifyMetadata !== "" ? state.signalingNotifyMetadata : undefined,
-      dataChannelSignaling: state.dataChannelSignaling !== "" ? state.dataChannelSignaling : undefined,
-      ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket !== "" ? state.ignoreDisconnectWebSocket : undefined,
-      dataChannels: state.dataChannels !== "" ? state.dataChannels : undefined,
+      bundleId: state.bundleId !== "" && state.enabledBundleId ? state.bundleId : undefined,
+      clientId: state.clientId !== "" && state.enabledClientId ? state.clientId : undefined,
+      metadata: state.metadata !== "" && state.enabledMetadata ? state.metadata : undefined,
+      signalingNotifyMetadata:
+        state.signalingNotifyMetadata !== "" && state.enabledSignalingNotifyMetadata
+          ? state.signalingNotifyMetadata
+          : undefined,
+      dataChannelSignaling:
+        state.dataChannelSignaling !== "" && state.enabledDataChannel ? state.dataChannelSignaling : undefined,
+      ignoreDisconnectWebSocket:
+        state.ignoreDisconnectWebSocket !== "" && state.enabledDataChannel
+          ? state.ignoreDisconnectWebSocket
+          : undefined,
+      dataChannels: state.dataChannels !== "" && state.enabledDataChannels ? state.dataChannels : undefined,
       // URL の長さ短縮のため true 以外は query string に含めない
       reconnect: state.reconnect === true ? true : undefined,
       e2ee: state.e2ee === true ? true : undefined,
@@ -321,7 +328,10 @@ export const copyURL = () => {
       audioTrack: state.audioTrack === false ? true : undefined,
       videoTrack: state.videoTrack === false ? false : undefined,
       // signalingUrlCandidates
-      signalingUrlCandidates: 0 < state.signalingUrlCandidates.length ? state.signalingUrlCandidates : undefined,
+      signalingUrlCandidates:
+        0 < state.signalingUrlCandidates.length && state.enabledSignalingUrlCandidates
+          ? state.signalingUrlCandidates
+          : undefined,
       // apiUrl
       apiUrl: state.apiUrl !== null ? state.apiUrl : undefined,
       // fakeVolume
