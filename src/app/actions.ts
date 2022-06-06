@@ -587,7 +587,10 @@ function setSoraCallbacks(
       for (const track of event.streams[0].getTracks()) {
         dispatch(
           slice.actions.setTimelineMessage(
-            createSoraDevtoolsTimelineMessage(`mediastream-track-properties`, getMediaStreamTrackProperties(track))
+            createSoraDevtoolsTimelineMessage(
+              `remote-${track.kind}-mediastream-track`,
+              getMediaStreamTrackProperties(track)
+            )
           )
         );
       }
