@@ -9,7 +9,7 @@ import { Footer } from "@/components/Footer";
 import { Head } from "@/components/Head";
 import { Header } from "@/components/Header";
 
-const Sendrecv: React.FC = () => {
+const Devtools: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(setInitialParameter("sendrecv"));
@@ -21,8 +21,8 @@ const Sendrecv: React.FC = () => {
   }, []);
   return (
     <>
-      <Head title={"sendrecv"} />
-      <Header pageName="sendrecv" />
+      <Head />
+      <Header />
       <main role="main">
         <div className="container">
           <div className="row">
@@ -37,4 +37,4 @@ const Sendrecv: React.FC = () => {
 };
 
 // eslint-disable-next-line import/no-default-export
-export default Sendrecv;
+export default Devtools;

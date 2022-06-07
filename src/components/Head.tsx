@@ -1,14 +1,10 @@
 import NextHead from "next/head";
 import React from "react";
 
-type Props = {
-  title: string;
-};
-
-export const Head: React.FC<Props> = (props) => {
+export const Head: React.FC = () => {
   return (
     <NextHead>
-      <title>Sora DevTools {props.title}</title>
+      <title>Sora DevTools</title>
     </NextHead>
   );
 };

@@ -4,7 +4,7 @@ import Sora from "sora-js-sdk";
 import { store } from "@/app/store";
 import { DownloadReport, DownloadReportParameters } from "@/types";
 
-function createDownloadReport(pageName: string): DownloadReport {
+function createDownloadReport(): DownloadReport {
   const state = store.getState();
   const parameters: DownloadReportParameters = {
     aspectRatio: state.aspectRatio,
@@ -67,7 +67,6 @@ function createDownloadReport(pageName: string): DownloadReport {
   };
   const report = {
     userAgent: navigator.userAgent,
-    pageName: pageName,
     "sora-devtools": state.version,
     "sora-js-sdk": Sora.version(),
     parameters: parameters,
@@ -84,13 +83,10 @@ function createDownloadReport(pageName: string): DownloadReport {
   return report;
 }
 
-type Props = {
-  pageName: string;
-};
-export const DownloadReportButton: React.FC<Props> = (props) => {
+export const DownloadReportButton: React.FC = () => {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const onClick = async (): Promise<void> => {
-    const report = createDownloadReport(props.pageName);
+    const report = createDownloadReport();
     const data = JSON.stringify(report);
     const blob = new Blob([data], { type: "text/plain" });
     window.URL = window.URL || window.webkitURL;

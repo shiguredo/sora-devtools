@@ -347,7 +347,6 @@ export type DownloadReportParameters = Omit<
 
 export type DownloadReport = {
   userAgent: string;
-  pageName: string;
   "sora-devtools": string;
   "sora-js-sdk": string;
   parameters: DownloadReportParameters;
