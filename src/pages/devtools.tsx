@@ -12,7 +12,7 @@ import { Header } from "@/components/Header";
 const Devtools: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setInitialParameter("sendrecv"));
+    dispatch(setInitialParameter());
     dispatch(setMediaDevices());
     return () => {
       dispatch(disconnectSora());
