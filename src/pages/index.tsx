@@ -62,23 +62,6 @@ const Index: React.FC = () => {
       <div className="container">
         <div className="row">
           <ul className="list-url">
-            <li className="separator">シングルストリーム</li>
-            <Link pageName="シングルストリーム送信のみ" params={{ role: "sendonly" }} />
-            <Link pageName="シングルストリーム受信のみ" params={{ role: "recvonly" }} />
-            <Link
-              pageName="シングルストリーム送信のみ (サイマルキャスト有効)"
-              params={{
-                role: "sendonly",
-                simulcast: true,
-                videoBitRate: "3000",
-                videoCodecType: "VP8",
-                resolution: "720p (1280x720)",
-              }}
-            />
-            <Link
-              pageName="シングルストリーム受信のみ (サイマルキャスト有効)"
-              params={{ role: "recvonly", simulcast: true, videoBitRate: "3000", videoCodecType: "VP8" }}
-            />
             <li className="separator">マルチストリーム</li>
             <Link pageName="マルチストリーム送受信" params={{ role: "sendrecv", multistream: true }} />
             <Link pageName="マルチストリーム送信のみ" params={{ role: "sendonly", multistream: true }} />
