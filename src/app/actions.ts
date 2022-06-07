@@ -34,11 +34,10 @@ import {
 import { slice } from "./slice";
 
 // ページ初期化処理
-export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
+export const setInitialParameter = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.resetState());
     const qsParams = parseQueryString();
-    dispatch(slice.actions.setRole(role));
     if (qsParams.audio !== undefined) {
       dispatch(slice.actions.setAudio(qsParams.audio));
     }
@@ -206,6 +205,9 @@ export const setInitialParameter = (role: SoraDevtoolsState["role"]) => {
     if (qsParams.apiUrl !== undefined && qsParams.apiUrl !== null) {
       dispatch(slice.actions.setApiUrl(qsParams.apiUrl));
     }
+    if (qsParams.role !== undefined) {
+      dispatch(slice.actions.setRole(qsParams.role));
+    }
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
@@ -272,6 +274,7 @@ export const copyURL = () => {
     const state = getState();
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
+      role: state.role,
       audio: state.audio,
       video: state.video,
       debug: state.debug,
@@ -1273,6 +1276,7 @@ export const {
   setNotifyMessages,
   setReconnect,
   setResizeMode,
+  setRole,
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,

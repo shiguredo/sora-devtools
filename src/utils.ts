@@ -20,6 +20,7 @@ import {
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   RESOLUTIONS,
+  ROLES,
   SIMULCAST,
   SIMULCAST_RID,
   SPOTLIGHT,
@@ -159,6 +160,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     blurRadius: parseSpecifiedStringParameter(qs.blurRadius, BLUR_RADIUS),
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
+    role: parseSpecifiedStringParameter(qs.role, ROLES),
   };
   // undefined の項目を削除する
   (Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {

@@ -40,6 +40,7 @@ import { ReconnectForm } from "./ReconnectForm";
 import { ReloadDevicesButton } from "./ReloadDevicesButton";
 import { ResizeModeForm } from "./ResizeModeForm";
 import { ResolutionForm } from "./ResolutionForm";
+import { RoleForm } from "./RoleForm";
 import { SignalingNotifyMetadataForm } from "./SignalingNotifyMetadataForm";
 import { SignalingUrlCandidatesForm } from "./SignalingUrlCandidatesForm";
 import { SimulcastForm } from "./SimulcastForm";
@@ -67,6 +68,9 @@ const RowChannelOptions: React.FC = () => {
         </Col>
       </Row>
       <Row className="form-row" xs="auto">
+        <Col>
+          <RoleForm />
+        </Col>
         <Col>
           <MultistreamForm />
         </Col>
