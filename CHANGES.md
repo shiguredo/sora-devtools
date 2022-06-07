@@ -13,9 +13,9 @@
 - [UPDATE] 接続オプションに bundleId を追加する
     - @yuitowest
 - [CHANGE] ページの統合
-    - sendonly.html / sendrecv.html / recvonly.html 以外のページを削除する
-    - multistream / simulcast / spotlight フラグをページ内で選択可能にする
-    - multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
+    - index.html, devtools.html の2ページのみにする
+    - role / multistream / simulcast / spotlight フラグをページ内で選択可能にする
+    - role / multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
 - [UPDATE] スポットライトページで simulcast フラグを選択可能にする
     - @yuitowest
 - [UPDATE] audioInput, audioOutput, videoInput に未指定のオプションを追加する
