@@ -1273,6 +1273,7 @@ export const {
   setNotifyMessages,
   setReconnect,
   setResizeMode,
+  setRole,
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
