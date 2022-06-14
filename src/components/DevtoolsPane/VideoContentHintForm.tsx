@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setVideoContentHint } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { VIDEO_CONTENT_HINTS } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const VideoContentHintForm: React.FC = () => {
   const videoContentHint = useAppSelector((state) => state.videoContentHint);
@@ -16,7 +18,7 @@ export const VideoContentHintForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="videoContentHint">
-      <FormLabel>videoContentHint:</FormLabel>
+      <TooltipFormLabel kind="videoContentHint">videoContentHint:</TooltipFormLabel>
       <FormSelect name="videoContentHint" value={videoContentHint} onChange={onChange}>
         {VIDEO_CONTENT_HINTS.map((value) => {
           return (

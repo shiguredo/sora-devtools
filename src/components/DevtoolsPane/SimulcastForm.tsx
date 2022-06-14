@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setSimulcast } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { SIMULCAST } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const SimulcastForm: React.FC = () => {
   const simulcast = useAppSelector((state) => state.simulcast);
@@ -18,7 +20,7 @@ export const SimulcastForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="simulcast">
-      <FormLabel>simulcast:</FormLabel>
+      <TooltipFormLabel kind="simulcast">simulcast:</TooltipFormLabel>
       <FormSelect name="simulcast" value={simulcast} onChange={onChange} disabled={disabled}>
         {SIMULCAST.map((value) => {
           return (

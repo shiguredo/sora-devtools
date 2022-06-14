@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setSpotlight } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { SPOTLIGHT } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const SpotlightForm: React.FC = () => {
   const spotlight = useAppSelector((state) => state.spotlight);
@@ -18,7 +20,7 @@ export const SpotlightForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="spotlight">
-      <FormLabel>spotlight:</FormLabel>
+      <TooltipFormLabel kind="spotlight">spotlight:</TooltipFormLabel>
       <FormSelect name="spotlight" value={spotlight} onChange={onChange} disabled={disabled}>
         {SPOTLIGHT.map((value) => {
           return (

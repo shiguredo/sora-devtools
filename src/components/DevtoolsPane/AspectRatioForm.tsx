@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setAspectRatio } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { ASPECT_RATIO_TYPES } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const AspectRatioForm: React.FC = () => {
   const aspectRatio = useAppSelector((state) => state.aspectRatio);
@@ -16,7 +18,7 @@ export const AspectRatioForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="aspectRatio">
-      <FormLabel>aspectRatio:</FormLabel>
+      <TooltipFormLabel kind="aspectRatio">aspectRatio:</TooltipFormLabel>
       <FormSelect name="aspectRatio" value={aspectRatio} onChange={onChange}>
         {ASPECT_RATIO_TYPES.map((value) => {
           return (

@@ -1,9 +1,11 @@
 import React from "react";
-import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { FormControl, FormGroup } from "react-bootstrap";
 
 import { setChannelId } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const ChannelIdForm: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);
@@ -15,7 +17,7 @@ export const ChannelIdForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="channelId">
-      <FormLabel>channelId:</FormLabel>
+      <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
       <FormControl
         type="text"
         placeholder="ChannelIdを指定"

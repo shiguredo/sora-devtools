@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setAutoGainControl } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { AUTO_GAIN_CONTROLS } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const AutoGainControlForm: React.FC = () => {
   const autoGainControl = useAppSelector((state) => state.autoGainControl);
@@ -16,7 +18,7 @@ export const AutoGainControlForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="autoGainControl">
-      <FormLabel>autoGainControl:</FormLabel>
+      <TooltipFormLabel kind="auto_gainControl">autoGainControl:</TooltipFormLabel>
       <FormSelect name="autoGainControl" value={autoGainControl} onChange={onChange}>
         {AUTO_GAIN_CONTROLS.map((value) => {
           return (

@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setVideoCodecType } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { VIDEO_CODEC_TYPES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const VideoCodecTypeForm: React.FC = () => {
   const videoCodecType = useAppSelector((state) => state.videoCodecType);
@@ -18,7 +20,7 @@ export const VideoCodecTypeForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="videoCodecType">
-      <FormLabel>videoCodecType:</FormLabel>
+      <TooltipFormLabel kind="videoCodecType">videoCodecType:</TooltipFormLabel>
       <FormSelect name="videoCodecType" value={videoCodecType} onChange={onChange} disabled={disabled}>
         {VIDEO_CODEC_TYPES.map((value) => {
           return (

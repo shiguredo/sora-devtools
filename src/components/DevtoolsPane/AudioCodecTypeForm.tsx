@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setAudioCodecType } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { AUDIO_CODEC_TYPES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const AudioCodecTypeForm: React.FC = () => {
   const audioCodecType = useAppSelector((state) => state.audioCodecType);
@@ -18,7 +20,7 @@ export const AudioCodecTypeForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="audioBitRate">
-      <FormLabel>audioCodecType:</FormLabel>
+      <TooltipFormLabel kind="audioCodecType">audioCodecType:</TooltipFormLabel>
       <FormSelect name="audioCodecType" value={audioCodecType} onChange={onChange} disabled={disabled}>
         {AUDIO_CODEC_TYPES.map((value) => {
           return (

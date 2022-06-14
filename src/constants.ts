@@ -1,3 +1,5 @@
+import instructionsJSON from "../instructions.json";
+
 export const MULTISTREAM = ["", "true", "false"] as const;
 
 export const SIMULCAST = ["", "true", "false"] as const;
@@ -105,3 +107,5 @@ self.onmessage = (event) => {
   }
 };
 ` as const;
+
+export const INSTRUCTIONS = instructionsJSON as Record<string, { name: string; description: string } | null>;

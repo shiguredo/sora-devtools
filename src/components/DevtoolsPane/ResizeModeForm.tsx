@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setResizeMode } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { RESIZE_MODE_TYPES } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const ResizeModeForm: React.FC = () => {
   const resizeMode = useAppSelector((state) => state.resizeMode);
@@ -16,7 +18,7 @@ export const ResizeModeForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="resizeMode">
-      <FormLabel>resizeMode:</FormLabel>
+      <TooltipFormLabel kind="resizeMode">resizeMode:</TooltipFormLabel>
       <FormSelect name="resizeMode" value={resizeMode} onChange={onChange}>
         {RESIZE_MODE_TYPES.map((value) => {
           return (

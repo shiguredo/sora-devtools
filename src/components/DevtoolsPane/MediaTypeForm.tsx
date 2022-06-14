@@ -1,10 +1,12 @@
 import React from "react";
-import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
+import { FormCheck, FormGroup } from "react-bootstrap";
 
 import { setMediaType } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { MEDIA_TYPES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 type FormRadioProps = {
   label: string;
@@ -40,7 +42,7 @@ export const MediaTypeForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline flex-wrap">
-      <FormLabel>mediaType:</FormLabel>
+      <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio label="getUserMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="getDisplayMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="fakeMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />

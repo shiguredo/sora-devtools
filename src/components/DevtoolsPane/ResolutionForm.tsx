@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setResolution } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { RESOLUTIONS } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const ResolutionForm: React.FC = () => {
   const resolution = useAppSelector((state) => state.resolution);
@@ -16,7 +18,7 @@ export const ResolutionForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="resolution">
-      <FormLabel>resolution:</FormLabel>
+      <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
       <FormSelect name="resolution" value={resolution} onChange={onChange}>
         {RESOLUTIONS.map((value) => {
           return (

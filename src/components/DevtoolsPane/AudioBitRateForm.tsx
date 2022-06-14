@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setAudioBitRate } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { AUDIO_BIT_RATES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const AudioBitRateForm: React.FC = () => {
   const audioBitRate = useAppSelector((state) => state.audioBitRate);
@@ -18,7 +20,7 @@ export const AudioBitRateForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="audioBitRate">
-      <FormLabel>audioBitRate:</FormLabel>
+      <TooltipFormLabel kind="audioBitRate">audioBitRate:</TooltipFormLabel>
       <FormSelect name="audioBitRate" value={audioBitRate} onChange={onChange} disabled={disabled}>
         {AUDIO_BIT_RATES.map((value) => {
           return (
