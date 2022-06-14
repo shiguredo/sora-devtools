@@ -860,15 +860,15 @@ export const connectSora = () => {
         if (originalTrack) {
           originalTrack.stop();
           dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
-        } else {
-          if (mediaStream) {
-            mediaStream.getAudioTracks().forEach((track) => {
-              track.stop();
-              dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-            });
-          }
         }
         state.noiseSuppressionProcessor.stopProcessing();
+      } else {
+        if (mediaStream) {
+          mediaStream.getAudioTracks().forEach((track) => {
+            track.stop();
+            dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
+          });
+        }
       }
       dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
       throw error;
