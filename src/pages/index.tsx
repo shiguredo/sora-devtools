@@ -8,9 +8,9 @@ import type { SoraDevtoolsState } from "@/types";
 
 const createAs = (queryString: string): string => {
   if (process.env.NODE_ENV === "production") {
-    return `devtools.html${queryString}`;
+    return `/devtools.html${queryString}`;
   }
-  return `devtools${queryString}`;
+  return `/devtools${queryString}`;
 };
 
 type LinkProps = {
