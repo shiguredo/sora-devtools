@@ -82,7 +82,7 @@ export const BLUR_RADIUS = ["", "weak", "midium", "strong"] as const;
 
 export const CONNECTION_STATUS = ["initializing", "disconnected", "disconnecting", "connected", "connecting"] as const;
 
-export const ROLES = ["sendonly", "sendrecv", "recvonly"] as const;
+export const ROLES = ["sendrecv", "sendonly", "recvonly"] as const;
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
