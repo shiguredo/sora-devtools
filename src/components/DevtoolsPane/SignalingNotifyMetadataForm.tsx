@@ -1,9 +1,11 @@
 import React from "react";
-import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
+import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const SignalingNotifyMetadataForm: React.FC = () => {
   const enabledSignalingNotifyMetadata = useAppSelector((state) => state.enabledSignalingNotifyMetadata);
@@ -22,14 +24,14 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
       <Row className="form-row">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="enabledSignalingNotifyMetadata">
-            <FormCheck
-              type="switch"
-              name="enabledSignalingNotifyMetadata"
-              label="signalingNotifyMetadata"
+            <TooltipFormCheck
+              kind="signalingNotifyMetadata"
               checked={enabledSignalingNotifyMetadata}
               onChange={onChangeSwitch}
               disabled={disabled}
-            />
+            >
+              signalingNotifyMetadata
+            </TooltipFormCheck>
           </FormGroup>
         </Col>
       </Row>

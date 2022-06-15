@@ -18,7 +18,7 @@ export const AutoGainControlForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="autoGainControl">
-      <TooltipFormLabel kind="auto_gainControl">autoGainControl:</TooltipFormLabel>
+      <TooltipFormLabel kind="autoGainControl">autoGainControl:</TooltipFormLabel>
       <FormSelect name="autoGainControl" value={autoGainControl} onChange={onChange}>
         {AUTO_GAIN_CONTROLS.map((value) => {
           return (

@@ -1,8 +1,10 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setVideoTrack } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const VideoTrackForm: React.FC = () => {
   const videoTrack = useAppSelector((state) => state.videoTrack);
@@ -12,7 +14,9 @@ export const VideoTrackForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="videoTrack">
-      <FormCheck type="switch" name="videoTrack" label="Enable video track" checked={videoTrack} onChange={onChange} />
+      <TooltipFormCheck kind="videoTrack" checked={videoTrack} onChange={onChange} disabled={false}>
+        Enable video track
+      </TooltipFormCheck>
     </FormGroup>
   );
 };

@@ -1,8 +1,10 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setAudioTrack } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const AudioTrackForm: React.FC = () => {
   const audioTrack = useAppSelector((state) => state.audioTrack);
@@ -12,7 +14,9 @@ export const AudioTrackForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="audioTrack">
-      <FormCheck type="switch" name="audioTrack" label="Enable audio track" checked={audioTrack} onChange={onChange} />
+      <TooltipFormCheck kind="audioTrack" checked={audioTrack} onChange={onChange} disabled={false}>
+        Enable audio track
+      </TooltipFormCheck>
     </FormGroup>
   );
 };

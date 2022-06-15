@@ -1,8 +1,10 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setCameraDevice } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const CameraDeviceForm: React.FC = () => {
   const cameraDevice = useAppSelector((state) => state.cameraDevice);
@@ -15,14 +17,9 @@ export const CameraDeviceForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="cameraDevice">
-      <FormCheck
-        type="switch"
-        name="cameraDevice"
-        label="Enable camera device"
-        checked={cameraDevice}
-        onChange={onChange}
-        disabled={disabled}
-      />
+      <TooltipFormCheck kind="cameraDevice" checked={cameraDevice} onChange={onChange} disabled={disabled}>
+        Enable camera device
+      </TooltipFormCheck>
     </FormGroup>
   );
 };

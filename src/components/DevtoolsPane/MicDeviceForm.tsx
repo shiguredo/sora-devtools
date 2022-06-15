@@ -1,8 +1,10 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setMicDevice } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const MicDeviceForm: React.FC = () => {
   const micDevice = useAppSelector((state) => state.micDevice);
@@ -15,14 +17,9 @@ export const MicDeviceForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="micDevice">
-      <FormCheck
-        type="switch"
-        name="micDevice"
-        label="Enable mic device"
-        checked={micDevice}
-        onChange={onChange}
-        disabled={disabled}
-      />
+      <TooltipFormCheck kind="micDevice" checked={micDevice} onChange={onChange} disabled={disabled}>
+        Enable mic device
+      </TooltipFormCheck>
     </FormGroup>
   );
 };

@@ -20,7 +20,7 @@ export const BlurRadiusForm: React.FC = () => {
   const disabled = mediaType !== "getUserMedia";
   return (
     <FormGroup className="form-inline" controlId="spotlightNumber">
-      <TooltipFormLabel kind="blur_radius">blurRadius:</TooltipFormLabel>
+      <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
       <FormSelect value={blurRadius} onChange={onChange} disabled={disabled}>
         {BLUR_RADIUS.map((value) => {
           return (

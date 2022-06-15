@@ -14,7 +14,7 @@ export const TooltipFormLabel: React.FC<Props> = (props) => {
   }
   return (
     <OverlayTrigger
-      placement="right"
+      placement="bottom"
       overlay={
         <Popover id="popover-basic">
           <Popover.Header as="h3">{instruction.name}</Popover.Header>

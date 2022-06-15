@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Col, FormCheck, FormGroup, Row, Spinner } from "react-bootstrap";
+import { Col, FormGroup, Row, Spinner } from "react-bootstrap";
 
 import { setE2EE } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const E2EEForm: React.FC = () => {
   const [displaySpinner, setDisplaySpinner] = useState(false);
@@ -26,7 +28,9 @@ export const E2EEForm: React.FC = () => {
     <Row className="form-row">
       <Col className="col-auto">
         <FormGroup className="form-inline" controlId="e2ee">
-          <FormCheck type="switch" name="e2ee" label="e2ee" checked={e2ee} onChange={onChange} disabled={disabled} />
+          <TooltipFormCheck kind="e2ee" checked={e2ee} onChange={onChange} disabled={disabled}>
+            e2ee
+          </TooltipFormCheck>
           {displaySpinner ? (
             <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
           ) : null}
