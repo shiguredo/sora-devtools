@@ -401,11 +401,7 @@ video {
   padding: 0.5rem;
 }
 
-.popover-header::before {
-  border-bottom-color: #0071bc !important;
-}
-
-.bs-popover-bottom > .popover-arrow::after {
+.bs-popover-bottom > .popover-arrow::before {
   border-bottom-color: #0071bc;
 }
 

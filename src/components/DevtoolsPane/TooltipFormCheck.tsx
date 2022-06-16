@@ -20,7 +20,7 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
     <>
       <FormCheck type="switch" checked={checked} onChange={onChange} disabled={disabled} />
       <OverlayTrigger
-        placement="bottom"
+        placement="top"
         overlay={
           <Popover id="popover-basic">
             <Popover.Body style={{ whiteSpace: "pre-wrap" }}>{instruction.description}</Popover.Body>
