@@ -1,9 +1,11 @@
 import React from "react";
-import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
+import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const DataChannelsForm: React.FC = () => {
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels);
@@ -38,14 +40,14 @@ export const DataChannelsForm: React.FC = () => {
       <Row className="form-row">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="enabledDataChannels">
-            <FormCheck
-              type="switch"
-              name="enabledDataChannels"
-              label="dataChannels"
+            <TooltipFormCheck
+              kind="dataChannels"
               checked={enabledDataChannels}
               onChange={onChangeSwitch}
               disabled={disabled}
-            />
+            >
+              dataChannels
+            </TooltipFormCheck>
           </FormGroup>
         </Col>
       </Row>

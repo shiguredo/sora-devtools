@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setRole } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { ROLES } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const RoleForm: React.FC = () => {
   const role = useAppSelector((state) => state.role);
@@ -18,7 +20,7 @@ export const RoleForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="role">
-      <FormLabel>role:</FormLabel>
+      <TooltipFormLabel kind="role">role:</TooltipFormLabel>
       <FormSelect name="role" value={role} onChange={onChange} disabled={disabled}>
         {ROLES.map((value) => {
           return (

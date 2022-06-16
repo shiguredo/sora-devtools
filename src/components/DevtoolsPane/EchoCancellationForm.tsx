@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setEchoCancellation } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { ECHO_CANCELLATIONS } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const EchoCancellationForm: React.FC = () => {
   const echoCancellation = useAppSelector((state) => state.echoCancellation);
@@ -16,7 +18,7 @@ export const EchoCancellationForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="echoCancellation">
-      <FormLabel>echoCancellation:</FormLabel>
+      <TooltipFormLabel kind="echoCancellation">echoCancellation:</TooltipFormLabel>
       <FormSelect name="echoCancellation" value={echoCancellation} onChange={onChange}>
         {ECHO_CANCELLATIONS.map((value) => {
           return (

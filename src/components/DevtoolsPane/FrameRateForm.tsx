@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setFrameRate } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { FRAME_RATES } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const FrameRateForm: React.FC = () => {
   const frameRate = useAppSelector((state) => state.frameRate);
@@ -16,7 +18,7 @@ export const FrameRateForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="frameRate">
-      <FormLabel>frameRate:</FormLabel>
+      <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
       <FormSelect name="frameRate" value={frameRate} onChange={onChange}>
         {FRAME_RATES.map((value) => {
           return (

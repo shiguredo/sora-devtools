@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setSpotlightFocusRid } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const SpotlightFocusRidForm: React.FC = () => {
   const spotlightFocusRid = useAppSelector((state) => state.spotlightFocusRid);
@@ -18,7 +20,7 @@ export const SpotlightFocusRidForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="spotlightFocusRid">
-      <FormLabel>spotlightFocusRid:</FormLabel>
+      <TooltipFormLabel kind="spotlightFocusRid">spotlightFocusRid:</TooltipFormLabel>
       <FormSelect value={spotlightFocusRid} onChange={onChange} disabled={disabled}>
         {SPOTLIGHT_FOCUS_RIDS.map((value) => {
           return (

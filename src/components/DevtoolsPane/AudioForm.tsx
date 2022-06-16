@@ -1,9 +1,11 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setAudio } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const AudioForm: React.FC = () => {
   const audio = useAppSelector((state) => state.audio);
@@ -15,7 +17,9 @@ export const AudioForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="audio">
-      <FormCheck type="switch" name="audio" label="audio" checked={audio} onChange={onChange} disabled={disabled} />
+      <TooltipFormCheck kind="audio" checked={audio} onChange={onChange} disabled={disabled}>
+        audio
+      </TooltipFormCheck>
     </FormGroup>
   );
 };

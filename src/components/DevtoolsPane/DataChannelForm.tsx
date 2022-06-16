@@ -1,10 +1,12 @@
 import React from "react";
-import { Col, FormCheck, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
+import { Col, FormCheck, FormGroup, FormSelect, Row } from "react-bootstrap";
 
 import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebSocket } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
   const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket);
@@ -16,7 +18,7 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
   };
   return (
     <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
-      <FormLabel>ignoreDisconnectWebSocket:</FormLabel>
+      <TooltipFormLabel kind="ignoreDisconnectWebSocket">ignoreDisconnectWebSocket:</TooltipFormLabel>
       <FormSelect
         name="ignoreDisconnectWebSocket"
         value={ignoreDisconnectWebSocket}
@@ -45,7 +47,7 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
   };
   return (
     <FormGroup className="form-inline" controlId="dataChannelSignaling">
-      <FormLabel>dataChannelSignaling:</FormLabel>
+      <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
       <FormSelect
         name="dataChannelSignaling"
         value={dataChannelSignaling}

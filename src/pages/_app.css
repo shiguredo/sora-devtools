@@ -391,6 +391,20 @@ video {
   width: 500px;
 }
 
+.popover {
+  border-color: #0071bc !important;
+  font-size: 1rem;
+  max-width: 350px;
+}
+
+.popover-body {
+  padding: 0.5rem;
+}
+
+.bs-popover-bottom > .popover-arrow::before {
+  border-bottom-color: #0071bc;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;

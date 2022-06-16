@@ -1,8 +1,10 @@
 import React from "react";
-import { Form, FormGroup, FormLabel } from "react-bootstrap";
+import { Form, FormGroup } from "react-bootstrap";
 
 import { setFakeVolume } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const FakeVolumeForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType);
@@ -16,7 +18,7 @@ export const FakeVolumeForm: React.FC = () => {
   }
   return (
     <FormGroup className="form-inline" controlId="fakeVolume">
-      <FormLabel>fakeVolume:</FormLabel>
+      <TooltipFormLabel kind="fakeVolume">fakeVolume:</TooltipFormLabel>
       <Form.Range min="0" max="1" step="0.25" value={fakeVolume} onChange={onChange} />
     </FormGroup>
   );

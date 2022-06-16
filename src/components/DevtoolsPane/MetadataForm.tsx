@@ -1,9 +1,11 @@
 import React from "react";
-import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
+import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { setEnabledMetadata, setMetadata } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const MetadataForm: React.FC = () => {
   const enabledMetadata = useAppSelector((state) => state.enabledMetadata);
@@ -22,14 +24,9 @@ export const MetadataForm: React.FC = () => {
       <Row className="form-row">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="enabledMetadata">
-            <FormCheck
-              type="switch"
-              name="enabledMetadata"
-              label="metadata"
-              checked={enabledMetadata}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            />
+            <TooltipFormCheck kind="metadata" checked={enabledMetadata} onChange={onChangeSwitch} disabled={disabled}>
+              metadata
+            </TooltipFormCheck>
           </FormGroup>
         </Col>
       </Row>

@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setBlurRadius } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { BLUR_RADIUS } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const BlurRadiusForm: React.FC = () => {
   const blurRadius = useAppSelector((state) => state.blurRadius);
@@ -17,8 +19,8 @@ export const BlurRadiusForm: React.FC = () => {
   };
   const disabled = mediaType !== "getUserMedia";
   return (
-    <FormGroup className="form-inline" controlId="spotlightNumber">
-      <FormLabel>blurRadius:</FormLabel>
+    <FormGroup className="form-inline" controlId="blurRadius">
+      <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
       <FormSelect value={blurRadius} onChange={onChange} disabled={disabled}>
         {BLUR_RADIUS.map((value) => {
           return (

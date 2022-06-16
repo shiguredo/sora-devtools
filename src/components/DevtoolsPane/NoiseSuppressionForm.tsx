@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setNoiseSuppression } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { NOISE_SUPPRESSIONS } from "@/constants";
 import { checkFormValue } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const NoiseSuppressionForm: React.FC = () => {
   const noiseSuppression = useAppSelector((state) => state.noiseSuppression);
@@ -16,7 +18,7 @@ export const NoiseSuppressionForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="noiseSuppression">
-      <FormLabel>noiseSuppression:</FormLabel>
+      <TooltipFormLabel kind="noiseSuppression">noiseSuppression:</TooltipFormLabel>
       <FormSelect name="noiseSuppression" value={noiseSuppression} onChange={onChange}>
         {NOISE_SUPPRESSIONS.map((value) => {
           return (

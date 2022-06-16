@@ -1,10 +1,12 @@
 import React from "react";
-import { FormGroup, FormLabel, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setSimulcastRid } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { SIMULCAST_RID } from "@/constants";
 import { checkFormValue, isFormDisabled } from "@/utils";
+
+import { TooltipFormLabel } from "./TooltipFormLabel";
 
 export const SimulcastRidForm: React.FC = () => {
   const simulcastRid = useAppSelector((state) => state.simulcastRid);
@@ -18,7 +20,7 @@ export const SimulcastRidForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="simulcastRid">
-      <FormLabel>simulcastRid:</FormLabel>
+      <TooltipFormLabel kind="simulcastRid">simulcastRid:</TooltipFormLabel>
       <FormSelect name="simulcastRid" value={simulcastRid} onChange={onChange} disabled={disabled}>
         {SIMULCAST_RID.map((value) => {
           return (

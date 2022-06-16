@@ -1,9 +1,11 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setVideo } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const VideoForm: React.FC = () => {
   const video = useAppSelector((state) => state.video);
@@ -15,7 +17,9 @@ export const VideoForm: React.FC = () => {
   };
   return (
     <FormGroup className="form-inline" controlId="video">
-      <FormCheck type="switch" name="video" label="video" checked={video} onChange={onChange} disabled={disabled} />
+      <TooltipFormCheck kind="video" checked={video} onChange={onChange} disabled={disabled}>
+        video
+      </TooltipFormCheck>
     </FormGroup>
   );
 };

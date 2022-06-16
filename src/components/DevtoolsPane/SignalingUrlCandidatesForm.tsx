@@ -1,9 +1,11 @@
 import React from "react";
-import { Col, FormCheck, FormControl, FormGroup, Row } from "react-bootstrap";
+import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { isFormDisabled } from "@/utils";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const SignalingUrlCandidatesForm: React.FC = () => {
   const enabledSignalingUrlCandidates = useAppSelector((state) => state.enabledSignalingUrlCandidates);
@@ -22,14 +24,14 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
       <Row className="form-row" xs="auto">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
-            <FormCheck
-              type="switch"
-              name="enabledSignalingUrlCandidates"
-              label="signalingUrlCandidates"
+            <TooltipFormCheck
+              kind="signalingUrlCandidates"
               checked={enabledSignalingUrlCandidates}
               onChange={onChangeSwitch}
               disabled={disabled}
-            />
+            >
+              signalingUrlCandidates
+            </TooltipFormCheck>
           </FormGroup>
         </Col>
       </Row>

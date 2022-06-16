@@ -1,8 +1,10 @@
 import React from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { FormGroup } from "react-bootstrap";
 
 import { setMediaProcessorsNoiseSuppression } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
+import { TooltipFormCheck } from "./TooltipFormCheck";
 
 export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   const mediaProcessorsNoiseSuppression = useAppSelector((state) => state.mediaProcessorsNoiseSuppression);
@@ -14,14 +16,14 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   const disabled = mediaType !== "getUserMedia";
   return (
     <FormGroup className="form-inline" controlId="mediaProcessorsNoiseSuppression">
-      <FormCheck
-        type="switch"
-        name="mediaProcessorsNoiseSuppression"
-        label="mediaProcessorsNoiseSuppression"
+      <TooltipFormCheck
+        kind="mediaProcessorsNoiseSuppression"
         checked={mediaProcessorsNoiseSuppression}
         onChange={onChange}
         disabled={disabled}
-      />
+      >
+        mediaProcessorsNoiseSuppression
+      </TooltipFormCheck>
     </FormGroup>
   );
 };
