@@ -394,15 +394,11 @@ video {
 .popover {
   border-color: #0071bc !important;
   font-size: 1rem;
-}
-
-.popover-header {
-  background-color: #0071bc;
-  color: #fff;
+  max-width: 350px;
 }
 
 .popover-body {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
 }
 
 .popover-header::before {

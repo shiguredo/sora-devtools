@@ -108,4 +108,4 @@ self.onmessage = (event) => {
 };
 ` as const;
 
-export const INSTRUCTIONS = instructionsJSON as Record<string, { name: string; description: string } | null>;
+export const INSTRUCTIONS = instructionsJSON as Record<string, { description: string } | null>;

@@ -23,7 +23,6 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
         placement="bottom"
         overlay={
           <Popover id="popover-basic">
-            <Popover.Header as="h3">{instruction.name}</Popover.Header>
             <Popover.Body style={{ whiteSpace: "pre-wrap" }}>{instruction.description}</Popover.Body>
           </Popover>
         }
