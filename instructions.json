@@ -1,50 +1,143 @@
 {
   "channelId": {
-    "name": "チャネルID",
     "description": "接続するチャネルの ID を指定します。\n1-255 文字までの文字列を指定できます。"
   },
   "role": {
-    "name": "ロール",
-    "description": "クライアントの役割を指定します。\nrole には sendrecv, sendonly, recvonly のどれかを指定できます。"
+    "description": "クライアントの役割を指定します。"
   },
-  "multistream": null,
-  "simulcast": null,
-  "spotlight": null,
-  "audio": null,
-  "audioCodecType": null,
-  "audioBitRate": null,
-  "video": null,
-  "videoCodecType": null,
-  "videoBitRate": null,
-  "e2ee": null,
-  "reconnect": null,
-  "clientId": null,
-  "metadata": null,
-  "bundleId": null,
-  "signalingNotifyMetadata": null,
-  "signalingUrlCandidates": null,
-  "dataChannelSignaling": null,
-  "ignoreDisconnectWebSocket": null,
-  "mediaType": null,
-  "fakeVolume": null,
-  "audioContentHint": null,
-  "autoGainControl": null,
-  "noiseSuppression": null,
-  "echoCancellation": null,
-  "echoCancellationType": null,
-  "mediaProcessorsNoiseSuppression": null,
-  "videoContentHint": null,
-  "resolution": null,
-  "frameRate": null,
-  "aspectRatio": null,
-  "resizeMode": null,
-  "blurRadius": null,
-  "audioIput": null,
-  "videoInput": null,
-  "audioOutput": null,
-  "displayResolution": null,
-  "micDevice": null,
-  "cameraDevice": null,
-  "audioTrack": null,
-  "videoTrack": null
+  "multistream": {
+    "description": "マルチストリームを使用するかどうかを指定します。"
+  },
+  "simulcast": {
+    "description": "サイマルキャストを使用するかどうかを指定します。"
+  },
+  "simulcastRid": {
+    "description": "サイマルキャストで配信されている映像を受信する際のエンコードの初期値を指定します。\nr0: 解像度(一辺)が1/4になるようにエンコード\nr1: 解像度(一辺)が1/2になるようにエンコード\nr2: 通常の解像度のままエンコード"
+  },
+  "spotlight": {
+    "description": "スポットライトを使用するかどうかを指定します。"
+  },
+  "spotlightNumber": {
+    "description": "スポットライトでフォーカスする配信数の最大値を指定します。\n1-8 までの数字を指定できます。"
+  },
+  "spotlightFocusRid": {
+    "description": "スポットライトででフォーカスした場合の映像を受信する際のエンコードの初期値を指定します。\nr0: 解像度(一辺)が1/4になるようにエンコード\nr1: 解像度(一辺)が1/2になるようにエンコード\nr2: 通常の解像度のままエンコード"
+  },
+  "spotlightUnfocusRid": {
+    "description": "スポットライトででフォーカスが外れた場合の映像を受信する際のエンコードの初期値を指定します。\nr0: 解像度(一辺)が1/4になるようにエンコード\nr1: 解像度(一辺)が1/2になるようにエンコード\nr2: 通常の解像度のままエンコード"
+  },
+  "audio": {
+    "description": "音声配信をするかどうかを指定します。"
+  },
+  "audioCodecType": {
+    "description": "音声のコーデックタイプを指定します。"
+  },
+  "audioBitRate": {
+    "description": "音声のビットレートを指定します。"
+  },
+  "video": {
+    "description": "映像配信をするかどうかを指定します。"
+  },
+  "videoCodecType": {
+    "description": "映像のコーデックタイプを指定します。"
+  },
+  "videoBitRate": {
+    "description": "映像のビットレートを指定します。"
+  },
+  "e2ee": {
+    "description": "E2EE(End-to-End Encryption) を使用するかどうかを指定します。"
+  },
+  "reconnect": {
+    "description": "切断時に再接続するかどうかを指定します。\n一度接続に成功したあとに意図しない切断があった場合に再接続を試みる仕組みです。"
+  },
+  "clientId": {
+    "description": "接続時に任意のクライアント ID を指定できます。"
+  },
+  "metadata": {
+    "description": "認証するための判断材料としてのメタデータを指定します。"
+  },
+  "bundleId": {
+    "description": "同一端末から複数接続する場合に、それぞれの接続で同一の bundle_id を指定すると、指定した接続からの音声や映像やメッセージングを受信しなくなります。"
+  },
+  "signalingNotifyMetadata": {
+    "description": "クライアントが参加や離脱したときに送られるシグナリング通知に含まれるメタデータを指定します。"
+  },
+  "signalingUrlCandidates": {
+    "description": "シグナリングをするURLを複数指定します。"
+  },
+  "dataChannels": {
+    "description": "メッセージング用の DataChannel を指定します。"
+  },
+  "dataChannelSignaling": {
+    "description": "シグナリングを DataChannel 経由に切り替えるかどうかを指定します。"
+  },
+  "ignoreDisconnectWebSocket": {
+    "description": "シグナリングを DataChannel 経由に切り替えた際に、 WebSocket が閉じても、接続が切断しないようにするかどうかを指定します。"
+  },
+  "mediaType": {
+    "description": "メディアタイプを指定します。\ngetUserMedia: デバイスに接続されているカメラ/マイクをメディアとして使用します。\ngetDisplayMedia: ディスプレイまたはその一部(ウィンドウ等)をメディアとして使用します。\nfakeMedia: 生成した映像と音声をメディアとして使用します"
+  },
+  "fakeVolume": {
+    "description": "mediaType に fakeMedia を選択した際の音量を指定します。"
+  },
+  "audioContentHint": {
+    "description": "MediaStreamTrack audio の contentHint を指定します。"
+  },
+  "autoGainControl": {
+    "description": "MediaTrackConstraints の autoGainControl を指定します。"
+  },
+  "noiseSuppression": {
+    "description": "MediaTrackConstraints の noiseSuppression を指定します。"
+  },
+  "echoCancellation": {
+    "description": "MediaTrackConstraints の echoCancellation を指定します。"
+  },
+  "echoCancellationType": {
+    "description": "MediaTrackConstraints の echoCancellationType を指定します。"
+  },
+  "mediaProcessorsNoiseSuppression": {
+    "description": "shiguredo Media Processors のノイズ抑制を使用するかどうか指定します。"
+  },
+  "videoContentHint": {
+    "description": "MediaStreamTrack video の contentHint を指定します。"
+  },
+  "resolution": {
+    "description": "解像度を指定します。"
+  },
+  "frameRate": {
+    "description": "MediaTrackConstraints の frameRate を指定します。"
+  },
+  "aspectRatio": {
+    "description": "MediaTrackConstraints の aspectRatio を指定します。"
+  },
+  "resizeMode": {
+    "description": "MediaTrackConstraints の resizeMode を指定します。"
+  },
+  "blurRadius": {
+    "description": "shiguredo Media Processors の背景ぼかしを使用するかどうか指定します。"
+  },
+  "audioInput": {
+    "description": "音声入力を指定します。"
+  },
+  "videoInput": {
+    "description": "映像入力を指定します。"
+  },
+  "audioOutput": {
+    "description": "音声出力を指定します。"
+  },
+  "displayResolution": {
+    "description": "画面に表示する際の解像度を指定します。"
+  },
+  "micDevice": {
+    "description": "Audio MediaStreamTrack を生成するかどうかを切り替えます。"
+  },
+  "cameraDevice": {
+    "description": "Video MediaStreamTrack を生成するかどうかを切り替えます。"
+  },
+  "audioTrack": {
+    "description": "Audio MediaStreamTrack の enabled 属性を切り替えます。"
+  },
+  "videoTrack": {
+    "description": "video MediaStreamTrack の enabled 属性を切り替えます。"
+  }
 }
