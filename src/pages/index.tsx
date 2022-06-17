@@ -1,17 +1,9 @@
 import NextHead from "next/head";
-import NextLink from "next/link";
 import queryString from "query-string";
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
 
 import type { SoraDevtoolsState } from "@/types";
-
-const createAs = (queryString: string): string => {
-  if (process.env.NODE_ENV === "production") {
-    return `/devtools.html${queryString}`;
-  }
-  return `/devtools${queryString}`;
-};
 
 type LinkProps = {
   pageName: string;
@@ -32,15 +24,11 @@ type LinkProps = {
   };
 };
 const Link: React.FC<LinkProps> = (props) => {
-  let qs = "";
-  if (props.params) {
-    qs = `?${queryString.stringify(props.params)}`;
-  }
+  const path = process.env.NODE_ENV === "production" ? "/devtools.html" : "/devtools";
+  const qs = props.params ? `?${queryString.stringify(props.params)}` : "";
   return (
     <li>
-      <NextLink href={`/devtools${qs}`} as={createAs(qs)}>
-        <a>{props.pageName}</a>
-      </NextLink>
+      <a href={`${path}${qs}`}>{props.pageName}</a>
     </li>
   );
 };
