@@ -31,7 +31,7 @@
     "@types/resize-observer-browser": "^0.1.7",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
-    "eslint": "^8.17.0",
+    "eslint": "^8.18.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
