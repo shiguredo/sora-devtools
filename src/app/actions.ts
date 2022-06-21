@@ -356,6 +356,7 @@ export const copyURL = () => {
       })
       .filter((value) => value !== undefined);
     copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join("&")}`);
+    window.history.replaceState(null, "", `${location.pathname}?${queryStrings.join("&")}`);
   };
 };
 
