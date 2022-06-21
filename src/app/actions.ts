@@ -339,6 +339,8 @@ export const copyURL = () => {
       apiUrl: state.apiUrl !== null ? state.apiUrl : undefined,
       // fakeVolume
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
+      // mute
+      mute: state.mute === true ? true : undefined,
     };
     const queryStrings = Object.keys(parameters)
       .map((key) => {
