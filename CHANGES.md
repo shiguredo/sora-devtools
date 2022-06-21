@@ -10,6 +10,10 @@
     - バグ修正
 
 ## develop
+- [UPDATE] copy URL クリック時にブラウザの URL バーも同一の URL に変更するように修正する
+    - @yuitowest
+- [UPDATE] パラメーターのラベルをマウスオーバー時に説明文を表示するように修正する
+    - @yuitowest
 - [UPDATE] 接続オプションに bundleId を追加する
     - @yuitowest
 - [CHANGE] ページの統合
