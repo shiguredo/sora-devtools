@@ -50,7 +50,7 @@
     "query-string": "^7.1.1",
     "react": "^18.1.0",
     "react-bootstrap": "^2.4.0",
-    "react-dom": "^18.1.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
     "redux-logger": "^3.0.6",
     "sora-js-sdk": "^2022.1.0-canary.6"
