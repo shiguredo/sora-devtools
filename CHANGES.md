@@ -20,6 +20,8 @@
     - index.html, devtools.html の2ページのみにする
     - role / multistream / simulcast / spotlight フラグをページ内で選択可能にする
     - role / multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
+    - role / multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
+    - devtools.html の初期値を role: sendrecv, multistream: true にする
 - [UPDATE] スポットライトページで simulcast フラグを選択可能にする
     - @yuitowest
 - [UPDATE] audioInput, audioOutput, videoInput に未指定のオプションを追加する
