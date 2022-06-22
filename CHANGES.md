@@ -9,26 +9,64 @@
 - FIX
     - バグ修正
 
+## 2022.1.0
+- [UPDATE] copy URL クリック時にブラウザの URL バーも同一の URL に変更するように修正する
+    - @yuitowest
+- [UPDATE] パラメーターのラベルをマウスオーバー時に説明文を表示するように修正する
+    - @yuitowest
+- [UPDATE] 接続オプションに bundleId を追加する
+    - @yuitowest
+- [CHANGE] ページの統合
+    - index.html, devtools.html の2ページのみにする
+    - role / multistream / simulcast / spotlight フラグをページ内で選択可能にする
+    - role / multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
+    - role / multistream / simulcast / spotlight フラグをURLパラメーターから指定可能にする
+    - devtools.html の初期値を role: sendrecv, multistream: true にする
+- [UPDATE] スポットライトページで simulcast フラグを選択可能にする
+    - @yuitowest
+- [UPDATE] audioInput, audioOutput, videoInput に未指定のオプションを追加する
+    - @yuitowest
+- [UPDATE] package を更新する
+    - @reduxjs/toolkit: 1.6.2, -> 1.7.2
+    - query-string: 7.0.1 -> 7.1.1
+    - react-bootstrap: 2.0.3 -> 2.1.2
+    - next: 12.0.10 -> 12.1.0
+    - @yuitowest
+- [UPDATE] media-processors を追加する
+    - @shiguredo/noise-suppression パッケージを使用した mediaProcessorsNoiseSuppression を設定項目に追加する
+    - @shiguredo/virtual-background パッケージを使用した blurRadius を設定項目に追加する
+    - @yuitowest
+- [UPDATE] fakeVolume の step を 0.1 から 0.25 に変更する
+    - @yuitowest
+- [UPDATE] MediaStream オプションに aspectRatio と resizeMode を追加する
+    - @yuitowest
+- [UPDATE] mediaType getDisplayMedia 時に width, height, frameRate を指定できるようにする
+
 ## 2021.2.5
+
 - [FIX] sora-js-sdk のバージョンを 2021.2.3 に更新する
     - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.3
     - @yuitowest
 
 ## 2021.2.4
+
 - [FIX] replace track 後に volume visualizer が動作しない問題を修正する
     - @yuitowest
 
 ## 2021.2.3
+
 - [FIX] sora-js-sdk のバージョンを 2021.2.2 に更新する
     - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.2
     - @yuitowest
 
 ## 2021.2.2
+
 - [FIX] sora-js-sdk のバージョンを 2021.2.1 に更新する
     - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1
     - @yuitowest
 
 ## 2021.2.1
+
 - [FIX] サーバからの正常切断時に devtools の connectionStatate が 'disconnect' にならない場合がある問題を修正する
     - @yuitowest
 

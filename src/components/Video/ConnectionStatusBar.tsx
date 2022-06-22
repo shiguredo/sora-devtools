@@ -1,6 +1,6 @@
 import React from "react";
 
-import { IconClipboard } from "@/components/IconClipboard";
+import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
 type TextBoxProps = {
@@ -19,7 +19,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
       </p>
       <div className="border-left border-secondary">
         <button className="btn btn-sm btn-light" onClick={onClick}>
-          <IconClipboard />
+          <ClipboardIcon />
         </button>
       </div>
     </div>

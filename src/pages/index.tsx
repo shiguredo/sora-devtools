@@ -1,21 +1,34 @@
 import NextHead from "next/head";
-import NextLink from "next/link";
+import queryString from "query-string";
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
 
-const createAs = (pageName: string): string => {
-  if (process.env.NODE_ENV === "production") {
-    return `${pageName}.html`;
-  }
-  return pageName;
-};
+import type { SoraDevtoolsState } from "@/types";
 
-const Link: React.FC<{ pageName: string }> = (props) => {
+type LinkProps = {
+  pageName: string;
+  params: {
+    role: SoraDevtoolsState["role"];
+    audio?: SoraDevtoolsState["audio"];
+    video?: SoraDevtoolsState["video"];
+    multistream?: boolean;
+    simulcast?: boolean;
+    spotlight?: boolean;
+    dataChannelSignaling?: boolean;
+    dataChannels?: string;
+    debug?: boolean;
+    debugType?: SoraDevtoolsState["debugType"];
+    videoBitRate?: SoraDevtoolsState["videoBitRate"];
+    videoCodecType?: SoraDevtoolsState["videoCodecType"];
+    resolution?: SoraDevtoolsState["resolution"];
+  };
+};
+const Link: React.FC<LinkProps> = (props) => {
+  const path = process.env.NODE_ENV === "production" ? "/devtools.html" : "/devtools";
+  const qs = props.params ? `?${queryString.stringify(props.params)}` : "";
   return (
     <li>
-      <NextLink href={`/${props.pageName}`} as={createAs(`/${props.pageName}`)}>
-        <a>{props.pageName}</a>
-      </NextLink>
+      <a href={`${path}${qs}`}>{props.pageName}</a>
     </li>
   );
 };
@@ -37,26 +50,119 @@ const Index: React.FC = () => {
       <div className="container">
         <div className="row">
           <ul className="list-url">
-            <li className="separator">片方向</li>
-            <Link pageName="sendonly" />
-            <Link pageName="recvonly" />
-            <li className="separator">双方向</li>
-            <Link pageName="multi_sendrecv" />
-            <Link pageName="multi_sendonly" />
-            <Link pageName="multi_recvonly" />
-            <li className="separator">片方向サイマルキャスト</li>
-            <Link pageName="simulcast_sendonly" />
-            <Link pageName="simulcast_recvonly" />
-            <li className="separator">双方向サイマルキャスト</li>
-            <Link pageName="multi_simulcast_sendrecv" />
-            <Link pageName="multi_simulcast_sendonly" />
-            <Link pageName="multi_simulcast_recvonly" />
+            <li className="separator">マルチストリーム</li>
+            <Link pageName="マルチストリーム送受信" params={{ role: "sendrecv", multistream: true }} />
+            <Link pageName="マルチストリーム送信のみ" params={{ role: "sendonly", multistream: true }} />
+            <Link pageName="マルチストリーム受信のみ" params={{ role: "recvonly", multistream: true }} />
+            <Link
+              pageName="マルチストリーム送受信 (サイマルキャスト有効)"
+              params={{
+                role: "sendrecv",
+                multistream: true,
+                simulcast: true,
+                videoBitRate: "3000",
+                videoCodecType: "VP8",
+                resolution: "720p (1280x720)",
+              }}
+            />
+            <Link
+              pageName="マルチストリーム送信のみ (サイマルキャスト有効)"
+              params={{
+                role: "sendonly",
+                multistream: true,
+                simulcast: true,
+                videoBitRate: "3000",
+                videoCodecType: "VP8",
+                resolution: "720p (1280x720)",
+              }}
+            />
+            <Link
+              pageName="マルチストリーム受信のみ (サイマルキャスト有効)"
+              params={{ role: "recvonly", multistream: true, simulcast: true, videoCodecType: "VP8" }}
+            />
             <li className="separator">スポットライト</li>
-            <Link pageName="spotlight_sendrecv" />
-            <Link pageName="spotlight_sendonly" />
-            <Link pageName="spotlight_recvonly" />
+            <Link
+              pageName="スポットライト送受信"
+              params={{
+                role: "sendrecv",
+                multistream: true,
+                simulcast: true,
+                spotlight: true,
+                videoCodecType: "VP8",
+                videoBitRate: "500",
+              }}
+            />
+            <Link
+              pageName="スポットライト送信のみ"
+              params={{
+                role: "sendonly",
+                multistream: true,
+                simulcast: true,
+                spotlight: true,
+                videoCodecType: "VP8",
+                videoBitRate: "500",
+              }}
+            />
+            <Link
+              pageName="スポットライト受信のみ"
+              params={{
+                role: "recvonly",
+                multistream: true,
+                simulcast: true,
+                spotlight: true,
+                videoCodecType: "VP8",
+                videoBitRate: "500",
+              }}
+            />
+            <Link
+              pageName="スポットライト送受信 (サイマルキャスト無効)"
+              params={{
+                role: "sendrecv",
+                multistream: true,
+                spotlight: true,
+                videoCodecType: "VP8",
+                videoBitRate: "500",
+              }}
+            />
+            <Link
+              pageName="スポットライト送信のみ (サイマルキャスト無効)"
+              params={{
+                role: "sendonly",
+                multistream: true,
+                spotlight: true,
+                videoCodecType: "VP8",
+                videoBitRate: "500",
+              }}
+            />
+            <Link
+              pageName="スポットライト受信のみ (サイマルキャスト無効)"
+              params={{
+                role: "recvonly",
+                multistream: true,
+                spotlight: true,
+                videoCodecType: "VP8",
+                videoBitRate: "500",
+              }}
+            />
             <li className="separator">データチャネルメッセージング</li>
-            <Link pageName="data_channel_messaging_only" />
+            <Link
+              pageName="メッセージングのみ"
+              params={{
+                role: "sendrecv",
+                multistream: true,
+                dataChannelSignaling: true,
+                debug: true,
+                debugType: "messaging",
+                audio: false,
+                video: false,
+                dataChannels: JSON.stringify([
+                  {
+                    label: "#sora-devtools",
+                    direction: "sendrecv",
+                  },
+                ]),
+              }}
+            />
           </ul>
         </div>
       </div>

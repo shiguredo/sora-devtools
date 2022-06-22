@@ -1,3 +1,5 @@
+import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import type { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -8,10 +10,13 @@ import type {
 } from "sora-js-sdk";
 
 import {
+  ASPECT_RATIO_TYPES,
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
+  BLUR_RADIUS,
+  CONNECTION_STATUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
@@ -20,9 +25,13 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
+  MULTISTREAM,
   NOISE_SUPPRESSIONS,
+  RESIZE_MODE_TYPES,
   RESOLUTIONS,
+  SIMULCAST,
   SIMULCAST_RID,
+  SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   VIDEO_BIT_RATES,
@@ -41,6 +50,8 @@ export type SoraDevtoolsState = {
   audioOutput: string;
   audioOutputDevices: MediaDeviceInfo[];
   autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
+  blurRadius: typeof BLUR_RADIUS[number];
+  bundleId: string;
   channelId: string;
   clientId: string;
   googCpuOveruseDetection: boolean | null;
@@ -51,11 +62,11 @@ export type SoraDevtoolsState = {
   dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   dataChannels: string;
   dataChannelMessages: DataChannelMessage[];
-  displaySettings: DisplaySettings;
   displayResolution: typeof DISPLAY_RESOLUTIONS[number];
   echoCancellation: typeof ECHO_CANCELLATIONS[number];
   echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
+  enabledBundleId: boolean;
   enabledClientId: boolean;
   enabledDataChannels: boolean;
   enabledDataChannel: boolean;
@@ -70,7 +81,7 @@ export type SoraDevtoolsState = {
   fakeVolume: string;
   frameRate: typeof FRAME_RATES[number];
   soraContents: {
-    connectionStatus: "disconnected" | "disconnecting" | "connected" | "connecting";
+    connectionStatus: typeof CONNECTION_STATUS[number];
     reconnecting: boolean;
     reconnectingTrials: number;
     sora: ConnectionPublisher | ConnectionSubscriber | null;
@@ -84,9 +95,10 @@ export type SoraDevtoolsState = {
   };
   ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   logMessages: LogMessage[];
+  mediaProcessorsNoiseSuppression: boolean;
   mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
-  multistream: boolean;
+  multistream: typeof MULTISTREAM[number];
   mute: boolean;
   noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
   notifyMessages: NotifyMessage[];
@@ -96,9 +108,9 @@ export type SoraDevtoolsState = {
   signalingMessages: SignalingMessage[];
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
-  simulcast: boolean;
+  simulcast: typeof SIMULCAST[number];
   simulcastRid: typeof SIMULCAST_RID[number];
-  spotlight: boolean;
+  spotlight: typeof SPOTLIGHT[number];
   focusedSpotlightConnectionIds: {
     [key: string]: boolean;
   };
@@ -119,6 +131,10 @@ export type SoraDevtoolsState = {
   role: Role;
   reconnect: boolean;
   apiUrl: null | string;
+  aspectRatio: typeof ASPECT_RATIO_TYPES[number];
+  resizeMode: typeof RESIZE_MODE_TYPES[number];
+  noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
+  virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
 };
 
 // 画面表示する message の Type
@@ -145,11 +161,10 @@ export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
   captureStream(fps?: number): MediaStream;
 }
 
-// MediaTrackConstraints interface に echoCancellationType を追加
+// MediaTrackConstraints interface に property を追加
 export interface SoraDevtoolsMediaTrackConstraints extends MediaTrackConstraintSet {
-  autoGainControl?: boolean;
-  noiseSuppression?: boolean;
   echoCancellationType?: "system" | "browser";
+  resizeMode?: "none" | "crop-and-scale";
 }
 
 export type Json =
@@ -165,11 +180,6 @@ export type Json =
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
   setSinkId(audioId: string): void;
-}
-
-// MediaDevices interface に getDisplayMedia を追加
-export interface SoraDevtoolsMediaDevices extends MediaDevices {
-  getDisplayMedia(constraints: MediaStreamConstraints): Promise<MediaStream>;
 }
 
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加
@@ -265,52 +275,21 @@ export type DataChannelMessage = {
 export type DebugType = typeof DEBUG_TYPES[number];
 
 // クエリ文字列から取得する parameter の Type
-export type QueryStringParameters = {
-  apiUrl: string;
-  audio: boolean;
-  audioBitRate: typeof AUDIO_BIT_RATES[number];
-  audioCodecType: typeof AUDIO_CODEC_TYPES[number];
-  audioContentHint: typeof AUDIO_CONTENT_HINTS[number];
-  audioInput: string;
-  audioOutput: string;
-  audioTrack: boolean;
-  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
-  cameraDevice: boolean;
-  channelId: string;
-  clientId: string;
-  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
-  dataChannels: string;
-  debug: boolean;
-  debugType: typeof DEBUG_TYPES[number];
-  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
-  e2ee: boolean;
-  echoCancellation: typeof ECHO_CANCELLATIONS[number];
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
-  fakeVolume: string;
-  frameRate: typeof FRAME_RATES[number];
-  googCpuOveruseDetection: boolean;
-  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
-  mediaType: typeof MEDIA_TYPES[number];
-  metadata: string;
-  micDevice: boolean;
-  mute: boolean;
-  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
-  reconnect: boolean;
-  resolution: typeof RESOLUTIONS[number];
-  showStats: boolean;
-  signalingNotifyMetadata: string;
-  signalingUrlCandidates: string[];
-  simulcastRid: typeof SIMULCAST_RID[number];
-  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
-  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
-  video: boolean;
-  videoBitRate: typeof VIDEO_BIT_RATES[number];
-  videoCodecType: typeof VIDEO_CODEC_TYPES[number];
-  videoContentHint: typeof VIDEO_CONTENT_HINTS[number];
-  videoInput: string;
-  videoTrack: boolean;
-};
+export type QueryStringParameters = Omit<
+  SoraDevtoolsState,
+  | "alertMessages"
+  | "dataChannelMessages"
+  | "debugFilterText"
+  | "fakeContents"
+  | "focusedSpotlightConnectionIds"
+  | "logMessages"
+  | "notifyMessages"
+  | "pushMessages"
+  | "signalingMessages"
+  | "soraContents"
+  | "timelineMessages"
+  | "version"
+>;
 
 // sora-js-sdk の接続オプションで使用する state
 export type ConnectionOptionsState = Pick<
@@ -318,10 +297,12 @@ export type ConnectionOptionsState = Pick<
   | "audio"
   | "audioBitRate"
   | "audioCodecType"
+  | "bundleId"
   | "clientId"
   | "dataChannels"
   | "dataChannelSignaling"
   | "e2ee"
+  | "enabledBundleId"
   | "enabledClientId"
   | "enabledDataChannel"
   | "enabledSignalingNotifyMetadata"
@@ -339,99 +320,21 @@ export type ConnectionOptionsState = Pick<
   | "videoCodecType"
 >;
 
-// page 初期レンダリング時に渡されるパラメーター
-export type PageInitialParameters = {
-  role: SoraDevtoolsState["role"];
-  multistream: SoraDevtoolsState["multistream"];
-  spotlight: SoraDevtoolsState["spotlight"];
-  simulcast: SoraDevtoolsState["simulcast"];
-  // DataChannelMessaging page 専用のオプション
-  dataChannelMessagingOnly?: boolean;
-  audio?: SoraDevtoolsState["audio"];
-  audioBitRate?: SoraDevtoolsState["audioBitRate"];
-  audioCodecType?: SoraDevtoolsState["audioCodecType"];
-  audioContentHint?: SoraDevtoolsState["audioContentHint"];
-  audioInput?: SoraDevtoolsState["audioInput"];
-  audioOutput?: SoraDevtoolsState["audioOutput"];
-  autoGainControl?: SoraDevtoolsState["autoGainControl"];
-  channelId?: SoraDevtoolsState["channelId"];
-  clientId?: SoraDevtoolsState["clientId"];
-  googCpuOveruseDetection?: SoraDevtoolsState["googCpuOveruseDetection"];
-  debug?: SoraDevtoolsState["debug"];
-  debugType?: SoraDevtoolsState["debugType"];
-  dataChannelSignaling?: SoraDevtoolsState["dataChannelSignaling"];
-  dataChannels?: SoraDevtoolsState["dataChannels"];
-  displayResolution?: SoraDevtoolsState["displayResolution"];
-  echoCancellation?: SoraDevtoolsState["echoCancellation"];
-  echoCancellationType?: SoraDevtoolsState["echoCancellationType"];
-  e2ee?: SoraDevtoolsState["e2ee"];
-  fakeVolume?: SoraDevtoolsState["fakeVolume"];
-  frameRate?: SoraDevtoolsState["frameRate"];
-  ignoreDisconnectWebSocket?: SoraDevtoolsState["ignoreDisconnectWebSocket"];
-  mediaType?: SoraDevtoolsState["mediaType"];
-  metadata?: SoraDevtoolsState["metadata"];
-  mute?: SoraDevtoolsState["mute"];
-  noiseSuppression?: SoraDevtoolsState["noiseSuppression"];
-  reconnect?: SoraDevtoolsState["reconnect"];
-  resolution?: SoraDevtoolsState["resolution"];
-  showStats?: SoraDevtoolsState["showStats"];
-  signalingNotifyMetadata?: SoraDevtoolsState["signalingNotifyMetadata"];
-  signalingUrlCandidates?: SoraDevtoolsState["signalingUrlCandidates"];
-  simulcastRid?: SoraDevtoolsState["simulcastRid"];
-  spotlightNumber?: SoraDevtoolsState["spotlightNumber"];
-  spotlightFocusRid?: SoraDevtoolsState["spotlightFocusRid"];
-  spotlightUnfocusRid?: SoraDevtoolsState["spotlightUnfocusRid"];
-  video?: SoraDevtoolsState["video"];
-  videoBitRate?: SoraDevtoolsState["videoBitRate"];
-  videoCodecType?: SoraDevtoolsState["videoCodecType"];
-  videoContentHint?: SoraDevtoolsState["videoContentHint"];
-  videoInput?: SoraDevtoolsState["videoInput"];
-  cameraDevice?: SoraDevtoolsState["cameraDevice"];
-  videoTrack?: SoraDevtoolsState["videoTrack"];
-  micDevice?: SoraDevtoolsState["micDevice"];
-  audioTrack?: SoraDevtoolsState["audioTrack"];
-};
-
-// 画面表示に使用する設定
-export type DisplaySettings = {
-  audio: boolean;
-  audioBitRate: boolean;
-  audioCodecType: boolean;
-  audioContentHint: boolean;
-  audioInput: boolean;
-  audioOutput: boolean;
-  audioTrack: boolean;
-  audioConstraints: boolean;
-  cameraDevice: boolean;
-  displayResolution: boolean;
-  mediaType: boolean;
-  micDevice: boolean;
-  simulcastRid: boolean;
-  spotlightFocusRid: boolean;
-  spotlightNumber: boolean;
-  spotlightUnfocusRid: boolean;
-  video: boolean;
-  videoBitRate: boolean;
-  videoCodecType: boolean;
-  videoConstraints: boolean;
-  videoContentHint: boolean;
-  videoInput: boolean;
-  videoTrack: boolean;
-};
-
 // ダウンロードレポートに使用するパラメーター
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
   | "alertMessages"
   | "apiUrl"
+  | "blurRadius"
   | "dataChannelMessages"
   | "debugFilterText"
   | "debugType"
-  | "displaySettings"
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
   | "logMessages"
+  | "mediaProcessorsNoiseSuppression"
   | "mute"
+  | "noiseSuppressionProcessor"
   | "notifyMessages"
   | "pushMessages"
   | "showStats"
@@ -439,11 +342,11 @@ export type DownloadReportParameters = Omit<
   | "soraContents"
   | "timelineMessages"
   | "version"
+  | "virtualBackgroundProcessor"
 >;
 
 export type DownloadReport = {
   userAgent: string;
-  pageName: string;
   "sora-devtools": string;
   "sora-js-sdk": string;
   parameters: DownloadReportParameters;

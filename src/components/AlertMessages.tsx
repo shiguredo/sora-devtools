@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Toast } from "react-bootstrap";
 
+import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from "@/app/actions";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from "@/app/slice";
 import type { AlertMessage } from "@/types";
 import { formatUnixtime } from "@/utils";
 
