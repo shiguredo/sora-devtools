@@ -513,7 +513,13 @@ async function createMediaStream(
         createSoraDevtoolsTimelineMessage("video-media-constraints", { video: videoConstraints })
       )
     );
-    const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
+    const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints }).catch((error) => {
+      // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
+      mediaStream.getTracks().forEach((t) => {
+        t.stop();
+      });
+      throw error;
+    });
     let videoTrack = videoMediaStream.getVideoTracks()[0];
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack)));
     if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
