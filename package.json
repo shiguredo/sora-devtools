@@ -43,7 +43,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.2",
+    "@reduxjs/toolkit": "^1.8.3",
     "@shiguredo/noise-suppression": "^2022.4.2",
     "@shiguredo/virtual-background": "^2022.4.3",
     "bootstrap": "5.1.3",
