@@ -441,7 +441,7 @@ async function createMediaStream(
     dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
     const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-    const targetElement = document.querySelector(".container");
+    const targetElement = document.querySelector("#cropArea");
     if (targetElement === null) {
       throw new Error("Failed to get CropTraget Element");
     }

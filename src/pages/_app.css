@@ -405,6 +405,13 @@ video {
   border-bottom-color: #0071bc;
 }
 
+.cropArea {
+  position: absolute;
+  outline: 4px solid deeppink;
+  cursor: move;
+  z-index: 2000;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;
