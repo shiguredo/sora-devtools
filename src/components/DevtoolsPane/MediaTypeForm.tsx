@@ -46,6 +46,7 @@ export const MediaTypeForm: React.FC = () => {
       <FormRadio label="getUserMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="getDisplayMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="fakeMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
+      <FormRadio label="mediacaptureRegion" mediaType={mediaType} disabled={disabled} onChange={onChange} />
     </FormGroup>
   );
 };
