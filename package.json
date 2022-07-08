@@ -51,6 +51,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.5",
     "react-redux": "^8.0.2",
     "recoil": "^0.7.4",
     "redux-logger": "^3.0.6",
