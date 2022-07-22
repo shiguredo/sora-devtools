@@ -207,14 +207,18 @@ const RowSignalingOptions: React.FC = () => {
 
 export const RowMediaType: React.FC = () => {
   return (
-    <Row xs="auto" className="form-row">
-      <Col>
-        <MediaTypeForm />
-      </Col>
-      <Col>
-        <FakeVolumeForm />
-      </Col>
-    </Row>
+    <>
+      <Row xs="auto" className="form-row">
+        <Col>
+          <MediaTypeForm />
+        </Col>
+      </Row>
+      <Row xs="auto" className="form-row">
+        <Col>
+          <FakeVolumeForm />
+        </Col>
+      </Row>
+    </>
   );
 };
 
