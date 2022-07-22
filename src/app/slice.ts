@@ -239,7 +239,15 @@ export const slice = createSlice({
       state.noiseSuppression = action.payload;
     },
     setMediaType: (state, action: PayloadAction<SoraDevtoolsState["mediaType"]>) => {
-      state.mediaType = action.payload;
+      // NOTE(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
+      if (
+        action.payload === "mediacaptureRegion" &&
+        (typeof window === "undefined" || window.CropTarget === undefined)
+      ) {
+        state.mediaType = "getUserMedia";
+      } else {
+        state.mediaType = action.payload;
+      }
     },
     setMetadata: (state, action: PayloadAction<string>) => {
       state.metadata = action.payload;

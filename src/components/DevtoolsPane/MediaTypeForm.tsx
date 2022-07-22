@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FormCheck, FormGroup } from "react-bootstrap";
 
 import { setMediaType } from "@/app/actions";
@@ -31,6 +31,11 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
 };
 
 export const MediaTypeForm: React.FC = () => {
+  // NOTE(yuito): window.CropTarget の有無のみで radio の表示/非表示を切り替えると
+  // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
+  // mount してから表示するハックを入れる
+  const [mountClient, setMountClient] = useState(false);
+  const enabledMediacaptureRegion = typeof window !== "undefined" && window.CropTarget !== undefined;
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const mediaType = useAppSelector((state) => state.mediaType);
   const disabled = isFormDisabled(connectionStatus);
@@ -40,12 +45,23 @@ export const MediaTypeForm: React.FC = () => {
       dispatch(setMediaType(event.target.value));
     }
   };
+  useEffect(() => {
+    setMountClient(true);
+  }, []);
   return (
     <FormGroup className="form-inline flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio label="getUserMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="getDisplayMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
       <FormRadio label="fakeMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
+      {mountClient && (
+        <FormRadio
+          label="mediacaptureRegion"
+          mediaType={mediaType}
+          disabled={disabled || !enabledMediacaptureRegion}
+          onChange={onChange}
+        />
+      )}
     </FormGroup>
   );
 };

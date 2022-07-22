@@ -58,7 +58,7 @@ export const ECHO_CANCELLATIONS = ["", "true", "false"] as const;
 
 export const ECHO_CANCELLATION_TYPES = ["", "browser", "system"] as const;
 
-export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia"] as const;
+export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia", "mediacaptureRegion"] as const;
 
 export const SPOTLIGHT_NUMBERS = ["", "1", "2", "3", "4", "5", "6", "7", "8"] as const;
 

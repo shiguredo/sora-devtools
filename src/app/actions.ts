@@ -421,6 +421,42 @@ async function createMediaStream(
     }
     return [stream, null];
   }
+  if (state.mediaType === "mediacaptureRegion") {
+    if (!state.video || !state.cameraDevice) {
+      return [new MediaStream(), null];
+    }
+    if (window.CropTarget === undefined) {
+      throw new Error("Failed to call CropTarget");
+    }
+    if (navigator.mediaDevices === undefined) {
+      throw new Error("Failed to call getDisplayMedia. Make sure domain is secure");
+    }
+    const constraints = createGetDisplayMediaConstraints({
+      frameRate: state.frameRate,
+      resolution: state.resolution,
+      aspectRatio: state.aspectRatio,
+      resizeMode: state.resizeMode,
+    });
+    constraints["preferCurrentTab"] = true;
+    dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
+    const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    const targetElement = document.querySelector("#cropArea");
+    if (targetElement === null) {
+      throw new Error("Failed to get CropTraget Element");
+    }
+    const cropTarget = await window.CropTarget.fromElement(targetElement);
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media")));
+    for (const track of stream.getVideoTracks()) {
+      if (track.contentHint !== undefined) {
+        track.contentHint = state.videoContentHint;
+      }
+      track.enabled = state.videoTrack;
+      await track.cropTo(cropTarget);
+      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
+    }
+    return [stream, null];
+  }
   if (state.mediaType === "fakeMedia" && state.fakeContents.worker) {
     const constraints = createFakeMediaConstraints({
       audio: state.audio && state.micDevice,
