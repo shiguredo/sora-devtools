@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## 2022.2.0
+- [UPDATE] media-processors/virtual-background を 2022.6.0 に更新する
+    - Safari での仮想背景処理に対応
+    - @yuitowest
+
 ## 2022.1.0
 - [UPDATE] copy URL クリック時にブラウザの URL バーも同一の URL に変更するように修正する
     - @yuitowest
