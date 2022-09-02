@@ -139,5 +139,8 @@
   },
   "videoTrack": {
     "description": "video MediaStreamTrack の enabled 属性を切り替えます。"
+  },
+  "facingMode": {
+    "description": "モバイルカメラのフロント/バックを切り替えます。"
   }
 }
