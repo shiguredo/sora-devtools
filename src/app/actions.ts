@@ -85,6 +85,9 @@ export const setInitialParameter = () => {
     if (qsParams.mediaType !== undefined) {
       dispatch(slice.actions.setMediaType(qsParams.mediaType));
     }
+    if (qsParams.facingMode !== undefined) {
+      dispatch(slice.actions.setFacingMode(qsParams.facingMode));
+    }
     if (qsParams.fakeVolume !== undefined) {
       dispatch(slice.actions.setFakeVolume(qsParams.fakeVolume));
     }
@@ -292,6 +295,7 @@ export const copyURL = () => {
       echoCancellationType: state.echoCancellationType !== "" ? state.echoCancellationType : undefined,
       videoContentHint: state.videoContentHint !== "" ? state.videoContentHint : undefined,
       resolution: state.resolution !== "" ? state.resolution : undefined,
+      facingMode: state.facingMode !== "" ? state.facingMode : undefined,
       frameRate: state.frameRate !== "" ? state.frameRate : undefined,
       aspectRatio: state.aspectRatio !== "" ? state.aspectRatio : undefined,
       resizeMode: state.resizeMode !== "" ? state.resizeMode : undefined,
@@ -374,6 +378,7 @@ type craeteMediaStreamPickedState = Pick<
   | "cameraDevice"
   | "echoCancellation"
   | "echoCancellationType"
+  | "facingMode"
   | "fakeContents"
   | "fakeVolume"
   | "frameRate"
@@ -539,6 +544,7 @@ async function createMediaStream(
     resolution: state.resolution,
     video: state.video && state.cameraDevice,
     videoInput: state.videoInput,
+    facingMode: state.facingMode,
   });
   if (videoConstraints) {
     dispatch(
@@ -1191,6 +1197,7 @@ export const setMicDevice = (micDevice: boolean) => {
         cameraDevice: state.cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
+        facingMode: state.facingMode,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
@@ -1244,6 +1251,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         cameraDevice: cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
+        facingMode: state.facingMode,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
@@ -1309,6 +1317,7 @@ export const {
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
   setFakeVolume,
+  setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,

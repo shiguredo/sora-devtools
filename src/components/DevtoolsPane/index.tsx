@@ -28,6 +28,7 @@ import { DisplayResolutionForm } from "./DisplayResolutionForm";
 import { E2EEForm } from "./E2EEForm";
 import { EchoCancellationForm } from "./EchoCancellationForm";
 import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm";
+import { FacingModeForm } from "./FacingModeForm";
 import { FakeVolumeForm } from "./FakeVolumeForm";
 import { FrameRateForm } from "./FrameRateForm";
 import { MediaProcessorsNoiseSuppressionForm } from "./MediaProcessorsNoiseSuppressionForm";
@@ -304,6 +305,9 @@ const RowMediaOptions: React.FC = () => {
             </Col>
             <Col className="col-auto">
               <BlurRadiusForm />
+            </Col>
+            <Col className="col-auto">
+              <FacingModeForm />
             </Col>
           </Row>
           <UpdateMediaStreamButton />

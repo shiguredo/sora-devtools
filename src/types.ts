@@ -22,6 +22,7 @@ import {
   DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
+  FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
@@ -135,6 +136,7 @@ export type SoraDevtoolsState = {
   resizeMode: typeof RESIZE_MODE_TYPES[number];
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
+  facingMode: typeof FACING_MODES[number];
 };
 
 // 画面表示する message の Type
