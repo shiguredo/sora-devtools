@@ -85,6 +85,9 @@ export const setInitialParameter = () => {
     if (qsParams.mediaType !== undefined) {
       dispatch(slice.actions.setMediaType(qsParams.mediaType));
     }
+    if (qsParams.facingMode !== undefined) {
+      dispatch(slice.actions.setFacingMode(qsParams.facingMode));
+    }
     if (qsParams.fakeVolume !== undefined) {
       dispatch(slice.actions.setFakeVolume(qsParams.fakeVolume));
     }
@@ -292,6 +295,7 @@ export const copyURL = () => {
       echoCancellationType: state.echoCancellationType !== "" ? state.echoCancellationType : undefined,
       videoContentHint: state.videoContentHint !== "" ? state.videoContentHint : undefined,
       resolution: state.resolution !== "" ? state.resolution : undefined,
+      facingMode: state.facingMode !== "" ? state.facingMode : undefined,
       frameRate: state.frameRate !== "" ? state.frameRate : undefined,
       aspectRatio: state.aspectRatio !== "" ? state.aspectRatio : undefined,
       resizeMode: state.resizeMode !== "" ? state.resizeMode : undefined,
