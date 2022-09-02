@@ -374,6 +374,7 @@ type craeteMediaStreamPickedState = Pick<
   | "cameraDevice"
   | "echoCancellation"
   | "echoCancellationType"
+  | "facingMode"
   | "fakeContents"
   | "fakeVolume"
   | "frameRate"
@@ -539,6 +540,7 @@ async function createMediaStream(
     resolution: state.resolution,
     video: state.video && state.cameraDevice,
     videoInput: state.videoInput,
+    facingMode: state.facingMode,
   });
   if (videoConstraints) {
     dispatch(
@@ -1191,6 +1193,7 @@ export const setMicDevice = (micDevice: boolean) => {
         cameraDevice: state.cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
+        facingMode: state.facingMode,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
@@ -1244,6 +1247,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         cameraDevice: cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
+        facingMode: state.facingMode,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
@@ -1309,6 +1313,7 @@ export const {
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
   setFakeVolume,
+  setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,

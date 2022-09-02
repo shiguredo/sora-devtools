@@ -35,6 +35,7 @@ function createDownloadReport(): DownloadReport {
     enabledMetadata: state.enabledMetadata,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     enabledSignalingUrlCandidates: state.enabledSignalingUrlCandidates,
+    facingMode: state.facingMode,
     fakeVolume: state.fakeVolume,
     frameRate: state.frameRate,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,

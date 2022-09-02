@@ -287,13 +287,14 @@ type CreateVideoConstraintsParameters = {
   resolution: SoraDevtoolsState["resolution"];
   video: SoraDevtoolsState["video"];
   videoInput: SoraDevtoolsState["videoInput"];
+  facingMode: SoraDevtoolsState["facingMode"];
 };
 export function createVideoConstraints(parameters: CreateVideoConstraintsParameters): boolean | MediaTrackConstraints {
-  const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode } = parameters;
+  const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode, facingMode } = parameters;
   if (!video) {
     return false;
   }
-  if (!frameRate && !resolution && !videoInput && !aspectRatio && !resizeMode) {
+  if (!frameRate && !resolution && !videoInput && !aspectRatio && !resizeMode && !facingMode) {
     return video;
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
@@ -315,6 +316,11 @@ export function createVideoConstraints(parameters: CreateVideoConstraintsParamet
   }
   if (resizeMode) {
     videoConstraints.resizeMode = resizeMode;
+  }
+  if (facingMode === "front") {
+    videoConstraints.facingMode = "user";
+  } else if (facingMode === "back") {
+    videoConstraints.facingMode = { exact: "environment" };
   }
   return videoConstraints;
 }
