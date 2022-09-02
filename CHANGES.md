@@ -9,6 +9,10 @@
 - FIX
     - バグ修正
 
+## develop
+- [UPDATE] メディアオプションに facingMode を追加する
+    - @yuitowest
+
 ## 2022.2.0
 - [UPDATE] media-processors/virtual-background を 2022.6.0 に更新する
     - Safari での仮想背景処理に対応
