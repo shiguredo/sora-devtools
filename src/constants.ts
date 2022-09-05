@@ -86,6 +86,8 @@ export const CONNECTION_STATUS = ["initializing", "disconnected", "disconnecting
 
 export const ROLES = ["sendrecv", "sendonly", "recvonly"] as const;
 
+export const FACING_MODES = ["", "front", "back"] as const;
+
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
   const data = event.data;

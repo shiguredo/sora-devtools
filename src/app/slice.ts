@@ -112,6 +112,7 @@ const initialState: SoraDevtoolsState = {
   resizeMode: "",
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
+  facingMode: "",
 };
 
 export const slice = createSlice({
@@ -507,6 +508,9 @@ export const slice = createSlice({
     },
     setEnabledBundleId: (state, action: PayloadAction<SoraDevtoolsState["enabledBundleId"]>) => {
       state.enabledBundleId = action.payload;
+    },
+    setFacingMode: (state, action: PayloadAction<SoraDevtoolsState["facingMode"]>) => {
+      state.facingMode = action.payload;
     },
   },
 });
