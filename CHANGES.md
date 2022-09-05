@@ -9,7 +9,7 @@
 - FIX
     - バグ修正
 
-## develop
+## 2022.3.0
 - [UPDATE] media-processors/virtual-background を 2022.6.1 に更新する
     - https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1
     - @sile
