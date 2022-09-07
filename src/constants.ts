@@ -48,7 +48,7 @@ export const RESOLUTIONS = [
 
 export const DISPLAY_RESOLUTIONS = ["", "480p (640x480)", "240p (320x240)"] as const;
 
-export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10"] as const;
+export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10", "5"] as const;
 
 export const AUTO_GAIN_CONTROLS = ["", "true", "false"] as const;
 
