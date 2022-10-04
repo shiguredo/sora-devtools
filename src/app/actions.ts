@@ -85,6 +85,9 @@ export const setInitialParameter = () => {
     if (qsParams.mediaType !== undefined) {
       dispatch(slice.actions.setMediaType(qsParams.mediaType));
     }
+    if (qsParams.facingMode !== undefined) {
+      dispatch(slice.actions.setFacingMode(qsParams.facingMode));
+    }
     if (qsParams.fakeVolume !== undefined) {
       dispatch(slice.actions.setFakeVolume(qsParams.fakeVolume));
     }
@@ -292,6 +295,7 @@ export const copyURL = () => {
       echoCancellationType: state.echoCancellationType !== "" ? state.echoCancellationType : undefined,
       videoContentHint: state.videoContentHint !== "" ? state.videoContentHint : undefined,
       resolution: state.resolution !== "" ? state.resolution : undefined,
+      facingMode: state.facingMode !== "" ? state.facingMode : undefined,
       frameRate: state.frameRate !== "" ? state.frameRate : undefined,
       aspectRatio: state.aspectRatio !== "" ? state.aspectRatio : undefined,
       resizeMode: state.resizeMode !== "" ? state.resizeMode : undefined,
@@ -374,6 +378,7 @@ type craeteMediaStreamPickedState = Pick<
   | "cameraDevice"
   | "echoCancellation"
   | "echoCancellationType"
+  | "facingMode"
   | "fakeContents"
   | "fakeVolume"
   | "frameRate"
@@ -417,6 +422,42 @@ async function createMediaStream(
         track.contentHint = state.videoContentHint;
       }
       track.enabled = state.videoTrack;
+      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
+    }
+    return [stream, null];
+  }
+  if (state.mediaType === "mediacaptureRegion") {
+    if (!state.video || !state.cameraDevice) {
+      return [new MediaStream(), null];
+    }
+    if (window.CropTarget === undefined) {
+      throw new Error("Failed to call CropTarget");
+    }
+    if (navigator.mediaDevices === undefined) {
+      throw new Error("Failed to call getDisplayMedia. Make sure domain is secure");
+    }
+    const constraints = createGetDisplayMediaConstraints({
+      frameRate: state.frameRate,
+      resolution: state.resolution,
+      aspectRatio: state.aspectRatio,
+      resizeMode: state.resizeMode,
+    });
+    constraints["preferCurrentTab"] = true;
+    dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
+    const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    const targetElement = document.querySelector("#cropArea");
+    if (targetElement === null) {
+      throw new Error("Failed to get CropTraget Element");
+    }
+    const cropTarget = await window.CropTarget.fromElement(targetElement);
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media")));
+    for (const track of stream.getVideoTracks()) {
+      if (track.contentHint !== undefined) {
+        track.contentHint = state.videoContentHint;
+      }
+      track.enabled = state.videoTrack;
+      await track.cropTo(cropTarget);
       dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
     }
     return [stream, null];
@@ -503,6 +544,7 @@ async function createMediaStream(
     resolution: state.resolution,
     video: state.video && state.cameraDevice,
     videoInput: state.videoInput,
+    facingMode: state.facingMode,
   });
   if (videoConstraints) {
     dispatch(
@@ -1155,6 +1197,7 @@ export const setMicDevice = (micDevice: boolean) => {
         cameraDevice: state.cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
+        facingMode: state.facingMode,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
@@ -1208,6 +1251,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         cameraDevice: cameraDevice,
         echoCancellation: state.echoCancellation,
         echoCancellationType: state.echoCancellationType,
+        facingMode: state.facingMode,
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
@@ -1273,6 +1317,7 @@ export const {
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
   setFakeVolume,
+  setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,

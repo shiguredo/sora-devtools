@@ -103,7 +103,7 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
           <JitterButter type="video" stream={props.stream} />
         </div>
         <div className="d-flex align-items-center mb-1 video-status-inner">
-          {!spotlight && multistream && simulcast ? (
+          {spotlight !== "true" && multistream === "true" && simulcast === "true" ? (
             <>
               <RequestRtpStreamBySendConnectionIdButton rid="r0" sendConnectionId={props.stream.id} />
               <RequestRtpStreamBySendConnectionIdButton rid="r1" sendConnectionId={props.stream.id} />
@@ -111,7 +111,7 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
               <ResetRtpStreamBySendConnectionIdButton sendConnectionId={props.stream.id} />
             </>
           ) : null}
-          {spotlight && multistream && simulcast ? (
+          {spotlight === "true" && multistream === "true" && simulcast === "true" ? (
             <>
               <RequestSpotlightRidBySendConnectionIdButton sendConnectionId={props.stream.id} />
               <ResetSpotlightRidBySendConnectionIdButton sendConnectionId={props.stream.id} />

@@ -75,7 +75,7 @@
     "description": "シグナリングを DataChannel 経由に切り替えた際に、 WebSocket が閉じても、接続が切断しないようにするかどうかを指定します。"
   },
   "mediaType": {
-    "description": "メディアタイプを指定します。\ngetUserMedia: デバイスのカメラ/マイクをメディアとして使用します。\ngetDisplayMedia: ディスプレイまたはその一部(ウィンドウ等)をメディアとして使用します。\nfakeMedia: ダミーの映像と音声をメディアとして使用します"
+    "description": "メディアタイプを指定します。\ngetUserMedia: デバイスのカメラ/マイクをメディアとして使用します。\ngetDisplayMedia: ディスプレイまたはその一部(ウィンドウ等)をメディアとして使用します。\nfakeMedia: ダミーの映像と音声をメディアとして使用します\nmediacaptureRegion: 現在開いているタブの一部をメディアとして使用します。"
   },
   "fakeVolume": {
     "description": "mediaType に fakeMedia を選択した際の音量を指定します。"
@@ -139,5 +139,8 @@
   },
   "videoTrack": {
     "description": "video MediaStreamTrack の enabled 属性を切り替えます。"
+  },
+  "facingMode": {
+    "description": "モバイルカメラのフロント/バックを切り替えます。"
   }
 }

@@ -48,7 +48,7 @@ export const RESOLUTIONS = [
 
 export const DISPLAY_RESOLUTIONS = ["", "480p (640x480)", "240p (320x240)"] as const;
 
-export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10"] as const;
+export const FRAME_RATES = ["", "60", "30", "24", "20", "15", "10", "5"] as const;
 
 export const AUTO_GAIN_CONTROLS = ["", "true", "false"] as const;
 
@@ -58,7 +58,7 @@ export const ECHO_CANCELLATIONS = ["", "true", "false"] as const;
 
 export const ECHO_CANCELLATION_TYPES = ["", "browser", "system"] as const;
 
-export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia"] as const;
+export const MEDIA_TYPES = ["getUserMedia", "getDisplayMedia", "fakeMedia", "mediacaptureRegion"] as const;
 
 export const SPOTLIGHT_NUMBERS = ["", "1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
@@ -85,6 +85,8 @@ export const BLUR_RADIUS = ["", "weak", "midium", "strong"] as const;
 export const CONNECTION_STATUS = ["initializing", "disconnected", "disconnecting", "connected", "connecting"] as const;
 
 export const ROLES = ["sendrecv", "sendonly", "recvonly"] as const;
+
+export const FACING_MODES = ["", "front", "back"] as const;
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {

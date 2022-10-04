@@ -60,7 +60,7 @@ export const LocalVideo: React.FC = () => {
               <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />
             </div>
           ) : null}
-          {connectionId !== null && !spotlight && simulcast && role !== "sendonly" ? (
+          {connectionId !== null && spotlight !== "true" && simulcast == "true" && role !== "sendonly" ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <RequestRtpStreamButton rid={"r0"} />
               <RequestRtpStreamButton rid={"r1"} />
@@ -68,7 +68,7 @@ export const LocalVideo: React.FC = () => {
               <ResetRtpStreamButton />
             </div>
           ) : null}
-          {connectionId !== null && spotlight ? (
+          {connectionId !== null && spotlight === "true" ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <RequestSpotlightRidButton />
               <ResetSpotlightRidButton />
