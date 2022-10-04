@@ -46,7 +46,7 @@
     "@reduxjs/toolkit": "^1.8.5",
     "@shiguredo/noise-suppression": "^2022.4.2",
     "@shiguredo/virtual-background": "^2022.6.1",
-    "bootstrap": "5.2.1",
+    "bootstrap": "5.2.2",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
