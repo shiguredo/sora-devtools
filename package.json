@@ -33,7 +33,7 @@
     "@typescript-eslint/parser": "5.43.0",
     "eslint": "8.27.0",
     "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-react": "7.31.10",
+    "eslint-plugin-react": "7.31.11",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-simple-import-sort": "8.0.0",
     "husky": "8.0.2",
