@@ -1,3 +1,4 @@
+import Script from "next/script";
 import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import Sora from "sora-js-sdk";
@@ -23,6 +24,21 @@ export const Footer: React.FC = () => {
           </Navbar.Collapse>
         </Nav>
       </Navbar>
+      <Script id="foobar">
+        {`
+        navigator.serviceWorker.register('./service-worker.js').then((registration) => {
+        console.log("register service worker");
+          registration.addEventListener('updatefound', () => {
+            const newServiceWorker = registration.installing;
+            newServiceWorker.addEventListener('statechange', () => {
+              if (newServiceWorker.state == 'activated') {
+                location.reload();
+              }
+            });
+          });
+        })
+      `}
+      </Script>
       <DebugButton />
     </footer>
   );
