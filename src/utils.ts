@@ -670,5 +670,10 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
       connectionOptions.dataChannels = dataChannels;
     }
   }
+  // audioStreamingLanguageCode
+  if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
+    // TODO(melpon) sora-js-sdk が対応したらコメントインする
+    //connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode;
+  }
   return connectionOptions;
 }
