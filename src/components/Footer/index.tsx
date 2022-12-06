@@ -26,6 +26,8 @@ export const Footer: React.FC = () => {
       </Navbar>
       <Script id="foobar">
         {`
+        // TODO: service worker の登録は別の箇所で行う
+        if('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js').then((registration) => {
         console.log("register service worker");
           registration.addEventListener('updatefound', () => {
@@ -37,6 +39,7 @@ export const Footer: React.FC = () => {
             });
           });
         })
+        }
       `}
       </Script>
       <DebugButton />

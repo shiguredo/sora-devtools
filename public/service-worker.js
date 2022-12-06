@@ -22,6 +22,9 @@ self.addEventListener('fetch', (e) => {
       const headers = new Headers(response.headers);
       headers.set("Cross-Origin-Embedder-Policy", "require-corp");
       headers.set("Cross-Origin-Opener-Policy", "same-origin");
+      // headers.set("Access-Control-Allow-Origin", "*"); // TODO
+      // headers.set("Access-Control-Allow-Private-Network", "true"); // TODO
+      headers.set("Content-Security-Policy", "treat-as-public-address"); // TODO
 
       return new Response(response.body, {
         status: response.status,
