@@ -19,7 +19,6 @@
     "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && npx tsc --noemit",
     "fmt": "eslint --fix --ext .ts,tsx ./src; prettier --write ./src",
     "cleanup": "rimraf ./.next ./dist/*",
-    "start": "npx serve -S -l 8080 ./dist",
     "prepare": "husky install"
   },
   "devDependencies": {
