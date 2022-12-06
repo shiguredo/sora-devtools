@@ -846,6 +846,13 @@ export const connectSora = () => {
     const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptionsState = pickConnectionOptionsState(state);
     const connectionOptions = createConnectOptions(connectionOptionsState);
+
+    // FIXME:
+    if (connectionOptions.audioCodecType === "LYRA") {
+      // TODO: 既に初期化済みかどうかをチェック
+      Sora.initLyraModule("https://lyra-wasm.shiguredo.app/2022.1.0/", "https://lyra-wasm.shiguredo.app/2022.1.0/");
+    }
+
     const metadata = parseMetadata(state.enabledMetadata, state.metadata);
     let sora, mediaStream, gainNode;
     try {
