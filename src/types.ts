@@ -218,6 +218,26 @@ export interface RTCMediaStreamTrackStats extends RTCStats {
   prevJitterBufferEmittedCount: number;
 }
 
+// RTCInboundRtpStreamStats に jitterBuffer 関連を追加
+// ref: https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats
+export interface RTCInboundRtpStreamStats extends RTCReceivedRtpStreamStats {
+  // 元々定義されてたやつ
+  firCount?: number;
+  framesDecoded?: number;
+  nackCount?: number;
+  pliCount?: number;
+  qpSum?: number;
+  remoteId?: string;
+
+  // 新しく追加したやつ
+  trackIdentifier: string;
+  kind: string;
+  jitterBufferDelay?: number;
+  jitterBufferTargetDelay?: number;
+  jitterBufferEmittedCount?: number;
+  jitterBufferMinimumDelay?: number;
+}
+
 // Debug log message の Type
 export type LogMessage = {
   timestamp: number;
