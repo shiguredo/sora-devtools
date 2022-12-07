@@ -211,13 +211,17 @@ export const setInitialParameter = () => {
     if (qsParams.role !== undefined) {
       dispatch(slice.actions.setRole(qsParams.role));
     }
+    if (qsParams.audioStreamingLanguageCode !== undefined) {
+      dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode));
+    }
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
+      audioStreamingLanguageCode,
       bundleId,
       clientId,
-      dataChannels,
       dataChannelSignaling,
+      dataChannels,
       e2ee,
       ignoreDisconnectWebSocket,
       metadata,
@@ -265,6 +269,10 @@ export const setInitialParameter = () => {
     // dataChannels が存在した場合は enabledDataChannels をセットする
     if (dataChannels !== "") {
       dispatch(slice.actions.setEnabledDataChannels(true));
+    }
+    // audioStreamingLanguageCode が存在した場合は enabledAudioStreamingLanguageCode をセットする
+    if (audioStreamingLanguageCode !== "") {
+      dispatch(slice.actions.setEnabledAudioStreamingLanguageCode(true));
     }
     dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
   };
@@ -345,6 +353,11 @@ export const copyURL = () => {
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
       // mute
       mute: state.mute === true ? true : undefined,
+      // audioStreamingLanguageCode
+      audioStreamingLanguageCode:
+        state.audioStreamingLanguageCode !== "" && state.enabledAudioStreamingLanguageCode
+          ? state.audioStreamingLanguageCode
+          : undefined,
     };
     const queryStrings = Object.keys(parameters)
       .map((key) => {
