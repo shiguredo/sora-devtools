@@ -74,6 +74,8 @@ export type SoraDevtoolsState = {
   enabledMetadata: boolean;
   enabledSignalingNotifyMetadata: boolean;
   enabledSignalingUrlCandidates: boolean;
+  audioStreamingLanguageCode: string;
+  enabledAudioStreamingLanguageCode: boolean;
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -319,11 +321,13 @@ export type ConnectionOptionsState = Pick<
   | "audio"
   | "audioBitRate"
   | "audioCodecType"
+  | "audioStreamingLanguageCode"
   | "bundleId"
   | "clientId"
-  | "dataChannels"
   | "dataChannelSignaling"
+  | "dataChannels"
   | "e2ee"
+  | "enabledAudioStreamingLanguageCode"
   | "enabledBundleId"
   | "enabledClientId"
   | "enabledDataChannel"

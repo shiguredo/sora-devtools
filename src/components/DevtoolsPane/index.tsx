@@ -13,6 +13,7 @@ import { AudioContentHintForm } from "./AudioContentHintForm";
 import { AudioForm } from "./AudioForm";
 import { AudioInputForm } from "./AudioInputForm";
 import { AudioOutputForm } from "./AudioOutputForm";
+import { AudioStreamingLanguageCodeForm } from "./AudioStreamingLanguageCodeForm";
 import { AudioTrackForm } from "./AudioTrackForm";
 import { AutoGainControlForm } from "./AutoGainControlForm";
 import { BlurRadiusForm } from "./BlurRadiusForm";
@@ -206,6 +207,37 @@ const RowSignalingOptions: React.FC = () => {
   );
 };
 
+const RowAdvancedOptions: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(true);
+  const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode);
+  const enabledOptions = [audioStreamingLanguageCode !== ""].some((e) => e);
+  const linkClassNames = ["btn-collapse-options"];
+  if (collapsed) {
+    linkClassNames.push("collapsed");
+  }
+  if (enabledOptions) {
+    linkClassNames.push("fw-bold");
+  }
+  const onClick = (event: React.MouseEvent): void => {
+    event.preventDefault();
+    setCollapsed(!collapsed);
+  };
+  return (
+    <Row className="form-row">
+      <Col>
+        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+          Advanced options
+        </a>
+      </Col>
+      <Collapse in={!collapsed}>
+        <div>
+          <AudioStreamingLanguageCodeForm />
+        </div>
+      </Collapse>
+    </Row>
+  );
+};
+
 export const RowMediaType: React.FC = () => {
   return (
     <>
@@ -378,6 +410,7 @@ export const DevtoolsPane: React.FC = () => {
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
+      <RowAdvancedOptions />
       <hr className="hr-form" />
       {role !== "recvonly" ? (
         <>
