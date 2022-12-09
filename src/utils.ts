@@ -675,9 +675,12 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
   if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
     connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode;
   }
-  // lyraBitrate
-  if (connectionOptionsState.lyraBitrate) {
-    connectionOptions.audioLyraParamsBitrate = parseInt(connectionOptionsState.lyraBitrate, 10) as 3200 | 6000 | 9200;
+  // lyraParamsBitrate
+  if (connectionOptionsState.lyraParamsBitrate) {
+    connectionOptions.audioLyraParamsBitrate = parseInt(connectionOptionsState.lyraParamsBitrate, 10) as
+      | 3200
+      | 6000
+      | 9200;
   }
   return connectionOptions;
 }

@@ -32,7 +32,7 @@ import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm";
 import { FacingModeForm } from "./FacingModeForm";
 import { FakeVolumeForm } from "./FakeVolumeForm";
 import { FrameRateForm } from "./FrameRateForm";
-import { LyraBitrateForm } from "./LyraBitrateForm";
+import { LyraParamsBitrateForm } from "./LyraParamsBitrateForm";
 import { MediaProcessorsNoiseSuppressionForm } from "./MediaProcessorsNoiseSuppressionForm";
 import { MediaTypeForm } from "./MediaTypeForm";
 import { MetadataForm } from "./MetadataForm";
@@ -343,7 +343,7 @@ const RowMediaOptions: React.FC = () => {
               <FacingModeForm />
             </Col>
             <Col className="col-auto">
-              <LyraBitrateForm />
+              <LyraParamsBitrateForm />
             </Col>
           </Row>
           <UpdateMediaStreamButton />
