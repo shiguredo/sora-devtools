@@ -33,6 +33,18 @@ import {
 
 import { slice } from "./slice";
 
+export const initLyra = () => {
+  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
+    // Lyra の初期化を行う。
+    // この時点では wasm ファイルのロードは行われず、
+    // 実際に Lyra コーデックの音声を送信・受信するまでは特別な処理は発生しない。
+    // 未対応環境だった場合には、Lyra コーデックが必要になった段階でエラーが発生する。
+    const wasmPath = "https://lyra-wasm.shiguredo.app/2022.2.0/";
+    const modelPath = wasmPath;
+    Sora.initLyra({ wasmPath, modelPath });
+  };
+};
+
 // ページ初期化処理
 export const setInitialParameter = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
@@ -861,13 +873,6 @@ export const connectSora = () => {
     const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptionsState = pickConnectionOptionsState(state);
     const connectionOptions = createConnectOptions(connectionOptionsState);
-
-    // FIXME:
-    if (connectionOptions.audioCodecType === "LYRA") {
-      // TODO: 既に初期化済みかどうかをチェック
-      Sora.initLyraModule("https://lyra-wasm.shiguredo.app/2022.1.0/", "https://lyra-wasm.shiguredo.app/2022.1.0/");
-    }
-
     const metadata = parseMetadata(state.enabledMetadata, state.metadata);
     let sora, mediaStream, gainNode;
     try {

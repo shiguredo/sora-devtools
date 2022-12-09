@@ -1,4 +1,5 @@
 self.addEventListener('install', (e) => {
+  // TODO
   console.log('[Service Worker] Install');
   e.waitUntil(self.skipWaiting());
 });
