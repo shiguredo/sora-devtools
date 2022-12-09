@@ -9,6 +9,12 @@
 - FIX
     - バグ修正
 
+## develop
+- [ADD] audioStreamingLanguageCode を入力できるようにする
+    - @melpon
+- [FIX] jitter が動作していなかったのを修正
+    - @melpon
+
 ## 2022.3.0
 - [UPDATE] media-processors/virtual-background を 2022.6.1 に更新する
     - https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1
