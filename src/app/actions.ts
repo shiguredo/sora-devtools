@@ -33,18 +33,6 @@ import {
 
 import { slice } from "./slice";
 
-export const initLyra = () => {
-  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
-    // Lyra の初期化を行う。
-    // この時点では wasm ファイルのロードは行われず、
-    // 実際に Lyra コーデックの音声を送信・受信するまでは特別な処理は発生しない。
-    // 未対応環境だった場合には、Lyra コーデックが必要になった段階でエラーが発生する。
-    const wasmPath = "https://lyra-wasm.shiguredo.app/2022.2.0/";
-    const modelPath = wasmPath;
-    Sora.initLyra({ wasmPath, modelPath });
-  };
-};
-
 // ページ初期化処理
 export const setInitialParameter = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
@@ -1307,6 +1295,36 @@ export const setCameraDevice = (cameraDevice: boolean) => {
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream);
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice));
+  };
+};
+
+// Lyra の初期化
+export const initLyra = () => {
+  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
+    // Lyra の初期化を行う。
+    // この時点では wasm ファイルのロードは行われず、
+    // 実際に Lyra コーデックの音声を送信・受信するまでは特別な処理は発生しない。
+    // 未対応環境だった場合には、Lyra コーデックが必要になった段階でエラーが発生する。
+    const wasmPath = "https://lyra-wasm.shiguredo.app/2022.2.0/";
+    const modelPath = wasmPath;
+    Sora.initLyra({ wasmPath, modelPath });
+
+    // lyra-wasm は SharedArrayBuffer を使っているので、それを有効にするために必要な
+    // HTTP 応答ヘッダの設定を行うサービスワーカを登録する。
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").then((registration) => {
+        registration.addEventListener("updatefound", () => {
+          const newServiceWorker = registration.installing;
+          if (newServiceWorker !== null) {
+            newServiceWorker.addEventListener("statechange", () => {
+              if (newServiceWorker.state == "activated") {
+                location.reload();
+              }
+            });
+          }
+        });
+      });
+    }
   };
 };
 
