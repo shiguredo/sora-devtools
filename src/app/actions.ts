@@ -214,6 +214,9 @@ export const setInitialParameter = () => {
     if (qsParams.audioStreamingLanguageCode !== undefined) {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode));
     }
+    if (qsParams.lyraParamsBitrate !== undefined) {
+      dispatch(slice.actions.setLyraParamsBitrate(qsParams.lyraParamsBitrate));
+    }
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
@@ -799,6 +802,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
+    lyraParamsBitrate: state.lyraParamsBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     simulcast: state.simulcast,
@@ -861,13 +865,6 @@ export const connectSora = () => {
     const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptionsState = pickConnectionOptionsState(state);
     const connectionOptions = createConnectOptions(connectionOptionsState);
-
-    // FIXME:
-    if (connectionOptions.audioCodecType === "LYRA") {
-      // TODO: 既に初期化済みかどうかをチェック
-      Sora.initLyraModule("https://lyra-wasm.shiguredo.app/2022.1.0/", "https://lyra-wasm.shiguredo.app/2022.1.0/");
-    }
-
     const metadata = parseMetadata(state.enabledMetadata, state.metadata);
     let sora, mediaStream, gainNode;
     try {
@@ -1305,6 +1302,36 @@ export const setCameraDevice = (cameraDevice: boolean) => {
   };
 };
 
+// Lyra の初期化
+export const initLyra = () => {
+  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
+    // Lyra の初期化を行う。
+    // この時点では wasm ファイルのロードは行われず、
+    // 実際に Lyra コーデックの音声を送信・受信するまでは特別な処理は発生しない。
+    // 未対応環境だった場合には、Lyra コーデックが必要になった段階でエラーが発生する。
+    const wasmPath = "https://lyra-wasm.shiguredo.app/2022.2.0/";
+    const modelPath = wasmPath;
+    Sora.initLyra({ wasmPath, modelPath });
+
+    // lyra-wasm は SharedArrayBuffer を使っているので、それを有効にするために必要な
+    // HTTP 応答ヘッダの設定を行うサービスワーカを登録する。
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").then((registration) => {
+        registration.addEventListener("updatefound", () => {
+          const newServiceWorker = registration.installing;
+          if (newServiceWorker !== null) {
+            newServiceWorker.addEventListener("statechange", () => {
+              if (newServiceWorker.state == "activated") {
+                location.reload();
+              }
+            });
+          }
+        });
+      });
+    }
+  };
+};
+
 export const {
   clearDataChannelMessages,
   deleteAlertMessage,
@@ -1346,6 +1373,7 @@ export const {
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
   setLogMessages,
+  setLyraParamsBitrate,
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,

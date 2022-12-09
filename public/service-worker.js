@@ -1,5 +1,4 @@
 self.addEventListener('install', (e) => {
-  console.log('[Service Worker] Install');
   e.waitUntil(self.skipWaiting());
 });
 
@@ -18,13 +17,10 @@ self.addEventListener('fetch', (e) => {
         return response;
       }
 
-      // SharedArrayBuffer 用に COEP と COOP を設定する
+      // Lyra で使用している SharedArrayBuffer 用に COEP と COOP を設定する
       const headers = new Headers(response.headers);
       headers.set("Cross-Origin-Embedder-Policy", "require-corp");
       headers.set("Cross-Origin-Opener-Policy", "same-origin");
-      // headers.set("Access-Control-Allow-Origin", "*"); // TODO
-      // headers.set("Access-Control-Allow-Private-Network", "true"); // TODO
-      headers.set("Content-Security-Policy", "treat-as-public-address"); // TODO
 
       return new Response(response.body, {
         status: response.status,

@@ -25,6 +25,7 @@ import {
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
+  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -76,6 +77,7 @@ export type SoraDevtoolsState = {
   enabledSignalingUrlCandidates: boolean;
   audioStreamingLanguageCode: string;
   enabledAudioStreamingLanguageCode: boolean;
+  lyraParamsBitrate: typeof LYRA_PARAMS_BITRATES[number];
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -333,6 +335,7 @@ export type ConnectionOptionsState = Pick<
   | "enabledDataChannel"
   | "enabledSignalingNotifyMetadata"
   | "ignoreDisconnectWebSocket"
+  | "lyraParamsBitrate"
   | "multistream"
   | "signalingNotifyMetadata"
   | "simulcast"
