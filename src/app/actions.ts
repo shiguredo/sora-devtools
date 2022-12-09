@@ -214,6 +214,9 @@ export const setInitialParameter = () => {
     if (qsParams.audioStreamingLanguageCode !== undefined) {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode));
     }
+    if (qsParams.lyraBitrate !== undefined) {
+      dispatch(slice.actions.setLyraBitrate(qsParams.lyraBitrate));
+    }
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
@@ -799,6 +802,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
+    lyraBitrate: state.lyraBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     simulcast: state.simulcast,
@@ -1369,6 +1373,7 @@ export const {
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
   setLogMessages,
+  setLyraBitrate,
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,

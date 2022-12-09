@@ -54,6 +54,7 @@ const initialState: SoraDevtoolsState = {
   enabledSignalingUrlCandidates: false,
   audioStreamingLanguageCode: "",
   enabledAudioStreamingLanguageCode: false,
+  lyraBitrate: "",
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -522,6 +523,9 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState["enabledAudioStreamingLanguageCode"]>
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload;
+    },
+    setLyraBitrate: (state, action: PayloadAction<SoraDevtoolsState["lyraBitrate"]>) => {
+      state.lyraBitrate = action.payload;
     },
   },
 });
