@@ -233,6 +233,11 @@ const RowAdvancedOptions: React.FC = () => {
       <Collapse in={!collapsed}>
         <div>
           <AudioStreamingLanguageCodeForm />
+          <Row className="form-row">
+            <Col className="col-auto">
+              <LyraParamsBitrateForm />
+            </Col>
+          </Row>
         </div>
       </Collapse>
     </Row>
@@ -341,9 +346,6 @@ const RowMediaOptions: React.FC = () => {
             </Col>
             <Col className="col-auto">
               <FacingModeForm />
-            </Col>
-            <Col className="col-auto">
-              <LyraParamsBitrateForm />
             </Col>
           </Row>
           <UpdateMediaStreamButton />
