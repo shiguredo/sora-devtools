@@ -13,6 +13,7 @@ import { AudioContentHintForm } from "./AudioContentHintForm";
 import { AudioForm } from "./AudioForm";
 import { AudioInputForm } from "./AudioInputForm";
 import { AudioOutputForm } from "./AudioOutputForm";
+import { AudioStreamingLanguageCodeForm } from "./AudioStreamingLanguageCodeForm";
 import { AudioTrackForm } from "./AudioTrackForm";
 import { AutoGainControlForm } from "./AutoGainControlForm";
 import { BlurRadiusForm } from "./BlurRadiusForm";
@@ -31,6 +32,7 @@ import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm";
 import { FacingModeForm } from "./FacingModeForm";
 import { FakeVolumeForm } from "./FakeVolumeForm";
 import { FrameRateForm } from "./FrameRateForm";
+import { LyraParamsBitrateForm } from "./LyraParamsBitrateForm";
 import { MediaProcessorsNoiseSuppressionForm } from "./MediaProcessorsNoiseSuppressionForm";
 import { MediaTypeForm } from "./MediaTypeForm";
 import { MetadataForm } from "./MetadataForm";
@@ -200,6 +202,42 @@ const RowSignalingOptions: React.FC = () => {
           <SignalingUrlCandidatesForm />
           <DataChannelsForm />
           <DataChannelForm />
+        </div>
+      </Collapse>
+    </Row>
+  );
+};
+
+const RowAdvancedOptions: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(true);
+  const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode);
+  const enabledOptions = [audioStreamingLanguageCode !== ""].some((e) => e);
+  const linkClassNames = ["btn-collapse-options"];
+  if (collapsed) {
+    linkClassNames.push("collapsed");
+  }
+  if (enabledOptions) {
+    linkClassNames.push("fw-bold");
+  }
+  const onClick = (event: React.MouseEvent): void => {
+    event.preventDefault();
+    setCollapsed(!collapsed);
+  };
+  return (
+    <Row className="form-row">
+      <Col>
+        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+          Advanced options
+        </a>
+      </Col>
+      <Collapse in={!collapsed}>
+        <div>
+          <AudioStreamingLanguageCodeForm />
+          <Row className="form-row">
+            <Col className="col-auto">
+              <LyraParamsBitrateForm />
+            </Col>
+          </Row>
         </div>
       </Collapse>
     </Row>
@@ -378,6 +416,7 @@ export const DevtoolsPane: React.FC = () => {
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
+      <RowAdvancedOptions />
       <hr className="hr-form" />
       {role !== "recvonly" ? (
         <>

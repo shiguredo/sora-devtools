@@ -1,13 +1,13 @@
 import React from "react";
 
 import { useAppSelector } from "@/app/hooks";
-import type { RTCMediaStreamTrackStats } from "@/types";
+import type { RTCInboundRtpStreamStats } from "@/types";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
   mediaStream: MediaStream | null,
   type: "video" | "audio"
-): RTCMediaStreamTrackStats | undefined {
+): RTCInboundRtpStreamStats | undefined {
   if (mediaStream === null) {
     return undefined;
   }
@@ -22,16 +22,22 @@ function mediaStreamStatsReportFilter(
     });
   }
   const targetStats = statsReport.find((stats) => {
-    if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
+    if (stats.type === "inbound-rtp") {
       return false;
     }
-    if ("trackIdentifier" in stats) {
-      const mediaStreamStats = stats as RTCMediaStreamTrackStats;
-      return mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier);
+    if (!("kind" in stats) || !("trackIdentifier" in stats)) {
+      return false;
     }
-    return false;
+    const inboundRtpStats = stats as RTCInboundRtpStreamStats;
+    if (inboundRtpStats.kind !== type) {
+      return false;
+    }
+    if (!trackIds.includes(inboundRtpStats.trackIdentifier)) {
+      return false;
+    }
+    return true;
   });
-  return targetStats as RTCMediaStreamTrackStats;
+  return targetStats as RTCInboundRtpStreamStats;
 }
 
 type Props = {
@@ -41,27 +47,29 @@ type Props = {
 export const JitterButter: React.FC<Props> = (props) => {
   const statsReport = useAppSelector((state) => state.soraContents.statsReport);
   const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport);
-  const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
-    statsReport,
-    props.stream,
-    props.type
-  ) as RTCMediaStreamTrackStats;
-  const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
-    prevStatsReport,
-    props.stream,
-    props.type
-  ) as RTCMediaStreamTrackStats;
-  if (!currentMediaStreamTrackStatsReport) {
+  const currentInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(statsReport, props.stream, props.type);
+  const prevInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(prevStatsReport, props.stream, props.type);
+  if (currentInboundRtpStreamStatsReport === undefined) {
     return null;
   }
-  let jitterBufferDelay = currentMediaStreamTrackStatsReport.jitterBufferDelay;
-  let jitterBufferEmittedCount = currentMediaStreamTrackStatsReport.jitterBufferEmittedCount;
-  if (prevMediaStreamTrackStatsReport) {
+  if (
+    currentInboundRtpStreamStatsReport.jitterBufferDelay === undefined ||
+    currentInboundRtpStreamStatsReport.jitterBufferEmittedCount === undefined
+  ) {
+    return null;
+  }
+  let jitterBufferDelay = currentInboundRtpStreamStatsReport.jitterBufferDelay;
+  let jitterBufferEmittedCount = currentInboundRtpStreamStatsReport.jitterBufferEmittedCount;
+  if (
+    prevInboundRtpStreamStatsReport !== undefined &&
+    prevInboundRtpStreamStatsReport.jitterBufferDelay !== undefined &&
+    prevInboundRtpStreamStatsReport.jitterBufferEmittedCount !== undefined
+  ) {
     jitterBufferDelay =
-      currentMediaStreamTrackStatsReport.jitterBufferDelay - prevMediaStreamTrackStatsReport.jitterBufferDelay;
+      currentInboundRtpStreamStatsReport.jitterBufferDelay - prevInboundRtpStreamStatsReport.jitterBufferDelay;
     jitterBufferEmittedCount =
-      currentMediaStreamTrackStatsReport.jitterBufferEmittedCount -
-      prevMediaStreamTrackStatsReport.jitterBufferEmittedCount;
+      currentInboundRtpStreamStatsReport.jitterBufferEmittedCount -
+      prevInboundRtpStreamStatsReport.jitterBufferEmittedCount;
   }
   const currentJitterBufferDelay = Math.floor((jitterBufferDelay / jitterBufferEmittedCount) * 1000);
   let borderClassName = "normal-jitter-buffer";

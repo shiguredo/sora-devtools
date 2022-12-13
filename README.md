@@ -46,6 +46,9 @@ https://sora-devtools.shiguredo.jp/
     - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
 - Bootstrap
     - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
+- Media Processors
+    - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
+    - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
 
 ## 特徴
 

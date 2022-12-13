@@ -63,7 +63,13 @@
     "description": "クライアントが参加や離脱したときに送られるシグナリング通知に含まれるメタデータを指定します。"
   },
   "signalingUrlCandidates": {
-    "description": "シグナリングをするURLを複数指定します。"
+    "description": "シグナリングをするURLを改行区切りで複数指定します。"
+  },
+  "audioStreamingLanguageCode": {
+    "description": "音声解析用の言語コードを指定します。"
+  },
+  "lyraParamsBitrate": {
+    "description": "音声に Lyra コーデックを使った場合のビットレートを指定します。"
   },
   "dataChannels": {
     "description": "メッセージング用の DataChannel を指定します。"

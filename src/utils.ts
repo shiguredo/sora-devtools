@@ -113,6 +113,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     audio: parseBooleanParameter(qs.audio),
     audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
     audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
+    audioStreamingLanguageCode: parseStringParameter(qs.audioStreamingLanguageCode),
     autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
     bundleId: parseStringParameter(qs.bundleId),
     channelId: parseStringParameter(qs.channelId),
@@ -669,6 +670,17 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
     if (Array.isArray(dataChannels)) {
       connectionOptions.dataChannels = dataChannels;
     }
+  }
+  // audioStreamingLanguageCode
+  if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
+    connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode;
+  }
+  // lyraParamsBitrate
+  if (connectionOptionsState.lyraParamsBitrate) {
+    connectionOptions.audioLyraParamsBitrate = parseInt(connectionOptionsState.lyraParamsBitrate, 10) as
+      | 3200
+      | 6000
+      | 9200;
   }
   return connectionOptions;
 }

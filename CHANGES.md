@@ -9,6 +9,21 @@
 - FIX
     - バグ修正
 
+## develop
+
+## 2022.4.0
+- [ADD] /devtools ページ読み込み時に service worker を登録
+    - Lyra で SharedArrayBuffer を使っているので、それを有効にするために COOP および COEP ヘッダを設定している
+    - @sile
+- [ADD] Advanced options に lyraParamsBitrate リストボックスを追加
+    - @sile
+- [ADD] audioCodecType の選択肢に LYRA を追加
+    - @sile
+- [ADD] audioStreamingLanguageCode を入力できるようにする
+    - @melpon
+- [FIX] jitter が動作していなかったのを修正
+    - @melpon
+
 ## 2022.3.0
 - [UPDATE] media-processors/virtual-background を 2022.6.1 に更新する
     - https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1

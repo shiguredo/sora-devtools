@@ -52,6 +52,9 @@ const initialState: SoraDevtoolsState = {
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
   enabledSignalingUrlCandidates: false,
+  audioStreamingLanguageCode: "",
+  enabledAudioStreamingLanguageCode: false,
+  lyraParamsBitrate: "",
   fakeVolume: "0",
   fakeContents: {
     worker: null,
@@ -511,6 +514,18 @@ export const slice = createSlice({
     },
     setFacingMode: (state, action: PayloadAction<SoraDevtoolsState["facingMode"]>) => {
       state.facingMode = action.payload;
+    },
+    setAudioStreamingLanguageCode: (state, action: PayloadAction<SoraDevtoolsState["audioStreamingLanguageCode"]>) => {
+      state.audioStreamingLanguageCode = action.payload;
+    },
+    setEnabledAudioStreamingLanguageCode: (
+      state,
+      action: PayloadAction<SoraDevtoolsState["enabledAudioStreamingLanguageCode"]>
+    ) => {
+      state.enabledAudioStreamingLanguageCode = action.payload;
+    },
+    setLyraParamsBitrate: (state, action: PayloadAction<SoraDevtoolsState["lyraParamsBitrate"]>) => {
+      state.lyraParamsBitrate = action.payload;
     },
   },
 });

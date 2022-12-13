@@ -211,13 +211,20 @@ export const setInitialParameter = () => {
     if (qsParams.role !== undefined) {
       dispatch(slice.actions.setRole(qsParams.role));
     }
+    if (qsParams.audioStreamingLanguageCode !== undefined) {
+      dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode));
+    }
+    if (qsParams.lyraParamsBitrate !== undefined) {
+      dispatch(slice.actions.setLyraParamsBitrate(qsParams.lyraParamsBitrate));
+    }
     dispatch(slice.actions.setInitialFakeContents());
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
+      audioStreamingLanguageCode,
       bundleId,
       clientId,
-      dataChannels,
       dataChannelSignaling,
+      dataChannels,
       e2ee,
       ignoreDisconnectWebSocket,
       metadata,
@@ -265,6 +272,10 @@ export const setInitialParameter = () => {
     // dataChannels が存在した場合は enabledDataChannels をセットする
     if (dataChannels !== "") {
       dispatch(slice.actions.setEnabledDataChannels(true));
+    }
+    // audioStreamingLanguageCode が存在した場合は enabledAudioStreamingLanguageCode をセットする
+    if (audioStreamingLanguageCode !== "") {
+      dispatch(slice.actions.setEnabledAudioStreamingLanguageCode(true));
     }
     dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
   };
@@ -345,6 +356,11 @@ export const copyURL = () => {
       fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
       // mute
       mute: state.mute === true ? true : undefined,
+      // audioStreamingLanguageCode
+      audioStreamingLanguageCode:
+        state.audioStreamingLanguageCode !== "" && state.enabledAudioStreamingLanguageCode
+          ? state.audioStreamingLanguageCode
+          : undefined,
     };
     const queryStrings = Object.keys(parameters)
       .map((key) => {
@@ -774,16 +790,19 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     audio: state.audio,
     audioBitRate: state.audioBitRate,
     audioCodecType: state.audioCodecType,
+    audioStreamingLanguageCode: state.audioStreamingLanguageCode,
     bundleId: state.bundleId,
     clientId: state.clientId,
-    dataChannels: state.enabledDataChannels ? state.dataChannels : "",
     dataChannelSignaling: state.dataChannelSignaling,
+    dataChannels: state.enabledDataChannels ? state.dataChannels : "",
     e2ee: state.e2ee,
+    enabledAudioStreamingLanguageCode: state.enabledAudioStreamingLanguageCode,
     enabledBundleId: state.enabledBundleId,
     enabledClientId: state.enabledClientId,
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
+    lyraParamsBitrate: state.lyraParamsBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     simulcast: state.simulcast,
@@ -1283,6 +1302,36 @@ export const setCameraDevice = (cameraDevice: boolean) => {
   };
 };
 
+// Lyra の初期化
+export const initLyra = () => {
+  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
+    // Lyra の初期化を行う。
+    // この時点では wasm ファイルのロードは行われず、
+    // 実際に Lyra コーデックの音声を送信・受信するまでは特別な処理は発生しない。
+    // 未対応環境だった場合には、Lyra コーデックが必要になった段階でエラーが発生する。
+    const wasmPath = "https://lyra-wasm.shiguredo.app/2022.2.0/";
+    const modelPath = wasmPath;
+    Sora.initLyra({ wasmPath, modelPath });
+
+    // lyra-wasm は SharedArrayBuffer を使っているので、それを有効にするために必要な
+    // HTTP 応答ヘッダの設定を行うサービスワーカを登録する。
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").then((registration) => {
+        registration.addEventListener("updatefound", () => {
+          const newServiceWorker = registration.installing;
+          if (newServiceWorker !== null) {
+            newServiceWorker.addEventListener("statechange", () => {
+              if (newServiceWorker.state == "activated") {
+                location.reload();
+              }
+            });
+          }
+        });
+      });
+    }
+  };
+};
+
 export const {
   clearDataChannelMessages,
   deleteAlertMessage,
@@ -1316,12 +1365,15 @@ export const {
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
+  setAudioStreamingLanguageCode,
+  setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
   setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
   setLogMessages,
+  setLyraParamsBitrate,
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,

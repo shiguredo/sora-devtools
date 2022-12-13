@@ -25,6 +25,7 @@ import {
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
+  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -74,6 +75,9 @@ export type SoraDevtoolsState = {
   enabledMetadata: boolean;
   enabledSignalingNotifyMetadata: boolean;
   enabledSignalingUrlCandidates: boolean;
+  audioStreamingLanguageCode: string;
+  enabledAudioStreamingLanguageCode: boolean;
+  lyraParamsBitrate: typeof LYRA_PARAMS_BITRATES[number];
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
@@ -218,6 +222,26 @@ export interface RTCMediaStreamTrackStats extends RTCStats {
   prevJitterBufferEmittedCount: number;
 }
 
+// RTCInboundRtpStreamStats に jitterBuffer 関連を追加
+// ref: https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats
+export interface RTCInboundRtpStreamStats extends RTCReceivedRtpStreamStats {
+  // 元々定義されてたやつ
+  firCount?: number;
+  framesDecoded?: number;
+  nackCount?: number;
+  pliCount?: number;
+  qpSum?: number;
+  remoteId?: string;
+
+  // 新しく追加したやつ
+  trackIdentifier: string;
+  kind: string;
+  jitterBufferDelay?: number;
+  jitterBufferTargetDelay?: number;
+  jitterBufferEmittedCount?: number;
+  jitterBufferMinimumDelay?: number;
+}
+
 // Debug log message の Type
 export type LogMessage = {
   timestamp: number;
@@ -299,16 +323,19 @@ export type ConnectionOptionsState = Pick<
   | "audio"
   | "audioBitRate"
   | "audioCodecType"
+  | "audioStreamingLanguageCode"
   | "bundleId"
   | "clientId"
-  | "dataChannels"
   | "dataChannelSignaling"
+  | "dataChannels"
   | "e2ee"
+  | "enabledAudioStreamingLanguageCode"
   | "enabledBundleId"
   | "enabledClientId"
   | "enabledDataChannel"
   | "enabledSignalingNotifyMetadata"
   | "ignoreDisconnectWebSocket"
+  | "lyraParamsBitrate"
   | "multistream"
   | "signalingNotifyMetadata"
   | "simulcast"
