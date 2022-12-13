@@ -13,7 +13,7 @@
 - [ADD] /devtools ページ読み込み時に service worker を登録する
     - Lyra で SharedArrayBuffer を使っているので、それを有効にするために COOP および COEP ヘッダを設定している
     - @sile
-- [ADD] Media options に lyraParamsBitrate リストボックスを追加
+- [ADD] Advanced options に lyraParamsBitrate リストボックスを追加
     - @sile
 - [ADD] audioCodecType の選択肢に LYRA を追加
     - @sile
