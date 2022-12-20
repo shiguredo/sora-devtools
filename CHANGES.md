@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2022.5.0
+
 - [UPDATE] sora-js-sdk を 2022.3.0 に更新する
     - @sile
 - [CHANGE] E2EE の Wasm ダウンロード URL を変更する
