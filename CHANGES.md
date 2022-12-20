@@ -11,7 +11,15 @@
 
 ## develop
 
+## 2022.5.0
+
+- [UPDATE] sora-js-sdk を 2022.3.0 に更新する
+    - @sile
+- [CHANGE] E2EE の Wasm ダウンロード URL を変更する
+    - @voluntas
+
 ## 2022.4.0
+
 - [ADD] /devtools ページ読み込み時に service worker を登録
     - Lyra で SharedArrayBuffer を使っているので、それを有効にするために COOP および COEP ヘッダを設定している
     - @sile

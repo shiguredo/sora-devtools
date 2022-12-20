@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2022.4.0",
+  "version": "2022.5.0",
   "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
@@ -22,23 +22,23 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "13.0.6",
+    "@next/eslint-plugin-next": "13.0.7",
     "@testing-library/jest-dom": "5.16.5",
-    "@types/node": "18.11.14",
+    "@types/node": "18.11.17",
     "@types/react": "18.0.26",
     "@types/react-redux": "7.1.24",
     "@types/redux-logger": "3.0.9",
     "@types/resize-observer-browser": "0.1.7",
-    "@typescript-eslint/eslint-plugin": "5.46.1",
-    "@typescript-eslint/parser": "5.46.1",
-    "eslint": "8.29.0",
+    "@typescript-eslint/eslint-plugin": "5.47.0",
+    "@typescript-eslint/parser": "5.47.0",
+    "eslint": "8.30.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-react": "7.31.11",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-simple-import-sort": "8.0.0",
     "husky": "8.0.2",
     "jest": "29.3.1",
-    "next": "13.0.6",
+    "next": "13.0.7",
     "prettier": "2.8.1",
     "typescript": "4.9.4"
   },
@@ -54,6 +54,6 @@
     "react-draggable": "4.4.5",
     "react-redux": "8.0.5",
     "redux-logger": "3.0.6",
-    "sora-js-sdk": "2022.2.0"
+    "sora-js-sdk": "2022.3.0"
   }
 }
