@@ -11,6 +11,9 @@
 
 ## develop
 
+- [FIX] 接続中には「lyraParamsBitrate」設定を変更不可にする
+- @sile
+
 ## 2022.5.2
 
 - [FIX] dist/ 以下の生成物が更新されていなかったのを修正
