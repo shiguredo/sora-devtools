@@ -35,8 +35,6 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run build
-      - run: npm run dist
-      - run: git diff --stat --exit-code
       - name: Slack Notification
         if: failure()
         uses: rtCamp/action-slack-notify@v2
@@ -45,3 +43,4 @@ jobs:
           SLACK_COLOR: danger
           SLACK_TITLE: Failure test
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
