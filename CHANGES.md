@@ -11,13 +11,16 @@
 
 ## develop
 
+- [UPDATE] sora-js-sdk を 2023.1.0-canary.0 に更新
+    - Lyra 音声コーデックの Safari 対応の取り込み
+    - @sile
 - [FIX] 接続中には「lyraParamsBitrate」設定を変更不可にする
-- @sile
+    - @sile
 
 ## 2022.5.2
 
 - [FIX] dist/ 以下の生成物が更新されていなかったのを修正
-   - @sile
+    - @sile
 
 ## 2022.5.1
 
