@@ -11,6 +11,8 @@
 
 ## develop
 
+- [FIX] "copy URL" ボタンを押しても lyraParamsBitrate の値が URL に反映されない問題を修正
+    - @sile
 - [UPDATE] sora-js-sdk を 2023.1.0-canary.0 に更新
     - Lyra 音声コーデックの Safari 対応の取り込み
     - @sile
