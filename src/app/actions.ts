@@ -361,6 +361,7 @@ export const copyURL = () => {
         state.audioStreamingLanguageCode !== "" && state.enabledAudioStreamingLanguageCode
           ? state.audioStreamingLanguageCode
           : undefined,
+      lyraParamsBitrate: state.lyraParamsBitrate ? state.lyraParamsBitrate : undefined,
     };
     const queryStrings = Object.keys(parameters)
       .map((key) => {
