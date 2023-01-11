@@ -16,6 +16,7 @@ import {
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
+  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -164,6 +165,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
+    lyraParamsBitrate: parseSpecifiedStringParameter(qs.lyraParamsBitrate, LYRA_PARAMS_BITRATES),
   };
   // undefined の項目を削除する
   (Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
