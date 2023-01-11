@@ -17,6 +17,8 @@
     - @voluntas
 - [FIX] Enable camera device と Enable audio track を false に設定しても "copy URL" に反映されない問題を修正
     - @torikizi
+- [FIX] "copy URL" ボタンを押しても lyraParamsBitrate の値が URL に反映されない問題を修正
+    - @sile
 - [FIX] 接続中には「lyraParamsBitrate」設定を変更不可にする
     - @sile
 
