@@ -11,6 +11,9 @@
 
 ## develop
 
+- [UPDATE] sora-js-sdk を 2023.1.0-canary.1 に更新
+    - SDP 再利用対応の取り込み
+    - @sile
 - [UPDATE] sora-js-sdk を 2023.1.0-canary.0 に更新
     - Lyra 音声コーデックの Safari 対応の取り込み
     - @sile

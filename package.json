@@ -54,6 +54,6 @@
     "react-draggable": "4.4.5",
     "react-redux": "8.0.5",
     "redux-logger": "3.0.6",
-    "sora-js-sdk": "2023.1.0-canary.0"
+    "sora-js-sdk": "2023.1.0-canary.1"
   }
 }
