@@ -342,8 +342,8 @@ export const copyURL = () => {
       mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression === true ? true : undefined,
       // URL の長さ短縮のため false 以外は query string に含めない
       micDevice: state.micDevice === false ? false : undefined,
-      cameraDevice: state.cameraDevice === false ? true : undefined,
-      audioTrack: state.audioTrack === false ? true : undefined,
+      cameraDevice: state.cameraDevice === false ? false : undefined,
+      audioTrack: state.audioTrack === false ? false : undefined,
       videoTrack: state.videoTrack === false ? false : undefined,
       // signalingUrlCandidates
       signalingUrlCandidates:
