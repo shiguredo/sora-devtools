@@ -15,6 +15,8 @@
 
 - [UPDATE] sora-js-sdk を 2022.3.2 に更新する
     - @voluntas
+- [FIX] Enable camera device と Enable audio track を false に設定しても "copy URL" に反映されない問題を修正
+    - @torikizi
 
 ## 2022.5.2
 
