@@ -11,6 +11,19 @@
 
 ## develop
 
+## 2022.5.3
+
+- [UPDATE] sora-js-sdk を 2022.3.2 に更新する
+    - @voluntas
+- [FIX] Enable camera device と Enable audio track を false に設定しても "copy URL" に反映されない問題を修正
+    - @torikizi
+- [FIX] lyraParamsBitrate を設定しても Advanced options が bold にならなかったのを修正
+    - @torikizi
+- [FIX] "copy URL" ボタンを押しても lyraParamsBitrate の値が URL に反映されない問題を修正
+    - @sile
+- [FIX] 接続中には「lyraParamsBitrate」設定を変更不可にする
+    - @sile
+
 ## 2022.5.2
 
 - [FIX] dist/ 以下の生成物が更新されていなかったのを修正

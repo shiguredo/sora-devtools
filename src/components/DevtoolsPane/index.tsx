@@ -211,7 +211,8 @@ const RowSignalingOptions: React.FC = () => {
 const RowAdvancedOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode);
-  const enabledOptions = [audioStreamingLanguageCode !== ""].some((e) => e);
+  const lyraParamsBitrate = useAppSelector((state) => state.lyraParamsBitrate);
+  const enabledOptions = [audioStreamingLanguageCode !== "", lyraParamsBitrate !== ""].some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
   if (collapsed) {
     linkClassNames.push("collapsed");
