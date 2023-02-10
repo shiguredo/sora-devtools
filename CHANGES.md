@@ -17,6 +17,8 @@
 - [UPDATE] sora-js-sdk を 2023.1.0-canary.0 に更新
     - Lyra 音声コーデックの Safari 対応の取り込み
     - @sile
+- [FIX] sora_demo を sora_devtools に修正する
+    - @voluntas
 
 ## 2022.5.3
 

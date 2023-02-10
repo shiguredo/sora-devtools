@@ -1,7 +1,7 @@
 module.exports = {
   compress: true,
   swcMinify: false,
-  generateBuildId: async () => "sora_demo",
+  generateBuildId: async () => "sora_devtools",
   webpack: (config) => {
     config.resolve.fallback = {
       'lyra.wasm': false,
