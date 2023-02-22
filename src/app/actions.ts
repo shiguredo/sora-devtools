@@ -181,6 +181,9 @@ export const setInitialParameter = () => {
     if (qsParams.signalingUrlCandidates !== undefined) {
       dispatch(slice.actions.setSignalingUrlCandidates(qsParams.signalingUrlCandidates));
     }
+    if (qsParams.forwardingFilter !== undefined) {
+      dispatch(slice.actions.setForwardingFilter(qsParams.forwardingFilter));
+    }
     if (qsParams.dataChannels !== undefined) {
       dispatch(slice.actions.setDataChannels(qsParams.dataChannels));
     }
@@ -230,6 +233,7 @@ export const setInitialParameter = () => {
       metadata,
       signalingNotifyMetadata,
       signalingUrlCandidates,
+      forwardingFilter,
     } = getState();
     if (e2ee) {
       const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
@@ -264,6 +268,10 @@ export const setInitialParameter = () => {
     // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
     if (0 < signalingUrlCandidates.length) {
       dispatch(slice.actions.setEnabledSignalingUrlCandidates(true));
+    }
+    // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
+    if (forwardingFilter !== "") {
+      dispatch(slice.actions.setEnabledForwardingFilter(true));
     }
     // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
     if (dataChannelSignaling !== "" || ignoreDisconnectWebSocket !== "") {
@@ -329,6 +337,8 @@ export const copyURL = () => {
         state.signalingNotifyMetadata !== "" && state.enabledSignalingNotifyMetadata
           ? state.signalingNotifyMetadata
           : undefined,
+      forwardingFilter:
+        state.forwardingFilter !== "" && state.enabledForwardingFilter ? state.forwardingFilter : undefined,
       dataChannelSignaling:
         state.dataChannelSignaling !== "" && state.enabledDataChannel ? state.dataChannelSignaling : undefined,
       ignoreDisconnectWebSocket:
@@ -802,10 +812,12 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledClientId: state.enabledClientId,
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    enabledForwardingFilter: state.enabledForwardingFilter,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     lyraParamsBitrate: state.lyraParamsBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
+    forwardingFilter: state.forwardingFilter,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
     spotlight: state.spotlight,
@@ -1363,6 +1375,7 @@ export const {
   setEnabledClientId,
   setEnabledDataChannels,
   setEnabledDataChannel,
+  setEnabledForwardingFilter,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
@@ -1387,6 +1400,7 @@ export const {
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
+  setForwardingFilter,
   setSimulcast,
   setSimulcastRid,
   setSora,

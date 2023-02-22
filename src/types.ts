@@ -75,6 +75,7 @@ export type SoraDevtoolsState = {
   enabledMetadata: boolean;
   enabledSignalingNotifyMetadata: boolean;
   enabledSignalingUrlCandidates: boolean;
+  enabledForwardingFilter: boolean;
   audioStreamingLanguageCode: string;
   enabledAudioStreamingLanguageCode: boolean;
   lyraParamsBitrate: (typeof LYRA_PARAMS_BITRATES)[number];
@@ -113,6 +114,7 @@ export type SoraDevtoolsState = {
   signalingMessages: SignalingMessage[];
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
+  forwardingFilter: string;
   simulcast: (typeof SIMULCAST)[number];
   simulcastRid: (typeof SIMULCAST_RID)[number];
   spotlight: (typeof SPOTLIGHT)[number];
@@ -334,10 +336,12 @@ export type ConnectionOptionsState = Pick<
   | "enabledClientId"
   | "enabledDataChannel"
   | "enabledSignalingNotifyMetadata"
+  | "enabledForwardingFilter"
   | "ignoreDisconnectWebSocket"
   | "lyraParamsBitrate"
   | "multistream"
   | "signalingNotifyMetadata"
+  | "forwardingFilter"
   | "simulcast"
   | "simulcastRid"
   | "spotlight"

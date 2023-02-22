@@ -135,6 +135,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     showStats: parseBooleanParameter(qs.showStats),
     signalingNotifyMetadata: parseStringParameter(qs.signalingNotifyMetadata),
     signalingUrlCandidates: Array.isArray(signalingUrlCandidates) ? signalingUrlCandidates : undefined,
+    forwardingFilter: parseStringParameter(qs.forwardingFilter),
     simulcast: parseSpecifiedStringParameter(qs.simulcast, SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(qs.simulcastRid, SIMULCAST_RID),
     spotlight: parseSpecifiedStringParameter(qs.spotlight, SPOTLIGHT),
@@ -640,6 +641,10 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
   // signalingNotifyMetadata
   if (connectionOptionsState.enabledSignalingNotifyMetadata) {
     connectionOptions.signalingNotifyMetadata = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
+  }
+  // forwardingFilter
+  if (connectionOptionsState.enabledForwardingFilter) {
+    connectionOptions.forwardingFilter = parseMetadata(true, connectionOptionsState.forwardingFilter);
   }
   // bundleId
   if (connectionOptionsState.enabledBundleId) {

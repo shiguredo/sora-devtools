@@ -392,6 +392,13 @@ describe("setInitialParameter tests", () => {
     expect(store.getState().signalingNotifyMetadata).toEqual(value);
   });
 
+  it("should handle 'forwardingFilter'", async () => {
+    const value = "forwardingFilter";
+    setLocationSearch({ forwardingFilter: value });
+    await store.dispatch(setInitialParameter());
+    expect(store.getState().forwardingFilter).toEqual(value);
+  });
+
   it("should handle 'dataChannels'", async () => {
     const value = "dataChannels";
     setLocationSearch({ dataChannels: value });

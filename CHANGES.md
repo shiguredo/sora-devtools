@@ -11,6 +11,10 @@
 
 ## develop
 
+- [UPDATE] シグナリング時に転送フィルターを指定できるようにする
+    - @sile
+- [UPDATE] sora-js-sdk を 2023.1.0-canary.5 に更新
+    - @sile
 - [UPDATE] sora-js-sdk を 2023.1.0-canary.1 に更新
     - SDP 再利用対応の取り込み
     - @sile
