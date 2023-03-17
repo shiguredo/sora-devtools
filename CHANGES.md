@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] TypeScript を 5 系に上げる
+    - @voluntas
 - [UPDATE] シグナリング時に転送フィルターを指定できるようにする
     - @sile
 - [UPDATE] sora-js-sdk を 2023.1.0-canary.5 に更新
