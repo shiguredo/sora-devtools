@@ -1,4 +1,4 @@
-import { LightAdjustmentProcessorOptions } from "@shiguredo/light-adjustment";
+import { LightAdjustmentProcessorOptions, SelfieSegmentationFocusMask } from "@shiguredo/light-adjustment";
 import queryString from "query-string";
 import type { ConnectionOptions } from "sora-js-sdk";
 
@@ -255,14 +255,17 @@ export function getLightAdjustmentOptions(
 ): LightAdjustmentProcessorOptions {
   switch (lightAdjustment) {
     case "weak":
-      return { adjustmentLevel: 20, sharpnessLevel: 0 };
-    case "medium":
-      // TODOO: focusMask
-      return { adjustmentLevel: 50, sharpnessLevel: 20 };
-    case "strong":
-      // const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
-      // TODOO: focusMask
-      return { adjustmentLevel: 80, sharpnessLevel: 20, minIntensity: 10 };
+      return { adjustmentLevel: 30, sharpnessLevel: 0 };
+    case "medium": {
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+      const focusMask = new SelfieSegmentationFocusMask(assetsPath);
+      return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask };
+    }
+    case "strong": {
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+      const focusMask = new SelfieSegmentationFocusMask(assetsPath);
+      return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask };
+    }
     default:
       return {};
   }
