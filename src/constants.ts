@@ -82,6 +82,8 @@ export const RESIZE_MODE_TYPES = ["", "none", "crop-and-scale"] as const;
 
 export const BLUR_RADIUS = ["", "weak", "medium", "strong"] as const;
 
+export const LIGHT_ADJUSTMENT = ["", "weak", "medium", "strong"] as const;
+
 export const CONNECTION_STATUS = ["initializing", "disconnected", "disconnecting", "connected", "connecting"] as const;
 
 export const ROLES = ["sendrecv", "sendonly", "recvonly"] as const;

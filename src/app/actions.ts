@@ -1,4 +1,5 @@
 import { Dispatch } from "@reduxjs/toolkit";
+import { LightAdjustmentProcessor } from "@shiguredo/light-adjustment";
 import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type { ConnectionPublisher, ConnectionSubscriber, TransportType } from "sora-js-sdk";
@@ -409,6 +410,8 @@ type craeteMediaStreamPickedState = Pick<
   | "fakeContents"
   | "fakeVolume"
   | "frameRate"
+  | "lightAdjustment"
+  | "lightAdjustmentProcessor"
   | "mediaProcessorsNoiseSuppression"
   | "mediaType"
   | "micDevice"
@@ -591,6 +594,29 @@ async function createMediaStream(
     });
     let videoTrack = videoMediaStream.getVideoTracks()[0];
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack)));
+    if (state.lightAdjustment !== "" && LightAdjustmentProcessor.isSupported()) {
+      if (state.lightAdjustmentProcessor === null) {
+        throw new Error("Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'");
+      }
+
+      let options;
+      switch (state.lightAdjustment) {
+        case "weak":
+          options = {"adjustmentLevel": 20, "sharpnessLevel": 0};
+          break;
+        case "medium":
+          // TODOO: focusMask
+          options = {"adjustmentLevel": 50, "sharpnessLevel": 20};
+          break;
+        case "strong":
+          // const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+          // TODOO: focusMask
+          options = {"adjustmentLevel": 80, "sharpnessLevel": 20, "minIntensity": 10};
+          break;
+      }
+      state.lightAdjustmentProcessor.stopProcessing();
+      videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options);
+    }
     if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
       if (state.virtualBackgroundProcessor === null) {
         throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
@@ -705,15 +731,22 @@ function setSoraCallbacks(
       message["params"] = event.params;
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
-    const { fakeContents, soraContents, reconnect, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
+    const { fakeContents, soraContents, reconnect, lightAdjustmentProcessor, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
+    let originalTrack;
+    if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
+      originalTrack = lightAdjustmentProcessor.getOriginalTrack();
+      lightAdjustmentProcessor.stopProcessing();
+    }
     if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
-      const originalTrack = virtualBackgroundProcessor.getOriginalTrack();
-      if (originalTrack) {
-        originalTrack.stop();
-        dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+      if (originalTrack !== undefined) {
+        originalTrack = virtualBackgroundProcessor.getOriginalTrack();
       }
       virtualBackgroundProcessor.stopProcessing();
+    } 
+    if (originalTrack !== undefined) {
+      originalTrack.stop();
+      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
     } else {
       if (localMediaStream) {
         localMediaStream.getVideoTracks().forEach((track) => {
@@ -722,6 +755,7 @@ function setSoraCallbacks(
         });
       }
     }
+
     if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
       const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
       if (originalTrack) {
@@ -923,13 +957,20 @@ export const connectSora = () => {
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
       }
+      let originalTrack;
+      if (state.lightAdjustmentProcessor && state.lightAdjustmentProcessor.isProcessing()) {
+        originalTrack = state.lightAdjustmentProcessor.getOriginalTrack();
+        state.lightAdjustmentProcessor.stopProcessing();
+      }
       if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
-        const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
-        if (originalTrack) {
-          originalTrack.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+        if (originalTrack !== undefined) {
+          originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
         }
         state.virtualBackgroundProcessor.stopProcessing();
+      }
+      if (originalTrack) {  
+        originalTrack.stop();
+        dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
       } else {
         if (mediaStream) {
           mediaStream.getVideoTracks().forEach((track) => {
@@ -938,6 +979,7 @@ export const connectSora = () => {
           });
         }
       }
+
       if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
         const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
         if (originalTrack) {
@@ -1233,6 +1275,8 @@ export const setMicDevice = (micDevice: boolean) => {
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        lightAdjustment: state.lightAdjustment,
+        lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
@@ -1287,6 +1331,8 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        lightAdjustment: state.lightAdjustment,
+        lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
