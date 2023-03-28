@@ -237,7 +237,7 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
   switch (blurRadius) {
     case "weak":
       return 5;
-    case "midium":
+    case "medium":
       return 10;
     case "strong":
       return 15;
