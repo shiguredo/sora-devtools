@@ -27,6 +27,7 @@ import {
   getBlurRadiusNumber,
   getDefaultVideoCodecType,
   getDevices,
+  getLightAdjustmentOptions,
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
@@ -206,6 +207,9 @@ export const setInitialParameter = () => {
     if (qsParams.blurRadius !== undefined) {
       dispatch(slice.actions.setBlurRadius(qsParams.blurRadius));
     }
+    if (qsParams.lightAdjustment !== undefined) {
+      dispatch(slice.actions.setLightAdjustment(qsParams.lightAdjustment));
+    }
     if (qsParams.mediaProcessorsNoiseSuppression !== undefined) {
       dispatch(slice.actions.setMediaProcessorsNoiseSuppression(qsParams.mediaProcessorsNoiseSuppression));
     }
@@ -320,6 +324,7 @@ export const copyURL = () => {
       aspectRatio: state.aspectRatio !== "" ? state.aspectRatio : undefined,
       resizeMode: state.resizeMode !== "" ? state.resizeMode : undefined,
       blurRadius: state.blurRadius !== "" ? state.blurRadius : undefined,
+      lightAdjustment: state.lightAdjustment !== "" ? state.lightAdjustment : undefined,
       multistream: state.multistream !== "" ? state.multistream : undefined,
       simulcast: state.simulcast !== "" ? state.simulcast : undefined,
       simulcastRid: state.simulcastRid !== "" ? state.simulcastRid : undefined,
@@ -598,22 +603,7 @@ async function createMediaStream(
       if (state.lightAdjustmentProcessor === null) {
         throw new Error("Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'");
       }
-
-      let options;
-      switch (state.lightAdjustment) {
-        case "weak":
-          options = { adjustmentLevel: 20, sharpnessLevel: 0 };
-          break;
-        case "medium":
-          // TODOO: focusMask
-          options = { adjustmentLevel: 50, sharpnessLevel: 20 };
-          break;
-        case "strong":
-          // const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
-          // TODOO: focusMask
-          options = { adjustmentLevel: 80, sharpnessLevel: 20, minIntensity: 10 };
-          break;
-      }
+      const options = getLightAdjustmentOptions(state.lightAdjustment);
       state.lightAdjustmentProcessor.stopProcessing();
       videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options);
     }
@@ -1438,6 +1428,7 @@ export const {
   setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
+  setLightAdjustment,
   setLocalMediaStream,
   setLogMessages,
   setLyraParamsBitrate,

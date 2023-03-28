@@ -171,6 +171,10 @@ MediaTrackConstraints の resizeMode を指定します。
 shiguredo Media Processors の背景ぼかしを使用するかどうか指定します。
 
 
+## lightAdjustment
+shiguredo Media Processors のライト調整を使用するかどうかを指定します。
+
+
 ## audioInput
 音声入力を指定します。
 
