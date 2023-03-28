@@ -602,16 +602,16 @@ async function createMediaStream(
       let options;
       switch (state.lightAdjustment) {
         case "weak":
-          options = {"adjustmentLevel": 20, "sharpnessLevel": 0};
+          options = { adjustmentLevel: 20, sharpnessLevel: 0 };
           break;
         case "medium":
           // TODOO: focusMask
-          options = {"adjustmentLevel": 50, "sharpnessLevel": 20};
+          options = { adjustmentLevel: 50, sharpnessLevel: 20 };
           break;
         case "strong":
           // const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
           // TODOO: focusMask
-          options = {"adjustmentLevel": 80, "sharpnessLevel": 20, "minIntensity": 10};
+          options = { adjustmentLevel: 80, sharpnessLevel: 20, minIntensity: 10 };
           break;
       }
       state.lightAdjustmentProcessor.stopProcessing();
@@ -731,7 +731,14 @@ function setSoraCallbacks(
       message["params"] = event.params;
     }
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
-    const { fakeContents, soraContents, reconnect, lightAdjustmentProcessor, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
+    const {
+      fakeContents,
+      soraContents,
+      reconnect,
+      lightAdjustmentProcessor,
+      noiseSuppressionProcessor,
+      virtualBackgroundProcessor,
+    } = getState();
     const { localMediaStream, remoteMediaStreams } = soraContents;
     let originalTrack;
     if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
@@ -743,7 +750,7 @@ function setSoraCallbacks(
         originalTrack = virtualBackgroundProcessor.getOriginalTrack();
       }
       virtualBackgroundProcessor.stopProcessing();
-    } 
+    }
     if (originalTrack !== undefined) {
       originalTrack.stop();
       dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
@@ -968,7 +975,7 @@ export const connectSora = () => {
         }
         state.virtualBackgroundProcessor.stopProcessing();
       }
-      if (originalTrack) {  
+      if (originalTrack) {
         originalTrack.stop();
         dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
       } else {
