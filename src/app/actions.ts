@@ -736,7 +736,7 @@ function setSoraCallbacks(
       lightAdjustmentProcessor.stopProcessing();
     }
     if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
-      if (originalTrack !== undefined) {
+      if (originalTrack === undefined) {
         originalTrack = virtualBackgroundProcessor.getOriginalTrack();
       }
       virtualBackgroundProcessor.stopProcessing();
@@ -960,7 +960,7 @@ export const connectSora = () => {
         state.lightAdjustmentProcessor.stopProcessing();
       }
       if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
-        if (originalTrack !== undefined) {
+        if (originalTrack === undefined) {
           originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
         }
         state.virtualBackgroundProcessor.stopProcessing();
