@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { LightAdjustmentProcessor } from "@shiguredo/light-adjustment";
 import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type { ConnectionPublisher, ConnectionSubscriber, DataChannelConfiguration, Role } from "sora-js-sdk";
@@ -115,6 +116,8 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: "",
   resizeMode: "",
+  lightAdjustment: "",
+  lightAdjustmentProcessor: null,
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: "",
@@ -494,6 +497,13 @@ export const slice = createSlice({
     },
     setResizeMode: (state, action: PayloadAction<SoraDevtoolsState["resizeMode"]>) => {
       state.resizeMode = action.payload;
+    },
+    setLightAdjustment: (state, action: PayloadAction<SoraDevtoolsState["lightAdjustment"]>) => {
+      if (action.payload !== "" && state.lightAdjustmentProcessor === null) {
+        const processor = new LightAdjustmentProcessor();
+        state.lightAdjustmentProcessor = processor;
+      }
+      state.lightAdjustment = action.payload;
     },
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState["blurRadius"]>) => {
       if (action.payload !== "" && state.virtualBackgroundProcessor === null) {

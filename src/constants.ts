@@ -80,7 +80,9 @@ export const ASPECT_RATIO_TYPES = ["", "4:3", "16:9", "21:9"] as const;
 
 export const RESIZE_MODE_TYPES = ["", "none", "crop-and-scale"] as const;
 
-export const BLUR_RADIUS = ["", "weak", "midium", "strong"] as const;
+export const BLUR_RADIUS = ["", "weak", "medium", "strong"] as const;
+
+export const LIGHT_ADJUSTMENT = ["", "weak", "medium", "strong"] as const;
 
 export const CONNECTION_STATUS = ["initializing", "disconnected", "disconnecting", "connected", "connecting"] as const;
 

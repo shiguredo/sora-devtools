@@ -11,6 +11,13 @@
 
 ## develop
 
+- [ADD] Media options にライト調整機能用の lightAdjustment 設定を追加する
+    - 値は「未設定」、「weak」、「medium」、「strong」の中から選択
+    - @sile
+- [ADD] @shiguredo/light-adjustment (2023.2.0) を依存パッケージに追加する
+    - @sile
+- [UPDATE] @shiguredo/virtual-background を 2023.1.0 に上げる
+    - @sile
 - [UPDATE] TypeScript を 5 系に上げる
     - @voluntas
 - [UPDATE] シグナリング時に転送フィルターを指定できるようにする

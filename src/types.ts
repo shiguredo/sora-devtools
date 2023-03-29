@@ -1,3 +1,4 @@
+import type { LightAdjustmentProcessor } from "@shiguredo/light-adjustment";
 import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import type { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
@@ -25,6 +26,7 @@ import {
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
+  LIGHT_ADJUSTMENT,
   LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
@@ -140,6 +142,8 @@ export type SoraDevtoolsState = {
   apiUrl: null | string;
   aspectRatio: (typeof ASPECT_RATIO_TYPES)[number];
   resizeMode: (typeof RESIZE_MODE_TYPES)[number];
+  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number];
+  lightAdjustmentProcessor: LightAdjustmentProcessor | null;
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
   facingMode: (typeof FACING_MODES)[number];
@@ -364,6 +368,8 @@ export type DownloadReportParameters = Omit<
   | "debugType"
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
+  | "lightAdjustment"
+  | "lightAdjustmentProcessor"
   | "logMessages"
   | "mediaProcessorsNoiseSuppression"
   | "mute"

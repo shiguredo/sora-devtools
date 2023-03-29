@@ -1,3 +1,4 @@
+import { LightAdjustmentProcessorOptions, SelfieSegmentationFocusMask } from "@shiguredo/light-adjustment";
 import queryString from "query-string";
 import type { ConnectionOptions } from "sora-js-sdk";
 
@@ -16,6 +17,7 @@ import {
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
+  LIGHT_ADJUSTMENT,
   LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
@@ -163,6 +165,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     aspectRatio: parseSpecifiedStringParameter(qs.aspectRatio, ASPECT_RATIO_TYPES),
     resizeMode: parseSpecifiedStringParameter(qs.resizeMode, RESIZE_MODE_TYPES),
     blurRadius: parseSpecifiedStringParameter(qs.blurRadius, BLUR_RADIUS),
+    lightAdjustment: parseSpecifiedStringParameter(qs.lightAdjustment, LIGHT_ADJUSTMENT),
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
@@ -237,12 +240,34 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
   switch (blurRadius) {
     case "weak":
       return 5;
-    case "midium":
+    case "medium":
       return 10;
     case "strong":
       return 15;
     default:
       return 0;
+  }
+}
+
+// devtools の lightAdjustment 文字列に対するオプションを返す
+export function getLightAdjustmentOptions(
+  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number]
+): LightAdjustmentProcessorOptions {
+  switch (lightAdjustment) {
+    case "weak":
+      return { adjustmentLevel: 30, sharpnessLevel: 0 };
+    case "medium": {
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+      const focusMask = new SelfieSegmentationFocusMask(assetsPath);
+      return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask };
+    }
+    case "strong": {
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+      const focusMask = new SelfieSegmentationFocusMask(assetsPath);
+      return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask };
+    }
+    default:
+      return {};
   }
 }
 
