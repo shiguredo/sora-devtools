@@ -22,7 +22,7 @@ function mediaStreamStatsReportFilter(
     });
   }
   const targetStats = statsReport.find((stats) => {
-    if (stats.type === "inbound-rtp") {
+    if (stats.type !== "inbound-rtp") {
       return false;
     }
     if (!("kind" in stats) || !("trackIdentifier" in stats)) {

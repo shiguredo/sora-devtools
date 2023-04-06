@@ -14,7 +14,7 @@
 - `npm install` を実行
 
 ## 開発
-- `npm run start` でローカルサーバを起動する
+- `npm run dev` でローカルサーバを起動する
 
 ## パッケージ更新
 sora-devtools の package 更新
