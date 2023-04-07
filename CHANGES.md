@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] tsconfig の moduleResolution を bundler にする
+    - [TypeScript で"moduleResolution": "Node"は使わないほうがいい](https://blog.s2n.tech/articles/dont-use-moduleresolution-node)
+    - @voluntas
 - [ADD] Media options にライト調整機能用の lightAdjustment 設定を追加する
     - 値は「未設定」、「weak」、「medium」、「strong」の中から選択
     - @sile
