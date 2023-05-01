@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] Node 14 対応を終了する
+    - @voluntas
+- [CHANGE] Node 20 対応を追加する
+    - @voluntas
 - [CHANGE] tsconfig の moduleResolution を bundler にする
     - [TypeScript で"moduleResolution": "Node"は使わないほうがいい](https://blog.s2n.tech/articles/dont-use-moduleresolution-node)
     - @voluntas
