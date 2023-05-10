@@ -11,7 +11,14 @@
 
 ## develop
 
-- [CHANGE] .prettierrc の trailingComma を all に変更する
+- [ADD] .prettierignore を追加
+  - @voluntas
+- [CHANGE] .prettierrc を変更する
+  - `"singleQuote": true`
+  - `"semi": false`
+  - `"trailingComma": "all"`
+  - `"tabWidth": 2`
+  - `"printWidth": 100`
   - @voluntas
 - [CHANGE] next export が廃止されたので next.config.js に設定を追加
   - `output: "export"`
