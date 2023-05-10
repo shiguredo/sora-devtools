@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] next export が廃止されたので next.config.js に設定を追加
+  - `output: "export"`
+  - `distDir: 'dist'`
+    - 出力を out から dist に変更する
 - [CHANGE] pnpm 化
   - GitHub Actions に pnpm/action-setup を追加
   - devDependencies に以下を追加
