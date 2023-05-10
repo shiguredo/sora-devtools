@@ -16,7 +16,7 @@
     "dev": "next -p 3333",
     "build": "next build",
     "dist": "pnpm run cleanup && next build && next export -o ./dist",
-    "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && npx tsc --noemit",
+    "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && tsc --noemit",
     "fmt": "eslint --fix --ext .ts,tsx ./src; prettier --write ./src",
     "cleanup": "rimraf ./.next ./dist/*",
     "prepare": "husky install"
