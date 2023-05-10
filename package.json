@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "next -p 3333",
     "build": "next build",
-    "dist": "pnpm run cleanup && next build && next export -o ./dist",
+    "dist": "pnpm run cleanup && next build",
     "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && tsc --noemit",
     "fmt": "eslint --fix --ext .ts,tsx ./src; prettier --write ./src",
     "cleanup": "rimraf ./.next ./dist/*",

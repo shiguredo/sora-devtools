@@ -1,4 +1,6 @@
-module.exports = {
+const nextConfig = {
+  output: "export",
+  distDir: 'dist',
   compress: true,
   swcMinify: false,
   generateBuildId: async () => "sora_devtools",
@@ -10,3 +12,5 @@ module.exports = {
     return config;
   }
 };
+
+module.exports = nextConfig;
