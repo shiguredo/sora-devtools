@@ -60,7 +60,7 @@
     "redux-thunk": "^2.4.2",
     "sora-js-sdk": "2023.1.0-canary.5"
   },
-  "packageManager": "pnpm@8.4.0",
+  "packageManager": "pnpm@8.5.0",
   "engines": {
     "node": ">=16.20.0"
   }
