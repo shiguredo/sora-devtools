@@ -5,12 +5,12 @@ on:
     branches:
       - master
       - develop
-      - 'feature/*'
+      - "feature/*"
     paths-ignore:
-      - '**.md'
-      - 'THANKS'
-      - 'LICENSE'
-      - 'releases/*'
+      - "**.md"
+      - "THANKS"
+      - "LICENSE"
+      - "releases/*"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,9 +32,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm run lint
-      - run: npm run build
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.5.0
+      - run: pnpm install
+      - run: pnpm run lint
+      - run: pnpm run build
       - name: Slack Notification
         if: failure()
         uses: rtCamp/action-slack-notify@v2
@@ -43,4 +46,3 @@ jobs:
           SLACK_COLOR: danger
           SLACK_TITLE: Failure test
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-
