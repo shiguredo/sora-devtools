@@ -1,25 +1,25 @@
-import React from 'react';
-import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap';
+import React from 'react'
+import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap'
 
 import {
   setDataChannelSignaling,
   setEnabledDataChannel,
   setIgnoreDisconnectWebSocket,
-} from '@/app/actions';
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants';
-import { checkFormValue, isFormDisabled } from '@/utils';
+} from '@/app/actions'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants'
+import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel';
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
-  const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket);
-  const dispatch = useAppDispatch();
+  const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket)
+  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
-      dispatch(setIgnoreDisconnectWebSocket(event.target.value));
+      dispatch(setIgnoreDisconnectWebSocket(event.target.value))
     }
-  };
+  }
   return (
     <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
@@ -36,21 +36,21 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
             <option key={value} value={value}>
               {value === '' ? '未指定' : value}
             </option>
-          );
+          )
         })}
       </FormSelect>
     </FormGroup>
-  );
-};
+  )
+}
 
 const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
-  const dataChannelSignaling = useAppSelector((state) => state.dataChannelSignaling);
-  const dispatch = useAppDispatch();
+  const dataChannelSignaling = useAppSelector((state) => state.dataChannelSignaling)
+  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, DATA_CHANNEL_SIGNALING)) {
-      dispatch(setDataChannelSignaling(event.target.value));
+      dispatch(setDataChannelSignaling(event.target.value))
     }
-  };
+  }
   return (
     <FormGroup className="form-inline" controlId="dataChannelSignaling">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
@@ -65,21 +65,21 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
             <option key={value} value={value}>
               {value === '' ? '未指定' : value}
             </option>
-          );
+          )
         })}
       </FormSelect>
     </FormGroup>
-  );
-};
+  )
+}
 
 export const DataChannelForm: React.FC = () => {
-  const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel);
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const dispatch = useAppDispatch();
+  const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel)
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const disabled = isFormDisabled(connectionStatus)
+  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledDataChannel(event.target.checked));
-  };
+    dispatch(setEnabledDataChannel(event.target.checked))
+  }
   return (
     <>
       <Row className="form-row">
@@ -111,5 +111,5 @@ export const DataChannelForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  );
-};
+  )
+}

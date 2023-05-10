@@ -1,4 +1,4 @@
-import { SimulcastRid, SpotlightFocusRid } from 'sora-js-sdk';
+import { SimulcastRid, SpotlightFocusRid } from 'sora-js-sdk'
 
 async function post(
   apiUrl: null | string,
@@ -6,14 +6,14 @@ async function post(
   path: string,
   params: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
-  const protocol = window.location.protocol;
-  const apiPort = protocol == 'https:' ? '443' : '3000';
-  const apiPath = protocol == 'https:' ? 'api' : '';
-  let url = `${protocol}//${window.location.hostname}:${apiPort}/${apiPath}`;
+  const protocol = window.location.protocol
+  const apiPort = protocol == 'https:' ? '443' : '3000'
+  const apiPath = protocol == 'https:' ? 'api' : ''
+  let url = `${protocol}//${window.location.hostname}:${apiPort}/${apiPath}`
   if (apiUrl !== null) {
-    url = apiUrl;
+    url = apiUrl
   }
-  const target = `Sora_${version}.${path}`;
+  const target = `Sora_${version}.${path}`
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(params),
@@ -23,27 +23,27 @@ async function post(
       'x-sora-target': target,
     },
     mode: 'cors',
-  });
-  const responseJson = await response.json();
+  })
+  const responseJson = await response.json()
   if (!response.ok) {
-    let errorMessage = `POST ${url} ${response.status} (${response.statusText}) target:${target}`;
+    let errorMessage = `POST ${url} ${response.status} (${response.statusText}) target:${target}`
     if (responseJson.error_type) {
-      errorMessage += ` error_type: ${responseJson.error_type}`;
+      errorMessage += ` error_type: ${responseJson.error_type}`
     }
-    const error = new Error(errorMessage);
-    throw error;
+    const error = new Error(errorMessage)
+    throw error
   }
-  return responseJson;
+  return responseJson
 }
 
 export function startRec(apiUrl: null | string, channelId: string): Promise<unknown> {
-  const params = { channel_id: channelId, expire_time: 3600 };
-  return post(apiUrl, '20161101', 'StartRecording', params);
+  const params = { channel_id: channelId, expire_time: 3600 }
+  return post(apiUrl, '20161101', 'StartRecording', params)
 }
 
 export function stopRec(apiUrl: null | string, channelId: string): Promise<unknown> {
-  const params = { channel_id: channelId };
-  return post(apiUrl, '20161101', 'StopRecording', params);
+  const params = { channel_id: channelId }
+  return post(apiUrl, '20161101', 'StopRecording', params)
 }
 
 export function requestRtpStream(
@@ -54,19 +54,19 @@ export function requestRtpStream(
   sendConnectionId?: string,
 ): Promise<unknown> {
   const params: {
-    channel_id: string;
-    recv_connection_id: string;
-    send_connection_id?: string;
-    rid: SimulcastRid;
+    channel_id: string
+    recv_connection_id: string
+    send_connection_id?: string
+    rid: SimulcastRid
   } = {
     channel_id: channelId,
     recv_connection_id: recvConnectionId,
     rid: rid,
-  };
-  if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
   }
-  return post(apiUrl, '20201005', 'RequestRtpStream', params);
+  if (sendConnectionId) {
+    params['send_connection_id'] = sendConnectionId
+  }
+  return post(apiUrl, '20201005', 'RequestRtpStream', params)
 }
 
 export function resetRtpStream(
@@ -78,11 +78,11 @@ export function resetRtpStream(
   const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
     channel_id: channelId,
     recv_connection_id: connectionId,
-  };
-  if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
   }
-  return post(apiUrl, '20201005', 'ResetRtpStream', params);
+  if (sendConnectionId) {
+    params['send_connection_id'] = sendConnectionId
+  }
+  return post(apiUrl, '20201005', 'ResetRtpStream', params)
 }
 
 export function requestSpotlightRid(
@@ -94,21 +94,21 @@ export function requestSpotlightRid(
   sendConnectionId?: string,
 ): Promise<unknown> {
   const params: {
-    channel_id: string;
-    recv_connection_id: string;
-    send_connection_id?: string;
-    spotlight_focus_rid: SpotlightFocusRid;
-    spotlight_unfocus_rid: SpotlightFocusRid;
+    channel_id: string
+    recv_connection_id: string
+    send_connection_id?: string
+    spotlight_focus_rid: SpotlightFocusRid
+    spotlight_unfocus_rid: SpotlightFocusRid
   } = {
     channel_id: channelId,
     recv_connection_id: recvConnectionId,
     spotlight_focus_rid: spotlightFocursRid,
     spotlight_unfocus_rid: spotlightUnfocursRid,
-  };
-  if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
   }
-  return post(apiUrl, '20211215', 'RequestSpotlightRid', params);
+  if (sendConnectionId) {
+    params['send_connection_id'] = sendConnectionId
+  }
+  return post(apiUrl, '20211215', 'RequestSpotlightRid', params)
 }
 
 export function resetSpotlightRid(
@@ -120,9 +120,9 @@ export function resetSpotlightRid(
   const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
     channel_id: channelId,
     recv_connection_id: connectionId,
-  };
-  if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
   }
-  return post(apiUrl, '20211215', 'ResetSpotlightRid', params);
+  if (sendConnectionId) {
+    params['send_connection_id'] = sendConnectionId
+  }
+  return post(apiUrl, '20211215', 'ResetSpotlightRid', params)
 }

@@ -1,18 +1,18 @@
-import React from 'react';
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
+import React from 'react'
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
-import { setDataChannels, setEnabledDataChannels } from '@/app/actions';
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { isFormDisabled } from '@/utils';
+import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck';
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const DataChannelsForm: React.FC = () => {
-  const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels);
-  const dataChannels = useAppSelector((state) => state.dataChannels);
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const dispatch = useAppDispatch();
+  const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)
+  const dataChannels = useAppSelector((state) => state.dataChannels)
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const disabled = isFormDisabled(connectionStatus)
+  const dispatch = useAppDispatch()
   const textareaPlaceholder =
     'dataChannelsを指定\n(例)\n' +
     JSON.stringify(
@@ -28,13 +28,13 @@ export const DataChannelsForm: React.FC = () => {
       ],
       null,
       2,
-    );
+    )
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledDataChannels(event.target.checked));
-  };
+    dispatch(setEnabledDataChannels(event.target.checked))
+  }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setDataChannels(event.target.value));
-  };
+    dispatch(setDataChannels(event.target.value))
+  }
   return (
     <>
       <Row className="form-row">
@@ -70,5 +70,5 @@ export const DataChannelsForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  );
-};
+  )
+}

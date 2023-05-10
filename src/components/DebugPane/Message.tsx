@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Collapse } from 'react-bootstrap';
+import React, { useState } from 'react'
+import { Collapse } from 'react-bootstrap'
 
-import { formatUnixtime } from '@/utils';
+import { formatUnixtime } from '@/utils'
 
-import { CopyLogButton } from './CopyLogButton';
+import { CopyLogButton } from './CopyLogButton'
 
 type DescriptionProps = {
-  description: string | number | Record<string, unknown>;
-  wordBreak?: boolean;
-};
+  description: string | number | Record<string, unknown>
+  wordBreak?: boolean
+}
 const Description: React.FC<DescriptionProps> = (props) => {
-  const { description } = props;
+  const { description } = props
   if (description === undefined) {
-    return null;
+    return null
   }
   if (typeof description !== 'object') {
     return (
@@ -21,7 +21,7 @@ const Description: React.FC<DescriptionProps> = (props) => {
           <pre className={props.wordBreak ? 'word-break' : ''}>{description}</pre>
         </div>
       </div>
-    );
+    )
   }
   return (
     <div className="debug-message">
@@ -31,22 +31,22 @@ const Description: React.FC<DescriptionProps> = (props) => {
         </pre>
       </div>
     </div>
-  );
-};
+  )
+}
 
 type Props = {
-  timestamp: number | null;
-  title: string;
-  description: string | number | Record<string, unknown>;
-  defaultShow?: boolean;
-  label?: JSX.Element | null;
-  wordBreak?: boolean;
-};
+  timestamp: number | null
+  title: string
+  description: string | number | Record<string, unknown>
+  defaultShow?: boolean
+  label?: JSX.Element | null
+  wordBreak?: boolean
+}
 export const Message: React.FC<Props> = (props) => {
-  const { defaultShow, description, title, timestamp, label } = props;
-  const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
-  const ariaControls = timestamp ? title + timestamp : title;
-  const disabled = description === undefined;
+  const { defaultShow, description, title, timestamp, label } = props
+  const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow)
+  const ariaControls = timestamp ? title + timestamp : title
+  const disabled = description === undefined
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="d-flex justify-content-between align-items-center text-break">
@@ -78,5 +78,5 @@ export const Message: React.FC<Props> = (props) => {
         </div>
       </Collapse>
     </div>
-  );
-};
+  )
+}

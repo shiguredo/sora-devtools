@@ -1,14 +1,14 @@
-import React from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import React from 'react'
+import { Container, Nav, Navbar } from 'react-bootstrap'
 
-import { useAppSelector } from '@/app/hooks';
+import { useAppSelector } from '@/app/hooks'
 
-import { CopyUrlButton } from './CopyUrlButton';
-import { DebugButton } from './DebugButton';
-import { DownloadReportButton } from './DownloadReportButton';
+import { CopyUrlButton } from './CopyUrlButton'
+import { DebugButton } from './DebugButton'
+import { DownloadReportButton } from './DownloadReportButton'
 
 export const Header: React.FC = () => {
-  const sora = useAppSelector((state) => state.soraContents.sora);
+  const sora = useAppSelector((state) => state.soraContents.sora)
   return (
     <header>
       <Navbar variant="dark" bg="sora" expand="md" fixed="top">
@@ -37,5 +37,5 @@ export const Header: React.FC = () => {
         </Container>
       </Navbar>
     </header>
-  );
-};
+  )
+}
