@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] eslint に `"@typescript-eslint/no-extra-semi": "off"` を追加
+  - @voluntas
 - [ADD] .prettierignore を追加
   - @voluntas
 - [CHANGE] .prettierrc を変更する
