@@ -6,7 +6,7 @@ import type { RTCInboundRtpStreamStats } from "@/types";
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
   mediaStream: MediaStream | null,
-  type: "video" | "audio"
+  type: "video" | "audio",
 ): RTCInboundRtpStreamStats | undefined {
   if (mediaStream === null) {
     return undefined;

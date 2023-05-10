@@ -14,7 +14,7 @@ import { VolumeVisualizer } from "./VolumeVisualizer";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
-  mediaStream: MediaStream | null
+  mediaStream: MediaStream | null,
 ): RTCMediaStreamTrackStats[] {
   if (mediaStream === null) {
     return [];
@@ -46,11 +46,11 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   }
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport,
-    props.stream
+    props.stream,
   ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport,
-    props.stream
+    props.stream,
   ) as RTCMediaStreamTrackStats[];
   return (
     <>

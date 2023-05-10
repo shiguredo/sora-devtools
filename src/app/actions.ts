@@ -432,7 +432,7 @@ type craeteMediaStreamPickedState = Pick<
 >;
 async function createMediaStream(
   dispatch: Dispatch,
-  state: craeteMediaStreamPickedState
+  state: craeteMediaStreamPickedState,
 ): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   if (state.mediaType === "getDisplayMedia") {
@@ -519,7 +519,10 @@ async function createMediaStream(
         drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, data.counter.toString());
       };
       state.fakeContents.worker.postMessage({ type: "stop" });
-      state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
+      state.fakeContents.worker.postMessage({
+        type: "start",
+        interval: 1000 / constraints.frameRate,
+      });
     }
     for (const track of mediaStream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
@@ -552,12 +555,15 @@ async function createMediaStream(
   });
   if (audioConstraints) {
     dispatch(
-      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify({ audio: audioConstraints }) })
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify({ audio: audioConstraints }),
+      }),
     );
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage("audio-media-constraints", { audio: audioConstraints })
-      )
+        createSoraDevtoolsTimelineMessage("audio-media-constraints", { audio: audioConstraints }),
+      ),
     );
     const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
     let audioTrack = audioMediaStream.getAudioTracks()[0];
@@ -583,12 +589,15 @@ async function createMediaStream(
   });
   if (videoConstraints) {
     dispatch(
-      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify({ video: videoConstraints }) })
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify({ video: videoConstraints }),
+      }),
     );
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage("video-media-constraints", { video: videoConstraints })
-      )
+        createSoraDevtoolsTimelineMessage("video-media-constraints", { video: videoConstraints }),
+      ),
     );
     const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints }).catch((error) => {
       // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
@@ -639,14 +648,14 @@ async function createMediaStream(
 function setSoraCallbacks(
   dispatch: Dispatch,
   getState: () => SoraDevtoolsState,
-  sora: ConnectionPublisher | ConnectionSubscriber
+  sora: ConnectionPublisher | ConnectionSubscriber,
 ): void {
   sora.on("log", (title: string, description: Json) => {
     dispatch(
       slice.actions.setLogMessages({
         title: title,
         description: JSON.stringify(description),
-      })
+      }),
     );
   });
   sora.on("notify", (message: SoraNotifyMessage, transportType: TransportType) => {
@@ -664,7 +673,7 @@ function setSoraCallbacks(
         timestamp: new Date().getTime(),
         message: message,
         transportType: transportType,
-      })
+      }),
     );
   });
   sora.on("push", (message: SoraPushMessage, transportType: TransportType) => {
@@ -673,7 +682,7 @@ function setSoraCallbacks(
         timestamp: new Date().getTime(),
         message: message,
         transportType: transportType,
-      })
+      }),
     );
   });
   sora.on("track", (event: RTCTrackEvent) => {
@@ -686,9 +695,9 @@ function setSoraCallbacks(
           slice.actions.setTimelineMessage(
             createSoraDevtoolsTimelineMessage(
               `remote-${track.kind}-mediastream-track`,
-              getMediaStreamTrackProperties(track)
-            )
-          )
+              getMediaStreamTrackProperties(track),
+            ),
+          ),
         );
       }
       dispatch(slice.actions.setRemoteMediaStream(event.streams[0]));
@@ -799,7 +808,7 @@ function setSoraCallbacks(
     dispatch(slice.actions.setTimelineMessage(message));
     if (event.data && typeof event.data === "object" && "sdp" in event.data) {
       dispatch(
-        slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage(`${event.type}-sdp`, event.data.sdp))
+        slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage(`${event.type}-sdp`, event.data.sdp)),
       );
     }
   });
@@ -818,7 +827,7 @@ function setSoraCallbacks(
         timestamp: new Date().getTime(),
         label: event.label,
         data: event.data,
-      })
+      }),
     );
   });
   sora.on("datachannel", (event) => {
@@ -901,10 +910,13 @@ export const connectSora = () => {
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
       state.enabledSignalingUrlCandidates,
-      state.signalingUrlCandidates
+      state.signalingUrlCandidates,
     );
     dispatch(
-      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
+      slice.actions.setLogMessages({
+        title: "SIGNALING_URL",
+        description: JSON.stringify(signalingUrlCandidates),
+      }),
     );
     const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptionsState = pickConnectionOptionsState(state);
@@ -1034,10 +1046,13 @@ export const reconnectSora = () => {
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
       state.enabledSignalingUrlCandidates,
-      state.signalingUrlCandidates
+      state.signalingUrlCandidates,
     );
     dispatch(
-      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
+      slice.actions.setLogMessages({
+        title: "SIGNALING_URL",
+        description: JSON.stringify(signalingUrlCandidates),
+      }),
     );
     const connection = Sora.connection(signalingUrlCandidates, state.debug);
     const connectionOptionsState = pickConnectionOptionsState(state);
@@ -1294,7 +1309,7 @@ export const setMicDevice = (micDevice: boolean) => {
       if (0 < mediaStream.getAudioTracks().length) {
         await state.soraContents.sora.replaceAudioTrack(
           state.soraContents.localMediaStream,
-          mediaStream.getAudioTracks()[0]
+          mediaStream.getAudioTracks()[0],
         );
         dispatch(slice.actions.setFakeContentsGainNode(gainNode));
       }

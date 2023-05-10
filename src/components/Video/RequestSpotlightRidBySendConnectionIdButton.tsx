@@ -36,7 +36,7 @@ export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (pro
         sora.connectionId,
         focusRid,
         unfocusRid,
-        props.sendConnectionId
+        props.sendConnectionId,
       );
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {

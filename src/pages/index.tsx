@@ -78,7 +78,12 @@ const Index: React.FC = () => {
             />
             <Link
               pageName="マルチストリーム受信のみ (サイマルキャスト有効)"
-              params={{ role: "recvonly", multistream: true, simulcast: true, videoCodecType: "VP8" }}
+              params={{
+                role: "recvonly",
+                multistream: true,
+                simulcast: true,
+                videoCodecType: "VP8",
+              }}
             />
             <li className="separator">スポットライト</li>
             <Link

@@ -332,7 +332,7 @@ export const slice = createSlice({
     },
     setSoraReconnectingTrials: (
       state,
-      action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnectingTrials"]>
+      action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnectingTrials"]>,
     ) => {
       state.soraContents.reconnectingTrials = action.payload;
     },
@@ -408,7 +408,7 @@ export const slice = createSlice({
     },
     deleteAlertMessage: (state, action: PayloadAction<number>) => {
       const filterdAlertMessages = state.alertMessages.filter(
-        (alertMessage) => alertMessage.timestamp !== action.payload
+        (alertMessage) => alertMessage.timestamp !== action.payload,
       );
       state.alertMessages = filterdAlertMessages;
     },
@@ -515,7 +515,7 @@ export const slice = createSlice({
     },
     setMediaProcessorsNoiseSuppression: (
       state,
-      action: PayloadAction<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>
+      action: PayloadAction<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>,
     ) => {
       if (action.payload && state.noiseSuppressionProcessor === null) {
         const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || "";
@@ -538,7 +538,7 @@ export const slice = createSlice({
     },
     setEnabledAudioStreamingLanguageCode: (
       state,
-      action: PayloadAction<SoraDevtoolsState["enabledAudioStreamingLanguageCode"]>
+      action: PayloadAction<SoraDevtoolsState["enabledAudioStreamingLanguageCode"]>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload;
     },
@@ -551,7 +551,7 @@ export const slice = createSlice({
 function setAlertMessagesAndLogMessages(
   alertMessages: SoraDevtoolsState["alertMessages"],
   logMessages: SoraDevtoolsState["logMessages"],
-  alertMessage: AlertMessage
+  alertMessage: AlertMessage,
 ): void {
   if (10 <= alertMessages.length) {
     for (let i = 0; i <= alertMessages.length - 5; i++) {

@@ -67,7 +67,7 @@ export function copy2clipboard(text: string): Promise<void> {
 // Form の Type Guard
 export function checkFormValue<T extends readonly string[]>(
   value: unknown,
-  candidates: T
+  candidates: T,
 ): value is (typeof candidates)[number] {
   if (typeof value === "string") {
     return candidates.indexOf(value) >= 0;
@@ -94,7 +94,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   // パラメーターが特定の文字列かどうかを判定して string | undefined を返す
   const parseSpecifiedStringParameter = <T extends readonly string[]>(
     parameter: string | (string | null)[] | null,
-    candidates: T
+    candidates: T,
   ): (typeof candidates)[number] | undefined => {
     if (checkFormValue(parameter, candidates)) {
       return parameter;
@@ -183,7 +183,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
 // Sora のシグナリングURLを生成
 export function createSignalingURL(
   enabledSignalingUrlCandidates: boolean,
-  signalingUrlCandidates: string[]
+  signalingUrlCandidates: string[],
 ): string | string[] {
   if (enabledSignalingUrlCandidates) {
     // 空文字列は取り除く
@@ -251,7 +251,7 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
 
 // devtools の lightAdjustment 文字列に対するオプションを返す
 export function getLightAdjustmentOptions(
-  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number]
+  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number],
 ): LightAdjustmentProcessorOptions {
   switch (lightAdjustment) {
     case "weak":
@@ -377,7 +377,7 @@ type FakeMediaStreamConstraints = {
   videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints;
 };
 export function createFakeMediaConstraints(
-  parameters: CreateFakeMediaConstraintsParameters
+  parameters: CreateFakeMediaConstraintsParameters,
 ): FakeMediaStreamConstraints {
   const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters;
   // fake の default frameRate は 30 fps
@@ -416,7 +416,7 @@ type CreateGetDisplayMediaConstraintsParameters = {
   resizeMode: SoraDevtoolsState["resizeMode"];
 };
 export function createGetDisplayMediaConstraints(
-  parameters: CreateGetDisplayMediaConstraintsParameters
+  parameters: CreateGetDisplayMediaConstraintsParameters,
 ): MediaStreamConstraints {
   const { aspectRatio, frameRate, resizeMode, resolution } = parameters;
   if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
@@ -489,7 +489,7 @@ export function drawFakeCanvas(
   canvas: CustomHTMLCanvasElement | null,
   colorCode: number,
   fontSize: number,
-  text: string
+  text: string,
 ): void {
   if (canvas === null) {
     return;

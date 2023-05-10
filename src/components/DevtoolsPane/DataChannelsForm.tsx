@@ -27,7 +27,7 @@ export const DataChannelsForm: React.FC = () => {
         },
       ],
       null,
-      2
+      2,
     );
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledDataChannels(event.target.checked));

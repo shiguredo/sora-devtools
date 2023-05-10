@@ -4,7 +4,7 @@ async function post(
   apiUrl: null | string,
   version: string,
   path: string,
-  params: Record<string, unknown>
+  params: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const protocol = window.location.protocol;
   const apiPort = protocol == "https:" ? "443" : "3000";
@@ -51,9 +51,14 @@ export function requestRtpStream(
   channelId: string,
   recvConnectionId: string,
   rid: SimulcastRid,
-  sendConnectionId?: string
+  sendConnectionId?: string,
 ): Promise<unknown> {
-  const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string; rid: SimulcastRid } = {
+  const params: {
+    channel_id: string;
+    recv_connection_id: string;
+    send_connection_id?: string;
+    rid: SimulcastRid;
+  } = {
     channel_id: channelId,
     recv_connection_id: recvConnectionId,
     rid: rid,
@@ -68,7 +73,7 @@ export function resetRtpStream(
   apiUrl: null | string,
   channelId: string,
   connectionId: string,
-  sendConnectionId?: string
+  sendConnectionId?: string,
 ): Promise<unknown> {
   const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
     channel_id: channelId,
@@ -86,7 +91,7 @@ export function requestSpotlightRid(
   recvConnectionId: string,
   spotlightFocursRid: SpotlightFocusRid,
   spotlightUnfocursRid: SpotlightFocusRid,
-  sendConnectionId?: string
+  sendConnectionId?: string,
 ): Promise<unknown> {
   const params: {
     channel_id: string;
@@ -110,7 +115,7 @@ export function resetSpotlightRid(
   apiUrl: null | string,
   channelId: string,
   connectionId: string,
-  sendConnectionId?: string
+  sendConnectionId?: string,
 ): Promise<unknown> {
   const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
     channel_id: channelId,
