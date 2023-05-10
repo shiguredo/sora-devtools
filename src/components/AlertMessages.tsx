@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { Toast } from "react-bootstrap";
+import React, { useEffect } from 'react';
+import { Toast } from 'react-bootstrap';
 
-import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import type { AlertMessage } from "@/types";
-import { formatUnixtime } from "@/utils";
+import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import type { AlertMessage } from '@/types';
+import { formatUnixtime } from '@/utils';
 
 const Reconnect: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +22,9 @@ const Reconnect: React.FC = () => {
         <strong className="me-auto">Reconnect</strong>
       </Toast.Header>
       <Toast.Body className="bg-light">
-        <p className="text-break font-weight-bold mb-0">Reconnecting... (trials {reconnectingTrials})</p>
+        <p className="text-break font-weight-bold mb-0">
+          Reconnecting... (trials {reconnectingTrials})
+        </p>
       </Toast.Body>
     </Toast>
   );
@@ -33,7 +35,7 @@ const Alert: React.FC<AlertMessage> = (props) => {
   const onClose = (): void => {
     dispatch(deleteAlertMessage(props.timestamp));
   };
-  const bgClassName = props.type === "error" ? "bg-danger" : "bg-info";
+  const bgClassName = props.type === 'error' ? 'bg-danger' : 'bg-info';
   return (
     <Toast autohide delay={20000} onClose={onClose}>
       <Toast.Header className={`${bgClassName} text-white`}>

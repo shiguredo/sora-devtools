@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setFrameRate } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { FRAME_RATES } from "@/constants";
-import { checkFormValue } from "@/utils";
+import { setFrameRate } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { FRAME_RATES } from '@/constants';
+import { checkFormValue } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const FrameRateForm: React.FC = () => {
   const frameRate = useAppSelector((state) => state.frameRate);
@@ -23,7 +23,7 @@ export const FrameRateForm: React.FC = () => {
         {FRAME_RATES.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

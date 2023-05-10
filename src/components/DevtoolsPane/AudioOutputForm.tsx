@@ -1,10 +1,10 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setAudioOutput } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAudioOutput } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const AudioOutputForm: React.FC = () => {
   const audioOutput = useAppSelector((state) => state.audioOutput);
@@ -16,7 +16,12 @@ export const AudioOutputForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="audioOutput">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
-      <FormSelect name="audioOutput" value={audioOutput} onChange={onChange} disabled={audioOutputDevices.length === 0}>
+      <FormSelect
+        name="audioOutput"
+        value={audioOutput}
+        onChange={onChange}
+        disabled={audioOutputDevices.length === 0}
+      >
         <option value="">未指定</option>
         {audioOutputDevices.map((deviceInfo) => {
           return (

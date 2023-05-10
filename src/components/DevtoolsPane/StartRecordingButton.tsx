@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { startRec } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { startRec } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 export const StartRecordingButton: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);
@@ -27,7 +27,7 @@ export const StartRecordingButton: React.FC = () => {
         name="startRec"
         defaultValue="start rec"
         onClick={onClick}
-        disabled={connectionStatus === "initializing"}
+        disabled={connectionStatus === 'initializing'}
       />
     </div>
   );

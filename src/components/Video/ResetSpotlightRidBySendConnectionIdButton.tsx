@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { resetSpotlightRid } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { resetSpotlightRid } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 type Props = {
   sendConnectionId: string;
@@ -17,7 +17,12 @@ export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props
       return;
     }
     try {
-      const response = await resetSpotlightRid(apiUrl, channelId, sora.connectionId, props.sendConnectionId);
+      const response = await resetSpotlightRid(
+        apiUrl,
+        channelId,
+        sora.connectionId,
+        props.sendConnectionId,
+      );
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {

@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { ClipboardIcon } from "@/components/ClipboardIcon";
-import { copy2clipboard } from "@/utils";
+import { ClipboardIcon } from '@/components/ClipboardIcon';
+import { copy2clipboard } from '@/utils';
 
 type TextBoxProps = {
   id?: string;
@@ -35,9 +35,11 @@ export const ConnectionStatusBar: React.FC<Props> = (props) => {
   const { localVideo, connectionId, clientId } = props;
   return (
     <>
-      {connectionId ? <TextBox id={localVideo ? "local-video-connection-id" : undefined} text={connectionId} /> : null}
+      {connectionId ? (
+        <TextBox id={localVideo ? 'local-video-connection-id' : undefined} text={connectionId} />
+      ) : null}
       {clientId !== null && clientId !== undefined && connectionId !== clientId ? (
-        <TextBox id={localVideo ? "local-video-client-id" : undefined} text={clientId} />
+        <TextBox id={localVideo ? 'local-video-client-id' : undefined} text={clientId} />
       ) : null}
     </>
   );

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Col, FormGroup, Row, Spinner } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Col, FormGroup, Row, Spinner } from 'react-bootstrap';
 
-import { setE2EE } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setE2EE } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const E2EEForm: React.FC = () => {
   const [displaySpinner, setDisplaySpinner] = useState(false);
@@ -32,7 +32,12 @@ export const E2EEForm: React.FC = () => {
             e2ee
           </TooltipFormCheck>
           {displaySpinner ? (
-            <Spinner className="spinner-status" variant="primary" animation="border" role="status" />
+            <Spinner
+              className="spinner-status"
+              variant="primary"
+              animation="border"
+              role="status"
+            />
           ) : null}
         </FormGroup>
       </Col>

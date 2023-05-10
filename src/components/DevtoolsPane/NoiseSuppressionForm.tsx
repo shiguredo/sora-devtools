@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setNoiseSuppression } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { NOISE_SUPPRESSIONS } from "@/constants";
-import { checkFormValue } from "@/utils";
+import { setNoiseSuppression } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { NOISE_SUPPRESSIONS } from '@/constants';
+import { checkFormValue } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const NoiseSuppressionForm: React.FC = () => {
   const noiseSuppression = useAppSelector((state) => state.noiseSuppression);
@@ -23,7 +23,7 @@ export const NoiseSuppressionForm: React.FC = () => {
         {NOISE_SUPPRESSIONS.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

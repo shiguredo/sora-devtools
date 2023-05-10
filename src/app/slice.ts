@@ -1,10 +1,15 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LightAdjustmentProcessor } from "@shiguredo/light-adjustment";
-import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
-import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
-import type { ConnectionPublisher, ConnectionSubscriber, DataChannelConfiguration, Role } from "sora-js-sdk";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment';
+import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression';
+import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background';
+import type {
+  ConnectionPublisher,
+  ConnectionSubscriber,
+  DataChannelConfiguration,
+  Role,
+} from 'sora-js-sdk';
 
-import { WORKER_SCRIPT } from "@/constants";
+import { WORKER_SCRIPT } from '@/constants';
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -15,38 +20,38 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from "@/types";
+} from '@/types';
 
-import packageJSON from "../../package.json";
+import packageJSON from '../../package.json';
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],
   audio: true,
-  audioBitRate: "",
-  audioCodecType: "",
-  audioContentHint: "",
-  audioInput: "",
+  audioBitRate: '',
+  audioCodecType: '',
+  audioContentHint: '',
+  audioInput: '',
   audioInputDevices: [],
-  audioOutput: "",
+  audioOutput: '',
   audioOutputDevices: [],
-  autoGainControl: "",
-  blurRadius: "",
-  bundleId: "",
+  autoGainControl: '',
+  blurRadius: '',
+  bundleId: '',
   enabledBundleId: false,
-  clientId: "",
-  channelId: "sora",
+  clientId: '',
+  channelId: 'sora',
   googCpuOveruseDetection: null,
   timelineMessages: [],
   debug: false,
-  debugFilterText: "",
-  debugType: "timeline",
-  dataChannelSignaling: "",
-  dataChannels: "",
+  debugFilterText: '',
+  debugType: 'timeline',
+  dataChannelSignaling: '',
+  dataChannels: '',
   dataChannelMessages: [],
-  displayResolution: "",
+  displayResolution: '',
   e2ee: false,
-  echoCancellation: "",
-  echoCancellationType: "",
+  echoCancellation: '',
+  echoCancellationType: '',
   enabledClientId: false,
   enabledDataChannel: false,
   enabledDataChannels: false,
@@ -54,18 +59,18 @@ const initialState: SoraDevtoolsState = {
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
   enabledSignalingUrlCandidates: false,
-  audioStreamingLanguageCode: "",
+  audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
-  lyraParamsBitrate: "",
-  fakeVolume: "0",
+  lyraParamsBitrate: '',
+  fakeVolume: '0',
   fakeContents: {
     worker: null,
     colorCode: 0,
     gainNode: null,
   },
-  frameRate: "",
+  frameRate: '',
   soraContents: {
-    connectionStatus: "initializing",
+    connectionStatus: 'initializing',
     reconnecting: false,
     reconnectingTrials: 0,
     sora: null,
@@ -77,54 +82,54 @@ const initialState: SoraDevtoolsState = {
     statsReport: [],
     datachannels: [],
   },
-  ignoreDisconnectWebSocket: "",
+  ignoreDisconnectWebSocket: '',
   logMessages: [],
   mediaProcessorsNoiseSuppression: false,
-  mediaType: "getUserMedia",
-  metadata: "",
-  multistream: "true",
+  mediaType: 'getUserMedia',
+  metadata: '',
+  multistream: 'true',
   mute: false,
-  noiseSuppression: "",
+  noiseSuppression: '',
   notifyMessages: [],
   pushMessages: [],
-  resolution: "",
+  resolution: '',
   showStats: false,
-  simulcast: "",
-  spotlight: "",
+  simulcast: '',
+  spotlight: '',
   signalingMessages: [],
-  signalingNotifyMetadata: "",
+  signalingNotifyMetadata: '',
   signalingUrlCandidates: [],
-  forwardingFilter: "",
-  simulcastRid: "",
-  spotlightNumber: "",
-  spotlightFocusRid: "",
-  spotlightUnfocusRid: "",
+  forwardingFilter: '',
+  simulcastRid: '',
+  spotlightNumber: '',
+  spotlightFocusRid: '',
+  spotlightUnfocusRid: '',
   focusedSpotlightConnectionIds: {},
   video: true,
-  videoBitRate: "",
-  videoCodecType: "",
-  videoContentHint: "",
-  videoInput: "",
+  videoBitRate: '',
+  videoCodecType: '',
+  videoContentHint: '',
+  videoInput: '',
   videoInputDevices: [],
   version: packageJSON.version,
   cameraDevice: true,
   videoTrack: true,
   micDevice: true,
   audioTrack: true,
-  role: "sendrecv",
+  role: 'sendrecv',
   reconnect: false,
   apiUrl: null,
-  aspectRatio: "",
-  resizeMode: "",
-  lightAdjustment: "",
+  aspectRatio: '',
+  resizeMode: '',
+  lightAdjustment: '',
   lightAdjustmentProcessor: null,
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
-  facingMode: "",
+  facingMode: '',
 };
 
 export const slice = createSlice({
-  name: "soraDevtools",
+  name: 'soraDevtools',
   initialState,
   reducers: {
     resetState: (state) => {
@@ -139,13 +144,13 @@ export const slice = createSlice({
     setAudioOutput: (state, action: PayloadAction<string>) => {
       state.audioOutput = action.payload;
     },
-    setAudioBitRate: (state, action: PayloadAction<SoraDevtoolsState["audioBitRate"]>) => {
+    setAudioBitRate: (state, action: PayloadAction<SoraDevtoolsState['audioBitRate']>) => {
       state.audioBitRate = action.payload;
     },
-    setAudioCodecType: (state, action: PayloadAction<SoraDevtoolsState["audioCodecType"]>) => {
+    setAudioCodecType: (state, action: PayloadAction<SoraDevtoolsState['audioCodecType']>) => {
       state.audioCodecType = action.payload;
     },
-    setAudioContentHint: (state, action: PayloadAction<SoraDevtoolsState["audioContentHint"]>) => {
+    setAudioContentHint: (state, action: PayloadAction<SoraDevtoolsState['audioContentHint']>) => {
       state.audioContentHint = action.payload;
       if (state.soraContents.localMediaStream) {
         for (const track of state.soraContents.localMediaStream.getAudioTracks()) {
@@ -153,7 +158,7 @@ export const slice = createSlice({
         }
       }
     },
-    setAutoGainControl: (state, action: PayloadAction<SoraDevtoolsState["autoGainControl"]>) => {
+    setAutoGainControl: (state, action: PayloadAction<SoraDevtoolsState['autoGainControl']>) => {
       state.autoGainControl = action.payload;
     },
     setClientId: (state, action: PayloadAction<string>) => {
@@ -165,7 +170,10 @@ export const slice = createSlice({
     setTimelineMessage: (state, action: PayloadAction<TimelineMessage>) => {
       state.timelineMessages.push(action.payload);
     },
-    setDataChannelSignaling: (state, action: PayloadAction<SoraDevtoolsState["dataChannelSignaling"]>) => {
+    setDataChannelSignaling: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['dataChannelSignaling']>,
+    ) => {
       state.dataChannelSignaling = action.payload;
     },
     setDataChannels: (state, action: PayloadAction<string>) => {
@@ -177,16 +185,22 @@ export const slice = createSlice({
     setGoogCpuOveruseDetection: (state, action: PayloadAction<boolean>) => {
       state.googCpuOveruseDetection = action.payload;
     },
-    setDisplayResolution: (state, action: PayloadAction<SoraDevtoolsState["displayResolution"]>) => {
+    setDisplayResolution: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['displayResolution']>,
+    ) => {
       state.displayResolution = action.payload;
     },
     setE2EE: (state, action: PayloadAction<boolean>) => {
       state.e2ee = action.payload;
     },
-    setEchoCancellation: (state, action: PayloadAction<SoraDevtoolsState["echoCancellation"]>) => {
+    setEchoCancellation: (state, action: PayloadAction<SoraDevtoolsState['echoCancellation']>) => {
       state.echoCancellation = action.payload;
     },
-    setEchoCancellationType: (state, action: PayloadAction<SoraDevtoolsState["echoCancellationType"]>) => {
+    setEchoCancellationType: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['echoCancellationType']>,
+    ) => {
       state.echoCancellationType = action.payload;
     },
     setEnabledClientId: (state, action: PayloadAction<boolean>) => {
@@ -201,7 +215,10 @@ export const slice = createSlice({
     setEnabledMetadata: (state, action: PayloadAction<boolean>) => {
       state.enabledMetadata = action.payload;
     },
-    setIgnoreDisconnectWebSocket: (state, action: PayloadAction<SoraDevtoolsState["ignoreDisconnectWebSocket"]>) => {
+    setIgnoreDisconnectWebSocket: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['ignoreDisconnectWebSocket']>,
+    ) => {
       state.ignoreDisconnectWebSocket = action.payload;
     },
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
@@ -219,9 +236,9 @@ export const slice = createSlice({
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
       if (isNaN(volume)) {
-        state.fakeVolume = "0";
+        state.fakeVolume = '0';
       } else if (1 < volume) {
-        state.fakeVolume = "1";
+        state.fakeVolume = '1';
       } else {
         state.fakeVolume = String(volume);
       }
@@ -237,26 +254,28 @@ export const slice = createSlice({
       state.fakeContents.colorCode = Math.floor(Math.random() * 0xffffff);
       // Fake canvas を表示しているブラウザタブがバックグラウンドへ移動しても canvas のレンダリングを続けるために worker を生成
       if (URL.createObjectURL) {
-        const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
+        const url = URL.createObjectURL(
+          new Blob([WORKER_SCRIPT], { type: 'application/javascript' }),
+        );
         state.fakeContents.worker = new Worker(url);
       }
     },
-    setFrameRate: (state, action: PayloadAction<SoraDevtoolsState["frameRate"]>) => {
+    setFrameRate: (state, action: PayloadAction<SoraDevtoolsState['frameRate']>) => {
       state.frameRate = action.payload;
     },
     setMute: (state, action: PayloadAction<boolean>) => {
       state.mute = action.payload;
     },
-    setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState["noiseSuppression"]>) => {
+    setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {
       state.noiseSuppression = action.payload;
     },
-    setMediaType: (state, action: PayloadAction<SoraDevtoolsState["mediaType"]>) => {
+    setMediaType: (state, action: PayloadAction<SoraDevtoolsState['mediaType']>) => {
       // NOTE(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
       if (
-        action.payload === "mediacaptureRegion" &&
-        (typeof window === "undefined" || window.CropTarget === undefined)
+        action.payload === 'mediacaptureRegion' &&
+        (typeof window === 'undefined' || window.CropTarget === undefined)
       ) {
-        state.mediaType = "getUserMedia";
+        state.mediaType = 'getUserMedia';
       } else {
         state.mediaType = action.payload;
       }
@@ -264,7 +283,7 @@ export const slice = createSlice({
     setMetadata: (state, action: PayloadAction<string>) => {
       state.metadata = action.payload;
     },
-    setResolution: (state, action: PayloadAction<SoraDevtoolsState["resolution"]>) => {
+    setResolution: (state, action: PayloadAction<SoraDevtoolsState['resolution']>) => {
       state.resolution = action.payload;
     },
     setSignalingNotifyMetadata: (state, action: PayloadAction<string>) => {
@@ -276,16 +295,22 @@ export const slice = createSlice({
     setForwardingFilter: (state, action: PayloadAction<string>) => {
       state.forwardingFilter = action.payload;
     },
-    setSimulcastRid: (state, action: PayloadAction<SoraDevtoolsState["simulcastRid"]>) => {
+    setSimulcastRid: (state, action: PayloadAction<SoraDevtoolsState['simulcastRid']>) => {
       state.simulcastRid = action.payload;
     },
-    setSpotlightNumber: (state, action: PayloadAction<SoraDevtoolsState["spotlightNumber"]>) => {
+    setSpotlightNumber: (state, action: PayloadAction<SoraDevtoolsState['spotlightNumber']>) => {
       state.spotlightNumber = action.payload;
     },
-    setSpotlightFocusRid: (state, action: PayloadAction<SoraDevtoolsState["spotlightFocusRid"]>) => {
+    setSpotlightFocusRid: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['spotlightFocusRid']>,
+    ) => {
       state.spotlightFocusRid = action.payload;
     },
-    setSpotlightUnfocusRid: (state, action: PayloadAction<SoraDevtoolsState["spotlightUnfocusRid"]>) => {
+    setSpotlightUnfocusRid: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['spotlightUnfocusRid']>,
+    ) => {
       state.spotlightUnfocusRid = action.payload;
     },
     setVideo: (state, action: PayloadAction<boolean>) => {
@@ -294,13 +319,13 @@ export const slice = createSlice({
     setVideoInput: (state, action: PayloadAction<string>) => {
       state.videoInput = action.payload;
     },
-    setVideoBitRate: (state, action: PayloadAction<SoraDevtoolsState["videoBitRate"]>) => {
+    setVideoBitRate: (state, action: PayloadAction<SoraDevtoolsState['videoBitRate']>) => {
       state.videoBitRate = action.payload;
     },
-    setVideoCodecType: (state, action: PayloadAction<SoraDevtoolsState["videoCodecType"]>) => {
+    setVideoCodecType: (state, action: PayloadAction<SoraDevtoolsState['videoCodecType']>) => {
       state.videoCodecType = action.payload;
     },
-    setVideoContentHint: (state, action: PayloadAction<SoraDevtoolsState["videoContentHint"]>) => {
+    setVideoContentHint: (state, action: PayloadAction<SoraDevtoolsState['videoContentHint']>) => {
       state.videoContentHint = action.payload;
       if (state.soraContents.localMediaStream) {
         for (const track of state.soraContents.localMediaStream.getVideoTracks()) {
@@ -321,10 +346,16 @@ export const slice = createSlice({
         state.soraContents.datachannels = [];
       }
     },
-    setSoraConnectionStatus: (state, action: PayloadAction<SoraDevtoolsState["soraContents"]["connectionStatus"]>) => {
+    setSoraConnectionStatus: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['soraContents']['connectionStatus']>,
+    ) => {
       state.soraContents.connectionStatus = action.payload;
     },
-    setSoraReconnecting: (state, action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnecting"]>) => {
+    setSoraReconnecting: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['soraContents']['reconnecting']>,
+    ) => {
       state.soraContents.reconnecting = action.payload;
       if (state.soraContents.reconnecting === false) {
         state.soraContents.reconnectingTrials = 0;
@@ -332,7 +363,7 @@ export const slice = createSlice({
     },
     setSoraReconnectingTrials: (
       state,
-      action: PayloadAction<SoraDevtoolsState["soraContents"]["reconnectingTrials"]>,
+      action: PayloadAction<SoraDevtoolsState['soraContents']['reconnectingTrials']>,
     ) => {
       state.soraContents.reconnectingTrials = action.payload;
     },
@@ -355,7 +386,9 @@ export const slice = createSlice({
       state.soraContents.statsReport = action.payload;
     },
     removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter((stream) => stream.id !== action.payload);
+      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter(
+        (stream) => stream.id !== action.payload,
+      );
       state.soraContents.remoteMediaStreams = remoteMediaStreams;
     },
     removeAllRemoteMediaStreams: (state) => {
@@ -372,8 +405,8 @@ export const slice = createSlice({
     },
     setSoraInfoAlertMessage: (state, action: PayloadAction<string>) => {
       const alertMessage: AlertMessage = {
-        title: "Sora info",
-        type: "info",
+        title: 'Sora info',
+        type: 'info',
         message: action.payload,
         timestamp: new Date().getTime(),
       };
@@ -381,8 +414,8 @@ export const slice = createSlice({
     },
     setSoraErrorAlertMessage: (state, action: PayloadAction<string>) => {
       const alertMessage: AlertMessage = {
-        title: "Sora error",
-        type: "error",
+        title: 'Sora error',
+        type: 'error',
         message: action.payload,
         timestamp: new Date().getTime(),
       };
@@ -390,8 +423,8 @@ export const slice = createSlice({
     },
     setAPIInfoAlertMessage: (state, action: PayloadAction<string>) => {
       const alertMessage: AlertMessage = {
-        title: "API info",
-        type: "info",
+        title: 'API info',
+        type: 'info',
         message: action.payload,
         timestamp: new Date().getTime(),
       };
@@ -399,8 +432,8 @@ export const slice = createSlice({
     },
     setAPIErrorAlertMessage: (state, action: PayloadAction<string>) => {
       const alertMessage: AlertMessage = {
-        title: "API error",
-        type: "error",
+        title: 'API error',
+        type: 'error',
         message: action.payload,
         timestamp: new Date().getTime(),
       };
@@ -419,10 +452,10 @@ export const slice = createSlice({
       state.debugFilterText = action.payload;
     },
     setDebugType: (state, action: PayloadAction<DebugType>) => {
-      state.debugFilterText = "";
+      state.debugFilterText = '';
       state.debugType = action.payload;
     },
-    setLogMessages: (state, action: PayloadAction<LogMessage["message"]>) => {
+    setLogMessages: (state, action: PayloadAction<LogMessage['message']>) => {
       state.logMessages.push({
         timestamp: new Date().getTime(),
         message: {
@@ -474,13 +507,13 @@ export const slice = createSlice({
     setRole: (state, action: PayloadAction<Role>) => {
       state.role = action.payload;
     },
-    setMultistream: (state, action: PayloadAction<SoraDevtoolsState["multistream"]>) => {
+    setMultistream: (state, action: PayloadAction<SoraDevtoolsState['multistream']>) => {
       state.multistream = action.payload;
     },
-    setSimulcast: (state, action: PayloadAction<SoraDevtoolsState["simulcast"]>) => {
+    setSimulcast: (state, action: PayloadAction<SoraDevtoolsState['simulcast']>) => {
       state.simulcast = action.payload;
     },
-    setSpotlight: (state, action: PayloadAction<SoraDevtoolsState["spotlight"]>) => {
+    setSpotlight: (state, action: PayloadAction<SoraDevtoolsState['spotlight']>) => {
       state.spotlight = action.payload;
     },
     setReconnect: (state, action: PayloadAction<boolean>) => {
@@ -492,22 +525,22 @@ export const slice = createSlice({
     clearDataChannelMessages: (state) => {
       state.dataChannelMessages = [];
     },
-    setAspectRatio: (state, action: PayloadAction<SoraDevtoolsState["aspectRatio"]>) => {
+    setAspectRatio: (state, action: PayloadAction<SoraDevtoolsState['aspectRatio']>) => {
       state.aspectRatio = action.payload;
     },
-    setResizeMode: (state, action: PayloadAction<SoraDevtoolsState["resizeMode"]>) => {
+    setResizeMode: (state, action: PayloadAction<SoraDevtoolsState['resizeMode']>) => {
       state.resizeMode = action.payload;
     },
-    setLightAdjustment: (state, action: PayloadAction<SoraDevtoolsState["lightAdjustment"]>) => {
-      if (action.payload !== "" && state.lightAdjustmentProcessor === null) {
+    setLightAdjustment: (state, action: PayloadAction<SoraDevtoolsState['lightAdjustment']>) => {
+      if (action.payload !== '' && state.lightAdjustmentProcessor === null) {
         const processor = new LightAdjustmentProcessor();
         state.lightAdjustmentProcessor = processor;
       }
       state.lightAdjustment = action.payload;
     },
-    setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState["blurRadius"]>) => {
-      if (action.payload !== "" && state.virtualBackgroundProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || "";
+    setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState['blurRadius']>) => {
+      if (action.payload !== '' && state.virtualBackgroundProcessor === null) {
+        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || '';
         const processor = new VirtualBackgroundProcessor(assetsPath);
         state.virtualBackgroundProcessor = processor;
       }
@@ -515,42 +548,48 @@ export const slice = createSlice({
     },
     setMediaProcessorsNoiseSuppression: (
       state,
-      action: PayloadAction<SoraDevtoolsState["mediaProcessorsNoiseSuppression"]>,
+      action: PayloadAction<SoraDevtoolsState['mediaProcessorsNoiseSuppression']>,
     ) => {
       if (action.payload && state.noiseSuppressionProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || "";
+        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || '';
         const processor = new NoiseSuppressionProcessor(assetsPath);
         state.noiseSuppressionProcessor = processor;
       }
       state.mediaProcessorsNoiseSuppression = action.payload;
     },
-    setBundleId: (state, action: PayloadAction<SoraDevtoolsState["bundleId"]>) => {
+    setBundleId: (state, action: PayloadAction<SoraDevtoolsState['bundleId']>) => {
       state.bundleId = action.payload;
     },
-    setEnabledBundleId: (state, action: PayloadAction<SoraDevtoolsState["enabledBundleId"]>) => {
+    setEnabledBundleId: (state, action: PayloadAction<SoraDevtoolsState['enabledBundleId']>) => {
       state.enabledBundleId = action.payload;
     },
-    setFacingMode: (state, action: PayloadAction<SoraDevtoolsState["facingMode"]>) => {
+    setFacingMode: (state, action: PayloadAction<SoraDevtoolsState['facingMode']>) => {
       state.facingMode = action.payload;
     },
-    setAudioStreamingLanguageCode: (state, action: PayloadAction<SoraDevtoolsState["audioStreamingLanguageCode"]>) => {
+    setAudioStreamingLanguageCode: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['audioStreamingLanguageCode']>,
+    ) => {
       state.audioStreamingLanguageCode = action.payload;
     },
     setEnabledAudioStreamingLanguageCode: (
       state,
-      action: PayloadAction<SoraDevtoolsState["enabledAudioStreamingLanguageCode"]>,
+      action: PayloadAction<SoraDevtoolsState['enabledAudioStreamingLanguageCode']>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload;
     },
-    setLyraParamsBitrate: (state, action: PayloadAction<SoraDevtoolsState["lyraParamsBitrate"]>) => {
+    setLyraParamsBitrate: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['lyraParamsBitrate']>,
+    ) => {
       state.lyraParamsBitrate = action.payload;
     },
   },
 });
 
 function setAlertMessagesAndLogMessages(
-  alertMessages: SoraDevtoolsState["alertMessages"],
-  logMessages: SoraDevtoolsState["logMessages"],
+  alertMessages: SoraDevtoolsState['alertMessages'],
+  logMessages: SoraDevtoolsState['logMessages'],
   alertMessage: AlertMessage,
 ): void {
   if (10 <= alertMessages.length) {

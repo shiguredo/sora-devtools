@@ -7,7 +7,7 @@ label {
   margin-bottom: 0;
 }
 
-input[type="range"] {
+input[type='range'] {
   cursor: pointer;
   outline: none;
   height: 8px;
@@ -16,7 +16,7 @@ input[type="range"] {
   background: #e5e5e5;
 }
 
-input[type="range"]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   background: #0375ff;
   width: 16px;
   height: 16px;
@@ -24,17 +24,17 @@ input[type="range"]::-moz-range-thumb {
   border: none;
 }
 
-input[type="range"]:active::-moz-range-thumb {
+input[type='range']:active::-moz-range-thumb {
   background: #015dc8;
 }
 
-input[type="range"]::-moz-range-progress {
+input[type='range']::-moz-range-progress {
   background: #0375ff;
   height: 7px;
   border-radius: 3.5px 0 0 3.5px;
 }
 
-input[type="range"]:active::-moz-range-progress {
+input[type='range']:active::-moz-range-progress {
   background: #015dc8;
 }
 
@@ -368,7 +368,7 @@ video {
   width: 1.25rem;
   height: 1.25rem;
   margin-left: 10px;
-  content: "";
+  content: '';
   background-repeat: no-repeat;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }

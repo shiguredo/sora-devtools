@@ -1,11 +1,11 @@
-import React from "react";
-import { FormControl, FormGroup } from "react-bootstrap";
+import React from 'react';
+import { FormControl, FormGroup } from 'react-bootstrap';
 
-import { setChannelId } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setChannelId } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const ChannelIdForm: React.FC = () => {
   const channelId = useAppSelector((state) => state.channelId);

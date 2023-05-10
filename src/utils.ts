@@ -1,6 +1,9 @@
-import { LightAdjustmentProcessorOptions, SelfieSegmentationFocusMask } from "@shiguredo/light-adjustment";
-import queryString from "query-string";
-import type { ConnectionOptions } from "sora-js-sdk";
+import {
+  LightAdjustmentProcessorOptions,
+  SelfieSegmentationFocusMask,
+} from '@shiguredo/light-adjustment';
+import queryString from 'query-string';
+import type { ConnectionOptions } from 'sora-js-sdk';
 
 import {
   ASPECT_RATIO_TYPES,
@@ -33,7 +36,7 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from "@/constants";
+} from '@/constants';
 import type {
   ConnectionOptionsState,
   CustomHTMLCanvasElement,
@@ -41,7 +44,7 @@ import type {
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
   SoraDevtoolsState,
-} from "@/types";
+} from '@/types';
 
 // UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -49,10 +52,10 @@ export function formatUnixtime(time: number): string {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const hour = date.getHours().toString().padStart(2, "0");
-  const minute = date.getMinutes().toString().padStart(2, "0");
-  const second = date.getSeconds().toString().padStart(2, "0");
-  const millisecond = date.getMilliseconds().toString().padStart(3, "0");
+  const hour = date.getHours().toString().padStart(2, '0');
+  const minute = date.getMinutes().toString().padStart(2, '0');
+  const second = date.getSeconds().toString().padStart(2, '0');
+  const millisecond = date.getMilliseconds().toString().padStart(3, '0');
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
@@ -69,7 +72,7 @@ export function checkFormValue<T extends readonly string[]>(
   value: unknown,
   candidates: T,
 ): value is (typeof candidates)[number] {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return candidates.indexOf(value) >= 0;
   }
   return false;
@@ -78,15 +81,19 @@ export function checkFormValue<T extends readonly string[]>(
 // クエリ文字列パーサー
 export function parseQueryString(): Partial<QueryStringParameters> {
   // パラメーターが文字列かどうかを判定して string | undefined を返す
-  const parseStringParameter = (parameter: string | (string | null)[] | null): string | undefined => {
-    if (typeof parameter === "string") {
+  const parseStringParameter = (
+    parameter: string | (string | null)[] | null,
+  ): string | undefined => {
+    if (typeof parameter === 'string') {
       return parameter;
     }
     return;
   };
   // パラメーターが boolean かどうかを判定して boolean | undefined を返す
-  const parseBooleanParameter = (parameter: string | (string | null)[] | null): boolean | undefined => {
-    if (typeof parameter === "string") {
+  const parseBooleanParameter = (
+    parameter: string | (string | null)[] | null,
+  ): boolean | undefined => {
+    if (typeof parameter === 'string') {
       return parseBooleanString(parameter);
     }
     return;
@@ -104,7 +111,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const qs = queryString.parse(location.search);
   // signalingUrlCandidates のパース
   let signalingUrlCandidates;
-  if (typeof qs.signalingUrlCandidates === "string") {
+  if (typeof qs.signalingUrlCandidates === 'string') {
     try {
       signalingUrlCandidates = JSON.parse(qs.signalingUrlCandidates);
     } catch (_) {
@@ -127,7 +134,10 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     displayResolution: parseSpecifiedStringParameter(qs.displayResolution, DISPLAY_RESOLUTIONS),
     e2ee: parseBooleanParameter(qs.e2ee),
     echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
-    echoCancellationType: parseSpecifiedStringParameter(qs.echoCancellationType, ECHO_CANCELLATION_TYPES),
+    echoCancellationType: parseSpecifiedStringParameter(
+      qs.echoCancellationType,
+      ECHO_CANCELLATION_TYPES,
+    ),
     noiseSuppression: parseSpecifiedStringParameter(qs.noiseSuppression, NOISE_SUPPRESSIONS),
     facingMode: parseSpecifiedStringParameter(qs.facingMode, FACING_MODES),
     fakeVolume: parseStringParameter(qs.fakeVolume),
@@ -136,14 +146,19 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     metadata: parseStringParameter(qs.metadata),
     showStats: parseBooleanParameter(qs.showStats),
     signalingNotifyMetadata: parseStringParameter(qs.signalingNotifyMetadata),
-    signalingUrlCandidates: Array.isArray(signalingUrlCandidates) ? signalingUrlCandidates : undefined,
+    signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
+      ? signalingUrlCandidates
+      : undefined,
     forwardingFilter: parseStringParameter(qs.forwardingFilter),
     simulcast: parseSpecifiedStringParameter(qs.simulcast, SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(qs.simulcastRid, SIMULCAST_RID),
     spotlight: parseSpecifiedStringParameter(qs.spotlight, SPOTLIGHT),
     spotlightNumber: parseSpecifiedStringParameter(qs.spotlightNumber, SPOTLIGHT_NUMBERS),
     spotlightFocusRid: parseSpecifiedStringParameter(qs.spotlightFocusRid, SPOTLIGHT_FOCUS_RIDS),
-    spotlightUnfocusRid: parseSpecifiedStringParameter(qs.spotlightUnfocusRid, SPOTLIGHT_FOCUS_RIDS),
+    spotlightUnfocusRid: parseSpecifiedStringParameter(
+      qs.spotlightUnfocusRid,
+      SPOTLIGHT_FOCUS_RIDS,
+    ),
     resolution: parseSpecifiedStringParameter(qs.resolution, RESOLUTIONS),
     video: parseBooleanParameter(qs.video),
     videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
@@ -152,8 +167,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     videoInput: parseStringParameter(qs.videoInput),
     audioOutput: parseStringParameter(qs.audioOutput),
     mute: parseBooleanParameter(qs.mute),
-    dataChannelSignaling: parseSpecifiedStringParameter(qs.dataChannelSignaling, DATA_CHANNEL_SIGNALING),
-    ignoreDisconnectWebSocket: parseSpecifiedStringParameter(qs.ignoreDisconnectWebSocket, IGNORE_DISCONNECT_WEBSOCKET),
+    dataChannelSignaling: parseSpecifiedStringParameter(
+      qs.dataChannelSignaling,
+      DATA_CHANNEL_SIGNALING,
+    ),
+    ignoreDisconnectWebSocket: parseSpecifiedStringParameter(
+      qs.ignoreDisconnectWebSocket,
+      IGNORE_DISCONNECT_WEBSOCKET,
+    ),
     micDevice: parseBooleanParameter(qs.micDevice),
     cameraDevice: parseBooleanParameter(qs.cameraDevice),
     audioTrack: parseBooleanParameter(qs.audioTrack),
@@ -187,34 +208,34 @@ export function createSignalingURL(
 ): string | string[] {
   if (enabledSignalingUrlCandidates) {
     // 空文字列は取り除く
-    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== "");
+    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '');
   }
-  if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
+  if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
     return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL;
   }
-  const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-  const port = window.location.port ? `:${window.location.port}` : "";
-  return wsProtocol + window.location.hostname + port + "/signaling";
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  const port = window.location.port ? `:${window.location.port}` : '';
+  return wsProtocol + window.location.hostname + port + '/signaling';
 }
 
 // 解像度に対応する width と height を返す
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
-    case "120p (160x120)":
+    case '120p (160x120)':
       return { width: 160, height: 120 };
-    case "180p (320x180)":
+    case '180p (320x180)':
       return { width: 320, height: 180 };
-    case "240p (320x240)":
+    case '240p (320x240)':
       return { width: 320, height: 240 };
-    case "360p (640x360)":
+    case '360p (640x360)':
       return { width: 640, height: 360 };
-    case "480p (640x480)":
+    case '480p (640x480)':
       return { width: 640, height: 480 };
-    case "720p (1280x720)":
+    case '720p (1280x720)':
       return { width: 1280, height: 720 };
-    case "1080p (1920x1080)":
+    case '1080p (1920x1080)':
       return { width: 1920, height: 1080 };
-    case "2160p (3840x2160)":
+    case '2160p (3840x2160)':
       return { width: 3840, height: 2160 };
     default:
       return { width: 0, height: 0 };
@@ -224,11 +245,11 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
 // アスペクト比に対応する数値を返す
 export function getValueByAspectRatio(aspectRatio: string): number {
   switch (aspectRatio) {
-    case "4:3":
+    case '4:3':
       return 4 / 3;
-    case "16:9":
+    case '16:9':
       return 16 / 9;
-    case "21:9":
+    case '21:9':
       return 20 / 9;
     default:
       return NaN;
@@ -238,11 +259,11 @@ export function getValueByAspectRatio(aspectRatio: string): number {
 // devtools の blurRadius 文字列に対する数値を返す
 export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): number {
   switch (blurRadius) {
-    case "weak":
+    case 'weak':
       return 5;
-    case "medium":
+    case 'medium':
       return 10;
-    case "strong":
+    case 'strong':
       return 15;
     default:
       return 0;
@@ -254,15 +275,15 @@ export function getLightAdjustmentOptions(
   lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number],
 ): LightAdjustmentProcessorOptions {
   switch (lightAdjustment) {
-    case "weak":
+    case 'weak':
       return { adjustmentLevel: 30, sharpnessLevel: 0 };
-    case "medium": {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+    case 'medium': {
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || '';
       const focusMask = new SelfieSegmentationFocusMask(assetsPath);
       return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask };
     }
-    case "strong": {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || "";
+    case 'strong': {
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || '';
       const focusMask = new SelfieSegmentationFocusMask(assetsPath);
       return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask };
     }
@@ -280,12 +301,27 @@ type CreateAudioConstraintsParameters = {
   echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number];
   audioInput: string;
 };
-export function createAudioConstraints(parameters: CreateAudioConstraintsParameters): boolean | MediaTrackConstraints {
-  const { audio, autoGainControl, noiseSuppression, echoCancellation, echoCancellationType, audioInput } = parameters;
+export function createAudioConstraints(
+  parameters: CreateAudioConstraintsParameters,
+): boolean | MediaTrackConstraints {
+  const {
+    audio,
+    autoGainControl,
+    noiseSuppression,
+    echoCancellation,
+    echoCancellationType,
+    audioInput,
+  } = parameters;
   if (!audio) {
     return false;
   }
-  if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType && !audioInput) {
+  if (
+    !autoGainControl &&
+    !noiseSuppression &&
+    !echoCancellation &&
+    !echoCancellationType &&
+    !audioInput
+  ) {
     return audio;
   }
   const audioConstraints: SoraDevtoolsMediaTrackConstraints = {};
@@ -312,16 +348,19 @@ export function createAudioConstraints(parameters: CreateAudioConstraintsParamet
 
 // getUserMedia の video constraints を生成
 type CreateVideoConstraintsParameters = {
-  aspectRatio: SoraDevtoolsState["aspectRatio"];
-  frameRate: SoraDevtoolsState["frameRate"];
-  resizeMode: SoraDevtoolsState["resizeMode"];
-  resolution: SoraDevtoolsState["resolution"];
-  video: SoraDevtoolsState["video"];
-  videoInput: SoraDevtoolsState["videoInput"];
-  facingMode: SoraDevtoolsState["facingMode"];
+  aspectRatio: SoraDevtoolsState['aspectRatio'];
+  frameRate: SoraDevtoolsState['frameRate'];
+  resizeMode: SoraDevtoolsState['resizeMode'];
+  resolution: SoraDevtoolsState['resolution'];
+  video: SoraDevtoolsState['video'];
+  videoInput: SoraDevtoolsState['videoInput'];
+  facingMode: SoraDevtoolsState['facingMode'];
 };
-export function createVideoConstraints(parameters: CreateVideoConstraintsParameters): boolean | MediaTrackConstraints {
-  const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode, facingMode } = parameters;
+export function createVideoConstraints(
+  parameters: CreateVideoConstraintsParameters,
+): boolean | MediaTrackConstraints {
+  const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode, facingMode } =
+    parameters;
   if (!video) {
     return false;
   }
@@ -348,23 +387,23 @@ export function createVideoConstraints(parameters: CreateVideoConstraintsParamet
   if (resizeMode) {
     videoConstraints.resizeMode = resizeMode;
   }
-  if (facingMode === "front") {
-    videoConstraints.facingMode = "user";
-  } else if (facingMode === "back") {
-    videoConstraints.facingMode = { exact: "environment" };
+  if (facingMode === 'front') {
+    videoConstraints.facingMode = 'user';
+  } else if (facingMode === 'back') {
+    videoConstraints.facingMode = { exact: 'environment' };
   }
   return videoConstraints;
 }
 
 // Fake 用の constraints を生成
 type CreateFakeMediaConstraintsParameters = {
-  audio: SoraDevtoolsState["audio"];
-  video: SoraDevtoolsState["video"];
-  frameRate: SoraDevtoolsState["frameRate"];
-  resolution: SoraDevtoolsState["resolution"];
-  volume: SoraDevtoolsState["fakeVolume"];
-  aspectRatio: SoraDevtoolsState["aspectRatio"];
-  resizeMode: SoraDevtoolsState["resizeMode"];
+  audio: SoraDevtoolsState['audio'];
+  video: SoraDevtoolsState['video'];
+  frameRate: SoraDevtoolsState['frameRate'];
+  resolution: SoraDevtoolsState['resolution'];
+  volume: SoraDevtoolsState['fakeVolume'];
+  aspectRatio: SoraDevtoolsState['aspectRatio'];
+  resizeMode: SoraDevtoolsState['resizeMode'];
 };
 type FakeMediaStreamConstraints = {
   audio: boolean;
@@ -410,10 +449,10 @@ export function createFakeMediaConstraints(
 
 // getDisplayMedia の video constraints を生成
 type CreateGetDisplayMediaConstraintsParameters = {
-  frameRate: SoraDevtoolsState["frameRate"];
-  resolution: SoraDevtoolsState["resolution"];
-  aspectRatio: SoraDevtoolsState["aspectRatio"];
-  resizeMode: SoraDevtoolsState["resizeMode"];
+  frameRate: SoraDevtoolsState['frameRate'];
+  resolution: SoraDevtoolsState['resolution'];
+  aspectRatio: SoraDevtoolsState['aspectRatio'];
+  resizeMode: SoraDevtoolsState['resizeMode'];
 };
 export function createGetDisplayMediaConstraints(
   parameters: CreateGetDisplayMediaConstraintsParameters,
@@ -453,9 +492,9 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   const mediaStream = new MediaStream();
   let canvas = null;
   if (parameters.video) {
-    canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
+    canvas = document.createElement('canvas') as CustomHTMLCanvasElement;
     // Firefox では getContext を呼ばないと captureStream が失敗する
-    canvas.getContext("2d");
+    canvas.getContext('2d');
     canvas.width = parameters.width;
     canvas.height = parameters.height;
     const cancasStream = canvas.captureStream(parameters.frameRate);
@@ -470,7 +509,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
     const oscillator = audioContext.createOscillator();
-    const selectedOscillatorType = "sine";
+    const selectedOscillatorType = 'sine';
     oscillator.type = selectedOscillatorType;
     gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
@@ -494,15 +533,15 @@ export function drawFakeCanvas(
   if (canvas === null) {
     return;
   }
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext('2d');
   if (!context) {
     return;
   }
-  context.globalCompositeOperation = "source-over";
+  context.globalCompositeOperation = 'source-over';
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "#" + ("0".repeat(6) + colorCode.toString(16)).slice(-6);
+  context.fillStyle = '#' + ('0'.repeat(6) + colorCode.toString(16)).slice(-6);
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "#" + ("0".repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6);
+  context.fillStyle = '#' + ('0'.repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6);
   context.font = `${fontSize}px Arial`;
   const x = canvas.width / 2 - fontSize / 2;
   const margin = (fontSize / 4) * (text.length - 1);
@@ -511,9 +550,9 @@ export function drawFakeCanvas(
 }
 
 export function parseBooleanString(value: string): boolean | undefined {
-  if (value === "true") {
+  if (value === 'true') {
     return true;
-  } else if (value === "false") {
+  } else if (value === 'false') {
     return false;
   }
   return;
@@ -534,30 +573,30 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
   // getCapabilities API が存在しない場合
   if (!window.RTCRtpSender || !RTCRtpSender.getCapabilities) {
-    return "VP9";
+    return 'VP9';
   }
   // getCapabilities APIから codec 一覧が取れない場合
-  const capabilities = RTCRtpSender.getCapabilities("video");
+  const capabilities = RTCRtpSender.getCapabilities('video');
   if (!capabilities || !capabilities.codecs) {
-    return "VP9";
+    return 'VP9';
   }
-  const codecs = capabilities.codecs.map((c) => c.mimeType.replace("video/", ""));
-  if (codecs.includes("VP9")) {
-    return "VP9";
+  const codecs = capabilities.codecs.map((c) => c.mimeType.replace('video/', ''));
+  if (codecs.includes('VP9')) {
+    return 'VP9';
   }
-  if (codecs.includes("VP8")) {
-    return "VP8";
+  if (codecs.includes('VP8')) {
+    return 'VP8';
   }
-  if (codecs.includes("H264")) {
-    return "H264";
+  if (codecs.includes('H264')) {
+    return 'H264';
   }
-  if (codecs.includes("AV1")) {
-    return "AV1";
+  if (codecs.includes('AV1')) {
+    return 'AV1';
   }
-  if (codecs.includes("H265")) {
-    return "H265";
+  if (codecs.includes('H265')) {
+    return 'H265';
   }
-  return "VP9";
+  return 'VP9';
 }
 
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
@@ -574,24 +613,28 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
 }
 
 // Sora との接続状態に応じて特定の Form を表示するかしないかを返す
-export function isFormDisabled(connectionStatus: SoraDevtoolsState["soraContents"]["connectionStatus"]): boolean {
-  return connectionStatus === "connected" || connectionStatus === "connecting";
+export function isFormDisabled(
+  connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
+): boolean {
+  return connectionStatus === 'connected' || connectionStatus === 'connecting';
 }
 
 // track の設定情報を返す
 type GetMediaStreamTrackProperties = {
-  id: MediaStreamTrack["id"];
-  label: MediaStreamTrack["label"];
-  kind: MediaStreamTrack["kind"];
-  enabled: MediaStreamTrack["enabled"];
-  muted: MediaStreamTrack["muted"];
-  readyState: MediaStreamTrack["readyState"];
-  contentHint: MediaStreamTrack["contentHint"];
+  id: MediaStreamTrack['id'];
+  label: MediaStreamTrack['label'];
+  kind: MediaStreamTrack['kind'];
+  enabled: MediaStreamTrack['enabled'];
+  muted: MediaStreamTrack['muted'];
+  readyState: MediaStreamTrack['readyState'];
+  contentHint: MediaStreamTrack['contentHint'];
   getConstraints: MediaTrackConstraints;
   getCapabilities: MediaTrackCapabilities | null;
   getSettings: MediaTrackSettings;
 };
-export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMediaStreamTrackProperties {
+export function getMediaStreamTrackProperties(
+  track: MediaStreamTrack,
+): GetMediaStreamTrackProperties {
   return {
     id: track.id,
     label: track.label,
@@ -607,7 +650,9 @@ export function getMediaStreamTrackProperties(track: MediaStreamTrack): GetMedia
 }
 
 // Sora の connectOptions を生成する
-export function createConnectOptions(connectionOptionsState: ConnectionOptionsState): ConnectionOptions {
+export function createConnectOptions(
+  connectionOptionsState: ConnectionOptionsState,
+): ConnectionOptions {
   const connectionOptions: ConnectionOptions = {
     audio: connectionOptionsState.audio,
     video: connectionOptionsState.video,
@@ -665,11 +710,17 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
   }
   // signalingNotifyMetadata
   if (connectionOptionsState.enabledSignalingNotifyMetadata) {
-    connectionOptions.signalingNotifyMetadata = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
+    connectionOptions.signalingNotifyMetadata = parseMetadata(
+      true,
+      connectionOptionsState.signalingNotifyMetadata,
+    );
   }
   // forwardingFilter
   if (connectionOptionsState.enabledForwardingFilter) {
-    connectionOptions.forwardingFilter = parseMetadata(true, connectionOptionsState.forwardingFilter);
+    connectionOptions.forwardingFilter = parseMetadata(
+      true,
+      connectionOptionsState.forwardingFilter,
+    );
   }
   // bundleId
   if (connectionOptionsState.enabledBundleId) {
@@ -681,23 +732,27 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
   }
   // dataChannelSignaling, ignoreDisconnectWebSocket
   if (connectionOptionsState.enabledDataChannel) {
-    const parsedDataChannelSignaling = parseBooleanString(connectionOptionsState.dataChannelSignaling);
+    const parsedDataChannelSignaling = parseBooleanString(
+      connectionOptionsState.dataChannelSignaling,
+    );
     if (parsedDataChannelSignaling !== undefined) {
       connectionOptions.dataChannelSignaling = parsedDataChannelSignaling;
     }
-    const parsedIgnoreDisconnectWebSocket = parseBooleanString(connectionOptionsState.ignoreDisconnectWebSocket);
+    const parsedIgnoreDisconnectWebSocket = parseBooleanString(
+      connectionOptionsState.ignoreDisconnectWebSocket,
+    );
     if (parsedIgnoreDisconnectWebSocket !== undefined) {
       connectionOptions.ignoreDisconnectWebSocket = parsedIgnoreDisconnectWebSocket;
     }
   }
   // dataChannels
-  if (connectionOptionsState.dataChannels !== "") {
+  if (connectionOptionsState.dataChannels !== '') {
     let dataChannels = [];
     try {
       dataChannels = JSON.parse(connectionOptionsState.dataChannels);
     } catch (_) {
       // サンプル実装なので warning で回避
-      console.warn("Illegal format DataChannels");
+      console.warn('Illegal format DataChannels');
     }
     if (Array.isArray(dataChannels)) {
       connectionOptions.dataChannels = dataChannels;
@@ -705,14 +760,15 @@ export function createConnectOptions(connectionOptionsState: ConnectionOptionsSt
   }
   // audioStreamingLanguageCode
   if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
-    connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode;
+    connectionOptions.audioStreamingLanguageCode =
+      connectionOptionsState.audioStreamingLanguageCode;
   }
   // lyraParamsBitrate
   if (connectionOptionsState.lyraParamsBitrate) {
-    connectionOptions.audioLyraParamsBitrate = parseInt(connectionOptionsState.lyraParamsBitrate, 10) as
-      | 3200
-      | 6000
-      | 9200;
+    connectionOptions.audioLyraParamsBitrate = parseInt(
+      connectionOptionsState.lyraParamsBitrate,
+      10,
+    ) as 3200 | 6000 | 9200;
   }
   return connectionOptions;
 }

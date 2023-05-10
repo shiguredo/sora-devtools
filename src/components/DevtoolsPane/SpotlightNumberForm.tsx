@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setSpotlightNumber } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { SPOTLIGHT_NUMBERS } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setSpotlightNumber } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { SPOTLIGHT_NUMBERS } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const SpotlightNumberForm: React.FC = () => {
   const spotlightNumber = useAppSelector((state) => state.spotlightNumber);
@@ -25,7 +25,7 @@ export const SpotlightNumberForm: React.FC = () => {
         {SPOTLIGHT_NUMBERS.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

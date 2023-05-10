@@ -1,11 +1,11 @@
-import React from "react";
-import { FormGroup } from "react-bootstrap";
+import React from 'react';
+import { FormGroup } from 'react-bootstrap';
 
-import { setAudio } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setAudio } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const AudioForm: React.FC = () => {
   const audio = useAppSelector((state) => state.audio);

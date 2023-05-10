@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
 const CANVAS_WIDTH = 25 as const;
 const MARGIN = 2.5 as const;
 const BAR_HEIGHT = 10 as const;
-const VOLUME_BAR_BACKGROUND_COLOR = "#CCCCCC" as const;
-const VOLUME_BAR_FOREGROUND_COLOR = "#000000" as const;
+const VOLUME_BAR_BACKGROUND_COLOR = '#CCCCCC' as const;
+const VOLUME_BAR_FOREGROUND_COLOR = '#000000' as const;
 
 function createVolumeRect(ctx: CanvasRenderingContext2D, style: string, rectY: number): void {
   ctx.beginPath();
@@ -23,7 +23,11 @@ function createVolumeBackground(ctx: CanvasRenderingContext2D, height: number): 
   }
 }
 
-function createVolumeForeground(ctx: CanvasRenderingContext2D, canvasHeight: number, rms: number): void {
+function createVolumeForeground(
+  ctx: CanvasRenderingContext2D,
+  canvasHeight: number,
+  rms: number,
+): void {
   const fillHeight = canvasHeight * rms;
   const barRenderCount = Math.ceil(fillHeight / (BAR_HEIGHT + MARGIN));
   for (let i = 0; i < barRenderCount; i++) {
@@ -64,7 +68,7 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
       if (canvas === null) {
         return;
       }
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       if (ctx === null) {
         return;
       }
@@ -87,7 +91,14 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.stream]);
-  return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
+  return (
+    <canvas
+      width={CANVAS_WIDTH}
+      height={props.height}
+      className="volume-visualizer"
+      ref={canvasRef}
+    />
+  );
 };
 
 type MutedVisualizerProps = {
@@ -101,7 +112,7 @@ const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
     if (canvas === null) {
       return;
     }
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (ctx === null) {
       return;
     }
@@ -111,7 +122,14 @@ const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
     createVolumeBackground(ctx, canvas.height);
     ctx.restore();
   }, []);
-  return <canvas width={CANVAS_WIDTH} height={props.height} className="volume-visualizer" ref={canvasRef} />;
+  return (
+    <canvas
+      width={CANVAS_WIDTH}
+      height={props.height}
+      className="volume-visualizer"
+      ref={canvasRef}
+    />
+  );
 };
 
 export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {

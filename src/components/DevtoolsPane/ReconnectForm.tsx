@@ -1,11 +1,11 @@
-import React from "react";
-import { Col, FormGroup, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormGroup, Row } from 'react-bootstrap';
 
-import { setReconnect } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setReconnect } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const ReconnectForm: React.FC = () => {
   const reconnect = useAppSelector((state) => state.reconnect);
@@ -19,7 +19,12 @@ export const ReconnectForm: React.FC = () => {
     <Row className="form-row">
       <Col className="col-auto">
         <FormGroup className="form-inline" controlId="reconnect">
-          <TooltipFormCheck kind="reconnect" checked={reconnect} onChange={onChange} disabled={disabled}>
+          <TooltipFormCheck
+            kind="reconnect"
+            checked={reconnect}
+            onChange={onChange}
+            disabled={disabled}
+          >
             reconnect
           </TooltipFormCheck>
         </FormGroup>

@@ -1,4 +1,4 @@
-import queryString from "query-string";
+import queryString from 'query-string';
 
 import {
   ASPECT_RATIO_TYPES,
@@ -27,16 +27,16 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from "@/constants";
+} from '@/constants';
 
-import { setInitialParameter } from "./actions";
-import { store } from "./store";
+import { setInitialParameter } from './actions';
+import { store } from './store';
 
 global.window = Object.create(window);
 
 function setLocationSearch(parameters: Record<string, unknown>): void {
   const search = queryString.stringify(parameters);
-  Object.defineProperty(window, "location", {
+  Object.defineProperty(window, 'location', {
     value: {
       search: search,
     },
@@ -44,7 +44,7 @@ function setLocationSearch(parameters: Record<string, unknown>): void {
   });
 }
 
-describe("setInitialParameter tests", () => {
+describe('setInitialParameter tests', () => {
   it("should handle 'role'", async () => {
     for (const value of ROLES) {
       setLocationSearch({ role: value });
@@ -358,63 +358,63 @@ describe("setInitialParameter tests", () => {
   });
 
   it("should handle 'channelId'", async () => {
-    const value = "channelId";
+    const value = 'channelId';
     setLocationSearch({ channelId: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().channelId).toEqual(value);
   });
 
   it("should handle 'clientId'", async () => {
-    const value = "clientId";
+    const value = 'clientId';
     setLocationSearch({ clientId: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().clientId).toEqual(value);
   });
 
   it("should handle 'fakeVolume'", async () => {
-    const value = "0.5";
+    const value = '0.5';
     setLocationSearch({ fakeVolume: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().fakeVolume).toEqual(value);
   });
 
   it("should handle 'metadata'", async () => {
-    const value = "metadata";
+    const value = 'metadata';
     setLocationSearch({ metadata: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().metadata).toEqual(value);
   });
 
   it("should handle 'signalingNotifyMetadata'", async () => {
-    const value = "signalingNotifyMetadata";
+    const value = 'signalingNotifyMetadata';
     setLocationSearch({ signalingNotifyMetadata: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().signalingNotifyMetadata).toEqual(value);
   });
 
   it("should handle 'forwardingFilter'", async () => {
-    const value = "forwardingFilter";
+    const value = 'forwardingFilter';
     setLocationSearch({ forwardingFilter: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().forwardingFilter).toEqual(value);
   });
 
   it("should handle 'dataChannels'", async () => {
-    const value = "dataChannels";
+    const value = 'dataChannels';
     setLocationSearch({ dataChannels: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().dataChannels).toEqual(value);
   });
 
   it("should handle 'signalingUrlCandidates'", async () => {
-    const value = ["ws://localhost:5000/signaling"];
+    const value = ['ws://localhost:5000/signaling'];
     setLocationSearch({ signalingUrlCandidates: JSON.stringify(value) });
     await store.dispatch(setInitialParameter());
     expect(store.getState().signalingUrlCandidates).toEqual(value);
   });
 
   it("should handle 'apiUrl'", async () => {
-    const value = "http://localhost:5000/api";
+    const value = 'http://localhost:5000/api';
     setLocationSearch({ apiUrl: value });
     await store.dispatch(setInitialParameter());
     expect(store.getState().apiUrl).toEqual(value);

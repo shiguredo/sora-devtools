@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { ClipboardIcon } from "@/components/ClipboardIcon";
-import { copy2clipboard } from "@/utils";
+import { ClipboardIcon } from '@/components/ClipboardIcon';
+import { copy2clipboard } from '@/utils';
 
 type Props = {
   text: string;
@@ -13,7 +13,7 @@ export const CopyLogButton: React.FC<Props> = (props) => {
     event.currentTarget.blur();
   };
   if (props.disabled) {
-    return <div style={{ height: "31px" }}></div>;
+    return <div style={{ height: '31px' }}></div>;
   }
   return (
     <button className="btn btn-sm btn-dark" onClick={onClick}>

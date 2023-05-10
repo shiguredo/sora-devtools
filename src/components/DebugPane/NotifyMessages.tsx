@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 
-import { useAppSelector } from "@/app/hooks";
-import type { NotifyMessage } from "@/types";
+import { useAppSelector } from '@/app/hooks';
+import type { NotifyMessage } from '@/types';
 
-import { Message } from "./Message";
+import { Message } from './Message';
 
 const SIGNALING_COLORS: { [key: string]: string } = {
-  websocket: "#00ff00",
-  datachannel: "#ff00ff",
+  websocket: '#00ff00',
+  datachannel: '#ff00ff',
 };
 
 const Label: React.FC<{ text: string }> = (props) => {
@@ -44,8 +44,8 @@ export const NotifyMessages: React.FC = () => {
   const notifyMessages = useAppSelector((state) => state.notifyMessages);
   const debugFilterText = useAppSelector((state) => state.debugFilterText);
   const filteredMessages = notifyMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
-      if (filterText === "") {
+    return debugFilterText.split(' ').every((filterText) => {
+      if (filterText === '') {
         return true;
       }
       return 0 <= JSON.stringify(message).indexOf(filterText);

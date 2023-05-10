@@ -1,10 +1,10 @@
-import React from "react";
-import { FormGroup } from "react-bootstrap";
+import React from 'react';
+import { FormGroup } from 'react-bootstrap';
 
-import { setAudioTrack } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setAudioTrack } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const AudioTrackForm: React.FC = () => {
   const audioTrack = useAppSelector((state) => state.audioTrack);

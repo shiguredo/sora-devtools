@@ -1,11 +1,11 @@
-import React from "react";
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
 
-import { setClientId, setEnabledClientId } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setClientId, setEnabledClientId } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const ClientIdForm: React.FC = () => {
   const enabledClientId = useAppSelector((state) => state.enabledClientId);
@@ -24,7 +24,12 @@ export const ClientIdForm: React.FC = () => {
       <Row className="form-row">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="enabledClientId">
-            <TooltipFormCheck kind="clientId" checked={enabledClientId} onChange={onChangeSwitch} disabled={disabled}>
+            <TooltipFormCheck
+              kind="clientId"
+              checked={enabledClientId}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            >
               clientId
             </TooltipFormCheck>
           </FormGroup>

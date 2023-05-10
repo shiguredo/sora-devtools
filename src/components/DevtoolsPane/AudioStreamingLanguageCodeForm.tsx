@@ -1,14 +1,16 @@
-import React from "react";
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
 
-import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const AudioStreamingLanguageCodeForm: React.FC = () => {
-  const enabledAudioStreamingLanguageCode = useAppSelector((state) => state.enabledAudioStreamingLanguageCode);
+  const enabledAudioStreamingLanguageCode = useAppSelector(
+    (state) => state.enabledAudioStreamingLanguageCode,
+  );
   const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode);
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const disabled = isFormDisabled(connectionStatus);

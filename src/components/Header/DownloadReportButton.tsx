@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
-import Sora from "sora-js-sdk";
+import React, { useRef } from 'react';
+import Sora from 'sora-js-sdk';
 
-import { store } from "@/app/store";
-import { DownloadReport, DownloadReportParameters } from "@/types";
+import { store } from '@/app/store';
+import { DownloadReport, DownloadReportParameters } from '@/types';
 
 function createDownloadReport(): DownloadReport {
   const state = store.getState();
@@ -73,8 +73,8 @@ function createDownloadReport(): DownloadReport {
   };
   const report = {
     userAgent: navigator.userAgent,
-    "sora-devtools": state.version,
-    "sora-js-sdk": Sora.version(),
+    'sora-devtools': state.version,
+    'sora-js-sdk': Sora.version(),
     parameters: parameters,
     timeline: state.timelineMessages.map((message) => {
       // Redux non-serializable value 対応で log を string にして保存してあるため parse する
@@ -94,10 +94,10 @@ export const DownloadReportButton: React.FC = () => {
   const onClick = async (): Promise<void> => {
     const report = createDownloadReport();
     const data = JSON.stringify(report);
-    const blob = new Blob([data], { type: "text/plain" });
+    const blob = new Blob([data], { type: 'text/plain' });
     window.URL = window.URL || window.webkitURL;
     if (anchorRef.current) {
-      const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
+      const datetimeString = new Date().toISOString().replaceAll(':', '_').replaceAll('.', '_');
       anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
       anchorRef.current.href = window.URL.createObjectURL(blob);
       anchorRef.current.click();
@@ -112,7 +112,7 @@ export const DownloadReportButton: React.FC = () => {
         defaultValue="Download report"
         onClick={onClick}
       />
-      <a ref={anchorRef} style={{ display: "none" }} />
+      <a ref={anchorRef} style={{ display: 'none' }} />
     </>
   );
 };

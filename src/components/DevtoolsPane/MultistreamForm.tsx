@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setMultistream } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { MULTISTREAM } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setMultistream } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { MULTISTREAM } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const MultistreamForm: React.FC = () => {
   const multistream = useAppSelector((state) => state.multistream);
@@ -25,7 +25,7 @@ export const MultistreamForm: React.FC = () => {
         {MULTISTREAM.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

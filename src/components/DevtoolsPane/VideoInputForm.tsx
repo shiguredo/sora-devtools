@@ -1,10 +1,10 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setVideoInput, updateMediaStream } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setVideoInput, updateMediaStream } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const VideoInputForm: React.FC = () => {
   const videoInput = useAppSelector((state) => state.videoInput);
@@ -17,7 +17,12 @@ export const VideoInputForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="videoInput">
       <TooltipFormLabel kind="videoInput">videoInput:</TooltipFormLabel>
-      <FormSelect name="videoInput" value={videoInput} onChange={onChange} disabled={videoInputDevices.length === 0}>
+      <FormSelect
+        name="videoInput"
+        value={videoInput}
+        onChange={onChange}
+        disabled={videoInputDevices.length === 0}
+      >
         <option value="">未指定</option>
         {videoInputDevices.map((deviceInfo) => {
           return (

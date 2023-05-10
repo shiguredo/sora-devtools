@@ -1,6 +1,6 @@
-import { FormCheck, FormLabel, OverlayTrigger, Popover } from "react-bootstrap";
+import { FormCheck, FormLabel, OverlayTrigger, Popover } from 'react-bootstrap';
 
-import { INSTRUCTIONS } from "@/constants";
+import { INSTRUCTIONS } from '@/constants';
 
 type Props = {
   kind: string;
@@ -23,7 +23,9 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
         placement="top"
         overlay={
           <Popover id="popover-basic">
-            <Popover.Body style={{ whiteSpace: "pre-wrap" }}>{instruction.description}</Popover.Body>
+            <Popover.Body style={{ whiteSpace: 'pre-wrap' }}>
+              {instruction.description}
+            </Popover.Body>
           </Popover>
         }
       >

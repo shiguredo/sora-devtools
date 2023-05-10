@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setFacingMode } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { FACING_MODES } from "@/constants";
-import { checkFormValue } from "@/utils";
+import { setFacingMode } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { FACING_MODES } from '@/constants';
+import { checkFormValue } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const FacingModeForm: React.FC = () => {
   const facingMode = useAppSelector((state) => state.facingMode);
@@ -17,7 +17,7 @@ export const FacingModeForm: React.FC = () => {
       dispatch(setFacingMode(event.target.value));
     }
   };
-  const disabled = mediaType !== "getUserMedia";
+  const disabled = mediaType !== 'getUserMedia';
   return (
     <FormGroup className="form-inline" controlId="facingMode">
       <TooltipFormLabel kind="facingMode">facingMode:</TooltipFormLabel>
@@ -25,7 +25,7 @@ export const FacingModeForm: React.FC = () => {
         {FACING_MODES.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

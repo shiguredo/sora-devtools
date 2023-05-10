@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { resetRtpStream } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { resetRtpStream } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 type Props = {
   sendConnectionId: string;
@@ -17,7 +17,12 @@ export const ResetRtpStreamBySendConnectionIdButton: React.FC<Props> = (props) =
       return;
     }
     try {
-      const response = await resetRtpStream(apiUrl, channelId, sora.connectionId, props.sendConnectionId);
+      const response = await resetRtpStream(
+        apiUrl,
+        channelId,
+        sora.connectionId,
+        props.sendConnectionId,
+      );
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {

@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setSimulcastRid } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { SIMULCAST_RID } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setSimulcastRid } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { SIMULCAST_RID } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const SimulcastRidForm: React.FC = () => {
   const simulcastRid = useAppSelector((state) => state.simulcastRid);
@@ -25,7 +25,7 @@ export const SimulcastRidForm: React.FC = () => {
         {SIMULCAST_RID.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

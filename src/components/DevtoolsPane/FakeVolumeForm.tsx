@@ -1,10 +1,10 @@
-import React from "react";
-import { Form, FormGroup } from "react-bootstrap";
+import React from 'react';
+import { Form, FormGroup } from 'react-bootstrap';
 
-import { setFakeVolume } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setFakeVolume } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const FakeVolumeForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType);
@@ -13,7 +13,7 @@ export const FakeVolumeForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setFakeVolume(event.target.value));
   };
-  if (mediaType !== "fakeMedia") {
+  if (mediaType !== 'fakeMedia') {
     return null;
   }
   return (

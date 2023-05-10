@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setAudioContentHint } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { AUDIO_CONTENT_HINTS } from "@/constants";
-import { checkFormValue } from "@/utils";
+import { setAudioContentHint } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { AUDIO_CONTENT_HINTS } from '@/constants';
+import { checkFormValue } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const AudioContentHintForm: React.FC = () => {
   const audioContentHint = useAppSelector((state) => state.audioContentHint);
@@ -23,7 +23,7 @@ export const AudioContentHintForm: React.FC = () => {
         {AUDIO_CONTENT_HINTS.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

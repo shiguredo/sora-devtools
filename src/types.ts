@@ -1,6 +1,6 @@
-import type { LightAdjustmentProcessor } from "@shiguredo/light-adjustment";
-import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
-import type { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
+import type { LightAdjustmentProcessor } from '@shiguredo/light-adjustment';
+import type { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression';
+import type { VirtualBackgroundProcessor } from '@shiguredo/virtual-background';
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -8,7 +8,7 @@ import type {
   Role,
   TimelineEventLogType,
   TransportType,
-} from "sora-js-sdk";
+} from 'sora-js-sdk';
 
 import {
   ASPECT_RATIO_TYPES,
@@ -41,7 +41,7 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from "@/constants";
+} from '@/constants';
 
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[];
@@ -152,7 +152,7 @@ export type SoraDevtoolsState = {
 // 画面表示する message の Type
 export type AlertMessage = {
   timestamp: number;
-  type: "error" | "info";
+  type: 'error' | 'info';
   title: string;
   message: string;
 };
@@ -161,7 +161,7 @@ export type AlertMessage = {
 export type TimelineMessage = {
   timestamp: number;
   type: string;
-  logType: TimelineEventLogType | "sora-devtools";
+  logType: TimelineEventLogType | 'sora-devtools';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   dataChannelId?: number | null;
@@ -175,8 +175,8 @@ export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
 
 // MediaTrackConstraints interface に property を追加
 export interface SoraDevtoolsMediaTrackConstraints extends MediaTrackConstraintSet {
-  echoCancellationType?: "system" | "browser";
-  resizeMode?: "none" | "crop-and-scale";
+  echoCancellationType?: 'system' | 'browser';
+  resizeMode?: 'none' | 'crop-and-scale';
 }
 
 export type Json =
@@ -259,7 +259,7 @@ export type LogMessage = {
 
 // Sora on notify callback の引数 Type
 export type SoraNotifyMessage = {
-  type: "notify";
+  type: 'notify';
   event_type: string;
   [x: string]: unknown;
 };
@@ -273,7 +273,7 @@ export type NotifyMessage = {
 
 // Sora on push callback の引数 Type
 export type SoraPushMessage = {
-  type: "push";
+  type: 'push';
   data: {
     [x: string]: unknown;
   };
@@ -309,85 +309,85 @@ export type DebugType = (typeof DEBUG_TYPES)[number];
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = Omit<
   SoraDevtoolsState,
-  | "alertMessages"
-  | "dataChannelMessages"
-  | "debugFilterText"
-  | "fakeContents"
-  | "focusedSpotlightConnectionIds"
-  | "logMessages"
-  | "notifyMessages"
-  | "pushMessages"
-  | "signalingMessages"
-  | "soraContents"
-  | "timelineMessages"
-  | "version"
+  | 'alertMessages'
+  | 'dataChannelMessages'
+  | 'debugFilterText'
+  | 'fakeContents'
+  | 'focusedSpotlightConnectionIds'
+  | 'logMessages'
+  | 'notifyMessages'
+  | 'pushMessages'
+  | 'signalingMessages'
+  | 'soraContents'
+  | 'timelineMessages'
+  | 'version'
 >;
 
 // sora-js-sdk の接続オプションで使用する state
 export type ConnectionOptionsState = Pick<
   SoraDevtoolsState,
-  | "audio"
-  | "audioBitRate"
-  | "audioCodecType"
-  | "audioStreamingLanguageCode"
-  | "bundleId"
-  | "clientId"
-  | "dataChannelSignaling"
-  | "dataChannels"
-  | "e2ee"
-  | "enabledAudioStreamingLanguageCode"
-  | "enabledBundleId"
-  | "enabledClientId"
-  | "enabledDataChannel"
-  | "enabledSignalingNotifyMetadata"
-  | "enabledForwardingFilter"
-  | "ignoreDisconnectWebSocket"
-  | "lyraParamsBitrate"
-  | "multistream"
-  | "signalingNotifyMetadata"
-  | "forwardingFilter"
-  | "simulcast"
-  | "simulcastRid"
-  | "spotlight"
-  | "spotlightFocusRid"
-  | "spotlightNumber"
-  | "spotlightUnfocusRid"
-  | "video"
-  | "videoBitRate"
-  | "videoCodecType"
+  | 'audio'
+  | 'audioBitRate'
+  | 'audioCodecType'
+  | 'audioStreamingLanguageCode'
+  | 'bundleId'
+  | 'clientId'
+  | 'dataChannelSignaling'
+  | 'dataChannels'
+  | 'e2ee'
+  | 'enabledAudioStreamingLanguageCode'
+  | 'enabledBundleId'
+  | 'enabledClientId'
+  | 'enabledDataChannel'
+  | 'enabledSignalingNotifyMetadata'
+  | 'enabledForwardingFilter'
+  | 'ignoreDisconnectWebSocket'
+  | 'lyraParamsBitrate'
+  | 'multistream'
+  | 'signalingNotifyMetadata'
+  | 'forwardingFilter'
+  | 'simulcast'
+  | 'simulcastRid'
+  | 'spotlight'
+  | 'spotlightFocusRid'
+  | 'spotlightNumber'
+  | 'spotlightUnfocusRid'
+  | 'video'
+  | 'videoBitRate'
+  | 'videoCodecType'
 >;
 
 // ダウンロードレポートに使用するパラメーター
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
-  | "alertMessages"
-  | "apiUrl"
-  | "blurRadius"
-  | "dataChannelMessages"
-  | "debugFilterText"
-  | "debugType"
-  | "fakeContents"
-  | "focusedSpotlightConnectionIds"
-  | "lightAdjustment"
-  | "lightAdjustmentProcessor"
-  | "logMessages"
-  | "mediaProcessorsNoiseSuppression"
-  | "mute"
-  | "noiseSuppressionProcessor"
-  | "notifyMessages"
-  | "pushMessages"
-  | "showStats"
-  | "signalingMessages"
-  | "soraContents"
-  | "timelineMessages"
-  | "version"
-  | "virtualBackgroundProcessor"
+  | 'alertMessages'
+  | 'apiUrl'
+  | 'blurRadius'
+  | 'dataChannelMessages'
+  | 'debugFilterText'
+  | 'debugType'
+  | 'fakeContents'
+  | 'focusedSpotlightConnectionIds'
+  | 'lightAdjustment'
+  | 'lightAdjustmentProcessor'
+  | 'logMessages'
+  | 'mediaProcessorsNoiseSuppression'
+  | 'mute'
+  | 'noiseSuppressionProcessor'
+  | 'notifyMessages'
+  | 'pushMessages'
+  | 'showStats'
+  | 'signalingMessages'
+  | 'soraContents'
+  | 'timelineMessages'
+  | 'version'
+  | 'virtualBackgroundProcessor'
 >;
 
 export type DownloadReport = {
   userAgent: string;
-  "sora-devtools": string;
-  "sora-js-sdk": string;
+  'sora-devtools': string;
+  'sora-js-sdk': string;
   parameters: DownloadReportParameters;
   timeline: unknown[];
   notify: unknown[];

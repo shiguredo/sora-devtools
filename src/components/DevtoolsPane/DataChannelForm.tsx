@@ -1,12 +1,16 @@
-import React from "react";
-import { Col, FormCheck, FormGroup, FormSelect, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap';
 
-import { setDataChannelSignaling, setEnabledDataChannel, setIgnoreDisconnectWebSocket } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import {
+  setDataChannelSignaling,
+  setEnabledDataChannel,
+  setIgnoreDisconnectWebSocket,
+} from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
   const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket);
@@ -18,7 +22,9 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
   };
   return (
     <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
-      <TooltipFormLabel kind="ignoreDisconnectWebSocket">ignoreDisconnectWebSocket:</TooltipFormLabel>
+      <TooltipFormLabel kind="ignoreDisconnectWebSocket">
+        ignoreDisconnectWebSocket:
+      </TooltipFormLabel>
       <FormSelect
         name="ignoreDisconnectWebSocket"
         value={ignoreDisconnectWebSocket}
@@ -28,7 +34,7 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
         {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}
@@ -57,7 +63,7 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
         {DATA_CHANNEL_SIGNALING.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

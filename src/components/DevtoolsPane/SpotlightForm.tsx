@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setSpotlight } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { SPOTLIGHT } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setSpotlight } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { SPOTLIGHT } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const SpotlightForm: React.FC = () => {
   const spotlight = useAppSelector((state) => state.spotlight);
@@ -25,7 +25,7 @@ export const SpotlightForm: React.FC = () => {
         {SPOTLIGHT.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

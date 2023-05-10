@@ -1,14 +1,16 @@
-import React from "react";
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
 
-import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const SignalingNotifyMetadataForm: React.FC = () => {
-  const enabledSignalingNotifyMetadata = useAppSelector((state) => state.enabledSignalingNotifyMetadata);
+  const enabledSignalingNotifyMetadata = useAppSelector(
+    (state) => state.enabledSignalingNotifyMetadata,
+  );
   const signalingNotifyMetadata = useAppSelector((state) => state.signalingNotifyMetadata);
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const disabled = isFormDisabled(connectionStatus);

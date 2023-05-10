@@ -1,11 +1,11 @@
-import React from "react";
-import { FormGroup } from "react-bootstrap";
+import React from 'react';
+import { FormGroup } from 'react-bootstrap';
 
-import { setVideo } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setVideo } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const VideoForm: React.FC = () => {
   const video = useAppSelector((state) => state.video);

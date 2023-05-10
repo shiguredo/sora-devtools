@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { connectSora } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { connectSora } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 export const ConnectButton: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
@@ -18,9 +18,9 @@ export const ConnectButton: React.FC = () => {
         defaultValue="connect"
         onClick={connect}
         disabled={
-          connectionStatus === "disconnecting" ||
-          connectionStatus === "connecting" ||
-          connectionStatus === "initializing"
+          connectionStatus === 'disconnecting' ||
+          connectionStatus === 'connecting' ||
+          connectionStatus === 'initializing'
         }
       />
     </div>

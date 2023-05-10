@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { copyURL } from "@/app/actions";
-import { useAppDispatch } from "@/app/hooks";
+import { copyURL } from '@/app/actions';
+import { useAppDispatch } from '@/app/hooks';
 
 export const CopyUrlButton: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -1,11 +1,11 @@
-import React from "react";
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
 
-import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setDataChannels, setEnabledDataChannels } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const DataChannelsForm: React.FC = () => {
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels);
@@ -14,16 +14,16 @@ export const DataChannelsForm: React.FC = () => {
   const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const textareaPlaceholder =
-    "dataChannelsを指定\n(例)\n" +
+    'dataChannelsを指定\n(例)\n' +
     JSON.stringify(
       [
         {
-          label: "#spam",
+          label: '#spam',
           maxPacketLifeTime: 10,
           ordered: true,
-          protocol: "efg",
+          protocol: 'efg',
           compress: false,
-          direction: "sendrecv",
+          direction: 'sendrecv',
         },
       ],
       null,

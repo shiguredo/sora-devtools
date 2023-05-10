@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] .prettierrc の trailingComma を all に変更する
+  - @voluntas
 - [CHANGE] next export が廃止されたので next.config.js に設定を追加
   - `output: "export"`
   - `distDir: 'dist'`

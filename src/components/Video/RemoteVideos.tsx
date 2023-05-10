@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { useAppSelector } from "@/app/hooks";
-import type { RTCMediaStreamTrackStats } from "@/types";
+import { useAppSelector } from '@/app/hooks';
+import type { RTCMediaStreamTrackStats } from '@/types';
 
-import { ConnectionStatusBar } from "./ConnectionStatusBar";
-import { JitterButter } from "./JitterBuffer";
-import { RequestRtpStreamBySendConnectionIdButton } from "./RequestRtpStreamBySendConnectionIdButton";
-import { RequestSpotlightRidBySendConnectionIdButton } from "./RequestSpotlightRidBySendConnectionIdButton";
-import { ResetRtpStreamBySendConnectionIdButton } from "./ResetRtpStreamBySendConnectionIdButton";
-import { ResetSpotlightRidBySendConnectionIdButton } from "./ResetSpotlightRidBySendConnectionIdButton";
-import { Video } from "./Video";
-import { VolumeVisualizer } from "./VolumeVisualizer";
+import { ConnectionStatusBar } from './ConnectionStatusBar';
+import { JitterButter } from './JitterBuffer';
+import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton';
+import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton';
+import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton';
+import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton';
+import { Video } from './Video';
+import { VolumeVisualizer } from './VolumeVisualizer';
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
@@ -27,7 +27,7 @@ function mediaStreamStatsReportFilter(
     if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
       continue;
     }
-    if ("trackIdentifier" in stats) {
+    if ('trackIdentifier' in stats) {
       const mediaStreamStats = stats as RTCMediaStreamTrackStats;
       if (mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier)) {
         result.push(mediaStreamStats);
@@ -60,7 +60,8 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
         const prevStats = prevMediaStreamTrackStatsReport.find((p) => s.id === p.id);
         if (prevStats) {
           jitterBufferDelay = s.jitterBufferDelay - prevStats.jitterBufferDelay;
-          jitterBufferEmittedCount = s.jitterBufferEmittedCount - prevStats.jitterBufferEmittedCount;
+          jitterBufferEmittedCount =
+            s.jitterBufferEmittedCount - prevStats.jitterBufferEmittedCount;
         }
         return (
           <div key={s.id}>
@@ -73,7 +74,7 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
                 );
               })}
               <li>
-                <strong>[jitterBufferDelay/jitterBufferEmittedCount_in_ms]</strong>{" "}
+                <strong>[jitterBufferDelay/jitterBufferEmittedCount_in_ms]</strong>{' '}
                 {Math.floor((jitterBufferDelay / jitterBufferEmittedCount) * 1000)}
               </li>
             </ul>
@@ -88,7 +89,9 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   const [height, setHeight] = useState<number>(0);
   const audioOutput = useAppSelector((state) => state.audioOutput);
   const displayResolution = useAppSelector((state) => state.displayResolution);
-  const focusedSpotlightConnectionIds = useAppSelector((state) => state.focusedSpotlightConnectionIds);
+  const focusedSpotlightConnectionIds = useAppSelector(
+    (state) => state.focusedSpotlightConnectionIds,
+  );
   const multistream = useAppSelector((state) => state.multistream);
   const mute = useAppSelector((state) => state.mute);
   const simulcast = useAppSelector((state) => state.simulcast);
@@ -103,15 +106,24 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
           <JitterButter type="video" stream={props.stream} />
         </div>
         <div className="d-flex align-items-center mb-1 video-status-inner">
-          {spotlight !== "true" && multistream === "true" && simulcast === "true" ? (
+          {spotlight !== 'true' && multistream === 'true' && simulcast === 'true' ? (
             <>
-              <RequestRtpStreamBySendConnectionIdButton rid="r0" sendConnectionId={props.stream.id} />
-              <RequestRtpStreamBySendConnectionIdButton rid="r1" sendConnectionId={props.stream.id} />
-              <RequestRtpStreamBySendConnectionIdButton rid="r2" sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionIdButton
+                rid="r0"
+                sendConnectionId={props.stream.id}
+              />
+              <RequestRtpStreamBySendConnectionIdButton
+                rid="r1"
+                sendConnectionId={props.stream.id}
+              />
+              <RequestRtpStreamBySendConnectionIdButton
+                rid="r2"
+                sendConnectionId={props.stream.id}
+              />
               <ResetRtpStreamBySendConnectionIdButton sendConnectionId={props.stream.id} />
             </>
           ) : null}
-          {spotlight === "true" && multistream === "true" && simulcast === "true" ? (
+          {spotlight === 'true' && multistream === 'true' && simulcast === 'true' ? (
             <>
               <RequestSpotlightRidBySendConnectionIdButton sendConnectionId={props.stream.id} />
               <ResetSpotlightRidBySendConnectionIdButton sendConnectionId={props.stream.id} />
@@ -120,7 +132,12 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
         </div>
       </div>
       <div className="d-flex flex-wrap align-items-start">
-        <div className={"d-flex flex-nowrap align-items-start video-wrapper" + (focused ? " spotlight-focused" : "")}>
+        <div
+          className={
+            'd-flex flex-nowrap align-items-start video-wrapper' +
+            (focused ? ' spotlight-focused' : '')
+          }
+        >
           <Video
             stream={props.stream}
             setHeight={setHeight}

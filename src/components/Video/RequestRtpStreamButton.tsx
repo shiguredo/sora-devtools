@@ -1,9 +1,9 @@
-import React from "react";
-import { SimulcastRid } from "sora-js-sdk";
+import React from 'react';
+import { SimulcastRid } from 'sora-js-sdk';
 
-import { requestRtpStream } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { requestRtpStream } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 type Props = {
   rid: SimulcastRid;

@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setEchoCancellationType } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { ECHO_CANCELLATION_TYPES } from "@/constants";
-import { checkFormValue } from "@/utils";
+import { setEchoCancellationType } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { ECHO_CANCELLATION_TYPES } from '@/constants';
+import { checkFormValue } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const EchoCancellationTypeForm: React.FC = () => {
   const echoCancellationType = useAppSelector((state) => state.echoCancellationType);
@@ -23,7 +23,7 @@ export const EchoCancellationTypeForm: React.FC = () => {
         {ECHO_CANCELLATION_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

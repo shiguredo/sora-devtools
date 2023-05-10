@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setAutoGainControl } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { AUTO_GAIN_CONTROLS } from "@/constants";
-import { checkFormValue } from "@/utils";
+import { setAutoGainControl } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { AUTO_GAIN_CONTROLS } from '@/constants';
+import { checkFormValue } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const AutoGainControlForm: React.FC = () => {
   const autoGainControl = useAppSelector((state) => state.autoGainControl);
@@ -23,7 +23,7 @@ export const AutoGainControlForm: React.FC = () => {
         {AUTO_GAIN_CONTROLS.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

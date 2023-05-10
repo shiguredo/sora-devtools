@@ -1,9 +1,9 @@
-import React from "react";
-import { SimulcastRid } from "sora-js-sdk";
+import React from 'react';
+import { SimulcastRid } from 'sora-js-sdk';
 
-import { requestRtpStream } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { requestRtpStream } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 type Props = {
   rid: SimulcastRid;
@@ -19,7 +19,13 @@ export const RequestRtpStreamBySendConnectionIdButton: React.FC<Props> = (props)
       return;
     }
     try {
-      const response = await requestRtpStream(apiUrl, channelId, sora.connectionId, props.rid, props.sendConnectionId);
+      const response = await requestRtpStream(
+        apiUrl,
+        channelId,
+        sora.connectionId,
+        props.rid,
+        props.sendConnectionId,
+      );
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {

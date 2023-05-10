@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setAudioBitRate } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { AUDIO_BIT_RATES } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setAudioBitRate } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { AUDIO_BIT_RATES } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const AudioBitRateForm: React.FC = () => {
   const audioBitRate = useAppSelector((state) => state.audioBitRate);
@@ -25,7 +25,7 @@ export const AudioBitRateForm: React.FC = () => {
         {AUDIO_BIT_RATES.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

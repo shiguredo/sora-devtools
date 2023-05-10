@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
-import { Button, FormControl, FormGroup, FormSelect } from "react-bootstrap";
+import React, { useRef } from 'react';
+import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap';
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from '@/app/hooks';
 
 export const SendDataChannelMessagingMessage: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
@@ -32,9 +32,18 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
           </FormSelect>
         </FormGroup>
         <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
-          <FormControl className="flex-fill" placeholder="sendDataChannelMessageを指定" type="text" ref={textareaRef} />
+          <FormControl
+            className="flex-fill"
+            placeholder="sendDataChannelMessageを指定"
+            type="text"
+            ref={textareaRef}
+          />
         </FormGroup>
-        <Button variant="secondary" onClick={handleSendMessage} disabled={datachannels.length === 0}>
+        <Button
+          variant="secondary"
+          onClick={handleSendMessage}
+          disabled={datachannels.length === 0}
+        >
           send
         </Button>
       </div>
@@ -42,10 +51,10 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
         <pre
           className="form-control mt-2"
           style={{
-            color: "#fff",
-            backgroundColor: "#222222",
-            maxHeight: "250px",
-            minHeight: "250px",
+            color: '#fff',
+            backgroundColor: '#222222',
+            maxHeight: '250px',
+            minHeight: '250px',
           }}
         >
           {JSON.stringify(datachannels, null, 2)}

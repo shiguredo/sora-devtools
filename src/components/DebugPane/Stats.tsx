@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from '@/app/hooks';
 
-import { Message } from "./Message";
+import { Message } from './Message';
 
 interface RTCStatsWithIndexSignature extends RTCStats {
   [x: string]: string | number | undefined;
@@ -20,8 +20,8 @@ export const Stats: React.FC = () => {
   const statsReport = useAppSelector((state) => state.soraContents.statsReport);
   const debugFilterText = useAppSelector((state) => state.debugFilterText);
   const filteredMessages = statsReport.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
-      if (filterText === "") {
+    return debugFilterText.split(' ').every((filterText) => {
+      if (filterText === '') {
         return true;
       }
       return 0 <= JSON.stringify(message).indexOf(filterText);

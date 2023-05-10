@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import type { DraggableData, DraggableEvent } from "react-draggable";
-import Draggable from "react-draggable";
+import React, { useEffect, useState } from 'react';
+import type { DraggableData, DraggableEvent } from 'react-draggable';
+import Draggable from 'react-draggable';
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from '@/app/hooks';
 
 const MAX_CROP_AREA_WIDTH = 640;
 const CROP_AREA_MARGIN = 40;
@@ -28,13 +28,13 @@ export const MediacaptureRegionTarget: React.FC = () => {
         setCropAreaWidth(calcCropAreaWidth(window.innerWidth));
       }
     };
-    window.addEventListener("resize", resizeEventListener);
+    window.addEventListener('resize', resizeEventListener);
     resizeEventListener();
     return () => {
-      window.removeEventListener("resize", resizeEventListener);
+      window.removeEventListener('resize', resizeEventListener);
     };
   }, []);
-  if (mediaType !== "mediacaptureRegion") {
+  if (mediaType !== 'mediacaptureRegion') {
     return null;
   }
   return (

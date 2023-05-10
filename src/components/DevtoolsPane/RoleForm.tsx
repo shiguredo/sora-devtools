@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setRole } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { ROLES } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setRole } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { ROLES } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const RoleForm: React.FC = () => {
   const role = useAppSelector((state) => state.role);

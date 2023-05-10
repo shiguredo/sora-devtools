@@ -1,12 +1,12 @@
-import React from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import React from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
 
-import { setSpotlightFocusRid } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { setSpotlightFocusRid } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { SPOTLIGHT_FOCUS_RIDS } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from "./TooltipFormLabel";
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 export const SpotlightFocusRidForm: React.FC = () => {
   const spotlightFocusRid = useAppSelector((state) => state.spotlightFocusRid);
@@ -25,7 +25,7 @@ export const SpotlightFocusRidForm: React.FC = () => {
         {SPOTLIGHT_FOCUS_RIDS.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
+              {value === '' ? '未指定' : value}
             </option>
           );
         })}

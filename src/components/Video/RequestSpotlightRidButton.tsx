@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
-import type { SpotlightFocusRid } from "sora-js-sdk";
+import React, { useRef } from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
+import type { SpotlightFocusRid } from 'sora-js-sdk';
 
-import { requestSpotlightRid } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
+import { requestSpotlightRid } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { SPOTLIGHT_FOCUS_RIDS } from '@/constants';
 
 export const RequestSpotlightRidButton: React.FC = () => {
   const focusRidRef = useRef<HTMLSelectElement>(null);
@@ -27,7 +27,13 @@ export const RequestSpotlightRidButton: React.FC = () => {
     const focusRid = focusRidRef.current.value as SpotlightFocusRid;
     const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid;
     try {
-      const response = await requestSpotlightRid(apiUrl, channelId, sora.connectionId, focusRid, unfocusRid);
+      const response = await requestSpotlightRid(
+        apiUrl,
+        channelId,
+        sora.connectionId,
+        focusRid,
+        unfocusRid,
+      );
       dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
@@ -40,7 +46,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
       <FormGroup className="form-inline">
         <FormSelect ref={focusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === "") {
+            if (value === '') {
               return null;
             }
             return (
@@ -52,7 +58,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
         </FormSelect>
         <FormSelect ref={unfocusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === "") {
+            if (value === '') {
               return null;
             }
             return (

@@ -1,11 +1,11 @@
-import React from "react";
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import React from 'react';
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
 
-import { setBundleId, setEnabledBundleId } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { isFormDisabled } from "@/utils";
+import { setBundleId, setEnabledBundleId } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const BundleIdForm: React.FC = () => {
   const enabledBundleId = useAppSelector((state) => state.enabledBundleId);
@@ -24,7 +24,12 @@ export const BundleIdForm: React.FC = () => {
       <Row className="form-row">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="enabledBundleId">
-            <TooltipFormCheck kind="bundleId" checked={enabledBundleId} onChange={onChangeSwitch} disabled={disabled}>
+            <TooltipFormCheck
+              kind="bundleId"
+              checked={enabledBundleId}
+              onChange={onChangeSwitch}
+              disabled={disabled}
+            >
               bundleId
             </TooltipFormCheck>
           </FormGroup>

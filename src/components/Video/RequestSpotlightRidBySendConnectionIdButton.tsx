@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
-import type { SpotlightFocusRid } from "sora-js-sdk";
+import React, { useRef } from 'react';
+import { FormGroup, FormSelect } from 'react-bootstrap';
+import type { SpotlightFocusRid } from 'sora-js-sdk';
 
-import { requestSpotlightRid } from "@/api";
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
+import { requestSpotlightRid } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { SPOTLIGHT_FOCUS_RIDS } from '@/constants';
 
 type Props = {
   sendConnectionId: string;
@@ -50,7 +50,7 @@ export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (pro
       <FormGroup className="form-inline">
         <FormSelect ref={focusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === "") {
+            if (value === '') {
               return null;
             }
             return (
@@ -62,7 +62,7 @@ export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (pro
         </FormSelect>
         <FormSelect ref={unfocusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === "") {
+            if (value === '') {
               return null;
             }
             return (
