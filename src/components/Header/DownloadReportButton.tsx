@@ -40,6 +40,9 @@ function createDownloadReport(): DownloadReport {
     enabledMetadata: state.enabledMetadata,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     enabledSignalingUrlCandidates: state.enabledSignalingUrlCandidates,
+    enabledVideoVP9Params: state.enabledVideoVP9Params,
+    enabledVideoH264Params: state.enabledVideoH264Params,
+    enabledVideoAV1Params: state.enabledVideoAV1Params,
     facingMode: state.facingMode,
     fakeVolume: state.fakeVolume,
     forwardingFilter: state.forwardingFilter,
@@ -70,6 +73,9 @@ function createDownloadReport(): DownloadReport {
     videoInput: state.videoInput,
     videoInputDevices: state.videoInputDevices,
     videoTrack: state.videoTrack,
+    videoVP9Params: state.videoVP9Params,
+    videoH264Params: state.videoH264Params,
+    videoAV1Params: state.videoAV1Params,
   }
   const report = {
     userAgent: navigator.userAgent,

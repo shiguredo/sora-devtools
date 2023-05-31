@@ -163,6 +163,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     video: parseBooleanParameter(qs.video),
     videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
+    videoVP9Params: parseStringParameter(qs.videoVP9Params),
+    videoH264Params: parseStringParameter(qs.videoH264Params),
+    videoAV1Params: parseStringParameter(qs.videoAV1Params),
     audioInput: parseStringParameter(qs.audioInput),
     videoInput: parseStringParameter(qs.videoInput),
     audioOutput: parseStringParameter(qs.audioOutput),
@@ -674,6 +677,18 @@ export function createConnectOptions(
   const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10)
   if (parsedVideoBitRate) {
     connectionOptions.videoBitRate = parsedVideoBitRate
+  }
+  // videoVP9Params
+  if (connectionOptionsState.videoVP9Params) {
+    connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
+  }
+  // videoH264Params
+  if (connectionOptionsState.videoH264Params) {
+    connectionOptions.videoH264Params = parseMetadata(true, connectionOptionsState.videoH264Params)
+  }
+  // videoVP9Params
+  if (connectionOptionsState.videoAV1Params) {
+    connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
   }
   // multistream
   const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)

@@ -57,12 +57,15 @@ import { SpotlightUnfocusRidForm } from './SpotlightUnfocusRidForm'
 import { StartRecordingButton } from './StartRecordingButton'
 import { StopRecordingButton } from './StopRecordingButton'
 import { UpdateMediaStreamButton } from './UpdateMediaStreamButton'
+import { VideoAV1ParamsForm } from './VideoAV1ParamsForm'
 import { VideoBitRateForm } from './VideoBitRateForm'
 import { VideoCodecTypeForm } from './VideoCodecTypeForm'
 import { VideoContentHintForm } from './VideoContentHintForm'
 import { VideoForm } from './VideoForm'
+import { VideoH264ParamsForm } from './VideoH264ParamsForm'
 import { VideoInputForm } from './VideoInputForm'
 import { VideoTrackForm } from './VideoTrackForm'
+import { VideoVP9ParamsForm } from './VideoVP9ParamsForm'
 
 const RowChannelOptions: React.FC = () => {
   return (
@@ -221,9 +224,16 @@ const RowAdvancedOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
   const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
   const lyraParamsBitrate = useAppSelector((state) => state.lyraParamsBitrate)
-  const enabledOptions = [audioStreamingLanguageCode !== '', lyraParamsBitrate !== ''].some(
-    (e) => e,
-  )
+  const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
+  const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
+  const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
+  const enabledOptions = [
+    audioStreamingLanguageCode !== '',
+    lyraParamsBitrate !== '',
+    enabledVideoVP9Params,
+    enabledVideoH264Params,
+    enabledVideoAV1Params,
+  ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
     linkClassNames.push('collapsed')
@@ -250,6 +260,9 @@ const RowAdvancedOptions: React.FC = () => {
               <LyraParamsBitrateForm />
             </Col>
           </Row>
+          <VideoVP9ParamsForm />
+          <VideoH264ParamsForm />
+          <VideoAV1ParamsForm />
         </div>
       </Collapse>
     </Row>
