@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] role が `recvonly` かつ multistream が `true` または `未指定` の時に video/audio のコーデックとビットレートの項目を表示しない
+  - @tnamao
 - [CHANGE] eslint に `"@typescript-eslint/no-extra-semi": "off"` を追加
   - @voluntas
 - [ADD] .prettierignore を追加
