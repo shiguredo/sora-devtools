@@ -11,6 +11,17 @@
 
 ## develop
 
+- [CHANGE] ローカル開発用と本番用で成果物の主力先を分ける
+  - `process.env.NODE_ENV` が `production` のときは `dist` に、それ以外は `dev` に出力する
+  - @voluntas
+- [CHANGE] `lyraParamsBitrate` を `audioLyraParamsBitrate` に変更
+  - querystring 上のパラメータ名も変わるので注意
+  - @tnamao
+- [ADD] シグナリング時のビデオコーデックパラメータ `videoVP9Params` `videoH264Params` `videoAV1Params` を追加
+  - 項目は Advanced options 内に追加
+  - @tnamao
+- [UPDATE] sora-js-sdk を 2023.1.0-canary.6 に更新
+  - @tnamao
 - [CHANGE] eslint に `"@typescript-eslint/no-extra-semi": "off"` を追加
   - @voluntas
 - [ADD] .prettierignore を追加
