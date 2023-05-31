@@ -682,15 +682,15 @@ export function createConnectOptions(
     connectionOptions.videoBitRate = parsedVideoBitRate
   }
   // videoVP9Params
-  if (connectionOptionsState.videoVP9Params) {
+  if (connectionOptionsState.enabledVideoVP9Params) {
     connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
   }
   // videoH264Params
-  if (connectionOptionsState.videoH264Params) {
+  if (connectionOptionsState.enabledVideoH264Params) {
     connectionOptions.videoH264Params = parseMetadata(true, connectionOptionsState.videoH264Params)
   }
   // videoVP9Params
-  if (connectionOptionsState.videoAV1Params) {
+  if (connectionOptionsState.enabledVideoAV1Params) {
     connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
   }
   // multistream
