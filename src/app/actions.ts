@@ -242,8 +242,8 @@ export const setInitialParameter = () => {
     if (qsParams.audioStreamingLanguageCode !== undefined) {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
-    if (qsParams.lyraParamsBitrate !== undefined) {
-      dispatch(slice.actions.setLyraParamsBitrate(qsParams.lyraParamsBitrate))
+    if (qsParams.audioLyraParamsBitrate !== undefined) {
+      dispatch(slice.actions.setAudioLyraParamsBitrate(qsParams.audioLyraParamsBitrate))
     }
     dispatch(slice.actions.setInitialFakeContents())
     // e2ee が有効な場合は e2ee 初期化処理をする
@@ -431,7 +431,9 @@ export const copyURL = () => {
         state.audioStreamingLanguageCode !== '' && state.enabledAudioStreamingLanguageCode
           ? state.audioStreamingLanguageCode
           : undefined,
-      lyraParamsBitrate: state.lyraParamsBitrate ? state.lyraParamsBitrate : undefined,
+      audioLyraParamsBitrate: state.audioLyraParamsBitrate
+        ? state.audioLyraParamsBitrate
+        : undefined,
     }
     const queryStrings = Object.keys(parameters)
       .map((key) => {
@@ -999,7 +1001,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledVideoH264Params: state.enabledVideoH264Params,
     enabledVideoAV1Params: state.enabledVideoAV1Params,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-    lyraParamsBitrate: state.lyraParamsBitrate,
+    audioLyraParamsBitrate: state.audioLyraParamsBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     forwardingFilter: state.forwardingFilter,
@@ -1644,7 +1646,7 @@ export const {
   setLightAdjustment,
   setLocalMediaStream,
   setLogMessages,
-  setLyraParamsBitrate,
+  setAudioLyraParamsBitrate,
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,

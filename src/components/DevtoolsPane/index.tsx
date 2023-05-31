@@ -12,6 +12,7 @@ import { AudioCodecTypeForm } from './AudioCodecTypeForm'
 import { AudioContentHintForm } from './AudioContentHintForm'
 import { AudioForm } from './AudioForm'
 import { AudioInputForm } from './AudioInputForm'
+import { AudioLyraParamsBitrateForm } from './AudioLyraParamsBitrateForm'
 import { AudioOutputForm } from './AudioOutputForm'
 import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm'
 import { AudioTrackForm } from './AudioTrackForm'
@@ -34,7 +35,6 @@ import { FakeVolumeForm } from './FakeVolumeForm'
 import { ForwardingFilterForm } from './ForwardingFilterForm'
 import { FrameRateForm } from './FrameRateForm'
 import { LightAdjustmentForm } from './LightAdjustmentForm'
-import { LyraParamsBitrateForm } from './LyraParamsBitrateForm'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm'
 import { MediaTypeForm } from './MediaTypeForm'
 import { MetadataForm } from './MetadataForm'
@@ -223,13 +223,13 @@ const RowSignalingOptions: React.FC = () => {
 const RowAdvancedOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
   const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
-  const lyraParamsBitrate = useAppSelector((state) => state.lyraParamsBitrate)
+  const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
   const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
   const enabledOptions = [
     audioStreamingLanguageCode !== '',
-    lyraParamsBitrate !== '',
+    audioLyraParamsBitrate !== '',
     enabledVideoVP9Params,
     enabledVideoH264Params,
     enabledVideoAV1Params,
@@ -257,7 +257,7 @@ const RowAdvancedOptions: React.FC = () => {
           <AudioStreamingLanguageCodeForm />
           <Row className="form-row">
             <Col className="col-auto">
-              <LyraParamsBitrateForm />
+              <AudioLyraParamsBitrateForm />
             </Col>
           </Row>
           <VideoVP9ParamsForm />

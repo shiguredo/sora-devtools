@@ -10,6 +10,7 @@ import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
+  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
@@ -21,7 +22,6 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
-  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -193,7 +193,10 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
-    lyraParamsBitrate: parseSpecifiedStringParameter(qs.lyraParamsBitrate, LYRA_PARAMS_BITRATES),
+    audioLyraParamsBitrate: parseSpecifiedStringParameter(
+      qs.audioLyraParamsBitrate,
+      AUDIO_LYRA_PARAMS_BITRATES,
+    ),
   }
   // undefined の項目を削除する
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
@@ -777,10 +780,10 @@ export function createConnectOptions(
   if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
     connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode
   }
-  // lyraParamsBitrate
-  if (connectionOptionsState.lyraParamsBitrate) {
+  // audioLyraParamsBitrate
+  if (connectionOptionsState.audioLyraParamsBitrate) {
     connectionOptions.audioLyraParamsBitrate = parseInt(
-      connectionOptionsState.lyraParamsBitrate,
+      connectionOptionsState.audioLyraParamsBitrate,
       10,
     ) as 3200 | 6000 | 9200
   }

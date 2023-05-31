@@ -15,6 +15,7 @@ import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
+  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   CONNECTION_STATUS,
@@ -27,7 +28,6 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
-  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -83,7 +83,7 @@ export type SoraDevtoolsState = {
   enabledVideoAV1Params: boolean
   audioStreamingLanguageCode: string
   enabledAudioStreamingLanguageCode: boolean
-  lyraParamsBitrate: (typeof LYRA_PARAMS_BITRATES)[number]
+  audioLyraParamsBitrate: (typeof AUDIO_LYRA_PARAMS_BITRATES)[number]
   fakeContents: {
     worker: Worker | null
     colorCode: number
@@ -351,7 +351,7 @@ export type ConnectionOptionsState = Pick<
   | 'enabledVideoH264Params'
   | 'enabledVideoAV1Params'
   | 'ignoreDisconnectWebSocket'
-  | 'lyraParamsBitrate'
+  | 'audioLyraParamsBitrate'
   | 'multistream'
   | 'signalingNotifyMetadata'
   | 'forwardingFilter'
