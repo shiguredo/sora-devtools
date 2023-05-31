@@ -13,7 +13,8 @@
   },
   "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "scripts": {
-    "dev": "next -p 3333",
+    "next": "next",
+    "dev": "next dev -p 3333",
     "build": "next build",
     "dist": "pnpm run cleanup && next build",
     "lint": "eslint --ext .ts,tsx ./src && prettier --check ./src && tsc --noemit",

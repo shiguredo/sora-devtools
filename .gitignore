@@ -5,3 +5,6 @@ node_modules/
 wasm.wasm
 next-env.d.ts
 *.tsbuildinfo
+
+# next dev は distDir に dev を利用する
+dev/
