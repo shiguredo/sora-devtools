@@ -53,15 +53,15 @@ const Index: React.FC = () => {
             <li className="separator">マルチストリーム</li>
             <Link
               pageName="マルチストリーム送受信"
-              params={{ role: 'sendrecv', multistream: true }}
+              params={{ role: 'sendrecv', multistream: true, videoCodecType: 'VP9' }}
             />
             <Link
               pageName="マルチストリーム送信のみ"
-              params={{ role: 'sendonly', multistream: true }}
+              params={{ role: 'sendonly', multistream: true, videoCodecType: 'VP9' }}
             />
             <Link
               pageName="マルチストリーム受信のみ"
-              params={{ role: 'recvonly', multistream: true }}
+              params={{ role: 'recvonly', multistream: true, videoCodecType: 'VP9' }}
             />
             <Link
               pageName="マルチストリーム送受信 (サイマルキャスト有効)"

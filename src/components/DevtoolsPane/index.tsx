@@ -231,7 +231,7 @@ const RowSignalingOptions: React.FC = () => {
   )
 }
 
-const RowAdvancedOptions: React.FC = () => {
+const RowAdvancedSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
   const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
   const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
@@ -260,7 +260,7 @@ const RowAdvancedOptions: React.FC = () => {
     <Row className="form-row">
       <Col>
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
-          Advanced options
+          Advanced signaling options
         </a>
       </Col>
       <Collapse in={!collapsed}>
@@ -450,6 +450,11 @@ export const RowMediaDevices: React.FC = () => {
 export const DevtoolsPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug)
   const role = useAppSelector((state) => state.role)
+  const multistream = useAppSelector((state) => state.multistream)
+  const showAdvancedSignalingForms = !(
+    role === 'recvonly' &&
+    (multistream === 'true' || multistream === '')
+  )
   return (
     <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />
@@ -459,7 +464,7 @@ export const DevtoolsPane: React.FC = () => {
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
-      <RowAdvancedOptions />
+      {showAdvancedSignalingForms && <RowAdvancedSignalingOptions />}
       <hr className="hr-form" />
       {role !== 'recvonly' ? (
         <>

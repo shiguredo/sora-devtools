@@ -11,7 +11,13 @@
 
 ## develop
 
-- [CHANGE] role が `recvonly` かつ multistream が `true` または `未指定` の時に video/audio のコーデックとビットレートの項目を表示しない
+- [CHANGE] `Advanced options` を `Advanced signaling options` に変更する
+  - @tnamao
+- [CHANGE] `videoCodecType` の初期値をブラウザから自動判別した値から `未指定` に変更する
+  - @tnamao
+- [CHANGE] index ページのマルチストリームのリンクに `videoCodecType=VP9` を追加する
+  - 初期値変更に伴う URL パラメータの追加
+  - @tnamao
 - [CHANGE] ローカル開発用と本番用で成果物の主力先を分ける
   - `process.env.NODE_ENV` が `production` のときは `dist` に、それ以外は `dev` に出力する
   - @voluntas
@@ -77,6 +83,35 @@
   - @sile
 - [FIX] sora_demo を sora_devtools に修正する
   - @voluntas
+
+### role が recvonly かつ multistream 利用時の表示と挙動の変更
+
+- [CHANGE] video/audio のコーデックとビットレートの項目を表示しない
+  - @tnamao
+- [CHANGE] `Advanced signaling options` の表示をしない
+  - @tnamao
+- [CHANGE] シグナリング時のパラメータから次のパラメータを含めず接続する
+  - `audioBitRate`
+  - `audioCodecType`
+  - `videoBitRate`
+  - `videoCodecType`
+  - `audioStreamingLanguageCode`
+  - `audioLyraParamsBitrate`
+  - `videoVP9Params`
+  - `videoH264Params`
+  - `videoAV1params`
+  - @tnamao
+- [CHANGE] `copy URL` でコピーする URL に次のパラメータを含めない
+  - `audioBitRate`
+  - `audioCodecType`
+  - `videoBitRate`
+  - `videoCodecType`
+  - `audioStreamingLanguageCode`
+  - `audioLyraParamsBitrate`
+  - `videoVP9Params`
+  - `videoH264Params`
+  - `videoAV1params`
+  - @tnamao
 
 ## 2022.5.3
 

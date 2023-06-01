@@ -25,7 +25,6 @@ import {
   createVideoConstraints,
   drawFakeCanvas,
   getBlurRadiusNumber,
-  getDefaultVideoCodecType,
   getDevices,
   getLightAdjustmentOptions,
   getMediaStreamTrackProperties,
@@ -138,11 +137,8 @@ export const setInitialParameter = () => {
     if (qsParams.videoBitRate !== undefined) {
       dispatch(slice.actions.setVideoBitRate(qsParams.videoBitRate))
     }
-    // videoCodecType は query string の指定がない場合、ブラウザが対応している codec type を選択する
     if (qsParams.videoCodecType !== undefined) {
       dispatch(slice.actions.setVideoCodecType(qsParams.videoCodecType))
-    } else {
-      dispatch(slice.actions.setVideoCodecType(getDefaultVideoCodecType()))
     }
     if (qsParams.videoVP9Params !== undefined) {
       dispatch(slice.actions.setVideoVP9Params(qsParams.videoVP9Params))
@@ -334,6 +330,10 @@ export const setInitialParameter = () => {
 export const copyURL = () => {
   return (_: Dispatch, getState: () => SoraDevtoolsState): void => {
     const state = getState()
+    const appendAudioVideoParams = !(
+      state.role === 'recvonly' &&
+      (state.multistream === 'true' || state.multistream === '')
+    )
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
       role: state.role,
@@ -343,20 +343,24 @@ export const copyURL = () => {
       // URL の長さ短縮のため初期値と同じ場合は query string に含めない
       mediaType: state.mediaType !== 'getUserMedia' ? state.mediaType : undefined,
       // URL の長さ短縮のため空文字列は query string に含めない
-      audioBitRate: state.audioBitRate !== '' ? state.audioBitRate : undefined,
-      audioCodecType: state.audioCodecType !== '' ? state.audioCodecType : undefined,
-      videoBitRate: state.videoBitRate !== '' ? state.videoBitRate : undefined,
-      videoCodecType: state.videoCodecType !== '' ? state.videoCodecType : undefined,
+      audioBitRate:
+        appendAudioVideoParams && state.audioBitRate !== '' ? state.audioBitRate : undefined,
+      audioCodecType:
+        appendAudioVideoParams && state.audioCodecType !== '' ? state.audioCodecType : undefined,
+      videoBitRate:
+        appendAudioVideoParams && state.videoBitRate !== '' ? state.videoBitRate : undefined,
+      videoCodecType:
+        appendAudioVideoParams && state.videoCodecType !== '' ? state.videoCodecType : undefined,
       videoVP9Params:
-        state.videoVP9Params !== '' && state.enabledVideoVP9Params
+        appendAudioVideoParams && state.videoVP9Params !== '' && state.enabledVideoVP9Params
           ? state.videoVP9Params
           : undefined,
       videoH264Params:
-        state.videoH264Params !== '' && state.enabledVideoH264Params
+        appendAudioVideoParams && state.videoH264Params !== '' && state.enabledVideoH264Params
           ? state.videoH264Params
           : undefined,
       videoAV1Params:
-        state.videoAV1Params !== '' && state.enabledVideoAV1Params
+        appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
           ? state.videoAV1Params
           : undefined,
       audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
@@ -428,12 +432,15 @@ export const copyURL = () => {
       mute: state.mute === true ? true : undefined,
       // audioStreamingLanguageCode
       audioStreamingLanguageCode:
-        state.audioStreamingLanguageCode !== '' && state.enabledAudioStreamingLanguageCode
+        appendAudioVideoParams &&
+        state.audioStreamingLanguageCode !== '' &&
+        state.enabledAudioStreamingLanguageCode
           ? state.audioStreamingLanguageCode
           : undefined,
-      audioLyraParamsBitrate: state.audioLyraParamsBitrate
-        ? state.audioLyraParamsBitrate
-        : undefined,
+      audioLyraParamsBitrate:
+        appendAudioVideoParams && state.audioLyraParamsBitrate
+          ? state.audioLyraParamsBitrate
+          : undefined,
     }
     const queryStrings = Object.keys(parameters)
       .map((key) => {
@@ -1017,6 +1024,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoVP9Params: state.videoVP9Params,
     videoH264Params: state.videoH264Params,
     videoAV1Params: state.videoAV1Params,
+    role: state.role,
   }
 }
 
