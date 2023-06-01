@@ -109,7 +109,7 @@ export const ROLES = ['sendrecv', 'sendonly', 'recvonly'] as const
 
 export const FACING_MODES = ['', 'front', 'back'] as const
 
-export const LYRA_PARAMS_BITRATES = ['', '3200', '6000', '9200'] as const
+export const AUDIO_LYRA_PARAMS_BITRATES = ['', '3200', '6000', '9200'] as const
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {

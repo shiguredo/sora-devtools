@@ -144,6 +144,15 @@ export const setInitialParameter = () => {
     } else {
       dispatch(slice.actions.setVideoCodecType(getDefaultVideoCodecType()))
     }
+    if (qsParams.videoVP9Params !== undefined) {
+      dispatch(slice.actions.setVideoVP9Params(qsParams.videoVP9Params))
+    }
+    if (qsParams.videoH264Params !== undefined) {
+      dispatch(slice.actions.setVideoH264Params(qsParams.videoH264Params))
+    }
+    if (qsParams.videoAV1Params !== undefined) {
+      dispatch(slice.actions.setVideoAV1Params(qsParams.videoAV1Params))
+    }
     if (qsParams.debug !== undefined) {
       dispatch(slice.actions.setDebug(qsParams.debug))
     }
@@ -233,8 +242,8 @@ export const setInitialParameter = () => {
     if (qsParams.audioStreamingLanguageCode !== undefined) {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
-    if (qsParams.lyraParamsBitrate !== undefined) {
-      dispatch(slice.actions.setLyraParamsBitrate(qsParams.lyraParamsBitrate))
+    if (qsParams.audioLyraParamsBitrate !== undefined) {
+      dispatch(slice.actions.setAudioLyraParamsBitrate(qsParams.audioLyraParamsBitrate))
     }
     dispatch(slice.actions.setInitialFakeContents())
     // e2ee が有効な場合は e2ee 初期化処理をする
@@ -250,6 +259,9 @@ export const setInitialParameter = () => {
       signalingNotifyMetadata,
       signalingUrlCandidates,
       forwardingFilter,
+      videoVP9Params,
+      videoH264Params,
+      videoAV1Params,
     } = getState()
     if (e2ee) {
       const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
@@ -301,6 +313,18 @@ export const setInitialParameter = () => {
     if (audioStreamingLanguageCode !== '') {
       dispatch(slice.actions.setEnabledAudioStreamingLanguageCode(true))
     }
+    // videoVP9Params が存在した場合は enabledVideoVP9Params をセットする
+    if (videoVP9Params !== '') {
+      dispatch(slice.actions.setEnabledVideoVP9Params(true))
+    }
+    // videoH264Params が存在した場合は enabledH264Params をセットする
+    if (videoH264Params !== '') {
+      dispatch(slice.actions.setEnabledVideoH264Params(true))
+    }
+    // videoAV1Params が存在した場合は enabledVideoAV1Params をセットする
+    if (videoAV1Params !== '') {
+      dispatch(slice.actions.setEnabledVideoAV1Params(true))
+    }
     dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
   }
 }
@@ -323,6 +347,18 @@ export const copyURL = () => {
       audioCodecType: state.audioCodecType !== '' ? state.audioCodecType : undefined,
       videoBitRate: state.videoBitRate !== '' ? state.videoBitRate : undefined,
       videoCodecType: state.videoCodecType !== '' ? state.videoCodecType : undefined,
+      videoVP9Params:
+        state.videoVP9Params !== '' && state.enabledVideoVP9Params
+          ? state.videoVP9Params
+          : undefined,
+      videoH264Params:
+        state.videoH264Params !== '' && state.enabledVideoH264Params
+          ? state.videoH264Params
+          : undefined,
+      videoAV1Params:
+        state.videoAV1Params !== '' && state.enabledVideoAV1Params
+          ? state.videoAV1Params
+          : undefined,
       audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
       autoGainControl: state.autoGainControl !== '' ? state.autoGainControl : undefined,
       noiseSuppression: state.noiseSuppression !== '' ? state.noiseSuppression : undefined,
@@ -395,7 +431,9 @@ export const copyURL = () => {
         state.audioStreamingLanguageCode !== '' && state.enabledAudioStreamingLanguageCode
           ? state.audioStreamingLanguageCode
           : undefined,
-      lyraParamsBitrate: state.lyraParamsBitrate ? state.lyraParamsBitrate : undefined,
+      audioLyraParamsBitrate: state.audioLyraParamsBitrate
+        ? state.audioLyraParamsBitrate
+        : undefined,
     }
     const queryStrings = Object.keys(parameters)
       .map((key) => {
@@ -959,8 +997,11 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     enabledForwardingFilter: state.enabledForwardingFilter,
+    enabledVideoVP9Params: state.enabledVideoVP9Params,
+    enabledVideoH264Params: state.enabledVideoH264Params,
+    enabledVideoAV1Params: state.enabledVideoAV1Params,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-    lyraParamsBitrate: state.lyraParamsBitrate,
+    audioLyraParamsBitrate: state.audioLyraParamsBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     forwardingFilter: state.forwardingFilter,
@@ -973,6 +1014,9 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     video: state.video,
     videoBitRate: state.videoBitRate,
     videoCodecType: state.videoCodecType,
+    videoVP9Params: state.videoVP9Params,
+    videoH264Params: state.videoH264Params,
+    videoAV1Params: state.videoAV1Params,
   }
 }
 
@@ -1590,6 +1634,9 @@ export const {
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
+  setEnabledVideoVP9Params,
+  setEnabledVideoH264Params,
+  setEnabledVideoAV1Params,
   setAudioStreamingLanguageCode,
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
@@ -1599,7 +1646,7 @@ export const {
   setLightAdjustment,
   setLocalMediaStream,
   setLogMessages,
-  setLyraParamsBitrate,
+  setAudioLyraParamsBitrate,
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,
@@ -1629,4 +1676,7 @@ export const {
   setVideoContentHint,
   setVideoInput,
   setVideoTrack,
+  setVideoVP9Params,
+  setVideoH264Params,
+  setVideoAV1Params,
 } = slice.actions

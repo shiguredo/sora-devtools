@@ -15,6 +15,7 @@ import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
+  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   CONNECTION_STATUS,
@@ -27,7 +28,6 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
-  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -78,9 +78,12 @@ export type SoraDevtoolsState = {
   enabledSignalingNotifyMetadata: boolean
   enabledSignalingUrlCandidates: boolean
   enabledForwardingFilter: boolean
+  enabledVideoVP9Params: boolean
+  enabledVideoH264Params: boolean
+  enabledVideoAV1Params: boolean
   audioStreamingLanguageCode: string
   enabledAudioStreamingLanguageCode: boolean
-  lyraParamsBitrate: (typeof LYRA_PARAMS_BITRATES)[number]
+  audioLyraParamsBitrate: (typeof AUDIO_LYRA_PARAMS_BITRATES)[number]
   fakeContents: {
     worker: Worker | null
     colorCode: number
@@ -132,6 +135,9 @@ export type SoraDevtoolsState = {
   videoContentHint: (typeof VIDEO_CONTENT_HINTS)[number]
   videoInput: string
   videoInputDevices: MediaDeviceInfo[]
+  videoVP9Params: string
+  videoH264Params: string
+  videoAV1Params: string
   version: string
   cameraDevice: boolean
   videoTrack: boolean
@@ -341,8 +347,11 @@ export type ConnectionOptionsState = Pick<
   | 'enabledDataChannel'
   | 'enabledSignalingNotifyMetadata'
   | 'enabledForwardingFilter'
+  | 'enabledVideoVP9Params'
+  | 'enabledVideoH264Params'
+  | 'enabledVideoAV1Params'
   | 'ignoreDisconnectWebSocket'
-  | 'lyraParamsBitrate'
+  | 'audioLyraParamsBitrate'
   | 'multistream'
   | 'signalingNotifyMetadata'
   | 'forwardingFilter'
@@ -355,6 +364,9 @@ export type ConnectionOptionsState = Pick<
   | 'video'
   | 'videoBitRate'
   | 'videoCodecType'
+  | 'videoVP9Params'
+  | 'videoH264Params'
+  | 'videoAV1Params'
 >
 
 // ダウンロードレポートに使用するパラメーター

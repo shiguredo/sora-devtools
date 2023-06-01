@@ -44,6 +44,15 @@
   "videoBitRate": {
     "description": "映像のビットレートを指定します。"
   },
+  "videoVP9Params": {
+    "description": "映像のコーデックタイプに VP9 を指定した場合の設定を指定します。"
+  },
+  "videoH264Params": {
+    "description": "映像のコーデックタイプに H264 を指定した場合の設定を指定します。"
+  },
+  "videoAV1Params": {
+    "description": "映像のコーデックタイプに AV1 を指定した場合の設定を指定します。"
+  },
   "e2ee": {
     "description": "E2EE(End-to-End Encryption) を使用するかどうかを指定します。"
   },
@@ -71,7 +80,7 @@
   "audioStreamingLanguageCode": {
     "description": "音声解析用の言語コードを指定します。"
   },
-  "lyraParamsBitrate": {
+  "audioLyraParamsBitrate": {
     "description": "音声に Lyra コーデックを使った場合のビットレートを指定します。"
   },
   "dataChannels": {
