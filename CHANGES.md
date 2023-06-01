@@ -85,6 +85,17 @@
   - @tnamao
 - [CHANGE] `Advanced signaling options` の表示をしない
   - @tnamao
+- [CHANGE] シグナリング時のパラメータから次のパラメータを含めず接続する
+  - `audioBitRate`
+  - `audioCodecType`
+  - `videoBitRate`
+  - `videoCodecType`
+  - `audioStreamingLanguageCode`
+  - `audioLyraParamsBitrate`
+  - `videoVP9Params`
+  - `videoH264Params`
+  - `videoAV1params`
+  - @tnamao
 - [CHANGE] `copy URL` でコピーする URL に次のパラメータを含めない
   - `audioBitRate`
   - `audioCodecType`
