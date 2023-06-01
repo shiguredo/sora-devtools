@@ -100,6 +100,10 @@ E2EE(End-to-End Encryption) を使用するかどうかを指定します。
 シグナリングをするURLを複数指定します。
 
 
+## forwardingFilter
+デフォルトの転送フィルターを指定します。
+
+
 ## dataChannels
 メッセージング用の DataChannel を指定します。
 
@@ -110,6 +114,26 @@ E2EE(End-to-End Encryption) を使用するかどうかを指定します。
 
 ## ignoreDisconnectWebSocket
 シグナリングを DataChannel 経由に切り替えた際に、 WebSocket が閉じても、接続が切断しないようにするかどうかを指定します。
+
+
+## audioStreamingLanguageCode
+音声解析用の言語コードを指定します。
+
+
+## audioLyraParamsBitrate
+音声に Lyra コーデックを使った場合のビットレートを指定します。
+
+
+## videoVP9Params
+映像のコーデックタイプに VP9 を指定した場合の設定を指定します。
+
+
+## videoH264Params
+映像のコーデックタイプに H264 を指定した場合の設定を指定します。
+
+
+## videoAV1Params
+映像のコーデックタイプに AV1 を指定した場合の設定を指定します。
 
 
 ## mediaType
@@ -173,6 +197,10 @@ shiguredo Media Processors の背景ぼかしを使用するかどうか指定�
 
 ## lightAdjustment
 shiguredo Media Processors のライト調整を使用するかどうかを指定します。
+
+
+## facingMode
+モバイルカメラのフロント/バックを切り替えます。
 
 
 ## audioInput
