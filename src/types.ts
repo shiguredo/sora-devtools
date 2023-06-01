@@ -367,6 +367,7 @@ export type ConnectionOptionsState = Pick<
   | 'videoVP9Params'
   | 'videoH264Params'
   | 'videoAV1Params'
+  | 'role'
 >
 
 // ダウンロードレポートに使用するパラメーター

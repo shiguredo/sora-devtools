@@ -1013,6 +1013,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoVP9Params: state.videoVP9Params,
     videoH264Params: state.videoH264Params,
     videoAV1Params: state.videoAV1Params,
+    role: state.role,
   }
 }
 

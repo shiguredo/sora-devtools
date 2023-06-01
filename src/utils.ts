@@ -663,35 +663,45 @@ export function createConnectOptions(
     audio: connectionOptionsState.audio,
     video: connectionOptionsState.video,
   }
-  // audioCodecType
-  if (connectionOptionsState.audioCodecType) {
-    connectionOptions.audioCodecType = connectionOptionsState.audioCodecType
-  }
-  // audioBitRate
-  const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10)
-  if (parsedAudioBitRate) {
-    connectionOptions.audioBitRate = parsedAudioBitRate
-  }
-  // videoCodecType
-  if (connectionOptionsState.videoCodecType) {
-    connectionOptions.videoCodecType = connectionOptionsState.videoCodecType
-  }
-  // videoBitRate
-  const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10)
-  if (parsedVideoBitRate) {
-    connectionOptions.videoBitRate = parsedVideoBitRate
-  }
-  // videoVP9Params
-  if (connectionOptionsState.enabledVideoVP9Params) {
-    connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
-  }
-  // videoH264Params
-  if (connectionOptionsState.enabledVideoH264Params) {
-    connectionOptions.videoH264Params = parseMetadata(true, connectionOptionsState.videoH264Params)
-  }
-  // videoVP9Params
-  if (connectionOptionsState.enabledVideoAV1Params) {
-    connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
+  // recvonly かつ multistream の時は audio/video のパラメータを送らない
+  const sendAudioVideoParams = !(
+    connectionOptionsState.role === 'recvonly' &&
+    (connectionOptionsState.multistream === 'true' || connectionOptionsState.multistream === '')
+  )
+  if (sendAudioVideoParams) {
+    // audioCodecType
+    if (connectionOptionsState.audioCodecType) {
+      connectionOptions.audioCodecType = connectionOptionsState.audioCodecType
+    }
+    // audioBitRate
+    const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10)
+    if (parsedAudioBitRate) {
+      connectionOptions.audioBitRate = parsedAudioBitRate
+    }
+    // videoCodecType
+    if (connectionOptionsState.videoCodecType) {
+      connectionOptions.videoCodecType = connectionOptionsState.videoCodecType
+    }
+    // videoBitRate
+    const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10)
+    if (parsedVideoBitRate) {
+      connectionOptions.videoBitRate = parsedVideoBitRate
+    }
+    // videoVP9Params
+    if (connectionOptionsState.enabledVideoVP9Params) {
+      connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
+    }
+    // videoH264Params
+    if (connectionOptionsState.enabledVideoH264Params) {
+      connectionOptions.videoH264Params = parseMetadata(
+        true,
+        connectionOptionsState.videoH264Params,
+      )
+    }
+    // videoVP9Params
+    if (connectionOptionsState.enabledVideoAV1Params) {
+      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
+    }
   }
   // multistream
   const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
