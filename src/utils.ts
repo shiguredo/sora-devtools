@@ -702,6 +702,18 @@ export function createConnectOptions(
     if (connectionOptionsState.enabledVideoAV1Params) {
       connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
     }
+    // audioStreamingLanguageCode
+    if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
+      connectionOptions.audioStreamingLanguageCode =
+        connectionOptionsState.audioStreamingLanguageCode
+    }
+    // audioLyraParamsBitrate
+    if (connectionOptionsState.audioLyraParamsBitrate) {
+      connectionOptions.audioLyraParamsBitrate = parseInt(
+        connectionOptionsState.audioLyraParamsBitrate,
+        10,
+      ) as 3200 | 6000 | 9200
+    }
   }
   // multistream
   const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
@@ -785,17 +797,6 @@ export function createConnectOptions(
     if (Array.isArray(dataChannels)) {
       connectionOptions.dataChannels = dataChannels
     }
-  }
-  // audioStreamingLanguageCode
-  if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
-    connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode
-  }
-  // audioLyraParamsBitrate
-  if (connectionOptionsState.audioLyraParamsBitrate) {
-    connectionOptions.audioLyraParamsBitrate = parseInt(
-      connectionOptionsState.audioLyraParamsBitrate,
-      10,
-    ) as 3200 | 6000 | 9200
   }
   return connectionOptions
 }
