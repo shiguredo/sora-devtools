@@ -25,7 +25,6 @@ import {
   createVideoConstraints,
   drawFakeCanvas,
   getBlurRadiusNumber,
-  getDefaultVideoCodecType,
   getDevices,
   getLightAdjustmentOptions,
   getMediaStreamTrackProperties,
@@ -138,11 +137,8 @@ export const setInitialParameter = () => {
     if (qsParams.videoBitRate !== undefined) {
       dispatch(slice.actions.setVideoBitRate(qsParams.videoBitRate))
     }
-    // videoCodecType は query string の指定がない場合、ブラウザが対応している codec type を選択する
     if (qsParams.videoCodecType !== undefined) {
       dispatch(slice.actions.setVideoCodecType(qsParams.videoCodecType))
-    } else {
-      dispatch(slice.actions.setVideoCodecType(getDefaultVideoCodecType()))
     }
     if (qsParams.videoVP9Params !== undefined) {
       dispatch(slice.actions.setVideoVP9Params(qsParams.videoVP9Params))
