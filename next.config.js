@@ -1,6 +1,8 @@
 const nextConfig = {
   output: "export",
-  distDir: 'dist',
+  // distDir: 'dist',
+  // eslint-disable-next-line no-undef
+  distDir: process.env.NODE_ENV === 'production' ? 'dist' : 'dev',
   compress: true,
   swcMinify: false,
   generateBuildId: async () => "sora_devtools",

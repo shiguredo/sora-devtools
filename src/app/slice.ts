@@ -59,9 +59,12 @@ const initialState: SoraDevtoolsState = {
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
   enabledSignalingUrlCandidates: false,
+  enabledVideoVP9Params: false,
+  enabledVideoH264Params: false,
+  enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
-  lyraParamsBitrate: '',
+  audioLyraParamsBitrate: '',
   fakeVolume: '0',
   fakeContents: {
     worker: null,
@@ -111,6 +114,9 @@ const initialState: SoraDevtoolsState = {
   videoContentHint: '',
   videoInput: '',
   videoInputDevices: [],
+  videoVP9Params: '',
+  videoH264Params: '',
+  videoAV1Params: '',
   version: packageJSON.version,
   cameraDevice: true,
   videoTrack: true,
@@ -233,6 +239,15 @@ export const slice = createSlice({
     setEnabledSignalingUrlCandidates: (state, action: PayloadAction<boolean>) => {
       state.enabledSignalingUrlCandidates = action.payload
     },
+    setEnabledVideoVP9Params: (state, action: PayloadAction<boolean>) => {
+      state.enabledVideoVP9Params = action.payload
+    },
+    setEnabledVideoH264Params: (state, action: PayloadAction<boolean>) => {
+      state.enabledVideoH264Params = action.payload
+    },
+    setEnabledVideoAV1Params: (state, action: PayloadAction<boolean>) => {
+      state.enabledVideoAV1Params = action.payload
+    },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload)
       if (isNaN(volume)) {
@@ -332,6 +347,15 @@ export const slice = createSlice({
           track.contentHint = state.videoContentHint
         }
       }
+    },
+    setVideoVP9Params: (state, action: PayloadAction<string>) => {
+      state.videoVP9Params = action.payload
+    },
+    setVideoH264Params: (state, action: PayloadAction<string>) => {
+      state.videoH264Params = action.payload
+    },
+    setVideoAV1Params: (state, action: PayloadAction<string>) => {
+      state.videoAV1Params = action.payload
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       // `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
@@ -578,11 +602,11 @@ export const slice = createSlice({
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload
     },
-    setLyraParamsBitrate: (
+    setAudioLyraParamsBitrate: (
       state,
-      action: PayloadAction<SoraDevtoolsState['lyraParamsBitrate']>,
+      action: PayloadAction<SoraDevtoolsState['audioLyraParamsBitrate']>,
     ) => {
-      state.lyraParamsBitrate = action.payload
+      state.audioLyraParamsBitrate = action.payload
     },
   },
 })

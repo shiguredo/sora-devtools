@@ -12,6 +12,7 @@ import { AudioCodecTypeForm } from './AudioCodecTypeForm'
 import { AudioContentHintForm } from './AudioContentHintForm'
 import { AudioForm } from './AudioForm'
 import { AudioInputForm } from './AudioInputForm'
+import { AudioLyraParamsBitrateForm } from './AudioLyraParamsBitrateForm'
 import { AudioOutputForm } from './AudioOutputForm'
 import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm'
 import { AudioTrackForm } from './AudioTrackForm'
@@ -34,7 +35,6 @@ import { FakeVolumeForm } from './FakeVolumeForm'
 import { ForwardingFilterForm } from './ForwardingFilterForm'
 import { FrameRateForm } from './FrameRateForm'
 import { LightAdjustmentForm } from './LightAdjustmentForm'
-import { LyraParamsBitrateForm } from './LyraParamsBitrateForm'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm'
 import { MediaTypeForm } from './MediaTypeForm'
 import { MetadataForm } from './MetadataForm'
@@ -57,12 +57,15 @@ import { SpotlightUnfocusRidForm } from './SpotlightUnfocusRidForm'
 import { StartRecordingButton } from './StartRecordingButton'
 import { StopRecordingButton } from './StopRecordingButton'
 import { UpdateMediaStreamButton } from './UpdateMediaStreamButton'
+import { VideoAV1ParamsForm } from './VideoAV1ParamsForm'
 import { VideoBitRateForm } from './VideoBitRateForm'
 import { VideoCodecTypeForm } from './VideoCodecTypeForm'
 import { VideoContentHintForm } from './VideoContentHintForm'
 import { VideoForm } from './VideoForm'
+import { VideoH264ParamsForm } from './VideoH264ParamsForm'
 import { VideoInputForm } from './VideoInputForm'
 import { VideoTrackForm } from './VideoTrackForm'
+import { VideoVP9ParamsForm } from './VideoVP9ParamsForm'
 
 const RowChannelOptions: React.FC = () => {
   return (
@@ -220,10 +223,17 @@ const RowSignalingOptions: React.FC = () => {
 const RowAdvancedOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
   const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
-  const lyraParamsBitrate = useAppSelector((state) => state.lyraParamsBitrate)
-  const enabledOptions = [audioStreamingLanguageCode !== '', lyraParamsBitrate !== ''].some(
-    (e) => e,
-  )
+  const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
+  const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
+  const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
+  const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
+  const enabledOptions = [
+    audioStreamingLanguageCode !== '',
+    audioLyraParamsBitrate !== '',
+    enabledVideoVP9Params,
+    enabledVideoH264Params,
+    enabledVideoAV1Params,
+  ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
     linkClassNames.push('collapsed')
@@ -247,9 +257,12 @@ const RowAdvancedOptions: React.FC = () => {
           <AudioStreamingLanguageCodeForm />
           <Row className="form-row">
             <Col className="col-auto">
-              <LyraParamsBitrateForm />
+              <AudioLyraParamsBitrateForm />
             </Col>
           </Row>
+          <VideoVP9ParamsForm />
+          <VideoH264ParamsForm />
+          <VideoAV1ParamsForm />
         </div>
       </Collapse>
     </Row>

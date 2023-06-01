@@ -10,6 +10,7 @@ import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
+  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
@@ -21,7 +22,6 @@ import {
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
-  LYRA_PARAMS_BITRATES,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
@@ -163,6 +163,9 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     video: parseBooleanParameter(qs.video),
     videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
+    videoVP9Params: parseStringParameter(qs.videoVP9Params),
+    videoH264Params: parseStringParameter(qs.videoH264Params),
+    videoAV1Params: parseStringParameter(qs.videoAV1Params),
     audioInput: parseStringParameter(qs.audioInput),
     videoInput: parseStringParameter(qs.videoInput),
     audioOutput: parseStringParameter(qs.audioOutput),
@@ -190,7 +193,10 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
-    lyraParamsBitrate: parseSpecifiedStringParameter(qs.lyraParamsBitrate, LYRA_PARAMS_BITRATES),
+    audioLyraParamsBitrate: parseSpecifiedStringParameter(
+      qs.audioLyraParamsBitrate,
+      AUDIO_LYRA_PARAMS_BITRATES,
+    ),
   }
   // undefined の項目を削除する
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
@@ -675,6 +681,18 @@ export function createConnectOptions(
   if (parsedVideoBitRate) {
     connectionOptions.videoBitRate = parsedVideoBitRate
   }
+  // videoVP9Params
+  if (connectionOptionsState.enabledVideoVP9Params) {
+    connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
+  }
+  // videoH264Params
+  if (connectionOptionsState.enabledVideoH264Params) {
+    connectionOptions.videoH264Params = parseMetadata(true, connectionOptionsState.videoH264Params)
+  }
+  // videoVP9Params
+  if (connectionOptionsState.enabledVideoAV1Params) {
+    connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
+  }
   // multistream
   const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
   if (parsedMultistream !== undefined) {
@@ -762,10 +780,10 @@ export function createConnectOptions(
   if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
     connectionOptions.audioStreamingLanguageCode = connectionOptionsState.audioStreamingLanguageCode
   }
-  // lyraParamsBitrate
-  if (connectionOptionsState.lyraParamsBitrate) {
+  // audioLyraParamsBitrate
+  if (connectionOptionsState.audioLyraParamsBitrate) {
     connectionOptions.audioLyraParamsBitrate = parseInt(
-      connectionOptionsState.lyraParamsBitrate,
+      connectionOptionsState.audioLyraParamsBitrate,
       10,
     ) as 3200 | 6000 | 9200
   }
