@@ -94,29 +94,40 @@ const RowChannelOptions: React.FC = () => {
 }
 
 const RowGetUserMediaConstraints: React.FC = () => {
+  const role = useAppSelector((state) => state.role)
+  const multistream = useAppSelector((state) => state.multistream)
+  const showCodecForms = !(role === 'recvonly' && (multistream === 'true' || multistream === ''))
   return (
     <>
       <Row className="form-row" xs="auto">
         <Col>
           <AudioForm />
         </Col>
-        <Col>
-          <AudioCodecTypeForm />
-        </Col>
-        <Col>
-          <AudioBitRateForm />
-        </Col>
+        {showCodecForms && (
+          <>
+            <Col>
+              <AudioCodecTypeForm />
+            </Col>
+            <Col>
+              <AudioBitRateForm />
+            </Col>
+          </>
+        )}
       </Row>
       <Row className="form-row" xs="auto">
         <Col>
           <VideoForm />
         </Col>
-        <Col>
-          <VideoCodecTypeForm />
-        </Col>
-        <Col>
-          <VideoBitRateForm />
-        </Col>
+        {showCodecForms && (
+          <>
+            <Col>
+              <VideoCodecTypeForm />
+            </Col>
+            <Col>
+              <VideoBitRateForm />
+            </Col>
+          </>
+        )}
       </Row>
     </>
   )

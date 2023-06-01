@@ -11,6 +11,7 @@
 
 ## develop
 
+- [CHANGE] role が `recvonly` かつ multistream が `true` または `未指定` の時に video/audio のコーデックとビットレートの項目を表示しない
 - [CHANGE] ローカル開発用と本番用で成果物の主力先を分ける
   - `process.env.NODE_ENV` が `production` のときは `dist` に、それ以外は `dev` に出力する
   - @voluntas
