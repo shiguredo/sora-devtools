@@ -450,6 +450,11 @@ export const RowMediaDevices: React.FC = () => {
 export const DevtoolsPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug)
   const role = useAppSelector((state) => state.role)
+  const multistream = useAppSelector((state) => state.multistream)
+  const showAdvancedSignalingForms = !(
+    role === 'recvonly' &&
+    (multistream === 'true' || multistream === '')
+  )
   return (
     <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />
@@ -459,7 +464,7 @@ export const DevtoolsPane: React.FC = () => {
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
-      <RowAdvancedOptions />
+      {showAdvancedSignalingForms && <RowAdvancedOptions />}
       <hr className="hr-form" />
       {role !== 'recvonly' ? (
         <>
