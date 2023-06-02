@@ -159,8 +159,8 @@ https://example.com/devtools?multistream=true&role=sendrecv
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```
+Copyright 2017-2023, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
-Copyright 2017-2022, Shiguredo Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
