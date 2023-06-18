@@ -26,8 +26,8 @@
     "@next/eslint-plugin-next": "13.4.5",
     "@testing-library/jest-dom": "5.16.5",
     "@types/jest": "29.5.2",
-    "@types/node": "18.16.17",
-    "@types/react": "18.2.11",
+    "@types/node": "18.16.18",
+    "@types/react": "18.2.12",
     "@types/react-redux": "7.1.25",
     "@types/redux-logger": "3.0.9",
     "@types/resize-observer-browser": "0.1.7",
@@ -56,13 +56,13 @@
     "react-bootstrap": "2.7.4",
     "react-dom": "18.2.0",
     "react-draggable": "4.4.5",
-    "react-redux": "8.0.7",
+    "react-redux": "8.1.0",
     "redux": "4.2.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.4.2",
     "sora-js-sdk": "2023.1.0-canary.6"
   },
-  "packageManager": "pnpm@8.6.1",
+  "packageManager": "pnpm@8.6.2",
   "engines": {
     "node": ">=16.20.0"
   }
