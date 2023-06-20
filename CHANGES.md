@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2023.1.0
+
+- [UPDATE] sora-js-sdk を 2023.1.0 に更新する
+  - @voluntas
 - [CHANGE] `Advanced options` を `Advanced signaling options` に変更する
   - @tnamao
 - [CHANGE] `videoCodecType` の初期値をブラウザから自動判別した値から `未指定` に変更する
