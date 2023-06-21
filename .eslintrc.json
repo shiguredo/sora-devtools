@@ -22,33 +22,33 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "import",
-    "simple-import-sort"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "import", "simple-import-sort"],
   "settings": {
     "react": {
       "version": "detect"
     }
   },
-  "globals": {
-  },
+  "globals": {},
   "rules": {
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-extra-semi": "off",
     "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/explicit-function-return-type": ["warn", {
-      "allowExpressions": true
-    }],
-    "@typescript-eslint/no-unused-vars": ["error", {
-      "vars": "all",
-      "args": "all",
-      "argsIgnorePattern": "^_"
-    }],
+    "@typescript-eslint/explicit-function-return-type": [
+      "warn",
+      {
+        "allowExpressions": true
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "all",
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "curly": "error",

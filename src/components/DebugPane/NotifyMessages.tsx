@@ -1,31 +1,31 @@
-import React from "react";
+import React from 'react'
 
-import { useAppSelector } from "@/app/hooks";
-import type { NotifyMessage } from "@/types";
+import { useAppSelector } from '@/app/hooks'
+import type { NotifyMessage } from '@/types'
 
-import { Message } from "./Message";
+import { Message } from './Message'
 
 const SIGNALING_COLORS: { [key: string]: string } = {
-  websocket: "#00ff00",
-  datachannel: "#ff00ff",
-};
+  websocket: '#00ff00',
+  datachannel: '#ff00ff',
+}
 
 const Label: React.FC<{ text: string }> = (props) => {
-  const { text } = props;
-  const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
+  const { text } = props
+  const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined
   return (
     <span className="me-1" style={color ? { color: color } : {}}>
       [{text}]
     </span>
-  );
-};
+  )
+}
 
 type CollapseNotifyProps = {
-  notify: NotifyMessage;
-};
+  notify: NotifyMessage
+}
 const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
-  const { notify } = props;
-  const label = notify.transportType ? <Label text={notify.transportType} /> : null;
+  const { notify } = props
+  const label = notify.transportType ? <Label text={notify.transportType} /> : null
   return (
     <Message
       title={notify.message.event_type}
@@ -33,29 +33,29 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
       description={notify.message}
       label={label}
     />
-  );
-};
+  )
+}
 
 const Log = React.memo((props: CollapseNotifyProps) => {
-  return <CollapseNotify {...props} />;
-});
+  return <CollapseNotify {...props} />
+})
 
 export const NotifyMessages: React.FC = () => {
-  const notifyMessages = useAppSelector((state) => state.notifyMessages);
-  const debugFilterText = useAppSelector((state) => state.debugFilterText);
+  const notifyMessages = useAppSelector((state) => state.notifyMessages)
+  const debugFilterText = useAppSelector((state) => state.debugFilterText)
   const filteredMessages = notifyMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
-      if (filterText === "") {
-        return true;
+    return debugFilterText.split(' ').every((filterText) => {
+      if (filterText === '') {
+        return true
       }
-      return 0 <= JSON.stringify(message).indexOf(filterText);
-    });
-  });
+      return 0 <= JSON.stringify(message).indexOf(filterText)
+    })
+  })
   return (
     <div className="debug-messages">
       {filteredMessages.map((notify) => {
-        return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
+        return <Log key={notify.message.type + notify.timestamp} notify={notify} />
       })}
     </div>
-  );
-};
+  )
+}

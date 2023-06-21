@@ -1,8 +1,9 @@
-import { Dispatch } from "@reduxjs/toolkit";
-import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
-import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
-import type { ConnectionPublisher, ConnectionSubscriber, TransportType } from "sora-js-sdk";
-import Sora from "sora-js-sdk";
+import { Dispatch } from '@reduxjs/toolkit'
+import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
+import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
+import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
+import type { ConnectionPublisher, ConnectionSubscriber, TransportType } from 'sora-js-sdk'
+import Sora from 'sora-js-sdk'
 
 import type {
   ConnectionOptionsState,
@@ -12,7 +13,7 @@ import type {
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
-} from "@/types";
+} from '@/types'
 import {
   copy2clipboard,
   createAudioConstraints,
@@ -24,200 +25,223 @@ import {
   createVideoConstraints,
   drawFakeCanvas,
   getBlurRadiusNumber,
-  getDefaultVideoCodecType,
   getDevices,
+  getLightAdjustmentOptions,
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
-} from "@/utils";
+} from '@/utils'
 
-import { slice } from "./slice";
+import { slice } from './slice'
 
 // ページ初期化処理
 export const setInitialParameter = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    dispatch(slice.actions.resetState());
-    const qsParams = parseQueryString();
+    dispatch(slice.actions.resetState())
+    const qsParams = parseQueryString()
     if (qsParams.audio !== undefined) {
-      dispatch(slice.actions.setAudio(qsParams.audio));
+      dispatch(slice.actions.setAudio(qsParams.audio))
     }
     if (qsParams.audioBitRate !== undefined) {
-      dispatch(slice.actions.setAudioBitRate(qsParams.audioBitRate));
+      dispatch(slice.actions.setAudioBitRate(qsParams.audioBitRate))
     }
     if (qsParams.audioCodecType !== undefined) {
-      dispatch(slice.actions.setAudioCodecType(qsParams.audioCodecType));
+      dispatch(slice.actions.setAudioCodecType(qsParams.audioCodecType))
     }
     // 存在しない Device の場合はセットしない
-    const deviceInfos = await getDevices();
+    const deviceInfos = await getDevices()
     // audioinput
-    const audioInputDevice = deviceInfos.find((d) => d.kind === "audioinput" && d.deviceId === qsParams.audioInput);
+    const audioInputDevice = deviceInfos.find(
+      (d) => d.kind === 'audioinput' && d.deviceId === qsParams.audioInput,
+    )
     if (audioInputDevice !== undefined) {
-      dispatch(slice.actions.setAudioInput(audioInputDevice.deviceId));
+      dispatch(slice.actions.setAudioInput(audioInputDevice.deviceId))
     }
     // audiooutput
-    const audioOutputDevice = deviceInfos.find((d) => d.kind === "audiooutput" && d.deviceId === qsParams.audioOutput);
+    const audioOutputDevice = deviceInfos.find(
+      (d) => d.kind === 'audiooutput' && d.deviceId === qsParams.audioOutput,
+    )
     if (audioOutputDevice !== undefined) {
-      dispatch(slice.actions.setAudioOutput(audioOutputDevice.deviceId));
+      dispatch(slice.actions.setAudioOutput(audioOutputDevice.deviceId))
     }
     // videoinput
-    const videoInputDevice = deviceInfos.find((d) => d.kind === "videoinput" && d.deviceId === qsParams.videoInput);
+    const videoInputDevice = deviceInfos.find(
+      (d) => d.kind === 'videoinput' && d.deviceId === qsParams.videoInput,
+    )
     if (videoInputDevice !== undefined) {
-      dispatch(slice.actions.setVideoInput(videoInputDevice.deviceId));
+      dispatch(slice.actions.setVideoInput(videoInputDevice.deviceId))
     }
     if (qsParams.autoGainControl !== undefined) {
-      dispatch(slice.actions.setAutoGainControl(qsParams.autoGainControl));
+      dispatch(slice.actions.setAutoGainControl(qsParams.autoGainControl))
     }
     if (qsParams.channelId !== undefined) {
-      dispatch(slice.actions.setChannelId(qsParams.channelId));
+      dispatch(slice.actions.setChannelId(qsParams.channelId))
     }
     if (qsParams.displayResolution !== undefined) {
-      dispatch(slice.actions.setDisplayResolution(qsParams.displayResolution));
+      dispatch(slice.actions.setDisplayResolution(qsParams.displayResolution))
     }
     if (qsParams.e2ee !== undefined) {
-      dispatch(slice.actions.setE2EE(qsParams.e2ee));
+      dispatch(slice.actions.setE2EE(qsParams.e2ee))
     }
     if (qsParams.echoCancellation !== undefined) {
-      dispatch(slice.actions.setEchoCancellation(qsParams.echoCancellation));
+      dispatch(slice.actions.setEchoCancellation(qsParams.echoCancellation))
     }
     if (qsParams.echoCancellationType !== undefined) {
-      dispatch(slice.actions.setEchoCancellationType(qsParams.echoCancellationType));
+      dispatch(slice.actions.setEchoCancellationType(qsParams.echoCancellationType))
     }
     if (qsParams.mediaType !== undefined) {
-      dispatch(slice.actions.setMediaType(qsParams.mediaType));
+      dispatch(slice.actions.setMediaType(qsParams.mediaType))
     }
     if (qsParams.facingMode !== undefined) {
-      dispatch(slice.actions.setFacingMode(qsParams.facingMode));
+      dispatch(slice.actions.setFacingMode(qsParams.facingMode))
     }
     if (qsParams.fakeVolume !== undefined) {
-      dispatch(slice.actions.setFakeVolume(qsParams.fakeVolume));
+      dispatch(slice.actions.setFakeVolume(qsParams.fakeVolume))
     }
     if (qsParams.frameRate !== undefined) {
-      dispatch(slice.actions.setFrameRate(qsParams.frameRate));
+      dispatch(slice.actions.setFrameRate(qsParams.frameRate))
     }
     if (qsParams.multistream !== undefined) {
-      dispatch(slice.actions.setMultistream(qsParams.multistream));
+      dispatch(slice.actions.setMultistream(qsParams.multistream))
     }
     if (qsParams.noiseSuppression !== undefined) {
-      dispatch(slice.actions.setNoiseSuppression(qsParams.noiseSuppression));
+      dispatch(slice.actions.setNoiseSuppression(qsParams.noiseSuppression))
     }
     if (qsParams.resolution !== undefined) {
-      dispatch(slice.actions.setResolution(qsParams.resolution));
+      dispatch(slice.actions.setResolution(qsParams.resolution))
     }
     if (qsParams.showStats !== undefined) {
-      dispatch(slice.actions.setShowStats(qsParams.showStats));
+      dispatch(slice.actions.setShowStats(qsParams.showStats))
     }
     if (qsParams.simulcast !== undefined) {
-      dispatch(slice.actions.setSimulcast(qsParams.simulcast));
+      dispatch(slice.actions.setSimulcast(qsParams.simulcast))
     }
     if (qsParams.simulcastRid !== undefined) {
-      dispatch(slice.actions.setSimulcastRid(qsParams.simulcastRid));
+      dispatch(slice.actions.setSimulcastRid(qsParams.simulcastRid))
     }
     if (qsParams.spotlight !== undefined) {
-      dispatch(slice.actions.setSpotlight(qsParams.spotlight));
+      dispatch(slice.actions.setSpotlight(qsParams.spotlight))
     }
     if (qsParams.spotlightNumber !== undefined) {
-      dispatch(slice.actions.setSpotlightNumber(qsParams.spotlightNumber));
+      dispatch(slice.actions.setSpotlightNumber(qsParams.spotlightNumber))
     }
     if (qsParams.spotlightFocusRid !== undefined) {
-      dispatch(slice.actions.setSpotlightFocusRid(qsParams.spotlightFocusRid));
+      dispatch(slice.actions.setSpotlightFocusRid(qsParams.spotlightFocusRid))
     }
     if (qsParams.spotlightUnfocusRid !== undefined) {
-      dispatch(slice.actions.setSpotlightUnfocusRid(qsParams.spotlightUnfocusRid));
+      dispatch(slice.actions.setSpotlightUnfocusRid(qsParams.spotlightUnfocusRid))
     }
     if (qsParams.video !== undefined) {
-      dispatch(slice.actions.setVideo(qsParams.video));
+      dispatch(slice.actions.setVideo(qsParams.video))
     }
     if (qsParams.videoBitRate !== undefined) {
-      dispatch(slice.actions.setVideoBitRate(qsParams.videoBitRate));
+      dispatch(slice.actions.setVideoBitRate(qsParams.videoBitRate))
     }
-    // videoCodecType は query string の指定がない場合、ブラウザが対応している codec type を選択する
     if (qsParams.videoCodecType !== undefined) {
-      dispatch(slice.actions.setVideoCodecType(qsParams.videoCodecType));
-    } else {
-      dispatch(slice.actions.setVideoCodecType(getDefaultVideoCodecType()));
+      dispatch(slice.actions.setVideoCodecType(qsParams.videoCodecType))
+    }
+    if (qsParams.videoVP9Params !== undefined) {
+      dispatch(slice.actions.setVideoVP9Params(qsParams.videoVP9Params))
+    }
+    if (qsParams.videoH264Params !== undefined) {
+      dispatch(slice.actions.setVideoH264Params(qsParams.videoH264Params))
+    }
+    if (qsParams.videoAV1Params !== undefined) {
+      dispatch(slice.actions.setVideoAV1Params(qsParams.videoAV1Params))
     }
     if (qsParams.debug !== undefined) {
-      dispatch(slice.actions.setDebug(qsParams.debug));
+      dispatch(slice.actions.setDebug(qsParams.debug))
     }
     if (qsParams.debugType !== undefined) {
-      dispatch(slice.actions.setDebugType(qsParams.debugType));
+      dispatch(slice.actions.setDebugType(qsParams.debugType))
     }
     if (qsParams.mute !== undefined) {
-      dispatch(slice.actions.setMute(qsParams.mute));
+      dispatch(slice.actions.setMute(qsParams.mute))
     }
     if (qsParams.dataChannelSignaling !== undefined) {
-      dispatch(slice.actions.setDataChannelSignaling(qsParams.dataChannelSignaling));
+      dispatch(slice.actions.setDataChannelSignaling(qsParams.dataChannelSignaling))
     }
     if (qsParams.ignoreDisconnectWebSocket !== undefined) {
-      dispatch(slice.actions.setIgnoreDisconnectWebSocket(qsParams.ignoreDisconnectWebSocket));
+      dispatch(slice.actions.setIgnoreDisconnectWebSocket(qsParams.ignoreDisconnectWebSocket))
     }
     if (qsParams.micDevice !== undefined) {
-      dispatch(slice.actions.setMicDevice(qsParams.micDevice));
+      dispatch(slice.actions.setMicDevice(qsParams.micDevice))
     }
     if (qsParams.cameraDevice !== undefined) {
-      dispatch(slice.actions.setCameraDevice(qsParams.cameraDevice));
+      dispatch(slice.actions.setCameraDevice(qsParams.cameraDevice))
     }
     if (qsParams.audioTrack !== undefined) {
-      dispatch(slice.actions.setAudioTrack(qsParams.audioTrack));
+      dispatch(slice.actions.setAudioTrack(qsParams.audioTrack))
     }
     if (qsParams.videoTrack !== undefined) {
-      dispatch(slice.actions.setVideoTrack(qsParams.videoTrack));
+      dispatch(slice.actions.setVideoTrack(qsParams.videoTrack))
     }
-    if (qsParams.googCpuOveruseDetection !== undefined && qsParams.googCpuOveruseDetection !== null) {
-      dispatch(slice.actions.setGoogCpuOveruseDetection(qsParams.googCpuOveruseDetection));
+    if (
+      qsParams.googCpuOveruseDetection !== undefined &&
+      qsParams.googCpuOveruseDetection !== null
+    ) {
+      dispatch(slice.actions.setGoogCpuOveruseDetection(qsParams.googCpuOveruseDetection))
     }
     if (qsParams.bundleId !== undefined) {
-      dispatch(slice.actions.setBundleId(qsParams.bundleId));
+      dispatch(slice.actions.setBundleId(qsParams.bundleId))
     }
     if (qsParams.clientId !== undefined) {
-      dispatch(slice.actions.setClientId(qsParams.clientId));
+      dispatch(slice.actions.setClientId(qsParams.clientId))
     }
     if (qsParams.metadata !== undefined) {
-      dispatch(slice.actions.setMetadata(qsParams.metadata));
+      dispatch(slice.actions.setMetadata(qsParams.metadata))
     }
     if (qsParams.signalingNotifyMetadata !== undefined) {
-      dispatch(slice.actions.setSignalingNotifyMetadata(qsParams.signalingNotifyMetadata));
+      dispatch(slice.actions.setSignalingNotifyMetadata(qsParams.signalingNotifyMetadata))
     }
     if (qsParams.signalingUrlCandidates !== undefined) {
-      dispatch(slice.actions.setSignalingUrlCandidates(qsParams.signalingUrlCandidates));
+      dispatch(slice.actions.setSignalingUrlCandidates(qsParams.signalingUrlCandidates))
+    }
+    if (qsParams.forwardingFilter !== undefined) {
+      dispatch(slice.actions.setForwardingFilter(qsParams.forwardingFilter))
     }
     if (qsParams.dataChannels !== undefined) {
-      dispatch(slice.actions.setDataChannels(qsParams.dataChannels));
+      dispatch(slice.actions.setDataChannels(qsParams.dataChannels))
     }
     if (qsParams.audioContentHint !== undefined) {
-      dispatch(slice.actions.setAudioContentHint(qsParams.audioContentHint));
+      dispatch(slice.actions.setAudioContentHint(qsParams.audioContentHint))
     }
     if (qsParams.videoContentHint !== undefined) {
-      dispatch(slice.actions.setVideoContentHint(qsParams.videoContentHint));
+      dispatch(slice.actions.setVideoContentHint(qsParams.videoContentHint))
     }
     if (qsParams.reconnect !== undefined) {
-      dispatch(slice.actions.setReconnect(qsParams.reconnect));
+      dispatch(slice.actions.setReconnect(qsParams.reconnect))
     }
     if (qsParams.aspectRatio !== undefined) {
-      dispatch(slice.actions.setAspectRatio(qsParams.aspectRatio));
+      dispatch(slice.actions.setAspectRatio(qsParams.aspectRatio))
     }
     if (qsParams.resizeMode !== undefined) {
-      dispatch(slice.actions.setResizeMode(qsParams.resizeMode));
+      dispatch(slice.actions.setResizeMode(qsParams.resizeMode))
     }
     if (qsParams.blurRadius !== undefined) {
-      dispatch(slice.actions.setBlurRadius(qsParams.blurRadius));
+      dispatch(slice.actions.setBlurRadius(qsParams.blurRadius))
+    }
+    if (qsParams.lightAdjustment !== undefined) {
+      dispatch(slice.actions.setLightAdjustment(qsParams.lightAdjustment))
     }
     if (qsParams.mediaProcessorsNoiseSuppression !== undefined) {
-      dispatch(slice.actions.setMediaProcessorsNoiseSuppression(qsParams.mediaProcessorsNoiseSuppression));
+      dispatch(
+        slice.actions.setMediaProcessorsNoiseSuppression(qsParams.mediaProcessorsNoiseSuppression),
+      )
     }
     if (qsParams.apiUrl !== undefined && qsParams.apiUrl !== null) {
-      dispatch(slice.actions.setApiUrl(qsParams.apiUrl));
+      dispatch(slice.actions.setApiUrl(qsParams.apiUrl))
     }
     if (qsParams.role !== undefined) {
-      dispatch(slice.actions.setRole(qsParams.role));
+      dispatch(slice.actions.setRole(qsParams.role))
     }
     if (qsParams.audioStreamingLanguageCode !== undefined) {
-      dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode));
+      dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
-    if (qsParams.lyraParamsBitrate !== undefined) {
-      dispatch(slice.actions.setLyraParamsBitrate(qsParams.lyraParamsBitrate));
+    if (qsParams.audioLyraParamsBitrate !== undefined) {
+      dispatch(slice.actions.setAudioLyraParamsBitrate(qsParams.audioLyraParamsBitrate))
     }
-    dispatch(slice.actions.setInitialFakeContents());
+    dispatch(slice.actions.setInitialFakeContents())
     // e2ee が有効な場合は e2ee 初期化処理をする
     const {
       audioStreamingLanguageCode,
@@ -230,62 +254,86 @@ export const setInitialParameter = () => {
       metadata,
       signalingNotifyMetadata,
       signalingUrlCandidates,
-    } = getState();
+      forwardingFilter,
+      videoVP9Params,
+      videoH264Params,
+      videoAV1Params,
+    } = getState()
     if (e2ee) {
-      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
+      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
       // wasm url が存在する場合は e2ee の初期化処理をする
       if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message));
-        return;
+        dispatch(slice.actions.setSoraErrorAlertMessage(message))
+        return
       }
       try {
-        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
       } catch (e) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message));
-        return;
+        dispatch(slice.actions.setSoraErrorAlertMessage(message))
+        return
       }
     }
     // bundleId が存在した場合は enabledBundleId をセットする
-    if (bundleId !== "") {
-      dispatch(slice.actions.setEnabledBundleId(true));
+    if (bundleId !== '') {
+      dispatch(slice.actions.setEnabledBundleId(true))
     }
     // clientId が存在した場合は enabledClientId をセットする
-    if (clientId !== "") {
-      dispatch(slice.actions.setEnabledClientId(true));
+    if (clientId !== '') {
+      dispatch(slice.actions.setEnabledClientId(true))
     }
     // metadata が存在した場合は enabledMetadata をセットする
-    if (metadata !== "") {
-      dispatch(slice.actions.setEnabledMetadata(true));
+    if (metadata !== '') {
+      dispatch(slice.actions.setEnabledMetadata(true))
     }
     // signalingNotifyMetadata が存在した場合は enabledSignalingNotifyMetadata をセットする
-    if (signalingNotifyMetadata !== "") {
-      dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true));
+    if (signalingNotifyMetadata !== '') {
+      dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true))
     }
     // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
     if (0 < signalingUrlCandidates.length) {
-      dispatch(slice.actions.setEnabledSignalingUrlCandidates(true));
+      dispatch(slice.actions.setEnabledSignalingUrlCandidates(true))
+    }
+    // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
+    if (forwardingFilter !== '') {
+      dispatch(slice.actions.setEnabledForwardingFilter(true))
     }
     // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
-    if (dataChannelSignaling !== "" || ignoreDisconnectWebSocket !== "") {
-      dispatch(slice.actions.setEnabledDataChannel(true));
+    if (dataChannelSignaling !== '' || ignoreDisconnectWebSocket !== '') {
+      dispatch(slice.actions.setEnabledDataChannel(true))
     }
     // dataChannels が存在した場合は enabledDataChannels をセットする
-    if (dataChannels !== "") {
-      dispatch(slice.actions.setEnabledDataChannels(true));
+    if (dataChannels !== '') {
+      dispatch(slice.actions.setEnabledDataChannels(true))
     }
     // audioStreamingLanguageCode が存在した場合は enabledAudioStreamingLanguageCode をセットする
-    if (audioStreamingLanguageCode !== "") {
-      dispatch(slice.actions.setEnabledAudioStreamingLanguageCode(true));
+    if (audioStreamingLanguageCode !== '') {
+      dispatch(slice.actions.setEnabledAudioStreamingLanguageCode(true))
     }
-    dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-  };
-};
+    // videoVP9Params が存在した場合は enabledVideoVP9Params をセットする
+    if (videoVP9Params !== '') {
+      dispatch(slice.actions.setEnabledVideoVP9Params(true))
+    }
+    // videoH264Params が存在した場合は enabledH264Params をセットする
+    if (videoH264Params !== '') {
+      dispatch(slice.actions.setEnabledVideoH264Params(true))
+    }
+    // videoAV1Params が存在した場合は enabledVideoAV1Params をセットする
+    if (videoAV1Params !== '') {
+      dispatch(slice.actions.setEnabledVideoAV1Params(true))
+    }
+    dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+  }
+}
 
 // URL をクリップボードにコピーする
 // Component で state を参照すると状態変更で再レンダリングされてしまうため action でコピーする
 export const copyURL = () => {
   return (_: Dispatch, getState: () => SoraDevtoolsState): void => {
-    const state = getState();
+    const state = getState()
+    const appendAudioVideoParams = !(
+      state.role === 'recvonly' &&
+      (state.multistream === 'true' || state.multistream === '')
+    )
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
       role: state.role,
@@ -293,53 +341,79 @@ export const copyURL = () => {
       video: state.video,
       debug: state.debug,
       // URL の長さ短縮のため初期値と同じ場合は query string に含めない
-      mediaType: state.mediaType !== "getUserMedia" ? state.mediaType : undefined,
+      mediaType: state.mediaType !== 'getUserMedia' ? state.mediaType : undefined,
       // URL の長さ短縮のため空文字列は query string に含めない
-      audioBitRate: state.audioBitRate !== "" ? state.audioBitRate : undefined,
-      audioCodecType: state.audioCodecType !== "" ? state.audioCodecType : undefined,
-      videoBitRate: state.videoBitRate !== "" ? state.videoBitRate : undefined,
-      videoCodecType: state.videoCodecType !== "" ? state.videoCodecType : undefined,
-      audioContentHint: state.audioContentHint !== "" ? state.audioContentHint : undefined,
-      autoGainControl: state.autoGainControl !== "" ? state.autoGainControl : undefined,
-      noiseSuppression: state.noiseSuppression !== "" ? state.noiseSuppression : undefined,
-      echoCancellation: state.echoCancellation !== "" ? state.echoCancellation : undefined,
-      echoCancellationType: state.echoCancellationType !== "" ? state.echoCancellationType : undefined,
-      videoContentHint: state.videoContentHint !== "" ? state.videoContentHint : undefined,
-      resolution: state.resolution !== "" ? state.resolution : undefined,
-      facingMode: state.facingMode !== "" ? state.facingMode : undefined,
-      frameRate: state.frameRate !== "" ? state.frameRate : undefined,
-      aspectRatio: state.aspectRatio !== "" ? state.aspectRatio : undefined,
-      resizeMode: state.resizeMode !== "" ? state.resizeMode : undefined,
-      blurRadius: state.blurRadius !== "" ? state.blurRadius : undefined,
-      multistream: state.multistream !== "" ? state.multistream : undefined,
-      simulcast: state.simulcast !== "" ? state.simulcast : undefined,
-      simulcastRid: state.simulcastRid !== "" ? state.simulcastRid : undefined,
-      spotlight: state.spotlight !== "" ? state.spotlight : undefined,
-      spotlightNumber: state.spotlightNumber !== "" ? state.spotlightNumber : undefined,
-      spotlightFocusRid: state.spotlightFocusRid !== "" ? state.spotlightFocusRid : undefined,
-      spotlightUnfocusRid: state.spotlightUnfocusRid !== "" ? state.spotlightUnfocusRid : undefined,
-      audioInput: state.audioInput !== "" ? state.audioInput : undefined,
-      audioOutput: state.audioOutput !== "" ? state.audioOutput : undefined,
-      videoInput: state.videoInput !== "" ? state.videoInput : undefined,
-      displayResolution: state.displayResolution !== "" ? state.displayResolution : undefined,
-      bundleId: state.bundleId !== "" && state.enabledBundleId ? state.bundleId : undefined,
-      clientId: state.clientId !== "" && state.enabledClientId ? state.clientId : undefined,
-      metadata: state.metadata !== "" && state.enabledMetadata ? state.metadata : undefined,
+      audioBitRate:
+        appendAudioVideoParams && state.audioBitRate !== '' ? state.audioBitRate : undefined,
+      audioCodecType:
+        appendAudioVideoParams && state.audioCodecType !== '' ? state.audioCodecType : undefined,
+      videoBitRate:
+        appendAudioVideoParams && state.videoBitRate !== '' ? state.videoBitRate : undefined,
+      videoCodecType:
+        appendAudioVideoParams && state.videoCodecType !== '' ? state.videoCodecType : undefined,
+      videoVP9Params:
+        appendAudioVideoParams && state.videoVP9Params !== '' && state.enabledVideoVP9Params
+          ? state.videoVP9Params
+          : undefined,
+      videoH264Params:
+        appendAudioVideoParams && state.videoH264Params !== '' && state.enabledVideoH264Params
+          ? state.videoH264Params
+          : undefined,
+      videoAV1Params:
+        appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
+          ? state.videoAV1Params
+          : undefined,
+      audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
+      autoGainControl: state.autoGainControl !== '' ? state.autoGainControl : undefined,
+      noiseSuppression: state.noiseSuppression !== '' ? state.noiseSuppression : undefined,
+      echoCancellation: state.echoCancellation !== '' ? state.echoCancellation : undefined,
+      echoCancellationType:
+        state.echoCancellationType !== '' ? state.echoCancellationType : undefined,
+      videoContentHint: state.videoContentHint !== '' ? state.videoContentHint : undefined,
+      resolution: state.resolution !== '' ? state.resolution : undefined,
+      facingMode: state.facingMode !== '' ? state.facingMode : undefined,
+      frameRate: state.frameRate !== '' ? state.frameRate : undefined,
+      aspectRatio: state.aspectRatio !== '' ? state.aspectRatio : undefined,
+      resizeMode: state.resizeMode !== '' ? state.resizeMode : undefined,
+      blurRadius: state.blurRadius !== '' ? state.blurRadius : undefined,
+      lightAdjustment: state.lightAdjustment !== '' ? state.lightAdjustment : undefined,
+      multistream: state.multistream !== '' ? state.multistream : undefined,
+      simulcast: state.simulcast !== '' ? state.simulcast : undefined,
+      simulcastRid: state.simulcastRid !== '' ? state.simulcastRid : undefined,
+      spotlight: state.spotlight !== '' ? state.spotlight : undefined,
+      spotlightNumber: state.spotlightNumber !== '' ? state.spotlightNumber : undefined,
+      spotlightFocusRid: state.spotlightFocusRid !== '' ? state.spotlightFocusRid : undefined,
+      spotlightUnfocusRid: state.spotlightUnfocusRid !== '' ? state.spotlightUnfocusRid : undefined,
+      audioInput: state.audioInput !== '' ? state.audioInput : undefined,
+      audioOutput: state.audioOutput !== '' ? state.audioOutput : undefined,
+      videoInput: state.videoInput !== '' ? state.videoInput : undefined,
+      displayResolution: state.displayResolution !== '' ? state.displayResolution : undefined,
+      bundleId: state.bundleId !== '' && state.enabledBundleId ? state.bundleId : undefined,
+      clientId: state.clientId !== '' && state.enabledClientId ? state.clientId : undefined,
+      metadata: state.metadata !== '' && state.enabledMetadata ? state.metadata : undefined,
       signalingNotifyMetadata:
-        state.signalingNotifyMetadata !== "" && state.enabledSignalingNotifyMetadata
+        state.signalingNotifyMetadata !== '' && state.enabledSignalingNotifyMetadata
           ? state.signalingNotifyMetadata
           : undefined,
+      forwardingFilter:
+        state.forwardingFilter !== '' && state.enabledForwardingFilter
+          ? state.forwardingFilter
+          : undefined,
       dataChannelSignaling:
-        state.dataChannelSignaling !== "" && state.enabledDataChannel ? state.dataChannelSignaling : undefined,
+        state.dataChannelSignaling !== '' && state.enabledDataChannel
+          ? state.dataChannelSignaling
+          : undefined,
       ignoreDisconnectWebSocket:
-        state.ignoreDisconnectWebSocket !== "" && state.enabledDataChannel
+        state.ignoreDisconnectWebSocket !== '' && state.enabledDataChannel
           ? state.ignoreDisconnectWebSocket
           : undefined,
-      dataChannels: state.dataChannels !== "" && state.enabledDataChannels ? state.dataChannels : undefined,
+      dataChannels:
+        state.dataChannels !== '' && state.enabledDataChannels ? state.dataChannels : undefined,
       // URL の長さ短縮のため true 以外は query string に含めない
       reconnect: state.reconnect === true ? true : undefined,
       e2ee: state.e2ee === true ? true : undefined,
-      mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression === true ? true : undefined,
+      mediaProcessorsNoiseSuppression:
+        state.mediaProcessorsNoiseSuppression === true ? true : undefined,
       // URL の長さ短縮のため false 以外は query string に含めない
       micDevice: state.micDevice === false ? false : undefined,
       cameraDevice: state.cameraDevice === false ? false : undefined,
@@ -353,133 +427,164 @@ export const copyURL = () => {
       // apiUrl
       apiUrl: state.apiUrl !== null ? state.apiUrl : undefined,
       // fakeVolume
-      fakeVolume: state.mediaType === "fakeMedia" ? state.fakeVolume : undefined,
+      fakeVolume: state.mediaType === 'fakeMedia' ? state.fakeVolume : undefined,
       // mute
       mute: state.mute === true ? true : undefined,
       // audioStreamingLanguageCode
       audioStreamingLanguageCode:
-        state.audioStreamingLanguageCode !== "" && state.enabledAudioStreamingLanguageCode
+        appendAudioVideoParams &&
+        state.audioStreamingLanguageCode !== '' &&
+        state.enabledAudioStreamingLanguageCode
           ? state.audioStreamingLanguageCode
           : undefined,
-      lyraParamsBitrate: state.lyraParamsBitrate ? state.lyraParamsBitrate : undefined,
-    };
+      audioLyraParamsBitrate:
+        appendAudioVideoParams && state.audioLyraParamsBitrate
+          ? state.audioLyraParamsBitrate
+          : undefined,
+    }
     const queryStrings = Object.keys(parameters)
       .map((key) => {
-        const value = (parameters as Record<string, unknown>)[key];
+        const value = (parameters as Record<string, unknown>)[key]
         if (value === undefined) {
-          return;
+          return
         }
         // signalingUrlCandidates は Array なので JSON.stringify する
-        if (key === "signalingUrlCandidates") {
-          return `${key}=${encodeURIComponent(JSON.stringify(value))}`;
+        if (key === 'signalingUrlCandidates') {
+          return `${key}=${encodeURIComponent(JSON.stringify(value))}`
         }
-        return `${key}=${encodeURIComponent(value as string)}`;
+        return `${key}=${encodeURIComponent(value as string)}`
       })
-      .filter((value) => value !== undefined);
-    copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join("&")}`);
-    window.history.replaceState(null, "", `${location.pathname}?${queryStrings.join("&")}`);
-  };
-};
+      .filter((value) => value !== undefined)
+    copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join('&')}`)
+    window.history.replaceState(null, '', `${location.pathname}?${queryStrings.join('&')}`)
+  }
+}
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
 type craeteMediaStreamPickedState = Pick<
   SoraDevtoolsState,
-  | "aspectRatio"
-  | "audio"
-  | "audioInput"
-  | "audioTrack"
-  | "audioContentHint"
-  | "autoGainControl"
-  | "blurRadius"
-  | "cameraDevice"
-  | "echoCancellation"
-  | "echoCancellationType"
-  | "facingMode"
-  | "fakeContents"
-  | "fakeVolume"
-  | "frameRate"
-  | "mediaProcessorsNoiseSuppression"
-  | "mediaType"
-  | "micDevice"
-  | "noiseSuppression"
-  | "noiseSuppressionProcessor"
-  | "resizeMode"
-  | "resolution"
-  | "video"
-  | "videoContentHint"
-  | "videoInput"
-  | "videoTrack"
-  | "virtualBackgroundProcessor"
->;
+  | 'aspectRatio'
+  | 'audio'
+  | 'audioInput'
+  | 'audioTrack'
+  | 'audioContentHint'
+  | 'autoGainControl'
+  | 'blurRadius'
+  | 'cameraDevice'
+  | 'echoCancellation'
+  | 'echoCancellationType'
+  | 'facingMode'
+  | 'fakeContents'
+  | 'fakeVolume'
+  | 'frameRate'
+  | 'lightAdjustment'
+  | 'lightAdjustmentProcessor'
+  | 'mediaProcessorsNoiseSuppression'
+  | 'mediaType'
+  | 'micDevice'
+  | 'noiseSuppression'
+  | 'noiseSuppressionProcessor'
+  | 'resizeMode'
+  | 'resolution'
+  | 'video'
+  | 'videoContentHint'
+  | 'videoInput'
+  | 'videoTrack'
+  | 'virtualBackgroundProcessor'
+>
 async function createMediaStream(
   dispatch: Dispatch,
-  state: craeteMediaStreamPickedState
+  state: craeteMediaStreamPickedState,
 ): Promise<[MediaStream, GainNode | null]> {
-  const LOG_TITLE = "MEDIA_CONSTRAINTS";
-  if (state.mediaType === "getDisplayMedia") {
+  const LOG_TITLE = 'MEDIA_CONSTRAINTS'
+  if (state.mediaType === 'getDisplayMedia') {
     if (!state.video || !state.cameraDevice) {
-      return [new MediaStream(), null];
+      return [new MediaStream(), null]
     }
     if (navigator.mediaDevices === undefined) {
-      throw new Error("Failed to call getUserMedia. Make sure domain is secure");
+      throw new Error('Failed to call getUserMedia. Make sure domain is secure')
     }
     const constraints = createGetDisplayMediaConstraints({
       frameRate: state.frameRate,
       resolution: state.resolution,
       aspectRatio: state.aspectRatio,
       resizeMode: state.resizeMode,
-    });
-    dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
-    const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media")));
+    })
+    dispatch(
+      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }),
+    )
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('media-constraints', constraints),
+      ),
+    )
+    const stream = await navigator.mediaDevices.getDisplayMedia(constraints)
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('succeed-get-display-media'),
+      ),
+    )
     for (const track of stream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
-        track.contentHint = state.videoContentHint;
+        track.contentHint = state.videoContentHint
       }
-      track.enabled = state.videoTrack;
-      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
+      track.enabled = state.videoTrack
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', track)),
+      )
     }
-    return [stream, null];
+    return [stream, null]
   }
-  if (state.mediaType === "mediacaptureRegion") {
+  if (state.mediaType === 'mediacaptureRegion') {
     if (!state.video || !state.cameraDevice) {
-      return [new MediaStream(), null];
+      return [new MediaStream(), null]
     }
     if (window.CropTarget === undefined) {
-      throw new Error("Failed to call CropTarget");
+      throw new Error('Failed to call CropTarget')
     }
     if (navigator.mediaDevices === undefined) {
-      throw new Error("Failed to call getDisplayMedia. Make sure domain is secure");
+      throw new Error('Failed to call getDisplayMedia. Make sure domain is secure')
     }
     const constraints = createGetDisplayMediaConstraints({
       frameRate: state.frameRate,
       resolution: state.resolution,
       aspectRatio: state.aspectRatio,
       resizeMode: state.resizeMode,
-    });
-    constraints["preferCurrentTab"] = true;
-    dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
-    const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-    const targetElement = document.querySelector("#cropArea");
+    })
+    constraints['preferCurrentTab'] = true
+    dispatch(
+      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }),
+    )
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('media-constraints', constraints),
+      ),
+    )
+    const stream = await navigator.mediaDevices.getDisplayMedia(constraints)
+    const targetElement = document.querySelector('#cropArea')
     if (targetElement === null) {
-      throw new Error("Failed to get CropTraget Element");
+      throw new Error('Failed to get CropTraget Element')
     }
-    const cropTarget = await window.CropTarget.fromElement(targetElement);
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media")));
+    const cropTarget = await window.CropTarget.fromElement(targetElement)
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('succeed-get-display-media'),
+      ),
+    )
     for (const track of stream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
-        track.contentHint = state.videoContentHint;
+        track.contentHint = state.videoContentHint
       }
-      track.enabled = state.videoTrack;
-      await track.cropTo(cropTarget);
-      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
+      track.enabled = state.videoTrack
+      await track.cropTo(cropTarget)
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', track)),
+      )
     }
-    return [stream, null];
+    return [stream, null]
   }
-  if (state.mediaType === "fakeMedia" && state.fakeContents.worker) {
+  if (state.mediaType === 'fakeMedia' && state.fakeContents.worker) {
     const constraints = createFakeMediaConstraints({
       audio: state.audio && state.micDevice,
       video: state.video && state.cameraDevice,
@@ -488,42 +593,64 @@ async function createMediaStream(
       volume: state.fakeVolume,
       aspectRatio: state.aspectRatio,
       resizeMode: state.resizeMode,
-    });
-    dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }));
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints)));
-    const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints);
+    })
+    dispatch(
+      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }),
+    )
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('media-constraints', constraints),
+      ),
+    )
+    const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints)
     if (canvas !== null) {
       state.fakeContents.worker.onmessage = (event) => {
-        const data = event.data;
-        if (data.type !== "update") {
-          return;
+        const data = event.data
+        if (data.type !== 'update') {
+          return
         }
-        drawFakeCanvas(canvas, state.fakeContents.colorCode, constraints.fontSize, data.counter.toString());
-      };
-      state.fakeContents.worker.postMessage({ type: "stop" });
-      state.fakeContents.worker.postMessage({ type: "start", interval: 1000 / constraints.frameRate });
+        drawFakeCanvas(
+          canvas,
+          state.fakeContents.colorCode,
+          constraints.fontSize,
+          data.counter.toString(),
+        )
+      }
+      state.fakeContents.worker.postMessage({ type: 'stop' })
+      state.fakeContents.worker.postMessage({
+        type: 'start',
+        interval: 1000 / constraints.frameRate,
+      })
     }
     for (const track of mediaStream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
-        track.contentHint = state.videoContentHint;
+        track.contentHint = state.videoContentHint
       }
-      track.enabled = state.videoTrack;
-      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
+      track.enabled = state.videoTrack
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', track)),
+      )
     }
     for (const track of mediaStream.getAudioTracks()) {
       if (track.contentHint !== undefined) {
-        track.contentHint = state.audioContentHint;
+        track.contentHint = state.audioContentHint
       }
-      track.enabled = state.audioTrack;
-      dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track)));
+      track.enabled = state.audioTrack
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', track)),
+      )
     }
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-create-fake-media")));
-    return [mediaStream, gainNode];
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('succeed-create-fake-media'),
+      ),
+    )
+    return [mediaStream, gainNode]
   }
   if (navigator.mediaDevices === undefined) {
-    throw new Error("Failed to call getUserMedia. Make sure domain is secure");
+    throw new Error('Failed to call getUserMedia. Make sure domain is secure')
   }
-  const mediaStream = new MediaStream();
+  const mediaStream = new MediaStream()
   const audioConstraints = createAudioConstraints({
     audio: state.audio && state.micDevice,
     autoGainControl: state.autoGainControl,
@@ -531,28 +658,39 @@ async function createMediaStream(
     echoCancellation: state.echoCancellation,
     echoCancellationType: state.echoCancellationType,
     audioInput: state.audioInput,
-  });
+  })
   if (audioConstraints) {
     dispatch(
-      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify({ audio: audioConstraints }) })
-    );
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify({ audio: audioConstraints }),
+      }),
+    )
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage("audio-media-constraints", { audio: audioConstraints })
-      )
-    );
-    const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
-    let audioTrack = audioMediaStream.getAudioTracks()[0];
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", audioTrack)));
+        createSoraDevtoolsTimelineMessage('audio-media-constraints', { audio: audioConstraints }),
+      ),
+    )
+    const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints })
+    let audioTrack = audioMediaStream.getAudioTracks()[0]
+    dispatch(
+      slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', audioTrack)),
+    )
     if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
       if (state.noiseSuppressionProcessor === null) {
-        throw new Error("Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'");
+        throw new Error(
+          "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
+        )
       }
-      state.noiseSuppressionProcessor.stopProcessing();
-      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
+      state.noiseSuppressionProcessor.stopProcessing()
+      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack)
     }
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media")));
-    mediaStream.addTrack(audioTrack);
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('succeed-audio-get-user-media'),
+      ),
+    )
+    mediaStream.addTrack(audioTrack)
   }
   const videoConstraints = createVideoConstraints({
     aspectRatio: state.aspectRatio,
@@ -562,191 +700,252 @@ async function createMediaStream(
     video: state.video && state.cameraDevice,
     videoInput: state.videoInput,
     facingMode: state.facingMode,
-  });
+  })
   if (videoConstraints) {
     dispatch(
-      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify({ video: videoConstraints }) })
-    );
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify({ video: videoConstraints }),
+      }),
+    )
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage("video-media-constraints", { video: videoConstraints })
-      )
-    );
-    const videoMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints }).catch((error) => {
-      // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-      mediaStream.getTracks().forEach((t) => {
-        t.stop();
-      });
-      throw error;
-    });
-    let videoTrack = videoMediaStream.getVideoTracks()[0];
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack)));
-    if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
+        createSoraDevtoolsTimelineMessage('video-media-constraints', { video: videoConstraints }),
+      ),
+    )
+    const videoMediaStream = await navigator.mediaDevices
+      .getUserMedia({ video: videoConstraints })
+      .catch((error) => {
+        // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
+        mediaStream.getTracks().forEach((t) => {
+          t.stop()
+        })
+        throw error
+      })
+    let videoTrack = videoMediaStream.getVideoTracks()[0]
+    dispatch(
+      slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', videoTrack)),
+    )
+    if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
+      if (state.lightAdjustmentProcessor === null) {
+        throw new Error(
+          "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
+        )
+      }
+      const options = getLightAdjustmentOptions(state.lightAdjustment)
+      state.lightAdjustmentProcessor.stopProcessing()
+      videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options)
+    }
+    if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
       if (state.virtualBackgroundProcessor === null) {
-        throw new Error("Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'");
+        throw new Error(
+          "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
+        )
       }
       const options = {
         blurRadius: getBlurRadiusNumber(state.blurRadius),
-      };
-      state.virtualBackgroundProcessor.stopProcessing();
-      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
+      }
+      state.virtualBackgroundProcessor.stopProcessing()
+      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options)
     }
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media")));
-    mediaStream.addTrack(videoTrack);
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('succeed-video-get-user-media'),
+      ),
+    )
+    mediaStream.addTrack(videoTrack)
   }
   for (const track of mediaStream.getVideoTracks()) {
     if (track.contentHint !== undefined) {
-      track.contentHint = state.videoContentHint;
+      track.contentHint = state.videoContentHint
     }
-    track.enabled = state.videoTrack;
+    track.enabled = state.videoTrack
   }
   for (const track of mediaStream.getAudioTracks()) {
     if (track.contentHint !== undefined) {
-      track.contentHint = state.audioContentHint;
+      track.contentHint = state.audioContentHint
     }
-    track.enabled = state.audioTrack;
+    track.enabled = state.audioTrack
   }
-  return [mediaStream, null];
+  return [mediaStream, null]
 }
 
 // Sora connection オブジェクトに callback をセットする
 function setSoraCallbacks(
   dispatch: Dispatch,
   getState: () => SoraDevtoolsState,
-  sora: ConnectionPublisher | ConnectionSubscriber
+  sora: ConnectionPublisher | ConnectionSubscriber,
 ): void {
-  sora.on("log", (title: string, description: Json) => {
+  sora.on('log', (title: string, description: Json) => {
     dispatch(
       slice.actions.setLogMessages({
         title: title,
         description: JSON.stringify(description),
-      })
-    );
-  });
-  sora.on("notify", (message: SoraNotifyMessage, transportType: TransportType) => {
-    if (message.event_type === "spotlight.focused" && typeof message.connection_id === "string") {
-      dispatch(slice.actions.setFocusedSpotlightConnectionId(message.connection_id));
+      }),
+    )
+  })
+  sora.on('notify', (message: SoraNotifyMessage, transportType: TransportType) => {
+    if (message.event_type === 'spotlight.focused' && typeof message.connection_id === 'string') {
+      dispatch(slice.actions.setFocusedSpotlightConnectionId(message.connection_id))
     }
-    if (message.event_type === "spotlight.unfocused" && typeof message.connection_id === "string") {
-      dispatch(slice.actions.setUnFocusedSpotlightConnectionId(message.connection_id));
+    if (message.event_type === 'spotlight.unfocused' && typeof message.connection_id === 'string') {
+      dispatch(slice.actions.setUnFocusedSpotlightConnectionId(message.connection_id))
     }
-    if (message.event_type === "connection.destroyed" && typeof message.connection_id === "string") {
-      dispatch(slice.actions.deleteFocusedSpotlightConnectionId(message.connection_id));
+    if (
+      message.event_type === 'connection.destroyed' &&
+      typeof message.connection_id === 'string'
+    ) {
+      dispatch(slice.actions.deleteFocusedSpotlightConnectionId(message.connection_id))
     }
     dispatch(
       slice.actions.setNotifyMessages({
         timestamp: new Date().getTime(),
         message: message,
         transportType: transportType,
-      })
-    );
-  });
-  sora.on("push", (message: SoraPushMessage, transportType: TransportType) => {
+      }),
+    )
+  })
+  sora.on('push', (message: SoraPushMessage, transportType: TransportType) => {
     dispatch(
       slice.actions.setPushMessages({
         timestamp: new Date().getTime(),
         message: message,
         transportType: transportType,
-      })
-    );
-  });
-  sora.on("track", (event: RTCTrackEvent) => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-track")));
-    const { soraContents } = getState();
-    const mediaStream = soraContents.remoteMediaStreams.find((stream) => stream.id === event.streams[0].id);
+      }),
+    )
+  })
+  sora.on('track', (event: RTCTrackEvent) => {
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-track')))
+    const { soraContents } = getState()
+    const mediaStream = soraContents.remoteMediaStreams.find(
+      (stream) => stream.id === event.streams[0].id,
+    )
     if (!mediaStream) {
       for (const track of event.streams[0].getTracks()) {
         dispatch(
           slice.actions.setTimelineMessage(
             createSoraDevtoolsTimelineMessage(
               `remote-${track.kind}-mediastream-track`,
-              getMediaStreamTrackProperties(track)
-            )
-          )
-        );
+              getMediaStreamTrackProperties(track),
+            ),
+          ),
+        )
       }
-      dispatch(slice.actions.setRemoteMediaStream(event.streams[0]));
+      dispatch(slice.actions.setRemoteMediaStream(event.streams[0]))
     }
-  });
-  sora.on("removetrack", (event: MediaStreamTrackEvent) => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-removetrack")));
-    const { soraContents } = getState();
+  })
+  sora.on('removetrack', (event: MediaStreamTrackEvent) => {
+    dispatch(
+      slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-removetrack')),
+    )
+    const { soraContents } = getState()
     const mediaStream = soraContents.remoteMediaStreams.find((stream) => {
       if (event?.target) {
-        return stream.id === (event.target as MediaStream).id;
+        return stream.id === (event.target as MediaStream).id
       }
-    });
+    })
     if (mediaStream) {
-      dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id));
+      dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id))
     }
-  });
-  sora.on("disconnect", (event) => {
+  })
+  sora.on('disconnect', (event) => {
     const message: Record<string, unknown> = {
       type: event.type,
       title: event.title,
-    };
+    }
     if (event.code !== undefined) {
-      message["code"] = event.code;
+      message['code'] = event.code
     }
     if (event.reason !== undefined) {
-      message["reason"] = event.reason;
+      message['reason'] = event.reason
     }
     if (event.params !== undefined) {
-      message["params"] = event.params;
+      message['params'] = event.params
     }
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message)));
-    const { fakeContents, soraContents, reconnect, noiseSuppressionProcessor, virtualBackgroundProcessor } = getState();
-    const { localMediaStream, remoteMediaStreams } = soraContents;
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('event-on-disconnect', message),
+      ),
+    )
+    const {
+      fakeContents,
+      soraContents,
+      reconnect,
+      lightAdjustmentProcessor,
+      noiseSuppressionProcessor,
+      virtualBackgroundProcessor,
+    } = getState()
+    const { localMediaStream, remoteMediaStreams } = soraContents
+    let originalTrack
+    if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
+      originalTrack = lightAdjustmentProcessor.getOriginalTrack()
+      lightAdjustmentProcessor.stopProcessing()
+    }
     if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
-      const originalTrack = virtualBackgroundProcessor.getOriginalTrack();
-      if (originalTrack) {
-        originalTrack.stop();
-        dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+      if (originalTrack === undefined) {
+        originalTrack = virtualBackgroundProcessor.getOriginalTrack()
       }
-      virtualBackgroundProcessor.stopProcessing();
+      virtualBackgroundProcessor.stopProcessing()
+    }
+    if (originalTrack !== undefined) {
+      originalTrack.stop()
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+        ),
+      )
     } else {
       if (localMediaStream) {
         localMediaStream.getVideoTracks().forEach((track) => {
-          track.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-        });
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
     }
+
     if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
-      const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
+      const originalTrack = noiseSuppressionProcessor.getOriginalTrack()
       if (originalTrack) {
-        originalTrack.stop();
-        dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+        originalTrack.stop()
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+          ),
+        )
       }
-      noiseSuppressionProcessor.stopProcessing();
+      noiseSuppressionProcessor.stopProcessing()
     } else {
       if (localMediaStream) {
         localMediaStream.getAudioTracks().forEach((track) => {
-          track.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-        });
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
     }
     remoteMediaStreams.forEach((mediaStream) => {
       mediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    });
+        track.stop()
+      })
+    })
     if (fakeContents.worker) {
-      fakeContents.worker.postMessage({ type: "stop" });
+      fakeContents.worker.postMessage({ type: 'stop' })
     }
-    dispatch(slice.actions.setSora(null));
-    dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-    dispatch(slice.actions.setLocalMediaStream(null));
-    dispatch(slice.actions.removeAllRemoteMediaStreams());
-    dispatch(slice.actions.setSoraInfoAlertMessage("Disconnect Sora."));
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected")));
-    if (event.type === "abend" && reconnect) {
+    dispatch(slice.actions.setSora(null))
+    dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+    dispatch(slice.actions.setLocalMediaStream(null))
+    dispatch(slice.actions.removeAllRemoteMediaStreams())
+    dispatch(slice.actions.setSoraInfoAlertMessage('Disconnect Sora.'))
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('disconnected')))
+    if (event.type === 'abend' && reconnect) {
       // 再接続処理開始フラグ
-      dispatch(slice.actions.setSoraReconnecting(true));
+      dispatch(slice.actions.setSoraReconnecting(true))
     }
-  });
-  sora.on("timeline", (event) => {
+  })
+  sora.on('timeline', (event) => {
     const message = {
       timestamp: new Date().getTime(),
       type: event.type,
@@ -754,35 +953,37 @@ function setSoraCallbacks(
       dataChannelId: event.dataChannelId,
       dataChannelLabel: event.dataChannelLabel,
       logType: event.logType,
-    };
-    dispatch(slice.actions.setTimelineMessage(message));
-    if (event.data && typeof event.data === "object" && "sdp" in event.data) {
-      dispatch(
-        slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage(`${event.type}-sdp`, event.data.sdp))
-      );
     }
-  });
-  sora.on("signaling", (event) => {
+    dispatch(slice.actions.setTimelineMessage(message))
+    if (event.data && typeof event.data === 'object' && 'sdp' in event.data) {
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage(`${event.type}-sdp`, event.data.sdp),
+        ),
+      )
+    }
+  })
+  sora.on('signaling', (event) => {
     const message = {
       timestamp: new Date().getTime(),
       transportType: event.transportType,
       type: event.type,
       data: event.data,
-    };
-    dispatch(slice.actions.setSignalingMessage(message));
-  });
-  sora.on("message", (event) => {
+    }
+    dispatch(slice.actions.setSignalingMessage(message))
+  })
+  sora.on('message', (event) => {
     dispatch(
       slice.actions.setDataChannelMessage({
         timestamp: new Date().getTime(),
         label: event.label,
         data: event.data,
-      })
-    );
-  });
-  sora.on("datachannel", (event) => {
-    dispatch(slice.actions.setSoraDataChannels(event.datachannel));
-  });
+      }),
+    )
+  })
+  sora.on('datachannel', (event) => {
+    dispatch(slice.actions.setSoraDataChannels(event.datachannel))
+  })
 }
 
 // SoraDevtoolsState から ConnectionOptionsState を生成する
@@ -795,17 +996,22 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     bundleId: state.bundleId,
     clientId: state.clientId,
     dataChannelSignaling: state.dataChannelSignaling,
-    dataChannels: state.enabledDataChannels ? state.dataChannels : "",
+    dataChannels: state.enabledDataChannels ? state.dataChannels : '',
     e2ee: state.e2ee,
     enabledAudioStreamingLanguageCode: state.enabledAudioStreamingLanguageCode,
     enabledBundleId: state.enabledBundleId,
     enabledClientId: state.enabledClientId,
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    enabledForwardingFilter: state.enabledForwardingFilter,
+    enabledVideoVP9Params: state.enabledVideoVP9Params,
+    enabledVideoH264Params: state.enabledVideoH264Params,
+    enabledVideoAV1Params: state.enabledVideoAV1Params,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-    lyraParamsBitrate: state.lyraParamsBitrate,
+    audioLyraParamsBitrate: state.audioLyraParamsBitrate,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
+    forwardingFilter: state.forwardingFilter,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
     spotlight: state.spotlight,
@@ -815,395 +1021,453 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     video: state.video,
     videoBitRate: state.videoBitRate,
     videoCodecType: state.videoCodecType,
-  };
+    videoVP9Params: state.videoVP9Params,
+    videoH264Params: state.videoH264Params,
+    videoAV1Params: state.videoAV1Params,
+    role: state.role,
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSoraDevtoolsTimelineMessage(type: string, data?: any): TimelineMessage {
   return {
     type: type,
-    logType: "sora-devtools",
+    logType: 'sora-devtools',
     timestamp: new Date().getTime(),
     data: data,
-  };
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createSoraDevtoolsMediaStreamTrackLog(action: "start" | "stop", track: MediaStreamTrack): TimelineMessage {
-  const properties = getMediaStreamTrackProperties(track);
-  return createSoraDevtoolsTimelineMessage(`${action}-${track.kind}-mediastream-track`, properties);
+function createSoraDevtoolsMediaStreamTrackLog(
+  action: 'start' | 'stop',
+  track: MediaStreamTrack,
+): TimelineMessage {
+  const properties = getMediaStreamTrackProperties(track)
+  return createSoraDevtoolsTimelineMessage(`${action}-${track.kind}-mediastream-track`, properties)
 }
 
 // statsReport を更新
-async function setStatsReport(dispatch: Dispatch, sora: ConnectionPublisher | ConnectionSubscriber): Promise<void> {
-  if (sora.pc && sora.pc?.iceConnectionState !== "closed") {
-    const stats = await sora.pc.getStats();
-    const statsReport: RTCStats[] = [];
+async function setStatsReport(
+  dispatch: Dispatch,
+  sora: ConnectionPublisher | ConnectionSubscriber,
+): Promise<void> {
+  if (sora.pc && sora.pc?.iceConnectionState !== 'closed') {
+    const stats = await sora.pc.getStats()
+    const statsReport: RTCStats[] = []
     stats.forEach((s) => {
-      statsReport.push(s);
-    });
-    dispatch(slice.actions.setStatsReport(statsReport));
+      statsReport.push(s)
+    })
+    dispatch(slice.actions.setStatsReport(statsReport))
   }
 }
 
 export const connectSora = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-connection")));
-    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
-    const state = getState();
+    dispatch(
+      slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('start-connection')),
+    )
+    dispatch(slice.actions.setSoraConnectionStatus('connecting'))
+    const state = getState()
     // 接続中の場合は切断する
     if (state.soraContents.sora) {
-      await state.soraContents.sora.disconnect();
+      await state.soraContents.sora.disconnect()
     }
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
       state.enabledSignalingUrlCandidates,
-      state.signalingUrlCandidates
-    );
+      state.signalingUrlCandidates,
+    )
     dispatch(
-      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
-    );
-    const connection = Sora.connection(signalingUrlCandidates, state.debug);
-    const connectionOptionsState = pickConnectionOptionsState(state);
-    const connectionOptions = createConnectOptions(connectionOptionsState);
-    const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    let sora, mediaStream, gainNode;
+      slice.actions.setLogMessages({
+        title: 'SIGNALING_URL',
+        description: JSON.stringify(signalingUrlCandidates),
+      }),
+    )
+    const connection = Sora.connection(signalingUrlCandidates, state.debug)
+    const connectionOptionsState = pickConnectionOptionsState(state)
+    const connectionOptions = createConnectOptions(connectionOptionsState)
+    const metadata = parseMetadata(state.enabledMetadata, state.metadata)
+    let sora, mediaStream, gainNode
     try {
-      if (state.role === "sendonly") {
-        sora = connection.sendonly(state.channelId, null, connectionOptions);
-        sora.metadata = metadata;
+      if (state.role === 'sendonly') {
+        sora = connection.sendonly(state.channelId, null, connectionOptions)
+        sora.metadata = metadata
         // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
-        if (typeof state.googCpuOveruseDetection === "boolean") {
+        if (typeof state.googCpuOveruseDetection === 'boolean') {
           sora.constraints = {
             optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
-          };
+          }
         }
-        setSoraCallbacks(dispatch, getState, sora);
-        [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-          dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-          throw error;
-        });
-        await sora.connect(mediaStream);
-      } else if (state.role === "sendrecv") {
-        sora = connection.sendrecv(state.channelId, null, connectionOptions);
-        sora.metadata = metadata;
+        setSoraCallbacks(dispatch, getState, sora)
+        ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
+          dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+          throw error
+        })
+        await sora.connect(mediaStream)
+      } else if (state.role === 'sendrecv') {
+        sora = connection.sendrecv(state.channelId, null, connectionOptions)
+        sora.metadata = metadata
         // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
-        if (typeof state.googCpuOveruseDetection === "boolean") {
+        if (typeof state.googCpuOveruseDetection === 'boolean') {
           sora.constraints = {
             optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
-          };
+          }
         }
-        setSoraCallbacks(dispatch, getState, sora);
-        [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-          dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-          throw error;
-        });
-        await sora.connect(mediaStream);
-      } else if (state.role === "recvonly") {
-        sora = connection.recvonly(state.channelId, null, connectionOptions);
-        sora.metadata = metadata;
-        setSoraCallbacks(dispatch, getState, sora);
-        await sora.connect();
+        setSoraCallbacks(dispatch, getState, sora)
+        ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
+          dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+          throw error
+        })
+        await sora.connect(mediaStream)
+      } else if (state.role === 'recvonly') {
+        sora = connection.recvonly(state.channelId, null, connectionOptions)
+        sora.metadata = metadata
+        setSoraCallbacks(dispatch, getState, sora)
+        await sora.connect()
       }
     } catch (error) {
       if (error instanceof Error) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`));
+        dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`))
+      }
+      let originalTrack
+      if (state.lightAdjustmentProcessor && state.lightAdjustmentProcessor.isProcessing()) {
+        originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
+        state.lightAdjustmentProcessor.stopProcessing()
       }
       if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
-        const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
-        if (originalTrack) {
-          originalTrack.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+        if (originalTrack === undefined) {
+          originalTrack = state.virtualBackgroundProcessor.getOriginalTrack()
         }
-        state.virtualBackgroundProcessor.stopProcessing();
+        state.virtualBackgroundProcessor.stopProcessing()
+      }
+      if (originalTrack) {
+        originalTrack.stop()
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+          ),
+        )
       } else {
         if (mediaStream) {
           mediaStream.getVideoTracks().forEach((track) => {
-            track.stop();
-            dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-          });
+            track.stop()
+            dispatch(
+              slice.actions.setTimelineMessage(
+                createSoraDevtoolsMediaStreamTrackLog('stop', track),
+              ),
+            )
+          })
         }
       }
+
       if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
-        const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
+        const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack()
         if (originalTrack) {
-          originalTrack.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+          originalTrack.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(
+              createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+            ),
+          )
         }
-        state.noiseSuppressionProcessor.stopProcessing();
+        state.noiseSuppressionProcessor.stopProcessing()
       } else {
         if (mediaStream) {
           mediaStream.getAudioTracks().forEach((track) => {
-            track.stop();
-            dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-          });
+            track.stop()
+            dispatch(
+              slice.actions.setTimelineMessage(
+                createSoraDevtoolsMediaStreamTrackLog('stop', track),
+              ),
+            )
+          })
         }
       }
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      throw error;
+      dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+      throw error
     }
     if (sora === undefined) {
-      throw new Error("Failed to connect Sora. Connection object is 'undefined'");
+      throw new Error("Failed to connect Sora. Connection object is 'undefined'")
     }
-    dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to connect Sora."));
-    await setStatsReport(dispatch, sora);
+    dispatch(slice.actions.setSoraInfoAlertMessage('Succeeded to connect Sora.'))
+    await setStatsReport(dispatch, sora)
     const timerId = setInterval(async () => {
-      const { soraContents } = getState();
+      const { soraContents } = getState()
       if (soraContents.sora) {
-        await setStatsReport(dispatch, soraContents.sora);
+        await setStatsReport(dispatch, soraContents.sora)
       } else {
-        clearInterval(timerId);
+        clearInterval(timerId)
       }
-    }, 1000);
+    }, 1000)
     // disconnect 時に stream を止めないためのハック
-    sora.stream = null;
-    dispatch(slice.actions.setSora(sora));
+    sora.stream = null
+    dispatch(slice.actions.setSora(sora))
     if (mediaStream) {
-      dispatch(slice.actions.setLocalMediaStream(mediaStream));
+      dispatch(slice.actions.setLocalMediaStream(mediaStream))
     }
     if (gainNode) {
-      dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+      dispatch(slice.actions.setFakeContentsGainNode(gainNode))
     }
-    dispatch(slice.actions.setSoraConnectionStatus("connected"));
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected")));
-  };
-};
+    dispatch(slice.actions.setSoraConnectionStatus('connected'))
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('connected')))
+  }
+}
 
 export const reconnectSora = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect")));
-    dispatch(slice.actions.setSoraConnectionStatus("connecting"));
-    const state = getState();
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('start-reconnect')))
+    dispatch(slice.actions.setSoraConnectionStatus('connecting'))
+    const state = getState()
     // 接続中の場合は切断する
     if (state.soraContents.sora) {
-      await state.soraContents.sora.disconnect();
+      await state.soraContents.sora.disconnect()
     }
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
       state.enabledSignalingUrlCandidates,
-      state.signalingUrlCandidates
-    );
+      state.signalingUrlCandidates,
+    )
     dispatch(
-      slice.actions.setLogMessages({ title: "SIGNALING_URL", description: JSON.stringify(signalingUrlCandidates) })
-    );
-    const connection = Sora.connection(signalingUrlCandidates, state.debug);
-    const connectionOptionsState = pickConnectionOptionsState(state);
-    const connectionOptions = createConnectOptions(connectionOptionsState);
-    const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    let sora, mediaStream, gainNode;
-    if (state.role === "sendonly" || state.role === "sendrecv") {
-      [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-        dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-        dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-        throw error;
-      });
+      slice.actions.setLogMessages({
+        title: 'SIGNALING_URL',
+        description: JSON.stringify(signalingUrlCandidates),
+      }),
+    )
+    const connection = Sora.connection(signalingUrlCandidates, state.debug)
+    const connectionOptionsState = pickConnectionOptionsState(state)
+    const connectionOptions = createConnectOptions(connectionOptionsState)
+    const metadata = parseMetadata(state.enabledMetadata, state.metadata)
+    let sora, mediaStream, gainNode
+    if (state.role === 'sendonly' || state.role === 'sendrecv') {
+      ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+        dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
+        dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+        throw error
+      })
     }
     for (let i = 1; i <= 10; i++) {
-      const { soraContents } = getState();
+      const { soraContents } = getState()
       if (soraContents.reconnecting === false) {
-        break;
+        break
       }
-      dispatch(slice.actions.setSoraReconnectingTrials(i));
+      dispatch(slice.actions.setSoraReconnectingTrials(i))
       try {
-        if (state.role === "sendonly") {
-          sora = connection.sendonly(state.channelId, null, connectionOptions);
-          sora.metadata = metadata;
+        if (state.role === 'sendonly') {
+          sora = connection.sendonly(state.channelId, null, connectionOptions)
+          sora.metadata = metadata
           // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
-          if (typeof state.googCpuOveruseDetection === "boolean") {
+          if (typeof state.googCpuOveruseDetection === 'boolean') {
             sora.constraints = {
               optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
-            };
+            }
           }
-          setSoraCallbacks(dispatch, getState, sora);
+          setSoraCallbacks(dispatch, getState, sora)
           if (mediaStream) {
-            await sora.connect(mediaStream);
+            await sora.connect(mediaStream)
           }
-        } else if (state.role === "sendrecv") {
-          sora = connection.sendrecv(state.channelId, null, connectionOptions);
-          sora.metadata = metadata;
+        } else if (state.role === 'sendrecv') {
+          sora = connection.sendrecv(state.channelId, null, connectionOptions)
+          sora.metadata = metadata
           // Chrome 独自のオプションを使用して CPU の負荷が高い場合に解像度を下げる処理の設定を入れる
-          if (typeof state.googCpuOveruseDetection === "boolean") {
+          if (typeof state.googCpuOveruseDetection === 'boolean') {
             sora.constraints = {
               optional: [{ googCpuOveruseDetection: state.googCpuOveruseDetection }],
-            };
+            }
           }
-          setSoraCallbacks(dispatch, getState, sora);
+          setSoraCallbacks(dispatch, getState, sora)
           if (mediaStream) {
-            await sora.connect(mediaStream);
+            await sora.connect(mediaStream)
           }
-        } else if (state.role === "recvonly") {
-          sora = connection.recvonly(state.channelId, null, connectionOptions);
-          sora.metadata = metadata;
-          setSoraCallbacks(dispatch, getState, sora);
-          await sora.connect();
+        } else if (state.role === 'recvonly') {
+          sora = connection.recvonly(state.channelId, null, connectionOptions)
+          sora.metadata = metadata
+          setSoraCallbacks(dispatch, getState, sora)
+          await sora.connect()
         }
       } catch (error) {
         if (error instanceof Error) {
-          dispatch(slice.actions.setSoraErrorAlertMessage(`(trials ${i}) Failed to connect Sora. ${error.message}`));
+          dispatch(
+            slice.actions.setSoraErrorAlertMessage(
+              `(trials ${i}) Failed to connect Sora. ${error.message}`,
+            ),
+          )
         }
-        sora = undefined;
+        sora = undefined
       }
       if (sora !== undefined) {
-        break;
+        break
       }
-      await new Promise((resolve) => setTimeout(resolve, i * 500 + 500));
+      await new Promise((resolve) => setTimeout(resolve, i * 500 + 500))
     }
     if (sora === undefined) {
-      dispatch(slice.actions.setSoraErrorAlertMessage("Failed to reconnect Sora."));
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      dispatch(slice.actions.setSoraReconnecting(false));
-      return;
+      dispatch(slice.actions.setSoraErrorAlertMessage('Failed to reconnect Sora.'))
+      dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+      dispatch(slice.actions.setSoraReconnecting(false))
+      return
     }
-    dispatch(slice.actions.setSoraInfoAlertMessage("Succeeded to reconnect Sora."));
-    await setStatsReport(dispatch, sora);
+    dispatch(slice.actions.setSoraInfoAlertMessage('Succeeded to reconnect Sora.'))
+    await setStatsReport(dispatch, sora)
     const timerId = setInterval(async () => {
-      const { soraContents } = getState();
+      const { soraContents } = getState()
       if (soraContents.sora) {
-        await setStatsReport(dispatch, soraContents.sora);
+        await setStatsReport(dispatch, soraContents.sora)
       } else {
-        clearInterval(timerId);
+        clearInterval(timerId)
       }
-    }, 1000);
-    dispatch(slice.actions.setSora(sora));
+    }, 1000)
+    dispatch(slice.actions.setSora(sora))
     if (mediaStream) {
-      dispatch(slice.actions.setLocalMediaStream(mediaStream));
+      dispatch(slice.actions.setLocalMediaStream(mediaStream))
     }
     if (gainNode) {
-      dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+      dispatch(slice.actions.setFakeContentsGainNode(gainNode))
     }
-    dispatch(slice.actions.setSoraConnectionStatus("connected"));
-    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected")));
-    dispatch(slice.actions.setSoraReconnecting(false));
-  };
-};
+    dispatch(slice.actions.setSoraConnectionStatus('connected'))
+    dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('connected')))
+    dispatch(slice.actions.setSoraReconnecting(false))
+  }
+}
 
 // Sora との切断処理
 export const disconnectSora = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    const { soraContents } = getState();
+    const { soraContents } = getState()
     if (soraContents.sora) {
-      dispatch(slice.actions.setSoraConnectionStatus("disconnecting"));
-      await soraContents.sora.disconnect();
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
+      dispatch(slice.actions.setSoraConnectionStatus('disconnecting'))
+      await soraContents.sora.disconnect()
+      dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
     }
-  };
-};
+  }
+}
 
 // デバイス一覧を取得
 export const setMediaDevices = () => {
   return async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
-    const deviceInfos = await getDevices();
-    const audioInputDevices: MediaDeviceInfo[] = [];
-    const videoInputDevices: MediaDeviceInfo[] = [];
-    const audioOutputDevices: MediaDeviceInfo[] = [];
+    const deviceInfos = await getDevices()
+    const audioInputDevices: MediaDeviceInfo[] = []
+    const videoInputDevices: MediaDeviceInfo[] = []
+    const audioOutputDevices: MediaDeviceInfo[] = []
     deviceInfos.forEach((deviceInfo) => {
-      if (deviceInfo.deviceId === "") {
-        return;
+      if (deviceInfo.deviceId === '') {
+        return
       }
-      if (deviceInfo.kind === "audioinput") {
-        audioInputDevices.push(deviceInfo.toJSON());
-      } else if (deviceInfo.kind === "audiooutput") {
-        audioOutputDevices.push(deviceInfo.toJSON());
-      } else if (deviceInfo.kind === "videoinput") {
-        videoInputDevices.push(deviceInfo.toJSON());
+      if (deviceInfo.kind === 'audioinput') {
+        audioInputDevices.push(deviceInfo.toJSON())
+      } else if (deviceInfo.kind === 'audiooutput') {
+        audioOutputDevices.push(deviceInfo.toJSON())
+      } else if (deviceInfo.kind === 'videoinput') {
+        videoInputDevices.push(deviceInfo.toJSON())
       }
-    });
-    dispatch(slice.actions.setAudioInputDevices(audioInputDevices));
-    dispatch(slice.actions.setVideoInputDevices(videoInputDevices));
-    dispatch(slice.actions.setAudioOutputDevices(audioOutputDevices));
-  };
-};
+    })
+    dispatch(slice.actions.setAudioInputDevices(audioInputDevices))
+    dispatch(slice.actions.setVideoInputDevices(videoInputDevices))
+    dispatch(slice.actions.setAudioOutputDevices(audioOutputDevices))
+  }
+}
 
 // デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新
 export const updateMediaStream = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    const state = getState();
+    const state = getState()
     if (!state.soraContents.sora) {
-      return;
+      return
     }
     if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
-      const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
+      const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack()
       if (originalTrack) {
-        originalTrack.stop();
-        dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+        originalTrack.stop()
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+          ),
+        )
       }
-      state.virtualBackgroundProcessor.stopProcessing();
+      state.virtualBackgroundProcessor.stopProcessing()
     } else {
       if (state.soraContents.localMediaStream) {
         state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
-          track.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-        });
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
     }
 
     if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
-      const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
+      const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack()
       if (originalTrack) {
-        originalTrack.stop();
-        dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack)));
+        originalTrack.stop()
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+          ),
+        )
       }
-      state.noiseSuppressionProcessor.stopProcessing();
+      state.noiseSuppressionProcessor.stopProcessing()
     } else {
       if (state.soraContents.localMediaStream) {
         state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
-          track.stop();
-          dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track)));
-        });
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
     }
     const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
-      dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-      dispatch(slice.actions.setSoraConnectionStatus("disconnected"));
-      throw error;
-    });
+      dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
+      dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
+      throw error
+    })
     mediaStream.getTracks().forEach((track) => {
       if (!state.soraContents.sora || !state.soraContents.sora.pc) {
-        return;
+        return
       }
       const sender = state.soraContents.sora.pc.getSenders().find((s) => {
         if (!s.track) {
-          return false;
+          return false
         }
-        return s.track.kind === track.kind;
-      });
+        return s.track.kind === track.kind
+      })
       if (sender) {
-        sender.replaceTrack(track);
+        sender.replaceTrack(track)
       }
-    });
-    dispatch(slice.actions.setLocalMediaStream(mediaStream));
-    dispatch(slice.actions.setFakeContentsGainNode(gainNode));
-  };
-};
+    })
+    dispatch(slice.actions.setLocalMediaStream(mediaStream))
+    dispatch(slice.actions.setFakeContentsGainNode(gainNode))
+  }
+}
 
 export const setE2EE = (e2ee: boolean) => {
   return async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
     if (e2ee) {
-      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`;
+      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
       // wasm url が存在する場合は e2ee の初期化処理をする
       if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message));
-        return;
+        dispatch(slice.actions.setSoraErrorAlertMessage(message))
+        return
       }
       try {
-        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL);
+        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
       } catch (e) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message));
-        return;
+        dispatch(slice.actions.setSoraErrorAlertMessage(message))
+        return
       }
     }
-    dispatch(slice.actions.setE2EE(e2ee));
-  };
-};
+    dispatch(slice.actions.setE2EE(e2ee))
+  }
+}
 
 export const setMicDevice = (micDevice: boolean) => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    const state = getState();
+    const state = getState()
     if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
-      dispatch(slice.actions.setMicDevice(micDevice));
-      return;
+      dispatch(slice.actions.setMicDevice(micDevice))
+      return
     }
     if (micDevice) {
       const pickedState = {
@@ -1221,6 +1485,8 @@ export const setMicDevice = (micDevice: boolean) => {
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        lightAdjustment: state.lightAdjustment,
+        lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
@@ -1233,31 +1499,33 @@ export const setMicDevice = (micDevice: boolean) => {
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
         virtualBackgroundProcessor: state.virtualBackgroundProcessor,
-      };
-      const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
-        dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-        throw error;
-      });
+      }
+      const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch(
+        (error) => {
+          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
+          throw error
+        },
+      )
       if (0 < mediaStream.getAudioTracks().length) {
         await state.soraContents.sora.replaceAudioTrack(
           state.soraContents.localMediaStream,
-          mediaStream.getAudioTracks()[0]
-        );
-        dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+          mediaStream.getAudioTracks()[0],
+        )
+        dispatch(slice.actions.setFakeContentsGainNode(gainNode))
       }
     } else {
-      state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream);
+      state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream)
     }
-    dispatch(slice.actions.setMicDevice(micDevice));
-  };
-};
+    dispatch(slice.actions.setMicDevice(micDevice))
+  }
+}
 
 export const setCameraDevice = (cameraDevice: boolean) => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    const state = getState();
+    const state = getState()
     if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
-      dispatch(slice.actions.setCameraDevice(cameraDevice));
-      return;
+      dispatch(slice.actions.setCameraDevice(cameraDevice))
+      return
     }
     if (cameraDevice) {
       const pickedState = {
@@ -1275,6 +1543,8 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         fakeContents: state.fakeContents,
         fakeVolume: state.fakeVolume,
         frameRate: state.frameRate,
+        lightAdjustment: state.lightAdjustment,
+        lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
@@ -1287,21 +1557,26 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         videoInput: state.videoInput,
         videoTrack: state.videoTrack,
         virtualBackgroundProcessor: state.virtualBackgroundProcessor,
-      };
-      const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch((error) => {
-        dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
-        throw error;
-      });
+      }
+      const [mediaStream, gainNode] = await createMediaStream(dispatch, pickedState).catch(
+        (error) => {
+          dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
+          throw error
+        },
+      )
       if (0 < mediaStream.getVideoTracks().length) {
-        state.soraContents.sora.replaceVideoTrack(state.soraContents.localMediaStream, mediaStream.getVideoTracks()[0]);
-        dispatch(slice.actions.setFakeContentsGainNode(gainNode));
+        state.soraContents.sora.replaceVideoTrack(
+          state.soraContents.localMediaStream,
+          mediaStream.getVideoTracks()[0],
+        )
+        dispatch(slice.actions.setFakeContentsGainNode(gainNode))
       }
     } else {
-      state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream);
+      state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream)
     }
-    dispatch(slice.actions.setCameraDevice(cameraDevice));
-  };
-};
+    dispatch(slice.actions.setCameraDevice(cameraDevice))
+  }
+}
 
 // Lyra の初期化
 export const initLyra = () => {
@@ -1310,28 +1585,28 @@ export const initLyra = () => {
     // この時点では wasm ファイルのロードは行われず、
     // 実際に Lyra コーデックの音声を送信・受信するまでは特別な処理は発生しない。
     // 未対応環境だった場合には、Lyra コーデックが必要になった段階でエラーが発生する。
-    const wasmPath = "https://lyra-wasm.shiguredo.app/2022.2.0/";
-    const modelPath = wasmPath;
-    Sora.initLyra({ wasmPath, modelPath });
+    const wasmPath = 'https://lyra-wasm.shiguredo.app/2022.2.0/'
+    const modelPath = wasmPath
+    Sora.initLyra({ wasmPath, modelPath })
 
     // lyra-wasm は SharedArrayBuffer を使っているので、それを有効にするために必要な
     // HTTP 応答ヘッダの設定を行うサービスワーカを登録する。
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js").then((registration) => {
-        registration.addEventListener("updatefound", () => {
-          const newServiceWorker = registration.installing;
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js').then((registration) => {
+        registration.addEventListener('updatefound', () => {
+          const newServiceWorker = registration.installing
           if (newServiceWorker !== null) {
-            newServiceWorker.addEventListener("statechange", () => {
-              if (newServiceWorker.state == "activated") {
-                location.reload();
+            newServiceWorker.addEventListener('statechange', () => {
+              if (newServiceWorker.state == 'activated') {
+                location.reload()
               }
-            });
+            })
           }
-        });
-      });
+        })
+      })
     }
-  };
-};
+  }
+}
 
 export const {
   clearDataChannelMessages,
@@ -1363,18 +1638,23 @@ export const {
   setEnabledClientId,
   setEnabledDataChannels,
   setEnabledDataChannel,
+  setEnabledForwardingFilter,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
+  setEnabledVideoVP9Params,
+  setEnabledVideoH264Params,
+  setEnabledVideoAV1Params,
   setAudioStreamingLanguageCode,
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
   setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
+  setLightAdjustment,
   setLocalMediaStream,
   setLogMessages,
-  setLyraParamsBitrate,
+  setAudioLyraParamsBitrate,
   setMediaProcessorsNoiseSuppression,
   setMediaType,
   setMetadata,
@@ -1387,6 +1667,7 @@ export const {
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
+  setForwardingFilter,
   setSimulcast,
   setSimulcastRid,
   setSora,
@@ -1403,4 +1684,7 @@ export const {
   setVideoContentHint,
   setVideoInput,
   setVideoTrack,
-} = slice.actions;
+  setVideoVP9Params,
+  setVideoH264Params,
+  setVideoAV1Params,
+} = slice.actions

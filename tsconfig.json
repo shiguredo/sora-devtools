@@ -25,7 +25,12 @@
       "dom.iterable",
       "esnext"
     ],
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     "node_modules"
@@ -34,6 +39,9 @@
     "next-env.d.ts",
     "global.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "dist/types/**/*.ts",
+    "dev/types/**/*.ts"
   ]
 }

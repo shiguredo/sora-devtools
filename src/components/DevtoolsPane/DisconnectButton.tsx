@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react'
 
-import { disconnectSora } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { disconnectSora } from '@/app/actions'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
 export const DisconnectButton: React.FC = () => {
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const dispatch = useAppDispatch();
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const dispatch = useAppDispatch()
   const disconnect = (): void => {
-    dispatch(disconnectSora());
-  };
+    dispatch(disconnectSora())
+  }
   return (
     <div className="col-auto mb-1">
       <input
@@ -18,11 +18,11 @@ export const DisconnectButton: React.FC = () => {
         defaultValue="disconnect"
         onClick={disconnect}
         disabled={
-          connectionStatus === "disconnecting" ||
-          connectionStatus === "connecting" ||
-          connectionStatus === "initializing"
+          connectionStatus === 'disconnecting' ||
+          connectionStatus === 'connecting' ||
+          connectionStatus === 'initializing'
         }
       />
     </div>
-  );
-};
+  )
+}

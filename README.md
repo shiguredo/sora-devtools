@@ -34,14 +34,14 @@ https://sora-devtools.shiguredo.jp/
 
 - Sora JavaScript SDK
     - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
+- Next.js
+    - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
 - TypeScript
     - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
 - React
     - [React – A JavaScript library for building user interfaces](https://reactjs.org/)
 - Redux
     - [Redux \- A predictable state container for JavaScript apps\. \| Redux](https://redux.js.org/)
-- Next.js
-    - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
 - Redux Toolkit
     - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
 - Bootstrap
@@ -49,6 +49,7 @@ https://sora-devtools.shiguredo.jp/
 - Media Processors
     - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
     - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
+    - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
 
 ## 特徴
 
@@ -159,8 +160,8 @@ https://example.com/devtools?multistream=true&role=sendrecv
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```
+Copyright 2017-2023, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
-Copyright 2017-2022, Shiguredo Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

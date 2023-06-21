@@ -1,14 +1,14 @@
-import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import React from 'react'
+import { Container, Nav, Navbar } from 'react-bootstrap'
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from '@/app/hooks'
 
-import { CopyUrlButton } from "./CopyUrlButton";
-import { DebugButton } from "./DebugButton";
-import { DownloadReportButton } from "./DownloadReportButton";
+import { CopyUrlButton } from './CopyUrlButton'
+import { DebugButton } from './DebugButton'
+import { DownloadReportButton } from './DownloadReportButton'
 
 export const Header: React.FC = () => {
-  const sora = useAppSelector((state) => state.soraContents.sora);
+  const sora = useAppSelector((state) => state.soraContents.sora)
   return (
     <header>
       <Navbar variant="dark" bg="sora" expand="md" fixed="top">
@@ -19,7 +19,9 @@ export const Header: React.FC = () => {
             <Nav className="me-auto" />
             <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
-                <p className="navbar-signaling-url border rounded">{sora ? sora.connectedSignalingUrl : "未接続"}</p>
+                <p className="navbar-signaling-url border rounded">
+                  {sora ? sora.connectedSignalingUrl : '未接続'}
+                </p>
               </Navbar.Text>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <DebugButton />
@@ -35,5 +37,5 @@ export const Header: React.FC = () => {
         </Container>
       </Navbar>
     </header>
-  );
-};
+  )
+}

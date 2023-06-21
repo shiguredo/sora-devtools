@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react'
 
-import { copyURL } from "@/app/actions";
-import { useAppDispatch } from "@/app/hooks";
+import { copyURL } from '@/app/actions'
+import { useAppDispatch } from '@/app/hooks'
 
 export const CopyUrlButton: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
   const onClick = (): void => {
-    dispatch(copyURL());
-  };
+    dispatch(copyURL())
+  }
   return (
     <input
       className="btn btn-light btn-sm ms-1"
@@ -16,5 +16,5 @@ export const CopyUrlButton: React.FC = () => {
       defaultValue="copy URL"
       onClick={onClick}
     />
-  );
-};
+  )
+}

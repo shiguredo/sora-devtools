@@ -1,19 +1,21 @@
-import React from "react";
-import { FormGroup } from "react-bootstrap";
+import React from 'react'
+import { FormGroup } from 'react-bootstrap'
 
-import { setMediaProcessorsNoiseSuppression } from "@/app/actions";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { setMediaProcessorsNoiseSuppression } from '@/app/actions'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from "./TooltipFormCheck";
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
-  const mediaProcessorsNoiseSuppression = useAppSelector((state) => state.mediaProcessorsNoiseSuppression);
-  const mediaType = useAppSelector((state) => state.mediaType);
-  const dispatch = useAppDispatch();
+  const mediaProcessorsNoiseSuppression = useAppSelector(
+    (state) => state.mediaProcessorsNoiseSuppression,
+  )
+  const mediaType = useAppSelector((state) => state.mediaType)
+  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setMediaProcessorsNoiseSuppression(event.target.checked));
-  };
-  const disabled = mediaType !== "getUserMedia";
+    dispatch(setMediaProcessorsNoiseSuppression(event.target.checked))
+  }
+  const disabled = mediaType !== 'getUserMedia'
   return (
     <FormGroup className="form-inline" controlId="mediaProcessorsNoiseSuppression">
       <TooltipFormCheck
@@ -25,5 +27,5 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
         mediaProcessorsNoiseSuppression
       </TooltipFormCheck>
     </FormGroup>
-  );
-};
+  )
+}
