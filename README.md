@@ -32,24 +32,26 @@ https://sora-devtools.shiguredo.jp/
 
 ## 利用技術
 
+- PnPm
+  - [Fast, disk space efficient package manager \| pnpm](https://pnpm.io/)
 - Sora JavaScript SDK
-    - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
+  - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - Next.js
-    - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
+  - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
 - TypeScript
-    - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
+  - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
 - React
-    - [React – A JavaScript library for building user interfaces](https://reactjs.org/)
+  - [React – A JavaScript library for building user interfaces](https://reactjs.org/)
 - Redux
-    - [Redux \- A predictable state container for JavaScript apps\. \| Redux](https://redux.js.org/)
+  - [Redux \- A predictable state container for JavaScript apps\. \| Redux](https://redux.js.org/)
 - Redux Toolkit
-    - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
+  - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
 - Bootstrap
-    - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
+  - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
 - Media Processors
-    - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
-    - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
-    - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
+  - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
+  - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
+  - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
 
 ## 特徴
 
@@ -87,19 +89,19 @@ https://example.com/devtools?multistream=true&role=sendrecv
 ## 用語集
 
 - 送受信
-    - 自分の音声や映像を配信し、視聴も行う仕組みです
+  - 自分の音声や映像を配信し、視聴も行う仕組みです
 - 送信のみ
-    - 自分の音声や映像をのみを配信し、視聴を行わない仕組みです
+  - 自分の音声や映像をのみを配信し、視聴を行わない仕組みです
 - 受信のみ
-    - 自分の音声や映像を配信せず、視聴だけを行う仕組みです
+  - 自分の音声や映像を配信せず、視聴だけを行う仕組みです
 - マルチストリーム
-    - 配信と視聴の両方を行う仕組みです
+  - 配信と視聴の両方を行う仕組みです
 - サイマルキャスト
-    - 配信時に複数の画質を同時に配信を行う仕組みです
+  - 配信時に複数の画質を同時に配信を行う仕組みです
 - スポットライト
-    - 直近で発話した N 人にスポットライトを当てるような仕組みです
+  - 直近で発話した N 人にスポットライトを当てるような仕組みです
 - データチャネルメッセージング
-    - WebRTC の機能を利用してデータの送受信を行う仕組みです
+  - WebRTC の機能を利用してデータの送受信を行う仕組みです
 
 ## 機能一覧
 
@@ -177,4 +179,3 @@ limitations under the License.
 ```
 
 このリポジトリに含まれる `favicon.ico` のライセンスは [CC BY\-ND 4\.0](https://creativecommons.org/licenses/by-nd/4.0/deed.ja) です。
-
