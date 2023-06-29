@@ -11,6 +11,10 @@
 
 ## develop
 
+- [FIX] index ページの受信のみのリンクから、ビデオコーデック関連のパラメータを削除する
+  - 受信時に `videoCodecType` `videoBitRate` は不要なため
+  - @tnamao
+
 ## 2023.1.0
 
 - [UPDATE] sora-js-sdk を 2023.1.0 に更新する
