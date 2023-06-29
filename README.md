@@ -32,7 +32,7 @@ https://sora-devtools.shiguredo.jp/
 
 ## 利用技術
 
-- PnPm
+- pnpm
   - [Fast, disk space efficient package manager \| pnpm](https://pnpm.io/)
 - Sora JavaScript SDK
   - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
