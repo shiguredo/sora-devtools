@@ -11,7 +11,7 @@
 
 ## develop
 
-- [CHANGE] index ページの受信のみのリンクから、ビデオコーデック関連のパラメータを削除する
+- [FIX] index ページの受信のみのリンクから、ビデオコーデック関連のパラメータを削除する
   - 受信時に `videoCodecType` `videoBitRate` は不要なため
   - @tnamao
 
