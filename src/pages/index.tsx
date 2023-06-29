@@ -61,7 +61,7 @@ const Index: React.FC = () => {
             />
             <Link
               pageName="マルチストリーム受信のみ"
-              params={{ role: 'recvonly', multistream: true, videoCodecType: 'VP9' }}
+              params={{ role: 'recvonly', multistream: true }}
             />
             <Link
               pageName="マルチストリーム送受信 (サイマルキャスト有効)"
@@ -91,7 +91,6 @@ const Index: React.FC = () => {
                 role: 'recvonly',
                 multistream: true,
                 simulcast: true,
-                videoCodecType: 'VP8',
               }}
             />
             <li className="separator">スポットライト</li>
@@ -124,8 +123,6 @@ const Index: React.FC = () => {
                 multistream: true,
                 simulcast: true,
                 spotlight: true,
-                videoCodecType: 'VP8',
-                videoBitRate: '500',
               }}
             />
             <Link
@@ -154,8 +151,6 @@ const Index: React.FC = () => {
                 role: 'recvonly',
                 multistream: true,
                 spotlight: true,
-                videoCodecType: 'VP8',
-                videoBitRate: '500',
               }}
             />
             <li className="separator">データチャネルメッセージング</li>
