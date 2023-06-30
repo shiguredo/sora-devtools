@@ -62,7 +62,7 @@
     "redux-thunk": "2.4.2",
     "sora-js-sdk": "2023.1.0"
   },
-  "packageManager": "pnpm@8.6.3",
+  "packageManager": "pnpm@8.6.5",
   "engines": {
     "node": ">=16.20.0"
   }
