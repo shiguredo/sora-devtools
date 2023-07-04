@@ -14,6 +14,7 @@ import type {
   SoraPushMessage,
   TimelineMessage,
 } from '@/types'
+
 import {
   copy2clipboard,
   createAudioConstraints,
@@ -30,8 +31,7 @@ import {
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
-} from '@/utils'
-
+} from './../utils'
 import { slice } from './slice'
 
 // ページ初期化処理

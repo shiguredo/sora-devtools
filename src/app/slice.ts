@@ -9,7 +9,8 @@ import type {
   Role,
 } from 'sora-js-sdk'
 
-import { WORKER_SCRIPT } from '@/constants'
+import packageJSON from '../../package.json'
+import { WORKER_SCRIPT } from '../constants'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -20,9 +21,7 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from '@/types'
-
-import packageJSON from '../../package.json'
+} from '../types'
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],

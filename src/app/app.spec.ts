@@ -1,6 +1,5 @@
-import { describe, expect } from 'vitest'
-
 import queryString from 'query-string'
+import { describe, expect, it } from 'vitest'
 
 import {
   ASPECT_RATIO_TYPES,
@@ -29,8 +28,7 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '@/constants'
-
+} from '../constants'
 import { setInitialParameter } from './actions'
 import { store } from './store'
 
