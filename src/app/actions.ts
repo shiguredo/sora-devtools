@@ -13,8 +13,7 @@ import type {
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
-} from '@/types'
-
+} from './../types'
 import {
   copy2clipboard,
   createAudioConstraints,

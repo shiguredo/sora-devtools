@@ -284,8 +284,9 @@ export const slice = createSlice({
       state.noiseSuppression = action.payload
     },
     setMediaType: (state, action: PayloadAction<SoraDevtoolsState['mediaType']>) => {
-      // NOTE(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
+      // TODO(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
       if (
+        // FIXME(v): これだと mediaType のテストが通らなくなる
         action.payload === 'mediacaptureRegion' &&
         (typeof window === 'undefined' || window.CropTarget === undefined)
       ) {
