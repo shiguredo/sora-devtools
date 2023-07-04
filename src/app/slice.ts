@@ -9,7 +9,8 @@ import type {
   Role,
 } from 'sora-js-sdk'
 
-import { WORKER_SCRIPT } from '@/constants'
+import packageJSON from '../../package.json'
+import { WORKER_SCRIPT } from '../constants'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -20,9 +21,7 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from '@/types'
-
-import packageJSON from '../../package.json'
+} from '../types'
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],
@@ -285,8 +284,9 @@ export const slice = createSlice({
       state.noiseSuppression = action.payload
     },
     setMediaType: (state, action: PayloadAction<SoraDevtoolsState['mediaType']>) => {
-      // NOTE(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
+      // TODO(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
       if (
+        // FIXME(v): これだと mediaType のテストが通らなくなる
         action.payload === 'mediacaptureRegion' &&
         (typeof window === 'undefined' || window.CropTarget === undefined)
       ) {

@@ -36,7 +36,7 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '@/constants'
+} from './constants'
 import type {
   ConnectionOptionsState,
   CustomHTMLCanvasElement,
@@ -44,7 +44,7 @@ import type {
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
   SoraDevtoolsState,
-} from '@/types'
+} from './types'
 
 // UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {

@@ -13,7 +13,7 @@ import type {
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
-} from '@/types'
+} from './../types'
 import {
   copy2clipboard,
   createAudioConstraints,
@@ -30,8 +30,7 @@ import {
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
-} from '@/utils'
-
+} from './../utils'
 import { slice } from './slice'
 
 // ページ初期化処理
