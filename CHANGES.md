@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] @shiguredo/virtual-background のバージョンを 2023.2.0 に上げる
+  - @sile
 - [CHANGE] vitest へ切り替える
   - jest をやめる
   - @voluntas
