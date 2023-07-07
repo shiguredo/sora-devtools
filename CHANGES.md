@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.1 に上げる
+  - @voluntas
 - [UPDATE] @shiguredo/virtual-background のバージョンを 2023.2.0 に上げる
   - @sile
 - [CHANGE] vitest へ切り替える
