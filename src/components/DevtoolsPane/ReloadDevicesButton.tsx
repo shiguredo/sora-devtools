@@ -1,13 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-import { setMediaDevices } from '@/app/actions'
-import { useAppDispatch } from '@/app/hooks'
+import { setMediaDevices } from '@/app/actions';
+import { useAppDispatch } from '@/app/hooks';
 
 export const ReloadDevicesButton: React.FC = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const onClick = (): void => {
-    dispatch(setMediaDevices())
-  }
+    dispatch(setMediaDevices());
+  };
   return (
     <div className="col-auto mb-1">
       <input
@@ -18,5 +18,5 @@ export const ReloadDevicesButton: React.FC = () => {
         onClick={onClick}
       />
     </div>
-  )
-}
+  );
+};

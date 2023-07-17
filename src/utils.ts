@@ -1,9 +1,9 @@
 import {
   LightAdjustmentProcessorOptions,
   SelfieSegmentationFocusMask,
-} from '@shiguredo/light-adjustment'
-import queryString from 'query-string'
-import type { ConnectionOptions } from 'sora-js-sdk'
+} from '@shiguredo/light-adjustment';
+import queryString from 'query-string';
+import type { ConnectionOptions } from 'sora-js-sdk';
 
 import {
   ASPECT_RATIO_TYPES,
@@ -36,7 +36,7 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from './constants'
+} from './constants';
 import type {
   ConnectionOptionsState,
   CustomHTMLCanvasElement,
@@ -44,27 +44,27 @@ import type {
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
   SoraDevtoolsState,
-} from './types'
+} from './types';
 
 // UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
-  const date = new Date(time)
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours().toString().padStart(2, '0')
-  const minute = date.getMinutes().toString().padStart(2, '0')
-  const second = date.getSeconds().toString().padStart(2, '0')
-  const millisecond = date.getMilliseconds().toString().padStart(3, '0')
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`
+  const date = new Date(time);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours().toString().padStart(2, '0');
+  const minute = date.getMinutes().toString().padStart(2, '0');
+  const second = date.getSeconds().toString().padStart(2, '0');
+  const millisecond = date.getMilliseconds().toString().padStart(3, '0');
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
 // OS の Clipboard にテキストを書き込む
 export function copy2clipboard(text: string): Promise<void> {
   if (navigator.clipboard) {
-    return navigator.clipboard.writeText(text)
+    return navigator.clipboard.writeText(text);
   }
-  return Promise.resolve()
+  return Promise.resolve();
 }
 
 // Form の Type Guard
@@ -73,9 +73,9 @@ export function checkFormValue<T extends readonly string[]>(
   candidates: T,
 ): value is (typeof candidates)[number] {
   if (typeof value === 'string') {
-    return candidates.indexOf(value) >= 0
+    return candidates.indexOf(value) >= 0;
   }
-  return false
+  return false;
 }
 
 // クエリ文字列パーサー
@@ -85,35 +85,35 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     parameter: string | (string | null)[] | null,
   ): string | undefined => {
     if (typeof parameter === 'string') {
-      return parameter
+      return parameter;
     }
-    return
-  }
+    return;
+  };
   // パラメーターが boolean かどうかを判定して boolean | undefined を返す
   const parseBooleanParameter = (
     parameter: string | (string | null)[] | null,
   ): boolean | undefined => {
     if (typeof parameter === 'string') {
-      return parseBooleanString(parameter)
+      return parseBooleanString(parameter);
     }
-    return
-  }
+    return;
+  };
   // パラメーターが特定の文字列かどうかを判定して string | undefined を返す
   const parseSpecifiedStringParameter = <T extends readonly string[]>(
     parameter: string | (string | null)[] | null,
     candidates: T,
   ): (typeof candidates)[number] | undefined => {
     if (checkFormValue(parameter, candidates)) {
-      return parameter
+      return parameter;
     }
-    return
-  }
-  const qs = queryString.parse(location.search)
+    return;
+  };
+  const qs = queryString.parse(location.search);
   // signalingUrlCandidates のパース
-  let signalingUrlCandidates
+  let signalingUrlCandidates;
   if (typeof qs.signalingUrlCandidates === 'string') {
     try {
-      signalingUrlCandidates = JSON.parse(qs.signalingUrlCandidates)
+      signalingUrlCandidates = JSON.parse(qs.signalingUrlCandidates);
     } catch (_) {
       // 例外の場合は何もしない
     }
@@ -197,14 +197,14 @@ export function parseQueryString(): Partial<QueryStringParameters> {
       qs.audioLyraParamsBitrate,
       AUDIO_LYRA_PARAMS_BITRATES,
     ),
-  }
+  };
   // undefined の項目を削除する
-  ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
+  (Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
     if (result[key] === undefined) {
-      delete result[key]
+      delete result[key];
     }
-  })
-  return result
+  });
+  return result;
 }
 
 // Sora のシグナリングURLを生成
@@ -214,37 +214,37 @@ export function createSignalingURL(
 ): string | string[] {
   if (enabledSignalingUrlCandidates) {
     // 空文字列は取り除く
-    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '')
+    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '');
   }
   if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
-    return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL
+    return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL;
   }
-  const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
-  const port = window.location.port ? `:${window.location.port}` : ''
-  return wsProtocol + window.location.hostname + port + '/signaling'
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  const port = window.location.port ? `:${window.location.port}` : '';
+  return wsProtocol + window.location.hostname + port + '/signaling';
 }
 
 // 解像度に対応する width と height を返す
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
     case '120p (160x120)':
-      return { width: 160, height: 120 }
+      return { width: 160, height: 120 };
     case '180p (320x180)':
-      return { width: 320, height: 180 }
+      return { width: 320, height: 180 };
     case '240p (320x240)':
-      return { width: 320, height: 240 }
+      return { width: 320, height: 240 };
     case '360p (640x360)':
-      return { width: 640, height: 360 }
+      return { width: 640, height: 360 };
     case '480p (640x480)':
-      return { width: 640, height: 480 }
+      return { width: 640, height: 480 };
     case '720p (1280x720)':
-      return { width: 1280, height: 720 }
+      return { width: 1280, height: 720 };
     case '1080p (1920x1080)':
-      return { width: 1920, height: 1080 }
+      return { width: 1920, height: 1080 };
     case '2160p (3840x2160)':
-      return { width: 3840, height: 2160 }
+      return { width: 3840, height: 2160 };
     default:
-      return { width: 0, height: 0 }
+      return { width: 0, height: 0 };
   }
 }
 
@@ -252,13 +252,13 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
 export function getValueByAspectRatio(aspectRatio: string): number {
   switch (aspectRatio) {
     case '4:3':
-      return 4 / 3
+      return 4 / 3;
     case '16:9':
-      return 16 / 9
+      return 16 / 9;
     case '21:9':
-      return 20 / 9
+      return 20 / 9;
     default:
-      return NaN
+      return NaN;
   }
 }
 
@@ -266,13 +266,13 @@ export function getValueByAspectRatio(aspectRatio: string): number {
 export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): number {
   switch (blurRadius) {
     case 'weak':
-      return 5
+      return 5;
     case 'medium':
-      return 10
+      return 10;
     case 'strong':
-      return 15
+      return 15;
     default:
-      return 0
+      return 0;
   }
 }
 
@@ -282,31 +282,31 @@ export function getLightAdjustmentOptions(
 ): LightAdjustmentProcessorOptions {
   switch (lightAdjustment) {
     case 'weak':
-      return { adjustmentLevel: 30, sharpnessLevel: 0 }
+      return { adjustmentLevel: 30, sharpnessLevel: 0 };
     case 'medium': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
-      const focusMask = new SelfieSegmentationFocusMask(assetsPath)
-      return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask }
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || '';
+      const focusMask = new SelfieSegmentationFocusMask(assetsPath);
+      return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask };
     }
     case 'strong': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
-      const focusMask = new SelfieSegmentationFocusMask(assetsPath)
-      return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask }
+      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || '';
+      const focusMask = new SelfieSegmentationFocusMask(assetsPath);
+      return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask };
     }
     default:
-      return {}
+      return {};
   }
 }
 
 // getUserMedia の audio constraints を生成
 type CreateAudioConstraintsParameters = {
-  audio: boolean
-  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
-  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
-  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
-  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
-  audioInput: string
-}
+  audio: boolean;
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number];
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number];
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number];
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number];
+  audioInput: string;
+};
 export function createAudioConstraints(
   parameters: CreateAudioConstraintsParameters,
 ): boolean | MediaTrackConstraints {
@@ -317,9 +317,9 @@ export function createAudioConstraints(
     echoCancellation,
     echoCancellationType,
     audioInput,
-  } = parameters
+  } = parameters;
   if (!audio) {
-    return false
+    return false;
   }
   if (
     !autoGainControl &&
@@ -328,110 +328,110 @@ export function createAudioConstraints(
     !echoCancellationType &&
     !audioInput
   ) {
-    return audio
+    return audio;
   }
-  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (audioInput) {
-    audioConstraints.deviceId = { exact: audioInput }
+    audioConstraints.deviceId = { exact: audioInput };
   }
-  const parsedAutoGainControl = parseBooleanString(autoGainControl)
+  const parsedAutoGainControl = parseBooleanString(autoGainControl);
   if (parsedAutoGainControl !== undefined) {
-    audioConstraints.autoGainControl = parsedAutoGainControl
+    audioConstraints.autoGainControl = parsedAutoGainControl;
   }
-  const parsedNoiseSuppression = parseBooleanString(noiseSuppression)
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression);
   if (parsedNoiseSuppression !== undefined) {
-    audioConstraints.noiseSuppression = parsedNoiseSuppression
+    audioConstraints.noiseSuppression = parsedNoiseSuppression;
   }
-  const parsedEchoCancellation = parseBooleanString(echoCancellation)
+  const parsedEchoCancellation = parseBooleanString(echoCancellation);
   if (parsedEchoCancellation !== undefined) {
-    audioConstraints.echoCancellation = parsedEchoCancellation
+    audioConstraints.echoCancellation = parsedEchoCancellation;
   }
   if (echoCancellationType) {
-    audioConstraints.echoCancellationType = echoCancellationType
+    audioConstraints.echoCancellationType = echoCancellationType;
   }
-  return audioConstraints
+  return audioConstraints;
 }
 
 // getUserMedia の video constraints を生成
 type CreateVideoConstraintsParameters = {
-  aspectRatio: SoraDevtoolsState['aspectRatio']
-  frameRate: SoraDevtoolsState['frameRate']
-  resizeMode: SoraDevtoolsState['resizeMode']
-  resolution: SoraDevtoolsState['resolution']
-  video: SoraDevtoolsState['video']
-  videoInput: SoraDevtoolsState['videoInput']
-  facingMode: SoraDevtoolsState['facingMode']
-}
+  aspectRatio: SoraDevtoolsState['aspectRatio'];
+  frameRate: SoraDevtoolsState['frameRate'];
+  resizeMode: SoraDevtoolsState['resizeMode'];
+  resolution: SoraDevtoolsState['resolution'];
+  video: SoraDevtoolsState['video'];
+  videoInput: SoraDevtoolsState['videoInput'];
+  facingMode: SoraDevtoolsState['facingMode'];
+};
 export function createVideoConstraints(
   parameters: CreateVideoConstraintsParameters,
 ): boolean | MediaTrackConstraints {
   const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode, facingMode } =
-    parameters
+    parameters;
   if (!video) {
-    return false
+    return false;
   }
   if (!frameRate && !resolution && !videoInput && !aspectRatio && !resizeMode && !facingMode) {
-    return video
+    return video;
   }
-  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
-    videoConstraints.frameRate = { min: parseInt(frameRate, 10), max: parseInt(frameRate, 10) }
+    videoConstraints.frameRate = { min: parseInt(frameRate, 10), max: parseInt(frameRate, 10) };
   }
   if (resolution) {
-    const { width, height } = getVideoSizeByResolution(resolution)
+    const { width, height } = getVideoSizeByResolution(resolution);
     if (0 < width && 0 < height) {
-      videoConstraints.width = { exact: width }
-      videoConstraints.height = { exact: height }
+      videoConstraints.width = { exact: width };
+      videoConstraints.height = { exact: height };
     }
   }
   if (videoInput) {
-    videoConstraints.deviceId = { exact: videoInput }
+    videoConstraints.deviceId = { exact: videoInput };
   }
   if (aspectRatio) {
-    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio)
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
   }
   if (resizeMode) {
-    videoConstraints.resizeMode = resizeMode
+    videoConstraints.resizeMode = resizeMode;
   }
   if (facingMode === 'front') {
-    videoConstraints.facingMode = 'user'
+    videoConstraints.facingMode = 'user';
   } else if (facingMode === 'back') {
-    videoConstraints.facingMode = { exact: 'environment' }
+    videoConstraints.facingMode = { exact: 'environment' };
   }
-  return videoConstraints
+  return videoConstraints;
 }
 
 // Fake 用の constraints を生成
 type CreateFakeMediaConstraintsParameters = {
-  audio: SoraDevtoolsState['audio']
-  video: SoraDevtoolsState['video']
-  frameRate: SoraDevtoolsState['frameRate']
-  resolution: SoraDevtoolsState['resolution']
-  volume: SoraDevtoolsState['fakeVolume']
-  aspectRatio: SoraDevtoolsState['aspectRatio']
-  resizeMode: SoraDevtoolsState['resizeMode']
-}
+  audio: SoraDevtoolsState['audio'];
+  video: SoraDevtoolsState['video'];
+  frameRate: SoraDevtoolsState['frameRate'];
+  resolution: SoraDevtoolsState['resolution'];
+  volume: SoraDevtoolsState['fakeVolume'];
+  aspectRatio: SoraDevtoolsState['aspectRatio'];
+  resizeMode: SoraDevtoolsState['resizeMode'];
+};
 type FakeMediaStreamConstraints = {
-  audio: boolean
-  video: boolean
-  frameRate: number
-  width: number
-  height: number
-  fontSize: number
-  volume: number
-  videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints
-}
+  audio: boolean;
+  video: boolean;
+  frameRate: number;
+  width: number;
+  height: number;
+  fontSize: number;
+  volume: number;
+  videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints;
+};
 export function createFakeMediaConstraints(
   parameters: CreateFakeMediaConstraintsParameters,
 ): FakeMediaStreamConstraints {
-  const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters
+  const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters;
   // fake の default frameRate は 30 fps
-  const parsedFrameRate = parseInt(frameRate, 10) || 30
+  const parsedFrameRate = parseInt(frameRate, 10) || 30;
   // width, height の default はそれぞれ 240 / 160
-  const resolutionSize = getVideoSizeByResolution(resolution)
-  const width = resolutionSize.width || 240
-  const height = resolutionSize.height || 160
-  const fontSize = Math.floor(width / 5)
+  const resolutionSize = getVideoSizeByResolution(resolution);
+  const width = resolutionSize.width || 240;
+  const height = resolutionSize.height || 160;
+  const fontSize = Math.floor(width / 5);
   const constraints: FakeMediaStreamConstraints = {
     audio: audio,
     video: video,
@@ -440,93 +440,93 @@ export function createFakeMediaConstraints(
     height: height,
     fontSize: fontSize,
     volume: parseFloat(volume),
-  }
+  };
   if (video && (aspectRatio || resizeMode)) {
-    constraints.videoTrackConstraints = {}
+    constraints.videoTrackConstraints = {};
     if (aspectRatio) {
-      constraints.videoTrackConstraints.aspectRatio = getValueByAspectRatio(aspectRatio)
+      constraints.videoTrackConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
     }
     if (resizeMode) {
-      constraints.videoTrackConstraints.resizeMode = resizeMode
+      constraints.videoTrackConstraints.resizeMode = resizeMode;
     }
   }
-  return constraints
+  return constraints;
 }
 
 // getDisplayMedia の video constraints を生成
 type CreateGetDisplayMediaConstraintsParameters = {
-  frameRate: SoraDevtoolsState['frameRate']
-  resolution: SoraDevtoolsState['resolution']
-  aspectRatio: SoraDevtoolsState['aspectRatio']
-  resizeMode: SoraDevtoolsState['resizeMode']
-}
+  frameRate: SoraDevtoolsState['frameRate'];
+  resolution: SoraDevtoolsState['resolution'];
+  aspectRatio: SoraDevtoolsState['aspectRatio'];
+  resizeMode: SoraDevtoolsState['resizeMode'];
+};
 export function createGetDisplayMediaConstraints(
   parameters: CreateGetDisplayMediaConstraintsParameters,
 ): MediaStreamConstraints {
-  const { aspectRatio, frameRate, resizeMode, resolution } = parameters
+  const { aspectRatio, frameRate, resizeMode, resolution } = parameters;
   if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
-    return { video: true }
+    return { video: true };
   }
-  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
-    videoConstraints.frameRate = parseInt(frameRate, 10)
+    videoConstraints.frameRate = parseInt(frameRate, 10);
   }
   if (resolution) {
-    const { width, height } = getVideoSizeByResolution(resolution)
+    const { width, height } = getVideoSizeByResolution(resolution);
     if (0 < width && 0 < height) {
-      videoConstraints.width = width
-      videoConstraints.height = height
+      videoConstraints.width = width;
+      videoConstraints.height = height;
     }
   }
   if (aspectRatio) {
-    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio)
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
   }
   if (resizeMode) {
-    videoConstraints.resizeMode = resizeMode
+    videoConstraints.resizeMode = resizeMode;
   }
   return {
     video: videoConstraints,
-  }
+  };
 }
 
 // Fake 用の MediaStream を生成
 export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
-  canvas: CustomHTMLCanvasElement | null
-  mediaStream: MediaStream
-  gainNode: GainNode | null
+  canvas: CustomHTMLCanvasElement | null;
+  mediaStream: MediaStream;
+  gainNode: GainNode | null;
 } {
-  const mediaStream = new MediaStream()
-  let canvas = null
+  const mediaStream = new MediaStream();
+  let canvas = null;
   if (parameters.video) {
-    canvas = document.createElement('canvas') as CustomHTMLCanvasElement
+    canvas = document.createElement('canvas') as CustomHTMLCanvasElement;
     // Firefox では getContext を呼ばないと captureStream が失敗する
-    canvas.getContext('2d')
-    canvas.width = parameters.width
-    canvas.height = parameters.height
-    const cancasStream = canvas.captureStream(parameters.frameRate)
-    const videoTrack = cancasStream.getTracks()[0]
+    canvas.getContext('2d');
+    canvas.width = parameters.width;
+    canvas.height = parameters.height;
+    const cancasStream = canvas.captureStream(parameters.frameRate);
+    const videoTrack = cancasStream.getTracks()[0];
     if (parameters.videoTrackConstraints) {
-      videoTrack.applyConstraints(parameters.videoTrackConstraints)
+      videoTrack.applyConstraints(parameters.videoTrackConstraints);
     }
-    mediaStream.addTrack(videoTrack)
+    mediaStream.addTrack(videoTrack);
   }
-  let gainNode = null
+  let gainNode = null;
   if (parameters.audio) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext
-    const audioContext = new AudioContext()
-    const oscillator = audioContext.createOscillator()
-    const selectedOscillatorType = 'sine'
-    oscillator.type = selectedOscillatorType
-    gainNode = audioContext.createGain()
-    oscillator.connect(gainNode)
-    oscillator.start(0)
-    const mediaStreamDestination = audioContext.createMediaStreamDestination()
-    gainNode.connect(mediaStreamDestination)
-    const audioTracks = mediaStreamDestination.stream.getTracks()
-    mediaStream.addTrack(audioTracks[0])
-    gainNode.gain.setValueAtTime(parameters.volume, 0)
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContext();
+    const oscillator = audioContext.createOscillator();
+    const selectedOscillatorType = 'sine';
+    oscillator.type = selectedOscillatorType;
+    gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    oscillator.start(0);
+    const mediaStreamDestination = audioContext.createMediaStreamDestination();
+    gainNode.connect(mediaStreamDestination);
+    const audioTracks = mediaStreamDestination.stream.getTracks();
+    mediaStream.addTrack(audioTracks[0]);
+    gainNode.gain.setValueAtTime(parameters.volume, 0);
   }
-  return { canvas, mediaStream, gainNode }
+  return { canvas, mediaStream, gainNode };
 }
 
 // Fake mediastream を生成するための canvas に書き込みをする
@@ -537,107 +537,107 @@ export function drawFakeCanvas(
   text: string,
 ): void {
   if (canvas === null) {
-    return
+    return;
   }
-  const context = canvas.getContext('2d')
+  const context = canvas.getContext('2d');
   if (!context) {
-    return
+    return;
   }
-  context.globalCompositeOperation = 'source-over'
-  context.clearRect(0, 0, canvas.width, canvas.height)
-  context.fillStyle = '#' + ('0'.repeat(6) + colorCode.toString(16)).slice(-6)
-  context.fillRect(0, 0, canvas.width, canvas.height)
-  context.fillStyle = '#' + ('0'.repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6)
-  context.font = `${fontSize}px Arial`
-  const x = canvas.width / 2 - fontSize / 2
-  const margin = (fontSize / 4) * (text.length - 1)
-  const y = canvas.height / 2 + fontSize / 2.5
-  context.fillText(text, x - margin, y)
+  context.globalCompositeOperation = 'source-over';
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#' + ('0'.repeat(6) + colorCode.toString(16)).slice(-6);
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#' + ('0'.repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6);
+  context.font = `${fontSize}px Arial`;
+  const x = canvas.width / 2 - fontSize / 2;
+  const margin = (fontSize / 4) * (text.length - 1);
+  const y = canvas.height / 2 + fontSize / 2.5;
+  context.fillText(text, x - margin, y);
 }
 
 export function parseBooleanString(value: string): boolean | undefined {
   if (value === 'true') {
-    return true
+    return true;
   } else if (value === 'false') {
-    return false
+    return false;
   }
-  return
+  return;
 }
 
 export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
   if (!enabledMetadata) {
-    return undefined
+    return undefined;
   }
   try {
-    return JSON.parse(metadata)
+    return JSON.parse(metadata);
   } catch (_e) {
     // JSON parse に失敗しても何もしない
   }
-  return metadata
+  return metadata;
 }
 
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
   // getCapabilities API が存在しない場合
   if (!window.RTCRtpSender || !RTCRtpSender.getCapabilities) {
-    return 'VP9'
+    return 'VP9';
   }
   // getCapabilities APIから codec 一覧が取れない場合
-  const capabilities = RTCRtpSender.getCapabilities('video')
+  const capabilities = RTCRtpSender.getCapabilities('video');
   if (!capabilities || !capabilities.codecs) {
-    return 'VP9'
+    return 'VP9';
   }
-  const codecs = capabilities.codecs.map((c) => c.mimeType.replace('video/', ''))
+  const codecs = capabilities.codecs.map((c) => c.mimeType.replace('video/', ''));
   if (codecs.includes('VP9')) {
-    return 'VP9'
+    return 'VP9';
   }
   if (codecs.includes('VP8')) {
-    return 'VP8'
+    return 'VP8';
   }
   if (codecs.includes('H264')) {
-    return 'H264'
+    return 'H264';
   }
   if (codecs.includes('AV1')) {
-    return 'AV1'
+    return 'AV1';
   }
   if (codecs.includes('H265')) {
-    return 'H265'
+    return 'H265';
   }
-  return 'VP9'
+  return 'VP9';
 }
 
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
   // https じゃない場合などで mediaDevices が undefined になる可能性がある
   if (navigator.mediaDevices === undefined) {
-    return []
+    return [];
   }
   try {
-    return await navigator.mediaDevices.enumerateDevices()
+    return await navigator.mediaDevices.enumerateDevices();
   } catch (_) {
     // 例外が起きた場合は何もしない
   }
-  return []
+  return [];
 }
 
 // Sora との接続状態に応じて特定の Form を表示するかしないかを返す
 export function isFormDisabled(
   connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
 ): boolean {
-  return connectionStatus === 'connected' || connectionStatus === 'connecting'
+  return connectionStatus === 'connected' || connectionStatus === 'connecting';
 }
 
 // track の設定情報を返す
 type GetMediaStreamTrackProperties = {
-  id: MediaStreamTrack['id']
-  label: MediaStreamTrack['label']
-  kind: MediaStreamTrack['kind']
-  enabled: MediaStreamTrack['enabled']
-  muted: MediaStreamTrack['muted']
-  readyState: MediaStreamTrack['readyState']
-  contentHint: MediaStreamTrack['contentHint']
-  getConstraints: MediaTrackConstraints
-  getCapabilities: MediaTrackCapabilities | null
-  getSettings: MediaTrackSettings
-}
+  id: MediaStreamTrack['id'];
+  label: MediaStreamTrack['label'];
+  kind: MediaStreamTrack['kind'];
+  enabled: MediaStreamTrack['enabled'];
+  muted: MediaStreamTrack['muted'];
+  readyState: MediaStreamTrack['readyState'];
+  contentHint: MediaStreamTrack['contentHint'];
+  getConstraints: MediaTrackConstraints;
+  getCapabilities: MediaTrackCapabilities | null;
+  getSettings: MediaTrackSettings;
+};
 export function getMediaStreamTrackProperties(
   track: MediaStreamTrack,
 ): GetMediaStreamTrackProperties {
@@ -652,7 +652,7 @@ export function getMediaStreamTrackProperties(
     getConstraints: track.getConstraints(),
     getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
     getSettings: track.getSettings(),
-  }
+  };
 }
 
 // Sora の connectOptions を生成する
@@ -662,90 +662,90 @@ export function createConnectOptions(
   const connectionOptions: ConnectionOptions = {
     audio: connectionOptionsState.audio,
     video: connectionOptionsState.video,
-  }
+  };
   // recvonly かつ multistream の時は audio/video のパラメータを送らない
   const sendAudioVideoParams = !(
     connectionOptionsState.role === 'recvonly' &&
     (connectionOptionsState.multistream === 'true' || connectionOptionsState.multistream === '')
-  )
+  );
   if (sendAudioVideoParams) {
     // audioCodecType
     if (connectionOptionsState.audioCodecType) {
-      connectionOptions.audioCodecType = connectionOptionsState.audioCodecType
+      connectionOptions.audioCodecType = connectionOptionsState.audioCodecType;
     }
     // audioBitRate
-    const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10)
+    const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10);
     if (parsedAudioBitRate) {
-      connectionOptions.audioBitRate = parsedAudioBitRate
+      connectionOptions.audioBitRate = parsedAudioBitRate;
     }
     // videoCodecType
     if (connectionOptionsState.videoCodecType) {
-      connectionOptions.videoCodecType = connectionOptionsState.videoCodecType
+      connectionOptions.videoCodecType = connectionOptionsState.videoCodecType;
     }
     // videoBitRate
-    const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10)
+    const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10);
     if (parsedVideoBitRate) {
-      connectionOptions.videoBitRate = parsedVideoBitRate
+      connectionOptions.videoBitRate = parsedVideoBitRate;
     }
     // videoVP9Params
     if (connectionOptionsState.enabledVideoVP9Params) {
-      connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
+      connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params);
     }
     // videoH264Params
     if (connectionOptionsState.enabledVideoH264Params) {
       connectionOptions.videoH264Params = parseMetadata(
         true,
         connectionOptionsState.videoH264Params,
-      )
+      );
     }
     // videoVP9Params
     if (connectionOptionsState.enabledVideoAV1Params) {
-      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
+      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params);
     }
     // audioStreamingLanguageCode
     if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
       connectionOptions.audioStreamingLanguageCode =
-        connectionOptionsState.audioStreamingLanguageCode
+        connectionOptionsState.audioStreamingLanguageCode;
     }
     // audioLyraParamsBitrate
     if (connectionOptionsState.audioLyraParamsBitrate) {
       connectionOptions.audioLyraParamsBitrate = parseInt(
         connectionOptionsState.audioLyraParamsBitrate,
         10,
-      ) as 3200 | 6000 | 9200
+      ) as 3200 | 6000 | 9200;
     }
   }
   // multistream
-  const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
+  const parsedMultistream = parseBooleanString(connectionOptionsState.multistream);
   if (parsedMultistream !== undefined) {
-    connectionOptions.multistream = parsedMultistream
+    connectionOptions.multistream = parsedMultistream;
   }
   // e2ee
   if (connectionOptionsState.e2ee) {
-    connectionOptions.e2ee = true
+    connectionOptions.e2ee = true;
   }
   // spotlight
-  const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight)
+  const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight);
   if (parsedSpotlight !== undefined) {
-    connectionOptions.spotlight = parsedSpotlight
+    connectionOptions.spotlight = parsedSpotlight;
     if (parsedSpotlight === true) {
       if (connectionOptionsState.spotlightNumber) {
-        connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber)
+        connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber);
       }
       if (connectionOptionsState.spotlightFocusRid) {
-        connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid
+        connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid;
       }
       if (connectionOptionsState.spotlightUnfocusRid) {
-        connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid
+        connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid;
       }
     }
   }
   // simulcast
-  const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast)
+  const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast);
   if (parsedSimulcast !== undefined) {
-    connectionOptions.simulcast = parsedSimulcast
+    connectionOptions.simulcast = parsedSimulcast;
     if (parsedSimulcast === true && connectionOptionsState.simulcastRid) {
-      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid
+      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid;
     }
   }
   // signalingNotifyMetadata
@@ -753,50 +753,50 @@ export function createConnectOptions(
     connectionOptions.signalingNotifyMetadata = parseMetadata(
       true,
       connectionOptionsState.signalingNotifyMetadata,
-    )
+    );
   }
   // forwardingFilter
   if (connectionOptionsState.enabledForwardingFilter) {
     connectionOptions.forwardingFilter = parseMetadata(
       true,
       connectionOptionsState.forwardingFilter,
-    )
+    );
   }
   // bundleId
   if (connectionOptionsState.enabledBundleId) {
-    connectionOptions.bundleId = connectionOptionsState.bundleId
+    connectionOptions.bundleId = connectionOptionsState.bundleId;
   }
   // clientId
   if (connectionOptionsState.enabledClientId) {
-    connectionOptions.clientId = connectionOptionsState.clientId
+    connectionOptions.clientId = connectionOptionsState.clientId;
   }
   // dataChannelSignaling, ignoreDisconnectWebSocket
   if (connectionOptionsState.enabledDataChannel) {
     const parsedDataChannelSignaling = parseBooleanString(
       connectionOptionsState.dataChannelSignaling,
-    )
+    );
     if (parsedDataChannelSignaling !== undefined) {
-      connectionOptions.dataChannelSignaling = parsedDataChannelSignaling
+      connectionOptions.dataChannelSignaling = parsedDataChannelSignaling;
     }
     const parsedIgnoreDisconnectWebSocket = parseBooleanString(
       connectionOptionsState.ignoreDisconnectWebSocket,
-    )
+    );
     if (parsedIgnoreDisconnectWebSocket !== undefined) {
-      connectionOptions.ignoreDisconnectWebSocket = parsedIgnoreDisconnectWebSocket
+      connectionOptions.ignoreDisconnectWebSocket = parsedIgnoreDisconnectWebSocket;
     }
   }
   // dataChannels
   if (connectionOptionsState.dataChannels !== '') {
-    let dataChannels = []
+    let dataChannels = [];
     try {
-      dataChannels = JSON.parse(connectionOptionsState.dataChannels)
+      dataChannels = JSON.parse(connectionOptionsState.dataChannels);
     } catch (_) {
       // サンプル実装なので warning で回避
-      console.warn('Illegal format DataChannels')
+      console.warn('Illegal format DataChannels');
     }
     if (Array.isArray(dataChannels)) {
-      connectionOptions.dataChannels = dataChannels
+      connectionOptions.dataChannels = dataChannels;
     }
   }
-  return connectionOptions
+  return connectionOptions;
 }

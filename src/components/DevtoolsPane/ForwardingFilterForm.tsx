@@ -1,24 +1,24 @@
-import React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import React from 'react';
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
 
-import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { isFormDisabled } from '@/utils'
+import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const ForwardingFilterForm: React.FC = () => {
-  const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)
-  const forwardingFilter = useAppSelector((state) => state.forwardingFilter)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
+  const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter);
+  const forwardingFilter = useAppSelector((state) => state.forwardingFilter);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
+  const dispatch = useAppDispatch();
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledForwardingFilter(event.target.checked))
-  }
+    dispatch(setEnabledForwardingFilter(event.target.checked));
+  };
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setForwardingFilter(event.target.value))
-  }
+    dispatch(setForwardingFilter(event.target.value));
+  };
   return (
     <>
       <Row className="form-row">
@@ -54,5 +54,5 @@ export const ForwardingFilterForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  )
-}
+  );
+};

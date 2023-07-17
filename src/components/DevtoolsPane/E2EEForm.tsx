@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import { Col, FormGroup, Row, Spinner } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react';
+import { Col, FormGroup, Row, Spinner } from 'react-bootstrap';
 
-import { setE2EE } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { isFormDisabled } from '@/utils'
+import { setE2EE } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { isFormDisabled } from '@/utils';
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck';
 
 export const E2EEForm: React.FC = () => {
-  const [displaySpinner, setDisplaySpinner] = useState(false)
-  const e2ee = useAppSelector((state) => state.e2ee)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
+  const [displaySpinner, setDisplaySpinner] = useState(false);
+  const e2ee = useAppSelector((state) => state.e2ee);
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (event.target.checked) {
-      setDisplaySpinner(true)
+      setDisplaySpinner(true);
     }
-    dispatch(setE2EE(event.target.checked))
-  }
+    dispatch(setE2EE(event.target.checked));
+  };
   useEffect(() => {
     if (e2ee) {
-      setDisplaySpinner(false)
+      setDisplaySpinner(false);
     }
-  }, [e2ee])
+  }, [e2ee]);
   return (
     <Row className="form-row">
       <Col className="col-auto">
@@ -42,5 +42,5 @@ export const E2EEForm: React.FC = () => {
         </FormGroup>
       </Col>
     </Row>
-  )
-}
+  );
+};

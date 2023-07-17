@@ -1,25 +1,25 @@
-import React from 'react'
-import { Tab, Tabs } from 'react-bootstrap'
+import React from 'react';
+import { Tab, Tabs } from 'react-bootstrap';
 
-import { setDebugType } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { setDebugType } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { DataChannelMessagingMessages } from './DataChannelMessagingMessages'
-import { DebugFilter } from './Filter'
-import { LogMessages } from './LogMessages'
-import { NotifyMessages } from './NotifyMessages'
-import { PushMessages } from './PushMessages'
-import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage'
-import { SignalingMessages } from './SignalingMessages'
-import { Stats } from './Stats'
-import { TimelineMessages } from './TimelineMessages'
+import { DataChannelMessagingMessages } from './DataChannelMessagingMessages';
+import { DebugFilter } from './Filter';
+import { LogMessages } from './LogMessages';
+import { NotifyMessages } from './NotifyMessages';
+import { PushMessages } from './PushMessages';
+import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage';
+import { SignalingMessages } from './SignalingMessages';
+import { Stats } from './Stats';
+import { TimelineMessages } from './TimelineMessages';
 
 export const DebugPane: React.FC = () => {
-  const debug = useAppSelector((state) => state.debug)
-  const debugType = useAppSelector((state) => state.debugType)
-  const dispatch = useAppDispatch()
+  const debug = useAppSelector((state) => state.debug);
+  const debugType = useAppSelector((state) => state.debugType);
+  const dispatch = useAppDispatch();
   if (!debug) {
-    return null
+    return null;
   }
   const onSelect = (key: string | null): void => {
     if (
@@ -31,9 +31,9 @@ export const DebugPane: React.FC = () => {
       key === 'signaling' ||
       key === 'messaging'
     ) {
-      dispatch(setDebugType(key))
+      dispatch(setDebugType(key));
     }
-  }
+  };
   return (
     <div className="col-debug col-6">
       <Tabs id="debug-tab" activeKey={debugType} defaultActiveKey={'timeline'} onSelect={onSelect}>
@@ -67,5 +67,5 @@ export const DebugPane: React.FC = () => {
         </Tab>
       </Tabs>
     </div>
-  )
-}
+  );
+};

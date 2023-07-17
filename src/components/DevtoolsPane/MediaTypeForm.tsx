@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { FormCheck, FormGroup } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react';
+import { FormCheck, FormGroup } from 'react-bootstrap';
 
-import { setMediaType } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { MEDIA_TYPES } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+import { setMediaType } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { MEDIA_TYPES } from '@/constants';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel';
 
 type FormRadioProps = {
-  label: string
-  mediaType: string
-  disabled: boolean
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
+  label: string;
+  mediaType: string;
+  disabled: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
 const FormRadio: React.FC<FormRadioProps> = (props) => {
-  const { label, disabled, onChange, mediaType } = props
+  const { label, disabled, onChange, mediaType } = props;
   return (
     <FormCheck
       type="radio"
@@ -27,27 +27,28 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
       onChange={onChange}
       disabled={disabled}
     />
-  )
-}
+  );
+};
 
 export const MediaTypeForm: React.FC = () => {
   // NOTE(yuito): window.CropTarget の有無のみで radio の表示/非表示を切り替えると
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
-  const [mountClient, setMountClient] = useState(false)
-  const enabledMediacaptureRegion = typeof window !== 'undefined' && window.CropTarget !== undefined
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const mediaType = useAppSelector((state) => state.mediaType)
-  const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
+  const [mountClient, setMountClient] = useState(false);
+  const enabledMediacaptureRegion =
+    typeof window !== 'undefined' && window.CropTarget !== undefined;
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
+  const mediaType = useAppSelector((state) => state.mediaType);
+  const disabled = isFormDisabled(connectionStatus);
+  const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {
-      dispatch(setMediaType(event.target.value))
+      dispatch(setMediaType(event.target.value));
     }
-  }
+  };
   useEffect(() => {
-    setMountClient(true)
-  }, [])
+    setMountClient(true);
+  }, []);
   return (
     <FormGroup className="form-inline flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
@@ -73,5 +74,5 @@ export const MediaTypeForm: React.FC = () => {
         />
       )}
     </FormGroup>
-  )
-}
+  );
+};

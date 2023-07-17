@@ -1,31 +1,31 @@
-import React from 'react'
-import { SimulcastRid } from 'sora-js-sdk'
+import React from 'react';
+import { SimulcastRid } from 'sora-js-sdk';
 
-import { requestRtpStream } from '@/api'
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { requestRtpStream } from '@/api';
+import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 type Props = {
-  rid: SimulcastRid
-}
+  rid: SimulcastRid;
+};
 export const RequestRtpStreamButton: React.FC<Props> = (props) => {
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
-  const channelId = useAppSelector((state) => state.channelId)
-  const dispatch = useAppDispatch()
+  const sora = useAppSelector((state) => state.soraContents.sora);
+  const apiUrl = useAppSelector((state) => state.apiUrl);
+  const channelId = useAppSelector((state) => state.channelId);
+  const dispatch = useAppDispatch();
   const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
-      return
+      return;
     }
     try {
-      const response = await requestRtpStream(apiUrl, channelId, sora.connectionId, props.rid)
-      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`))
+      const response = await requestRtpStream(apiUrl, channelId, sora.connectionId, props.rid);
+      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`));
     } catch (error) {
       if (error instanceof Error) {
-        dispatch(setAPIErrorAlertMessage(error.message))
+        dispatch(setAPIErrorAlertMessage(error.message));
       }
     }
-  }
+  };
   return (
     <div className="mx-1">
       <input
@@ -36,5 +36,5 @@ export const RequestRtpStreamButton: React.FC<Props> = (props) => {
         onClick={onClick}
       />
     </div>
-  )
-}
+  );
+};

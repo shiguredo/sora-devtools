@@ -1,66 +1,67 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import { useAppSelector } from '@/app/hooks'
-import type { RTCMediaStreamTrackStats } from '@/types'
+import { useAppSelector } from '@/app/hooks';
+import type { RTCMediaStreamTrackStats } from '@/types';
 
-import { ConnectionStatusBar } from './ConnectionStatusBar'
-import { JitterButter } from './JitterBuffer'
-import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton'
-import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton'
-import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton'
-import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton'
-import { Video } from './Video'
-import { VolumeVisualizer } from './VolumeVisualizer'
+import { ConnectionStatusBar } from './ConnectionStatusBar';
+import { JitterButter } from './JitterBuffer';
+import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton';
+import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton';
+import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton';
+import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton';
+import { Video } from './Video';
+import { VolumeVisualizer } from './VolumeVisualizer';
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
   mediaStream: MediaStream | null,
 ): RTCMediaStreamTrackStats[] {
   if (mediaStream === null) {
-    return []
+    return [];
   }
   const trackIds = mediaStream.getTracks().map((t) => {
-    return t.id
-  })
-  const result: RTCMediaStreamTrackStats[] = []
+    return t.id;
+  });
+  const result: RTCMediaStreamTrackStats[] = [];
   for (const stats of statsReport) {
     if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
-      continue
+      continue;
     }
     if ('trackIdentifier' in stats) {
-      const mediaStreamStats = stats as RTCMediaStreamTrackStats
+      const mediaStreamStats = stats as RTCMediaStreamTrackStats;
       if (mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier)) {
-        result.push(mediaStreamStats)
+        result.push(mediaStreamStats);
       }
     }
   }
-  return result
+  return result;
 }
 
 const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
-  const showStats = useAppSelector((state) => state.showStats)
-  const statsReport = useAppSelector((state) => state.soraContents.statsReport)
-  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport)
+  const showStats = useAppSelector((state) => state.showStats);
+  const statsReport = useAppSelector((state) => state.soraContents.statsReport);
+  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport);
   if (!showStats) {
-    return null
+    return null;
   }
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport,
     props.stream,
-  ) as RTCMediaStreamTrackStats[]
+  ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport,
     props.stream,
-  ) as RTCMediaStreamTrackStats[]
+  ) as RTCMediaStreamTrackStats[];
   return (
     <>
       {currentMediaStreamTrackStatsReport.map((s) => {
-        let jitterBufferDelay = 0
-        let jitterBufferEmittedCount = 0
-        const prevStats = prevMediaStreamTrackStatsReport.find((p) => s.id === p.id)
+        let jitterBufferDelay = 0;
+        let jitterBufferEmittedCount = 0;
+        const prevStats = prevMediaStreamTrackStatsReport.find((p) => s.id === p.id);
         if (prevStats) {
-          jitterBufferDelay = s.jitterBufferDelay - prevStats.jitterBufferDelay
-          jitterBufferEmittedCount = s.jitterBufferEmittedCount - prevStats.jitterBufferEmittedCount
+          jitterBufferDelay = s.jitterBufferDelay - prevStats.jitterBufferDelay;
+          jitterBufferEmittedCount =
+            s.jitterBufferEmittedCount - prevStats.jitterBufferEmittedCount;
         }
         return (
           <div key={s.id}>
@@ -70,7 +71,7 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
                   <li key={key}>
                     <strong>{key}:</strong> {value}
                   </li>
-                )
+                );
               })}
               <li>
                 <strong>[jitterBufferDelay/jitterBufferEmittedCount_in_ms]</strong>{' '}
@@ -78,24 +79,24 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
               </li>
             </ul>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
 const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
-  const [height, setHeight] = useState<number>(0)
-  const audioOutput = useAppSelector((state) => state.audioOutput)
-  const displayResolution = useAppSelector((state) => state.displayResolution)
+  const [height, setHeight] = useState<number>(0);
+  const audioOutput = useAppSelector((state) => state.audioOutput);
+  const displayResolution = useAppSelector((state) => state.displayResolution);
   const focusedSpotlightConnectionIds = useAppSelector(
     (state) => state.focusedSpotlightConnectionIds,
-  )
-  const multistream = useAppSelector((state) => state.multistream)
-  const mute = useAppSelector((state) => state.mute)
-  const simulcast = useAppSelector((state) => state.simulcast)
-  const spotlight = useAppSelector((state) => state.spotlight)
-  const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id]
+  );
+  const multistream = useAppSelector((state) => state.multistream);
+  const mute = useAppSelector((state) => state.mute);
+  const simulcast = useAppSelector((state) => state.simulcast);
+  const spotlight = useAppSelector((state) => state.spotlight);
+  const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id];
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -149,16 +150,16 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
         <MediaStreamStatsReport stream={props.stream} />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const RemoteVideos: React.FC = () => {
-  const remoteMediaStreams = useAppSelector((state) => state.soraContents.remoteMediaStreams)
+  const remoteMediaStreams = useAppSelector((state) => state.soraContents.remoteMediaStreams);
   return (
     <div className="row my-2">
       {remoteMediaStreams.map((mediaStream) => {
-        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />
+        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />;
       })}
     </div>
-  )
-}
+  );
+};
