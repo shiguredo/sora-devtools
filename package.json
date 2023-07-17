@@ -32,7 +32,7 @@
     "@types/resize-observer-browser": "0.1.7",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
-    "@vitejs/plugin-react": "^4.0.2",
+    "@vitejs/plugin-react": "^4.0.3",
     "eslint": "8.45.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-react": "7.32.2",
