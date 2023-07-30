@@ -25,8 +25,8 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "13.4.12",
-    "@types/node": "18.17.0",
-    "@types/react": "18.2.15",
+    "@types/node": "18.17.1",
+    "@types/react": "18.2.17",
     "@types/react-redux": "7.1.25",
     "@types/redux-logger": "3.0.9",
     "@types/resize-observer-browser": "0.1.7",
@@ -51,19 +51,19 @@
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
-    "bootstrap": "5.3.0",
+    "bootstrap": "5.3.1",
     "query-string": "8.1.0",
     "react": "18.2.0",
     "react-bootstrap": "2.8.0",
     "react-dom": "18.2.0",
     "react-draggable": "4.4.5",
-    "react-redux": "8.1.1",
+    "react-redux": "8.1.2",
     "redux": "4.2.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.4.2",
     "sora-js-sdk": "2023.2.0-canary.1"
   },
-  "packageManager": "pnpm@8.6.9",
+  "packageManager": "pnpm@8.6.11",
   "engines": {
     "node": ">=16.20.0"
   }
