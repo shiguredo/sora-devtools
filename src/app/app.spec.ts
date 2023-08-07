@@ -40,6 +40,12 @@ function setLocationSearch(parameters: Record<string, unknown>): void {
   vi.stubGlobal('location', { search: search });
 }
 
+// XXX(v): 悲しいけど Mock 化するしかない
+beforeEach(() => {
+  URL.createObjectURL = vi.fn();
+  globalThis.Worker = vi.fn();
+});
+
 describe('setInitialParameter tests', () => {
   it("should handle 'role'", async () => {
     for (const value of ROLES) {
