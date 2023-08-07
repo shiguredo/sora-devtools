@@ -61,7 +61,7 @@
     "redux": "4.2.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.4.2",
-    "sora-js-sdk": "2023.2.0-canary.1"
+    "sora-js-sdk": "2023.2.0-canary.2"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {
