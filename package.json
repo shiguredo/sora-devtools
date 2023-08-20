@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "13.4.16",
-    "@types/node": "20.5.0",
+    "@types/node": "20.5.1",
     "@types/react": "18.2.20",
     "@types/react-redux": "7.1.25",
     "@types/redux-logger": "3.0.9",
@@ -44,7 +44,7 @@
     "prettier": "3.0.2",
     "rimraf": "5.0.1",
     "typescript": "5.1.6",
-    "vitest": "0.34.1"
+    "vitest": "0.34.2"
   },
   "dependencies": {
     "@reduxjs/toolkit": "1.9.5",
