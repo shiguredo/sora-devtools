@@ -24,7 +24,11 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 **このサイトだけでは WebRTC SFU を試すことはできません。WebRTC SFU Sora を別途用意してください**
 
+正式版 (master ブランチ) がデプロイされています。
 https://sora-devtools.shiguredo.jp/
+
+開発版 (develop ブランチ) がデプロイされています。
+https://develop.sora-devtools.pages.dev/
 
 ## スクリーンショット
 
