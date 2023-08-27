@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "13.4.19",
-    "@types/node": "20.5.4",
+    "@types/node": "20.5.6",
     "@types/react": "18.2.21",
     "@types/react-redux": "7.1.26",
     "@types/redux-logger": "3.0.9",
@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "6.4.1",
     "@typescript-eslint/parser": "6.4.1",
     "@vitejs/plugin-react": "4.0.4",
-    "eslint": "8.47.0",
+    "eslint": "8.48.0",
     "eslint-plugin-import": "2.28.1",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
@@ -43,8 +43,8 @@
     "next": "13.4.19",
     "prettier": "3.0.2",
     "rimraf": "5.0.1",
-    "typescript": "5.1.6",
-    "vitest": "0.34.2"
+    "typescript": "5.2.2",
+    "vitest": "0.34.3"
   },
   "dependencies": {
     "@reduxjs/toolkit": "1.9.5",
@@ -61,9 +61,9 @@
     "redux": "4.2.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.4.2",
-    "sora-js-sdk": "2023.2.0-canary.1"
+    "sora-js-sdk": "2023.1.0"
   },
-  "packageManager": "pnpm@8.6.12",
+  "packageManager": "pnpm@8.7.0",
   "engines": {
     "node": ">=16.20.0"
   }
