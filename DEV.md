@@ -13,8 +13,11 @@ $ corepack prepare pnpm@latest-8 --activate
 
 ## 開発環境
 
+- nodejs
+  - 18.17.1 以降
+  - package.json でバージョンを確認すること
 - pnpm
-  - 最新版
+  - 8.7.0 以降
   - package.json でバージョンを確認すること
 - pnpm install
   - これで事前に利用するライブラリをインストールする

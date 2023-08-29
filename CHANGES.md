@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] Node.js 16 系を落とす
+  - @voluntas
 - [CHANGE] GA の main.yml を ci.yml に変更する
   - @voluntas
 - [CHANGE] 一時的に ; ありにする
