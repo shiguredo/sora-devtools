@@ -48,8 +48,8 @@ dependencies:
     specifier: 2.4.2
     version: 2.4.2(redux@4.2.1)
   sora-js-sdk:
-    specifier: 2023.1.0
-    version: 2023.1.0
+    specifier: 2023.2.0-canary.1
+    version: 2023.2.0-canary.1
 
 devDependencies:
   '@next/eslint-plugin-next':
@@ -3384,8 +3384,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /sora-js-sdk@2023.1.0:
-    resolution: {integrity: sha512-29vB+jv8Iz9kVr5rcr1dWLg4Cnto6mdA7/Mksvo0AM9ns3XHog695h51/AUO71agIk8APoeGAWKcZMniVzm8mA==}
+  /sora-js-sdk@2023.2.0-canary.1:
+    resolution: {integrity: sha512-nQa3BDAmKtMFLDbuC+4JI47O9GePA5SVC+1a+z63uZJv/XF1MM7wTMGqDeWZBD6EO7YNP1Bdu8y9vAA+qimuKQ==}
+    engines: {node: '>=16.20.0'}
     dev: false
 
   /source-map-js@1.0.2:
