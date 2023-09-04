@@ -6,6 +6,7 @@ wasm.wasm
 next-env.d.ts
 *.tsbuildinfo
 .DS_Store
+.pnpm-store/
 
 # next dev は distDir に dev を利用する
 dev/
