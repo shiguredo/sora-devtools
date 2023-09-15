@@ -227,20 +227,20 @@ export function createSignalingURL(
 // 解像度に対応する width と height を返す
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
-    case '120p (160x120)':
-      return { width: 160, height: 120 };
-    case '180p (320x180)':
-      return { width: 320, height: 180 };
+    case '144p (256x144)':
+      return { width: 256, height: 144 };
     case '240p (320x240)':
       return { width: 320, height: 240 };
     case '360p (640x360)':
       return { width: 640, height: 360 };
-    case '480p (640x480)':
-      return { width: 640, height: 480 };
+    case '480p (720x480)':
+      return { width: 720, height: 480 };
     case '720p (1280x720)':
       return { width: 1280, height: 720 };
     case '1080p (1920x1080)':
       return { width: 1920, height: 1080 };
+    case '1440p (2560x1440)':
+      return { width: 2560, height: 1440 };
     case '2160p (3840x2160)':
       return { width: 3840, height: 2160 };
     default:
