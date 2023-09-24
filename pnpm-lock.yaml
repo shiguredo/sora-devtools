@@ -98,7 +98,7 @@ devDependencies:
     specifier: 22.1.0
     version: 22.1.0
   knip:
-    specifier: ^2.26.0
+    specifier: 2.26.0
     version: 2.26.0
   next:
     specifier: 13.5.2
