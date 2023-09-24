@@ -67,9 +67,6 @@ devDependencies:
   '@types/redux-logger':
     specifier: 3.0.9
     version: 3.0.9
-  '@types/resize-observer-browser':
-    specifier: 0.1.7
-    version: 0.1.7
   '@typescript-eslint/eslint-plugin':
     specifier: 6.7.2
     version: 6.7.2(@typescript-eslint/parser@6.7.2)(eslint@8.50.0)(typescript@5.2.2)
@@ -101,7 +98,7 @@ devDependencies:
     specifier: 22.1.0
     version: 22.1.0
   knip:
-    specifier: 2.26.0
+    specifier: ^2.26.0
     version: 2.26.0
   next:
     specifier: 13.5.2
@@ -989,10 +986,6 @@ packages:
     resolution: {integrity: sha512-cwYhVbYNgH01aepeMwhd0ABX6fhVB2rcQ9m80u8Fl50ZODhsZ8RhQArnLTkE7/Zrfq4Sz/taNoF7DQy9pCZSKg==}
     dependencies:
       redux: 4.2.1
-    dev: true
-
-  /@types/resize-observer-browser@0.1.7:
-    resolution: {integrity: sha512-G9eN0Sn0ii9PWQ3Vl72jDPgeJwRWhv2Qk/nQkJuWmRmOB4HX3/BhD5SE1dZs/hzPZL/WKnvF0RHdTSG54QJFyg==}
     dev: true
 
   /@types/scheduler@0.16.3:
