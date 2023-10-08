@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "13.5.4",
-    "@types/node": "20.8.0",
-    "@types/react": "18.2.24",
+    "@types/node": "20.8.3",
+    "@types/react": "18.2.25",
     "@types/react-redux": "7.1.27",
     "@types/redux-logger": "3.0.10",
     "@typescript-eslint/eslint-plugin": "6.7.4",
@@ -40,7 +40,7 @@
     "eslint-plugin-simple-import-sort": "10.0.0",
     "husky": "8.0.3",
     "jsdom": "22.1.0",
-    "knip": "2.30.0",
+    "knip": "2.32.4",
     "next": "13.5.4",
     "prettier": "3.0.3",
     "rimraf": "5.0.5",
@@ -48,7 +48,7 @@
     "vitest": "0.34.6"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "1.9.6",
+    "@reduxjs/toolkit": "1.9.7",
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
