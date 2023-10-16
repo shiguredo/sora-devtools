@@ -404,7 +404,7 @@ const RowDevices: React.FC = () => {
   return (
     <Row className="form-row" xs="auto">
       {/**
-       * role が recvonly かつ mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
+       * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
        */}
       {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
         <>
