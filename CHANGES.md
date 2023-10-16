@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] mediaType が getUserMedia 以外の場合は audioInput / videoInput のフォームは表示しない
+  - @tnamao
+- [CHANGE] mediaType が getUserMedia 以外の場合は、copy URL をクリックした時にクリップボードにコピーする URL のパラメータに audioInput / videoInput を含めない
+  - @tnamao
 - [CHANGE] Node.js 16 系を落とす
   - @voluntas
 - [CHANGE] GA の main.yml を ci.yml に変更する
