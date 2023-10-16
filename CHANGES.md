@@ -11,9 +11,9 @@
 
 ## develop
 
-- [CHANGE] mediaType が getUserMedia 以外の場合は audioInput / videoInput のフォームは表示しない
+- [CHANGE] mediaType が getUserMedia 以外の場合は audioInput / videoInput のフォームを表示しないように修正する
   - @tnamao
-- [CHANGE] mediaType が getUserMedia 以外の場合は、copy URL をクリックした時にクリップボードにコピーする URL のパラメータに audioInput / videoInput を含めない
+- [CHANGE] mediaType が getUserMedia 以外の場合は、copy URL をクリックした時にクリップボードにコピーする URL のパラメータに audioInput / videoInput を含めないように修正する
   - @tnamao
 - [CHANGE] Node.js 16 系を落とす
   - @voluntas
