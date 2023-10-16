@@ -400,9 +400,13 @@ const RowMediaOptions: React.FC = () => {
 
 const RowDevices: React.FC = () => {
   const role = useAppSelector((state) => state.role);
+  const mediaType = useAppSelector((state) => state.mediaType);
   return (
     <Row className="form-row" xs="auto">
-      {role !== 'recvonly' ? (
+      {/**
+       * role が recvonly かつ mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
+       */}
+      {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
         <>
           <Col>
             <AudioInputForm />
