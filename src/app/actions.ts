@@ -1061,6 +1061,10 @@ async function setStatsReport(
   }
 }
 
+export const mediaAccessAction = () => {
+  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {};
+};
+
 export const connectSora = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(

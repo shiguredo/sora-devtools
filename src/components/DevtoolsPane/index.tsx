@@ -35,6 +35,7 @@ import { FakeVolumeForm } from './FakeVolumeForm';
 import { ForwardingFilterForm } from './ForwardingFilterForm';
 import { FrameRateForm } from './FrameRateForm';
 import { LightAdjustmentForm } from './LightAdjustmentForm';
+import { MediaAccessButton } from './MediaAccessButton';
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm';
 import { MediaTypeForm } from './MediaTypeForm';
 import { MetadataForm } from './MetadataForm';
@@ -477,6 +478,7 @@ export const DevtoolsPane: React.FC = () => {
       <RowMediaDevices />
       <hr className="hr-form" />
       <div className="row">
+        <MediaAccessButton />
         <ConnectButton />
         <DisconnectButton />
         <StartRecordingButton />
