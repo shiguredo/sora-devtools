@@ -4,6 +4,7 @@ import { Col, Collapse, Row } from 'react-bootstrap';
 import { useAppSelector } from '@/app/hooks';
 import { AlertMessages } from '@/components/AlertMessages';
 import { LocalVideo } from '@/components/Video/LocalVideo';
+import { LocalVideoTest } from '@/components/Video/LocalVideoTest';
 import { RemoteVideos } from '@/components/Video/RemoteVideos';
 
 import { AspectRatioForm } from './AspectRatioForm';
@@ -485,6 +486,7 @@ export const DevtoolsPane: React.FC = () => {
         <StopRecordingButton />
       </div>
       <hr className="hr-form" />
+      <LocalVideoTest />
       <LocalVideo />
       {role === 'recvonly' || role === 'sendrecv' ? <RemoteVideos /> : null}
     </div>

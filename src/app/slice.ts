@@ -85,6 +85,7 @@ const initialState: SoraDevtoolsState = {
     datachannels: [],
   },
   ignoreDisconnectWebSocket: '',
+  localTestMediaStream: null,
   logMessages: [],
   mediaProcessorsNoiseSuppression: false,
   mediaType: 'getUserMedia',
@@ -401,6 +402,14 @@ export const slice = createSlice({
         });
       }
       state.soraContents.localMediaStream = action.payload;
+    },
+    setLocalTestMediaStream: (state, aciton: PayloadAction<MediaStream | null>) => {
+      if (state.localTestMediaStream) {
+        state.localTestMediaStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+      state.localTestMediaStream = aciton.payload;
     },
     setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
       state.soraContents.remoteMediaStreams.push(action.payload);
