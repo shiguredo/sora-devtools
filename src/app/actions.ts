@@ -383,9 +383,15 @@ export const copyURL = () => {
       spotlightNumber: state.spotlightNumber !== '' ? state.spotlightNumber : undefined,
       spotlightFocusRid: state.spotlightFocusRid !== '' ? state.spotlightFocusRid : undefined,
       spotlightUnfocusRid: state.spotlightUnfocusRid !== '' ? state.spotlightUnfocusRid : undefined,
-      audioInput: state.audioInput !== '' ? state.audioInput : undefined,
+      audioInput:
+        state.mediaType === 'getUserMedia' && state.audioInput !== ''
+          ? state.audioInput
+          : undefined,
       audioOutput: state.audioOutput !== '' ? state.audioOutput : undefined,
-      videoInput: state.videoInput !== '' ? state.videoInput : undefined,
+      videoInput:
+        state.mediaType === 'getUserMedia' && state.videoInput !== ''
+          ? state.videoInput
+          : undefined,
       displayResolution: state.displayResolution !== '' ? state.displayResolution : undefined,
       bundleId: state.bundleId !== '' && state.enabledBundleId ? state.bundleId : undefined,
       clientId: state.clientId !== '' && state.enabledClientId ? state.clientId : undefined,
