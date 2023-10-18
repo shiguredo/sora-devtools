@@ -625,6 +625,13 @@ export function isFormDisabled(
   return connectionStatus === 'connected' || connectionStatus === 'connecting';
 }
 
+export function isMediaTypeFormDisabled(
+  localTestMediaStream: SoraDevtoolsState['localTestMediaStream'],
+  connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
+): boolean {
+  return localTestMediaStream !== null || isFormDisabled(connectionStatus);
+}
+
 // track の設定情報を返す
 type GetMediaStreamTrackProperties = {
   id: MediaStreamTrack['id'];
