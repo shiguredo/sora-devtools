@@ -622,14 +622,11 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
 export function isFormDisabled(
   connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
 ): boolean {
-  return connectionStatus === 'connected' || connectionStatus === 'connecting';
-}
-
-export function isMediaTypeFormDisabled(
-  localTestMediaStream: SoraDevtoolsState['localTestMediaStream'],
-  connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
-): boolean {
-  return localTestMediaStream !== null || isFormDisabled(connectionStatus);
+  return (
+    connectionStatus === 'preparing' ||
+    connectionStatus === 'connected' ||
+    connectionStatus === 'connecting'
+  );
 }
 
 // track の設定情報を返す
