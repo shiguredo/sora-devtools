@@ -1512,9 +1512,10 @@ export const setMediaDevices = () => {
 export const updateMediaStream = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState();
-    if (!state.soraContents.sora) {
+    if (!state.soraContents.sora && !state.localTestMediaStream) {
       return;
     }
+    const localMediaStream = state.soraContents.localMediaStream || state.localTestMediaStream;
     if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
       const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
       if (originalTrack) {
@@ -1527,8 +1528,8 @@ export const updateMediaStream = () => {
       }
       state.virtualBackgroundProcessor.stopProcessing();
     } else {
-      if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
+      if (localMediaStream) {
+        localMediaStream.getVideoTracks().forEach((track) => {
           track.stop();
           dispatch(
             slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
@@ -1549,8 +1550,8 @@ export const updateMediaStream = () => {
       }
       state.noiseSuppressionProcessor.stopProcessing();
     } else {
-      if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
+      if (localMediaStream) {
+        localMediaStream.getAudioTracks().forEach((track) => {
           track.stop();
           dispatch(
             slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
@@ -1577,7 +1578,11 @@ export const updateMediaStream = () => {
         sender.replaceTrack(track);
       }
     });
-    dispatch(slice.actions.setLocalMediaStream(mediaStream));
+    if (state.soraContents.sora) {
+      dispatch(slice.actions.setLocalMediaStream(mediaStream));
+    } else {
+      dispatch(slice.actions.setLocalTestMediaStream(mediaStream));
+    }
     dispatch(slice.actions.setFakeContentsGainNode(gainNode));
   };
 };
