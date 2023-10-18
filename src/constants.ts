@@ -113,6 +113,7 @@ export const CONNECTION_STATUS = [
   'disconnecting',
   'connected',
   'connecting',
+  'preparing',
 ] as const;
 
 export const ROLES = ['sendrecv', 'sendonly', 'recvonly'] as const;
