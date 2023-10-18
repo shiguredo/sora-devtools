@@ -1209,6 +1209,10 @@ export const connectSora = () => {
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect();
     }
+    // media access でテスト表示している場合は停止する
+    if (state.localTestMediaStream !== null) {
+      dispatch(slice.actions.setLocalTestMediaStream(null));
+    }
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
       state.enabledSignalingUrlCandidates,
