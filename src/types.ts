@@ -104,7 +104,6 @@ export type SoraDevtoolsState = {
     statsReport: RTCStats[];
     datachannels: DataChannelConfiguration[];
   };
-  localTestMediaStream: MediaStream | null;
   ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number];
   logMessages: LogMessage[];
   mediaProcessorsNoiseSuppression: boolean;

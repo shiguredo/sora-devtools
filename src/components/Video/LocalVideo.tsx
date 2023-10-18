@@ -58,7 +58,7 @@ export const LocalVideo: React.FC = () => {
   const simulcast = useAppSelector((state) => state.simulcast);
   const spotlight = useAppSelector((state) => state.spotlight);
   const role = useAppSelector((state) => state.role);
-  const localMediaStream = useAppSelector((state) => state.localTestMediaStream);
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
   return (
     <div className="row my-1">
       <div className="col-auto">
@@ -86,7 +86,7 @@ export const LocalVideo: React.FC = () => {
             </div>
           ) : null}
         </div>
-        {localMediaStream === null && role !== 'recvonly' ? <VideoBox /> : null}
+        {localMediaStream !== null && role !== 'recvonly' ? <VideoBox /> : null}
       </div>
     </div>
   );

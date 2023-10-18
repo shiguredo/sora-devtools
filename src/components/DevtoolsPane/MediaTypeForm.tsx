@@ -4,7 +4,7 @@ import { FormCheck, FormGroup } from 'react-bootstrap';
 import { setMediaType } from '@/app/actions';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { MEDIA_TYPES } from '@/constants';
-import { checkFormValue, isMediaTypeFormDisabled } from '@/utils';
+import { checkFormValue, isFormDisabled } from '@/utils';
 
 import { TooltipFormLabel } from './TooltipFormLabel';
 
@@ -38,9 +38,9 @@ export const MediaTypeForm: React.FC = () => {
   const enabledMediacaptureRegion =
     typeof window !== 'undefined' && window.CropTarget !== undefined;
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const localTestMediaStream = useAppSelector((state) => state.localTestMediaStream);
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
   const mediaType = useAppSelector((state) => state.mediaType);
-  const disabled = isMediaTypeFormDisabled(localTestMediaStream, connectionStatus);
+  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {

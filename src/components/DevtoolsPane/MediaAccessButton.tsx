@@ -13,16 +13,16 @@ export const MediaAccessButton: React.FC = () => {
     dispatch(disposeTestMediaAccess());
   };
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const localTestMediaStream = useAppSelector((state) => state.localTestMediaStream);
-  const disabled = localTestMediaStream === null && isFormDisabled(connectionStatus);
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
+  const disabled = localMediaStream === null && isFormDisabled(connectionStatus);
   return (
     <div className="col-auto mb-1">
       <input
         className="btn btn-secondary"
         type="button"
         name="media_access"
-        defaultValue={localTestMediaStream === null ? 'media access' : 'dispose'}
-        onClick={localTestMediaStream === null ? mediaAccess : disposeMediaAccess}
+        defaultValue={localMediaStream === null ? 'media access' : 'dispose'}
+        onClick={localMediaStream === null ? mediaAccess : disposeMediaAccess}
         disabled={disabled}
       />
     </div>
