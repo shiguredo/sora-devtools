@@ -11,7 +11,8 @@ import { TooltipFormLabel } from './TooltipFormLabel';
 export const RoleForm: React.FC = () => {
   const role = useAppSelector((state) => state.role);
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
+  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ROLES)) {
