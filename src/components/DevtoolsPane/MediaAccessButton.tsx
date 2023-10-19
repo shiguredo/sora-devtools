@@ -15,7 +15,8 @@ export const MediaAccessButton: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const sora = useAppSelector((state) => state.soraContents.sora);
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
-  const disabled = sora !== null || isFormDisabled(connectionStatus);
+  const role = useAppSelector((state) => state.role);
+  const disabled = role === 'recvonly' || sora !== null || isFormDisabled(connectionStatus);
   return (
     <div className="col-auto mb-1">
       <input
