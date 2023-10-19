@@ -1657,14 +1657,35 @@ export const setMicDevice = (micDevice: boolean) => {
         },
       );
       if (0 < mediaStream.getAudioTracks().length) {
-        await state.soraContents.sora.replaceAudioTrack(
-          state.soraContents.localMediaStream,
-          mediaStream.getAudioTracks()[0],
-        );
+        if (state.soraContents.sora && state.soraContents.localMediaStream) {
+          // Sora 接続中の場合
+          await state.soraContents.sora.replaceAudioTrack(
+            state.soraContents.localMediaStream,
+            mediaStream.getAudioTracks()[0],
+          );
+        } else if (state.soraContents.localMediaStream) {
+          // Sora は未接続で media access での表示を行っている場合
+          // 現在の AudioTrack を停止、削除してから、新しい AudioTrack を追加する
+          state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
+            track.enabled = false;
+            track.stop();
+            state.soraContents.localMediaStream?.removeTrack(track);
+          });
+          state.soraContents.localMediaStream.addTrack(mediaStream.getAudioTracks()[0]);
+        }
         dispatch(slice.actions.setFakeContentsGainNode(gainNode));
       }
-    } else {
+    } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
+      // Sora 接続中の場合
       state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream);
+    } else if (state.soraContents.localMediaStream) {
+      // Sora は未接続で media access での表示を行っている場合
+      // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
+      state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
+        track.enabled = false;
+        track.stop();
+        state.soraContents.localMediaStream?.removeTrack(track);
+      });
     }
     dispatch(slice.actions.setMicDevice(micDevice));
   };
@@ -1673,7 +1694,7 @@ export const setMicDevice = (micDevice: boolean) => {
 export const setCameraDevice = (cameraDevice: boolean) => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState();
-    if (!state.soraContents.localMediaStream || !state.soraContents.sora) {
+    if (!state.soraContents.localMediaStream && !state.soraContents.sora) {
       dispatch(slice.actions.setCameraDevice(cameraDevice));
       return;
     }
@@ -1715,14 +1736,35 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         },
       );
       if (0 < mediaStream.getVideoTracks().length) {
-        state.soraContents.sora.replaceVideoTrack(
-          state.soraContents.localMediaStream,
-          mediaStream.getVideoTracks()[0],
-        );
+        if (state.soraContents.sora && state.soraContents.localMediaStream) {
+          // Sora 接続中の場合
+          state.soraContents.sora.replaceVideoTrack(
+            state.soraContents.localMediaStream,
+            mediaStream.getVideoTracks()[0],
+          );
+        } else if (state.soraContents.localMediaStream) {
+          // Sora は未接続で media access での表示を行っている場合
+          // 現在の VideoTrack を停止、削除してから、新しい VideoTrack を追加する
+          state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
+            track.enabled = false;
+            track.stop();
+            state.soraContents.localMediaStream?.removeTrack(track);
+          });
+          state.soraContents.localMediaStream.addTrack(mediaStream.getVideoTracks()[0]);
+        }
         dispatch(slice.actions.setFakeContentsGainNode(gainNode));
       }
-    } else {
+    } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
+      // Sora 接続中の場合
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream);
+    } else if (state.soraContents.localMediaStream) {
+      // Sora は未接続で media access での表示を行っている場合
+      // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
+      state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
+        track.enabled = false;
+        track.stop();
+        state.soraContents.localMediaStream?.removeTrack(track);
+      });
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice));
   };
