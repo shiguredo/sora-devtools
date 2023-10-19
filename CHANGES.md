@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] Sora とは接続せず Audio / Video デバイスの表示確認を行う `media access` 機能を追加する
+  - @tnamao
 - [CHANGE] mediaType が getUserMedia 以外の場合は audioInput / videoInput のフォームを表示しないように修正する
   - @tnamao
 - [CHANGE] mediaType が getUserMedia 以外の場合は、copy URL をクリックした時にクリップボードにコピーする URL のパラメータに audioInput / videoInput を含めないように修正する
