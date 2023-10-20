@@ -383,6 +383,7 @@ export type DownloadReportParameters = Omit<
   | 'focusedSpotlightConnectionIds'
   | 'lightAdjustment'
   | 'lightAdjustmentProcessor'
+  | 'localTestMediaStream'
   | 'logMessages'
   | 'mediaProcessorsNoiseSuppression'
   | 'mute'

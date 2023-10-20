@@ -11,6 +11,12 @@
 
 ## develop
 
+- [ADD] Sora とは接続せず Audio / Video デバイスの表示確認と停止を行う `request media` `dispose media` 機能を追加する
+  - 現状の設定項目を利用するため、`request media` の実行中は `role` や `mediaType` を disabled にする
+  - @tnamao
+- [CHANGE] `request media` 機能で取得した MediaStream をそのまま Sora の接続に利用できるようにしたため、新たに `preparing` の状態を追加する
+  - `connecting` の状態は MediaStream を取得後、実際に Sora との接続処理を行う時の状態として意味を変更する
+  - @tnamao
 - [CHANGE] mediaType が getUserMedia 以外の場合は audioInput / videoInput のフォームを表示しないように修正する
   - @tnamao
 - [CHANGE] mediaType が getUserMedia 以外の場合は、copy URL をクリックした時にクリップボードにコピーする URL のパラメータに audioInput / videoInput を含めないように修正する
