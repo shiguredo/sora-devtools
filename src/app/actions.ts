@@ -1069,130 +1069,75 @@ async function setStatsReport(
 
 export const requestMedia = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
-    const LOG_TITLE = 'MEDIA_CONSTRAINTS';
+    const LOG_TITLE = 'REQUEST_MEDIA';
     const state = getState();
-    const mediaStream = new MediaStream();
-    const audioConstraints = createAudioConstraints({
-      audio: state.audio && state.micDevice,
-      autoGainControl: state.autoGainControl,
-      noiseSuppression: state.noiseSuppression,
-      echoCancellation: state.echoCancellation,
-      echoCancellationType: state.echoCancellationType,
-      audioInput: state.audioInput,
-    });
-    if (audioConstraints) {
-      dispatch(
-        slice.actions.setLogMessages({
-          title: LOG_TITLE,
-          description: JSON.stringify({ audio: audioConstraints }),
-        }),
-      );
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage('audio-media-constraints', { audio: audioConstraints }),
-        ),
-      );
-      const audioMediaStream = await navigator.mediaDevices.getUserMedia({
-        audio: audioConstraints,
+    let mediaStream, gainNode;
+    try {
+      [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
+        throw error;
       });
-      let audioTrack = audioMediaStream.getAudioTracks()[0];
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsMediaStreamTrackLog('start', audioTrack),
-        ),
-      );
-      if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
-        if (state.noiseSuppressionProcessor === null) {
-          throw new Error(
-            "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: error.message }));
+      }
+      let originalTrack;
+      if (state.lightAdjustmentProcessor && state.lightAdjustmentProcessor.isProcessing()) {
+        originalTrack = state.lightAdjustmentProcessor.getOriginalTrack();
+        state.lightAdjustmentProcessor.stopProcessing();
+      }
+      if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
+        if (originalTrack === undefined) {
+          originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
+        }
+        state.virtualBackgroundProcessor.stopProcessing();
+      }
+      if (originalTrack) {
+        originalTrack.stop();
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+          ),
+        );
+      } else {
+        if (mediaStream) {
+          mediaStream.getVideoTracks().forEach((track) => {
+            track.stop();
+            dispatch(
+              slice.actions.setTimelineMessage(
+                createSoraDevtoolsMediaStreamTrackLog('stop', track),
+              ),
+            );
+          });
+        }
+      }
+
+      if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
+        const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
+        if (originalTrack) {
+          originalTrack.stop();
+          dispatch(
+            slice.actions.setTimelineMessage(
+              createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+            ),
           );
         }
         state.noiseSuppressionProcessor.stopProcessing();
-        audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
-      }
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage('succeed-audio-get-user-media'),
-        ),
-      );
-      mediaStream.addTrack(audioTrack);
-    }
-    const videoConstraints = createVideoConstraints({
-      aspectRatio: state.aspectRatio,
-      frameRate: state.frameRate,
-      resizeMode: state.resizeMode,
-      resolution: state.resolution,
-      video: state.video && state.cameraDevice,
-      videoInput: state.videoInput,
-      facingMode: state.facingMode,
-    });
-    if (videoConstraints) {
-      dispatch(
-        slice.actions.setLogMessages({
-          title: LOG_TITLE,
-          description: JSON.stringify({ video: videoConstraints }),
-        }),
-      );
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage('video-media-constraints', { video: videoConstraints }),
-        ),
-      );
-      const videoMediaStream = await navigator.mediaDevices
-        .getUserMedia({ video: videoConstraints })
-        .catch((error) => {
-          // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-          mediaStream.getTracks().forEach((t) => {
-            t.stop();
+      } else {
+        if (mediaStream) {
+          mediaStream.getAudioTracks().forEach((track) => {
+            track.stop();
+            dispatch(
+              slice.actions.setTimelineMessage(
+                createSoraDevtoolsMediaStreamTrackLog('stop', track),
+              ),
+            );
           });
-          throw error;
-        });
-      let videoTrack = videoMediaStream.getVideoTracks()[0];
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsMediaStreamTrackLog('start', videoTrack),
-        ),
-      );
-      if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
-        if (state.lightAdjustmentProcessor === null) {
-          throw new Error(
-            "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
-          );
         }
-        const options = getLightAdjustmentOptions(state.lightAdjustment);
-        state.lightAdjustmentProcessor.stopProcessing();
-        videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options);
       }
-      if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
-        if (state.virtualBackgroundProcessor === null) {
-          throw new Error(
-            "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
-          );
-        }
-        const options = {
-          blurRadius: getBlurRadiusNumber(state.blurRadius),
-        };
-        state.virtualBackgroundProcessor.stopProcessing();
-        videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
-      }
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage('succeed-video-get-user-media'),
-        ),
-      );
-      mediaStream.addTrack(videoTrack);
+      throw error;
     }
-    for (const track of mediaStream.getVideoTracks()) {
-      if (track.contentHint !== undefined) {
-        track.contentHint = state.videoContentHint;
-      }
-      track.enabled = state.videoTrack;
-    }
-    for (const track of mediaStream.getAudioTracks()) {
-      if (track.contentHint !== undefined) {
-        track.contentHint = state.audioContentHint;
-      }
-      track.enabled = state.audioTrack;
+    if (gainNode) {
+      dispatch(slice.actions.setFakeContentsGainNode(gainNode));
     }
     dispatch(slice.actions.setLocalMediaStream(mediaStream));
   };
