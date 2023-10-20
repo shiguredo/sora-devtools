@@ -39,5 +39,8 @@ sora-devtools の package 更新
 ## sora-js-sdk の動作確認を行いたい場合
 
 - ローカルに sora-js-sdk を clone しておく
-- sora-js-sdk のトップディレクトリで `pnpm link` を実行する
-- sora-devtools のトップディレクトリで `pnpm link "sora-js-sdk"` を実行する(`readlink node_modules/sora-js-sdk` で sora-js-sdk がシンボリックリンクになっていることが確認できれば成功)
+  - sora-js-sdk のトップディレクトリで `pnpm i` と `pnpm run build` を実行しておく
+- sora-js-sdk のトップディレクトリで `pnpm link --dir <devtools path>` を実行する
+  - `<devtools path>` は sora-devtools を clone したディレクトリパスを指定する
+- sora-devtools の package.json ファイル内で `"sora-js-sdk": "link:<sora-js-sdk path>"` と置き換えられていたら成功
+  - sora-devtools のトップディレクトリで `pnpm i` `pnpm run dev` を実行するとローカルの sora-js-sdk が利用される
