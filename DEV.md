@@ -26,6 +26,13 @@ $ corepack prepare pnpm@latest-8 --activate
 
 - `pnpm install` を実行
 
+## .env ファイルのコピー
+
+ローカル開発時に仮想背景処理を利用する時に .env ファイルをコピーする手順が必要になります
+
+- `cp .env.example .env` を実行
+  - 内容の変更は不要です
+
 ## 開発
 
 - `pnpm run dev` でローカルサーバを起動する
