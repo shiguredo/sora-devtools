@@ -483,8 +483,12 @@ export const DevtoolsPane: React.FC = () => {
       <RowMediaDevices />
       <hr className="hr-form" />
       <div className="row">
-        <RequestMediaButton />
-        <DisposeMediaButton />
+        {role !== 'recvonly' ? (
+          <>
+            <RequestMediaButton />
+            <DisposeMediaButton />
+          </>
+        ) : null}
         <ConnectButton />
         <DisconnectButton />
         <StartRecordingButton />
