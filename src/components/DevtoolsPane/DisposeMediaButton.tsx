@@ -1,20 +1,16 @@
 import React from 'react';
 
-import { disposeTestMediaAccess, testMediaAccess } from '@/app/actions';
+import { disposeMedia } from '@/app/actions';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { isFormDisabled } from '@/utils';
 
-export const MediaAccessButton: React.FC = () => {
+export const DisposeMediaButton: React.FC = () => {
   const dispatch = useAppDispatch();
-  const mediaAccess = (): void => {
-    dispatch(testMediaAccess());
-  };
-  const disposeMediaAccess = (): void => {
-    dispatch(disposeTestMediaAccess());
+  const onClick = (): void => {
+    dispatch(disposeMedia());
   };
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const sora = useAppSelector((state) => state.soraContents.sora);
-  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream);
   const role = useAppSelector((state) => state.role);
   const disabled = role === 'recvonly' || sora !== null || isFormDisabled(connectionStatus);
   return (
@@ -23,8 +19,8 @@ export const MediaAccessButton: React.FC = () => {
         className="btn btn-secondary"
         type="button"
         name="media_access"
-        defaultValue={localMediaStream === null ? 'media access' : 'dispose'}
-        onClick={localMediaStream === null ? mediaAccess : disposeMediaAccess}
+        defaultValue="dispose media"
+        onClick={onClick}
         disabled={disabled}
       />
     </div>

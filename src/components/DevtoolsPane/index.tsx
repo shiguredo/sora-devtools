@@ -27,6 +27,7 @@ import { DataChannelForm } from './DataChannelForm';
 import { DataChannelsForm } from './DataChannelsForm';
 import { DisconnectButton } from './DisconnectButton';
 import { DisplayResolutionForm } from './DisplayResolutionForm';
+import { DisposeMediaButton } from './DisposeMediaButton';
 import { E2EEForm } from './E2EEForm';
 import { EchoCancellationForm } from './EchoCancellationForm';
 import { EchoCancellationTypeForm } from './EchoCancellationTypeForm';
@@ -35,7 +36,6 @@ import { FakeVolumeForm } from './FakeVolumeForm';
 import { ForwardingFilterForm } from './ForwardingFilterForm';
 import { FrameRateForm } from './FrameRateForm';
 import { LightAdjustmentForm } from './LightAdjustmentForm';
-import { MediaAccessButton } from './MediaAccessButton';
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm';
 import { MediaTypeForm } from './MediaTypeForm';
 import { MetadataForm } from './MetadataForm';
@@ -44,6 +44,7 @@ import { MultistreamForm } from './MultistreamForm';
 import { NoiseSuppressionForm } from './NoiseSuppressionForm';
 import { ReconnectForm } from './ReconnectForm';
 import { ReloadDevicesButton } from './ReloadDevicesButton';
+import { RequestMediaButton } from './RequestMediaButton';
 import { ResizeModeForm } from './ResizeModeForm';
 import { ResolutionForm } from './ResolutionForm';
 import { RoleForm } from './RoleForm';
@@ -482,7 +483,8 @@ export const DevtoolsPane: React.FC = () => {
       <RowMediaDevices />
       <hr className="hr-form" />
       <div className="row">
-        <MediaAccessButton />
+        <RequestMediaButton />
+        <DisposeMediaButton />
         <ConnectButton />
         <DisconnectButton />
         <StartRecordingButton />

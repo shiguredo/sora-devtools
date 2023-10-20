@@ -1067,7 +1067,7 @@ async function setStatsReport(
   }
 }
 
-export const testMediaAccess = () => {
+export const requestMedia = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const LOG_TITLE = 'MEDIA_CONSTRAINTS';
     const state = getState();
@@ -1198,7 +1198,7 @@ export const testMediaAccess = () => {
   };
 };
 
-export const disposeTestMediaAccess = () => {
+export const disposeMedia = () => {
   return async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.setLocalMediaStream(null));
   };
