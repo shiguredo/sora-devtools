@@ -1152,7 +1152,68 @@ export const requestMedia = () => {
 };
 
 export const disposeMedia = () => {
-  return async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
+    const {
+      fakeContents,
+      soraContents,
+      lightAdjustmentProcessor,
+      noiseSuppressionProcessor,
+      virtualBackgroundProcessor,
+    } = getState();
+    const { localMediaStream } = soraContents;
+    let originalTrack;
+    if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
+      originalTrack = lightAdjustmentProcessor.getOriginalTrack();
+      lightAdjustmentProcessor.stopProcessing();
+    }
+    if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
+      if (originalTrack === undefined) {
+        originalTrack = virtualBackgroundProcessor.getOriginalTrack();
+      }
+      virtualBackgroundProcessor.stopProcessing();
+    }
+    if (originalTrack !== undefined) {
+      originalTrack.stop();
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+        ),
+      );
+    } else {
+      if (localMediaStream) {
+        localMediaStream.getVideoTracks().forEach((track) => {
+          track.stop();
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          );
+        });
+      }
+    }
+
+    if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
+      const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
+      if (originalTrack) {
+        originalTrack.stop();
+        dispatch(
+          slice.actions.setTimelineMessage(
+            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+          ),
+        );
+      }
+      noiseSuppressionProcessor.stopProcessing();
+    } else {
+      if (localMediaStream) {
+        localMediaStream.getAudioTracks().forEach((track) => {
+          track.stop();
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          );
+        });
+      }
+    }
+    if (fakeContents.worker) {
+      fakeContents.worker.postMessage({ type: 'stop' });
+    }
     dispatch(slice.actions.setLocalMediaStream(null));
   };
 };
