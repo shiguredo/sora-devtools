@@ -1078,7 +1078,15 @@ export const requestMedia = () => {
       });
     } catch (error) {
       if (error instanceof Error) {
-        dispatch(slice.actions.setLogMessages({ title: LOG_TITLE, description: error.message }));
+        dispatch(
+          slice.actions.setLogMessages({
+            title: LOG_TITLE,
+            description: JSON.stringify(error.message),
+          }),
+        );
+        dispatch(
+          slice.actions.setAPIErrorAlertMessage(`Failed to get user devices. ${error.message}`),
+        );
       }
       let originalTrack;
       if (state.lightAdjustmentProcessor && state.lightAdjustmentProcessor.isProcessing()) {
