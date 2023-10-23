@@ -872,65 +872,11 @@ function setSoraCallbacks(
         createSoraDevtoolsTimelineMessage('event-on-disconnect', message),
       ),
     );
-    const {
-      fakeContents,
-      soraContents,
-      reconnect,
-      lightAdjustmentProcessor,
-      noiseSuppressionProcessor,
-      virtualBackgroundProcessor,
-    } = getState();
-    const { localMediaStream, remoteMediaStreams } = soraContents;
-    let originalTrack;
-    if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
-      originalTrack = lightAdjustmentProcessor.getOriginalTrack();
-      lightAdjustmentProcessor.stopProcessing();
-    }
-    if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
-      if (originalTrack === undefined) {
-        originalTrack = virtualBackgroundProcessor.getOriginalTrack();
-      }
-      virtualBackgroundProcessor.stopProcessing();
-    }
-    if (originalTrack !== undefined) {
-      originalTrack.stop();
-      dispatch(
-        slice.actions.setTimelineMessage(
-          createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
-        ),
-      );
-    } else {
-      if (localMediaStream) {
-        localMediaStream.getVideoTracks().forEach((track) => {
-          track.stop();
-          dispatch(
-            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-          );
-        });
-      }
-    }
-
-    if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
-      const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
-      if (originalTrack) {
-        originalTrack.stop();
-        dispatch(
-          slice.actions.setTimelineMessage(
-            createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
-          ),
-        );
-      }
-      noiseSuppressionProcessor.stopProcessing();
-    } else {
-      if (localMediaStream) {
-        localMediaStream.getAudioTracks().forEach((track) => {
-          track.stop();
-          dispatch(
-            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-          );
-        });
-      }
-    }
+    // ローカルの MediaStream の Track と MediaProcessor を止める
+    stopLocalVideoTrack(dispatch, getState());
+    stopLocalAudioTrack(dispatch, getState());
+    const { fakeContents, soraContents, reconnect } = getState();
+    const { remoteMediaStreams } = soraContents;
     remoteMediaStreams.forEach((mediaStream) => {
       mediaStream.getTracks().forEach((track) => {
         track.stop();
