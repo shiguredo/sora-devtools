@@ -1784,6 +1784,10 @@ export const setCameraDevice = (cameraDevice: boolean) => {
   };
 };
 
+/**
+ * devtools のローカルにもっている MediaStream のうち Video Track と
+ * 映像処理を行っている MediaProcessor の停止を行う関数
+ */
 const stopLocalVideoTrack = (
   dispatch: Dispatch,
   { soraContents, lightAdjustmentProcessor, virtualBackgroundProcessor }: SoraDevtoolsState,
@@ -1819,6 +1823,10 @@ const stopLocalVideoTrack = (
   }
 };
 
+/**
+ * devtools のローカルにもっている MediaStream のうち Video Track と
+ * 映像処理を行っている MediaProcessor の停止を行う関数
+ */
 const stopLocalAudioTrack = (
   dispatch: Dispatch,
   { soraContents, noiseSuppressionProcessor }: SoraDevtoolsState,
