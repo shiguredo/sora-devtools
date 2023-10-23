@@ -1697,15 +1697,12 @@ export const setMicDevice = (micDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
+      stopLocalAudioTrack(dispatch, state);
       state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream);
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
-      state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
-        track.enabled = false;
-        track.stop();
-        state.soraContents.localMediaStream?.removeTrack(track);
-      });
+      stopLocalAudioTrack(dispatch, state);
     }
     dispatch(slice.actions.setMicDevice(micDevice));
   };
@@ -1776,18 +1773,78 @@ export const setCameraDevice = (cameraDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
+      stopLocalVideoTrack(dispatch, state);
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream);
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
-      state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
-        track.enabled = false;
-        track.stop();
-        state.soraContents.localMediaStream?.removeTrack(track);
-      });
+      stopLocalVideoTrack(dispatch, state);
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice));
   };
+};
+
+const stopLocalVideoTrack = (
+  dispatch: Dispatch,
+  { soraContents, lightAdjustmentProcessor, virtualBackgroundProcessor }: SoraDevtoolsState,
+): void => {
+  const { localMediaStream } = soraContents;
+  let originalTrack;
+  if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
+    originalTrack = lightAdjustmentProcessor.getOriginalTrack();
+    lightAdjustmentProcessor.stopProcessing();
+  }
+  if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
+    if (originalTrack === undefined) {
+      originalTrack = virtualBackgroundProcessor.getOriginalTrack();
+    }
+    virtualBackgroundProcessor.stopProcessing();
+  }
+  if (originalTrack !== undefined) {
+    originalTrack.stop();
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+      ),
+    );
+  } else {
+    if (localMediaStream) {
+      localMediaStream.getVideoTracks().forEach((track) => {
+        track.stop();
+        dispatch(
+          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+        );
+      });
+    }
+  }
+};
+
+const stopLocalAudioTrack = (
+  dispatch: Dispatch,
+  { soraContents, noiseSuppressionProcessor }: SoraDevtoolsState,
+): void => {
+  const { localMediaStream } = soraContents;
+  if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
+    const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
+    if (originalTrack) {
+      originalTrack.stop();
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
+        ),
+      );
+    }
+    noiseSuppressionProcessor.stopProcessing();
+  } else {
+    if (localMediaStream) {
+      localMediaStream.getAudioTracks().forEach((track) => {
+        track.stop();
+        dispatch(
+          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+        );
+      });
+    }
+  }
 };
 
 // Lyra の初期化
