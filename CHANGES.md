@@ -11,7 +11,7 @@
 
 ## develop
 
-- [FIX]  `request media` `connect` を実行した後に、`Enable mic device` `Enable video device` のトグルでデバイスを無効化した時に Media Processor が保持している Track の停止漏れを修正する
+- [FIX]  `request media` `connect` を実行した後に、`Enable mic device` `Enable camera device` のトグルでデバイスを無効化した時に Media Processor が保持している Track の停止漏れを修正する
   - トグル切替でマイクやカメラのデバイスを無効化してもカメラ等のデバイスが使用中の状態のままになってしまっていた
   - @tnamao
 - [ADD] Sora とは接続せず Audio / Video デバイスの表示確認と停止を行う `request media` `dispose media` 機能を追加する
