@@ -1120,6 +1120,7 @@ export const disposeMedia = () => {
     }
     if (originalTrack !== undefined) {
       originalTrack.stop();
+      localMediaStream?.removeTrack(originalTrack);
       dispatch(
         slice.actions.setTimelineMessage(
           createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
@@ -1129,6 +1130,7 @@ export const disposeMedia = () => {
       if (localMediaStream) {
         localMediaStream.getVideoTracks().forEach((track) => {
           track.stop();
+          localMediaStream.removeTrack(track);
           dispatch(
             slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
           );
@@ -1140,6 +1142,7 @@ export const disposeMedia = () => {
       const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
       if (originalTrack) {
         originalTrack.stop();
+        localMediaStream?.removeTrack(originalTrack);
         dispatch(
           slice.actions.setTimelineMessage(
             createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
@@ -1151,6 +1154,7 @@ export const disposeMedia = () => {
       if (localMediaStream) {
         localMediaStream.getAudioTracks().forEach((track) => {
           track.stop();
+          localMediaStream.removeTrack(track);
           dispatch(
             slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
           );
@@ -1733,13 +1737,14 @@ export const setCameraDevice = (cameraDevice: boolean) => {
 /**
  * devtools のローカルにもっている MediaStream のうち Video Track と
  * 映像処理を行っている MediaProcessor の停止を行う関数
+ * MediaStream から Track の削除も行う
  */
 const stopLocalVideoTrack = (
   dispatch: Dispatch,
   { soraContents, lightAdjustmentProcessor, virtualBackgroundProcessor }: SoraDevtoolsState,
 ): void => {
   const { localMediaStream } = soraContents;
-  let originalTrack;
+  let originalTrack: MediaStreamTrack | undefined;
   if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
     originalTrack = lightAdjustmentProcessor.getOriginalTrack();
     lightAdjustmentProcessor.stopProcessing();
@@ -1752,26 +1757,30 @@ const stopLocalVideoTrack = (
   }
   if (originalTrack !== undefined) {
     originalTrack.stop();
+    localMediaStream?.removeTrack(originalTrack);
     dispatch(
       slice.actions.setTimelineMessage(
         createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
       ),
     );
   } else {
-    if (localMediaStream) {
-      localMediaStream.getVideoTracks().forEach((track) => {
-        track.stop();
-        dispatch(
-          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-        );
-      });
+    if (!localMediaStream) {
+      return;
     }
+    localMediaStream.getVideoTracks().forEach((track) => {
+      track.stop();
+      localMediaStream.removeTrack(track);
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+      );
+    });
   }
 };
 
 /**
- * devtools のローカルにもっている MediaStream のうち Video Track と
+ * devtools のローカルにもっている MediaStream のうち Audio Track と
  * 映像処理を行っている MediaProcessor の停止を行う関数
+ * MediaStream から Track の削除も行う
  */
 const stopLocalAudioTrack = (
   dispatch: Dispatch,
@@ -1782,6 +1791,7 @@ const stopLocalAudioTrack = (
     const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
     if (originalTrack) {
       originalTrack.stop();
+      localMediaStream?.removeTrack(originalTrack);
       dispatch(
         slice.actions.setTimelineMessage(
           createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
@@ -1793,6 +1803,7 @@ const stopLocalAudioTrack = (
     if (localMediaStream) {
       localMediaStream.getAudioTracks().forEach((track) => {
         track.stop();
+        localMediaStream.removeTrack(track);
         dispatch(
           slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
         );
