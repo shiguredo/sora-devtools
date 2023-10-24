@@ -853,7 +853,7 @@ function setSoraCallbacks(
       dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id));
     }
   });
-  sora.on('disconnect', (event) => {
+  sora.on('disconnect', async (event) => {
     const message: Record<string, unknown> = {
       type: event.type,
       title: event.title,
@@ -873,7 +873,7 @@ function setSoraCallbacks(
       ),
     );
     // ローカルの MediaStream の Track と MediaProcessor を止める
-    stopLocalVideoTrack(dispatch, getState());
+    await stopLocalVideoTrack(dispatch, getState());
     stopLocalAudioTrack(dispatch, getState());
     const { fakeContents, soraContents, reconnect } = getState();
     const { remoteMediaStreams } = soraContents;
@@ -1723,12 +1723,12 @@ export const setCameraDevice = (cameraDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
-      stopLocalVideoTrack(dispatch, state);
+      await stopLocalVideoTrack(dispatch, state);
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream);
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
-      stopLocalVideoTrack(dispatch, state);
+      await stopLocalVideoTrack(dispatch, state);
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice));
   };
@@ -1739,10 +1739,10 @@ export const setCameraDevice = (cameraDevice: boolean) => {
  * 映像処理を行っている MediaProcessor の停止を行う関数
  * MediaStream から Track の削除も行う
  */
-const stopLocalVideoTrack = (
+const stopLocalVideoTrack = async (
   dispatch: Dispatch,
   { soraContents, lightAdjustmentProcessor, virtualBackgroundProcessor }: SoraDevtoolsState,
-): void => {
+): Promise<void> => {
   const { localMediaStream } = soraContents;
   let originalTrack: MediaStreamTrack | undefined;
   if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
@@ -1756,6 +1756,10 @@ const stopLocalVideoTrack = (
     virtualBackgroundProcessor.stopProcessing();
   }
   if (originalTrack !== undefined) {
+    originalTrack.enabled = false;
+    // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
+    // safari はこれで対応できるが firefox は残ってしまう
+    await new Promise((resolve) => setTimeout(resolve, 100));
     originalTrack.stop();
     localMediaStream?.removeTrack(originalTrack);
     dispatch(
@@ -1767,6 +1771,12 @@ const stopLocalVideoTrack = (
     if (!localMediaStream) {
       return;
     }
+    localMediaStream.getVideoTracks().forEach((track) => {
+      track.enabled = false;
+    });
+    // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
+    // safari はこれで対応できるが firefox は残ってしまう
+    await new Promise((resolve) => setTimeout(resolve, 100));
     localMediaStream.getVideoTracks().forEach((track) => {
       track.stop();
       localMediaStream.removeTrack(track);
