@@ -482,13 +482,13 @@ export const DevtoolsPane: React.FC = () => {
       <RowDevices />
       <RowMediaDevices />
       <hr className="hr-form" />
+      {role !== 'recvonly' ? (
+        <div className="row mb-2">
+          <RequestMediaButton />
+          <DisposeMediaButton />
+        </div>
+      ) : null}
       <div className="row">
-        {role !== 'recvonly' ? (
-          <>
-            <RequestMediaButton />
-            <DisposeMediaButton />
-          </>
-        ) : null}
         <ConnectButton />
         <DisconnectButton />
         <StartRecordingButton />
