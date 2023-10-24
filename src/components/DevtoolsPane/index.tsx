@@ -404,31 +404,35 @@ const RowDevices: React.FC = () => {
   const role = useAppSelector((state) => state.role);
   const mediaType = useAppSelector((state) => state.mediaType);
   return (
-    <Row className="form-row" xs="auto">
-      {/**
-       * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
-       */}
-      {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
-        <>
-          <Col>
-            <AudioInputForm />
-          </Col>
-          <Col>
-            <VideoInputForm />
-          </Col>
-        </>
-      ) : null}
-      <Col>
-        <AudioOutputForm />
-      </Col>
-      <ReloadDevicesButton />
-      {role !== 'recvonly' ? (
-        <>
-          <RequestMediaButton />
-          <DisposeMediaButton />
-        </>
-      ) : null}
-    </Row>
+    <>
+      <Row className="form-row" xs="auto">
+        {/**
+         * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
+         */}
+        {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
+          <>
+            <Col>
+              <AudioInputForm />
+            </Col>
+            <Col>
+              <VideoInputForm />
+            </Col>
+          </>
+        ) : null}
+      </Row>
+      <Row className="form-row" xs="auto">
+        <Col>
+          <AudioOutputForm />
+        </Col>
+        <ReloadDevicesButton />
+        {role !== 'recvonly' ? (
+          <>
+            <RequestMediaButton />
+            <DisposeMediaButton />
+          </>
+        ) : null}
+      </Row>
+    </>
   );
 };
 
