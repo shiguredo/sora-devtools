@@ -16,7 +16,7 @@ export const DisposeMediaButton: React.FC = () => {
   return (
     <div className="col-auto mb-1">
       <input
-        className="btn btn-secondary"
+        className="btn btn-outline-secondary"
         type="button"
         name="media_access"
         defaultValue="dispose media"
