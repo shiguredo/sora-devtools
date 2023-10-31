@@ -664,20 +664,44 @@ async function createMediaStream(
     echoCancellationType: state.echoCancellationType,
     audioInput: state.audioInput,
   });
+  const videoConstraints = createVideoConstraints({
+    aspectRatio: state.aspectRatio,
+    frameRate: state.frameRate,
+    resizeMode: state.resizeMode,
+    resolution: state.resolution,
+    video: state.video && state.cameraDevice,
+    videoInput: state.videoInput,
+    facingMode: state.facingMode,
+  });
+  const mediaStreamConstraints: MediaStreamConstraints = {};
   if (audioConstraints) {
-    dispatch(
-      slice.actions.setLogMessages({
-        title: LOG_TITLE,
-        description: JSON.stringify({ audio: audioConstraints }),
-      }),
-    );
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('audio-media-constraints', { audio: audioConstraints }),
-      ),
-    );
-    const audioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
-    let audioTrack = audioMediaStream.getAudioTracks()[0];
+    mediaStreamConstraints.audio = audioConstraints;
+  }
+  if (videoConstraints) {
+    mediaStreamConstraints.video = videoConstraints;
+  }
+  dispatch(
+    slice.actions.setLogMessages({
+      title: LOG_TITLE,
+      description: JSON.stringify(mediaStreamConstraints),
+    }),
+  );
+  dispatch(
+    slice.actions.setTimelineMessage(
+      createSoraDevtoolsTimelineMessage('media-constraints', mediaStreamConstraints),
+    ),
+  );
+  const gumMediaStream = await navigator.mediaDevices
+    .getUserMedia(mediaStreamConstraints)
+    .catch((error) => {
+      // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
+      mediaStream.getTracks().forEach((t) => {
+        t.stop();
+      });
+      throw error;
+    });
+  if (audioConstraints) {
+    let audioTrack = gumMediaStream.getAudioTracks()[0];
     dispatch(
       slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', audioTrack)),
     );
@@ -697,37 +721,8 @@ async function createMediaStream(
     );
     mediaStream.addTrack(audioTrack);
   }
-  const videoConstraints = createVideoConstraints({
-    aspectRatio: state.aspectRatio,
-    frameRate: state.frameRate,
-    resizeMode: state.resizeMode,
-    resolution: state.resolution,
-    video: state.video && state.cameraDevice,
-    videoInput: state.videoInput,
-    facingMode: state.facingMode,
-  });
   if (videoConstraints) {
-    dispatch(
-      slice.actions.setLogMessages({
-        title: LOG_TITLE,
-        description: JSON.stringify({ video: videoConstraints }),
-      }),
-    );
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('video-media-constraints', { video: videoConstraints }),
-      ),
-    );
-    const videoMediaStream = await navigator.mediaDevices
-      .getUserMedia({ video: videoConstraints })
-      .catch((error) => {
-        // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-        mediaStream.getTracks().forEach((t) => {
-          t.stop();
-        });
-        throw error;
-      });
-    let videoTrack = videoMediaStream.getVideoTracks()[0];
+    let videoTrack = gumMediaStream.getVideoTracks()[0];
     dispatch(
       slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', videoTrack)),
     );
