@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] mic / camera の gUM 呼び出しを 1 回で済むように処理を変更する
+  - Chrome のみ gUM の呼び出しが連続すると許可ダイアログの表示に時間がかかるため、まとめて許可を取るようにポリシーを変更する
+  - @tnamao
 - [CHANGE] videoAV1Params の表示位置をを変更し、`videoVP9Params` の下に表示する
   - @tnamao
 - [CHANGE] videoCodecType の `AV1` の表示順を変更し、`VP9` の下に表示する
