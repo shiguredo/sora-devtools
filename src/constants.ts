@@ -10,7 +10,7 @@ export const AUDIO_CODEC_TYPES = ['', 'OPUS', 'LYRA'] as const;
 
 export const AUDIO_BIT_RATES = ['', '8', '16', '24', '32', '64', '96', '128', '256'] as const;
 
-export const VIDEO_CODEC_TYPES = ['', 'VP8', 'VP9', 'H264', 'H265', 'AV1'] as const;
+export const VIDEO_CODEC_TYPES = ['', 'VP8', 'VP9', 'AV1', 'H264', 'H265'] as const;
 
 export const VIDEO_BIT_RATES = [
   '',
