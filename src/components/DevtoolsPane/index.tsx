@@ -274,8 +274,8 @@ const RowAdvancedSignalingOptions: React.FC = () => {
             </Col>
           </Row>
           <VideoVP9ParamsForm />
-          <VideoH264ParamsForm />
           <VideoAV1ParamsForm />
+          <VideoH264ParamsForm />
         </div>
       </Collapse>
     </Row>

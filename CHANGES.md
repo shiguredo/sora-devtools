@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] videoAV1Params の表示位置をを変更し、`videoVP9Params` の下に表示する
+  - @tnamao
 - [CHANGE] videoCodecType の `AV1` の表示順を変更し、`VP9` の下に表示する
   - @tnamao
 - [FIX]  `request media` `connect` を実行した後に、`Enable mic device` `Enable camera device` のトグルでデバイスを無効化した時に Media Processor が保持している Track の停止漏れを修正する
