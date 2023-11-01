@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] Debug Pane に `Codec` のタブを追加する
+  - RTCRtpCapabilities の codec 一覧を表示する
+  - @tnamao
 - [CHANGE] mic / camera の gUM 呼び出しを 1 回で済むように処理を変更する
   - Chrome のみ gUM の呼び出しが連続すると許可ダイアログの表示に時間がかかるため、まとめて許可を取るようにポリシーを変更する
   - @tnamao
