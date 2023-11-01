@@ -68,6 +68,7 @@ export const DebugPane: React.FC = () => {
           <DataChannelMessagingMessages />
         </Tab>
         <Tab eventKey="codec" title="Codec">
+          <DebugFilter />
           <CapabilitiesCodec />
         </Tab>
       </Tabs>
