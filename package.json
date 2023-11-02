@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2023.2.0-canary.4",
+  "version": "2023.2.0-canary.5",
   "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "14.0.1",
     "@types/node": "20.8.10",
-    "@types/react": "18.2.33",
+    "@types/react": "18.2.34",
     "@types/react-redux": "7.1.28",
     "@types/redux-logger": "3.0.11",
     "@typescript-eslint/eslint-plugin": "6.9.1",
@@ -40,7 +40,7 @@
     "eslint-plugin-simple-import-sort": "10.0.0",
     "husky": "8.0.3",
     "jsdom": "22.1.0",
-    "knip": "2.38.4",
+    "knip": "2.38.6",
     "next": "14.0.1",
     "prettier": "3.0.3",
     "rimraf": "5.0.5",
