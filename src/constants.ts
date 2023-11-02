@@ -93,6 +93,7 @@ export const DEBUG_TYPES = [
   'timeline',
   'signaling',
   'messaging',
+  'codec',
 ] as const;
 
 export const AUDIO_CONTENT_HINTS = ['', 'speech', 'speech-recognition', 'music'] as const;
