@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] 録画 API のバージョンを `20231220` に変更する
+  - @voluntas
 - [ADD] Debug Pane に `Codec` のタブを追加する
   - RTCRtpSender と RTCRtpReceiver の RTCRtpCapabilities の codec 一覧を表示する
   - @tnamao
@@ -21,7 +23,7 @@
   - @tnamao
 - [CHANGE] videoCodecType の `AV1` の表示順を変更し、`VP9` の下に表示する
   - @tnamao
-- [FIX]  `request media` `connect` を実行した後に、`Enable mic device` `Enable camera device` のトグルでデバイスを無効化した時に Media Processor が保持している Track の停止漏れを修正する
+- [FIX] `request media` `connect` を実行した後に、`Enable mic device` `Enable camera device` のトグルでデバイスを無効化した時に Media Processor が保持している Track の停止漏れを修正する
   - トグル切替でマイクやカメラのデバイスを無効化してもカメラ等のデバイスが使用中の状態のままになってしまっていた
   - @tnamao
 - [ADD] Sora とは接続せず Audio / Video デバイスの表示確認と停止を行う `request media` `dispose media` 機能を追加する
