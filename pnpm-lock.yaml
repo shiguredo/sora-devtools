@@ -82,9 +82,6 @@ devDependencies:
   next:
     specifier: 14.0.2
     version: 14.0.2(@babel/core@7.23.3)(react-dom@18.2.0)(react@18.2.0)
-  prettier:
-    specifier: 3.1.0
-    version: 3.1.0
   rimraf:
     specifier: 5.0.5
     version: 5.0.5
@@ -2489,12 +2486,6 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: true
-
-  /prettier@3.1.0:
-    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
-    engines: {node: '>=14'}
-    hasBin: true
     dev: true
 
   /pretty-format@29.7.0:
