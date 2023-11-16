@@ -134,8 +134,7 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
       <div className="d-flex flex-wrap align-items-start">
         <div
           className={
-            'd-flex flex-nowrap align-items-start video-wrapper' +
-            (focused ? ' spotlight-focused' : '')
+            `d-flex flex-nowrap align-items-start video-wrapper${focused ? ' spotlight-focused' : ''}`
           }
         >
           <Video

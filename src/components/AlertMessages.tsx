@@ -18,7 +18,7 @@ const Reconnect: React.FC = () => {
   }, []);
   return (
     <Toast delay={20000} onClose={onClose}>
-      <Toast.Header className={`bg-warning text-white`}>
+      <Toast.Header className={'bg-warning text-white'}>
         <strong className="me-auto">Reconnect</strong>
       </Toast.Header>
       <Toast.Body className="bg-light">

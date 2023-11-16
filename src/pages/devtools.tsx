@@ -26,7 +26,7 @@ const Devtools: React.FC = () => {
       <MediacaptureRegionTarget />
       <Head />
       <Header />
-      <main role="main">
+      <main>
         <div className="container">
           <div className="row">
             <DevtoolsPane />

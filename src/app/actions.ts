@@ -557,7 +557,7 @@ async function createMediaStream(
       aspectRatio: state.aspectRatio,
       resizeMode: state.resizeMode,
     });
-    constraints['preferCurrentTab'] = true;
+    constraints.preferCurrentTab = true;
     dispatch(
       slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }),
     );
@@ -695,7 +695,7 @@ async function createMediaStream(
     .getUserMedia(mediaStreamConstraints)
     .catch((error) => {
       // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-      mediaStream.getTracks().forEach((t) => {
+      mediaStream.getTracks().filter((t) => {
         t.stop();
       });
       throw error;
@@ -854,13 +854,13 @@ function setSoraCallbacks(
       title: event.title,
     };
     if (event.code !== undefined) {
-      message['code'] = event.code;
+      message.code = event.code;
     }
     if (event.reason !== undefined) {
-      message['reason'] = event.reason;
+      message.reason = event.reason;
     }
     if (event.params !== undefined) {
-      message['params'] = event.params;
+      message.params = event.params;
     }
     dispatch(
       slice.actions.setTimelineMessage(
@@ -872,8 +872,8 @@ function setSoraCallbacks(
     stopLocalAudioTrack(dispatch, getState());
     const { fakeContents, soraContents, reconnect } = getState();
     const { remoteMediaStreams } = soraContents;
-    remoteMediaStreams.forEach((mediaStream) => {
-      mediaStream.getTracks().forEach((track) => {
+    remoteMediaStreams.filter((mediaStream) => {
+      mediaStream.getTracks().filter((track) => {
         track.stop();
       });
     });
@@ -974,8 +974,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createSoraDevtoolsTimelineMessage(type: string, data?: any): TimelineMessage {
+function createSoraDevtoolsTimelineMessage(type: string, data?: unknown): TimelineMessage {
   return {
     type: type,
     logType: 'sora-devtools',
@@ -984,7 +983,6 @@ function createSoraDevtoolsTimelineMessage(type: string, data?: any): TimelineMe
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSoraDevtoolsMediaStreamTrackLog(
   action: 'start' | 'stop',
   track: MediaStreamTrack,
@@ -1001,6 +999,7 @@ async function setStatsReport(
   if (sora.pc && sora.pc?.iceConnectionState !== 'closed') {
     const stats = await sora.pc.getStats();
     const statsReport: RTCStats[] = [];
+    // biome-ignore lint/complexity/noForEach: stats は Array ではなく RTCStatsReport なので forEach で回す
     stats.forEach((s) => {
       statsReport.push(s);
     });
@@ -1012,7 +1011,8 @@ export const requestMedia = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const LOG_TITLE = 'REQUEST_MEDIA';
     const state = getState();
-    let mediaStream, gainNode;
+    let mediaStream;
+    let gainNode;
     try {
       [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
         throw error;
@@ -1030,11 +1030,11 @@ export const requestMedia = () => {
         );
       }
       let originalTrack;
-      if (state.lightAdjustmentProcessor && state.lightAdjustmentProcessor.isProcessing()) {
+      if (state.lightAdjustmentProcessor?.isProcessing()) {
         originalTrack = state.lightAdjustmentProcessor.getOriginalTrack();
         state.lightAdjustmentProcessor.stopProcessing();
       }
-      if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
+      if (state.virtualBackgroundProcessor?.isProcessing()) {
         if (originalTrack === undefined) {
           originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
         }
@@ -1049,7 +1049,7 @@ export const requestMedia = () => {
         );
       } else {
         if (mediaStream) {
-          mediaStream.getVideoTracks().forEach((track) => {
+          mediaStream.getVideoTracks().filter((track) => {
             track.stop();
             dispatch(
               slice.actions.setTimelineMessage(
@@ -1060,7 +1060,7 @@ export const requestMedia = () => {
         }
       }
 
-      if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
+      if (state.noiseSuppressionProcessor?.isProcessing()) {
         const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
         if (originalTrack) {
           originalTrack.stop();
@@ -1073,7 +1073,7 @@ export const requestMedia = () => {
         state.noiseSuppressionProcessor.stopProcessing();
       } else {
         if (mediaStream) {
-          mediaStream.getAudioTracks().forEach((track) => {
+          mediaStream.getAudioTracks().filter((track) => {
             track.stop();
             dispatch(
               slice.actions.setTimelineMessage(
@@ -1103,11 +1103,11 @@ export const disposeMedia = () => {
     } = getState();
     const { localMediaStream } = soraContents;
     let originalTrack;
-    if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
+    if (lightAdjustmentProcessor?.isProcessing()) {
       originalTrack = lightAdjustmentProcessor.getOriginalTrack();
       lightAdjustmentProcessor.stopProcessing();
     }
-    if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
+    if (virtualBackgroundProcessor?.isProcessing()) {
       if (originalTrack === undefined) {
         originalTrack = virtualBackgroundProcessor.getOriginalTrack();
       }
@@ -1123,7 +1123,7 @@ export const disposeMedia = () => {
       );
     } else {
       if (localMediaStream) {
-        localMediaStream.getVideoTracks().forEach((track) => {
+        localMediaStream.getVideoTracks().filter((track) => {
           track.stop();
           localMediaStream.removeTrack(track);
           dispatch(
@@ -1133,7 +1133,7 @@ export const disposeMedia = () => {
       }
     }
 
-    if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
+    if (noiseSuppressionProcessor?.isProcessing()) {
       const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
       if (originalTrack) {
         originalTrack.stop();
@@ -1147,7 +1147,7 @@ export const disposeMedia = () => {
       noiseSuppressionProcessor.stopProcessing();
     } else {
       if (localMediaStream) {
-        localMediaStream.getAudioTracks().forEach((track) => {
+        localMediaStream.getAudioTracks().filter((track) => {
           track.stop();
           localMediaStream.removeTrack(track);
           dispatch(
@@ -1189,7 +1189,9 @@ export const connectSora = () => {
     const connectionOptionsState = pickConnectionOptionsState(state);
     const connectionOptions = createConnectOptions(connectionOptionsState);
     const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    let sora, mediaStream, gainNode;
+    let sora;
+    let mediaStream;
+    let gainNode;
     try {
       if (state.role === 'sendonly') {
         sora = connection.sendonly(state.channelId, null, connectionOptions);
@@ -1246,11 +1248,11 @@ export const connectSora = () => {
         );
       }
       let originalTrack;
-      if (state.lightAdjustmentProcessor && state.lightAdjustmentProcessor.isProcessing()) {
+      if (state.lightAdjustmentProcessor?.isProcessing()) {
         originalTrack = state.lightAdjustmentProcessor.getOriginalTrack();
         state.lightAdjustmentProcessor.stopProcessing();
       }
-      if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
+      if (state.virtualBackgroundProcessor?.isProcessing()) {
         if (originalTrack === undefined) {
           originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
         }
@@ -1265,7 +1267,7 @@ export const connectSora = () => {
         );
       } else {
         if (mediaStream) {
-          mediaStream.getVideoTracks().forEach((track) => {
+          mediaStream.getVideoTracks().filter((track) => {
             track.stop();
             dispatch(
               slice.actions.setTimelineMessage(
@@ -1276,7 +1278,7 @@ export const connectSora = () => {
         }
       }
 
-      if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
+      if (state.noiseSuppressionProcessor?.isProcessing()) {
         const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
         if (originalTrack) {
           originalTrack.stop();
@@ -1289,7 +1291,7 @@ export const connectSora = () => {
         state.noiseSuppressionProcessor.stopProcessing();
       } else {
         if (mediaStream) {
-          mediaStream.getAudioTracks().forEach((track) => {
+          mediaStream.getAudioTracks().filter((track) => {
             track.stop();
             dispatch(
               slice.actions.setTimelineMessage(
@@ -1355,7 +1357,9 @@ export const reconnectSora = () => {
     const connectionOptionsState = pickConnectionOptionsState(state);
     const connectionOptions = createConnectOptions(connectionOptionsState);
     const metadata = parseMetadata(state.enabledMetadata, state.metadata);
-    let sora, mediaStream, gainNode;
+    let sora;
+    let mediaStream;
+    let gainNode;
     if (state.role === 'sendonly' || state.role === 'sendrecv') {
       [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()));
@@ -1465,7 +1469,7 @@ export const setMediaDevices = () => {
     const audioInputDevices: MediaDeviceInfo[] = [];
     const videoInputDevices: MediaDeviceInfo[] = [];
     const audioOutputDevices: MediaDeviceInfo[] = [];
-    deviceInfos.forEach((deviceInfo) => {
+    deviceInfos.filter((deviceInfo) => {
       if (deviceInfo.deviceId === '') {
         return;
       }
@@ -1490,7 +1494,7 @@ export const updateMediaStream = () => {
     if (!state.soraContents.localMediaStream) {
       return;
     }
-    if (state.virtualBackgroundProcessor && state.virtualBackgroundProcessor.isProcessing()) {
+    if (state.virtualBackgroundProcessor?.isProcessing()) {
       const originalTrack = state.virtualBackgroundProcessor.getOriginalTrack();
       if (originalTrack) {
         originalTrack.stop();
@@ -1503,7 +1507,7 @@ export const updateMediaStream = () => {
       state.virtualBackgroundProcessor.stopProcessing();
     } else {
       if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
+        state.soraContents.localMediaStream.getVideoTracks().filter((track) => {
           track.stop();
           dispatch(
             slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
@@ -1512,7 +1516,7 @@ export const updateMediaStream = () => {
       }
     }
 
-    if (state.noiseSuppressionProcessor && state.noiseSuppressionProcessor.isProcessing()) {
+    if (state.noiseSuppressionProcessor?.isProcessing()) {
       const originalTrack = state.noiseSuppressionProcessor.getOriginalTrack();
       if (originalTrack) {
         originalTrack.stop();
@@ -1525,7 +1529,7 @@ export const updateMediaStream = () => {
       state.noiseSuppressionProcessor.stopProcessing();
     } else {
       if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
+        state.soraContents.localMediaStream.getAudioTracks().filter((track) => {
           track.stop();
           dispatch(
             slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
@@ -1538,7 +1542,7 @@ export const updateMediaStream = () => {
       dispatch(slice.actions.setSoraConnectionStatus('disconnected'));
       throw error;
     });
-    mediaStream.getTracks().forEach((track) => {
+    mediaStream.getTracks().filter((track) => {
       if (!state.soraContents.sora || !state.soraContents.sora.pc) {
         return;
       }
@@ -1631,7 +1635,7 @@ export const setMicDevice = (micDevice: boolean) => {
         } else if (state.soraContents.localMediaStream) {
           // Sora は未接続で media access での表示を行っている場合
           // 現在の AudioTrack を停止、削除してから、新しい AudioTrack を追加する
-          state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
+          state.soraContents.localMediaStream.getAudioTracks().filter((track) => {
             track.enabled = false;
             track.stop();
             state.soraContents.localMediaStream?.removeTrack(track);
@@ -1707,7 +1711,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         } else if (state.soraContents.localMediaStream) {
           // Sora は未接続で media access での表示を行っている場合
           // 現在の VideoTrack を停止、削除してから、新しい VideoTrack を追加する
-          state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
+          state.soraContents.localMediaStream.getVideoTracks().filter((track) => {
             track.enabled = false;
             track.stop();
             state.soraContents.localMediaStream?.removeTrack(track);
@@ -1740,11 +1744,11 @@ const stopLocalVideoTrack = async (
 ): Promise<void> => {
   const { localMediaStream } = soraContents;
   let originalTrack: MediaStreamTrack | undefined;
-  if (lightAdjustmentProcessor && lightAdjustmentProcessor.isProcessing()) {
+  if (lightAdjustmentProcessor?.isProcessing()) {
     originalTrack = lightAdjustmentProcessor.getOriginalTrack();
     lightAdjustmentProcessor.stopProcessing();
   }
-  if (virtualBackgroundProcessor && virtualBackgroundProcessor.isProcessing()) {
+  if (virtualBackgroundProcessor?.isProcessing()) {
     if (originalTrack === undefined) {
       originalTrack = virtualBackgroundProcessor.getOriginalTrack();
     }
@@ -1766,13 +1770,13 @@ const stopLocalVideoTrack = async (
     if (!localMediaStream) {
       return;
     }
-    localMediaStream.getVideoTracks().forEach((track) => {
+    localMediaStream.getVideoTracks().filter((track) => {
       track.enabled = false;
     });
     // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
     // safari はこれで対応できるが firefox は残ってしまう
     await new Promise((resolve) => setTimeout(resolve, 100));
-    localMediaStream.getVideoTracks().forEach((track) => {
+    localMediaStream.getVideoTracks().filter((track) => {
       track.stop();
       localMediaStream.removeTrack(track);
       dispatch(
@@ -1792,7 +1796,7 @@ const stopLocalAudioTrack = (
   { soraContents, noiseSuppressionProcessor }: SoraDevtoolsState,
 ): void => {
   const { localMediaStream } = soraContents;
-  if (noiseSuppressionProcessor && noiseSuppressionProcessor.isProcessing()) {
+  if (noiseSuppressionProcessor?.isProcessing()) {
     const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
     if (originalTrack) {
       originalTrack.stop();
@@ -1806,7 +1810,7 @@ const stopLocalAudioTrack = (
     noiseSuppressionProcessor.stopProcessing();
   } else {
     if (localMediaStream) {
-      localMediaStream.getAudioTracks().forEach((track) => {
+      localMediaStream.getAudioTracks().filter((track) => {
         track.stop();
         localMediaStream.removeTrack(track);
         dispatch(
@@ -1836,7 +1840,7 @@ export const initLyra = () => {
           const newServiceWorker = registration.installing;
           if (newServiceWorker !== null) {
             newServiceWorker.addEventListener('statechange', () => {
-              if (newServiceWorker.state == 'activated') {
+              if (newServiceWorker.state === 'activated') {
                 location.reload();
               }
             });

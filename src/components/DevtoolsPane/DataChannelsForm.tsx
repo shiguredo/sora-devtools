@@ -13,22 +13,20 @@ export const DataChannelsForm: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
   const disabled = isFormDisabled(connectionStatus);
   const dispatch = useAppDispatch();
-  const textareaPlaceholder =
-    'dataChannelsを指定\n(例)\n' +
-    JSON.stringify(
-      [
-        {
-          label: '#spam',
-          maxPacketLifeTime: 10,
-          ordered: true,
-          protocol: 'efg',
-          compress: false,
-          direction: 'sendrecv',
-        },
-      ],
-      null,
-      2,
-    );
+  const textareaPlaceholder = `dataChannelsを指定\n(例)\n${JSON.stringify(
+    [
+      {
+        label: '#spam',
+        maxPacketLifeTime: 10,
+        ordered: true,
+        protocol: 'efg',
+        compress: false,
+        direction: 'sendrecv',
+      },
+    ],
+    null,
+    2,
+  )}`;
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledDataChannels(event.target.checked));
   };

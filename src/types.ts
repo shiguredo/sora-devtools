@@ -46,15 +46,15 @@ import {
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[];
   audio: boolean;
-  audioBitRate: (typeof AUDIO_BIT_RATES)[number];
-  audioCodecType: (typeof AUDIO_CODEC_TYPES)[number];
-  audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number];
+  audioBitRate: typeof AUDIO_BIT_RATES[number];
+  audioCodecType: typeof AUDIO_CODEC_TYPES[number];
+  audioContentHint: typeof AUDIO_CONTENT_HINTS[number];
   audioInput: string;
   audioInputDevices: MediaDeviceInfo[];
   audioOutput: string;
   audioOutputDevices: MediaDeviceInfo[];
-  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number];
-  blurRadius: (typeof BLUR_RADIUS)[number];
+  autoGainControl: typeof AUTO_GAIN_CONTROLS[number];
+  blurRadius: typeof BLUR_RADIUS[number];
   bundleId: string;
   channelId: string;
   clientId: string;
@@ -63,12 +63,12 @@ export type SoraDevtoolsState = {
   debug: boolean;
   debugFilterText: string;
   debugType: DebugType;
-  dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number];
+  dataChannelSignaling: typeof DATA_CHANNEL_SIGNALING[number];
   dataChannels: string;
   dataChannelMessages: DataChannelMessage[];
-  displayResolution: (typeof DISPLAY_RESOLUTIONS)[number];
-  echoCancellation: (typeof ECHO_CANCELLATIONS)[number];
-  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number];
+  displayResolution: typeof DISPLAY_RESOLUTIONS[number];
+  echoCancellation: typeof ECHO_CANCELLATIONS[number];
+  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number];
   e2ee: boolean;
   enabledBundleId: boolean;
   enabledClientId: boolean;
@@ -83,16 +83,16 @@ export type SoraDevtoolsState = {
   enabledVideoAV1Params: boolean;
   audioStreamingLanguageCode: string;
   enabledAudioStreamingLanguageCode: boolean;
-  audioLyraParamsBitrate: (typeof AUDIO_LYRA_PARAMS_BITRATES)[number];
+  audioLyraParamsBitrate: typeof AUDIO_LYRA_PARAMS_BITRATES[number];
   fakeContents: {
     worker: Worker | null;
     colorCode: number;
     gainNode: GainNode | null;
   };
   fakeVolume: string;
-  frameRate: (typeof FRAME_RATES)[number];
+  frameRate: typeof FRAME_RATES[number];
   soraContents: {
-    connectionStatus: (typeof CONNECTION_STATUS)[number];
+    connectionStatus: typeof CONNECTION_STATUS[number];
     reconnecting: boolean;
     reconnectingTrials: number;
     sora: ConnectionPublisher | ConnectionSubscriber | null;
@@ -104,35 +104,35 @@ export type SoraDevtoolsState = {
     statsReport: RTCStats[];
     datachannels: DataChannelConfiguration[];
   };
-  ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number];
+  ignoreDisconnectWebSocket: typeof IGNORE_DISCONNECT_WEBSOCKET[number];
   logMessages: LogMessage[];
   mediaProcessorsNoiseSuppression: boolean;
-  mediaType: (typeof MEDIA_TYPES)[number];
+  mediaType: typeof MEDIA_TYPES[number];
   metadata: string;
-  multistream: (typeof MULTISTREAM)[number];
+  multistream: typeof MULTISTREAM[number];
   mute: boolean;
-  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number];
+  noiseSuppression: typeof NOISE_SUPPRESSIONS[number];
   notifyMessages: NotifyMessage[];
   pushMessages: PushMessage[];
-  resolution: (typeof RESOLUTIONS)[number];
+  resolution: typeof RESOLUTIONS[number];
   showStats: boolean;
   signalingMessages: SignalingMessage[];
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
   forwardingFilter: string;
-  simulcast: (typeof SIMULCAST)[number];
-  simulcastRid: (typeof SIMULCAST_RID)[number];
-  spotlight: (typeof SPOTLIGHT)[number];
+  simulcast: typeof SIMULCAST[number];
+  simulcastRid: typeof SIMULCAST_RID[number];
+  spotlight: typeof SPOTLIGHT[number];
   focusedSpotlightConnectionIds: {
     [key: string]: boolean;
   };
-  spotlightNumber: (typeof SPOTLIGHT_NUMBERS)[number];
-  spotlightFocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number];
-  spotlightUnfocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number];
+  spotlightNumber: typeof SPOTLIGHT_NUMBERS[number];
+  spotlightFocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
+  spotlightUnfocusRid: typeof SPOTLIGHT_FOCUS_RIDS[number];
   video: boolean;
-  videoBitRate: (typeof VIDEO_BIT_RATES)[number];
-  videoCodecType: (typeof VIDEO_CODEC_TYPES)[number];
-  videoContentHint: (typeof VIDEO_CONTENT_HINTS)[number];
+  videoBitRate: typeof VIDEO_BIT_RATES[number];
+  videoCodecType: typeof VIDEO_CODEC_TYPES[number];
+  videoContentHint: typeof VIDEO_CONTENT_HINTS[number];
   videoInput: string;
   videoInputDevices: MediaDeviceInfo[];
   videoVP9Params: string;
@@ -146,13 +146,13 @@ export type SoraDevtoolsState = {
   role: Role;
   reconnect: boolean;
   apiUrl: null | string;
-  aspectRatio: (typeof ASPECT_RATIO_TYPES)[number];
-  resizeMode: (typeof RESIZE_MODE_TYPES)[number];
-  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number];
+  aspectRatio: typeof ASPECT_RATIO_TYPES[number];
+  resizeMode: typeof RESIZE_MODE_TYPES[number];
+  lightAdjustment: typeof LIGHT_ADJUSTMENT[number];
   lightAdjustmentProcessor: LightAdjustmentProcessor | null;
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
-  facingMode: (typeof FACING_MODES)[number];
+  facingMode: typeof FACING_MODES[number];
 };
 
 // 画面表示する message の Type
@@ -168,8 +168,7 @@ export type TimelineMessage = {
   timestamp: number;
   type: string;
   logType: TimelineEventLogType | 'sora-devtools';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
+  data?: unknown;
   dataChannelId?: number | null;
   dataChannelLabel?: string | null;
 };
@@ -297,20 +296,18 @@ export type SignalingMessage = {
   timestamp: number;
   type: string;
   transportType: TransportType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
+  data?: unknown;
 };
 
 // Debug data channel message の Type
 export type DataChannelMessage = {
   timestamp: number;
   label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
+  data?: unknown;
 };
 
 // Debug 表示タブ選択状態用の Type
-export type DebugType = (typeof DEBUG_TYPES)[number];
+export type DebugType = typeof DEBUG_TYPES[number];
 
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = Omit<
