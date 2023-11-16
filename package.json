@@ -37,7 +37,7 @@
     "next": "14.0.2",
     "rimraf": "5.0.5",
     "typescript": "5.2.2",
-    "vitest": "0.34.6"
+    "vitest": "0.34.3"
   },
   "dependencies": {
     "@reduxjs/toolkit": "1.9.7",
