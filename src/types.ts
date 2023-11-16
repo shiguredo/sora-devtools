@@ -22,8 +22,8 @@ import {
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
-  ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
+  ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
@@ -168,7 +168,8 @@ export type TimelineMessage = {
   timestamp: number;
   type: string;
   logType: TimelineEventLogType | 'sora-devtools';
-  data?: unknown;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  data?: any;
   dataChannelId?: number | null;
   dataChannelLabel?: string | null;
 };
@@ -296,14 +297,16 @@ export type SignalingMessage = {
   timestamp: number;
   type: string;
   transportType: TransportType;
-  data?: unknown;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  data?: any;
 };
 
 // Debug data channel message の Type
 export type DataChannelMessage = {
   timestamp: number;
   label: string;
-  data?: unknown;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  data?: any;
 };
 
 // Debug 表示タブ選択状態用の Type
