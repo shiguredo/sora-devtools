@@ -7,8 +7,8 @@ async function post(
   params: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const protocol = window.location.protocol;
-  const apiPort = protocol == 'https:' ? '443' : '3000';
-  const apiPath = protocol == 'https:' ? 'api' : '';
+  const apiPort = protocol === 'https:' ? '443' : '3000';
+  const apiPath = protocol === 'https:' ? 'api' : '';
   let url = `${protocol}//${window.location.hostname}:${apiPort}/${apiPath}`;
   if (apiUrl !== null) {
     url = apiUrl;
@@ -64,7 +64,7 @@ export function requestRtpStream(
     rid: rid,
   };
   if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
+    params.send_connection_id = sendConnectionId;
   }
   return post(apiUrl, '20201005', 'RequestRtpStream', params);
 }
@@ -80,7 +80,7 @@ export function resetRtpStream(
     recv_connection_id: connectionId,
   };
   if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
+    params.send_connection_id = sendConnectionId;
   }
   return post(apiUrl, '20201005', 'ResetRtpStream', params);
 }
@@ -106,7 +106,7 @@ export function requestSpotlightRid(
     spotlight_unfocus_rid: spotlightUnfocursRid,
   };
   if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
+    params.send_connection_id = sendConnectionId;
   }
   return post(apiUrl, '20211215', 'RequestSpotlightRid', params);
 }
@@ -122,7 +122,7 @@ export function resetSpotlightRid(
     recv_connection_id: connectionId,
   };
   if (sendConnectionId) {
-    params['send_connection_id'] = sendConnectionId;
+    params.send_connection_id = sendConnectionId;
   }
   return post(apiUrl, '20211215', 'ResetSpotlightRid', params);
 }

@@ -34,7 +34,7 @@ const Collapse: React.FC<DataChannelMessage> = (props) => {
     const description = `connectionId: ${connectionId}\nUnixTimeMicro: ${unixTimeMicro}\nCounter: ${counter}\nByteLength: ${byteLength}`;
     return (
       <Message
-        title={label + ' ZAKURO'}
+        title={`${label} ZAKURO`}
         timestamp={timestamp}
         description={description}
         defaultShow

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment';
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression';
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background';
@@ -249,7 +249,7 @@ export const slice = createSlice({
     },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload);
-      if (isNaN(volume)) {
+      if (Number.isNaN(volume)) {
         state.fakeVolume = '0';
       } else if (1 < volume) {
         state.fakeVolume = '1';
@@ -358,8 +358,7 @@ export const slice = createSlice({
       state.videoAV1Params = action.payload;
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
-      // `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
       state.soraContents.sora = <any>action.payload;
       if (state.soraContents.sora) {
         state.soraContents.connectionId = state.soraContents.sora.connectionId;
@@ -396,7 +395,7 @@ export const slice = createSlice({
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getTracks().forEach((track) => {
+        state.soraContents.localMediaStream.getTracks().filter((track) => {
           track.stop();
         });
       }

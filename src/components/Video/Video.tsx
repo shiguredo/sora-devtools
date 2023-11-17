@@ -17,7 +17,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const videoSize = getVideoSizeByResolution(displayResolution);
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      entries.forEach((entry) => {
+      entries.filter((entry) => {
         setHeight(entry.contentRect.height);
       });
     });
@@ -45,12 +45,12 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
       // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
       let originalEnabled: boolean | undefined;
-      stream.getVideoTracks().forEach((track) => {
+      stream.getVideoTracks().filter((track) => {
         originalEnabled = track.enabled;
         track.enabled = false;
       });
       videoRef.current.onloadedmetadata = (_) => {
-        stream.getVideoTracks().forEach((track) => {
+        stream.getVideoTracks().filter((track) => {
           if (originalEnabled !== undefined) {
             track.enabled = originalEnabled;
           }

@@ -18,7 +18,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
         {props.text}
       </p>
       <div className="border-left border-secondary">
-        <button className="btn btn-sm btn-light" onClick={onClick}>
+        <button type="button" className="btn btn-sm btn-light" onClick={onClick}>
           <ClipboardIcon />
         </button>
       </div>

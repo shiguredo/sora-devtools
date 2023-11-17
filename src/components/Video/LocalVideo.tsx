@@ -30,10 +30,9 @@ const VideoBox: React.FC = () => {
     <>
       <div className="d-flex">
         <div
-          className={
-            'd-flex flex-nowrap align-items-start video-wrapper' +
-            (focused ? ' spotlight-focused' : '')
-          }
+          className={`d-flex·flex-nowrap·align-items-start·video-wrapper${
+            focused ? '·spotlight-focused' : ''
+          }`}
         >
           <Video
             stream={localMediaStream}
@@ -70,7 +69,7 @@ export const LocalVideo: React.FC = () => {
           ) : null}
           {connectionId !== null &&
           spotlight !== 'true' &&
-          simulcast == 'true' &&
+          simulcast === 'true' &&
           role !== 'sendonly' ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <RequestRtpStreamButton rid={'r0'} />
