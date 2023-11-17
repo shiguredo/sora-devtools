@@ -1,4 +1,5 @@
-import React, { FormCheck, FormLabel, OverlayTrigger, Popover } from 'react-bootstrap'
+import React from 'react'
+import { FormCheck, FormLabel, OverlayTrigger, Popover } from 'react-bootstrap'
 
 import { INSTRUCTIONS } from '@/constants'
 
