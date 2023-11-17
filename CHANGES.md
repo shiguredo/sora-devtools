@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] fmt / lint を biome に変更する
+  - @voluntas
 - [CHANGE] 録画 API のバージョンを `20231220` に変更する
   - @voluntas
 - [ADD] Debug Pane に `Codec` のタブを追加する
