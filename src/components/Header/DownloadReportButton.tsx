@@ -118,6 +118,8 @@ export const DownloadReportButton: React.FC = () => {
         defaultValue="Download report"
         onClick={onClick}
       />
+      {/* biome-ignore lint/a11y/useAnchorContent: <explanation> */}
+      {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
       <a ref={anchorRef} style={{ display: 'none' }} />
     </>
   )
