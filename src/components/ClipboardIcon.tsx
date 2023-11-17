@@ -2,7 +2,6 @@ import React from 'react'
 
 export const ClipboardIcon: React.FC = () => {
   return (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
     <svg
       width="1em"
       height="1em"
