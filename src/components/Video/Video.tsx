@@ -16,7 +16,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-useEffect(() => {
+  useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       entries.filter((entry) => {
         setHeight(entry.contentRect.height)
@@ -40,7 +40,7 @@ useEffect(() => {
   }, [mute])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-useEffect(() => {
+  useEffect(() => {
     if (videoRef.current && stream) {
       // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
       // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
