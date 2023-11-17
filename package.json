@@ -37,7 +37,7 @@
     "next": "14.0.2",
     "rimraf": "5.0.5",
     "typescript": "5.2.2",
-    "vitest": "0.34.3"
+    "vitest": "0.34.6"
   },
   "dependencies": {
     "@reduxjs/toolkit": "1.9.7",
@@ -54,7 +54,7 @@
     "redux": "4.2.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.4.2",
-    "sora-js-sdk": "2023.2.0-canary.4"
+    "sora-js-sdk": "2023.2.0-canary.5"
   },
   "packageManager": "pnpm@8.10.5",
   "engines": {
