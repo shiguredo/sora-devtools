@@ -36,8 +36,6 @@ https://master.sora-devtools.pages.dev
 
 ## 利用技術
 
-- pnpm
-  - [Fast, disk space efficient package manager \| pnpm](https://pnpm.io/)
 - Sora JavaScript SDK
   - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - Next.js
@@ -56,6 +54,10 @@ https://master.sora-devtools.pages.dev
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
   - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
+- pnpm
+  - [Fast, disk space efficient package manager \| pnpm](https://pnpm.io/)
+- Biome
+  - [Biome](https://biomejs.dev/)
 
 ## 特徴
 
