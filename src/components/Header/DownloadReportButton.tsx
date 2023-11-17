@@ -119,6 +119,7 @@ export const DownloadReportButton: React.FC = () => {
         onClick={onClick}
       />
       {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+      {/* biome-ignore lint/a11y/useAnchorContent: <explanation> */}
       <a ref={anchorRef} style={{ display: 'none' }} />
     </>
   )
