@@ -13,7 +13,8 @@
       },
       "correctness": {
         "noUndeclaredVariables": "error",
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "error",
+        "useHookAtTopLevel": "error"
       },
       "style": {
         "noNamespace": "error"
