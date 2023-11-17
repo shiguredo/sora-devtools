@@ -1,5 +1,5 @@
 import queryString from 'query-string'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   ASPECT_RATIO_TYPES,
@@ -10,8 +10,8 @@ import {
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
-  ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
+  ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,

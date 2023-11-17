@@ -8,7 +8,21 @@
     "rules": {
       "recommended": true,
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "noAccessKey": "error",
+        "useHeadingContent": "error"
+      },
+      "correctness": {
+        "noUndeclaredVariables": "error",
+        "noUnusedVariables": "error"
+      },
+      "style": {
+        "noNamespace": "error"
+      },
+      "nursery": {
+        "noEmptyCharacterClassInRegex": "error",
+        "noMisleadingInstantiator": "error",
+        "useAsConstAssertion": "error"
       }
     }
   },
