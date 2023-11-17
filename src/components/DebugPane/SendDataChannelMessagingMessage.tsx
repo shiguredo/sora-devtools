@@ -1,22 +1,22 @@
-import React, { useRef } from 'react';
-import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap';
+import React, { useRef } from 'react'
+import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap'
 
-import { useAppSelector } from '@/app/hooks';
+import { useAppSelector } from '@/app/hooks'
 
 export const SendDataChannelMessagingMessage: React.FC = () => {
-  const selectRef = useRef<HTMLSelectElement>(null);
-  const textareaRef = useRef<HTMLInputElement>(null);
-  const sora = useAppSelector((state) => state.soraContents.sora);
-  const datachannels = useAppSelector((state) => state.soraContents.datachannels);
+  const selectRef = useRef<HTMLSelectElement>(null)
+  const textareaRef = useRef<HTMLInputElement>(null)
+  const sora = useAppSelector((state) => state.soraContents.sora)
+  const datachannels = useAppSelector((state) => state.soraContents.datachannels)
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
-      return;
+      return
     }
-    const label = selectRef.current.value;
+    const label = selectRef.current.value
     if (sora) {
-      sora.sendMessage(label, new TextEncoder().encode(textareaRef.current.value));
+      sora.sendMessage(label, new TextEncoder().encode(textareaRef.current.value))
     }
-  };
+  }
   return (
     <>
       <div className="d-flex mt-2">
@@ -27,7 +27,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
                 <option key={datachannel.label} value={datachannel.label}>
                   {datachannel.label}
                 </option>
-              );
+              )
             })}
           </FormSelect>
         </FormGroup>
@@ -61,5 +61,5 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
         </pre>
       ) : null}
     </>
-  );
-};
+  )
+}

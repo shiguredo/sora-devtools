@@ -1,14 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-import { connectSora } from '@/app/actions';
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { connectSora } from '@/app/actions'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
 export const ConnectButton: React.FC = () => {
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const dispatch = useAppDispatch();
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const dispatch = useAppDispatch()
   const connect = (): void => {
-    dispatch(connectSora());
-  };
+    dispatch(connectSora())
+  }
   return (
     <div className="col-auto mb-1">
       <input
@@ -24,5 +24,5 @@ export const ConnectButton: React.FC = () => {
         }
       />
     </div>
-  );
-};
+  )
+}

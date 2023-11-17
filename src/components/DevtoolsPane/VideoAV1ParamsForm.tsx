@@ -1,24 +1,24 @@
-import React from 'react';
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap';
+import React from 'react'
+import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
-import { setEnabledVideoAV1Params, setVideoAV1Params } from '@/app/actions';
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { isFormDisabled } from '@/utils';
+import { setEnabledVideoAV1Params, setVideoAV1Params } from '@/app/actions'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck';
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const VideoAV1ParamsForm: React.FC = () => {
-  const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params);
-  const videoAV1Params = useAppSelector((state) => state.videoAV1Params);
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const dispatch = useAppDispatch();
+  const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
+  const videoAV1Params = useAppSelector((state) => state.videoAV1Params)
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const disabled = isFormDisabled(connectionStatus)
+  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledVideoAV1Params(event.target.checked));
-  };
+    dispatch(setEnabledVideoAV1Params(event.target.checked))
+  }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setVideoAV1Params(event.target.value));
-  };
+    dispatch(setVideoAV1Params(event.target.value))
+  }
   return (
     <>
       <Row className="form-row">
@@ -54,5 +54,5 @@ export const VideoAV1ParamsForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  );
-};
+  )
+}

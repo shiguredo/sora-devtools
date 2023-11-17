@@ -20,8 +20,8 @@
     "enabled": true,
     "formatWithErrors": false,
     "ignore": [],
-    "indentWidth": 2,
     "indentStyle": "space",
+    "indentWidth": 2,
     "lineWidth": 100
   },
   "json": {
@@ -41,7 +41,7 @@
       "quoteStyle": "single",
       "jsxQuoteStyle": "double",
       "trailingComma": "all",
-      "semicolons": "always",
+      "semicolons": "asNeeded",
       "arrowParentheses": "always",
       "indentStyle": "space",
       "indentWidth": 2,

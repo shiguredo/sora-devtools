@@ -1,16 +1,16 @@
-import { FormLabel, OverlayTrigger, Popover } from 'react-bootstrap';
+import { FormLabel, OverlayTrigger, Popover } from 'react-bootstrap'
 
-import { INSTRUCTIONS } from '@/constants';
+import { INSTRUCTIONS } from '@/constants'
 
 type Props = {
-  kind: string;
-  children: React.ReactNode;
-};
+  kind: string
+  children: React.ReactNode
+}
 export const TooltipFormLabel: React.FC<Props> = (props) => {
-  const instruction = INSTRUCTIONS[props.kind];
+  const instruction = INSTRUCTIONS[props.kind]
   if (!instruction) {
-    console.warn(`Could not load description "${props.kind}"`);
-    return <FormLabel>{props.children}</FormLabel>;
+    console.warn(`Could not load description "${props.kind}"`)
+    return <FormLabel>{props.children}</FormLabel>
   }
   return (
     <OverlayTrigger
@@ -23,5 +23,5 @@ export const TooltipFormLabel: React.FC<Props> = (props) => {
     >
       <FormLabel>{props.children}</FormLabel>
     </OverlayTrigger>
-  );
-};
+  )
+}

@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
-import Sora from 'sora-js-sdk';
+import React, { useRef } from 'react'
+import Sora from 'sora-js-sdk'
 
-import { store } from '@/app/store';
-import { DownloadReport, DownloadReportParameters } from '@/types';
+import { store } from '@/app/store'
+import { DownloadReport, DownloadReportParameters } from '@/types'
 
 function createDownloadReport(): DownloadReport {
-  const state = store.getState();
+  const state = store.getState()
   const parameters: DownloadReportParameters = {
     aspectRatio: state.aspectRatio,
     audio: state.audio,
@@ -76,7 +76,7 @@ function createDownloadReport(): DownloadReport {
     videoVP9Params: state.videoVP9Params,
     videoH264Params: state.videoH264Params,
     videoAV1Params: state.videoAV1Params,
-  };
+  }
   const report = {
     userAgent: navigator.userAgent,
     'sora-devtools': state.version,
@@ -87,28 +87,28 @@ function createDownloadReport(): DownloadReport {
       return {
         timestamp: message.timestamp,
         message: message,
-      };
+      }
     }),
     notify: state.notifyMessages,
     stats: state.soraContents.statsReport,
-  };
-  return report;
+  }
+  return report
 }
 
 export const DownloadReportButton: React.FC = () => {
-  const anchorRef = useRef<HTMLAnchorElement>(null);
+  const anchorRef = useRef<HTMLAnchorElement>(null)
   const onClick = async (): Promise<void> => {
-    const report = createDownloadReport();
-    const data = JSON.stringify(report);
-    const blob = new Blob([data], { type: 'text/plain' });
-    window.URL = window.URL || window.webkitURL;
+    const report = createDownloadReport()
+    const data = JSON.stringify(report)
+    const blob = new Blob([data], { type: 'text/plain' })
+    window.URL = window.URL || window.webkitURL
     if (anchorRef.current) {
-      const datetimeString = new Date().toISOString().replaceAll(':', '_').replaceAll('.', '_');
-      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
-      anchorRef.current.href = window.URL.createObjectURL(blob);
-      anchorRef.current.click();
+      const datetimeString = new Date().toISOString().replaceAll(':', '_').replaceAll('.', '_')
+      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`
+      anchorRef.current.href = window.URL.createObjectURL(blob)
+      anchorRef.current.click()
     }
-  };
+  }
   return (
     <>
       <input
@@ -120,5 +120,5 @@ export const DownloadReportButton: React.FC = () => {
       />
       <a ref={anchorRef} style={{ display: 'none' }} />
     </>
-  );
-};
+  )
+}

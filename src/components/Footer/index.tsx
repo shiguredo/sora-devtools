@@ -1,13 +1,13 @@
-import React from 'react';
-import { Nav, Navbar } from 'react-bootstrap';
-import Sora from 'sora-js-sdk';
+import React from 'react'
+import { Nav, Navbar } from 'react-bootstrap'
+import Sora from 'sora-js-sdk'
 
-import { useAppSelector } from '@/app/hooks';
+import { useAppSelector } from '@/app/hooks'
 
-import { DebugButton } from './DebugButton';
+import { DebugButton } from './DebugButton'
 
 export const Footer: React.FC = () => {
-  const version = useAppSelector((state) => state.version);
+  const version = useAppSelector((state) => state.version)
   return (
     <footer>
       <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
@@ -31,5 +31,5 @@ export const Footer: React.FC = () => {
       </Navbar>
       <DebugButton />
     </footer>
-  );
-};
+  )
+}

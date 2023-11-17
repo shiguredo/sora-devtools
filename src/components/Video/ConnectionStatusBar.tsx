@@ -1,17 +1,17 @@
-import React from 'react';
+import React from 'react'
 
-import { ClipboardIcon } from '@/components/ClipboardIcon';
-import { copy2clipboard } from '@/utils';
+import { ClipboardIcon } from '@/components/ClipboardIcon'
+import { copy2clipboard } from '@/utils'
 
 type TextBoxProps = {
-  id?: string;
-  text: string;
-};
+  id?: string
+  text: string
+}
 const TextBox: React.FC<TextBoxProps> = (props) => {
   const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    copy2clipboard(props.text);
-    event.currentTarget.blur();
-  };
+    copy2clipboard(props.text)
+    event.currentTarget.blur()
+  }
   return (
     <div className="d-flex align-items-center border border-secondary rounded mx-1">
       <p id={props.id} className="mx-2 p-1">
@@ -23,16 +23,16 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 type Props = {
-  localVideo?: boolean;
-  connectionId: string | null;
-  clientId?: string | null;
-};
+  localVideo?: boolean
+  connectionId: string | null
+  clientId?: string | null
+}
 export const ConnectionStatusBar: React.FC<Props> = (props) => {
-  const { localVideo, connectionId, clientId } = props;
+  const { localVideo, connectionId, clientId } = props
   return (
     <>
       {connectionId ? (
@@ -42,5 +42,5 @@ export const ConnectionStatusBar: React.FC<Props> = (props) => {
         <TextBox id={localVideo ? 'local-video-client-id' : undefined} text={clientId} />
       ) : null}
     </>
-  );
-};
+  )
+}
