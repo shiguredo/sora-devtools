@@ -8,7 +8,6 @@
     "rules": {
       "recommended": true,
       "a11y": {
-        "noSvgWithoutTitle": "off",
         "noAccessKey": "error",
         "useHeadingContent": "error"
       },
