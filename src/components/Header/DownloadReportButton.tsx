@@ -118,7 +118,7 @@ export const DownloadReportButton: React.FC = () => {
         defaultValue="Download report"
         onClick={onClick}
       />
-      <a ref={anchorRef} style={{ display: 'none' }} />
+      <button type="button" ref={anchorRef} style={{ display: 'none' }} />
     </>
   )
 }
