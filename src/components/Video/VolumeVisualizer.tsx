@@ -89,6 +89,7 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
         cancelAnimationFrame(animationFrameId)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.stream])
   return (
     <canvas

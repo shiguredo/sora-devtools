@@ -12,9 +12,9 @@ const Reconnect: React.FC = () => {
   const onClose = (): void => {
     dispatch(setSoraReconnecting(false))
   }
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     dispatch(reconnectSora())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <Toast delay={20000} onClose={onClose}>

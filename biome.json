@@ -7,8 +7,13 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "correctness": {
+        "useExhaustiveDependencies": "off"
+      },
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "useValidAnchor": "off",
+        "useAnchorContent": "off"
       }
     }
   },

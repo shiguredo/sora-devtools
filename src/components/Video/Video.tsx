@@ -15,7 +15,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       entries.filter((entry) => {
@@ -31,6 +30,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     return () => {
       resizeObserver.disconnect()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -39,7 +39,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     }
   }, [mute])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (videoRef.current && stream) {
       // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
@@ -65,6 +64,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     } else if (videoRef.current && stream === null) {
       videoRef.current.srcObject = null
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stream])
 
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {

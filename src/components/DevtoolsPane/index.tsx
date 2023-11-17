@@ -211,9 +211,9 @@ const RowSignalingOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        <button type="button" className={linkClassNames.join(' ')} onClick={onClick}>
+        <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Signaling options
-        </button>
+        </a>
       </Col>
       <Collapse in={!collapsed}>
         <div>
@@ -261,9 +261,9 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        <button type="button" className={linkClassNames.join(' ')} onClick={onClick}>
+        <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Advanced signaling options
-        </button>
+        </a>
       </Col>
       <Collapse in={!collapsed}>
         <div>
@@ -341,9 +341,9 @@ const RowMediaOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        <button type="button" className={linkClassNames.join(' ')} onClick={onClick}>
+        <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Media options
-        </button>
+        </a>
       </Col>
       <Collapse in={!collapsed}>
         <div>

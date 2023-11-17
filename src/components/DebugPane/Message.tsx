@@ -50,8 +50,7 @@ export const Message: React.FC<Props> = (props) => {
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="d-flex justify-content-between align-items-center text-break">
-        <button
-          type="button"
+        <a
           className={`debug-title ${disabled ? 'disabled' : ''}`}
           onClick={() => setShow(!show)}
           aria-controls={ariaControls}
@@ -63,7 +62,7 @@ export const Message: React.FC<Props> = (props) => {
           ) : null}
           {label}
           <span>{title}</span>
-        </button>
+        </a>
         <div className="border-left">
           <CopyLogButton
             text={

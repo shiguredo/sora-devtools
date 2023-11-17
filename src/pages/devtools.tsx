@@ -12,7 +12,6 @@ import { MediacaptureRegionTarget } from '@/components/MediacaptureRegionTarget'
 
 const Devtools: React.FC = () => {
   const dispatch = useAppDispatch()
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     dispatch(setInitialParameter())
     dispatch(setMediaDevices())
@@ -20,6 +19,7 @@ const Devtools: React.FC = () => {
     return () => {
       dispatch(disconnectSora())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <>
@@ -39,4 +39,5 @@ const Devtools: React.FC = () => {
   )
 }
 
+// eslint-disable-next-line import/no-default-export
 export default Devtools
