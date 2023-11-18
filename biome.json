@@ -6,23 +6,15 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
-      "a11y": {
-        "noAccessKey": "error",
-        "useHeadingContent": "error"
-      },
-      "correctness": {
-        "noUndeclaredVariables": "error",
-        "noUnusedVariables": "error",
-        "useHookAtTopLevel": "error"
-      },
+      "all": true,
       "style": {
-        "noNamespace": "error"
+        "useNamingConvention": "off"
       },
       "nursery": {
-        "noEmptyCharacterClassInRegex": "error",
-        "noMisleadingInstantiator": "error",
-        "useAsConstAssertion": "error"
+        "noUselessLoneBlockStatements": "off"
+      },
+      "complexity": {
+        "useSimplifiedLogicExpression": "off"
       }
     }
   },
