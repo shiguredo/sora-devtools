@@ -6,12 +6,18 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "all": true,
       "correctness": {
         "useExhaustiveDependencies": "off"
       },
-      "a11y": {
-        "noSvgWithoutTitle": "off"
+      "style": {
+        "useNamingConvention": "off"
+      },
+      "nursery": {
+        "noUselessLoneBlockStatements": "off"
+      },
+      "complexity": {
+        "useSimplifiedLogicExpression": "off"
       }
     }
   },

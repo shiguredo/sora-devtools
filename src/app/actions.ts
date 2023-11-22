@@ -267,7 +267,7 @@ export const setInitialParameter = () => {
       }
       try {
         await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
-      } catch (e) {
+      } catch (_e) {
         dispatch(slice.actions.setSoraErrorAlertMessage(message))
         return
       }
@@ -1568,7 +1568,7 @@ export const setE2EE = (e2ee: boolean) => {
       }
       try {
         await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
-      } catch (e) {
+      } catch (_e) {
         dispatch(slice.actions.setSoraErrorAlertMessage(message))
         return
       }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { JSX, useState } from 'react'
 import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'

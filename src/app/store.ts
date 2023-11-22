@@ -1,4 +1,4 @@
-import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
+import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
 
 import { slice } from './slice'
