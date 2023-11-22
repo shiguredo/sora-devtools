@@ -12,7 +12,6 @@ import { MediacaptureRegionTarget } from '@/components/MediacaptureRegionTarget'
 
 const Devtools: React.FC = () => {
   const dispatch = useAppDispatch()
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     dispatch(setInitialParameter())
     dispatch(setMediaDevices())
