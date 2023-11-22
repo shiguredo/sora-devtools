@@ -14,7 +14,7 @@ const Reconnect: React.FC = () => {
   }
   useEffect(() => {
     dispatch(reconnectSora())
-  }, [])
+  }, [dispatch])
   return (
     <Toast delay={20000} onClose={onClose}>
       <Toast.Header className={'bg-warning text-white'}>

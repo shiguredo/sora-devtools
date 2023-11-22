@@ -19,7 +19,7 @@ const Devtools: React.FC = () => {
     return () => {
       dispatch(disconnectSora())
     }
-  }, [])
+  }, [dispatch])
   return (
     <>
       <MediacaptureRegionTarget />

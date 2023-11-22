@@ -7,9 +7,6 @@
     "enabled": true,
     "rules": {
       "all": true,
-      "correctness": {
-        "useExhaustiveDependencies": "off"
-      },
       "style": {
         "useNamingConvention": "off"
       },

@@ -15,6 +15,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
+
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       entries.filter((entry) => {
@@ -30,7 +31,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [])
+  }, [setHeight, audioOutput, stream])
 
   useEffect(() => {
     if (videoRef.current && mute) {
@@ -63,7 +64,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     } else if (videoRef.current && stream === null) {
       videoRef.current.srcObject = null
     }
-  }, [stream])
+  }, [stream, audioOutput])
 
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
     videoRef.current.setSinkId(audioOutput)
