@@ -7,6 +7,9 @@
     "enabled": true,
     "rules": {
       "all": true,
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
       "style": {
         "useNamingConvention": "off"
       },

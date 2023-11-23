@@ -358,7 +358,6 @@ export const slice = createSlice({
       state.videoAV1Params = action.payload
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
-      // biome-ignore lint/suspicious/noExplicitAny: `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
       state.soraContents.sora = <any>action.payload
       if (state.soraContents.sora) {
         state.soraContents.connectionId = state.soraContents.sora.connectionId

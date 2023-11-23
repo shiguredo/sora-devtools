@@ -168,7 +168,6 @@ export type TimelineMessage = {
   timestamp: number
   type: string
   logType: TimelineEventLogType | 'sora-devtools'
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   data?: any
   dataChannelId?: number | null
   dataChannelLabel?: string | null
@@ -297,7 +296,6 @@ export type SignalingMessage = {
   timestamp: number
   type: string
   transportType: TransportType
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   data?: any
 }
 
@@ -305,7 +303,6 @@ export type SignalingMessage = {
 export type DataChannelMessage = {
   timestamp: number
   label: string
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   data?: any
 }
 
