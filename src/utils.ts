@@ -71,7 +71,7 @@ export function copy2clipboard(text: string): Promise<void> {
 export function checkFormValue<T extends readonly string[]>(
   value: unknown,
   candidates: T,
-): value is typeof candidates[number] {
+): value is (typeof candidates)[number] {
   if (typeof value === 'string') {
     return candidates.indexOf(value) >= 0
   }
@@ -102,7 +102,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const parseSpecifiedStringParameter = <T extends readonly string[]>(
     parameter: string | (string | null)[] | null,
     candidates: T,
-  ): typeof candidates[number] | undefined => {
+  ): (typeof candidates)[number] | undefined => {
     if (checkFormValue(parameter, candidates)) {
       return parameter
     }
@@ -263,7 +263,7 @@ export function getValueByAspectRatio(aspectRatio: string): number {
 }
 
 // devtools の blurRadius 文字列に対する数値を返す
-export function getBlurRadiusNumber(blurRadius: typeof BLUR_RADIUS[number]): number {
+export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): number {
   switch (blurRadius) {
     case 'weak':
       return 5
@@ -278,7 +278,7 @@ export function getBlurRadiusNumber(blurRadius: typeof BLUR_RADIUS[number]): num
 
 // devtools の lightAdjustment 文字列に対するオプションを返す
 export function getLightAdjustmentOptions(
-  lightAdjustment: typeof LIGHT_ADJUSTMENT[number],
+  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number],
 ): LightAdjustmentProcessorOptions {
   switch (lightAdjustment) {
     case 'weak':
@@ -301,10 +301,10 @@ export function getLightAdjustmentOptions(
 // getUserMedia の audio constraints を生成
 type CreateAudioConstraintsParameters = {
   audio: boolean
-  autoGainControl: typeof AUTO_GAIN_CONTROLS[number]
-  noiseSuppression: typeof NOISE_SUPPRESSIONS[number]
-  echoCancellation: typeof ECHO_CANCELLATIONS[number]
-  echoCancellationType: typeof ECHO_CANCELLATION_TYPES[number]
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
   audioInput: string
 }
 export function createAudioConstraints(
@@ -558,7 +558,8 @@ export function drawFakeCanvas(
 export function parseBooleanString(value: string): boolean | undefined {
   if (value === 'true') {
     return true
-  } else if (value === 'false') {
+  }
+  if (value === 'false') {
     return false
   }
   return
@@ -576,7 +577,7 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
   return metadata
 }
 
-export function getDefaultVideoCodecType(): typeof VIDEO_CODEC_TYPES[number] {
+export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
   // getCapabilities API が存在しない場合
   if (!window.RTCRtpSender || !RTCRtpSender.getCapabilities) {
     return 'VP9'
