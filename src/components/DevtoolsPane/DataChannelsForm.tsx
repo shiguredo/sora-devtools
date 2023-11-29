@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { Button, Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -13,7 +13,7 @@ export const DataChannelsForm: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
   const dispatch = useAppDispatch()
-  const textareaPlaceholder = `dataChannelsを指定\n(例)\n${JSON.stringify(
+  const exampleJsonString = JSON.stringify(
     [
       {
         label: '#spam',
@@ -26,7 +26,8 @@ export const DataChannelsForm: React.FC = () => {
     ],
     null,
     2,
-  )}`
+  )
+  const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledDataChannels(event.target.checked))
   }
@@ -47,6 +48,16 @@ export const DataChannelsForm: React.FC = () => {
               dataChannels
             </TooltipFormCheck>
           </FormGroup>
+        </Col>
+        <Col>
+          <Button
+            type="button"
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => dispatch(setDataChannels(exampleJsonString))}
+          >
+            load template
+          </Button>
         </Col>
       </Row>
       {enabledDataChannels ? (
