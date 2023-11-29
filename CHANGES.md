@@ -11,6 +11,8 @@
 
 ## develop
 
+- [FIX] `audio` `video` がともに無効な状態で Sora への接続時に getUserMedia を呼び出してしまう問題を修正する
+  - @tnamao
 - [CHANGE] fmt / lint を biome に変更する
   - @voluntas
 - [CHANGE] 録画 API のバージョンを `20231220` に変更する
