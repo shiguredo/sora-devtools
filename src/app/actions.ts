@@ -673,87 +673,89 @@ async function createMediaStream(
     videoInput: state.videoInput,
     facingMode: state.facingMode,
   })
-  const mediaStreamConstraints: MediaStreamConstraints = {}
-  if (audioConstraints) {
-    mediaStreamConstraints.audio = audioConstraints
-  }
-  if (videoConstraints) {
-    mediaStreamConstraints.video = videoConstraints
-  }
-  dispatch(
-    slice.actions.setLogMessages({
-      title: LOG_TITLE,
-      description: JSON.stringify(mediaStreamConstraints),
-    }),
-  )
-  dispatch(
-    slice.actions.setTimelineMessage(
-      createSoraDevtoolsTimelineMessage('media-constraints', mediaStreamConstraints),
-    ),
-  )
-  const gumMediaStream = await navigator.mediaDevices
-    .getUserMedia(mediaStreamConstraints)
-    .catch((error) => {
-      // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-      mediaStream.getTracks().filter((t) => {
-        t.stop()
+  if (audioConstraints || videoConstraints) {
+    const mediaStreamConstraints: MediaStreamConstraints = {}
+    if (audioConstraints) {
+      mediaStreamConstraints.audio = audioConstraints
+    }
+    if (videoConstraints) {
+      mediaStreamConstraints.video = videoConstraints
+    }
+    dispatch(
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify(mediaStreamConstraints),
+      }),
+    )
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('media-constraints', mediaStreamConstraints),
+      ),
+    )
+    const gumMediaStream = await navigator.mediaDevices
+      .getUserMedia(mediaStreamConstraints)
+      .catch((error) => {
+        // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
+        mediaStream.getTracks().filter((t) => {
+          t.stop()
+        })
+        throw error
       })
-      throw error
-    })
-  if (audioConstraints) {
-    let audioTrack = gumMediaStream.getAudioTracks()[0]
-    dispatch(
-      slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', audioTrack)),
-    )
-    if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
-      if (state.noiseSuppressionProcessor === null) {
-        throw new Error(
-          "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
-        )
+    if (audioConstraints) {
+      let audioTrack = gumMediaStream.getAudioTracks()[0]
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', audioTrack)),
+      )
+      if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
+        if (state.noiseSuppressionProcessor === null) {
+          throw new Error(
+            "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
+          )
+        }
+        state.noiseSuppressionProcessor.stopProcessing()
+        audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack)
       }
-      state.noiseSuppressionProcessor.stopProcessing()
-      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack)
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage('succeed-audio-get-user-media'),
+        ),
+      )
+      mediaStream.addTrack(audioTrack)
     }
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('succeed-audio-get-user-media'),
-      ),
-    )
-    mediaStream.addTrack(audioTrack)
-  }
-  if (videoConstraints) {
-    let videoTrack = gumMediaStream.getVideoTracks()[0]
-    dispatch(
-      slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', videoTrack)),
-    )
-    if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
-      if (state.lightAdjustmentProcessor === null) {
-        throw new Error(
-          "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
-        )
+    if (videoConstraints) {
+      let videoTrack = gumMediaStream.getVideoTracks()[0]
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', videoTrack)),
+      )
+      if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
+        if (state.lightAdjustmentProcessor === null) {
+          throw new Error(
+            "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
+          )
+        }
+        const options = getLightAdjustmentOptions(state.lightAdjustment)
+        state.lightAdjustmentProcessor.stopProcessing()
+        videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options)
       }
-      const options = getLightAdjustmentOptions(state.lightAdjustment)
-      state.lightAdjustmentProcessor.stopProcessing()
-      videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options)
+      if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
+        if (state.virtualBackgroundProcessor === null) {
+          throw new Error(
+            "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
+          )
+        }
+        const options = {
+          blurRadius: getBlurRadiusNumber(state.blurRadius),
+        }
+        state.virtualBackgroundProcessor.stopProcessing()
+        videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options)
+      }
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage('succeed-video-get-user-media'),
+        ),
+      )
+      mediaStream.addTrack(videoTrack)
     }
-    if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
-      if (state.virtualBackgroundProcessor === null) {
-        throw new Error(
-          "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
-        )
-      }
-      const options = {
-        blurRadius: getBlurRadiusNumber(state.blurRadius),
-      }
-      state.virtualBackgroundProcessor.stopProcessing()
-      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options)
-    }
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('succeed-video-get-user-media'),
-      ),
-    )
-    mediaStream.addTrack(videoTrack)
   }
   for (const track of mediaStream.getVideoTracks()) {
     if (track.contentHint !== undefined) {
