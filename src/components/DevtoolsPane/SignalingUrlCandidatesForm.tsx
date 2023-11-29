@@ -21,6 +21,11 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setSignalingUrlCandidates(event.target.value.split('\n')))
   }
+  const textareaPlaceholder = `signalingUrlCandidatesを指定
+(例)
+wss://sora0.example.com/signaling
+wss://sora1.example.com/signaling
+`
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -44,7 +49,7 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
               <FormControl
                 className="flex-fill"
                 as="textarea"
-                placeholder="signalingUrlCandidatesを指定"
+                placeholder={textareaPlaceholder}
                 value={signalingUrlCandidates.join('\n')}
                 onChange={onChangeText}
                 rows={5}

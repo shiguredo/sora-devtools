@@ -13,6 +13,11 @@
 
 - [FIX] `audio` `video` がともに無効な状態で Sora への接続時に getUserMedia を呼び出してしまう問題を修正する
   - @tnamao
+- [ADD] `dataChannels` のフォームにテンプレート読み込みボタンを追加する
+  - テキストエリアに挿入されるテンプレートは placeholder の内容と同じ
+  - @tnamao
+- [UPDATE] `signalingUrlCandidates` の placeholder に設定例を追加する
+  - @tnamao
 - [CHANGE] fmt / lint を biome に変更する
   - @voluntas
 - [CHANGE] 録画 API のバージョンを `20231220` に変更する
