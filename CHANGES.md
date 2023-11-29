@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] `signalingUrlCandidates` の placeholder に設定例を追加する
+  - @tnamao
 - [CHANGE] fmt / lint を biome に変更する
   - @voluntas
 - [CHANGE] 録画 API のバージョンを `20231220` に変更する
