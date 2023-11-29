@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] `dataChannels` のフォームにテンプレート読み込みボタンを追加する
+  - テキストエリアに挿入されるテンプレートは placeholder の内容と同じ
+  - @tnamao
 - [UPDATE] `signalingUrlCandidates` の placeholder に設定例を追加する
   - @tnamao
 - [CHANGE] fmt / lint を biome に変更する
