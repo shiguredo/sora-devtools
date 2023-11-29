@@ -11,6 +11,8 @@
 
 ## develop
 
+- [FIX] `audio` `video` がともに無効な状態で Sora への接続時に getUserMedia を呼び出してしまう問題を修正する
+  - @tnamao
 - [ADD] `dataChannels` のフォームにテンプレート読み込みボタンを追加する
   - テキストエリアに挿入されるテンプレートは placeholder の内容と同じ
   - @tnamao
