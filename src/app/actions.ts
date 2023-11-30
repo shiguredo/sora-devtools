@@ -704,7 +704,9 @@ async function createMediaStream(
     if (audioConstraints) {
       let audioTrack = gumMediaStream.getAudioTracks()[0]
       dispatch(
-        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', audioTrack)),
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('start', audioTrack),
+        ),
       )
       if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
         if (state.noiseSuppressionProcessor === null) {
@@ -725,7 +727,9 @@ async function createMediaStream(
     if (videoConstraints) {
       let videoTrack = gumMediaStream.getVideoTracks()[0]
       dispatch(
-        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', videoTrack)),
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('start', videoTrack),
+        ),
       )
       if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
         if (state.lightAdjustmentProcessor === null) {
