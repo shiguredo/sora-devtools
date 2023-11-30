@@ -49,21 +49,11 @@ export const DataChannelsForm: React.FC = () => {
             </TooltipFormCheck>
           </FormGroup>
         </Col>
-        <Col>
-          <Button
-            type="button"
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => dispatch(setDataChannels(exampleJsonString))}
-          >
-            load template
-          </Button>
-        </Col>
       </Row>
       {enabledDataChannels ? (
         <Row className="form-row">
           <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="dataChannels">
+            <FormGroup className="form-inline position-relative" controlId="dataChannels">
               <FormControl
                 className="flex-fill"
                 as="textarea"
@@ -74,6 +64,15 @@ export const DataChannelsForm: React.FC = () => {
                 cols={100}
                 disabled={disabled}
               />
+              <Button
+                className="btn-load-template"
+                type="button"
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => dispatch(setDataChannels(exampleJsonString))}
+              >
+                load template
+              </Button>
             </FormGroup>
           </Col>
         </Row>
