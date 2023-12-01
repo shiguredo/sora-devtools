@@ -48,8 +48,8 @@ dependencies:
     specifier: 2.4.2
     version: 2.4.2(redux@4.2.1)
   sora-js-sdk:
-    specifier: 2023.2.0-canary.12
-    version: 2023.2.0-canary.12
+    specifier: 2023.2.0-canary.13
+    version: 2023.2.0-canary.13
 
 devDependencies:
   '@biomejs/biome':
@@ -2911,8 +2911,8 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /sora-js-sdk@2023.2.0-canary.12:
-    resolution: {integrity: sha512-R6905XH4qhH88lO8LkWJBWxvaHTtcC9hQCIXYaZgDF+D5i2DhXxXAri+QXBDeQ60ce+XSCVNYW/uyzA226YLhw==}
+  /sora-js-sdk@2023.2.0-canary.13:
+    resolution: {integrity: sha512-nMkF2NN49462621PVS8b8D73uty0LC8CcKJG9rLOiUhEYoNt3EzoCMhHHXpHscmoS0mraZryHL1XAMBsb3MsDA==}
     engines: {node: '>=18'}
     dev: false
 
