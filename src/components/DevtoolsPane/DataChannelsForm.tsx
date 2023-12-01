@@ -19,7 +19,7 @@ export const DataChannelsForm: React.FC = () => {
         label: '#spam',
         maxPacketLifeTime: 10,
         ordered: true,
-        protocol: 'efg',
+        protocol: 'egg',
         compress: false,
         direction: 'sendrecv',
       },
