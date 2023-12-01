@@ -167,7 +167,7 @@ const Index: React.FC = () => {
                 dataChannels: JSON.stringify(
                   [
                     {
-                      label: '#sora-devtools',
+                      label: '#devtools',
                       maxPacketLifeTime: 10,
                       ordered: true,
                       compress: false,
