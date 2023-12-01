@@ -16,10 +16,9 @@ export const DataChannelsForm: React.FC = () => {
   const exampleJsonString = JSON.stringify(
     [
       {
-        label: '#spam',
+        label: '#sora-devtools',
         maxPacketLifeTime: 10,
         ordered: true,
-        protocol: 'egg',
         compress: false,
         direction: 'sendrecv',
       },
