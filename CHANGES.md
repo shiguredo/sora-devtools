@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] コネクション ID とクライアント ID の表示にラベルを追加する
+  - @tnamao
 - [ADD] Sora 接続後にセッション ID の表示を追加する
   - @tnamao
 - [FIX] `audio` `video` がともに無効な状態で Sora への接続時に getUserMedia を呼び出してしまう問題を修正する
