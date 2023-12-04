@@ -98,6 +98,7 @@ export type SoraDevtoolsState = {
     sora: ConnectionPublisher | ConnectionSubscriber | null
     connectionId: string | null
     clientId: string | null
+    sessionId: string | null
     localMediaStream: MediaStream | null
     remoteMediaStreams: MediaStream[]
     prevStatsReport: RTCStats[]

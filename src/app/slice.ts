@@ -78,6 +78,7 @@ const initialState: SoraDevtoolsState = {
     sora: null,
     connectionId: null,
     clientId: null,
+    sessionId: null,
     localMediaStream: null,
     remoteMediaStreams: [],
     prevStatsReport: [],
@@ -367,6 +368,9 @@ export const slice = createSlice({
         state.soraContents.clientId = null
         state.soraContents.datachannels = []
       }
+    },
+    setSoraSessionId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.sessionId = action.payload
     },
     setSoraConnectionStatus: (
       state,

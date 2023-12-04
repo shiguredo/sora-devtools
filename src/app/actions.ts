@@ -803,6 +803,9 @@ function setSoraCallbacks(
     ) {
       dispatch(slice.actions.deleteFocusedSpotlightConnectionId(message.connection_id))
     }
+    if (message.event_type === 'connection.created' && typeof message.session_id === 'string') {
+      dispatch(slice.actions.setSoraSessionId(message.session_id))
+    }
     dispatch(
       slice.actions.setNotifyMessages({
         timestamp: new Date().getTime(),
@@ -887,6 +890,7 @@ function setSoraCallbacks(
       fakeContents.worker.postMessage({ type: 'stop' })
     }
     dispatch(slice.actions.setSora(null))
+    dispatch(slice.actions.setSoraSessionId(null))
     dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
     dispatch(slice.actions.setLocalMediaStream(null))
     dispatch(slice.actions.removeAllRemoteMediaStreams())
