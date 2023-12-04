@@ -80,6 +80,7 @@ export type SoraDevtoolsState = {
   enabledForwardingFilter: boolean
   enabledVideoVP9Params: boolean
   enabledVideoH264Params: boolean
+  enabledVideoH265Params: boolean
   enabledVideoAV1Params: boolean
   audioStreamingLanguageCode: string
   enabledAudioStreamingLanguageCode: boolean
@@ -138,6 +139,7 @@ export type SoraDevtoolsState = {
   videoInputDevices: MediaDeviceInfo[]
   videoVP9Params: string
   videoH264Params: string
+  videoH265Params: string
   videoAV1Params: string
   version: string
   cameraDevice: boolean
@@ -347,6 +349,7 @@ export type ConnectionOptionsState = Pick<
   | 'enabledForwardingFilter'
   | 'enabledVideoVP9Params'
   | 'enabledVideoH264Params'
+  | 'enabledVideoH265Params'
   | 'enabledVideoAV1Params'
   | 'ignoreDisconnectWebSocket'
   | 'audioLyraParamsBitrate'
@@ -364,6 +367,7 @@ export type ConnectionOptionsState = Pick<
   | 'videoCodecType'
   | 'videoVP9Params'
   | 'videoH264Params'
+  | 'videoH265Params'
   | 'videoAV1Params'
   | 'role'
 >
