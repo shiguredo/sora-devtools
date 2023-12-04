@@ -57,7 +57,7 @@
   - @voluntas
 - [CHANGE] 一時的に ; ありにする
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.2 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.14 に上げる
   - @voluntas
 - [UPDATE] @shiguredo/virtual-background のバージョンを 2023.2.0 に上げる
   - @sile
