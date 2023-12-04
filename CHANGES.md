@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] `h265_params` のフォームを追加する
+  - @tnamao
 - [ADD] コネクション ID とクライアント ID の表示にラベルを追加する
   - @tnamao
 - [ADD] Sora 接続後にセッション ID の表示を追加する
