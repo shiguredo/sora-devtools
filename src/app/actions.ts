@@ -145,6 +145,9 @@ export const setInitialParameter = () => {
     if (qsParams.videoH264Params !== undefined) {
       dispatch(slice.actions.setVideoH264Params(qsParams.videoH264Params))
     }
+    if (qsParams.videoH265Params !== undefined) {
+      dispatch(slice.actions.setVideoH265Params(qsParams.videoH265Params))
+    }
     if (qsParams.videoAV1Params !== undefined) {
       dispatch(slice.actions.setVideoAV1Params(qsParams.videoAV1Params))
     }
@@ -256,6 +259,7 @@ export const setInitialParameter = () => {
       forwardingFilter,
       videoVP9Params,
       videoH264Params,
+      videoH265Params,
       videoAV1Params,
     } = getState()
     if (e2ee) {
@@ -316,6 +320,10 @@ export const setInitialParameter = () => {
     if (videoH264Params !== '') {
       dispatch(slice.actions.setEnabledVideoH264Params(true))
     }
+    // videoH265Params が存在した場合は enabledH265Params をセットする
+    if (videoH265Params !== '') {
+      dispatch(slice.actions.setEnabledVideoH265Params(true))
+    }
     // videoAV1Params が存在した場合は enabledVideoAV1Params をセットする
     if (videoAV1Params !== '') {
       dispatch(slice.actions.setEnabledVideoAV1Params(true))
@@ -357,6 +365,10 @@ export const copyURL = () => {
       videoH264Params:
         appendAudioVideoParams && state.videoH264Params !== '' && state.enabledVideoH264Params
           ? state.videoH264Params
+          : undefined,
+      videoH265Params:
+        appendAudioVideoParams && state.videoH265Params !== '' && state.enabledVideoH265Params
+          ? state.videoH265Params
           : undefined,
       videoAV1Params:
         appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
@@ -962,6 +974,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledForwardingFilter: state.enabledForwardingFilter,
     enabledVideoVP9Params: state.enabledVideoVP9Params,
     enabledVideoH264Params: state.enabledVideoH264Params,
+    enabledVideoH265Params: state.enabledVideoH265Params,
     enabledVideoAV1Params: state.enabledVideoAV1Params,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     audioLyraParamsBitrate: state.audioLyraParamsBitrate,
@@ -979,6 +992,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoCodecType: state.videoCodecType,
     videoVP9Params: state.videoVP9Params,
     videoH264Params: state.videoH264Params,
+    videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
     role: state.role,
   }
@@ -1893,6 +1907,7 @@ export const {
   setEnabledSignalingUrlCandidates,
   setEnabledVideoVP9Params,
   setEnabledVideoH264Params,
+  setEnabledVideoH265Params,
   setEnabledVideoAV1Params,
   setAudioStreamingLanguageCode,
   setEnabledAudioStreamingLanguageCode,
@@ -1935,5 +1950,6 @@ export const {
   setVideoTrack,
   setVideoVP9Params,
   setVideoH264Params,
+  setVideoH265Params,
   setVideoAV1Params,
 } = slice.actions

@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] `h265_params` のフォームを追加する
+  - @tnamao
 - [ADD] コネクション ID とクライアント ID の表示にラベルを追加する
   - @tnamao
 - [ADD] Sora 接続後にセッション ID の表示を追加する
@@ -55,7 +57,7 @@
   - @voluntas
 - [CHANGE] 一時的に ; ありにする
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.2 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.14 に上げる
   - @voluntas
 - [UPDATE] @shiguredo/virtual-background のバージョンを 2023.2.0 に上げる
   - @sile
