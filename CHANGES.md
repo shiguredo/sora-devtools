@@ -16,6 +16,8 @@
 - [ADD] コネクション ID とクライアント ID の表示にラベルを追加する
   - @tnamao
 - [ADD] Sora 接続後にセッション ID の表示を追加する
+  - Sora 2023.2.0 以降は sora-js-sdk が `type: offer` から取得したセッション ID を表示に使用する
+  - それ以外の場合は notify の `connection.created` イベントで取得したセッション ID を表示に使用する
   - @tnamao
 - [FIX] `audio` `video` がともに無効な状態で Sora への接続時に getUserMedia を呼び出してしまう問題を修正する
   - @tnamao
@@ -57,7 +59,7 @@
   - @voluntas
 - [CHANGE] 一時的に ; ありにする
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.14 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.15 に上げる
   - @voluntas
 - [UPDATE] @shiguredo/virtual-background のバージョンを 2023.2.0 に上げる
   - @sile
