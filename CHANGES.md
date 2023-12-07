@@ -11,6 +11,8 @@
 
 ## develop
 
+- [FIX] `audioStreamingLanguageCode` のトグルを有効に設定した時に `Advanced signaling options` が強調されない問題を修正する
+  - @tnamao
 - [ADD] `h265_params` のフォームを追加する
   - @tnamao
 - [ADD] コネクション ID とクライアント ID の表示にラベルを追加する
