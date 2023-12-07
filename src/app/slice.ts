@@ -371,14 +371,20 @@ export const slice = createSlice({
       if (state.soraContents.sora) {
         state.soraContents.connectionId = state.soraContents.sora.connectionId
         state.soraContents.clientId = state.soraContents.sora.clientId
+        if (state.soraContents.sessionId === null) {
+          state.soraContents.sessionId = state.soraContents.sora.sessionId
+        }
       } else {
         state.soraContents.connectionId = null
         state.soraContents.clientId = null
+        state.soraContents.sessionId = null
         state.soraContents.datachannels = []
       }
     },
-    setSoraSessionId: (state, action: PayloadAction<string | null>) => {
-      state.soraContents.sessionId = action.payload
+    setSoraSessionId: (state, action: PayloadAction<string>) => {
+      if (state.soraContents.sessionId === null) {
+        state.soraContents.sessionId = action.payload
+      }
     },
     setSoraConnectionStatus: (
       state,
