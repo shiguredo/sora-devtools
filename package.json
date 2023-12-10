@@ -55,7 +55,7 @@
     "next": "14.0.3",
     "rimraf": "5.0.5",
     "typescript": "5.3.3",
-    "vitest": "0.34.6"
+    "vitest": "1.0.4"
   },
   "packageManager": "pnpm@8.12.0",
   "engines": {
