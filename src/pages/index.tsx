@@ -164,12 +164,19 @@ const Index: React.FC = () => {
                 debugType: 'messaging',
                 audio: false,
                 video: false,
-                dataChannels: JSON.stringify([
-                  {
-                    label: '#sora-devtools',
-                    direction: 'sendrecv',
-                  },
-                ]),
+                dataChannels: JSON.stringify(
+                  [
+                    {
+                      label: '#devtools',
+                      maxPacketLifeTime: 10,
+                      ordered: true,
+                      compress: false,
+                      direction: 'sendrecv',
+                    },
+                  ],
+                  null,
+                  2,
+                ),
               }}
             />
           </ul>

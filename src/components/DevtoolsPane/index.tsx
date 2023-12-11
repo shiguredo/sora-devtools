@@ -65,6 +65,7 @@ import { VideoCodecTypeForm } from './VideoCodecTypeForm'
 import { VideoContentHintForm } from './VideoContentHintForm'
 import { VideoForm } from './VideoForm'
 import { VideoH264ParamsForm } from './VideoH264ParamsForm'
+import { VideoH265ParamsForm } from './VideoH265ParamsForm'
 import { VideoInputForm } from './VideoInputForm'
 import { VideoTrackForm } from './VideoTrackForm'
 import { VideoVP9ParamsForm } from './VideoVP9ParamsForm'
@@ -236,16 +237,20 @@ const RowSignalingOptions: React.FC = () => {
 
 const RowAdvancedSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
+  const enableAudioStreamingLanguageCode = useAppSelector(
+    (state) => state.enabledAudioStreamingLanguageCode,
+  )
   const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
   const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
+  const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
   const enabledOptions = [
-    audioStreamingLanguageCode !== '',
+    enableAudioStreamingLanguageCode,
     audioLyraParamsBitrate !== '',
     enabledVideoVP9Params,
     enabledVideoH264Params,
+    enabledVideoH265Params,
     enabledVideoAV1Params,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
@@ -278,6 +283,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
           <VideoVP9ParamsForm />
           <VideoAV1ParamsForm />
           <VideoH264ParamsForm />
+          <VideoH265ParamsForm />
         </div>
       </Collapse>
     </Row>

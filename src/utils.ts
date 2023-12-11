@@ -165,6 +165,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
     videoVP9Params: parseStringParameter(qs.videoVP9Params),
     videoH264Params: parseStringParameter(qs.videoH264Params),
+    videoH265Params: parseStringParameter(qs.videoH265Params),
     videoAV1Params: parseStringParameter(qs.videoAV1Params),
     audioInput: parseStringParameter(qs.audioInput),
     videoInput: parseStringParameter(qs.videoInput),
@@ -701,6 +702,13 @@ export function createConnectOptions(
       connectionOptions.videoH264Params = parseMetadata(
         true,
         connectionOptionsState.videoH264Params,
+      )
+    }
+    // videoH265Params
+    if (connectionOptionsState.enabledVideoH265Params) {
+      connectionOptions.videoH265Params = parseMetadata(
+        true,
+        connectionOptionsState.videoH265Params,
       )
     }
     // videoVP9Params

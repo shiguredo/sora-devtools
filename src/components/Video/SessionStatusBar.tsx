@@ -5,7 +5,6 @@ import { copy2clipboard } from '@/utils'
 
 type TextBoxProps = {
   id?: string
-  label?: string
   text: string
 }
 const TextBox: React.FC<TextBoxProps> = (props) => {
@@ -15,7 +14,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
   }
   return (
     <div className="d-flex align-items-center">
-      {props.label ? <p>{props.label}</p> : null}
+      <p>sessionID:</p>
       <div className="d-flex align-items-center border border-secondary rounded mx-1">
         <p id={props.id} className="mx-2 p-1">
           {props.text}
@@ -31,28 +30,9 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
 }
 
 type Props = {
-  localVideo?: boolean
-  connectionId: string | null
-  clientId?: string | null
+  sessionId: string
 }
-export const ConnectionStatusBar: React.FC<Props> = (props) => {
-  const { localVideo, connectionId, clientId } = props
-  return (
-    <>
-      {connectionId ? (
-        <TextBox
-          id={localVideo ? 'local-video-connection-id' : undefined}
-          label="connectionID:"
-          text={connectionId}
-        />
-      ) : null}
-      {clientId !== null && clientId !== undefined && connectionId !== clientId ? (
-        <TextBox
-          id={localVideo ? 'local-video-client-id' : undefined}
-          label="clientID:"
-          text={clientId}
-        />
-      ) : null}
-    </>
-  )
+export const SessionStatusBar: React.FC<Props> = (props) => {
+  const { sessionId } = props
+  return <TextBox id="session-id" text={sessionId} />
 }

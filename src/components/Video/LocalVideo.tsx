@@ -7,6 +7,7 @@ import { RequestRtpStreamButton } from './RequestRtpStreamButton'
 import { RequestSpotlightRidButton } from './RequestSpotlightRidButton'
 import { ResetRtpStreamButton } from './ResetRtpStreamButton'
 import { ResetSpotlightRidButton } from './ResetSpotlightRidButton'
+import { SessionStatusBar } from './SessionStatusBar'
 import { Video } from './Video'
 import { VolumeVisualizer } from './VolumeVisualizer'
 
@@ -54,6 +55,7 @@ const VideoBox: React.FC = () => {
 export const LocalVideo: React.FC = () => {
   const connectionId = useAppSelector((state) => state.soraContents.connectionId)
   const clientId = useAppSelector((state) => state.soraContents.clientId)
+  const sessionId = useAppSelector((state) => state.soraContents.sessionId)
   const simulcast = useAppSelector((state) => state.simulcast)
   const spotlight = useAppSelector((state) => state.spotlight)
   const role = useAppSelector((state) => state.role)
@@ -62,6 +64,11 @@ export const LocalVideo: React.FC = () => {
     <div className="row my-1">
       <div className="col-auto">
         <div className="video-status mb-1">
+          {sessionId !== null ? (
+            <div className="d-flex align-items-center mb-1 video-status-inner">
+              <SessionStatusBar sessionId={sessionId} />
+            </div>
+          ) : null}
           {connectionId !== null || clientId !== null ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />

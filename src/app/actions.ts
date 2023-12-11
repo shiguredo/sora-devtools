@@ -145,6 +145,9 @@ export const setInitialParameter = () => {
     if (qsParams.videoH264Params !== undefined) {
       dispatch(slice.actions.setVideoH264Params(qsParams.videoH264Params))
     }
+    if (qsParams.videoH265Params !== undefined) {
+      dispatch(slice.actions.setVideoH265Params(qsParams.videoH265Params))
+    }
     if (qsParams.videoAV1Params !== undefined) {
       dispatch(slice.actions.setVideoAV1Params(qsParams.videoAV1Params))
     }
@@ -256,6 +259,7 @@ export const setInitialParameter = () => {
       forwardingFilter,
       videoVP9Params,
       videoH264Params,
+      videoH265Params,
       videoAV1Params,
     } = getState()
     if (e2ee) {
@@ -316,6 +320,10 @@ export const setInitialParameter = () => {
     if (videoH264Params !== '') {
       dispatch(slice.actions.setEnabledVideoH264Params(true))
     }
+    // videoH265Params が存在した場合は enabledH265Params をセットする
+    if (videoH265Params !== '') {
+      dispatch(slice.actions.setEnabledVideoH265Params(true))
+    }
     // videoAV1Params が存在した場合は enabledVideoAV1Params をセットする
     if (videoAV1Params !== '') {
       dispatch(slice.actions.setEnabledVideoAV1Params(true))
@@ -357,6 +365,10 @@ export const copyURL = () => {
       videoH264Params:
         appendAudioVideoParams && state.videoH264Params !== '' && state.enabledVideoH264Params
           ? state.videoH264Params
+          : undefined,
+      videoH265Params:
+        appendAudioVideoParams && state.videoH265Params !== '' && state.enabledVideoH265Params
+          ? state.videoH265Params
           : undefined,
       videoAV1Params:
         appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
@@ -673,87 +685,93 @@ async function createMediaStream(
     videoInput: state.videoInput,
     facingMode: state.facingMode,
   })
-  const mediaStreamConstraints: MediaStreamConstraints = {}
-  if (audioConstraints) {
-    mediaStreamConstraints.audio = audioConstraints
-  }
-  if (videoConstraints) {
-    mediaStreamConstraints.video = videoConstraints
-  }
-  dispatch(
-    slice.actions.setLogMessages({
-      title: LOG_TITLE,
-      description: JSON.stringify(mediaStreamConstraints),
-    }),
-  )
-  dispatch(
-    slice.actions.setTimelineMessage(
-      createSoraDevtoolsTimelineMessage('media-constraints', mediaStreamConstraints),
-    ),
-  )
-  const gumMediaStream = await navigator.mediaDevices
-    .getUserMedia(mediaStreamConstraints)
-    .catch((error) => {
-      // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-      mediaStream.getTracks().filter((t) => {
-        t.stop()
+  if (audioConstraints || videoConstraints) {
+    const mediaStreamConstraints: MediaStreamConstraints = {}
+    if (audioConstraints) {
+      mediaStreamConstraints.audio = audioConstraints
+    }
+    if (videoConstraints) {
+      mediaStreamConstraints.video = videoConstraints
+    }
+    dispatch(
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify(mediaStreamConstraints),
+      }),
+    )
+    dispatch(
+      slice.actions.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage('media-constraints', mediaStreamConstraints),
+      ),
+    )
+    const gumMediaStream = await navigator.mediaDevices
+      .getUserMedia(mediaStreamConstraints)
+      .catch((error) => {
+        // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
+        mediaStream.getTracks().filter((t) => {
+          t.stop()
+        })
+        throw error
       })
-      throw error
-    })
-  if (audioConstraints) {
-    let audioTrack = gumMediaStream.getAudioTracks()[0]
-    dispatch(
-      slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', audioTrack)),
-    )
-    if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
-      if (state.noiseSuppressionProcessor === null) {
-        throw new Error(
-          "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
-        )
+    if (audioConstraints) {
+      let audioTrack = gumMediaStream.getAudioTracks()[0]
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('start', audioTrack),
+        ),
+      )
+      if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
+        if (state.noiseSuppressionProcessor === null) {
+          throw new Error(
+            "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
+          )
+        }
+        state.noiseSuppressionProcessor.stopProcessing()
+        audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack)
       }
-      state.noiseSuppressionProcessor.stopProcessing()
-      audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack)
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage('succeed-audio-get-user-media'),
+        ),
+      )
+      mediaStream.addTrack(audioTrack)
     }
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('succeed-audio-get-user-media'),
-      ),
-    )
-    mediaStream.addTrack(audioTrack)
-  }
-  if (videoConstraints) {
-    let videoTrack = gumMediaStream.getVideoTracks()[0]
-    dispatch(
-      slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('start', videoTrack)),
-    )
-    if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
-      if (state.lightAdjustmentProcessor === null) {
-        throw new Error(
-          "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
-        )
+    if (videoConstraints) {
+      let videoTrack = gumMediaStream.getVideoTracks()[0]
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsMediaStreamTrackLog('start', videoTrack),
+        ),
+      )
+      if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
+        if (state.lightAdjustmentProcessor === null) {
+          throw new Error(
+            "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
+          )
+        }
+        const options = getLightAdjustmentOptions(state.lightAdjustment)
+        state.lightAdjustmentProcessor.stopProcessing()
+        videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options)
       }
-      const options = getLightAdjustmentOptions(state.lightAdjustment)
-      state.lightAdjustmentProcessor.stopProcessing()
-      videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options)
+      if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
+        if (state.virtualBackgroundProcessor === null) {
+          throw new Error(
+            "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
+          )
+        }
+        const options = {
+          blurRadius: getBlurRadiusNumber(state.blurRadius),
+        }
+        state.virtualBackgroundProcessor.stopProcessing()
+        videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options)
+      }
+      dispatch(
+        slice.actions.setTimelineMessage(
+          createSoraDevtoolsTimelineMessage('succeed-video-get-user-media'),
+        ),
+      )
+      mediaStream.addTrack(videoTrack)
     }
-    if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
-      if (state.virtualBackgroundProcessor === null) {
-        throw new Error(
-          "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
-        )
-      }
-      const options = {
-        blurRadius: getBlurRadiusNumber(state.blurRadius),
-      }
-      state.virtualBackgroundProcessor.stopProcessing()
-      videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options)
-    }
-    dispatch(
-      slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('succeed-video-get-user-media'),
-      ),
-    )
-    mediaStream.addTrack(videoTrack)
   }
   for (const track of mediaStream.getVideoTracks()) {
     if (track.contentHint !== undefined) {
@@ -796,6 +814,9 @@ function setSoraCallbacks(
       typeof message.connection_id === 'string'
     ) {
       dispatch(slice.actions.deleteFocusedSpotlightConnectionId(message.connection_id))
+    }
+    if (message.event_type === 'connection.created' && typeof message.session_id === 'string') {
+      dispatch(slice.actions.setSoraSessionId(message.session_id))
     }
     dispatch(
       slice.actions.setNotifyMessages({
@@ -952,6 +973,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledForwardingFilter: state.enabledForwardingFilter,
     enabledVideoVP9Params: state.enabledVideoVP9Params,
     enabledVideoH264Params: state.enabledVideoH264Params,
+    enabledVideoH265Params: state.enabledVideoH265Params,
     enabledVideoAV1Params: state.enabledVideoAV1Params,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     audioLyraParamsBitrate: state.audioLyraParamsBitrate,
@@ -969,6 +991,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoCodecType: state.videoCodecType,
     videoVP9Params: state.videoVP9Params,
     videoH264Params: state.videoH264Params,
+    videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
     role: state.role,
   }
@@ -1883,6 +1906,7 @@ export const {
   setEnabledSignalingUrlCandidates,
   setEnabledVideoVP9Params,
   setEnabledVideoH264Params,
+  setEnabledVideoH265Params,
   setEnabledVideoAV1Params,
   setAudioStreamingLanguageCode,
   setEnabledAudioStreamingLanguageCode,
@@ -1925,5 +1949,6 @@ export const {
   setVideoTrack,
   setVideoVP9Params,
   setVideoH264Params,
+  setVideoH265Params,
   setVideoAV1Params,
 } = slice.actions

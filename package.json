@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2023.2.0-canary.7",
+  "version": "2023.2.0-canary.11",
   "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
@@ -40,7 +40,7 @@
     "redux": "5.0.0",
     "redux-logger": "3.0.6",
     "redux-thunk": "3.1.0",
-    "sora-js-sdk": "2023.2.0-canary.7"
+    "sora-js-sdk": "2023.2.0-canary.15"
   },
   "devDependencies": {
     "@biomejs/biome": "1.4.1",
@@ -57,8 +57,8 @@
     "typescript": "5.3.3",
     "vitest": "1.0.4"
   },
-  "packageManager": "pnpm@8.11.0",
+  "packageManager": "pnpm@8.12.0",
   "engines": {
-    "node": ">=18.17.1"
+    "node": ">=18"
   }
 }

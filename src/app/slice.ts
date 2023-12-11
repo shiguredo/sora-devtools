@@ -60,6 +60,7 @@ const initialState: SoraDevtoolsState = {
   enabledSignalingUrlCandidates: false,
   enabledVideoVP9Params: false,
   enabledVideoH264Params: false,
+  enabledVideoH265Params: false,
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
@@ -78,6 +79,7 @@ const initialState: SoraDevtoolsState = {
     sora: null,
     connectionId: null,
     clientId: null,
+    sessionId: null,
     localMediaStream: null,
     remoteMediaStreams: [],
     prevStatsReport: [],
@@ -115,6 +117,7 @@ const initialState: SoraDevtoolsState = {
   videoInputDevices: [],
   videoVP9Params: '',
   videoH264Params: '',
+  videoH265Params: '',
   videoAV1Params: '',
   version: packageJSON.version,
   cameraDevice: true,
@@ -244,6 +247,9 @@ export const slice = createSlice({
     setEnabledVideoH264Params: (state, action: PayloadAction<boolean>) => {
       state.enabledVideoH264Params = action.payload
     },
+    setEnabledVideoH265Params: (state, action: PayloadAction<boolean>) => {
+      state.enabledVideoH265Params = action.payload
+    },
     setEnabledVideoAV1Params: (state, action: PayloadAction<boolean>) => {
       state.enabledVideoAV1Params = action.payload
     },
@@ -354,6 +360,9 @@ export const slice = createSlice({
     setVideoH264Params: (state, action: PayloadAction<string>) => {
       state.videoH264Params = action.payload
     },
+    setVideoH265Params: (state, action: PayloadAction<string>) => {
+      state.videoH265Params = action.payload
+    },
     setVideoAV1Params: (state, action: PayloadAction<string>) => {
       state.videoAV1Params = action.payload
     },
@@ -362,10 +371,19 @@ export const slice = createSlice({
       if (state.soraContents.sora) {
         state.soraContents.connectionId = state.soraContents.sora.connectionId
         state.soraContents.clientId = state.soraContents.sora.clientId
+        if (state.soraContents.sessionId === null) {
+          state.soraContents.sessionId = state.soraContents.sora.sessionId
+        }
       } else {
         state.soraContents.connectionId = null
         state.soraContents.clientId = null
+        state.soraContents.sessionId = null
         state.soraContents.datachannels = []
+      }
+    },
+    setSoraSessionId: (state, action: PayloadAction<string>) => {
+      if (state.soraContents.sessionId === null) {
+        state.soraContents.sessionId = action.payload
       }
     },
     setSoraConnectionStatus: (
