@@ -45,8 +45,8 @@ dependencies:
     specifier: 3.0.6
     version: 3.0.6
   redux-thunk:
-    specifier: 2.4.2
-    version: 2.4.2(redux@5.0.0)
+    specifier: 3.1.0
+    version: 3.1.0(redux@5.0.0)
   sora-js-sdk:
     specifier: 2023.2.0-canary.15
     version: 2023.2.0-canary.15
@@ -2914,10 +2914,10 @@ packages:
       redux: 4.2.1
     dev: false
 
-  /redux-thunk@2.4.2(redux@5.0.0):
-    resolution: {integrity: sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==}
+  /redux-thunk@3.1.0(redux@5.0.0):
+    resolution: {integrity: sha512-NW2r5T6ksUKXCabzhL9z+h206HQw/NJkcLm1GPImRQ8IzfXwRGqjVhKJGauHirT0DAuyy6hjdnMZaRoAcy0Klw==}
     peerDependencies:
-      redux: ^4
+      redux: ^5.0.0
     dependencies:
       redux: 5.0.0
     dev: false
