@@ -26,7 +26,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "1.9.7",
+    "@reduxjs/toolkit": "2.0.1",
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
