@@ -869,7 +869,7 @@ function setSoraCallbacks(
       dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id))
     }
   })
-  sora.on('disconnect', async (event) => {
+  sora.on('disconnect', (event) => {
     const message: Record<string, unknown> = {
       type: event.type,
       title: event.title,
@@ -888,11 +888,23 @@ function setSoraCallbacks(
         createSoraDevtoolsTimelineMessage('event-on-disconnect', message),
       ),
     )
-    // ローカルの MediaStream の Track と MediaProcessor を止める
-    await stopLocalVideoTrack(dispatch, getState())
-    stopLocalAudioTrack(dispatch, getState())
-    const { fakeContents, soraContents, reconnect } = getState()
-    const { remoteMediaStreams } = soraContents
+    const {
+      fakeContents,
+      soraContents,
+      reconnect,
+      lightAdjustmentProcessor,
+      virtualBackgroundProcessor,
+      noiseSuppressionProcessor,
+    } = getState()
+    const { localMediaStream, remoteMediaStreams } = soraContents
+    // media processor は同期処理で停止する
+    const originalTrack = stopVideoProcessors(lightAdjustmentProcessor, virtualBackgroundProcessor)
+    // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
+    ;(async () => {
+      // ローカルの MediaStream の Track と MediaProcessor を止める
+      await stopLocalVideoTrack(dispatch, localMediaStream, originalTrack)
+    })()
+    stopLocalAudioTrack(dispatch, localMediaStream, noiseSuppressionProcessor)
     remoteMediaStreams.filter((mediaStream) => {
       mediaStream.getTracks().filter((track) => {
         track.stop()
@@ -1193,9 +1205,13 @@ export const connectSora = () => {
     )
     dispatch(slice.actions.setSoraConnectionStatus('preparing'))
     const state = getState()
+    // 強制的に state.soraContents.localMediaStream を作り直すかどうか
+    let forceCreateMediaStream = false
     // 接続中の場合は切断する
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect()
+      // 接続中の再接続の場合は、MediaStream を作り直し、state.soraContents.localMediaStream を更新する
+      forceCreateMediaStream = true
     }
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
@@ -1226,7 +1242,7 @@ export const connectSora = () => {
           }
         }
         setSoraCallbacks(dispatch, getState, sora)
-        if (state.soraContents.localMediaStream) {
+        if (!forceCreateMediaStream && state.soraContents.localMediaStream) {
           mediaStream = state.soraContents.localMediaStream
         } else {
           ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
@@ -1247,7 +1263,7 @@ export const connectSora = () => {
           }
         }
         setSoraCallbacks(dispatch, getState, sora)
-        if (state.soraContents.localMediaStream) {
+        if (!forceCreateMediaStream && state.soraContents.localMediaStream) {
           mediaStream = state.soraContents.localMediaStream
         } else {
           ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
@@ -1341,7 +1357,7 @@ export const connectSora = () => {
     // disconnect 時に stream を止めないためのハック
     sora.stream = null
     dispatch(slice.actions.setSora(sora))
-    if (mediaStream && state.soraContents.localMediaStream === null) {
+    if (mediaStream && (state.soraContents.localMediaStream === null || forceCreateMediaStream)) {
       dispatch(slice.actions.setLocalMediaStream(mediaStream))
     }
     if (gainNode) {
@@ -1665,12 +1681,20 @@ export const setMicDevice = (micDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
-      stopLocalAudioTrack(dispatch, state)
+      stopLocalAudioTrack(
+        dispatch,
+        state.soraContents.localMediaStream,
+        state.noiseSuppressionProcessor,
+      )
       state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream)
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
-      stopLocalAudioTrack(dispatch, state)
+      stopLocalAudioTrack(
+        dispatch,
+        state.soraContents.localMediaStream,
+        state.noiseSuppressionProcessor,
+      )
     }
     dispatch(slice.actions.setMicDevice(micDevice))
   }
@@ -1741,27 +1765,33 @@ export const setCameraDevice = (cameraDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
-      await stopLocalVideoTrack(dispatch, state)
+      const originalTrack = stopVideoProcessors(
+        state.lightAdjustmentProcessor,
+        state.virtualBackgroundProcessor,
+      )
+      await stopLocalVideoTrack(dispatch, state.soraContents.localMediaStream, originalTrack)
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream)
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
-      await stopLocalVideoTrack(dispatch, state)
+      const originalTrack = stopVideoProcessors(
+        state.lightAdjustmentProcessor,
+        state.virtualBackgroundProcessor,
+      )
+      await stopLocalVideoTrack(dispatch, state.soraContents.localMediaStream, originalTrack)
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice))
   }
 }
 
 /**
- * devtools のローカルにもっている MediaStream のうち Video Track と
- * 映像処理を行っている MediaProcessor の停止を行う関数
- * MediaStream から Track の削除も行う
+ * 設定されている media processor が実行中の場合は停止し、使用されていた MediaStreamTrack を返す
+ * media processor が実行中でない場合は undefined を返す
  */
-const stopLocalVideoTrack = async (
-  dispatch: Dispatch,
-  { soraContents, lightAdjustmentProcessor, virtualBackgroundProcessor }: SoraDevtoolsState,
-): Promise<void> => {
-  const { localMediaStream } = soraContents
+const stopVideoProcessors = (
+  lightAdjustmentProcessor: LightAdjustmentProcessor | null,
+  virtualBackgroundProcessor: VirtualBackgroundProcessor | null,
+): MediaStreamTrack | undefined => {
   let originalTrack: MediaStreamTrack | undefined
   if (lightAdjustmentProcessor?.isProcessing()) {
     originalTrack = lightAdjustmentProcessor.getOriginalTrack()
@@ -1773,6 +1803,19 @@ const stopLocalVideoTrack = async (
     }
     virtualBackgroundProcessor.stopProcessing()
   }
+  return originalTrack
+}
+
+/**
+ * devtools のローカルにもっている MediaStream のうち Video Track の停止を行う関数
+ * MediaStream から Track の削除も行う
+ * originalTrack の引数は stopVideoProcessors を呼び出し取得した MediaStreamTrack を渡す
+ */
+const stopLocalVideoTrack = async (
+  dispatch: Dispatch,
+  localMediaStream: MediaStream | null,
+  originalTrack?: MediaStreamTrack,
+): Promise<void> => {
   if (originalTrack !== undefined) {
     originalTrack.enabled = false
     // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
@@ -1812,9 +1855,9 @@ const stopLocalVideoTrack = async (
  */
 const stopLocalAudioTrack = (
   dispatch: Dispatch,
-  { soraContents, noiseSuppressionProcessor }: SoraDevtoolsState,
+  localMediaStream: MediaStream | null,
+  noiseSuppressionProcessor: NoiseSuppressionProcessor | null,
 ): void => {
-  const { localMediaStream } = soraContents
   if (noiseSuppressionProcessor?.isProcessing()) {
     const originalTrack = noiseSuppressionProcessor.getOriginalTrack()
     if (originalTrack) {
