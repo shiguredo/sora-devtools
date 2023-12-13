@@ -869,7 +869,7 @@ function setSoraCallbacks(
       dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id))
     }
   })
-  sora.on('disconnect', async (event) => {
+  sora.on('disconnect', (event) => {
     const message: Record<string, unknown> = {
       type: event.type,
       title: event.title,
@@ -888,11 +888,25 @@ function setSoraCallbacks(
         createSoraDevtoolsTimelineMessage('event-on-disconnect', message),
       ),
     )
-    // ローカルの MediaStream の Track と MediaProcessor を止める
-    await stopLocalVideoTrack(dispatch, getState())
-    stopLocalAudioTrack(dispatch, getState())
-    const { fakeContents, soraContents, reconnect } = getState()
-    const { remoteMediaStreams } = soraContents
+    const {
+      fakeContents,
+      soraContents,
+      reconnect,
+      lightAdjustmentProcessor,
+      virtualBackgroundProcessor,
+      noiseSuppressionProcessor,
+    } = getState()
+    const { localMediaStream, remoteMediaStreams } = soraContents
+    ;(async () => {
+      // ローカルの MediaStream の Track と MediaProcessor を止める
+      await stopLocalVideoTrack(
+        dispatch,
+        localMediaStream,
+        lightAdjustmentProcessor,
+        virtualBackgroundProcessor,
+      )
+    })()
+    stopLocalAudioTrack(dispatch, localMediaStream, noiseSuppressionProcessor)
     remoteMediaStreams.filter((mediaStream) => {
       mediaStream.getTracks().filter((track) => {
         track.stop()
@@ -1193,9 +1207,11 @@ export const connectSora = () => {
     )
     dispatch(slice.actions.setSoraConnectionStatus('preparing'))
     const state = getState()
+    let forceCreateMediaStream = false
     // 接続中の場合は切断する
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect()
+      forceCreateMediaStream = true
     }
     // シグナリング候補のURLリストを作成する
     const signalingUrlCandidates = createSignalingURL(
@@ -1226,7 +1242,7 @@ export const connectSora = () => {
           }
         }
         setSoraCallbacks(dispatch, getState, sora)
-        if (state.soraContents.localMediaStream) {
+        if (!forceCreateMediaStream && state.soraContents.localMediaStream) {
           mediaStream = state.soraContents.localMediaStream
         } else {
           ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
@@ -1247,7 +1263,7 @@ export const connectSora = () => {
           }
         }
         setSoraCallbacks(dispatch, getState, sora)
-        if (state.soraContents.localMediaStream) {
+        if (!forceCreateMediaStream && state.soraContents.localMediaStream) {
           mediaStream = state.soraContents.localMediaStream
         } else {
           ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
@@ -1341,7 +1357,7 @@ export const connectSora = () => {
     // disconnect 時に stream を止めないためのハック
     sora.stream = null
     dispatch(slice.actions.setSora(sora))
-    if (mediaStream && state.soraContents.localMediaStream === null) {
+    if (mediaStream) {
       dispatch(slice.actions.setLocalMediaStream(mediaStream))
     }
     if (gainNode) {
@@ -1665,12 +1681,20 @@ export const setMicDevice = (micDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
-      stopLocalAudioTrack(dispatch, state)
+      stopLocalAudioTrack(
+        dispatch,
+        state.soraContents.localMediaStream,
+        state.noiseSuppressionProcessor,
+      )
       state.soraContents.sora.stopAudioTrack(state.soraContents.localMediaStream)
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
-      stopLocalAudioTrack(dispatch, state)
+      stopLocalAudioTrack(
+        dispatch,
+        state.soraContents.localMediaStream,
+        state.noiseSuppressionProcessor,
+      )
     }
     dispatch(slice.actions.setMicDevice(micDevice))
   }
@@ -1741,12 +1765,22 @@ export const setCameraDevice = (cameraDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
-      await stopLocalVideoTrack(dispatch, state)
+      await stopLocalVideoTrack(
+        dispatch,
+        state.soraContents.localMediaStream,
+        state.lightAdjustmentProcessor,
+        state.virtualBackgroundProcessor,
+      )
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream)
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
-      await stopLocalVideoTrack(dispatch, state)
+      await stopLocalVideoTrack(
+        dispatch,
+        state.soraContents.localMediaStream,
+        state.lightAdjustmentProcessor,
+        state.virtualBackgroundProcessor,
+      )
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice))
   }
@@ -1759,9 +1793,10 @@ export const setCameraDevice = (cameraDevice: boolean) => {
  */
 const stopLocalVideoTrack = async (
   dispatch: Dispatch,
-  { soraContents, lightAdjustmentProcessor, virtualBackgroundProcessor }: SoraDevtoolsState,
+  localMediaStream: MediaStream | null,
+  lightAdjustmentProcessor: LightAdjustmentProcessor | null,
+  virtualBackgroundProcessor: VirtualBackgroundProcessor | null,
 ): Promise<void> => {
-  const { localMediaStream } = soraContents
   let originalTrack: MediaStreamTrack | undefined
   if (lightAdjustmentProcessor?.isProcessing()) {
     originalTrack = lightAdjustmentProcessor.getOriginalTrack()
@@ -1812,9 +1847,9 @@ const stopLocalVideoTrack = async (
  */
 const stopLocalAudioTrack = (
   dispatch: Dispatch,
-  { soraContents, noiseSuppressionProcessor }: SoraDevtoolsState,
+  localMediaStream: MediaStream | null,
+  noiseSuppressionProcessor: NoiseSuppressionProcessor | null,
 ): void => {
-  const { localMediaStream } = soraContents
   if (noiseSuppressionProcessor?.isProcessing()) {
     const originalTrack = noiseSuppressionProcessor.getOriginalTrack()
     if (originalTrack) {
