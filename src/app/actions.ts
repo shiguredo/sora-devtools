@@ -897,14 +897,10 @@ function setSoraCallbacks(
       noiseSuppressionProcessor,
     } = getState()
     const { localMediaStream, remoteMediaStreams } = soraContents
+    const originalTrack = stopVideoProcessors(lightAdjustmentProcessor, virtualBackgroundProcessor)
     ;(async () => {
       // ローカルの MediaStream の Track と MediaProcessor を止める
-      await stopLocalVideoTrack(
-        dispatch,
-        localMediaStream,
-        lightAdjustmentProcessor,
-        virtualBackgroundProcessor,
-      )
+      await stopLocalVideoTrack(dispatch, localMediaStream, originalTrack)
     })()
     stopLocalAudioTrack(dispatch, localMediaStream, noiseSuppressionProcessor)
     remoteMediaStreams.filter((mediaStream) => {
@@ -1765,38 +1761,33 @@ export const setCameraDevice = (cameraDevice: boolean) => {
       }
     } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
       // Sora 接続中の場合
-      await stopLocalVideoTrack(
-        dispatch,
-        state.soraContents.localMediaStream,
+      const originalTrack = stopVideoProcessors(
         state.lightAdjustmentProcessor,
         state.virtualBackgroundProcessor,
       )
+      await stopLocalVideoTrack(dispatch, state.soraContents.localMediaStream, originalTrack)
       state.soraContents.sora.stopVideoTrack(state.soraContents.localMediaStream)
     } else if (state.soraContents.localMediaStream) {
       // Sora は未接続で media access での表示を行っている場合
       // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
-      await stopLocalVideoTrack(
-        dispatch,
-        state.soraContents.localMediaStream,
+      const originalTrack = stopVideoProcessors(
         state.lightAdjustmentProcessor,
         state.virtualBackgroundProcessor,
       )
+      await stopLocalVideoTrack(dispatch, state.soraContents.localMediaStream, originalTrack)
     }
     dispatch(slice.actions.setCameraDevice(cameraDevice))
   }
 }
 
 /**
- * devtools のローカルにもっている MediaStream のうち Video Track と
- * 映像処理を行っている MediaProcessor の停止を行う関数
- * MediaStream から Track の削除も行う
+ * 設定されている media processor が実行中の場合は停止し、使用されていた MediaStreamTrack を返す
+ * media processor が実行中でない場合は undefined を返す
  */
-const stopLocalVideoTrack = async (
-  dispatch: Dispatch,
-  localMediaStream: MediaStream | null,
+const stopVideoProcessors = (
   lightAdjustmentProcessor: LightAdjustmentProcessor | null,
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null,
-): Promise<void> => {
+): MediaStreamTrack | undefined => {
   let originalTrack: MediaStreamTrack | undefined
   if (lightAdjustmentProcessor?.isProcessing()) {
     originalTrack = lightAdjustmentProcessor.getOriginalTrack()
@@ -1808,6 +1799,19 @@ const stopLocalVideoTrack = async (
     }
     virtualBackgroundProcessor.stopProcessing()
   }
+  return originalTrack
+}
+
+/**
+ * devtools のローカルにもっている MediaStream のうち Video Track の停止を行う関数
+ * MediaStream から Track の削除も行う
+ * originalTrack の引数は stopVideoProcessors を呼び出し取得した MediaStreamTrack を渡す
+ */
+const stopLocalVideoTrack = async (
+  dispatch: Dispatch,
+  localMediaStream: MediaStream | null,
+  originalTrack?: MediaStreamTrack,
+): Promise<void> => {
   if (originalTrack !== undefined) {
     originalTrack.enabled = false
     // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
