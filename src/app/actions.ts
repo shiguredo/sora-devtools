@@ -1357,7 +1357,7 @@ export const connectSora = () => {
     // disconnect 時に stream を止めないためのハック
     sora.stream = null
     dispatch(slice.actions.setSora(sora))
-    if (mediaStream) {
+    if (mediaStream && (state.soraContents.localMediaStream === null || forceCreateMediaStream)) {
       dispatch(slice.actions.setLocalMediaStream(mediaStream))
     }
     if (gainNode) {
