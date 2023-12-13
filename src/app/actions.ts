@@ -897,7 +897,9 @@ function setSoraCallbacks(
       noiseSuppressionProcessor,
     } = getState()
     const { localMediaStream, remoteMediaStreams } = soraContents
+    // media processor は同期処理で停止する
     const originalTrack = stopVideoProcessors(lightAdjustmentProcessor, virtualBackgroundProcessor)
+    // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
     ;(async () => {
       // ローカルの MediaStream の Track と MediaProcessor を止める
       await stopLocalVideoTrack(dispatch, localMediaStream, originalTrack)
@@ -1203,10 +1205,12 @@ export const connectSora = () => {
     )
     dispatch(slice.actions.setSoraConnectionStatus('preparing'))
     const state = getState()
+    // 強制的に state.soraContents.localMediaStream を作り直すかどうか
     let forceCreateMediaStream = false
     // 接続中の場合は切断する
     if (state.soraContents.sora) {
       await state.soraContents.sora.disconnect()
+      // 接続中の再接続の場合は、MediaStream を作り直し、state.soraContents.localMediaStream を更新する
       forceCreateMediaStream = true
     }
     // シグナリング候補のURLリストを作成する
