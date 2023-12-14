@@ -42,6 +42,7 @@ function createDownloadReport(): DownloadReport {
     enabledSignalingUrlCandidates: state.enabledSignalingUrlCandidates,
     enabledVideoVP9Params: state.enabledVideoVP9Params,
     enabledVideoH264Params: state.enabledVideoH264Params,
+    enabledVideoH265Params: state.enabledVideoH265Params,
     enabledVideoAV1Params: state.enabledVideoAV1Params,
     facingMode: state.facingMode,
     fakeVolume: state.fakeVolume,
@@ -75,6 +76,7 @@ function createDownloadReport(): DownloadReport {
     videoTrack: state.videoTrack,
     videoVP9Params: state.videoVP9Params,
     videoH264Params: state.videoH264Params,
+    videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
   }
   const report = {
@@ -118,6 +120,8 @@ export const DownloadReportButton: React.FC = () => {
         defaultValue="Download report"
         onClick={onClick}
       />
+      {/* biome-ignore lint/a11y/useAnchorContent: <explanation> */}
+      {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
       <a ref={anchorRef} style={{ display: 'none' }} />
     </>
   )

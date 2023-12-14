@@ -16,8 +16,8 @@ import {
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
   DISPLAY_RESOLUTIONS,
-  ECHO_CANCELLATION_TYPES,
   ECHO_CANCELLATIONS,
+  ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
@@ -36,7 +36,7 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '@/constants'
+} from './constants'
 import type {
   ConnectionOptionsState,
   CustomHTMLCanvasElement,
@@ -44,7 +44,7 @@ import type {
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
   SoraDevtoolsState,
-} from '@/types'
+} from './types'
 
 // UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -165,6 +165,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
     videoVP9Params: parseStringParameter(qs.videoVP9Params),
     videoH264Params: parseStringParameter(qs.videoH264Params),
+    videoH265Params: parseStringParameter(qs.videoH265Params),
     videoAV1Params: parseStringParameter(qs.videoAV1Params),
     audioInput: parseStringParameter(qs.audioInput),
     videoInput: parseStringParameter(qs.videoInput),
@@ -221,26 +222,26 @@ export function createSignalingURL(
   }
   const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
   const port = window.location.port ? `:${window.location.port}` : ''
-  return wsProtocol + window.location.hostname + port + '/signaling'
+  return `${wsProtocol + window.location.hostname + port}/signaling`
 }
 
 // 解像度に対応する width と height を返す
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
   switch (resolution) {
-    case '120p (160x120)':
-      return { width: 160, height: 120 }
-    case '180p (320x180)':
-      return { width: 320, height: 180 }
+    case '144p (256x144)':
+      return { width: 256, height: 144 }
     case '240p (320x240)':
       return { width: 320, height: 240 }
     case '360p (640x360)':
       return { width: 640, height: 360 }
-    case '480p (640x480)':
-      return { width: 640, height: 480 }
+    case '480p (720x480)':
+      return { width: 720, height: 480 }
     case '720p (1280x720)':
       return { width: 1280, height: 720 }
     case '1080p (1920x1080)':
       return { width: 1920, height: 1080 }
+    case '1440p (2560x1440)':
+      return { width: 2560, height: 1440 }
     case '2160p (3840x2160)':
       return { width: 3840, height: 2160 }
     default:
@@ -545,9 +546,9 @@ export function drawFakeCanvas(
   }
   context.globalCompositeOperation = 'source-over'
   context.clearRect(0, 0, canvas.width, canvas.height)
-  context.fillStyle = '#' + ('0'.repeat(6) + colorCode.toString(16)).slice(-6)
+  context.fillStyle = `#${('0'.repeat(6) + colorCode.toString(16)).slice(-6)}`
   context.fillRect(0, 0, canvas.width, canvas.height)
-  context.fillStyle = '#' + ('0'.repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6)
+  context.fillStyle = `#${('0'.repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6)}`
   context.font = `${fontSize}px Arial`
   const x = canvas.width / 2 - fontSize / 2
   const margin = (fontSize / 4) * (text.length - 1)
@@ -558,7 +559,8 @@ export function drawFakeCanvas(
 export function parseBooleanString(value: string): boolean | undefined {
   if (value === 'true') {
     return true
-  } else if (value === 'false') {
+  }
+  if (value === 'false') {
     return false
   }
   return
@@ -622,7 +624,11 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
 export function isFormDisabled(
   connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
 ): boolean {
-  return connectionStatus === 'connected' || connectionStatus === 'connecting'
+  return (
+    connectionStatus === 'preparing' ||
+    connectionStatus === 'connected' ||
+    connectionStatus === 'connecting'
+  )
 }
 
 // track の設定情報を返す
@@ -696,6 +702,13 @@ export function createConnectOptions(
       connectionOptions.videoH264Params = parseMetadata(
         true,
         connectionOptionsState.videoH264Params,
+      )
+    }
+    // videoH265Params
+    if (connectionOptionsState.enabledVideoH265Params) {
+      connectionOptions.videoH265Params = parseMetadata(
+        true,
+        connectionOptionsState.videoH265Params,
       )
     }
     // videoVP9Params

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -9,7 +9,8 @@ import type {
   Role,
 } from 'sora-js-sdk'
 
-import { WORKER_SCRIPT } from '@/constants'
+import packageJSON from '../../package.json'
+import { WORKER_SCRIPT } from '../constants'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -20,9 +21,7 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from '@/types'
-
-import packageJSON from '../../package.json'
+} from '../types'
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],
@@ -61,6 +60,7 @@ const initialState: SoraDevtoolsState = {
   enabledSignalingUrlCandidates: false,
   enabledVideoVP9Params: false,
   enabledVideoH264Params: false,
+  enabledVideoH265Params: false,
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
@@ -79,6 +79,7 @@ const initialState: SoraDevtoolsState = {
     sora: null,
     connectionId: null,
     clientId: null,
+    sessionId: null,
     localMediaStream: null,
     remoteMediaStreams: [],
     prevStatsReport: [],
@@ -116,6 +117,7 @@ const initialState: SoraDevtoolsState = {
   videoInputDevices: [],
   videoVP9Params: '',
   videoH264Params: '',
+  videoH265Params: '',
   videoAV1Params: '',
   version: packageJSON.version,
   cameraDevice: true,
@@ -245,12 +247,15 @@ export const slice = createSlice({
     setEnabledVideoH264Params: (state, action: PayloadAction<boolean>) => {
       state.enabledVideoH264Params = action.payload
     },
+    setEnabledVideoH265Params: (state, action: PayloadAction<boolean>) => {
+      state.enabledVideoH265Params = action.payload
+    },
     setEnabledVideoAV1Params: (state, action: PayloadAction<boolean>) => {
       state.enabledVideoAV1Params = action.payload
     },
     setFakeVolume: (state, action: PayloadAction<string>) => {
       const volume = parseFloat(action.payload)
-      if (isNaN(volume)) {
+      if (Number.isNaN(volume)) {
         state.fakeVolume = '0'
       } else if (1 < volume) {
         state.fakeVolume = '1'
@@ -285,8 +290,9 @@ export const slice = createSlice({
       state.noiseSuppression = action.payload
     },
     setMediaType: (state, action: PayloadAction<SoraDevtoolsState['mediaType']>) => {
-      // NOTE(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
+      // TODO(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
       if (
+        // FIXME(v): これだと mediaType のテストが通らなくなる
         action.payload === 'mediacaptureRegion' &&
         (typeof window === 'undefined' || window.CropTarget === undefined)
       ) {
@@ -354,20 +360,30 @@ export const slice = createSlice({
     setVideoH264Params: (state, action: PayloadAction<string>) => {
       state.videoH264Params = action.payload
     },
+    setVideoH265Params: (state, action: PayloadAction<string>) => {
+      state.videoH265Params = action.payload
+    },
     setVideoAV1Params: (state, action: PayloadAction<string>) => {
       state.videoAV1Params = action.payload
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
-      // `Type instantiation is excessively deep and possibly infinite` エラーが出るので any に type casting する
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       state.soraContents.sora = <any>action.payload
       if (state.soraContents.sora) {
         state.soraContents.connectionId = state.soraContents.sora.connectionId
         state.soraContents.clientId = state.soraContents.sora.clientId
+        if (state.soraContents.sessionId === null) {
+          state.soraContents.sessionId = state.soraContents.sora.sessionId
+        }
       } else {
         state.soraContents.connectionId = null
         state.soraContents.clientId = null
+        state.soraContents.sessionId = null
         state.soraContents.datachannels = []
+      }
+    },
+    setSoraSessionId: (state, action: PayloadAction<string>) => {
+      if (state.soraContents.sessionId === null) {
+        state.soraContents.sessionId = action.payload
       }
     },
     setSoraConnectionStatus: (
@@ -396,7 +412,7 @@ export const slice = createSlice({
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getTracks().forEach((track) => {
+        state.soraContents.localMediaStream.getTracks().filter((track) => {
           track.stop()
         })
       }

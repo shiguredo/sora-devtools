@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { JSX, useState } from 'react'
 import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
@@ -52,6 +52,7 @@ export const Message: React.FC<Props> = (props) => {
       <div className="d-flex justify-content-between align-items-center text-break">
         <a
           className={`debug-title ${disabled ? 'disabled' : ''}`}
+          // biome-ignore lint/a11y/useValidAnchor: <explanation>
           onClick={() => setShow(!show)}
           aria-controls={ariaControls}
           aria-expanded={show}

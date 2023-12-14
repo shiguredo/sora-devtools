@@ -43,7 +43,7 @@ export const MediacaptureRegionTarget: React.FC = () => {
         id="cropArea"
         className="cropArea"
         style={{ width: `${cropAreaWidth}px`, height: `${Math.floor((cropAreaWidth / 4) * 3)}px` }}
-      ></div>
+      />
     </Draggable>
   )
 }

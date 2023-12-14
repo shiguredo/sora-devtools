@@ -13,10 +13,10 @@ export const CopyLogButton: React.FC<Props> = (props) => {
     event.currentTarget.blur()
   }
   if (props.disabled) {
-    return <div style={{ height: '31px' }}></div>
+    return <div style={{ height: '31px' }} />
   }
   return (
-    <button className="btn btn-sm btn-dark" onClick={onClick}>
+    <button type="button" className="btn btn-sm btn-dark" onClick={onClick}>
       <ClipboardIcon />
     </button>
   )

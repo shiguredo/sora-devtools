@@ -27,6 +27,7 @@ import { DataChannelForm } from './DataChannelForm'
 import { DataChannelsForm } from './DataChannelsForm'
 import { DisconnectButton } from './DisconnectButton'
 import { DisplayResolutionForm } from './DisplayResolutionForm'
+import { DisposeMediaButton } from './DisposeMediaButton'
 import { E2EEForm } from './E2EEForm'
 import { EchoCancellationForm } from './EchoCancellationForm'
 import { EchoCancellationTypeForm } from './EchoCancellationTypeForm'
@@ -43,6 +44,7 @@ import { MultistreamForm } from './MultistreamForm'
 import { NoiseSuppressionForm } from './NoiseSuppressionForm'
 import { ReconnectForm } from './ReconnectForm'
 import { ReloadDevicesButton } from './ReloadDevicesButton'
+import { RequestMediaButton } from './RequestMediaButton'
 import { ResizeModeForm } from './ResizeModeForm'
 import { ResolutionForm } from './ResolutionForm'
 import { RoleForm } from './RoleForm'
@@ -63,6 +65,7 @@ import { VideoCodecTypeForm } from './VideoCodecTypeForm'
 import { VideoContentHintForm } from './VideoContentHintForm'
 import { VideoForm } from './VideoForm'
 import { VideoH264ParamsForm } from './VideoH264ParamsForm'
+import { VideoH265ParamsForm } from './VideoH265ParamsForm'
 import { VideoInputForm } from './VideoInputForm'
 import { VideoTrackForm } from './VideoTrackForm'
 import { VideoVP9ParamsForm } from './VideoVP9ParamsForm'
@@ -209,6 +212,7 @@ const RowSignalingOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
+        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Signaling options
         </a>
@@ -233,16 +237,20 @@ const RowSignalingOptions: React.FC = () => {
 
 const RowAdvancedSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
+  const enableAudioStreamingLanguageCode = useAppSelector(
+    (state) => state.enabledAudioStreamingLanguageCode,
+  )
   const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
   const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
+  const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
   const enabledOptions = [
-    audioStreamingLanguageCode !== '',
+    enableAudioStreamingLanguageCode,
     audioLyraParamsBitrate !== '',
     enabledVideoVP9Params,
     enabledVideoH264Params,
+    enabledVideoH265Params,
     enabledVideoAV1Params,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
@@ -259,6 +267,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
+        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Advanced signaling options
         </a>
@@ -272,8 +281,9 @@ const RowAdvancedSignalingOptions: React.FC = () => {
             </Col>
           </Row>
           <VideoVP9ParamsForm />
-          <VideoH264ParamsForm />
           <VideoAV1ParamsForm />
+          <VideoH264ParamsForm />
+          <VideoH265ParamsForm />
         </div>
       </Collapse>
     </Row>
@@ -339,6 +349,7 @@ const RowMediaOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
+        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Media options
         </a>
@@ -400,23 +411,37 @@ const RowMediaOptions: React.FC = () => {
 
 const RowDevices: React.FC = () => {
   const role = useAppSelector((state) => state.role)
+  const mediaType = useAppSelector((state) => state.mediaType)
   return (
-    <Row className="form-row" xs="auto">
-      {role !== 'recvonly' ? (
-        <>
-          <Col>
-            <AudioInputForm />
-          </Col>
-          <Col>
-            <VideoInputForm />
-          </Col>
-        </>
-      ) : null}
-      <Col>
-        <AudioOutputForm />
-      </Col>
-      <ReloadDevicesButton />
-    </Row>
+    <>
+      <Row className="form-row" xs="auto">
+        {/**
+         * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
+         */}
+        {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
+          <>
+            <Col>
+              <AudioInputForm />
+            </Col>
+            <Col>
+              <VideoInputForm />
+            </Col>
+          </>
+        ) : null}
+      </Row>
+      <Row className="form-row" xs="auto">
+        <Col>
+          <AudioOutputForm />
+        </Col>
+        <ReloadDevicesButton />
+        {role !== 'recvonly' ? (
+          <>
+            <RequestMediaButton />
+            <DisposeMediaButton />
+          </>
+        ) : null}
+      </Row>
+    </>
   )
 }
 

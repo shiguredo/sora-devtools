@@ -11,6 +11,69 @@
 
 ## develop
 
+- [FIX] `audioStreamingLanguageCode` のトグルを有効に設定した時に `Advanced signaling options` が強調されない問題を修正する
+  - @tnamao
+- [ADD] `h265_params` のフォームを追加する
+  - @tnamao
+- [ADD] コネクション ID とクライアント ID の表示にラベルを追加する
+  - @tnamao
+- [ADD] Sora 接続後にセッション ID の表示を追加する
+  - Sora 2023.2.0 以降は sora-js-sdk が `type: offer` から取得したセッション ID を表示に使用する
+  - それ以外の場合は notify の `connection.created` イベントで取得したセッション ID を表示に使用する
+  - @tnamao
+- [FIX] `audio` `video` がともに無効な状態で Sora への接続時に getUserMedia を呼び出してしまう問題を修正する
+  - @tnamao
+- [ADD] `dataChannels` のフォームにテンプレート読み込みボタンを追加する
+  - テキストエリアに挿入されるテンプレートは placeholder の内容と同じ
+  - @tnamao
+- [UPDATE] `signalingUrlCandidates` の placeholder に設定例を追加する
+  - @tnamao
+- [CHANGE] fmt / lint を biome に変更する
+  - @voluntas
+- [CHANGE] 録画 API のバージョンを `20231220` に変更する
+  - @voluntas
+- [ADD] Debug Pane に `Codec` のタブを追加する
+  - RTCRtpSender と RTCRtpReceiver の RTCRtpCapabilities の codec 一覧を表示する
+  - @tnamao
+- [CHANGE] mic / camera の gUM 呼び出しを 1 回で済むように処理を変更する
+  - Chrome のみ gUM の呼び出しが連続すると許可ダイアログの表示に時間がかかるため、まとめて許可を取るようにポリシーを変更する
+  - @tnamao
+- [CHANGE] videoAV1Params の表示位置をを変更し、`videoVP9Params` の下に表示する
+  - @tnamao
+- [CHANGE] videoCodecType の `AV1` の表示順を変更し、`VP9` の下に表示する
+  - @tnamao
+- [FIX] `request media` `connect` を実行した後に、`Enable mic device` `Enable camera device` のトグルでデバイスを無効化した時に Media Processor が保持している Track の停止漏れを修正する
+  - トグル切替でマイクやカメラのデバイスを無効化してもカメラ等のデバイスが使用中の状態のままになってしまっていた
+  - @tnamao
+- [ADD] Sora とは接続せず Audio / Video デバイスの表示確認と停止を行う `request media` `dispose media` 機能を追加する
+  - 現状の設定項目を利用するため、`request media` の実行中は `role` や `mediaType` を disabled にする
+  - @tnamao
+- [CHANGE] `request media` 機能で取得した MediaStream をそのまま Sora の接続に利用できるようにしたため、新たに `preparing` の状態を追加する
+  - `connecting` の状態は MediaStream を取得後、実際に Sora との接続処理を行う時の状態として意味を変更する
+  - @tnamao
+- [CHANGE] mediaType が getUserMedia 以外の場合は audioInput / videoInput のフォームを表示しないように修正する
+  - @tnamao
+- [CHANGE] mediaType が getUserMedia 以外の場合は、copy URL をクリックした時にクリップボードにコピーする URL のパラメータに audioInput / videoInput を含めないように修正する
+  - @tnamao
+- [CHANGE] Node.js 16 系を落とす
+  - @voluntas
+- [CHANGE] GA の main.yml を ci.yml に変更する
+  - @voluntas
+- [CHANGE] 一時的に ; ありにする
+  - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2023.2.0-canary.15 に上げる
+  - @voluntas
+- [UPDATE] @shiguredo/virtual-background のバージョンを 2023.2.0 に上げる
+  - @sile
+- [CHANGE] vitest へ切り替える
+  - jest をやめる
+  - @voluntas
+- [FIX] テストを実行できるようにする
+  - @voluntas
+- [FIX] index ページの受信のみのリンクから、ビデオコーデック関連のパラメータを削除する
+  - 受信時に `videoCodecType` `videoBitRate` は不要なため
+  - @tnamao
+
 ## 2023.1.0
 
 - [UPDATE] sora-js-sdk を 2023.1.0 に更新する

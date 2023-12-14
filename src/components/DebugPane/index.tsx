@@ -4,6 +4,7 @@ import { Tab, Tabs } from 'react-bootstrap'
 import { setDebugType } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
+import { CapabilitiesCodec } from './CapabilitiesCodec'
 import { DataChannelMessagingMessages } from './DataChannelMessagingMessages'
 import { DebugFilter } from './Filter'
 import { LogMessages } from './LogMessages'
@@ -29,7 +30,8 @@ export const DebugPane: React.FC = () => {
       key === 'stats' ||
       key === 'timeline' ||
       key === 'signaling' ||
-      key === 'messaging'
+      key === 'messaging' ||
+      key === 'codec'
     ) {
       dispatch(setDebugType(key))
     }
@@ -64,6 +66,9 @@ export const DebugPane: React.FC = () => {
         <Tab eventKey="messaging" title="Messaging">
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
+        </Tab>
+        <Tab eventKey="codec" title="Codec">
+          <CapabilitiesCodec />
         </Tab>
       </Tabs>
     </div>

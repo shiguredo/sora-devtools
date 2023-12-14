@@ -37,8 +37,9 @@ export const MediaTypeForm: React.FC = () => {
   const [mountClient, setMountClient] = useState(false)
   const enabledMediacaptureRegion = typeof window !== 'undefined' && window.CropTarget !== undefined
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const mediaType = useAppSelector((state) => state.mediaType)
-  const disabled = isFormDisabled(connectionStatus)
+  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
   const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {

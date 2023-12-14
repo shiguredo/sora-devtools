@@ -15,9 +15,10 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
+
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      entries.forEach((entry) => {
+      entries.filter((entry) => {
         setHeight(entry.contentRect.height)
       })
     })
@@ -30,8 +31,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     return () => {
       resizeObserver.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [setHeight, audioOutput, stream])
 
   useEffect(() => {
     if (videoRef.current && mute) {
@@ -45,12 +45,12 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
       // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
       let originalEnabled: boolean | undefined
-      stream.getVideoTracks().forEach((track) => {
+      stream.getVideoTracks().filter((track) => {
         originalEnabled = track.enabled
         track.enabled = false
       })
       videoRef.current.onloadedmetadata = (_) => {
-        stream.getVideoTracks().forEach((track) => {
+        stream.getVideoTracks().filter((track) => {
           if (originalEnabled !== undefined) {
             track.enabled = originalEnabled
           }
@@ -64,8 +64,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
     } else if (videoRef.current && stream === null) {
       videoRef.current.srcObject = null
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stream])
+  }, [stream, audioOutput])
 
   if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
     videoRef.current.setSinkId(audioOutput)

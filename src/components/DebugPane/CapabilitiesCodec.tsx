@@ -1,0 +1,68 @@
+import React from 'react'
+
+import { Message } from './Message'
+
+interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodecCapability {
+  [x: string]: string | number | undefined
+}
+
+type LogProps = {
+  title: string
+  codecs: RTCRtpCapabilitiesCodecWithIndexSignature[]
+}
+
+const Collapse: React.FC<LogProps> = ({ title, codecs }) => {
+  return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />
+}
+
+const Log = React.memo((props: LogProps) => {
+  return <Collapse {...props} />
+})
+
+const getCapabilitiesCodec = (
+  getCapabilities: (kind: string) => RTCRtpCapabilities | null,
+  kind: string,
+): RTCRtpCodecCapability[] => {
+  if (!getCapabilities) {
+    return []
+  }
+  const capabilities = getCapabilities(kind)
+  if (!capabilities || !capabilities.codecs) {
+    return []
+  }
+
+  return capabilities.codecs
+}
+
+export const CapabilitiesCodec: React.FC = () => {
+  const senderAudioCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'audio')
+  const senderVideoCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'video')
+  const receiverAudioCapabilitiesCodec = getCapabilitiesCodec(
+    RTCRtpReceiver.getCapabilities,
+    'audio',
+  )
+  const receiverVideoCapabilitiesCodec = getCapabilitiesCodec(
+    RTCRtpReceiver.getCapabilities,
+    'video',
+  )
+  return (
+    <div className="capabilities-codec">
+      <Log
+        title="Audio RTCRtpSender CapabilitiesCodec"
+        codecs={senderAudioCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+      />
+      <Log
+        title="Video RTCRtpSender CapabilitiesCodec"
+        codecs={senderVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+      />
+      <Log
+        title="Audio RTCRtpReceiver CapabilitiesCodec"
+        codecs={receiverAudioCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+      />
+      <Log
+        title="Video RTCRtpReceiver CapabilitiesCodec"
+        codecs={receiverVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+      />
+    </div>
+  )
+}

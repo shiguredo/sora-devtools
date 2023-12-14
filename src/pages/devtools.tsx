@@ -19,14 +19,13 @@ const Devtools: React.FC = () => {
     return () => {
       dispatch(disconnectSora())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dispatch])
   return (
     <>
       <MediacaptureRegionTarget />
       <Head />
       <Header />
-      <main role="main">
+      <main>
         <div className="container">
           <div className="row">
             <DevtoolsPane />
@@ -39,5 +38,4 @@ const Devtools: React.FC = () => {
   )
 }
 
-// eslint-disable-next-line import/no-default-export
 export default Devtools

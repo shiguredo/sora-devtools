@@ -12,7 +12,7 @@ export const DebugButton: React.FC = () => {
   const className = debug ? 'btn btn-footer-debug-mode active' : 'btn btn-footer-debug-mode'
   return (
     <div>
-      <button className={className} onClick={onClick}>
+      <button type="button" className={className} onClick={onClick}>
         debug
       </button>
     </div>
