@@ -1064,7 +1064,7 @@ export const requestMedia = () => {
           slice.actions.setAPIErrorAlertMessage(`Failed to get user devices. ${error.message}`),
         )
       }
-      // biome-ignore lint/correctness/noUndeclaredVariables: <explanation>
+      // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
       let originalTrack: MediaStreamVideoTrack | undefined
       if (state.lightAdjustmentProcessor?.isProcessing()) {
         originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
@@ -1285,7 +1285,7 @@ export const connectSora = () => {
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`))
       }
-      // biome-ignore lint/correctness/noUndeclaredVariables: <explanation>
+      // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
       let originalTrack: MediaStreamVideoTrack | undefined
       if (state.lightAdjustmentProcessor?.isProcessing()) {
         originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
@@ -1794,7 +1794,7 @@ const stopVideoProcessors = (
   lightAdjustmentProcessor: LightAdjustmentProcessor | null,
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null,
 ): MediaStreamTrack | undefined => {
-  // biome-ignore lint/correctness/noUndeclaredVariables: <explanation>
+  // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
   let originalTrack: MediaStreamVideoTrack | undefined
   if (lightAdjustmentProcessor?.isProcessing()) {
     originalTrack = lightAdjustmentProcessor.getOriginalTrack()
