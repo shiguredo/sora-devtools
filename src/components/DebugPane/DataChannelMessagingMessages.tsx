@@ -43,7 +43,7 @@ const Collapse: React.FC<DataChannelMessage> = (props) => {
     )
   }
   const uint8array = new Uint8Array(data)
-  const description = uint8array.toString() + `\n(${new TextDecoder().decode(data)})`
+  const description = `${uint8array.toString()}\n(${new TextDecoder().decode(data)})`
   return (
     <Message title={label} timestamp={timestamp} description={description} defaultShow wordBreak />
   )

@@ -66,7 +66,7 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
 const Collapse: React.FC<TimelineMessage> = (props) => {
   const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props
   const title = `${type}`
-  let labelComponent
+  let labelComponent: any
   if (logType === 'websocket') {
     labelComponent = <WebSocketLabel />
   } else if (logType === 'datachannel') {

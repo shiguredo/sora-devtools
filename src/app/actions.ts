@@ -1046,8 +1046,8 @@ export const requestMedia = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const LOG_TITLE = 'REQUEST_MEDIA'
     const state = getState()
-    let mediaStream
-    let gainNode
+    let mediaStream: undefined | MediaStream
+    let gainNode: undefined | GainNode | null
     try {
       ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
         throw error
@@ -1064,7 +1064,7 @@ export const requestMedia = () => {
           slice.actions.setAPIErrorAlertMessage(`Failed to get user devices. ${error.message}`),
         )
       }
-      let originalTrack
+      let originalTrack: MediaStreamTrack | undefined
       if (state.lightAdjustmentProcessor?.isProcessing()) {
         originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
         state.lightAdjustmentProcessor.stopProcessing()
@@ -1137,7 +1137,7 @@ export const disposeMedia = () => {
       virtualBackgroundProcessor,
     } = getState()
     const { localMediaStream } = soraContents
-    let originalTrack
+    let originalTrack: MediaStreamTrack | undefined
     if (lightAdjustmentProcessor?.isProcessing()) {
       originalTrack = lightAdjustmentProcessor.getOriginalTrack()
       lightAdjustmentProcessor.stopProcessing()
@@ -1228,9 +1228,9 @@ export const connectSora = () => {
     const connectionOptionsState = pickConnectionOptionsState(state)
     const connectionOptions = createConnectOptions(connectionOptionsState)
     const metadata = parseMetadata(state.enabledMetadata, state.metadata)
-    let sora
-    let mediaStream
-    let gainNode
+    let sora: undefined | ConnectionPublisher | ConnectionSubscriber
+    let mediaStream: undefined | MediaStream
+    let gainNode: undefined | GainNode | null
     try {
       if (state.role === 'sendonly') {
         sora = connection.sendonly(state.channelId, null, connectionOptions)
@@ -1284,7 +1284,7 @@ export const connectSora = () => {
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`))
       }
-      let originalTrack
+      let originalTrack: MediaStreamTrack | undefined
       if (state.lightAdjustmentProcessor?.isProcessing()) {
         originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
         state.lightAdjustmentProcessor.stopProcessing()
@@ -1392,9 +1392,9 @@ export const reconnectSora = () => {
     const connectionOptionsState = pickConnectionOptionsState(state)
     const connectionOptions = createConnectOptions(connectionOptionsState)
     const metadata = parseMetadata(state.enabledMetadata, state.metadata)
-    let sora
-    let mediaStream
-    let gainNode
+    let sora: undefined | ConnectionPublisher | ConnectionSubscriber
+    let mediaStream: undefined | MediaStream
+    let gainNode: undefined | GainNode | null
     if (state.role === 'sendonly' || state.role === 'sendrecv') {
       ;[mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
         dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
