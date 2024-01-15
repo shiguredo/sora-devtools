@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] LocalVideo でサイマルキャストの rid を変更するボタンにラベルとツールチップを追加する
+  - @tnamao
+
 ## 2023.2.0
 
 - [FIX] `audioStreamingLanguageCode` のトグルを有効に設定した時に `Advanced signaling options` が強調されない問題を修正する
