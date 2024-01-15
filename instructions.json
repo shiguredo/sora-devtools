@@ -166,5 +166,8 @@
   },
   "facingMode": {
     "description": "モバイルカメラのフロント/バックを切り替えます。"
+  },
+  "changeAllRecvStream": {
+    "description": "サイマルキャストで受信中の全てのストリームの rid を操作します。"
   }
 }

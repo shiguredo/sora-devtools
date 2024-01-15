@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 
+import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel'
 import { ConnectionStatusBar } from './ConnectionStatusBar'
 import { RequestRtpStreamButton } from './RequestRtpStreamButton'
 import { RequestSpotlightRidButton } from './RequestSpotlightRidButton'
@@ -79,6 +80,7 @@ export const LocalVideo: React.FC = () => {
           simulcast === 'true' &&
           role !== 'sendonly' ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
+              <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
               <RequestRtpStreamButton rid={'r0'} />
               <RequestRtpStreamButton rid={'r1'} />
               <RequestRtpStreamButton rid={'r2'} />
