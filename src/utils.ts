@@ -454,19 +454,52 @@ export function createFakeMediaConstraints(
   return constraints
 }
 
+// getDisplayMedia の audio constraints を生成
+type CreateGetDisplayMediaAudioConstraintsParameters = {
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
+}
+export function createGetDisplayMediaAudioConstraints(
+  parameters: CreateGetDisplayMediaAudioConstraintsParameters,
+): boolean | MediaTrackConstraints {
+  const { autoGainControl, noiseSuppression, echoCancellation, echoCancellationType } = parameters
+  if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType) {
+    return true
+  }
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const parsedAutoGainControl = parseBooleanString(autoGainControl)
+  if (parsedAutoGainControl !== undefined) {
+    audioConstraints.autoGainControl = parsedAutoGainControl
+  }
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression)
+  if (parsedNoiseSuppression !== undefined) {
+    audioConstraints.noiseSuppression = parsedNoiseSuppression
+  }
+  const parsedEchoCancellation = parseBooleanString(echoCancellation)
+  if (parsedEchoCancellation !== undefined) {
+    audioConstraints.echoCancellation = parsedEchoCancellation
+  }
+  if (echoCancellationType) {
+    audioConstraints.echoCancellationType = echoCancellationType
+  }
+  return audioConstraints
+}
+
 // getDisplayMedia の video constraints を生成
-type CreateGetDisplayMediaConstraintsParameters = {
+type CreateGetDisplayMediaVideoConstraintsParameters = {
   frameRate: SoraDevtoolsState['frameRate']
   resolution: SoraDevtoolsState['resolution']
   aspectRatio: SoraDevtoolsState['aspectRatio']
   resizeMode: SoraDevtoolsState['resizeMode']
 }
-export function createGetDisplayMediaConstraints(
-  parameters: CreateGetDisplayMediaConstraintsParameters,
-): MediaStreamConstraints {
+export function createGetDisplayMediaVideoConstraints(
+  parameters: CreateGetDisplayMediaVideoConstraintsParameters,
+): boolean | SoraDevtoolsMediaTrackConstraints {
   const { aspectRatio, frameRate, resizeMode, resolution } = parameters
   if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
-    return { video: true }
+    return true
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
@@ -485,9 +518,7 @@ export function createGetDisplayMediaConstraints(
   if (resizeMode) {
     videoConstraints.resizeMode = resizeMode
   }
-  return {
-    video: videoConstraints,
-  }
+  return videoConstraints
 }
 
 // Fake 用の MediaStream を生成

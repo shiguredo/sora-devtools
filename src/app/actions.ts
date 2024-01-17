@@ -20,7 +20,8 @@ import {
   createConnectOptions,
   createFakeMediaConstraints,
   createFakeMediaStream,
-  createGetDisplayMediaConstraints,
+  createGetDisplayMediaAudioConstraints,
+  createGetDisplayMediaVideoConstraints,
   createSignalingURL,
   createVideoConstraints,
   drawFakeCanvas,
@@ -522,21 +523,32 @@ async function createMediaStream(
     if (navigator.mediaDevices === undefined) {
       throw new Error('Failed to call getUserMedia. Make sure domain is secure')
     }
-    const constraints = createGetDisplayMediaConstraints({
-      frameRate: state.frameRate,
-      resolution: state.resolution,
-      aspectRatio: state.aspectRatio,
-      resizeMode: state.resizeMode,
-    })
+    const mediaConstraints = {
+      audio: createGetDisplayMediaAudioConstraints({
+        autoGainControl: state.autoGainControl,
+        noiseSuppression: state.noiseSuppression,
+        echoCancellation: state.echoCancellation,
+        echoCancellationType: state.echoCancellationType,
+      }),
+      video: createGetDisplayMediaVideoConstraints({
+        frameRate: state.frameRate,
+        resolution: state.resolution,
+        aspectRatio: state.aspectRatio,
+        resizeMode: state.resizeMode,
+      }),
+    }
     dispatch(
-      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }),
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify(mediaConstraints),
+      }),
     )
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('media-constraints', constraints),
+        createSoraDevtoolsTimelineMessage('media-constraints', mediaConstraints),
       ),
     )
-    const stream = await navigator.mediaDevices.getDisplayMedia(constraints)
+    const stream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
     dispatch(
       slice.actions.setTimelineMessage(
         createSoraDevtoolsTimelineMessage('succeed-get-display-media'),
@@ -563,22 +575,33 @@ async function createMediaStream(
     if (navigator.mediaDevices === undefined) {
       throw new Error('Failed to call getDisplayMedia. Make sure domain is secure')
     }
-    const constraints = createGetDisplayMediaConstraints({
-      frameRate: state.frameRate,
-      resolution: state.resolution,
-      aspectRatio: state.aspectRatio,
-      resizeMode: state.resizeMode,
-    })
-    constraints.preferCurrentTab = true
+    const mediaStreamConstraints = {
+      audio: createGetDisplayMediaAudioConstraints({
+        autoGainControl: state.autoGainControl,
+        noiseSuppression: state.noiseSuppression,
+        echoCancellation: state.echoCancellation,
+        echoCancellationType: state.echoCancellationType,
+      }),
+      video: createGetDisplayMediaVideoConstraints({
+        frameRate: state.frameRate,
+        resolution: state.resolution,
+        aspectRatio: state.aspectRatio,
+        resizeMode: state.resizeMode,
+      }),
+    } as MediaStreamConstraints
+    mediaStreamConstraints.preferCurrentTab = true
     dispatch(
-      slice.actions.setLogMessages({ title: LOG_TITLE, description: JSON.stringify(constraints) }),
+      slice.actions.setLogMessages({
+        title: LOG_TITLE,
+        description: JSON.stringify(mediaStreamConstraints),
+      }),
     )
     dispatch(
       slice.actions.setTimelineMessage(
-        createSoraDevtoolsTimelineMessage('media-constraints', constraints),
+        createSoraDevtoolsTimelineMessage('media-constraints', mediaStreamConstraints),
       ),
     )
-    const stream = await navigator.mediaDevices.getDisplayMedia(constraints)
+    const stream = await navigator.mediaDevices.getDisplayMedia(mediaStreamConstraints)
     const targetElement = document.querySelector('#cropArea')
     if (targetElement === null) {
       throw new Error('Failed to get CropTraget Element')
