@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] `getDisplayMedia` 使用時の MediaConstraints に audio も含めるようにする
+  - gDM に渡す MediaConstraint の `audio` パラメータは audio のトグルの状態や `Media options` の設定と連動している
+  - @tnamao
 - [CHANGE] role が `sendonly` の時に `Audio Output` のフォームを非表示にする
   - @tnamao
 - [ADD] LocalVideo でサイマルキャストの rid を変更するボタンにラベルとツールチップを追加する
