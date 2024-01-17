@@ -456,6 +456,7 @@ export function createFakeMediaConstraints(
 
 // getDisplayMedia の audio constraints を生成
 type CreateGetDisplayMediaAudioConstraintsParameters = {
+  audio: SoraDevtoolsState['audio']
   autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
   echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
@@ -464,7 +465,11 @@ type CreateGetDisplayMediaAudioConstraintsParameters = {
 export function createGetDisplayMediaAudioConstraints(
   parameters: CreateGetDisplayMediaAudioConstraintsParameters,
 ): boolean | MediaTrackConstraints {
-  const { autoGainControl, noiseSuppression, echoCancellation, echoCancellationType } = parameters
+  const { audio, autoGainControl, noiseSuppression, echoCancellation, echoCancellationType } =
+    parameters
+  if (!audio) {
+    return false
+  }
   if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType) {
     return true
   }

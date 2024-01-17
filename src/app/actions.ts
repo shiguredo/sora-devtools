@@ -524,7 +524,9 @@ async function createMediaStream(
       throw new Error('Failed to call getUserMedia. Make sure domain is secure')
     }
     const mediaConstraints = {
+      // getDisplayMedia では配信する画面の音声を利用するため、デバイス指定 (audioInput) は使わない
       audio: createGetDisplayMediaAudioConstraints({
+        audio: state.audio,
         autoGainControl: state.autoGainControl,
         noiseSuppression: state.noiseSuppression,
         echoCancellation: state.echoCancellation,
@@ -576,7 +578,9 @@ async function createMediaStream(
       throw new Error('Failed to call getDisplayMedia. Make sure domain is secure')
     }
     const mediaStreamConstraints = {
+      // getDisplayMedia (mediacaptureRegion) では配信する画面の音声を利用するため、デバイス指定 (audioInput) は使わない
       audio: createGetDisplayMediaAudioConstraints({
+        audio: state.audio,
         autoGainControl: state.autoGainControl,
         noiseSuppression: state.noiseSuppression,
         echoCancellation: state.echoCancellation,
