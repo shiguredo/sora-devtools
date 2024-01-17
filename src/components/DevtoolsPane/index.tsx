@@ -430,9 +430,11 @@ const RowDevices: React.FC = () => {
         ) : null}
       </Row>
       <Row className="form-row" xs="auto">
-        <Col>
-          <AudioOutputForm />
-        </Col>
+        {role !== 'sendonly' ? (
+          <Col>
+            <AudioOutputForm />
+          </Col>
+        ) : null}
         <ReloadDevicesButton />
         {role !== 'recvonly' ? (
           <>
