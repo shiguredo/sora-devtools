@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] role が `sendonly` の時に `Audio Output` のフォームを非表示にする
+  - @tnamao
 - [ADD] LocalVideo でサイマルキャストの rid を変更するボタンにラベルとツールチップを追加する
   - @tnamao
 
