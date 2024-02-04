@@ -31,7 +31,7 @@
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.2",
-    "query-string": "8.1.0",
+    "query-string": "8.2.0",
     "react": "18.2.0",
     "react-bootstrap": "2.10.0",
     "react-dom": "18.2.0",
@@ -44,20 +44,20 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
-    "@types/node": "20.11.10",
-    "@types/react": "18.2.48",
+    "@types/node": "20.11.16",
+    "@types/react": "18.2.52",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.2.1",
-    "husky": "9.0.6",
+    "husky": "9.0.10",
     "jsdom": "24.0.0",
-    "knip": "4.2.1",
+    "knip": "4.3.1",
     "next": "14.1.0",
     "rimraf": "5.0.5",
     "typescript": "5.3.3",
     "vitest": "1.2.2"
   },
-  "packageManager": "pnpm@8.15.0",
+  "packageManager": "pnpm@8.15.1",
   "engines": {
     "node": ">=18"
   }
