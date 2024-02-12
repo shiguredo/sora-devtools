@@ -77,8 +77,8 @@ devDependencies:
     specifier: 24.0.0
     version: 24.0.0
   knip:
-    specifier: 4.6.0
-    version: 4.6.0(@types/node@20.11.17)(typescript@5.3.3)
+    specifier: 5.0.1
+    version: 5.0.1(@types/node@20.11.17)(typescript@5.3.3)
   next:
     specifier: 14.1.0
     version: 14.1.0(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
@@ -2284,8 +2284,8 @@ packages:
       graceful-fs: 4.2.11
     dev: true
 
-  /knip@4.6.0(@types/node@20.11.17)(typescript@5.3.3):
-    resolution: {integrity: sha512-6slzggzmyAuvtr97nH56ob1RNlkrG2dGF7yn8PJ/LIF8bPsoM93TRNLWTbmuOg4/E1CImilSX4qy9fok0AKJyA==}
+  /knip@5.0.1(@types/node@20.11.17)(typescript@5.3.3):
+    resolution: {integrity: sha512-rvZbe2JIpx+3i+ZC3XpLpKPp6oII9f5w1MOMsXwS1JnuYVuNd4R2i4eon2hFds9a+pf8F10DC1Gvt1W8SIBw3A==}
     engines: {node: '>=18.6.0'}
     hasBin: true
     peerDependencies:
