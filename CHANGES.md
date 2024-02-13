@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] `next` を `14.1.0` に上げると `pnpm run dev` が動かないので `14.0.4` に固定する
+  - @voluntas
 - [CHANGE] `getDisplayMedia` 使用時の MediaConstraints に audio も含めるようにする
   - gDM に渡す MediaConstraint の `audio` パラメータは audio のトグルの状態や `Media options` の設定と連動している
   - @tnamao
