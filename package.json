@@ -26,7 +26,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.1.0",
+    "@reduxjs/toolkit": "2.2.0",
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
@@ -51,13 +51,13 @@
     "@vitejs/plugin-react": "4.2.1",
     "husky": "9.0.10",
     "jsdom": "24.0.0",
-    "knip": "4.6.0",
-    "next": "14.1.0",
+    "knip": "5.0.1",
+    "next": "14.0.4",
     "rimraf": "5.0.5",
     "typescript": "5.3.3",
     "vitest": "1.2.2"
   },
-  "packageManager": "pnpm@8.15.1",
+  "packageManager": "pnpm@8.15.2",
   "engines": {
     "node": ">=18"
   }
