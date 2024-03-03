@@ -31,7 +31,7 @@
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.3",
-    "query-string": "8.2.0",
+    "query-string": "9.0.0",
     "react": "18.2.0",
     "react-bootstrap": "2.10.1",
     "react-dom": "18.2.0",
