@@ -91,7 +91,7 @@ const initialState: SoraDevtoolsState = {
   mediaProcessorsNoiseSuppression: false,
   mediaType: 'getUserMedia',
   metadata: '',
-  multistream: 'true',
+  multistream: '',
   mute: false,
   noiseSuppression: '',
   notifyMessages: [],
