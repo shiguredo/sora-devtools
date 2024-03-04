@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] `multistream` の初期値を `未指定` に変更する
+  - querystring にパラメータが存在しない場合に `true` になるのを防ぐため
+  - @tnamao
 - [CHANGE] `next` を `14.1.0` に上げると `pnpm run dev` が動かないので `14.0.4` に固定する
   - @voluntas
 - [CHANGE] `getDisplayMedia` 使用時の MediaConstraints に audio も含めるようにする
