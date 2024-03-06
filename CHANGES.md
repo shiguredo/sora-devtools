@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] オーディオコーデック `LYRA` の設定を削除する
+  - 関連するコードと `service-worker.js` の削除
+  - next.config.js から不要な設定の削除
+  - @tnamao
 - [CHANGE] `multistream` の初期値を `未指定` に変更する
   - querystring にパラメータが存在しない場合に `true` になるのを防ぐため
   - @tnamao
