@@ -17,7 +17,6 @@ function createDownloadReport(): DownloadReport {
     audioOutput: state.audioOutput,
     audioOutputDevices: state.audioOutputDevices,
     audioStreamingLanguageCode: state.audioStreamingLanguageCode,
-    audioLyraParamsBitrate: state.audioLyraParamsBitrate,
     audioTrack: state.audioTrack,
     autoGainControl: state.autoGainControl,
     bundleId: state.bundleId,

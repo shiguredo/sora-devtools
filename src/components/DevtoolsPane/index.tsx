@@ -12,7 +12,6 @@ import { AudioCodecTypeForm } from './AudioCodecTypeForm'
 import { AudioContentHintForm } from './AudioContentHintForm'
 import { AudioForm } from './AudioForm'
 import { AudioInputForm } from './AudioInputForm'
-import { AudioLyraParamsBitrateForm } from './AudioLyraParamsBitrateForm'
 import { AudioOutputForm } from './AudioOutputForm'
 import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm'
 import { AudioTrackForm } from './AudioTrackForm'
@@ -240,14 +239,12 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   const enableAudioStreamingLanguageCode = useAppSelector(
     (state) => state.enabledAudioStreamingLanguageCode,
   )
-  const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
   const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
   const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
   const enabledOptions = [
     enableAudioStreamingLanguageCode,
-    audioLyraParamsBitrate !== '',
     enabledVideoVP9Params,
     enabledVideoH264Params,
     enabledVideoH265Params,
@@ -275,11 +272,6 @@ const RowAdvancedSignalingOptions: React.FC = () => {
       <Collapse in={!collapsed}>
         <div>
           <AudioStreamingLanguageCodeForm />
-          <Row className="form-row">
-            <Col className="col-auto">
-              <AudioLyraParamsBitrateForm />
-            </Col>
-          </Row>
           <VideoVP9ParamsForm />
           <VideoAV1ParamsForm />
           <VideoH264ParamsForm />

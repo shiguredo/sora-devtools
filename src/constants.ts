@@ -6,7 +6,7 @@ export const SIMULCAST = ['', 'true', 'false'] as const
 
 export const SPOTLIGHT = ['', 'true', 'false'] as const
 
-export const AUDIO_CODEC_TYPES = ['', 'OPUS', 'LYRA'] as const
+export const AUDIO_CODEC_TYPES = ['', 'OPUS'] as const
 
 export const AUDIO_BIT_RATES = ['', '8', '16', '24', '32', '64', '96', '128', '256'] as const
 
@@ -120,8 +120,6 @@ export const CONNECTION_STATUS = [
 export const ROLES = ['sendrecv', 'sendonly', 'recvonly'] as const
 
 export const FACING_MODES = ['', 'front', 'back'] as const
-
-export const AUDIO_LYRA_PARAMS_BITRATES = ['', '3200', '6000', '9200'] as const
 
 export const WORKER_SCRIPT = `
 self.onmessage = (event) => {
