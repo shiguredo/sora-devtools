@@ -10,7 +10,6 @@ import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
-  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
@@ -194,10 +193,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
-    audioLyraParamsBitrate: parseSpecifiedStringParameter(
-      qs.audioLyraParamsBitrate,
-      AUDIO_LYRA_PARAMS_BITRATES,
-    ),
   }
   // undefined の項目を削除する
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
@@ -755,13 +750,6 @@ export function createConnectOptions(
     if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
       connectionOptions.audioStreamingLanguageCode =
         connectionOptionsState.audioStreamingLanguageCode
-    }
-    // audioLyraParamsBitrate
-    if (connectionOptionsState.audioLyraParamsBitrate) {
-      connectionOptions.audioLyraParamsBitrate = parseInt(
-        connectionOptionsState.audioLyraParamsBitrate,
-        10,
-      ) as 3200 | 6000 | 9200
     }
   }
   // multistream

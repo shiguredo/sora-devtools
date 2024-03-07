@@ -120,10 +120,6 @@ E2EE(End-to-End Encryption) を使用するかどうかを指定します。
 音声解析用の言語コードを指定します。
 
 
-## audioLyraParamsBitrate
-音声に Lyra コーデックを使った場合のビットレートを指定します。
-
-
 ## videoVP9Params
 映像のコーデックタイプに VP9 を指定した場合の設定を指定します。
 

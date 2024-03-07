@@ -83,9 +83,6 @@
   "audioStreamingLanguageCode": {
     "description": "音声解析用の言語コードを指定します。"
   },
-  "audioLyraParamsBitrate": {
-    "description": "音声に Lyra コーデックを使った場合のビットレートを指定します。"
-  },
   "dataChannels": {
     "description": "メッセージング用の DataChannel を指定します。"
   },
