@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from '@/app/actions'

@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import type React from 'react'
+import { useRef } from 'react'
 import Sora from 'sora-js-sdk'
 
 import { store } from '@/app/store'
-import { DownloadReport, DownloadReportParameters } from '@/types'
+import type { DownloadReport, DownloadReportParameters } from '@/types'
 
 function createDownloadReport(): DownloadReport {
   const state = store.getState()

@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioOutput } from '@/app/actions'

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import type React from 'react'
+import { useEffect } from 'react'
 
 import { disconnectSora, setMediaDevices } from '@/app/actions'
 import { setInitialParameter } from '@/app/actions'

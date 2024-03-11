@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 
 import { setFakeVolume } from '@/app/actions'

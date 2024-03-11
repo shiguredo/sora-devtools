@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { FormControl, FormGroup } from 'react-bootstrap'
 
 import { setChannelId } from '@/app/actions'

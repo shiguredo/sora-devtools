@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Tab, Tabs } from 'react-bootstrap'
 
 import { setDebugType } from '@/app/actions'
