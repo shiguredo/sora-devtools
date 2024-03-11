@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { resetSpotlightRid } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'

@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { FormGroup } from 'react-bootstrap'
 
 import { setVideoTrack } from '@/app/actions'

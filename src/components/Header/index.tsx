@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 
 import { useAppSelector } from '@/app/hooks'

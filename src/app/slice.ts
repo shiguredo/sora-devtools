@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -253,7 +253,7 @@ export const slice = createSlice({
       state.enabledVideoAV1Params = action.payload
     },
     setFakeVolume: (state, action: PayloadAction<string>) => {
-      const volume = parseFloat(action.payload)
+      const volume = Number.parseFloat(action.payload)
       if (Number.isNaN(volume)) {
         state.fakeVolume = '0'
       } else if (1 < volume) {
@@ -262,7 +262,7 @@ export const slice = createSlice({
         state.fakeVolume = String(volume)
       }
       if (state.fakeContents.gainNode) {
-        state.fakeContents.gainNode.gain.setValueAtTime(parseFloat(state.fakeVolume), 0)
+        state.fakeContents.gainNode.gain.setValueAtTime(Number.parseFloat(state.fakeVolume), 0)
       }
     },
     setFakeContentsGainNode: (state, action: PayloadAction<GainNode | null>) => {

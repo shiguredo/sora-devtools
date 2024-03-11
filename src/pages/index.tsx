@@ -1,6 +1,6 @@
 import NextHead from 'next/head'
 import queryString from 'query-string'
-import React from 'react'
+import type React from 'react'
 import { Container, Navbar } from 'react-bootstrap'
 
 import type { SoraDevtoolsState } from '@/types'

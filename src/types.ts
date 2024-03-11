@@ -10,7 +10,7 @@ import type {
   TransportType,
 } from 'sora-js-sdk'
 
-import {
+import type {
   ASPECT_RATIO_TYPES,
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
@@ -197,7 +197,7 @@ export type Json =
 
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
-  setSinkId(audioId: string): void
+  setSinkId(audioId: string): Promise<void>
 }
 
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加

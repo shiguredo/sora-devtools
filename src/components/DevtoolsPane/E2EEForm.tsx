@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 import { Col, FormGroup, Row, Spinner } from 'react-bootstrap'
 
 import { setE2EE } from '@/app/actions'

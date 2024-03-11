@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { setMediaDevices } from '@/app/actions'
 import { useAppDispatch } from '@/app/hooks'

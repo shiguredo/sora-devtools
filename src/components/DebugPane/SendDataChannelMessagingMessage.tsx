@@ -1,4 +1,5 @@
-import React, { useRef } from 'react'
+import type React from 'react'
+import { useRef } from 'react'
 import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap'
 
 import { useAppSelector } from '@/app/hooks'
