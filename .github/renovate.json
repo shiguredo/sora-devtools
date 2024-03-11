@@ -33,8 +33,8 @@
         "next"
       ],
       "groupName": "next",
-      "platformAutomerge": true,
-      "automerge": true
+      "platformAutomerge": false,
+      "automerge": false
     }
   ]
 }
