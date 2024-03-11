@@ -13,6 +13,9 @@
       "style": {
         "useNamingConvention": "off"
       },
+      "nursery": {
+        "noUndeclaredDependencies": "off"
+      },
       "complexity": {
         "useSimplifiedLogicExpression": "off"
       }
