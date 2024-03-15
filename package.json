@@ -21,6 +21,7 @@
     "lint": "biome lint ./src",
     "fix": "biome check --apply ./src",
     "test": "vitest run",
+    "e2e-test": "playwright test --project=chromium",
     "cleanup": "rimraf ./.next ./dist/*",
     "knip": "knip",
     "prepare": "husky install"
@@ -44,11 +45,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.6.0",
+    "@playwright/test": "1.42.1",
     "@types/node": "20.11.25",
     "@types/react": "18.2.64",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.2.1",
+    "dotenv": "16.4.5",
     "husky": "9.0.11",
     "jsdom": "24.0.0",
     "knip": "5.0.3",
