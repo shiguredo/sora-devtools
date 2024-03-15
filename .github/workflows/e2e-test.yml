@@ -22,9 +22,9 @@ jobs:
         # browser: ["chromium", "firefox", "webkit"]
         browser: ["chromium"]
     env:
-      VITE_SORA_SIGNALING_URL: ${{ secrets.TEST_SIGNALING_URL }}
-      VITE_SORA_CHANNEL_ID_PREFIX: ${{ secrets.TEST_CHANNEL_ID_PREFIX }}
-      VITE_ACCESS_TOKEN: ${{ secrets.TEST_SECRET_KEY }}
+      E2E_TEST_SORA_SIGNALING_URL: ${{ secrets.TEST_SIGNALING_URL }}
+      E2E_TEST_SORA_CHANNEL_ID_PREFIX: ${{ secrets.TEST_CHANNEL_ID_PREFIX }}
+      E2E_TEST_ACCESS_TOKEN: ${{ secrets.TEST_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
