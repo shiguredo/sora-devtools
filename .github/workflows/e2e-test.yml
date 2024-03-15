@@ -3,7 +3,6 @@ name: e2e-test
 on:
   push:
     branches:
-      - master
       - develop
       - "feature/*"
     paths-ignore:
