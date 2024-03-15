@@ -27,6 +27,8 @@
   - @tnamao
 - [ADD] LocalVideo でサイマルキャストの rid を変更するボタンにラベルとツールチップを追加する
   - @tnamao
+- [ADD] Playwright を利用した E2E テストを追加する
+  - @voluntas
 
 ## 2023.2.0
 
