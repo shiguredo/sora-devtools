@@ -8,6 +8,7 @@ import { DebugButton } from './DebugButton'
 import { DownloadReportButton } from './DownloadReportButton'
 
 export const Header: React.FC = () => {
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const sora = useAppSelector((state) => state.soraContents.sora)
   return (
     <header>
@@ -20,7 +21,7 @@ export const Header: React.FC = () => {
             <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <p className="navbar-signaling-url border rounded">
-                  {sora ? sora.connectedSignalingUrl : '未接続'}
+                  {sora && connectionStatus === 'connected' ? sora.connectedSignalingUrl : '未接続'}
                 </p>
               </Navbar.Text>
               <Navbar.Text className="py-0 my-1 mx-1">

@@ -1419,7 +1419,7 @@ export const reconnectSora = () => {
     dispatch(slice.actions.setSoraConnectionStatus('connecting'))
     const state = getState()
     // 接続中の場合は切断する
-    if (state.soraContents.sora) {
+    if (state.soraContents.sora && state.soraContents.connectionStatus === 'connected') {
       await state.soraContents.sora.disconnect()
     }
     // シグナリング候補のURLリストを作成する
@@ -1534,7 +1534,7 @@ export const reconnectSora = () => {
 export const disconnectSora = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const { soraContents } = getState()
-    if (soraContents.sora) {
+    if (soraContents.sora && soraContents.connectionStatus === 'connected') {
       dispatch(slice.actions.setSoraConnectionStatus('disconnecting'))
       await soraContents.sora.disconnect()
       dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
@@ -1706,7 +1706,11 @@ export const setMicDevice = (micDevice: boolean) => {
         },
       )
       if (0 < mediaStream.getAudioTracks().length) {
-        if (state.soraContents.sora && state.soraContents.localMediaStream) {
+        if (
+          state.soraContents.sora &&
+          state.soraContents.connectionStatus === 'connected' &&
+          state.soraContents.localMediaStream
+        ) {
           // Sora 接続中の場合
           await state.soraContents.sora.replaceAudioTrack(
             state.soraContents.localMediaStream,
@@ -1724,7 +1728,11 @@ export const setMicDevice = (micDevice: boolean) => {
         }
         dispatch(slice.actions.setFakeContentsGainNode(gainNode))
       }
-    } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
+    } else if (
+      state.soraContents.sora &&
+      state.soraContents.connectionStatus === 'connected' &&
+      state.soraContents.localMediaStream
+    ) {
       // Sora 接続中の場合
       stopLocalAudioTrack(
         dispatch,
@@ -1748,7 +1756,11 @@ export const setMicDevice = (micDevice: boolean) => {
 export const setCameraDevice = (cameraDevice: boolean) => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState()
-    if (!state.soraContents.localMediaStream && !state.soraContents.sora) {
+    if (
+      !state.soraContents.localMediaStream &&
+      !state.soraContents.sora &&
+      state.soraContents.connectionStatus !== 'connected'
+    ) {
       dispatch(slice.actions.setCameraDevice(cameraDevice))
       return
     }
@@ -1790,7 +1802,11 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         },
       )
       if (0 < mediaStream.getVideoTracks().length) {
-        if (state.soraContents.sora && state.soraContents.localMediaStream) {
+        if (
+          state.soraContents.sora &&
+          state.soraContents.connectionStatus === 'connected' &&
+          state.soraContents.localMediaStream
+        ) {
           // Sora 接続中の場合
           state.soraContents.sora.replaceVideoTrack(
             state.soraContents.localMediaStream,
@@ -1808,7 +1824,11 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         }
         dispatch(slice.actions.setFakeContentsGainNode(gainNode))
       }
-    } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
+    } else if (
+      state.soraContents.sora &&
+      state.soraContents.connectionStatus === 'connected' &&
+      state.soraContents.localMediaStream
+    ) {
       // Sora 接続中の場合
       const originalTrack = stopVideoProcessors(
         state.lightAdjustmentProcessor,
