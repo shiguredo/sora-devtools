@@ -11,8 +11,8 @@
 
 ## develop
 
-- [CHANGE] `Session ID` `Connection ID` `Client ID` の表示を `type: notify` で受け取ったタイミングでの表示に変更する
-  - この変更に伴い、Sora Devtools の Sora 接続状態の確認は state の `soraContents.connectionStatus` の値の確認も追加
+- [CHANGE] `Session ID` と自身の  `Connection ID` `Client ID` の表示を `type: notify` の `connection.created` を受け取ったタイミングでの表示に変更する
+  - この変更に伴い、Sora Devtools の Sora 接続状態の確認は state の `soraContents.connectionStatus` の値の確認も追加する
   - @tnamao
 - [CHANGE] オーディオコーデック `LYRA` の設定を削除する
   - 関連するコードと `service-worker.js` の削除
