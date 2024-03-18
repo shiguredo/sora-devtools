@@ -16,7 +16,7 @@
     "next": "next",
     "dev": "next dev -p 3333",
     "build": "next build --no-lint",
-    "dist": "pnpm run cleanup && next build --no-lint",
+    "dist": "pnpm run cleanup && pnpm install && next build --no-lint",
     "fmt": "biome format --write ./src",
     "lint": "biome lint ./src",
     "fix": "biome check --apply ./src",
