@@ -14,7 +14,7 @@ export const store = configureStore({
         ignoredActions: [
           'soraDevtools/setSora',
           'soraDevtools/setLocalMediaStream',
-          'soraDevtools/setRemoteMediaStream',
+          'soraDevtools/setRemoteClient',
           'soraDevtools/setFakeContentsGainNode',
           'soraDevtools/setDataChannelMessage',
         ],
