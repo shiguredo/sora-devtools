@@ -74,7 +74,7 @@ const RowChannelOptions: React.FC = () => {
   return (
     <>
       <Row className="form-row" xs="auto">
-        <Col xs="12" sm="12" md="10" lg="8">
+        <Col xs="12" sm="12" className="form-channel-id">
           <ChannelIdForm />
         </Col>
       </Row>

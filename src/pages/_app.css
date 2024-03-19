@@ -43,6 +43,12 @@ footer .btn {
   padding: 5px;
 }
 
+/* Channel ID fixed max-width */
+.form-channel-id {
+  max-width: 802px;
+  padding-bottom: 0.5rem;
+}
+
 video {
   min-width: 80px;
   min-height: 60px;
