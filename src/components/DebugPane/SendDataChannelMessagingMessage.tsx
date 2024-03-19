@@ -8,13 +8,14 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null)
   const textareaRef = useRef<HTMLInputElement>(null)
   const sora = useAppSelector((state) => state.soraContents.sora)
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const datachannels = useAppSelector((state) => state.soraContents.datachannels)
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
       return
     }
     const label = selectRef.current.value
-    if (sora) {
+    if (sora && connectionStatus === 'connected') {
       sora.sendMessage(label, new TextEncoder().encode(textareaRef.current.value))
     }
   }

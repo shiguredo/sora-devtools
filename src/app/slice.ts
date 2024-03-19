@@ -367,23 +367,18 @@ export const slice = createSlice({
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       state.soraContents.sora = <any>action.payload
-      if (state.soraContents.sora) {
-        state.soraContents.connectionId = state.soraContents.sora.connectionId
-        state.soraContents.clientId = state.soraContents.sora.clientId
-        if (state.soraContents.sessionId === null) {
-          state.soraContents.sessionId = state.soraContents.sora.sessionId
-        }
-      } else {
-        state.soraContents.connectionId = null
-        state.soraContents.clientId = null
-        state.soraContents.sessionId = null
+      if (!state.soraContents.sora) {
         state.soraContents.datachannels = []
       }
     },
-    setSoraSessionId: (state, action: PayloadAction<string>) => {
-      if (state.soraContents.sessionId === null) {
-        state.soraContents.sessionId = action.payload
-      }
+    setSoraSessionId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.sessionId = action.payload
+    },
+    setSoraConnectionId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.connectionId = action.payload
+    },
+    setSoraClientId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.clientId = action.payload
     },
     setSoraConnectionStatus: (
       state,
