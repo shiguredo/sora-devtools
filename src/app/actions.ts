@@ -1,4 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit'
+import type { Dispatch } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -835,8 +835,51 @@ function setSoraCallbacks(
     ) {
       dispatch(slice.actions.deleteFocusedSpotlightConnectionId(message.connection_id))
     }
-    if (message.event_type === 'connection.created' && typeof message.session_id === 'string') {
-      dispatch(slice.actions.setSoraSessionId(message.session_id))
+    const { soraContents } = getState()
+    if (
+      message.event_type === 'connection.created' &&
+      typeof message.connection_id === 'string' &&
+      // notify の connection_id と offer で受け取った自身の connection id が一致すること
+      message.connection_id === soraContents.sora?.connectionId
+    ) {
+      if (typeof message.session_id === 'string') {
+        dispatch(slice.actions.setSoraSessionId(message.session_id))
+      }
+      if (typeof message.connection_id === 'string') {
+        dispatch(slice.actions.setSoraConnectionId(message.connection_id))
+      }
+      if (typeof message.client_id === 'string') {
+        dispatch(slice.actions.setSoraClientId(message.client_id))
+      }
+      // 接続時点で存在する remote client の client_id を保存する
+      if (Array.isArray(message.data)) {
+        for (const remoteClient of message.data) {
+          if (
+            typeof remoteClient.connection_id === 'string' &&
+            typeof remoteClient.client_id === 'string'
+          ) {
+            dispatch(
+              slice.actions.setSoraRemoteClientId({
+                connectionId: remoteClient.connection_id,
+                clientId: remoteClient.client_id,
+              }),
+            )
+          }
+        }
+      }
+    } else if (
+      message.event_type === 'connection.created' &&
+      typeof message.connection_id === 'string'
+    ) {
+      // 自身以外の notify
+      if (typeof message.client_id === 'string') {
+        dispatch(
+          slice.actions.setSoraRemoteClientId({
+            connectionId: message.connection_id,
+            clientId: message.client_id,
+          }),
+        )
+      }
     }
     dispatch(
       slice.actions.setNotifyMessages({
@@ -858,8 +901,8 @@ function setSoraCallbacks(
   sora.on('track', (event: RTCTrackEvent) => {
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-track')))
     const { soraContents } = getState()
-    const mediaStream = soraContents.remoteMediaStreams.find(
-      (stream) => stream.id === event.streams[0].id,
+    const mediaStream = soraContents.remoteClients.find(
+      (client) => client.connectionId === event.streams[0].id,
     )
     if (!mediaStream) {
       for (const track of event.streams[0].getTracks()) {
@@ -872,7 +915,13 @@ function setSoraCallbacks(
           ),
         )
       }
-      dispatch(slice.actions.setRemoteMediaStream(event.streams[0]))
+      dispatch(
+        slice.actions.setRemoteClient({
+          mediaStream: event.streams[0],
+          connectionId: event.streams[0].id,
+          clientId: null,
+        }),
+      )
     }
   })
   sora.on('removetrack', (event: MediaStreamTrackEvent) => {
@@ -880,13 +929,13 @@ function setSoraCallbacks(
       slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-removetrack')),
     )
     const { soraContents } = getState()
-    const mediaStream = soraContents.remoteMediaStreams.find((stream) => {
+    const remoteClient = soraContents.remoteClients.find((client) => {
       if (event?.target) {
-        return stream.id === (event.target as MediaStream).id
+        return client.connectionId === (event.target as MediaStream).id
       }
     })
-    if (mediaStream) {
-      dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id))
+    if (remoteClient) {
+      dispatch(slice.actions.removeRemoteClient(remoteClient.connectionId))
     }
   })
   sora.on('disconnect', (event) => {
@@ -916,7 +965,7 @@ function setSoraCallbacks(
       virtualBackgroundProcessor,
       noiseSuppressionProcessor,
     } = getState()
-    const { localMediaStream, remoteMediaStreams } = soraContents
+    const { localMediaStream, remoteClients } = soraContents
     // media processor は同期処理で停止する
     const originalTrack = stopVideoProcessors(lightAdjustmentProcessor, virtualBackgroundProcessor)
     // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
@@ -925,8 +974,8 @@ function setSoraCallbacks(
       await stopLocalVideoTrack(dispatch, localMediaStream, originalTrack)
     })()
     stopLocalAudioTrack(dispatch, localMediaStream, noiseSuppressionProcessor)
-    remoteMediaStreams.filter((mediaStream) => {
-      mediaStream.getTracks().filter((track) => {
+    remoteClients.filter((client) => {
+      client.mediaStream.getTracks().filter((track) => {
         track.stop()
       })
     })
@@ -934,9 +983,12 @@ function setSoraCallbacks(
       fakeContents.worker.postMessage({ type: 'stop' })
     }
     dispatch(slice.actions.setSora(null))
+    dispatch(slice.actions.setSoraSessionId(null))
+    dispatch(slice.actions.setSoraConnectionId(null))
+    dispatch(slice.actions.setSoraClientId(null))
     dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
     dispatch(slice.actions.setLocalMediaStream(null))
-    dispatch(slice.actions.removeAllRemoteMediaStreams())
+    dispatch(slice.actions.removeAllRemoteClients())
     dispatch(slice.actions.setSoraInfoAlertMessage('Disconnect Sora.'))
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('disconnected')))
     if (event.type === 'abend' && reconnect) {
@@ -1272,6 +1324,8 @@ export const connectSora = () => {
           })
         }
         dispatch(slice.actions.setSoraConnectionStatus('connecting'))
+        // 先に setSora で state を参照できるようにしておかないと connection.created の notify が来た時に処理に困るため
+        dispatch(slice.actions.setSora(sora))
         await sora.connect(mediaStream)
       } else if (state.role === 'sendrecv') {
         sora = connection.sendrecv(state.channelId, null, connectionOptions)
@@ -1292,15 +1346,21 @@ export const connectSora = () => {
             throw error
           })
         }
+        // 先に setSora で state を参照できるようにしておかないと connection.created の notify が来た時に処理に困るため
+        dispatch(slice.actions.setSora(sora))
         await sora.connect(mediaStream)
       } else if (state.role === 'recvonly') {
         sora = connection.recvonly(state.channelId, null, connectionOptions)
         sora.metadata = metadata
         setSoraCallbacks(dispatch, getState, sora)
         dispatch(slice.actions.setSoraConnectionStatus('connecting'))
+        // 先に setSora で state を参照できるようにしておかないと connection.created の notify が来た時に処理に困るため
+        dispatch(slice.actions.setSora(sora))
         await sora.connect()
       }
     } catch (error) {
+      // 先に setSora で state を参照できるようにした state の参照を削除
+      dispatch(slice.actions.setSora(null))
       if (error instanceof Error) {
         dispatch(slice.actions.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`))
       }
@@ -1377,7 +1437,6 @@ export const connectSora = () => {
     }, 1000)
     // disconnect 時に stream を止めないためのハック
     sora.stream = null
-    dispatch(slice.actions.setSora(sora))
     if (mediaStream && (state.soraContents.localMediaStream === null || forceCreateMediaStream)) {
       dispatch(slice.actions.setLocalMediaStream(mediaStream))
     }
@@ -1395,7 +1454,7 @@ export const reconnectSora = () => {
     dispatch(slice.actions.setSoraConnectionStatus('connecting'))
     const state = getState()
     // 接続中の場合は切断する
-    if (state.soraContents.sora) {
+    if (state.soraContents.sora && state.soraContents.connectionStatus === 'connected') {
       await state.soraContents.sora.disconnect()
     }
     // シグナリング候補のURLリストを作成する
@@ -1510,7 +1569,7 @@ export const reconnectSora = () => {
 export const disconnectSora = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const { soraContents } = getState()
-    if (soraContents.sora) {
+    if (soraContents.sora && soraContents.connectionStatus === 'connected') {
       dispatch(slice.actions.setSoraConnectionStatus('disconnecting'))
       await soraContents.sora.disconnect()
       dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
@@ -1682,7 +1741,11 @@ export const setMicDevice = (micDevice: boolean) => {
         },
       )
       if (0 < mediaStream.getAudioTracks().length) {
-        if (state.soraContents.sora && state.soraContents.localMediaStream) {
+        if (
+          state.soraContents.sora &&
+          state.soraContents.connectionStatus === 'connected' &&
+          state.soraContents.localMediaStream
+        ) {
           // Sora 接続中の場合
           await state.soraContents.sora.replaceAudioTrack(
             state.soraContents.localMediaStream,
@@ -1700,7 +1763,11 @@ export const setMicDevice = (micDevice: boolean) => {
         }
         dispatch(slice.actions.setFakeContentsGainNode(gainNode))
       }
-    } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
+    } else if (
+      state.soraContents.sora &&
+      state.soraContents.connectionStatus === 'connected' &&
+      state.soraContents.localMediaStream
+    ) {
       // Sora 接続中の場合
       stopLocalAudioTrack(
         dispatch,
@@ -1724,7 +1791,11 @@ export const setMicDevice = (micDevice: boolean) => {
 export const setCameraDevice = (cameraDevice: boolean) => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState()
-    if (!state.soraContents.localMediaStream && !state.soraContents.sora) {
+    if (
+      !state.soraContents.localMediaStream &&
+      !state.soraContents.sora &&
+      state.soraContents.connectionStatus !== 'connected'
+    ) {
       dispatch(slice.actions.setCameraDevice(cameraDevice))
       return
     }
@@ -1766,7 +1837,11 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         },
       )
       if (0 < mediaStream.getVideoTracks().length) {
-        if (state.soraContents.sora && state.soraContents.localMediaStream) {
+        if (
+          state.soraContents.sora &&
+          state.soraContents.connectionStatus === 'connected' &&
+          state.soraContents.localMediaStream
+        ) {
           // Sora 接続中の場合
           state.soraContents.sora.replaceVideoTrack(
             state.soraContents.localMediaStream,
@@ -1784,7 +1859,11 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         }
         dispatch(slice.actions.setFakeContentsGainNode(gainNode))
       }
-    } else if (state.soraContents.sora && state.soraContents.localMediaStream) {
+    } else if (
+      state.soraContents.sora &&
+      state.soraContents.connectionStatus === 'connected' &&
+      state.soraContents.localMediaStream
+    ) {
       // Sora 接続中の場合
       const originalTrack = stopVideoProcessors(
         state.lightAdjustmentProcessor,

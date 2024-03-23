@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 import { Col, Collapse, Row } from 'react-bootstrap'
 
 import { useAppSelector } from '@/app/hooks'
@@ -73,7 +74,7 @@ const RowChannelOptions: React.FC = () => {
   return (
     <>
       <Row className="form-row" xs="auto">
-        <Col>
+        <Col xs="12" sm="12" className="form-channel-id">
           <ChannelIdForm />
         </Col>
       </Row>

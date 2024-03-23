@@ -1,5 +1,5 @@
 import {
-  LightAdjustmentProcessorOptions,
+  type LightAdjustmentProcessorOptions,
   SelfieSegmentationFocusMask,
 } from '@shiguredo/light-adjustment'
 import queryString from 'query-string'
@@ -254,7 +254,7 @@ export function getValueByAspectRatio(aspectRatio: string): number {
     case '21:9':
       return 20 / 9
     default:
-      return NaN
+      return Number.NaN
   }
 }
 
@@ -371,7 +371,10 @@ export function createVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = { min: parseInt(frameRate, 10), max: parseInt(frameRate, 10) }
+    videoConstraints.frameRate = {
+      min: Number.parseInt(frameRate, 10),
+      max: Number.parseInt(frameRate, 10),
+    }
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
@@ -422,7 +425,7 @@ export function createFakeMediaConstraints(
 ): FakeMediaStreamConstraints {
   const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters
   // fake の default frameRate は 30 fps
-  const parsedFrameRate = parseInt(frameRate, 10) || 30
+  const parsedFrameRate = Number.parseInt(frameRate, 10) || 30
   // width, height の default はそれぞれ 240 / 160
   const resolutionSize = getVideoSizeByResolution(resolution)
   const width = resolutionSize.width || 240
@@ -435,7 +438,7 @@ export function createFakeMediaConstraints(
     width: width,
     height: height,
     fontSize: fontSize,
-    volume: parseFloat(volume),
+    volume: Number.parseFloat(volume),
   }
   if (video && (aspectRatio || resizeMode)) {
     constraints.videoTrackConstraints = {}
@@ -503,7 +506,7 @@ export function createGetDisplayMediaVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = parseInt(frameRate, 10)
+    videoConstraints.frameRate = Number.parseInt(frameRate, 10)
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
@@ -711,7 +714,7 @@ export function createConnectOptions(
       connectionOptions.audioCodecType = connectionOptionsState.audioCodecType
     }
     // audioBitRate
-    const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10)
+    const parsedAudioBitRate = Number.parseInt(connectionOptionsState.audioBitRate, 10)
     if (parsedAudioBitRate) {
       connectionOptions.audioBitRate = parsedAudioBitRate
     }
@@ -720,7 +723,7 @@ export function createConnectOptions(
       connectionOptions.videoCodecType = connectionOptionsState.videoCodecType
     }
     // videoBitRate
-    const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10)
+    const parsedVideoBitRate = Number.parseInt(connectionOptionsState.videoBitRate, 10)
     if (parsedVideoBitRate) {
       connectionOptions.videoBitRate = parsedVideoBitRate
     }
@@ -767,7 +770,7 @@ export function createConnectOptions(
     connectionOptions.spotlight = parsedSpotlight
     if (parsedSpotlight === true) {
       if (connectionOptionsState.spotlightNumber) {
-        connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber)
+        connectionOptions.spotlightNumber = Number.parseInt(connectionOptionsState.spotlightNumber)
       }
       if (connectionOptionsState.spotlightFocusRid) {
         connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid

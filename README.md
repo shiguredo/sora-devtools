@@ -36,28 +36,22 @@ https://master.sora-devtools.pages.dev
 
 ## 利用技術
 
-- Sora JavaScript SDK
-  - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
-- Next.js
-  - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
-- TypeScript
-  - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
-- React
-  - [React – A JavaScript library for building user interfaces](https://reactjs.org/)
-- Redux
-  - [Redux \- A predictable state container for JavaScript apps\. \| Redux](https://redux.js.org/)
-- Redux Toolkit
-  - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
-- Bootstrap
-  - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
-- Media Processors
+- [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
+- [Next\.js](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [React](https://reactjs.org/)
+- [Redux](https://redux.js.org/)
+  - [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Bootstrap](https://getbootstrap.com/)
+  - [React Bootstrap \| React Bootstrap](https://react-bootstrap.github.io/)
+- [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
   - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
-- pnpm
-  - [Fast, disk space efficient package manager \| pnpm](https://pnpm.io/)
-- Biome
-  - [Biome](https://biomejs.dev/)
+- [Playwright](https://playwright.dev/)
+- [Vitest](https://vitest.dev/)
+- [pnpm](https://pnpm.io/)
+- [Biome](https://biomejs.dev/)
 
 ## 特徴
 
@@ -168,7 +162,7 @@ https://example.com/devtools?multistream=true&role=sendrecv
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```
-Copyright 2017-2023, Shiguredo Inc.
+Copyright 2017-2024, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
 
 Licensed under the Apache License, Version 2.0 (the "License");
