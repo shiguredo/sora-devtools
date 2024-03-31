@@ -42,10 +42,10 @@
     "sora-js-sdk": "2024.1.0-canary.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.2",
+    "@biomejs/biome": "1.6.3",
     "@playwright/test": "1.42.1",
-    "@types/node": "20.11.30",
-    "@types/react": "18.2.69",
+    "@types/node": "20.12.2",
+    "@types/react": "18.2.73",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.2.1",
