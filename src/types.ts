@@ -413,4 +413,4 @@ export type DownloadReport = {
   stats: unknown[]
 }
 
-export type RTCStatsCodec = RTCStats & RTCRtpCodec
+export type RTCStatsCodec = RTCStats & RTCRtpCodecParameters
