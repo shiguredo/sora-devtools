@@ -6,6 +6,7 @@ import type { RTCMediaStreamTrackStats } from '@/types'
 
 import { ConnectionStatusBar } from './ConnectionStatusBar'
 import { JitterButter } from './JitterBuffer'
+import { RemoteVideoCapabilities } from './RemoteVideoCapabilities'
 import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton'
 import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton'
 import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton'
@@ -97,6 +98,7 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   const simulcast = useAppSelector((state) => state.simulcast)
   const spotlight = useAppSelector((state) => state.spotlight)
   const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id]
+  const [showVideoCapabilities, setShowVideoCapabilities] = useState(false)
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -132,11 +134,23 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
         </div>
       </div>
       <div className="d-flex flex-wrap align-items-start">
+        {/* オーバーレイするため position-relative を付けておくこと */}
+        {/* TODO(tnamao): useCallback つかう */}
         <div
-          className={`d-flex flex-nowrap align-items-start video-wrapper${
+          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
             focused ? ' spotlight-focused' : ''
           }`}
+          onContextMenuCapture={(e) => {
+            e.preventDefault()
+            setShowVideoCapabilities(true)
+          }}
         >
+          {showVideoCapabilities && (
+            <RemoteVideoCapabilities
+              stream={props.stream}
+              onClose={() => setShowVideoCapabilities(false)}
+            />
+          )}
           <Video
             stream={props.stream}
             setHeight={setHeight}
