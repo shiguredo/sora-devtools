@@ -15,20 +15,23 @@ export const RemoteVideoCapabilities = ({
       if (!soraContents.sora?.pc) {
         return
       }
+      // 現在の VideoTrack を取得
       const track = stream.getVideoTracks().find((track) => {
         return track
       })
       if (track === undefined) {
         return
       }
+
+      // track の RTCRtpReceiver を取得
       const receiver = await soraContents.sora.pc
         .getReceivers()
         .find((receiver) => receiver.track.id === track.id)
       if (receiver === undefined) {
-        console.log('receiver is undefined')
         return
       }
 
+      // RTCRtpReceiver の getStats から codecId を取得
       let codecId = undefined
       const receiverStatsReport = await receiver.getStats()
       for (const stats of receiverStatsReport) {
@@ -42,7 +45,7 @@ export const RemoteVideoCapabilities = ({
         return
       }
 
-      console.log(codecId)
+      // RTCStatsReport から codecId が一致する codec の情報を取得
       for (const stats of statsReport) {
         const castedStats = stats as RTCStatsCodec
         if (stats.type !== 'codec') {
