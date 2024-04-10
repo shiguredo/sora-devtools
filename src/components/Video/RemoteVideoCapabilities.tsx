@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/app/hooks'
 import type { RTCStatsCodec } from '@/types'
 import { useEffect, useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { CloseButton } from 'react-bootstrap'
 
 export const RemoteVideoCapabilities = ({
   stream,
@@ -9,7 +9,10 @@ export const RemoteVideoCapabilities = ({
 }: { stream: MediaStream; onClose: () => void }) => {
   const statsReport = useAppSelector((state) => state.soraContents.statsReport)
   const soraContents = useAppSelector((state) => state.soraContents)
-  const [trackStats, setTrackStats] = useState<RTCStatsCodec | null>(null)
+  const [trackStats, setTrackStats] = useState<{
+    codec: RTCStatsCodec
+    inboundRtp: RTCInboundRtpStreamStats
+  } | null>(null)
   useEffect(() => {
     ;(async () => {
       if (!soraContents.sora?.pc) {
@@ -46,38 +49,57 @@ export const RemoteVideoCapabilities = ({
       }
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
+      let codec = undefined
+      let inboundRtp = undefined
       for (const stats of statsReport) {
-        const castedStats = stats as RTCStatsCodec
-        if (stats.type !== 'codec') {
-          continue
+        if (stats.type === 'codec') {
+          const castedStats = stats as RTCStatsCodec
+          if (codecId === castedStats.id) {
+            codec = castedStats
+          }
         }
-        if (codecId === castedStats.id) {
-          setTrackStats(castedStats)
-          break
+        if (stats.type === 'inbound-rtp') {
+          const castedStats = stats as RTCInboundRtpStreamStats
+          if (codecId === castedStats.codecId) {
+            inboundRtp = castedStats
+          }
         }
+      }
+      if (codec && inboundRtp) {
+        setTrackStats({ codec, inboundRtp })
       }
     })()
   }, [statsReport, stream, soraContents])
 
   return trackStats === null ? null : (
-    <div className="videoOverlay">
+    <div className="video-overlay">
       <div className="d-flex justify-content-end">
-        <button className="btnClose" type="button" onClick={onClose}>
-          [X]
-        </button>
+        <CloseButton onClick={onClose} />
       </div>
-      <Row className="">
-        <Col>id</Col>
-        <Col>{trackStats.id}</Col>
-      </Row>
-      <Row>
-        <Col>mimeType</Col>
-        <Col>{trackStats.mimeType}</Col>
-      </Row>
-      <Row>
-        <Col>SdpFmtpLine</Col>
-        <Col>{trackStats.sdpFmtpLine}</Col>
-      </Row>
+      <table className="table-video-capabilities">
+        <tr>
+          <th>mimeType</th>
+          <td>{trackStats.codec.mimeType}</td>
+        </tr>
+        <tr>
+          <th>payloadTpe</th>
+          <td>{trackStats.codec.payloadType}</td>
+        </tr>
+        <tr>
+          <th>sdpFmtpLine</th>
+          <td>{trackStats.codec.sdpFmtpLine}</td>
+        </tr>
+        <tr>
+          <th>resolution</th>
+          <td>
+            {trackStats.inboundRtp.frameWidth}x{trackStats.inboundRtp.frameHeight}
+          </td>
+        </tr>
+        <tr>
+          <th>fps</th>
+          <td>{trackStats.inboundRtp.framesPerSecond}</td>
+        </tr>
+      </table>
     </div>
   )
 }
