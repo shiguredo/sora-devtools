@@ -424,6 +424,24 @@ video {
   z-index: 2000;
 }
 
+.videoOverlay {
+  z-index: 2000;
+  position: absolute;
+  padding: 0.5rem;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  color: white;
+}
+
+.videoOverlay .btnClose {
+  background-color: transparent;
+  color: white;
+  border: 0;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;
