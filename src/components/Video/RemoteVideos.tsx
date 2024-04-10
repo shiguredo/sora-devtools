@@ -139,7 +139,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
         >
           {showVideoCapabilities && (
             <RemoteVideoCapabilities
-              stream={props.stream}
+              stream={mediaStream}
               onClose={() => setShowVideoCapabilities(false)}
             />
           )}
