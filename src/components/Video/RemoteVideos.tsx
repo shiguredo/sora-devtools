@@ -103,10 +103,10 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
   const openVideoCapabilities = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
     setShowVideoCapabilities(true)
-  }, [setShowVideoCapabilities])
+  }, [])
   const closeVideoCapabilities = useCallback(() => {
     setShowVideoCapabilities(false)
-  }, [setShowVideoCapabilities])
+  }, [])
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -141,10 +141,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
           onContextMenuCapture={openVideoCapabilities}
         >
           {showVideoCapabilities && (
-            <RemoteVideoCapabilities
-              stream={mediaStream}
-              onClose={closeVideoCapabilities}
-            />
+            <RemoteVideoCapabilities stream={mediaStream} onClose={closeVideoCapabilities} />
           )}
           <Video
             stream={mediaStream}
