@@ -406,3 +406,5 @@ export type DownloadReport = {
   notify: unknown[]
   stats: unknown[]
 }
+
+export type RTCStatsCodec = RTCStats & RTCRtpCodec
