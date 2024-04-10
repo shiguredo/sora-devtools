@@ -132,7 +132,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start">
+      <div className="d-flex flex-wrap align-items-start overflow-y-hidden">
         {/* オーバーレイするため position-relative を付けておくこと */}
         <div
           className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
