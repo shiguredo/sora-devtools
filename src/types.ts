@@ -42,6 +42,12 @@ import type {
   VIDEO_CONTENT_HINTS,
 } from '@/constants'
 
+export type RemoteClient = {
+  mediaStream: MediaStream
+  clientId: string | null
+  connectionId: string
+}
+
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[]
   audio: boolean
@@ -99,7 +105,7 @@ export type SoraDevtoolsState = {
     clientId: string | null
     sessionId: string | null
     localMediaStream: MediaStream | null
-    remoteMediaStreams: MediaStream[]
+    remoteClients: RemoteClient[]
     prevStatsReport: RTCStats[]
     statsReport: RTCStats[]
     datachannels: DataChannelConfiguration[]

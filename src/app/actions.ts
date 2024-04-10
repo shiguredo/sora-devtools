@@ -851,6 +851,35 @@ function setSoraCallbacks(
       if (typeof message.client_id === 'string') {
         dispatch(slice.actions.setSoraClientId(message.client_id))
       }
+      // 接続時点で存在する remote client の client_id を保存する
+      if (Array.isArray(message.data)) {
+        for (const remoteClient of message.data) {
+          if (
+            typeof remoteClient.connection_id === 'string' &&
+            typeof remoteClient.client_id === 'string'
+          ) {
+            dispatch(
+              slice.actions.setSoraRemoteClientId({
+                connectionId: remoteClient.connection_id,
+                clientId: remoteClient.client_id,
+              }),
+            )
+          }
+        }
+      }
+    } else if (
+      message.event_type === 'connection.created' &&
+      typeof message.connection_id === 'string'
+    ) {
+      // 自身以外の notify
+      if (typeof message.client_id === 'string') {
+        dispatch(
+          slice.actions.setSoraRemoteClientId({
+            connectionId: message.connection_id,
+            clientId: message.client_id,
+          }),
+        )
+      }
     }
     dispatch(
       slice.actions.setNotifyMessages({
@@ -872,8 +901,8 @@ function setSoraCallbacks(
   sora.on('track', (event: RTCTrackEvent) => {
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-track')))
     const { soraContents } = getState()
-    const mediaStream = soraContents.remoteMediaStreams.find(
-      (stream) => stream.id === event.streams[0].id,
+    const mediaStream = soraContents.remoteClients.find(
+      (client) => client.connectionId === event.streams[0].id,
     )
     if (!mediaStream) {
       for (const track of event.streams[0].getTracks()) {
@@ -886,7 +915,13 @@ function setSoraCallbacks(
           ),
         )
       }
-      dispatch(slice.actions.setRemoteMediaStream(event.streams[0]))
+      dispatch(
+        slice.actions.setRemoteClient({
+          mediaStream: event.streams[0],
+          connectionId: event.streams[0].id,
+          clientId: null,
+        }),
+      )
     }
   })
   sora.on('removetrack', (event: MediaStreamTrackEvent) => {
@@ -894,13 +929,13 @@ function setSoraCallbacks(
       slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-removetrack')),
     )
     const { soraContents } = getState()
-    const mediaStream = soraContents.remoteMediaStreams.find((stream) => {
+    const remoteClient = soraContents.remoteClients.find((client) => {
       if (event?.target) {
-        return stream.id === (event.target as MediaStream).id
+        return client.connectionId === (event.target as MediaStream).id
       }
     })
-    if (mediaStream) {
-      dispatch(slice.actions.removeRemoteMediaStream((event.target as MediaStream).id))
+    if (remoteClient) {
+      dispatch(slice.actions.removeRemoteClient(remoteClient.connectionId))
     }
   })
   sora.on('disconnect', (event) => {
@@ -930,7 +965,7 @@ function setSoraCallbacks(
       virtualBackgroundProcessor,
       noiseSuppressionProcessor,
     } = getState()
-    const { localMediaStream, remoteMediaStreams } = soraContents
+    const { localMediaStream, remoteClients } = soraContents
     // media processor は同期処理で停止する
     const originalTrack = stopVideoProcessors(lightAdjustmentProcessor, virtualBackgroundProcessor)
     // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
@@ -939,8 +974,8 @@ function setSoraCallbacks(
       await stopLocalVideoTrack(dispatch, localMediaStream, originalTrack)
     })()
     stopLocalAudioTrack(dispatch, localMediaStream, noiseSuppressionProcessor)
-    remoteMediaStreams.filter((mediaStream) => {
-      mediaStream.getTracks().filter((track) => {
+    remoteClients.filter((client) => {
+      client.mediaStream.getTracks().filter((track) => {
         track.stop()
       })
     })
@@ -953,7 +988,7 @@ function setSoraCallbacks(
     dispatch(slice.actions.setSoraClientId(null))
     dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
     dispatch(slice.actions.setLocalMediaStream(null))
-    dispatch(slice.actions.removeAllRemoteMediaStreams())
+    dispatch(slice.actions.removeAllRemoteClients())
     dispatch(slice.actions.setSoraInfoAlertMessage('Disconnect Sora.'))
     dispatch(slice.actions.setTimelineMessage(createSoraDevtoolsTimelineMessage('disconnected')))
     if (event.type === 'abend' && reconnect) {

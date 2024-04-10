@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2024.1.0-canary.2",
+  "version": "2024.1.0-canary.3",
   "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "cleanup": "git clean -ffdx"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.2.1",
+    "@reduxjs/toolkit": "2.2.3",
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
@@ -42,20 +42,20 @@
     "sora-js-sdk": "2024.1.0-canary.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.1",
-    "@playwright/test": "1.42.1",
-    "@types/node": "20.11.28",
-    "@types/react": "18.2.66",
+    "@biomejs/biome": "1.6.4",
+    "@playwright/test": "1.43.0",
+    "@types/node": "20.12.5",
+    "@types/react": "18.2.74",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.2.1",
     "dotenv": "16.4.5",
     "jsdom": "24.0.0",
     "next": "14.0.4",
-    "typescript": "5.4.2",
+    "typescript": "5.4.4",
     "vitest": "1.4.0"
   },
-  "packageManager": "pnpm@8.15.4",
+  "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=18"
   }

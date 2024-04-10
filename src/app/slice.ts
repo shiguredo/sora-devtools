@@ -18,6 +18,7 @@ import type {
   LogMessage,
   NotifyMessage,
   PushMessage,
+  RemoteClient,
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
@@ -80,7 +81,7 @@ const initialState: SoraDevtoolsState = {
     clientId: null,
     sessionId: null,
     localMediaStream: null,
-    remoteMediaStreams: [],
+    remoteClients: [],
     prevStatsReport: [],
     statsReport: [],
     datachannels: [],
@@ -412,21 +413,31 @@ export const slice = createSlice({
       }
       state.soraContents.localMediaStream = action.payload
     },
-    setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
-      state.soraContents.remoteMediaStreams.push(action.payload)
+    setRemoteClient: (state, action: PayloadAction<RemoteClient>) => {
+      state.soraContents.remoteClients.push(action.payload)
+    },
+    setSoraRemoteClientId: (
+      state,
+      action: PayloadAction<{ connectionId: string; clientId: string }>,
+    ) => {
+      for (const client of state.soraContents.remoteClients) {
+        if (client.connectionId === action.payload.connectionId) {
+          client.clientId = action.payload.clientId
+        }
+      }
     },
     setStatsReport: (state, action: PayloadAction<RTCStats[]>) => {
       state.soraContents.prevStatsReport = state.soraContents.statsReport
       state.soraContents.statsReport = action.payload
     },
-    removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter(
-        (stream) => stream.id !== action.payload,
+    removeRemoteClient: (state, action: PayloadAction<string>) => {
+      const remoteClients = state.soraContents.remoteClients.filter(
+        (client) => client.connectionId !== action.payload,
       )
-      state.soraContents.remoteMediaStreams = remoteMediaStreams
+      state.soraContents.remoteClients = remoteClients
     },
-    removeAllRemoteMediaStreams: (state) => {
-      state.soraContents.remoteMediaStreams = []
+    removeAllRemoteClients: (state) => {
+      state.soraContents.remoteClients = []
     },
     setAudioInputDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
       state.audioInputDevices = action.payload
