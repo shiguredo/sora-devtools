@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
@@ -100,6 +100,13 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
   const spotlight = useAppSelector((state) => state.spotlight)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
   const [showVideoCapabilities, setShowVideoCapabilities] = useState(false)
+  const openVideoCapabilities = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault()
+    setShowVideoCapabilities(true)
+  }, [setShowVideoCapabilities])
+  const closeVideoCapabilities = useCallback(() => {
+    setShowVideoCapabilities(false)
+  }, [setShowVideoCapabilities])
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -127,20 +134,16 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
       </div>
       <div className="d-flex flex-wrap align-items-start">
         {/* オーバーレイするため position-relative を付けておくこと */}
-        {/* TODO(tnamao): useCallback つかう */}
         <div
           className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
             focused ? ' spotlight-focused' : ''
           }`}
-          onContextMenuCapture={(e) => {
-            e.preventDefault()
-            setShowVideoCapabilities(true)
-          }}
+          onContextMenuCapture={openVideoCapabilities}
         >
           {showVideoCapabilities && (
             <RemoteVideoCapabilities
               stream={mediaStream}
-              onClose={() => setShowVideoCapabilities(false)}
+              onClose={closeVideoCapabilities}
             />
           )}
           <Video
