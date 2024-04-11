@@ -58,6 +58,7 @@ function createDownloadReport(): DownloadReport {
     reconnect: state.reconnect,
     resizeMode: state.resizeMode,
     resolution: state.resolution,
+    mediaStats: state.mediaStats,
     role: state.role,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     signalingUrlCandidates: state.signalingUrlCandidates,
