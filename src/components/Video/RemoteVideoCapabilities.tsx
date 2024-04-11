@@ -91,7 +91,7 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <td>{trackStats.codec.mimeType}</td>
           </tr>
           <tr>
-            <th>payloadTpe</th>
+            <th>payloadType</th>
             <td>{trackStats.codec.payloadType}</td>
           </tr>
           <tr>
