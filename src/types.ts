@@ -113,6 +113,7 @@ export type SoraDevtoolsState = {
   ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number]
   logMessages: LogMessage[]
   mediaProcessorsNoiseSuppression: boolean
+  mediaStats: boolean
   mediaType: (typeof MEDIA_TYPES)[number]
   metadata: string
   multistream: (typeof MULTISTREAM)[number]

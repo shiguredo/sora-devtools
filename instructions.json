@@ -122,6 +122,9 @@
   "resolution": {
     "description": "解像度を指定します。"
   },
+  "mediaStats": {
+    "description": "映像の統計情報を映像に重ねて表示します。"
+  },
   "frameRate": {
     "description": "MediaTrackConstraints の frameRate を指定します。"
   },
