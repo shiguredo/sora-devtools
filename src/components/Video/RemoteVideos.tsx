@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
@@ -99,21 +99,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
   const simulcast = useAppSelector((state) => state.simulcast)
   const spotlight = useAppSelector((state) => state.spotlight)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
-  const [showVideoCapabilities, setShowVideoCapabilities] = useState(false)
-  const openVideoCapabilities = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      e.preventDefault()
-      const track = mediaStream.getVideoTracks().find((track) => track)
-      if (track === undefined) {
-        return
-      }
-      setShowVideoCapabilities(true)
-    },
-    [mediaStream],
-  )
-  const closeVideoCapabilities = useCallback(() => {
-    setShowVideoCapabilities(false)
-  }, [])
+  const mediaStats = useAppSelector((state) => state.mediaStats)
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -145,11 +131,8 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
           className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
             focused ? ' spotlight-focused' : ''
           }`}
-          onContextMenuCapture={openVideoCapabilities}
         >
-          {showVideoCapabilities && (
-            <RemoteVideoCapabilities stream={mediaStream} onClose={closeVideoCapabilities} />
-          )}
+          {mediaStats && <RemoteVideoCapabilities stream={mediaStream} />}
           <Video
             stream={mediaStream}
             setHeight={setHeight}

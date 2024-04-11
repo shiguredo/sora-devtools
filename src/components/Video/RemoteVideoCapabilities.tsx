@@ -1,7 +1,6 @@
 import { useAppSelector } from '@/app/hooks'
 import type { RTCStatsCodec } from '@/types'
 import { useEffect, useState } from 'react'
-import { CloseButton } from 'react-bootstrap'
 
 const useVideoTrackStats = (stream: MediaStream) => {
   const statsReport = useAppSelector((state) => state.soraContents.statsReport)
@@ -79,16 +78,10 @@ const useVideoTrackStats = (stream: MediaStream) => {
   }
 }
 
-export const RemoteVideoCapabilities = ({
-  stream,
-  onClose,
-}: { stream: MediaStream; onClose: () => void }) => {
+export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
   const { trackStats } = useVideoTrackStats(stream)
   return (
     <div className="video-overlay">
-      <div className="d-flex justify-content-end">
-        <CloseButton onClick={onClose} />
-      </div>
       {trackStats === null ? (
         <p>loading...</p>
       ) : (
