@@ -8,7 +8,11 @@ const useVideoTrackStats = (stream: MediaStream) => {
   const soraContents = useAppSelector((state) => state.soraContents)
   const [trackStats, setTrackStats] = useState<{
     codec: RTCStatsCodec
-    inboundRtp: RTCInboundRtpStreamStats
+    videoTrackStats: {
+      width?: number
+      height?: number
+      frameRate?: number
+    }
   } | null>(null)
   useEffect(() => {
     ;(async () => {
@@ -47,7 +51,6 @@ const useVideoTrackStats = (stream: MediaStream) => {
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
       let codec = undefined
-      let inboundRtp = undefined
       for (const stats of statsReport) {
         if (stats.type === 'codec') {
           const castedStats = stats as RTCStatsCodec
@@ -55,15 +58,19 @@ const useVideoTrackStats = (stream: MediaStream) => {
             codec = castedStats
           }
         }
-        if (stats.type === 'inbound-rtp') {
-          const castedStats = stats as RTCInboundRtpStreamStats
-          if (codecId === castedStats.codecId) {
-            inboundRtp = castedStats
-          }
-        }
       }
-      if (codec && inboundRtp) {
-        setTrackStats({ codec, inboundRtp })
+      if (codec) {
+        setTrackStats({
+          codec,
+          videoTrackStats: {
+            width: track.getSettings().width,
+            height: track.getSettings().height,
+            frameRate:
+              track.getSettings().frameRate !== undefined
+                ? Math.floor(track.getSettings().frameRate || 0)
+                : undefined,
+          },
+        })
       }
     })()
   }, [statsReport, stream, soraContents])
@@ -101,12 +108,12 @@ export const RemoteVideoCapabilities = ({
           <tr>
             <th>resolution</th>
             <td>
-              {trackStats.inboundRtp.frameWidth}x{trackStats.inboundRtp.frameHeight}
+              {trackStats.videoTrackStats.width}x{trackStats.videoTrackStats.height}
             </td>
           </tr>
           <tr>
             <th>fps</th>
-            <td>{trackStats.inboundRtp.framesPerSecond}</td>
+            <td>{trackStats.videoTrackStats.frameRate}</td>
           </tr>
         </table>
       )}
