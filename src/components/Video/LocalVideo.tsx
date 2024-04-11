@@ -5,6 +5,7 @@ import { useAppSelector } from '@/app/hooks'
 
 import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel'
 import { ConnectionStatusBar } from './ConnectionStatusBar'
+import { LocalVideoCapabilities } from './LocalVideoCapabilities'
 import { RequestRtpStreamButton } from './RequestRtpStreamButton'
 import { RequestSpotlightRidButton } from './RequestSpotlightRidButton'
 import { ResetRtpStreamButton } from './ResetRtpStreamButton'
@@ -26,6 +27,7 @@ const VideoBox: React.FC = () => {
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const micDevice = useAppSelector((state) => state.micDevice)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
+  const mediaStats = useAppSelector((state) => state.mediaStats)
   if (audio === false && video === false) {
     return null
   }
@@ -33,10 +35,11 @@ const VideoBox: React.FC = () => {
     <>
       <div className="d-flex">
         <div
-          className={`d-flex·flex-nowrap·align-items-start·video-wrapper${
+          className={`position-relative d-flex·flex-nowrap·align-items-start·video-wrapper${
             focused ? '·spotlight-focused' : ''
           }`}
         >
+          {mediaStats && localMediaStream && <LocalVideoCapabilities stream={localMediaStream} />}
           <Video
             stream={localMediaStream}
             setHeight={setHeight}
