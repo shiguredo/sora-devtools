@@ -100,10 +100,17 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
   const spotlight = useAppSelector((state) => state.spotlight)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
   const [showVideoCapabilities, setShowVideoCapabilities] = useState(false)
-  const openVideoCapabilities = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault()
-    setShowVideoCapabilities(true)
-  }, [])
+  const openVideoCapabilities = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.preventDefault()
+      const track = mediaStream.getVideoTracks().find((track) => track)
+      if (track === undefined) {
+        return
+      }
+      setShowVideoCapabilities(true)
+    },
+    [mediaStream],
+  )
   const closeVideoCapabilities = useCallback(() => {
     setShowVideoCapabilities(false)
   }, [])
