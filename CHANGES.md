@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] 視聴中の RemoteVideo の表示上で右クリックすると、その動画の情報をオーバーレイ表示できるようにする
+  - Firefox では複数の RemoteVideo を受信しているときに RTCPeerConnection の getStats から取得できるコーデック情報がおかしくなってしまうため、正しい動画のコーデック情報を表示できません
+  - @tnamao
 - [ADD] 受信している接続のクライアント ID の表示に対応する
   - `notify` で受け取ったクライアント ID を表示に使用するため、state の `soraContents.remoteMediaStream` を `soraContents.remoteClient` に変更し、MediaStream の他に `connectionId` と `client_id` を保持できる型に変更する
   - この変更に伴ってリモートの `MediaStream` を使用した関数、変数の名前を `Client` に変更する
