@@ -67,43 +67,49 @@ const useVideoTrackStats = (stream: MediaStream) => {
       }
     })()
   }, [statsReport, stream, soraContents])
-  return [trackStats]
+  return {
+    trackStats,
+  }
 }
 
 export const RemoteVideoCapabilities = ({
   stream,
   onClose,
 }: { stream: MediaStream; onClose: () => void }) => {
-  const [trackStats] = useVideoTrackStats(stream)
-  return trackStats === null ? null : (
+  const { trackStats } = useVideoTrackStats(stream)
+  return (
     <div className="video-overlay">
       <div className="d-flex justify-content-end">
         <CloseButton onClick={onClose} />
       </div>
-      <table className="table-video-capabilities">
-        <tr>
-          <th>mimeType</th>
-          <td>{trackStats.codec.mimeType}</td>
-        </tr>
-        <tr>
-          <th>payloadTpe</th>
-          <td>{trackStats.codec.payloadType}</td>
-        </tr>
-        <tr>
-          <th>sdpFmtpLine</th>
-          <td>{trackStats.codec.sdpFmtpLine}</td>
-        </tr>
-        <tr>
-          <th>resolution</th>
-          <td>
-            {trackStats.inboundRtp.frameWidth}x{trackStats.inboundRtp.frameHeight}
-          </td>
-        </tr>
-        <tr>
-          <th>fps</th>
-          <td>{trackStats.inboundRtp.framesPerSecond}</td>
-        </tr>
-      </table>
+      {trackStats === null ? (
+        <p>loading...</p>
+      ) : (
+        <table className="table-video-capabilities">
+          <tr>
+            <th>mimeType</th>
+            <td>{trackStats.codec.mimeType}</td>
+          </tr>
+          <tr>
+            <th>payloadTpe</th>
+            <td>{trackStats.codec.payloadType}</td>
+          </tr>
+          <tr>
+            <th>sdpFmtpLine</th>
+            <td>{trackStats.codec.sdpFmtpLine}</td>
+          </tr>
+          <tr>
+            <th>resolution</th>
+            <td>
+              {trackStats.inboundRtp.frameWidth}x{trackStats.inboundRtp.frameHeight}
+            </td>
+          </tr>
+          <tr>
+            <th>fps</th>
+            <td>{trackStats.inboundRtp.framesPerSecond}</td>
+          </tr>
+        </table>
+      )}
     </div>
   )
 }
