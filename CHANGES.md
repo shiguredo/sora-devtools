@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] index ページのリンクに指定していた `multistream` パラメータを全て削除する
+  - multistream はデフォルト有効になり、明示的な指定は不要となったため
+  - @tnamao
 - [ADD] 映像のコーデックなどの情報を映像にオーバーレイ表示する `Show media stats` のトグルを追加する
   - Firefox での制限
     - 複数の RemoteVideo を受信しているときに RTCPeerConnection の getStats から取得できるコーデック情報がおかしくなってしまうため、正しい動画のコーデック情報を表示できません
