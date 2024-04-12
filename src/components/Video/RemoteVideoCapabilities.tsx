@@ -103,13 +103,17 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <td>
               {trackStats.videoTrackStats.width === undefined ||
               trackStats.videoTrackStats.height === undefined
-                ? ''
+                ? 'undefined'
                 : `${trackStats.videoTrackStats.width}x${trackStats.videoTrackStats.height}`}
             </td>
           </tr>
           <tr>
             <th>fps</th>
-            <td>{trackStats.videoTrackStats.frameRate}</td>
+            <td>
+              {trackStats.videoTrackStats.frameRate === undefined
+                ? 'undefined'
+                : trackStats.videoTrackStats.frameRate}
+            </td>
           </tr>
         </table>
       )}
