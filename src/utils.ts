@@ -141,6 +141,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     facingMode: parseSpecifiedStringParameter(qs.facingMode, FACING_MODES),
     fakeVolume: parseStringParameter(qs.fakeVolume),
     frameRate: parseSpecifiedStringParameter(qs.frameRate, FRAME_RATES),
+    mediaStats: parseBooleanParameter(qs.mediaStats),
     mediaType: parseSpecifiedStringParameter(qs.mediaType, MEDIA_TYPES),
     metadata: parseStringParameter(qs.metadata),
     showStats: parseBooleanParameter(qs.showStats),

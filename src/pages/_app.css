@@ -424,6 +424,27 @@ video {
   z-index: 2000;
 }
 
+.video-overlay {
+  max-width: max-content;
+  position: absolute;
+  padding: 0.5rem;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  color: white;
+  z-index: 1055;
+}
+
+.video-overlay .table-video-capabilities {
+  border-collapse: separate;
+  border-spacing: 0.2rem;
+}
+
+.video-overlay .table-video-capabilities th {
+  font-weight: normal;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;

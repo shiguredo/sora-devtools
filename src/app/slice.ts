@@ -89,6 +89,7 @@ const initialState: SoraDevtoolsState = {
   ignoreDisconnectWebSocket: '',
   logMessages: [],
   mediaProcessorsNoiseSuppression: false,
+  mediaStats: false,
   mediaType: 'getUserMedia',
   metadata: '',
   multistream: '',
@@ -285,6 +286,9 @@ export const slice = createSlice({
     },
     setMute: (state, action: PayloadAction<boolean>) => {
       state.mute = action.payload
+    },
+    setMediaStats: (state, action: PayloadAction<boolean>) => {
+      state.mediaStats = action.payload
     },
     setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {
       state.noiseSuppression = action.payload

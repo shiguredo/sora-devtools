@@ -89,6 +89,9 @@ export const setInitialParameter = () => {
     if (qsParams.echoCancellationType !== undefined) {
       dispatch(slice.actions.setEchoCancellationType(qsParams.echoCancellationType))
     }
+    if (qsParams.mediaStats !== undefined) {
+      dispatch(slice.actions.setMediaStats(qsParams.mediaStats))
+    }
     if (qsParams.mediaType !== undefined) {
       dispatch(slice.actions.setMediaType(qsParams.mediaType))
     }
@@ -403,6 +406,8 @@ export const copyURL = () => {
           ? state.videoInput
           : undefined,
       displayResolution: state.displayResolution !== '' ? state.displayResolution : undefined,
+      // URL の長さ短縮のため true 以外は query string に含めない
+      mediaStats: state.mediaStats === true ? true : undefined,
       bundleId: state.bundleId !== '' && state.enabledBundleId ? state.bundleId : undefined,
       clientId: state.clientId !== '' && state.enabledClientId ? state.clientId : undefined,
       metadata: state.metadata !== '' && state.enabledMetadata ? state.metadata : undefined,
@@ -2032,6 +2037,7 @@ export const {
   setLocalMediaStream,
   setLogMessages,
   setMediaProcessorsNoiseSuppression,
+  setMediaStats,
   setMediaType,
   setMetadata,
   setMultistream,

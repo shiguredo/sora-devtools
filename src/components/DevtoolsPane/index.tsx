@@ -37,6 +37,7 @@ import { ForwardingFilterForm } from './ForwardingFilterForm'
 import { FrameRateForm } from './FrameRateForm'
 import { LightAdjustmentForm } from './LightAdjustmentForm'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm'
+import { MediaStatsForm } from './MediaStatsForm'
 import { MediaTypeForm } from './MediaTypeForm'
 import { MetadataForm } from './MetadataForm'
 import { MicDeviceForm } from './MicDeviceForm'
@@ -443,12 +444,17 @@ const RowDevices: React.FC = () => {
 export const RowMediaDevices: React.FC = () => {
   const role = useAppSelector((state) => state.role)
   return (
-    <Row className="form-row" xs="auto">
-      <Col>
-        <DisplayResolutionForm />
-      </Col>
-      {role !== 'recvonly' ? (
-        <>
+    <>
+      <Row className="form-row" xs="auto">
+        <Col>
+          <DisplayResolutionForm />
+        </Col>
+        <Col>
+          <MediaStatsForm />
+        </Col>
+      </Row>
+      {role !== 'recvonly' && (
+        <Row className="form-row" xs="auto">
           <Col>
             <MicDeviceForm />
           </Col>
@@ -461,9 +467,9 @@ export const RowMediaDevices: React.FC = () => {
           <Col>
             <VideoTrackForm />
           </Col>
-        </>
-      ) : null}
-    </Row>
+        </Row>
+      )}
+    </>
   )
 }
 
