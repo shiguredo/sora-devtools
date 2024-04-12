@@ -15,7 +15,7 @@
   - `notify` で受け取ったクライアント ID を表示に使用するため、state の `soraContents.remoteMediaStream` を `soraContents.remoteClient` に変更し、MediaStream の他に `connectionId` と `client_id` を保持できる型に変更する
   - この変更に伴ってリモートの `MediaStream` を使用した関数、変数の名前を `Client` に変更する
   - @tnamao
-- [CHANGE] `Session ID` と自身の  `Connection ID` `Client ID` の表示を `type: notify` の `connection.created` を受け取ったタイミングでの表示に変更する
+- [CHANGE] `Session ID` と自身の `Connection ID` `Client ID` の表示を `type: notify` の `connection.created` を受け取ったタイミングでの表示に変更する
   - この変更に伴い、Sora Devtools の Sora 接続状態の確認は state の `soraContents.connectionStatus` の値の確認も追加する
   - @tnamao
 - [CHANGE] オーディオコーデック `LYRA` の設定を削除する
@@ -25,8 +25,6 @@
 - [CHANGE] `multistream` の初期値を `未指定` に変更する
   - querystring にパラメータが存在しない場合に `true` になるのを防ぐため
   - @tnamao
-- [CHANGE] `next` を `14.1.0` に上げると `pnpm run dev` が動かないので `14.0.4` に固定する
-  - @voluntas
 - [CHANGE] `getDisplayMedia` 使用時の MediaConstraints に audio も含めるようにする
   - gDM に渡す MediaConstraint の `audio` パラメータは audio のトグルの状態や `Media options` の設定と連動している
   - @tnamao
