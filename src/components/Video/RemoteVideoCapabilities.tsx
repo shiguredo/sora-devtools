@@ -101,7 +101,10 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
           <tr>
             <th>resolution</th>
             <td>
-              {trackStats.videoTrackStats.width}x{trackStats.videoTrackStats.height}
+              {trackStats.videoTrackStats.width === undefined ||
+              trackStats.videoTrackStats.height === undefined
+                ? ''
+                : `${trackStats.videoTrackStats.width}x${trackStats.videoTrackStats.height}`}
             </td>
           </tr>
           <tr>
