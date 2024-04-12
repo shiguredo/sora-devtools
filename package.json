@@ -44,16 +44,16 @@
   "devDependencies": {
     "@biomejs/biome": "1.6.4",
     "@playwright/test": "1.43.0",
-    "@types/node": "20.12.5",
-    "@types/react": "18.2.74",
+    "@types/node": "20.12.7",
+    "@types/react": "18.2.77",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.2.1",
     "dotenv": "16.4.5",
     "jsdom": "24.0.0",
-    "next": "14.0.4",
-    "typescript": "5.4.4",
-    "vitest": "1.4.0"
+    "next": "14.2.0",
+    "typescript": "5.4.5",
+    "vitest": "1.5.0"
   },
   "packageManager": "pnpm@8.15.6",
   "engines": {
