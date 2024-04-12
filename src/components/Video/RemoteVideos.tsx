@@ -132,7 +132,9 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
             focused ? ' spotlight-focused' : ''
           }`}
         >
-          {mediaStats && <RemoteVideoCapabilities stream={mediaStream} />}
+          {mediaStats && mediaStream.getVideoTracks().length > 0 && (
+            <RemoteVideoCapabilities stream={mediaStream} />
+          )}
           <Video
             stream={mediaStream}
             setHeight={setHeight}

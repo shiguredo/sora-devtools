@@ -39,7 +39,9 @@ const VideoBox: React.FC = () => {
             focused ? '·spotlight-focused' : ''
           }`}
         >
-          {mediaStats && localMediaStream && <LocalVideoCapabilities stream={localMediaStream} />}
+          {mediaStats && localMediaStream && localMediaStream.getVideoTracks().length > 0 && (
+            <LocalVideoCapabilities stream={localMediaStream} />
+          )}
           <Video
             stream={localMediaStream}
             setHeight={setHeight}
