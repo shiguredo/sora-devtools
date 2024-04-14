@@ -35,7 +35,7 @@
     "react-bootstrap": "2.10.2",
     "react-dom": "18.2.0",
     "react-draggable": "4.4.6",
-    "react-redux": "9.1.0",
+    "react-redux": "9.1.1",
     "redux": "5.0.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "3.1.0",
@@ -43,9 +43,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.6.4",
-    "@playwright/test": "1.43.0",
+    "@playwright/test": "1.43.1",
     "@types/node": "20.12.7",
-    "@types/react": "18.2.77",
+    "@types/react": "18.2.78",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.2.1",
@@ -55,7 +55,7 @@
     "typescript": "5.4.5",
     "vitest": "1.5.0"
   },
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@8.15.7",
   "engines": {
     "node": ">=18"
   }

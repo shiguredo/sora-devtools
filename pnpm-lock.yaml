@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@reduxjs/toolkit':
     specifier: 2.2.3
-    version: 2.2.3(react-redux@9.1.0)(react@18.2.0)
+    version: 2.2.3(react-redux@9.1.1)(react@18.2.0)
   '@shiguredo/light-adjustment':
     specifier: 2023.2.0
     version: 2023.2.0
@@ -28,7 +28,7 @@ dependencies:
     version: 18.2.0
   react-bootstrap:
     specifier: 2.10.2
-    version: 2.10.2(@types/react@18.2.77)(react-dom@18.2.0)(react@18.2.0)
+    version: 2.10.2(@types/react@18.2.78)(react-dom@18.2.0)(react@18.2.0)
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
@@ -36,8 +36,8 @@ dependencies:
     specifier: 4.4.6
     version: 4.4.6(react-dom@18.2.0)(react@18.2.0)
   react-redux:
-    specifier: 9.1.0
-    version: 9.1.0(@types/react@18.2.77)(react@18.2.0)(redux@5.0.1)
+    specifier: 9.1.1
+    version: 9.1.1(@types/react@18.2.78)(react@18.2.0)(redux@5.0.1)
   redux:
     specifier: 5.0.1
     version: 5.0.1
@@ -56,14 +56,14 @@ devDependencies:
     specifier: 1.6.4
     version: 1.6.4
   '@playwright/test':
-    specifier: 1.43.0
-    version: 1.43.0
+    specifier: 1.43.1
+    version: 1.43.1
   '@types/node':
     specifier: 20.12.7
     version: 20.12.7
   '@types/react':
-    specifier: 18.2.77
-    version: 18.2.77
+    specifier: 18.2.78
+    version: 18.2.78
   '@types/react-redux':
     specifier: 7.1.33
     version: 7.1.33
@@ -81,7 +81,7 @@ devDependencies:
     version: 24.0.0
   next:
     specifier: 14.2.0
-    version: 14.2.0(@babel/core@7.24.4)(@playwright/test@1.43.0)(react-dom@18.2.0)(react@18.2.0)
+    version: 14.2.0(@babel/core@7.24.4)(@playwright/test@1.43.1)(react-dom@18.2.0)(react@18.2.0)
   typescript:
     specifier: 5.4.5
     version: 5.4.5
@@ -739,12 +739,12 @@ packages:
     dev: true
     optional: true
 
-  /@playwright/test@1.43.0:
-    resolution: {integrity: sha512-Ebw0+MCqoYflop7wVKj711ccbNlrwTBCtjY5rlbiY9kHL2bCYxq+qltK6uPsVBGGAOb033H2VO0YobcQVxoW7Q==}
+  /@playwright/test@1.43.1:
+    resolution: {integrity: sha512-HgtQzFgNEEo4TE22K/X7sYTYNqEMMTZmFS8kTq6m8hXj+m1D8TgwgIbumHddJa9h4yl4GkKb8/bgAl2+g7eDgA==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright: 1.43.0
+      playwright: 1.43.1
     dev: true
 
   /@popperjs/core@2.11.8:
@@ -761,7 +761,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@reduxjs/toolkit@2.2.3(react-redux@9.1.0)(react@18.2.0):
+  /@reduxjs/toolkit@2.2.3(react-redux@9.1.1)(react@18.2.0):
     resolution: {integrity: sha512-76dll9EnJXg4EVcI5YNxZA/9hSAmZsFqzMmNRHvIlzw2WS/twfcVX3ysYrWGJMClwEmChQFC4yRq74tn6fdzRA==}
     peerDependencies:
       react: ^16.9.0 || ^17.0.0 || ^18
@@ -774,7 +774,7 @@ packages:
     dependencies:
       immer: 10.0.4
       react: 18.2.0
-      react-redux: 9.1.0(@types/react@18.2.77)(react@18.2.0)(redux@5.0.1)
+      react-redux: 9.1.1(@types/react@18.2.78)(react@18.2.0)(redux@5.0.1)
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.0
@@ -1013,7 +1013,7 @@ packages:
   /@types/hoist-non-react-statics@3.3.5:
     resolution: {integrity: sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==}
     dependencies:
-      '@types/react': 18.2.77
+      '@types/react': 18.2.78
       hoist-non-react-statics: 3.3.2
     dev: true
 
@@ -1030,7 +1030,7 @@ packages:
     resolution: {integrity: sha512-NF8m5AjWCkert+fosDsN3hAlHzpjSiXlVy9EgQEmLoBhaNXbmyeGs/aj5dQzKuF+/q+S7JQagorGDW8pJ28Hmg==}
     dependencies:
       '@types/hoist-non-react-statics': 3.3.5
-      '@types/react': 18.2.77
+      '@types/react': 18.2.78
       hoist-non-react-statics: 3.3.2
       redux: 4.2.1
     dev: true
@@ -1038,11 +1038,11 @@ packages:
   /@types/react-transition-group@4.4.10:
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
     dependencies:
-      '@types/react': 18.2.77
+      '@types/react': 18.2.78
     dev: false
 
-  /@types/react@18.2.77:
-    resolution: {integrity: sha512-CUT9KUUF+HytDM7WiXKLF9qUSg4tGImwy4FXTlfEDPEkkNUzJ7rVFolYweJ9fS1ljoIaP7M7Rdjc5eUm/Yu5AA==}
+  /@types/react@18.2.78:
+    resolution: {integrity: sha512-qOwdPnnitQY4xKlKayt42q5W5UQrSHjgoXNVEtxeqdITJ99k4VXJOP3vt8Rkm9HmgJpH50UNU+rlqfkfWOqp0A==}
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
@@ -1668,7 +1668,7 @@ packages:
     hasBin: true
     dev: true
 
-  /next@14.2.0(@babel/core@7.24.4)(@playwright/test@1.43.0)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.2.0(@babel/core@7.24.4)(@playwright/test@1.43.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-2T41HqJdKPqheR27ll7MFZ3gtTYvGew7cUc0PwPSyK9Ao5vvwpf9bYfP4V5YBGLckHF2kEGvrLte5BqLSv0s8g==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -1687,7 +1687,7 @@ packages:
         optional: true
     dependencies:
       '@next/env': 14.2.0
-      '@playwright/test': 1.43.0
+      '@playwright/test': 1.43.1
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001608
@@ -1781,18 +1781,18 @@ packages:
       pathe: 1.1.2
     dev: true
 
-  /playwright-core@1.43.0:
-    resolution: {integrity: sha512-iWFjyBUH97+pUFiyTqSLd8cDMMOS0r2ZYz2qEsPjH8/bX++sbIJT35MSwKnp1r/OQBAqC5XO99xFbJ9XClhf4w==}
+  /playwright-core@1.43.1:
+    resolution: {integrity: sha512-EI36Mto2Vrx6VF7rm708qSnesVQKbxEWvPrfA1IPY6HgczBplDx7ENtx+K2n4kJ41sLLkuGfmb0ZLSSXlDhqPg==}
     engines: {node: '>=16'}
     hasBin: true
     dev: true
 
-  /playwright@1.43.0:
-    resolution: {integrity: sha512-SiOKHbVjTSf6wHuGCbqrEyzlm6qvXcv7mENP+OZon1I07brfZLGdfWV0l/efAzVx7TF3Z45ov1gPEkku9q25YQ==}
+  /playwright@1.43.1:
+    resolution: {integrity: sha512-V7SoH0ai2kNt1Md9E3Gwas5B9m8KR2GVvwZnAI6Pg0m3sh7UvgiYhRrhsziCmqMJNouPckiOhk8T+9bSAK0VIA==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright-core: 1.43.0
+      playwright-core: 1.43.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
@@ -1864,7 +1864,7 @@ packages:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
     dev: true
 
-  /react-bootstrap@2.10.2(@types/react@18.2.77)(react-dom@18.2.0)(react@18.2.0):
+  /react-bootstrap@2.10.2(@types/react@18.2.78)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-UvB7mRqQjivdZNxJNEA2yOQRB7L9N43nBnKc33K47+cH90/ujmnMwatTCwQLu83gLhrzAl8fsa6Lqig/KLghaA==}
     peerDependencies:
       '@types/react': '>=16.14.8'
@@ -1877,7 +1877,7 @@ packages:
       '@babel/runtime': 7.24.4
       '@restart/hooks': 0.4.16(react@18.2.0)
       '@restart/ui': 1.6.8(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.77
+      '@types/react': 18.2.78
       '@types/react-transition-group': 4.4.10
       classnames: 2.5.1
       dom-helpers: 5.2.1
@@ -1923,8 +1923,8 @@ packages:
     resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
     dev: false
 
-  /react-redux@9.1.0(@types/react@18.2.77)(react@18.2.0)(redux@5.0.1):
-    resolution: {integrity: sha512-6qoDzIO+gbrza8h3hjMA9aq4nwVFCKFtY2iLxCtVT38Swyy2C/dJCGBXHeHLtx6qlg/8qzc2MrhOeduf5K32wQ==}
+  /react-redux@9.1.1(@types/react@18.2.78)(react@18.2.0)(redux@5.0.1):
+    resolution: {integrity: sha512-5ynfGDzxxsoV73+4czQM56qF43vsmgJsO22rmAvU5tZT2z5Xow/A2uhhxwXuGTxgdReF3zcp7A80gma2onRs1A==}
     peerDependencies:
       '@types/react': ^18.2.25
       react: ^18.0
@@ -1938,7 +1938,7 @@ packages:
       redux:
         optional: true
     dependencies:
-      '@types/react': 18.2.77
+      '@types/react': 18.2.78
       '@types/use-sync-external-store': 0.0.3
       react: 18.2.0
       redux: 5.0.1
@@ -2203,7 +2203,7 @@ packages:
       react: '>=15.0.0'
     dependencies:
       '@babel/runtime': 7.24.4
-      '@types/react': 18.2.77
+      '@types/react': 18.2.78
       invariant: 2.2.4
       react: 18.2.0
       react-lifecycles-compat: 3.0.4
