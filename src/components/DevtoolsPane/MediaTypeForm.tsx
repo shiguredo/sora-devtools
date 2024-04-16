@@ -20,7 +20,7 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
   return (
     <FormCheck
       type="radio"
-      inline
+      inline={true}
       id={label}
       label={label}
       value={label}

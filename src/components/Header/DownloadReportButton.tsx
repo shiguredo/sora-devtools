@@ -100,7 +100,7 @@ function createDownloadReport(): DownloadReport {
 
 export const DownloadReportButton: React.FC = () => {
   const anchorRef = useRef<HTMLAnchorElement>(null)
-  const onClick = async (): Promise<void> => {
+  const onClick = (): void => {
     const report = createDownloadReport()
     const data = JSON.stringify(report)
     const blob = new Blob([data], { type: 'text/plain' })

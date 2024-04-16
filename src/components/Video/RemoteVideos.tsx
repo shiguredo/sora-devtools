@@ -142,7 +142,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
             audioOutput={audioOutput}
             displayResolution={displayResolution}
           />
-          <VolumeVisualizer micDevice stream={mediaStream} height={height} />
+          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height} />
         </div>
         <MediaStreamStatsReport stream={mediaStream} />
       </div>
