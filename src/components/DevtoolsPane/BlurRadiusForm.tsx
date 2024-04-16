@@ -24,7 +24,7 @@ export const BlurRadiusForm: React.FC = () => {
       <FormSelect value={blurRadius} onChange={onChange} disabled={disabled}>
         {BLUR_RADIUS.map((value) => {
           return (
-            <option suppressHydrationWarning key={value} value={value}>
+            <option suppressHydrationWarning={true} key={value} value={value}>
               {value === '' || disabled ? '未指定' : value}
             </option>
           )

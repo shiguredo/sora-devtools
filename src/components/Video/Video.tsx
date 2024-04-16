@@ -72,9 +72,9 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   return (
     <video
       id={props.localVideo ? 'local-video' : undefined}
-      autoPlay
-      playsInline
-      controls
+      autoPlay={true}
+      playsInline={true}
+      controls={true}
       muted={mute}
       ref={videoRef}
       width={0 < videoSize.width ? videoSize.width : undefined}

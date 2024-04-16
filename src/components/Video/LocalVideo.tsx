@@ -47,8 +47,8 @@ const VideoBox: React.FC = () => {
             setHeight={setHeight}
             audioOutput={audioOutput}
             displayResolution={displayResolution}
-            localVideo
-            mute
+            localVideo={true}
+            mute={true}
           />
           {localMediaStream !== null ? (
             <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} />
@@ -78,7 +78,11 @@ export const LocalVideo: React.FC = () => {
           ) : null}
           {connectionId !== null || clientId !== null ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
-              <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />
+              <ConnectionStatusBar
+                connectionId={connectionId}
+                clientId={clientId}
+                localVideo={true}
+              />
             </div>
           ) : null}
           {connectionId !== null &&

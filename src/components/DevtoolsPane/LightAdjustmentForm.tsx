@@ -24,7 +24,7 @@ export const LightAdjustmentForm: React.FC = () => {
       <FormSelect value={lightAdjustment} onChange={onChange} disabled={disabled}>
         {LIGHT_ADJUSTMENT.map((value) => {
           return (
-            <option suppressHydrationWarning key={value} value={value}>
+            <option suppressHydrationWarning={true} key={value} value={value}>
               {value === '' || disabled ? '未指定' : value}
             </option>
           )

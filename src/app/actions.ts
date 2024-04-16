@@ -1159,17 +1159,13 @@ export const requestMedia = () => {
             createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
           ),
         )
-      } else {
-        if (mediaStream) {
-          mediaStream.getVideoTracks().filter((track) => {
-            track.stop()
-            dispatch(
-              slice.actions.setTimelineMessage(
-                createSoraDevtoolsMediaStreamTrackLog('stop', track),
-              ),
-            )
-          })
-        }
+      } else if (mediaStream) {
+        mediaStream.getVideoTracks().filter((track) => {
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
 
       if (state.noiseSuppressionProcessor?.isProcessing()) {
@@ -1183,17 +1179,13 @@ export const requestMedia = () => {
           )
         }
         state.noiseSuppressionProcessor.stopProcessing()
-      } else {
-        if (mediaStream) {
-          mediaStream.getAudioTracks().filter((track) => {
-            track.stop()
-            dispatch(
-              slice.actions.setTimelineMessage(
-                createSoraDevtoolsMediaStreamTrackLog('stop', track),
-              ),
-            )
-          })
-        }
+      } else if (mediaStream) {
+        mediaStream.getAudioTracks().filter((track) => {
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
       throw error
     }
@@ -1233,16 +1225,14 @@ export const disposeMedia = () => {
           createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
         ),
       )
-    } else {
-      if (localMediaStream) {
-        localMediaStream.getVideoTracks().filter((track) => {
-          track.stop()
-          localMediaStream.removeTrack(track)
-          dispatch(
-            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-          )
-        })
-      }
+    } else if (localMediaStream) {
+      localMediaStream.getVideoTracks().filter((track) => {
+        track.stop()
+        localMediaStream.removeTrack(track)
+        dispatch(
+          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+        )
+      })
     }
 
     if (noiseSuppressionProcessor?.isProcessing()) {
@@ -1257,16 +1247,14 @@ export const disposeMedia = () => {
         )
       }
       noiseSuppressionProcessor.stopProcessing()
-    } else {
-      if (localMediaStream) {
-        localMediaStream.getAudioTracks().filter((track) => {
-          track.stop()
-          localMediaStream.removeTrack(track)
-          dispatch(
-            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-          )
-        })
-      }
+    } else if (localMediaStream) {
+      localMediaStream.getAudioTracks().filter((track) => {
+        track.stop()
+        localMediaStream.removeTrack(track)
+        dispatch(
+          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+        )
+      })
     }
     if (fakeContents.worker) {
       fakeContents.worker.postMessage({ type: 'stop' })
@@ -1388,17 +1376,13 @@ export const connectSora = () => {
             createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack),
           ),
         )
-      } else {
-        if (mediaStream) {
-          mediaStream.getVideoTracks().filter((track) => {
-            track.stop()
-            dispatch(
-              slice.actions.setTimelineMessage(
-                createSoraDevtoolsMediaStreamTrackLog('stop', track),
-              ),
-            )
-          })
-        }
+      } else if (mediaStream) {
+        mediaStream.getVideoTracks().filter((track) => {
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
 
       if (state.noiseSuppressionProcessor?.isProcessing()) {
@@ -1412,17 +1396,13 @@ export const connectSora = () => {
           )
         }
         state.noiseSuppressionProcessor.stopProcessing()
-      } else {
-        if (mediaStream) {
-          mediaStream.getAudioTracks().filter((track) => {
-            track.stop()
-            dispatch(
-              slice.actions.setTimelineMessage(
-                createSoraDevtoolsMediaStreamTrackLog('stop', track),
-              ),
-            )
-          })
-        }
+      } else if (mediaStream) {
+        mediaStream.getAudioTracks().filter((track) => {
+          track.stop()
+          dispatch(
+            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+          )
+        })
       }
       dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
       throw error
@@ -1625,15 +1605,13 @@ export const updateMediaStream = () => {
         )
       }
       state.virtualBackgroundProcessor.stopProcessing()
-    } else {
-      if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getVideoTracks().filter((track) => {
-          track.stop()
-          dispatch(
-            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-          )
-        })
-      }
+    } else if (state.soraContents.localMediaStream) {
+      state.soraContents.localMediaStream.getVideoTracks().filter((track) => {
+        track.stop()
+        dispatch(
+          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+        )
+      })
     }
 
     if (state.noiseSuppressionProcessor?.isProcessing()) {
@@ -1647,15 +1625,13 @@ export const updateMediaStream = () => {
         )
       }
       state.noiseSuppressionProcessor.stopProcessing()
-    } else {
-      if (state.soraContents.localMediaStream) {
-        state.soraContents.localMediaStream.getAudioTracks().filter((track) => {
-          track.stop()
-          dispatch(
-            slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-          )
-        })
-      }
+    } else if (state.soraContents.localMediaStream) {
+      state.soraContents.localMediaStream.getAudioTracks().filter((track) => {
+        track.stop()
+        dispatch(
+          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+        )
+      })
     }
     const [mediaStream, gainNode] = await createMediaStream(dispatch, state).catch((error) => {
       dispatch(slice.actions.setSoraErrorAlertMessage(error.toString()))
@@ -1976,16 +1952,14 @@ const stopLocalAudioTrack = (
       )
     }
     noiseSuppressionProcessor.stopProcessing()
-  } else {
-    if (localMediaStream) {
-      localMediaStream.getAudioTracks().filter((track) => {
-        track.stop()
-        localMediaStream.removeTrack(track)
-        dispatch(
-          slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
-        )
-      })
-    }
+  } else if (localMediaStream) {
+    localMediaStream.getAudioTracks().filter((track) => {
+      track.stop()
+      localMediaStream.removeTrack(track)
+      dispatch(
+        slice.actions.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track)),
+      )
+    })
   }
 }
 
