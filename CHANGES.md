@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] `resolution` と `displayResolution` のプルダウンに `540p (960x540)` を追加する
+  - @tnamao
 - [CHANGE] index ページのリンクに指定していた `multistream` パラメータを全て削除する
   - multistream はデフォルト有効になり、明示的な指定は不要となったため
   - @tnamao
