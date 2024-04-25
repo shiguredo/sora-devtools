@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] `resolution` `displayResolution` `frameRate` を任意の値を入力できるようにする
+  - 元々のプルダウンで指定できた値は datalist を使用し、推奨入力候補として表示する
+  - `resolution` と `displayResolution` はこの修正前後で保持するパラメータの互換性が無くなり、破壊的変更になります
+  - @tnamao
 - [ADD] `resolution` と `displayResolution` のプルダウンに `540p (960x540)` を追加する
   - @tnamao
 - [CHANGE] index ページのリンクに指定していた `multistream` パラメータを全て削除する
