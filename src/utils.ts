@@ -232,6 +232,8 @@ export function getVideoSizeByResolution(resolution: string): { width: number; h
       return { width: 640, height: 360 }
     case '480p (720x480)':
       return { width: 720, height: 480 }
+    case '540p (960x540)':
+      return { width: 960, height: 540 }
     case '720p (1280x720)':
       return { width: 1280, height: 720 }
     case '1080p (1920x1080)':
