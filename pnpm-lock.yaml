@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@reduxjs/toolkit':
         specifier: 2.2.3
-        version: 2.2.3(react-redux@9.1.1)(react@18.2.0)
+        version: 2.2.3(react-redux@9.1.1(@types/react@18.2.79)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
       '@shiguredo/light-adjustment':
         specifier: 2023.2.0
         version: 2023.2.0
@@ -31,13 +31,13 @@ importers:
         version: 18.2.0
       react-bootstrap:
         specifier: 2.10.2
-        version: 2.10.2(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+        version: 2.10.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       react-draggable:
         specifier: 4.4.6
-        version: 4.4.6(react-dom@18.2.0)(react@18.2.0)
+        version: 4.4.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-redux:
         specifier: 9.1.1
         version: 9.1.1(@types/react@18.2.79)(react@18.2.0)(redux@5.0.1)
@@ -74,7 +74,7 @@ importers:
         version: 3.0.13
       '@vitejs/plugin-react':
         specifier: 4.2.1
-        version: 4.2.1(vite@5.2.9)
+        version: 4.2.1(vite@5.2.9(@types/node@20.12.7))
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
@@ -82,8 +82,8 @@ importers:
         specifier: 24.0.0
         version: 24.0.0
       next:
-        specifier: 14.2.2
-        version: 14.2.2(@babel/core@7.24.4)(@playwright/test@1.43.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.2.3
+        version: 14.2.3(@babel/core@7.24.4)(@playwright/test@1.43.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -417,59 +417,59 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@next/env@14.2.2':
-    resolution: {integrity: sha512-sk72qRfM1Q90XZWYRoJKu/UWlTgihrASiYw/scb15u+tyzcze3bOuJ/UV6TBOQEeUaxOkRqGeuGUdiiuxc5oqw==}
+  '@next/env@14.2.3':
+    resolution: {integrity: sha512-W7fd7IbkfmeeY2gXrzJYDx8D2lWKbVoTIj1o1ScPHNzvp30s1AuoEFSdr39bC5sjxJaxTtq3OTCZboNp0lNWHA==}
 
-  '@next/swc-darwin-arm64@14.2.2':
-    resolution: {integrity: sha512-3iPgMhzbalizGwHNFUcGnDhFPSgVBHQ8aqSTAMxB5BvJG0oYrDf1WOJZlbXBgunOEj/8KMVbejEur/FpvFsgFQ==}
+  '@next/swc-darwin-arm64@14.2.3':
+    resolution: {integrity: sha512-3pEYo/RaGqPP0YzwnlmPN2puaF2WMLM3apt5jLW2fFdXD9+pqcoTzRk+iZsf8ta7+quAe4Q6Ms0nR0SFGFdS1A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@14.2.2':
-    resolution: {integrity: sha512-x7Afi/jt0ZBRUZHTi49yyej4o8znfIMHO4RvThuoc0P+uli8Jd99y5GKjxoYunPKsXL09xBXEM1+OQy2xEL0Ag==}
+  '@next/swc-darwin-x64@14.2.3':
+    resolution: {integrity: sha512-6adp7waE6P1TYFSXpY366xwsOnEXM+y1kgRpjSRVI2CBDOcbRjsJ67Z6EgKIqWIue52d2q/Mx8g9MszARj8IEA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@14.2.2':
-    resolution: {integrity: sha512-zbfPtkk7L41ODMJwSp5VbmPozPmMMQrzAc0HAUomVeVIIwlDGs/UCqLJvLNDt4jpWgc21SjjyIn762lNGrMaUA==}
+  '@next/swc-linux-arm64-gnu@14.2.3':
+    resolution: {integrity: sha512-cuzCE/1G0ZSnTAHJPUT1rPgQx1w5tzSX7POXSLaS7w2nIUJUD+e25QoXD/hMfxbsT9rslEXugWypJMILBj/QsA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-arm64-musl@14.2.2':
-    resolution: {integrity: sha512-wPbS3pI/JU16rm3XdLvvTmlsmm1nd+sBa2ohXgBZcShX4TgOjD4R+RqHKlI1cjo/jDZKXt6OxmcU0Iys0OC/yg==}
+  '@next/swc-linux-arm64-musl@14.2.3':
+    resolution: {integrity: sha512-0D4/oMM2Y9Ta3nGuCcQN8jjJjmDPYpHX9OJzqk42NZGJocU2MqhBq5tWkJrUQOQY9N+In9xOdymzapM09GeiZw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@14.2.2':
-    resolution: {integrity: sha512-NqWOHqqq8iC9tuHvZxjQ2tX+jWy2X9y8NX2mcB4sj2bIccuCxbIZrU/ThFPZZPauygajZuVQ6zediejQHwZHwQ==}
+  '@next/swc-linux-x64-gnu@14.2.3':
+    resolution: {integrity: sha512-ENPiNnBNDInBLyUU5ii8PMQh+4XLr4pG51tOp6aJ9xqFQ2iRI6IH0Ds2yJkAzNV1CfyagcyzPfROMViS2wOZ9w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-musl@14.2.2':
-    resolution: {integrity: sha512-lGepHhwb9sGhCcU7999+iK1ZZT+6rrIoVg40MP7DZski9GIZP80wORSbt5kJzh9v2x2ev2lxC6VgwMQT0PcgTA==}
+  '@next/swc-linux-x64-musl@14.2.3':
+    resolution: {integrity: sha512-BTAbq0LnCbF5MtoM7I/9UeUu/8ZBY0i8SFjUMCbPDOLv+un67e2JgyN4pmgfXBwy/I+RHu8q+k+MCkDN6P9ViQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@14.2.2':
-    resolution: {integrity: sha512-TZSh/48SfcLEQ4rD25VVn2kdIgUWmMflRX3OiyPwGNXn3NiyPqhqei/BaqCYXViIQ+6QsG9R0C8LftMqy8JPMA==}
+  '@next/swc-win32-arm64-msvc@14.2.3':
+    resolution: {integrity: sha512-AEHIw/dhAMLNFJFJIJIyOFDzrzI5bAjI9J26gbO5xhAKHYTZ9Or04BesFPXiAYXDNdrwTP2dQceYA4dL1geu8A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-ia32-msvc@14.2.2':
-    resolution: {integrity: sha512-M0tBVNMEBJN2ZNQWlcekMn6pvLria7Sa2Fai5znm7CCJz4pP3lrvlSxhKdkCerk0D9E0bqx5yAo3o2Q7RrD4gA==}
+  '@next/swc-win32-ia32-msvc@14.2.3':
+    resolution: {integrity: sha512-vga40n1q6aYb0CLrM+eEmisfKCR45ixQYXuBXxOOmmoV8sYST9k7E3US32FsY+CkkF7NtzdcebiFT4CHuMSyZw==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@14.2.2':
-    resolution: {integrity: sha512-a/20E/wtTJZ3Ykv3f/8F0l7TtgQa2LWHU2oNB9bsu0VjqGuGGHmm/q6waoUNQYTVPYrrlxxaHjJcDV6aiSTt/w==}
+  '@next/swc-win32-x64-msvc@14.2.3':
+    resolution: {integrity: sha512-Q1/zm43RWynxrO7lW4ehciQVj+5ePBhOK+/K2P7pLFX3JaJ/IZVC69SHidrmZSOkqz7ECIOhhy7XhAFG4JYyHA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -996,8 +996,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  next@14.2.2:
-    resolution: {integrity: sha512-oGwUaa2bCs47FbuxWMpOoXtBMPYpvTPgdZr3UAo+pu7Ns00z9otmYpoeV1HEiYL06AlRQQIA/ypK526KjJfaxg==}
+  next@14.2.3:
+    resolution: {integrity: sha512-dowFkFTR8v79NPJO4QsBUtxv0g9BrS/phluVpMAt2ku7H+cbcBJlopXjkWlwxrk/xGqMemr7JkGPGemPrLLX7A==}
     engines: {node: '>=18.17.0'}
     hasBin: true
     peerDependencies:
@@ -1731,33 +1731,33 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@next/env@14.2.2': {}
+  '@next/env@14.2.3': {}
 
-  '@next/swc-darwin-arm64@14.2.2':
+  '@next/swc-darwin-arm64@14.2.3':
     optional: true
 
-  '@next/swc-darwin-x64@14.2.2':
+  '@next/swc-darwin-x64@14.2.3':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@14.2.2':
+  '@next/swc-linux-arm64-gnu@14.2.3':
     optional: true
 
-  '@next/swc-linux-arm64-musl@14.2.2':
+  '@next/swc-linux-arm64-musl@14.2.3':
     optional: true
 
-  '@next/swc-linux-x64-gnu@14.2.2':
+  '@next/swc-linux-x64-gnu@14.2.3':
     optional: true
 
-  '@next/swc-linux-x64-musl@14.2.2':
+  '@next/swc-linux-x64-musl@14.2.3':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@14.2.2':
+  '@next/swc-win32-arm64-msvc@14.2.3':
     optional: true
 
-  '@next/swc-win32-ia32-msvc@14.2.2':
+  '@next/swc-win32-ia32-msvc@14.2.3':
     optional: true
 
-  '@next/swc-win32-x64-msvc@14.2.2':
+  '@next/swc-win32-x64-msvc@14.2.3':
     optional: true
 
   '@playwright/test@1.43.1':
@@ -1771,21 +1771,22 @@ snapshots:
       '@swc/helpers': 0.5.10
       react: 18.2.0
 
-  '@reduxjs/toolkit@2.2.3(react-redux@9.1.1)(react@18.2.0)':
+  '@reduxjs/toolkit@2.2.3(react-redux@9.1.1(@types/react@18.2.79)(react@18.2.0)(redux@5.0.1))(react@18.2.0)':
     dependencies:
       immer: 10.0.4
-      react: 18.2.0
-      react-redux: 9.1.1(@types/react@18.2.79)(react@18.2.0)(redux@5.0.1)
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.0
+    optionalDependencies:
+      react: 18.2.0
+      react-redux: 9.1.1(@types/react@18.2.79)(react@18.2.0)(redux@5.0.1)
 
   '@restart/hooks@0.4.16(react@18.2.0)':
     dependencies:
       dequal: 2.0.3
       react: 18.2.0
 
-  '@restart/ui@1.6.8(react-dom@18.2.0)(react@18.2.0)':
+  '@restart/ui@1.6.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.24.4
       '@popperjs/core': 2.11.8
@@ -1936,7 +1937,7 @@ snapshots:
 
   '@types/warning@3.0.3': {}
 
-  '@vitejs/plugin-react@4.2.1(vite@5.2.9)':
+  '@vitejs/plugin-react@4.2.1(vite@5.2.9(@types/node@20.12.7))':
     dependencies:
       '@babel/core': 7.24.4
       '@babel/plugin-transform-react-jsx-self': 7.24.1(@babel/core@7.24.4)
@@ -2293,10 +2294,9 @@ snapshots:
 
   nanoid@3.3.7: {}
 
-  next@14.2.2(@babel/core@7.24.4)(@playwright/test@1.43.1)(react-dom@18.2.0)(react@18.2.0):
+  next@14.2.3(@babel/core@7.24.4)(@playwright/test@1.43.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
-      '@next/env': 14.2.2
-      '@playwright/test': 1.43.1
+      '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001610
@@ -2306,15 +2306,16 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       styled-jsx: 5.1.1(@babel/core@7.24.4)(react@18.2.0)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 14.2.2
-      '@next/swc-darwin-x64': 14.2.2
-      '@next/swc-linux-arm64-gnu': 14.2.2
-      '@next/swc-linux-arm64-musl': 14.2.2
-      '@next/swc-linux-x64-gnu': 14.2.2
-      '@next/swc-linux-x64-musl': 14.2.2
-      '@next/swc-win32-arm64-msvc': 14.2.2
-      '@next/swc-win32-ia32-msvc': 14.2.2
-      '@next/swc-win32-x64-msvc': 14.2.2
+      '@next/swc-darwin-arm64': 14.2.3
+      '@next/swc-darwin-x64': 14.2.3
+      '@next/swc-linux-arm64-gnu': 14.2.3
+      '@next/swc-linux-arm64-musl': 14.2.3
+      '@next/swc-linux-x64-gnu': 14.2.3
+      '@next/swc-linux-x64-musl': 14.2.3
+      '@next/swc-win32-arm64-msvc': 14.2.3
+      '@next/swc-win32-ia32-msvc': 14.2.3
+      '@next/swc-win32-x64-msvc': 14.2.3
+      '@playwright/test': 1.43.1
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
@@ -2407,12 +2408,11 @@ snapshots:
 
   querystringify@2.2.0: {}
 
-  react-bootstrap@2.10.2(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0):
+  react-bootstrap@2.10.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.24.4
       '@restart/hooks': 0.4.16(react@18.2.0)
-      '@restart/ui': 1.6.8(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.79
+      '@restart/ui': 1.6.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/react-transition-group': 4.4.10
       classnames: 2.5.1
       dom-helpers: 5.2.1
@@ -2421,9 +2421,11 @@ snapshots:
       prop-types-extra: 1.1.1(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
+      react-transition-group: 4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       uncontrollable: 7.2.1(react@18.2.0)
       warning: 4.0.3
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   react-dom@18.2.0(react@18.2.0):
     dependencies:
@@ -2431,7 +2433,7 @@ snapshots:
       react: 18.2.0
       scheduler: 0.23.0
 
-  react-draggable@4.4.6(react-dom@18.2.0)(react@18.2.0):
+  react-draggable@4.4.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       clsx: 1.2.1
       prop-types: 15.8.1
@@ -2446,15 +2448,16 @@ snapshots:
 
   react-redux@9.1.1(@types/react@18.2.79)(react@18.2.0)(redux@5.0.1):
     dependencies:
-      '@types/react': 18.2.79
       '@types/use-sync-external-store': 0.0.3
       react: 18.2.0
-      redux: 5.0.1
       use-sync-external-store: 1.2.0(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.79
+      redux: 5.0.1
 
   react-refresh@0.14.0: {}
 
-  react-transition-group@4.4.5(react-dom@18.2.0)(react@18.2.0):
+  react-transition-group@4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.24.4
       dom-helpers: 5.2.1
@@ -2553,9 +2556,10 @@ snapshots:
 
   styled-jsx@5.1.1(@babel/core@7.24.4)(react@18.2.0):
     dependencies:
-      '@babel/core': 7.24.4
       client-only: 0.0.1
       react: 18.2.0
+    optionalDependencies:
+      '@babel/core': 7.24.4
 
   supports-color@5.5.0:
     dependencies:
@@ -2640,16 +2644,15 @@ snapshots:
 
   vite@5.2.9(@types/node@20.12.7):
     dependencies:
-      '@types/node': 20.12.7
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.14.3
     optionalDependencies:
+      '@types/node': 20.12.7
       fsevents: 2.3.3
 
   vitest@1.5.0(@types/node@20.12.7)(jsdom@24.0.0):
     dependencies:
-      '@types/node': 20.12.7
       '@vitest/expect': 1.5.0
       '@vitest/runner': 1.5.0
       '@vitest/snapshot': 1.5.0
@@ -2659,7 +2662,6 @@ snapshots:
       chai: 4.4.1
       debug: 4.3.4
       execa: 8.0.1
-      jsdom: 24.0.0
       local-pkg: 0.5.0
       magic-string: 0.30.10
       pathe: 1.1.2
@@ -2671,6 +2673,9 @@ snapshots:
       vite: 5.2.9(@types/node@20.12.7)
       vite-node: 1.5.0(@types/node@20.12.7)
       why-is-node-running: 2.2.2
+    optionalDependencies:
+      '@types/node': 20.12.7
+      jsdom: 24.0.0
     transitivePeerDependencies:
       - less
       - lightningcss
