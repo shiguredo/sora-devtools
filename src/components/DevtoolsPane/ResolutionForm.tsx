@@ -3,6 +3,7 @@ import { Form, FormGroup } from 'react-bootstrap'
 
 import { setResolution } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useRef } from 'react'
 import { TooltipFormLabel } from './TooltipFormLabel'
 
 type ResolutionData = {
@@ -23,10 +24,19 @@ const RESOLUTION_DATA_LIST = Array<ResolutionData>(
 )
 
 export const ResolutionForm: React.FC = () => {
+  const textInputRef = useRef<HTMLInputElement>(null)
   const resolution = useAppSelector((state) => state.resolution)
   const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setResolution(event.target.value))
+  }
+  const onClearClick = () => {
+    dispatch(setResolution(''))
+    if (textInputRef.current !== null) {
+      textInputRef.current.value = ''
+      textInputRef.current.focus()
+      textInputRef.current.showPicker()
+    }
   }
   return (
     <FormGroup className="form-inline" controlId="resolution">
@@ -38,12 +48,16 @@ export const ResolutionForm: React.FC = () => {
         onChange={onChange}
         list="resolutionData"
         placeholder="未指定"
+        ref={textInputRef}
       />
       <datalist id="resolutionData">
         {RESOLUTION_DATA_LIST.map((v) => {
           return <option key={v.label} value={v.value} label={v.label} />
         })}
       </datalist>
+      <button type="button" className="btn btn-secondary" onClick={onClearClick}>
+        Clear
+      </button>
     </FormGroup>
   )
 }
