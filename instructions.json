@@ -120,7 +120,7 @@
     "description": "MediaStreamTrack video の contentHint を指定します。"
   },
   "resolution": {
-    "description": "解像度を指定します。"
+    "description": "解像度を指定します。任意の解像度を指定する場合は、幅と高さを x 区切りで指定します。 (例: 640x480)"
   },
   "mediaStats": {
     "description": "映像の統計情報を映像に重ねて表示します。"
@@ -150,7 +150,7 @@
     "description": "音声出力を指定します。"
   },
   "displayResolution": {
-    "description": "画面に表示する際の解像度を指定します。"
+    "description": "画面に表示する際の解像度を指定します。任意の解像度を指定する場合は、幅と高さを x 区切りで指定します。 (例: 640x480)"
   },
   "micDevice": {
     "description": "Audio MediaStreamTrack を生成するかどうかを切り替えます。"
