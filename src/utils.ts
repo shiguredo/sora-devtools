@@ -25,7 +25,6 @@ import {
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
@@ -159,7 +158,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
       qs.spotlightUnfocusRid,
       SPOTLIGHT_FOCUS_RIDS,
     ),
-    resolution: parseSpecifiedStringParameter(qs.resolution, RESOLUTIONS),
+    resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
     videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
@@ -222,29 +221,20 @@ export function createSignalingURL(
 }
 
 // 解像度に対応する width と height を返す
+const videoResolutionPattern = /^(\d+)x(\d+)$/
+
+export function testVideoResolutionPattern(resolution: string): boolean {
+  return videoResolutionPattern.test(resolution)
+}
+
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
-  switch (resolution) {
-    case '144p (256x144)':
-      return { width: 256, height: 144 }
-    case '240p (320x240)':
-      return { width: 320, height: 240 }
-    case '360p (640x360)':
-      return { width: 640, height: 360 }
-    case '480p (720x480)':
-      return { width: 720, height: 480 }
-    case '540p (960x540)':
-      return { width: 960, height: 540 }
-    case '720p (1280x720)':
-      return { width: 1280, height: 720 }
-    case '1080p (1920x1080)':
-      return { width: 1920, height: 1080 }
-    case '1440p (2560x1440)':
-      return { width: 2560, height: 1440 }
-    case '2160p (3840x2160)':
-      return { width: 3840, height: 2160 }
-    default:
-      return { width: 0, height: 0 }
+  if (videoResolutionPattern.test(resolution)) {
+    const match = resolution.match(videoResolutionPattern)
+    if (match) {
+      return { width: Number.parseInt(match[1], 10), height: Number.parseInt(match[2], 10) }
+    }
   }
+  return { width: 0, height: 0 }
 }
 
 // アスペクト比に対応する数値を返す

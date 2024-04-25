@@ -31,7 +31,6 @@ import type {
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   SIMULCAST,
   SIMULCAST_RID,
   SPOTLIGHT,
@@ -121,7 +120,7 @@ export type SoraDevtoolsState = {
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
   notifyMessages: NotifyMessage[]
   pushMessages: PushMessage[]
-  resolution: (typeof RESOLUTIONS)[number]
+  resolution: string
   showStats: boolean
   signalingMessages: SignalingMessage[]
   signalingNotifyMetadata: string

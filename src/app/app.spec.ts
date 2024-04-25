@@ -18,7 +18,6 @@ import {
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
@@ -189,11 +188,10 @@ describe('setInitialParameter tests', () => {
   })
 
   it("should handle 'resolution'", async () => {
-    for (const value of RESOLUTIONS) {
-      setLocationSearch({ resolution: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().resolution).toEqual(value)
-    }
+    const value = '1920x1080'
+    setLocationSearch({ resolution: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().resolution).toEqual(value)
   })
 
   it("should handle 'simulcast'", async () => {

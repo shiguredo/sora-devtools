@@ -34,19 +34,6 @@ export const VIDEO_BIT_RATES = [
   '50000',
 ] as const
 
-export const RESOLUTIONS = [
-  '',
-  '2160p (3840x2160)',
-  '1440p (2560x1440)',
-  '1080p (1920x1080)',
-  '720p (1280x720)',
-  '540p (960x540)',
-  '480p (720x480)',
-  '360p (640x360)',
-  '240p (320x240)',
-  '144p (256x144)',
-] as const
-
 export const DISPLAY_RESOLUTIONS = [
   '',
   '144p (256x144)',
