@@ -17,7 +17,14 @@ export const FrameRateForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="frameRate">
       <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
-      <Form.Control type="text" value={frameRate} onChange={onChange} list="frameRateData" />
+      <Form.Control
+        className="form-frame-rate"
+        type="text"
+        value={frameRate}
+        onChange={onChange}
+        list="frameRateData"
+        placeholder="未指定"
+      />
       <datalist id="frameRateData">
         {FRAME_RATE_DATA.map((value) => {
           return <option key={value} value={value} />

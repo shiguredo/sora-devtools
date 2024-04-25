@@ -31,7 +31,14 @@ export const ResolutionForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="resolution">
       <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
-      <Form.Control type="text" value={resolution} onChange={onChange} list="resolutionData" />
+      <Form.Control
+        className="form-resolution"
+        type="text"
+        value={resolution}
+        onChange={onChange}
+        list="resolutionData"
+        placeholder="未指定"
+      />
       <datalist id="resolutionData">
         {RESOLUTION_DATA_LIST.map((v) => {
           return <option key={v.label} value={v.value} label={v.label} />

@@ -49,6 +49,17 @@ footer .btn {
   padding-bottom: 0.5rem;
 }
 
+.form-resolution,
+.form-display-resolution {
+  max-width: 130px;
+  padding-bottom: 0.5rem;
+}
+
+.form-frame-rate {
+  max-width: 100px;
+  padding-bottom: 0.5rem;
+}
+
 video {
   min-width: 80px;
   min-height: 60px;
