@@ -33,7 +33,7 @@ export const DisplayResolutionForm: React.FC = () => {
     <FormGroup className="form-inline" controlId="displayResolution">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
       <Form.Control
-        name="displayResolution"
+        type="text"
         value={displayResolution}
         onChange={onChange}
         list="displayResolutionDataList"
