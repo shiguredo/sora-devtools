@@ -23,7 +23,6 @@ import type {
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
@@ -93,7 +92,7 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null
   }
   fakeVolume: string
-  frameRate: (typeof FRAME_RATES)[number]
+  frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
     reconnecting: boolean

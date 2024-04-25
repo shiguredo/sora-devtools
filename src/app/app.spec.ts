@@ -11,7 +11,6 @@ import {
   DEBUG_TYPES,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   MULTISTREAM,
@@ -133,11 +132,10 @@ describe('setInitialParameter tests', () => {
   })
 
   it("should handle 'frameRate'", async () => {
-    for (const value of FRAME_RATES) {
-      setLocationSearch({ frameRate: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().frameRate).toEqual(value)
-    }
+    const value = '60'
+    setLocationSearch({ frameRate: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().frameRate).toEqual(value)
   })
 
   it("should handle 'ignoreDisconnectWebSocket'", async () => {

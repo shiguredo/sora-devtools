@@ -34,8 +34,6 @@ export const VIDEO_BIT_RATES = [
   '50000',
 ] as const
 
-export const FRAME_RATES = ['', '60', '30', '24', '20', '15', '10', '5'] as const
-
 export const AUTO_GAIN_CONTROLS = ['', 'true', 'false'] as const
 
 export const NOISE_SUPPRESSIONS = ['', 'true', 'false'] as const
