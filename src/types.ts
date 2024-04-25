@@ -20,7 +20,6 @@ import type {
   CONNECTION_STATUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
@@ -70,7 +69,7 @@ export type SoraDevtoolsState = {
   dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number]
   dataChannels: string
   dataChannelMessages: DataChannelMessage[]
-  displayResolution: (typeof DISPLAY_RESOLUTIONS)[number]
+  displayResolution: string
   echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
   echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
   e2ee: boolean

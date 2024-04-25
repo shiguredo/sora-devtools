@@ -14,7 +14,6 @@ import {
   BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
@@ -129,7 +128,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     googCpuOveruseDetection: parseBooleanParameter(qs.googCpuOveruseDetection),
     debug: parseBooleanParameter(qs.debug),
     debugType: parseSpecifiedStringParameter(qs.debugType, DEBUG_TYPES),
-    displayResolution: parseSpecifiedStringParameter(qs.displayResolution, DISPLAY_RESOLUTIONS),
+    displayResolution: parseStringParameter(qs.displayResolution),
     e2ee: parseBooleanParameter(qs.e2ee),
     echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
     echoCancellationType: parseSpecifiedStringParameter(

@@ -9,7 +9,6 @@ import {
   AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FRAME_RATES,
@@ -111,11 +110,10 @@ describe('setInitialParameter tests', () => {
   })
 
   it("should handle 'displayResolution'", async () => {
-    for (const value of DISPLAY_RESOLUTIONS) {
-      setLocationSearch({ displayResolution: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().displayResolution).toEqual(value)
-    }
+    const value = '1920x1080'
+    setLocationSearch({ displayResolution: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().displayResolution).toEqual(value)
   })
 
   it("should handle 'echoCancellationType'", async () => {
