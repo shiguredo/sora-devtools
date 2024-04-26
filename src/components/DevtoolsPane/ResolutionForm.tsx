@@ -49,12 +49,7 @@ export const ResolutionForm: React.FC = () => {
           onChange={onChange}
           placeholder="未指定"
         />
-        <DropdownButton
-          variant="outline-secondary form-template-dropdown"
-          title=""
-          id="input-group-dropdown-2"
-          align="end"
-        >
+        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
           {RESOLUTION_DATA_LIST.map(({ label, value }) => {
             return <DropdownItem key={value} label={label} value={value} />
           })}
