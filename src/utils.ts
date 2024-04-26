@@ -14,18 +14,15 @@ import {
   BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
@@ -130,7 +127,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     googCpuOveruseDetection: parseBooleanParameter(qs.googCpuOveruseDetection),
     debug: parseBooleanParameter(qs.debug),
     debugType: parseSpecifiedStringParameter(qs.debugType, DEBUG_TYPES),
-    displayResolution: parseSpecifiedStringParameter(qs.displayResolution, DISPLAY_RESOLUTIONS),
+    displayResolution: parseStringParameter(qs.displayResolution),
     e2ee: parseBooleanParameter(qs.e2ee),
     echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
     echoCancellationType: parseSpecifiedStringParameter(
@@ -140,7 +137,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     noiseSuppression: parseSpecifiedStringParameter(qs.noiseSuppression, NOISE_SUPPRESSIONS),
     facingMode: parseSpecifiedStringParameter(qs.facingMode, FACING_MODES),
     fakeVolume: parseStringParameter(qs.fakeVolume),
-    frameRate: parseSpecifiedStringParameter(qs.frameRate, FRAME_RATES),
+    frameRate: parseStringParameter(qs.frameRate),
     mediaStats: parseBooleanParameter(qs.mediaStats),
     mediaType: parseSpecifiedStringParameter(qs.mediaType, MEDIA_TYPES),
     metadata: parseStringParameter(qs.metadata),
@@ -159,7 +156,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
       qs.spotlightUnfocusRid,
       SPOTLIGHT_FOCUS_RIDS,
     ),
-    resolution: parseSpecifiedStringParameter(qs.resolution, RESOLUTIONS),
+    resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
     videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
@@ -222,29 +219,20 @@ export function createSignalingURL(
 }
 
 // 解像度に対応する width と height を返す
+const videoResolutionPattern = /^(\d+)x(\d+)$/
+
+export function testVideoResolutionPattern(resolution: string): boolean {
+  return videoResolutionPattern.test(resolution)
+}
+
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
-  switch (resolution) {
-    case '144p (256x144)':
-      return { width: 256, height: 144 }
-    case '240p (320x240)':
-      return { width: 320, height: 240 }
-    case '360p (640x360)':
-      return { width: 640, height: 360 }
-    case '480p (720x480)':
-      return { width: 720, height: 480 }
-    case '540p (960x540)':
-      return { width: 960, height: 540 }
-    case '720p (1280x720)':
-      return { width: 1280, height: 720 }
-    case '1080p (1920x1080)':
-      return { width: 1920, height: 1080 }
-    case '1440p (2560x1440)':
-      return { width: 2560, height: 1440 }
-    case '2160p (3840x2160)':
-      return { width: 3840, height: 2160 }
-    default:
-      return { width: 0, height: 0 }
+  if (videoResolutionPattern.test(resolution)) {
+    const match = resolution.match(videoResolutionPattern)
+    if (match) {
+      return { width: Number.parseInt(match[1], 10), height: Number.parseInt(match[2], 10) }
+    }
   }
+  return { width: 0, height: 0 }
 }
 
 // アスペクト比に対応する数値を返す
@@ -374,9 +362,12 @@ export function createVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = {
-      min: Number.parseInt(frameRate, 10),
-      max: Number.parseInt(frameRate, 10),
+    const fps = Number.parseInt(frameRate, 10)
+    if (!Number.isNaN(fps)) {
+      videoConstraints.frameRate = {
+        min: fps,
+        max: fps,
+      }
     }
   }
   if (resolution) {
@@ -428,7 +419,8 @@ export function createFakeMediaConstraints(
 ): FakeMediaStreamConstraints {
   const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters
   // fake の default frameRate は 30 fps
-  const parsedFrameRate = Number.parseInt(frameRate, 10) || 30
+  const fps = Number.parseInt(frameRate, 10)
+  const parsedFrameRate = Number.isNaN(fps) ? 30 : fps
   // width, height の default はそれぞれ 240 / 160
   const resolutionSize = getVideoSizeByResolution(resolution)
   const width = resolutionSize.width || 240
@@ -509,7 +501,10 @@ export function createGetDisplayMediaVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = Number.parseInt(frameRate, 10)
+    const fps = Number.parseInt(frameRate, 10)
+    if (!Number.isNaN(fps)) {
+      videoConstraints.frameRate = fps
+    }
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)

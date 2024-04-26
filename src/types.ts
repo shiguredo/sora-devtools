@@ -20,18 +20,15 @@ import type {
   CONNECTION_STATUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   SIMULCAST,
   SIMULCAST_RID,
   SPOTLIGHT,
@@ -71,7 +68,7 @@ export type SoraDevtoolsState = {
   dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number]
   dataChannels: string
   dataChannelMessages: DataChannelMessage[]
-  displayResolution: (typeof DISPLAY_RESOLUTIONS)[number]
+  displayResolution: string
   echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
   echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
   e2ee: boolean
@@ -95,7 +92,7 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null
   }
   fakeVolume: string
-  frameRate: (typeof FRAME_RATES)[number]
+  frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
     reconnecting: boolean
@@ -121,7 +118,7 @@ export type SoraDevtoolsState = {
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
   notifyMessages: NotifyMessage[]
   pushMessages: PushMessage[]
-  resolution: (typeof RESOLUTIONS)[number]
+  resolution: string
   showStats: boolean
   signalingMessages: SignalingMessage[]
   signalingNotifyMetadata: string

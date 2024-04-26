@@ -9,16 +9,13 @@ import {
   AUTO_GAIN_CONTROLS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
@@ -112,11 +109,10 @@ describe('setInitialParameter tests', () => {
   })
 
   it("should handle 'displayResolution'", async () => {
-    for (const value of DISPLAY_RESOLUTIONS) {
-      setLocationSearch({ displayResolution: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().displayResolution).toEqual(value)
-    }
+    const value = '1920x1080'
+    setLocationSearch({ displayResolution: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().displayResolution).toEqual(value)
   })
 
   it("should handle 'echoCancellationType'", async () => {
@@ -136,11 +132,10 @@ describe('setInitialParameter tests', () => {
   })
 
   it("should handle 'frameRate'", async () => {
-    for (const value of FRAME_RATES) {
-      setLocationSearch({ frameRate: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().frameRate).toEqual(value)
-    }
+    const value = '60'
+    setLocationSearch({ frameRate: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().frameRate).toEqual(value)
   })
 
   it("should handle 'ignoreDisconnectWebSocket'", async () => {
@@ -189,11 +184,10 @@ describe('setInitialParameter tests', () => {
   })
 
   it("should handle 'resolution'", async () => {
-    for (const value of RESOLUTIONS) {
-      setLocationSearch({ resolution: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().resolution).toEqual(value)
-    }
+    const value = '1920x1080'
+    setLocationSearch({ resolution: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().resolution).toEqual(value)
   })
 
   it("should handle 'simulcast'", async () => {

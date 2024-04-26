@@ -34,34 +34,6 @@ export const VIDEO_BIT_RATES = [
   '50000',
 ] as const
 
-export const RESOLUTIONS = [
-  '',
-  '2160p (3840x2160)',
-  '1440p (2560x1440)',
-  '1080p (1920x1080)',
-  '720p (1280x720)',
-  '540p (960x540)',
-  '480p (720x480)',
-  '360p (640x360)',
-  '240p (320x240)',
-  '144p (256x144)',
-] as const
-
-export const DISPLAY_RESOLUTIONS = [
-  '',
-  '144p (256x144)',
-  '240p (320x240)',
-  '360p (640x360)',
-  '480p (720x480)',
-  '540p (960x540)',
-  '720p (1280x720)',
-  '1080p (1920x1080)',
-  '1440p (2560x1440)',
-  '2160p (3840x2160)',
-] as const
-
-export const FRAME_RATES = ['', '60', '30', '24', '20', '15', '10', '5'] as const
-
 export const AUTO_GAIN_CONTROLS = ['', 'true', 'false'] as const
 
 export const NOISE_SUPPRESSIONS = ['', 'true', 'false'] as const

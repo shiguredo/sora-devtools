@@ -11,6 +11,12 @@
 
 ## develop
 
+- [CHANGE] `resolution` `displayResolution` `frameRate` を任意の値を入力できるようにする
+  - 元々のプルダウンで指定できた値は Dropdown ボタンのメニューから選択可能になります
+  - `resolution` と `displayResolution` はこの修正前後で保持するパラメータの互換性が無くなり、破壊的変更になります
+  - 解像度が `{width}x{height}` ではない形式や数字を期待する箇所に数字以外が入った場合は、`未指定` と同じ扱いになります
+  - frameRate に数値以外が設定された場合は、`未指定` と同じ扱いになります
+  - @tnamao
 - [ADD] `resolution` と `displayResolution` のプルダウンに `540p (960x540)` を追加する
   - @tnamao
 - [CHANGE] index ページのリンクに指定していた `multistream` パラメータを全て削除する
