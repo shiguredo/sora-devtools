@@ -1,5 +1,5 @@
 import type React from 'react'
-import { Form, FormGroup } from 'react-bootstrap'
+import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setDisplayResolution } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -12,6 +12,7 @@ type DisplayResolutionData = {
 }
 
 const DISPLAY_RESOLUTION_DATA_LIST = Array<DisplayResolutionData>(
+  { label: '未指定', value: '' },
   { label: '144p', value: '256x144' },
   { label: '240p', value: '320x240' },
   { label: '360p', value: '640x360' },
@@ -23,6 +24,15 @@ const DISPLAY_RESOLUTION_DATA_LIST = Array<DisplayResolutionData>(
   { label: '2160p', value: '3840x2160' },
 )
 
+const DropdownItem = ({ label, value }: DisplayResolutionData) => {
+  const dispatch = useAppDispatch()
+  return (
+    <Dropdown.Item as="button" onClick={() => dispatch(setDisplayResolution(value))}>
+      {label} {value !== '' && `(${value})`}
+    </Dropdown.Item>
+  )
+}
+
 export const DisplayResolutionForm: React.FC = () => {
   const displayResolution = useAppSelector((state) => state.displayResolution)
   const dispatch = useAppDispatch()
@@ -32,19 +42,20 @@ export const DisplayResolutionForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="displayResolution">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
-      <Form.Control
-        className="form-display-resolution"
-        type="text"
-        value={displayResolution}
-        onChange={onChange}
-        list="displayResolutionDataList"
-        placeholder="未指定"
-      />
-      <datalist id="displayResolutionDataList">
-        {DISPLAY_RESOLUTION_DATA_LIST.map((v) => {
-          return <option key={v.label} value={v.value} label={v.label} />
-        })}
-      </datalist>
+      <InputGroup>
+        <Form.Control
+          className="form-display-resolution"
+          type="text"
+          value={displayResolution}
+          onChange={onChange}
+          placeholder="未指定"
+        />
+        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
+          {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
+            return <DropdownItem key={value} label={label} value={value} />
+          })}
+        </DropdownButton>
+      </InputGroup>
     </FormGroup>
   )
 }
