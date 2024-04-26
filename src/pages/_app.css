@@ -60,6 +60,10 @@ footer .btn {
   padding-bottom: 0.5rem;
 }
 
+.form-template-dropdown {
+  border: 1px rgb(222, 226, 230) solid;
+}
+
 video {
   min-width: 80px;
   min-height: 60px;
