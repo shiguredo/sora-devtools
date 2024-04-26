@@ -362,9 +362,12 @@ export function createVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = {
-      min: Number.parseInt(frameRate, 10),
-      max: Number.parseInt(frameRate, 10),
+    const fps = Number.parseInt(frameRate, 10)
+    if (!Number.isNaN(fps)) {
+      videoConstraints.frameRate = {
+        min: fps,
+        max: fps,
+      }
     }
   }
   if (resolution) {
@@ -416,7 +419,8 @@ export function createFakeMediaConstraints(
 ): FakeMediaStreamConstraints {
   const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters
   // fake の default frameRate は 30 fps
-  const parsedFrameRate = Number.parseInt(frameRate, 10) || 30
+  const fps = Number.parseInt(frameRate, 10)
+  const parsedFrameRate = Number.isNaN(fps) ? 30 : fps
   // width, height の default はそれぞれ 240 / 160
   const resolutionSize = getVideoSizeByResolution(resolution)
   const width = resolutionSize.width || 240
@@ -497,7 +501,10 @@ export function createGetDisplayMediaVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = Number.parseInt(frameRate, 10)
+    const fps = Number.parseInt(frameRate, 10)
+    if (!Number.isNaN(fps)) {
+      videoConstraints.frameRate = fps
+    }
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
