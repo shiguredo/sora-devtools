@@ -47,7 +47,6 @@ export const ResolutionForm: React.FC = () => {
           type="text"
           value={resolution}
           onChange={onChange}
-          list="resolutionData"
           placeholder="未指定"
         />
         <DropdownButton
