@@ -269,7 +269,7 @@
 ## 2022.3.0
 
 - [UPDATE] media-processors/virtual-background を 2022.6.1 に更新する
-  - https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1
+  - <https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1>
   - @sile
 - [UPDATE] メディアオプションに facingMode を追加する
   - @yuitowest
@@ -317,7 +317,7 @@
 ## 2021.2.5
 
 - [FIX] sora-js-sdk のバージョンを 2021.2.3 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.3
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.3>
   - @yuitowest
 
 ## 2021.2.4
@@ -328,13 +328,13 @@
 ## 2021.2.3
 
 - [FIX] sora-js-sdk のバージョンを 2021.2.2 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.2
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.2>
   - @yuitowest
 
 ## 2021.2.2
 
 - [FIX] sora-js-sdk のバージョンを 2021.2.1 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1>
   - @yuitowest
 
 ## 2021.2.1
@@ -383,26 +383,26 @@
 ## 2021.1.6
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.6 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.6
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.6>
   - @yuitowest
 
 ## 2021.1.5
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.5 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.5
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.5>
   - @yuitowest
 
 ## 2021.1.4
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.4 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.4
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.4>
   - @yuitowest
 
 ## 2021.1.3
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.3 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.2
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.3
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.2>
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.3>
   - @yuitowest
 
 ## 2021.1.2
@@ -413,7 +413,7 @@
 ## 2021.1.1
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.1 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.1
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.1>
   - @yuitowest
 
 ## 2021.1.0
