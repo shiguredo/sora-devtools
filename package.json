@@ -44,7 +44,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
     "@playwright/test": "1.44.0",
-    "@types/node": "20.12.11",
+    "@types/node": "20.12.12",
     "@types/react": "18.3.2",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
@@ -55,7 +55,7 @@
     "typescript": "5.4.5",
     "vitest": "1.6.0"
   },
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.1",
   "engines": {
     "node": ">=18"
   }
