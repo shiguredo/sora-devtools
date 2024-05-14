@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] `.env.example` を `.env.template` に揃える
+  - @voluntas
 - [CHANGE] `resolution` `displayResolution` `frameRate` を任意の値を入力できるようにする
   - 元々のプルダウンで指定できた値は Dropdown ボタンのメニューから選択可能になります
   - `resolution` と `displayResolution` はこの修正前後で保持するパラメータの互換性が無くなり、破壊的変更になります
