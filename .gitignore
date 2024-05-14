@@ -11,7 +11,7 @@ dev/
 
 # .env
 .env*
-!.env.example
+!.env.template
 !.env.production
 
 # playwright
