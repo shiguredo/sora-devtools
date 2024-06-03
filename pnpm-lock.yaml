@@ -61,8 +61,8 @@ importers:
         specifier: 1.44.1
         version: 1.44.1
       '@types/node':
-        specifier: 20.12.13
-        version: 20.12.13
+        specifier: 20.14.0
+        version: 20.14.0
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -74,7 +74,7 @@ importers:
         version: 3.0.13
       '@vitejs/plugin-react':
         specifier: 4.3.0
-        version: 4.3.0(vite@5.2.12(@types/node@20.12.13))
+        version: 4.3.0(vite@5.2.12(@types/node@20.14.0))
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
@@ -89,7 +89,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@types/node@20.12.13)(jsdom@24.1.0)
+        version: 1.6.0(@types/node@20.14.0)(jsdom@24.1.0)
 
 packages:
 
@@ -635,8 +635,8 @@ packages:
   '@types/hoist-non-react-statics@3.3.5':
     resolution: {integrity: sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==}
 
-  '@types/node@20.12.13':
-    resolution: {integrity: sha512-gBGeanV41c1L171rR7wjbMiEpEI/l5XFQdLLfhr/REwpgDy/4U8y89+i8kRiLzDyZdOkXh+cRaTetUnCYutoXA==}
+  '@types/node@20.14.0':
+    resolution: {integrity: sha512-5cHBxFGJx6L4s56Bubp4fglrEpmyJypsqI6RgzMfBHWUJQGWAAi8cWcgetEbZXHYXo9C2Fa4EEds/uSyS4cxmA==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -1904,7 +1904,7 @@ snapshots:
       '@types/react': 18.3.3
       hoist-non-react-statics: 3.3.2
 
-  '@types/node@20.12.13':
+  '@types/node@20.14.0':
     dependencies:
       undici-types: 5.26.5
 
@@ -1934,14 +1934,14 @@ snapshots:
 
   '@types/warning@3.0.3': {}
 
-  '@vitejs/plugin-react@4.3.0(vite@5.2.12(@types/node@20.12.13))':
+  '@vitejs/plugin-react@4.3.0(vite@5.2.12(@types/node@20.14.0))':
     dependencies:
       '@babel/core': 7.24.6
       '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
       '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.2.12(@types/node@20.12.13)
+      vite: 5.2.12(@types/node@20.14.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -2624,13 +2624,13 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  vite-node@1.6.0(@types/node@20.12.13):
+  vite-node@1.6.0(@types/node@20.14.0):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.1
-      vite: 5.2.12(@types/node@20.12.13)
+      vite: 5.2.12(@types/node@20.14.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -2641,16 +2641,16 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.2.12(@types/node@20.12.13):
+  vite@5.2.12(@types/node@20.14.0):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.18.0
     optionalDependencies:
-      '@types/node': 20.12.13
+      '@types/node': 20.14.0
       fsevents: 2.3.3
 
-  vitest@1.6.0(@types/node@20.12.13)(jsdom@24.1.0):
+  vitest@1.6.0(@types/node@20.14.0)(jsdom@24.1.0):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -2669,11 +2669,11 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.2.12(@types/node@20.12.13)
-      vite-node: 1.6.0(@types/node@20.12.13)
+      vite: 5.2.12(@types/node@20.14.0)
+      vite-node: 1.6.0(@types/node@20.14.0)
       why-is-node-running: 2.2.2
     optionalDependencies:
-      '@types/node': 20.12.13
+      '@types/node': 20.14.0
       jsdom: 24.1.0
     transitivePeerDependencies:
       - less
