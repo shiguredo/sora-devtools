@@ -9,6 +9,7 @@ import type {
   ConnectionOptionsState,
   Json,
   QueryStringParameters,
+  RTCIceLocalCandidateStats,
   SoraDevtoolsState,
   SoraNotifyMessage,
   SoraPushMessage,
@@ -991,6 +992,7 @@ function setSoraCallbacks(
     dispatch(slice.actions.setSoraSessionId(null))
     dispatch(slice.actions.setSoraConnectionId(null))
     dispatch(slice.actions.setSoraClientId(null))
+    dispatch(slice.actions.setSoraTurnUrl(null))
     dispatch(slice.actions.setSoraConnectionStatus('disconnected'))
     dispatch(slice.actions.setLocalMediaStream(null))
     dispatch(slice.actions.removeAllRemoteClients())
@@ -1110,11 +1112,24 @@ async function setStatsReport(
   if (sora.pc && sora.pc?.iceConnectionState !== 'closed') {
     const stats = await sora.pc.getStats()
     const statsReport: RTCStats[] = []
+    const localCandidateStats: RTCIceLocalCandidateStats[] = []
     // biome-ignore lint/complexity/noForEach: stats は Array ではなく RTCStatsReport なので forEach で回す
     stats.forEach((s) => {
       statsReport.push(s)
+      if (s.type === 'local-candidate') {
+        localCandidateStats.push(s)
+      }
     })
     dispatch(slice.actions.setStatsReport(statsReport))
+
+    // local-candidate の最初に出現する TURN サーバーの URL を取得
+    for (const s of localCandidateStats) {
+      const localCandidate = s as RTCIceLocalCandidateStats
+      if (localCandidate.url !== undefined) {
+        dispatch(slice.actions.setSoraTurnUrl(localCandidate.url))
+        break
+      }
+    }
   }
 }
 

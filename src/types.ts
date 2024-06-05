@@ -106,6 +106,7 @@ export type SoraDevtoolsState = {
     prevStatsReport: RTCStats[]
     statsReport: RTCStats[]
     datachannels: DataChannelConfiguration[]
+    turnUrl: string | null
   }
   ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number]
   logMessages: LogMessage[]
@@ -412,3 +413,8 @@ export type DownloadReport = {
 }
 
 export type RTCStatsCodec = RTCStats & RTCRtpCodecParameters
+
+// RTCStats.type === 'local-candidate' の型
+export type RTCIceLocalCandidateStats = RTCStats & {
+  url?: string
+}
