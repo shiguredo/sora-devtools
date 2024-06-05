@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora)
   return (
     <header>
-      <Navbar variant="dark" bg="sora" expand="md" fixed="top">
+      <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
         <Container>
           <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-collapse" />
