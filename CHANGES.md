@@ -11,6 +11,14 @@
 
 ## develop
 
+- [CHANGE] ヘッダーの接続先 URL の表示の初期値を変更する
+  - `未接続` を `Signaling URL` `TURN URL` に変更する
+  - @tnamao
+- [ADD] ヘッダーに接続中の TURN URL を表示する
+  - `local-candidate` の RTCStats に `url` が含まれる場合に表示する
+  - `local-candidate` が複数存在する場合は、最初に取得できる `url` を表示する
+  - `url` が取得できない場合は `不明` と表示する
+  - @tnamao
 - [CHANGE] `.env.example` を `.env.template` に揃える
   - @voluntas
 - [CHANGE] `resolution` `displayResolution` `frameRate` を任意の値を入力できるようにする

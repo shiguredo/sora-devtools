@@ -9,10 +9,17 @@ import { DownloadReportButton } from './DownloadReportButton'
 
 export const Header: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const turnUrl = useAppSelector((state) => state.soraContents.turnUrl)
   const sora = useAppSelector((state) => state.soraContents.sora)
+  const turnUrlLabel = (() => {
+    if (sora && connectionStatus === 'connected') {
+      return turnUrl !== null ? turnUrl : '不明'
+    }
+    return 'TURN URL'
+  })()
   return (
     <header>
-      <Navbar variant="dark" bg="sora" expand="md" fixed="top">
+      <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
         <Container>
           <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-collapse" />
@@ -21,8 +28,13 @@ export const Header: React.FC = () => {
             <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <p className="navbar-signaling-url border rounded">
-                  {sora && connectionStatus === 'connected' ? sora.connectedSignalingUrl : '未接続'}
+                  {sora && connectionStatus === 'connected'
+                    ? sora.connectedSignalingUrl
+                    : 'Signaling URL'}
                 </p>
+              </Navbar.Text>
+              <Navbar.Text className="py-0 my-1 mx-1">
+                <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
               </Navbar.Text>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <DebugButton />

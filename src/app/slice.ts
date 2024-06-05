@@ -85,6 +85,7 @@ const initialState: SoraDevtoolsState = {
     prevStatsReport: [],
     statsReport: [],
     datachannels: [],
+    turnUrl: null,
   },
   ignoreDisconnectWebSocket: '',
   logMessages: [],
@@ -384,6 +385,9 @@ export const slice = createSlice({
     },
     setSoraClientId: (state, action: PayloadAction<string | null>) => {
       state.soraContents.clientId = action.payload
+    },
+    setSoraTurnUrl: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.turnUrl = action.payload
     },
     setSoraConnectionStatus: (
       state,
