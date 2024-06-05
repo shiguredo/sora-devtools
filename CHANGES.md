@@ -11,6 +11,11 @@
 
 ## develop
 
+- [ADD] ヘッダーに接続中の TURN URL を表示する
+  - `local-candidate` の RTCStats に `url` が含まれる場合に表示する
+  - `local-candidate` が複数存在する場合は、最初に取得できる `url` を表示する
+  - Firefox では `url` が含まれないため、表示されません
+  - @tnamao
 - [CHANGE] `.env.example` を `.env.template` に揃える
   - @voluntas
 - [CHANGE] `resolution` `displayResolution` `frameRate` を任意の値を入力できるようにする
