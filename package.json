@@ -39,12 +39,12 @@
     "redux": "5.0.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "3.1.0",
-    "sora-js-sdk": "2024.1.0-canary.1"
+    "sora-js-sdk": "2024.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.0",
     "@playwright/test": "1.44.1",
-    "@types/node": "20.14.1",
+    "@types/node": "20.14.2",
     "@types/react": "18.3.3",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",

@@ -11,6 +11,8 @@
 
 ## develop
 
+- [UPDATE] sora-js-sdk のバージョンを 2024.1.0 に上げる
+  - @voluntas
 - [CHANGE] ヘッダーの接続先 URL の表示の初期値を変更する
   - `未接続` を `Signaling URL` `TURN URL` に変更する
   - @tnamao
