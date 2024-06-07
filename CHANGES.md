@@ -11,6 +11,64 @@
 
 ## develop
 
+## 2024.1.0
+
+**2024-06-07**
+
+- [UPDATE] sora-js-sdk のバージョンを 2024.1.0 に上げる
+  - @voluntas
+- [CHANGE] ヘッダーの接続先 URL の表示の初期値を変更する
+  - `未接続` を `Signaling URL` `TURN URL` に変更する
+  - @tnamao
+- [ADD] ヘッダーに接続中の TURN URL を表示する
+  - `local-candidate` の RTCStats に `url` が含まれる場合に表示する
+  - `local-candidate` が複数存在する場合は、最初に取得できる `url` を表示する
+  - `url` が取得できない場合は `不明` と表示する
+  - @tnamao
+- [CHANGE] `.env.example` を `.env.template` に揃える
+  - @voluntas
+- [CHANGE] `resolution` `displayResolution` `frameRate` を任意の値を入力できるようにする
+  - 元々のプルダウンで指定できた値は Dropdown ボタンのメニューから選択可能になります
+  - `resolution` と `displayResolution` はこの修正前後で保持するパラメータの互換性が無くなり、破壊的変更になります
+  - 解像度が `{width}x{height}` ではない形式や数字を期待する箇所に数字以外が入った場合は、`未指定` と同じ扱いになります
+  - frameRate に数値以外が設定された場合は、`未指定` と同じ扱いになります
+  - @tnamao
+- [ADD] `resolution` と `displayResolution` のプルダウンに `540p (960x540)` を追加する
+  - @tnamao
+- [CHANGE] index ページのリンクに指定していた `multistream` パラメータを全て削除する
+  - multistream はデフォルト有効になり、明示的な指定は不要となったため
+  - @tnamao
+- [ADD] 映像のコーデックなどの情報を映像にオーバーレイ表示する `Show media stats` のトグルを追加する
+  - Firefox での制限
+    - 複数の RemoteVideo を受信しているときに RTCPeerConnection の getStats から取得できるコーデック情報がおかしくなってしまうため、正しい動画のコーデック情報を表示できません
+    - Firefox では RemoteVideo の MediaStreamTrack から解像度や FPS の取得できないため、項目の値の表示は `undefined` になります
+  - @tnamao
+- [ADD] 受信している接続のクライアント ID の表示に対応する
+  - `notify` で受け取ったクライアント ID を表示に使用するため、state の `soraContents.remoteMediaStream` を `soraContents.remoteClient` に変更し、MediaStream の他に `connectionId` と `client_id` を保持できる型に変更する
+  - この変更に伴ってリモートの `MediaStream` を使用した関数、変数の名前を `Client` に変更する
+  - @tnamao
+- [CHANGE] `Session ID` と自身の `Connection ID` `Client ID` の表示を `type: notify` の `connection.created` を受け取ったタイミングでの表示に変更する
+  - この変更に伴い、Sora Devtools の Sora 接続状態の確認は state の `soraContents.connectionStatus` の値の確認も追加する
+  - @tnamao
+- [CHANGE] オーディオコーデック `LYRA` の設定を削除する
+  - 関連するコードと `service-worker.js` の削除
+  - next.config.js から不要な設定の削除
+  - @tnamao
+- [CHANGE] `multistream` の初期値を `未指定` に変更する
+  - querystring にパラメータが存在しない場合に `true` になるのを防ぐため
+  - @tnamao
+- [CHANGE] `getDisplayMedia` 使用時の MediaConstraints に audio も含めるようにする
+  - gDM に渡す MediaConstraint の `audio` パラメータは audio のトグルの状態や `Media options` の設定と連動している
+  - @tnamao
+- [CHANGE] role が `sendonly` の時に `Audio Output` のフォームを非表示にする
+  - @tnamao
+- [ADD] LocalVideo でサイマルキャストの rid を変更するボタンにラベルとツールチップを追加する
+  - @tnamao
+- [ADD] Playwright を利用した E2E テストを追加する
+  - @voluntas
+
+## 2023.2.0
+
 - [FIX] `audioStreamingLanguageCode` のトグルを有効に設定した時に `Advanced signaling options` が強調されない問題を修正する
   - @tnamao
 - [ADD] `h265_params` のフォームを追加する
@@ -227,7 +285,7 @@
 ## 2022.3.0
 
 - [UPDATE] media-processors/virtual-background を 2022.6.1 に更新する
-  - https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1
+  - <https://github.com/shiguredo/media-processors/releases/tag/virtual-background-2022.6.1>
   - @sile
 - [UPDATE] メディアオプションに facingMode を追加する
   - @yuitowest
@@ -275,7 +333,7 @@
 ## 2021.2.5
 
 - [FIX] sora-js-sdk のバージョンを 2021.2.3 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.3
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.3>
   - @yuitowest
 
 ## 2021.2.4
@@ -286,13 +344,13 @@
 ## 2021.2.3
 
 - [FIX] sora-js-sdk のバージョンを 2021.2.2 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.2
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.2>
   - @yuitowest
 
 ## 2021.2.2
 
 - [FIX] sora-js-sdk のバージョンを 2021.2.1 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.2.1>
   - @yuitowest
 
 ## 2021.2.1
@@ -341,26 +399,26 @@
 ## 2021.1.6
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.6 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.6
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.6>
   - @yuitowest
 
 ## 2021.1.5
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.5 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.5
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.5>
   - @yuitowest
 
 ## 2021.1.4
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.4 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.4
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.4>
   - @yuitowest
 
 ## 2021.1.3
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.3 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.2
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.3
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.2>
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.3>
   - @yuitowest
 
 ## 2021.1.2
@@ -371,7 +429,7 @@
 ## 2021.1.1
 
 - [FIX] sora-js-sdk のバージョンを 2021.1.1 に更新する
-  - https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.1
+  - <https://github.com/shiguredo/sora-js-sdk/releases/tag/2021.1.1>
   - @yuitowest
 
 ## 2021.1.0

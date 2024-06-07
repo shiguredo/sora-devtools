@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -18,6 +18,7 @@ import type {
   LogMessage,
   NotifyMessage,
   PushMessage,
+  RemoteClient,
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
@@ -64,7 +65,6 @@ const initialState: SoraDevtoolsState = {
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
-  audioLyraParamsBitrate: '',
   fakeVolume: '0',
   fakeContents: {
     worker: null,
@@ -81,17 +81,19 @@ const initialState: SoraDevtoolsState = {
     clientId: null,
     sessionId: null,
     localMediaStream: null,
-    remoteMediaStreams: [],
+    remoteClients: [],
     prevStatsReport: [],
     statsReport: [],
     datachannels: [],
+    turnUrl: null,
   },
   ignoreDisconnectWebSocket: '',
   logMessages: [],
   mediaProcessorsNoiseSuppression: false,
+  mediaStats: false,
   mediaType: 'getUserMedia',
   metadata: '',
-  multistream: 'true',
+  multistream: '',
   mute: false,
   noiseSuppression: '',
   notifyMessages: [],
@@ -254,7 +256,7 @@ export const slice = createSlice({
       state.enabledVideoAV1Params = action.payload
     },
     setFakeVolume: (state, action: PayloadAction<string>) => {
-      const volume = parseFloat(action.payload)
+      const volume = Number.parseFloat(action.payload)
       if (Number.isNaN(volume)) {
         state.fakeVolume = '0'
       } else if (1 < volume) {
@@ -263,7 +265,7 @@ export const slice = createSlice({
         state.fakeVolume = String(volume)
       }
       if (state.fakeContents.gainNode) {
-        state.fakeContents.gainNode.gain.setValueAtTime(parseFloat(state.fakeVolume), 0)
+        state.fakeContents.gainNode.gain.setValueAtTime(Number.parseFloat(state.fakeVolume), 0)
       }
     },
     setFakeContentsGainNode: (state, action: PayloadAction<GainNode | null>) => {
@@ -285,6 +287,9 @@ export const slice = createSlice({
     },
     setMute: (state, action: PayloadAction<boolean>) => {
       state.mute = action.payload
+    },
+    setMediaStats: (state, action: PayloadAction<boolean>) => {
+      state.mediaStats = action.payload
     },
     setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {
       state.noiseSuppression = action.payload
@@ -368,23 +373,21 @@ export const slice = createSlice({
     },
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       state.soraContents.sora = <any>action.payload
-      if (state.soraContents.sora) {
-        state.soraContents.connectionId = state.soraContents.sora.connectionId
-        state.soraContents.clientId = state.soraContents.sora.clientId
-        if (state.soraContents.sessionId === null) {
-          state.soraContents.sessionId = state.soraContents.sora.sessionId
-        }
-      } else {
-        state.soraContents.connectionId = null
-        state.soraContents.clientId = null
-        state.soraContents.sessionId = null
+      if (!state.soraContents.sora) {
         state.soraContents.datachannels = []
       }
     },
-    setSoraSessionId: (state, action: PayloadAction<string>) => {
-      if (state.soraContents.sessionId === null) {
-        state.soraContents.sessionId = action.payload
-      }
+    setSoraSessionId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.sessionId = action.payload
+    },
+    setSoraConnectionId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.connectionId = action.payload
+    },
+    setSoraClientId: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.clientId = action.payload
+    },
+    setSoraTurnUrl: (state, action: PayloadAction<string | null>) => {
+      state.soraContents.turnUrl = action.payload
     },
     setSoraConnectionStatus: (
       state,
@@ -418,21 +421,31 @@ export const slice = createSlice({
       }
       state.soraContents.localMediaStream = action.payload
     },
-    setRemoteMediaStream: (state, action: PayloadAction<MediaStream>) => {
-      state.soraContents.remoteMediaStreams.push(action.payload)
+    setRemoteClient: (state, action: PayloadAction<RemoteClient>) => {
+      state.soraContents.remoteClients.push(action.payload)
+    },
+    setSoraRemoteClientId: (
+      state,
+      action: PayloadAction<{ connectionId: string; clientId: string }>,
+    ) => {
+      for (const client of state.soraContents.remoteClients) {
+        if (client.connectionId === action.payload.connectionId) {
+          client.clientId = action.payload.clientId
+        }
+      }
     },
     setStatsReport: (state, action: PayloadAction<RTCStats[]>) => {
       state.soraContents.prevStatsReport = state.soraContents.statsReport
       state.soraContents.statsReport = action.payload
     },
-    removeRemoteMediaStream: (state, action: PayloadAction<string>) => {
-      const remoteMediaStreams = state.soraContents.remoteMediaStreams.filter(
-        (stream) => stream.id !== action.payload,
+    removeRemoteClient: (state, action: PayloadAction<string>) => {
+      const remoteClients = state.soraContents.remoteClients.filter(
+        (client) => client.connectionId !== action.payload,
       )
-      state.soraContents.remoteMediaStreams = remoteMediaStreams
+      state.soraContents.remoteClients = remoteClients
     },
-    removeAllRemoteMediaStreams: (state) => {
-      state.soraContents.remoteMediaStreams = []
+    removeAllRemoteClients: (state) => {
+      state.soraContents.remoteClients = []
     },
     setAudioInputDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
       state.audioInputDevices = action.payload
@@ -617,12 +630,6 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['enabledAudioStreamingLanguageCode']>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload
-    },
-    setAudioLyraParamsBitrate: (
-      state,
-      action: PayloadAction<SoraDevtoolsState['audioLyraParamsBitrate']>,
-    ) => {
-      state.audioLyraParamsBitrate = action.payload
     },
   },
 })

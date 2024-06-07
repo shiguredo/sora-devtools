@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 import type { RTCInboundRtpStreamStats } from '@/types'

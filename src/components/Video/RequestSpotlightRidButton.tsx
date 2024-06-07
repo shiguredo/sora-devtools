@@ -1,4 +1,5 @@
-import React, { useRef } from 'react'
+import type React from 'react'
+import { useRef } from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 import type { SpotlightFocusRid } from 'sora-js-sdk'
 

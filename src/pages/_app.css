@@ -43,6 +43,27 @@ footer .btn {
   padding: 5px;
 }
 
+/* Channel ID fixed max-width */
+.form-channel-id {
+  max-width: 802px;
+  padding-bottom: 0.5rem;
+}
+
+.form-resolution,
+.form-display-resolution {
+  max-width: 130px;
+  padding-bottom: 0.5rem;
+}
+
+.form-frame-rate {
+  max-width: 100px;
+  padding-bottom: 0.5rem;
+}
+
+.form-template-dropdown {
+  border: 1px rgb(222, 226, 230) solid;
+}
+
 video {
   min-width: 80px;
   min-height: 60px;
@@ -62,6 +83,14 @@ video {
 }
 
 .navbar-signaling-url {
+  min-width: 250px;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.navbar-turn-url {
   min-width: 250px;
   font-size: 0.875rem;
   padding: 0.25rem 0.5rem;
@@ -416,6 +445,27 @@ video {
   outline: 4px solid deeppink;
   cursor: move;
   z-index: 2000;
+}
+
+.video-overlay {
+  max-width: max-content;
+  position: absolute;
+  padding: 0.5rem;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  color: white;
+  z-index: 1055;
+}
+
+.video-overlay .table-video-capabilities {
+  border-collapse: separate;
+  border-spacing: 0.2rem;
+}
+
+.video-overlay .table-video-capabilities th {
+  font-weight: normal;
 }
 
 @media (max-width: 768px) {

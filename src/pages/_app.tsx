@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './_app.css'
 
-import { AppProps } from 'next/app'
-import { ReactElement } from 'react'
+import type { AppProps } from 'next/app'
+import type { ReactElement } from 'react'
 import { Provider } from 'react-redux'
 
 import { store } from '@/app/store'

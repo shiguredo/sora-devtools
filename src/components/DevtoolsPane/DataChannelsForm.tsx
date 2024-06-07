@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Button, Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'

@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setReconnect } from '@/app/actions'

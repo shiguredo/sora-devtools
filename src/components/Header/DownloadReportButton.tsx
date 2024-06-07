@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import type React from 'react'
+import { useRef } from 'react'
 import Sora from 'sora-js-sdk'
 
 import { store } from '@/app/store'
-import { DownloadReport, DownloadReportParameters } from '@/types'
+import type { DownloadReport, DownloadReportParameters } from '@/types'
 
 function createDownloadReport(): DownloadReport {
   const state = store.getState()
@@ -17,7 +18,6 @@ function createDownloadReport(): DownloadReport {
     audioOutput: state.audioOutput,
     audioOutputDevices: state.audioOutputDevices,
     audioStreamingLanguageCode: state.audioStreamingLanguageCode,
-    audioLyraParamsBitrate: state.audioLyraParamsBitrate,
     audioTrack: state.audioTrack,
     autoGainControl: state.autoGainControl,
     bundleId: state.bundleId,
@@ -58,6 +58,7 @@ function createDownloadReport(): DownloadReport {
     reconnect: state.reconnect,
     resizeMode: state.resizeMode,
     resolution: state.resolution,
+    mediaStats: state.mediaStats,
     role: state.role,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     signalingUrlCandidates: state.signalingUrlCandidates,
@@ -99,7 +100,7 @@ function createDownloadReport(): DownloadReport {
 
 export const DownloadReportButton: React.FC = () => {
   const anchorRef = useRef<HTMLAnchorElement>(null)
-  const onClick = async (): Promise<void> => {
+  const onClick = (): void => {
     const report = createDownloadReport()
     const data = JSON.stringify(report)
     const blob = new Blob([data], { type: 'text/plain' })

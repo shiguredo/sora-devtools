@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 
 import { useAppSelector } from '@/app/hooks'
-import type { RTCMediaStreamTrackStats } from '@/types'
+import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
 
 import { ConnectionStatusBar } from './ConnectionStatusBar'
 import { JitterButter } from './JitterBuffer'
+import { RemoteVideoCapabilities } from './RemoteVideoCapabilities'
 import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton'
 import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton'
 import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton'
@@ -84,7 +86,8 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
   )
 }
 
-const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
+const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
+  const { mediaStream, connectionId, clientId } = client
   const [height, setHeight] = useState<number>(0)
   const audioOutput = useAppSelector((state) => state.audioOutput)
   const displayResolution = useAppSelector((state) => state.displayResolution)
@@ -95,68 +98,64 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   const mute = useAppSelector((state) => state.mute)
   const simulcast = useAppSelector((state) => state.simulcast)
   const spotlight = useAppSelector((state) => state.spotlight)
-  const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id]
+  const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
+  const mediaStats = useAppSelector((state) => state.mediaStats)
   return (
     <div className="col-auto">
       <div className="video-status">
         <div className="d-flex align-items-center mb-1 video-status-inner">
-          <ConnectionStatusBar connectionId={props.stream.id} />
-          <JitterButter type="audio" stream={props.stream} />
-          <JitterButter type="video" stream={props.stream} />
+          <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
+          <JitterButter type="audio" stream={mediaStream} />
+          <JitterButter type="video" stream={mediaStream} />
         </div>
         <div className="d-flex align-items-center mb-1 video-status-inner">
           {spotlight !== 'true' && multistream === 'true' && simulcast === 'true' ? (
             <>
-              <RequestRtpStreamBySendConnectionIdButton
-                rid="r0"
-                sendConnectionId={props.stream.id}
-              />
-              <RequestRtpStreamBySendConnectionIdButton
-                rid="r1"
-                sendConnectionId={props.stream.id}
-              />
-              <RequestRtpStreamBySendConnectionIdButton
-                rid="r2"
-                sendConnectionId={props.stream.id}
-              />
-              <ResetRtpStreamBySendConnectionIdButton sendConnectionId={props.stream.id} />
+              <RequestRtpStreamBySendConnectionIdButton rid="r0" sendConnectionId={connectionId} />
+              <RequestRtpStreamBySendConnectionIdButton rid="r1" sendConnectionId={connectionId} />
+              <RequestRtpStreamBySendConnectionIdButton rid="r2" sendConnectionId={connectionId} />
+              <ResetRtpStreamBySendConnectionIdButton sendConnectionId={connectionId} />
             </>
           ) : null}
           {spotlight === 'true' && multistream === 'true' && simulcast === 'true' ? (
             <>
-              <RequestSpotlightRidBySendConnectionIdButton sendConnectionId={props.stream.id} />
-              <ResetSpotlightRidBySendConnectionIdButton sendConnectionId={props.stream.id} />
+              <RequestSpotlightRidBySendConnectionIdButton sendConnectionId={connectionId} />
+              <ResetSpotlightRidBySendConnectionIdButton sendConnectionId={connectionId} />
             </>
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start">
+      <div className="d-flex flex-wrap align-items-start overflow-y-hidden">
+        {/* オーバーレイするため position-relative を付けておくこと */}
         <div
-          className={`d-flex flex-nowrap align-items-start video-wrapper${
+          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
             focused ? ' spotlight-focused' : ''
           }`}
         >
+          {mediaStats && mediaStream.getVideoTracks().length > 0 && (
+            <RemoteVideoCapabilities stream={mediaStream} />
+          )}
           <Video
-            stream={props.stream}
+            stream={mediaStream}
             setHeight={setHeight}
             mute={mute}
             audioOutput={audioOutput}
             displayResolution={displayResolution}
           />
-          <VolumeVisualizer micDevice stream={props.stream} height={height} />
+          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height} />
         </div>
-        <MediaStreamStatsReport stream={props.stream} />
+        <MediaStreamStatsReport stream={mediaStream} />
       </div>
     </div>
   )
 }
 
 export const RemoteVideos: React.FC = () => {
-  const remoteMediaStreams = useAppSelector((state) => state.soraContents.remoteMediaStreams)
+  const remoteClients = useAppSelector((state) => state.soraContents.remoteClients)
   return (
     <div className="row my-2">
-      {remoteMediaStreams.map((mediaStream) => {
-        return <RemoteVideo key={mediaStream.id} stream={mediaStream} />
+      {remoteClients.map((client) => {
+        return <RemoteVideo key={client.connectionId} client={client} />
       })}
     </div>
   )

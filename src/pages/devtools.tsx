@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import type React from 'react'
+import { useEffect } from 'react'
 
 import { disconnectSora, setMediaDevices } from '@/app/actions'
-import { initLyra, setInitialParameter } from '@/app/actions'
+import { setInitialParameter } from '@/app/actions'
 import { useAppDispatch } from '@/app/hooks'
 import { DebugPane } from '@/components/DebugPane'
 import { DevtoolsPane } from '@/components/DevtoolsPane'
@@ -15,7 +16,6 @@ const Devtools: React.FC = () => {
   useEffect(() => {
     dispatch(setInitialParameter())
     dispatch(setMediaDevices())
-    dispatch(initLyra())
     return () => {
       dispatch(disconnectSora())
     }

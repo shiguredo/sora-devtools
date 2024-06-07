@@ -1,5 +1,5 @@
 import {
-  LightAdjustmentProcessorOptions,
+  type LightAdjustmentProcessorOptions,
   SelfieSegmentationFocusMask,
 } from '@shiguredo/light-adjustment'
 import queryString from 'query-string'
@@ -10,23 +10,19 @@ import {
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
-  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
@@ -110,7 +106,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   const qs = queryString.parse(location.search)
   // signalingUrlCandidates のパース
-  let signalingUrlCandidates
+  let signalingUrlCandidates: any
   if (typeof qs.signalingUrlCandidates === 'string') {
     try {
       signalingUrlCandidates = JSON.parse(qs.signalingUrlCandidates)
@@ -131,7 +127,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     googCpuOveruseDetection: parseBooleanParameter(qs.googCpuOveruseDetection),
     debug: parseBooleanParameter(qs.debug),
     debugType: parseSpecifiedStringParameter(qs.debugType, DEBUG_TYPES),
-    displayResolution: parseSpecifiedStringParameter(qs.displayResolution, DISPLAY_RESOLUTIONS),
+    displayResolution: parseStringParameter(qs.displayResolution),
     e2ee: parseBooleanParameter(qs.e2ee),
     echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
     echoCancellationType: parseSpecifiedStringParameter(
@@ -141,7 +137,8 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     noiseSuppression: parseSpecifiedStringParameter(qs.noiseSuppression, NOISE_SUPPRESSIONS),
     facingMode: parseSpecifiedStringParameter(qs.facingMode, FACING_MODES),
     fakeVolume: parseStringParameter(qs.fakeVolume),
-    frameRate: parseSpecifiedStringParameter(qs.frameRate, FRAME_RATES),
+    frameRate: parseStringParameter(qs.frameRate),
+    mediaStats: parseBooleanParameter(qs.mediaStats),
     mediaType: parseSpecifiedStringParameter(qs.mediaType, MEDIA_TYPES),
     metadata: parseStringParameter(qs.metadata),
     showStats: parseBooleanParameter(qs.showStats),
@@ -159,7 +156,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
       qs.spotlightUnfocusRid,
       SPOTLIGHT_FOCUS_RIDS,
     ),
-    resolution: parseSpecifiedStringParameter(qs.resolution, RESOLUTIONS),
+    resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
     videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
@@ -194,10 +191,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
     multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
-    audioLyraParamsBitrate: parseSpecifiedStringParameter(
-      qs.audioLyraParamsBitrate,
-      AUDIO_LYRA_PARAMS_BITRATES,
-    ),
   }
   // undefined の項目を削除する
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
@@ -226,27 +219,20 @@ export function createSignalingURL(
 }
 
 // 解像度に対応する width と height を返す
+const videoResolutionPattern = /^(\d+)x(\d+)$/
+
+export function testVideoResolutionPattern(resolution: string): boolean {
+  return videoResolutionPattern.test(resolution)
+}
+
 export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
-  switch (resolution) {
-    case '144p (256x144)':
-      return { width: 256, height: 144 }
-    case '240p (320x240)':
-      return { width: 320, height: 240 }
-    case '360p (640x360)':
-      return { width: 640, height: 360 }
-    case '480p (720x480)':
-      return { width: 720, height: 480 }
-    case '720p (1280x720)':
-      return { width: 1280, height: 720 }
-    case '1080p (1920x1080)':
-      return { width: 1920, height: 1080 }
-    case '1440p (2560x1440)':
-      return { width: 2560, height: 1440 }
-    case '2160p (3840x2160)':
-      return { width: 3840, height: 2160 }
-    default:
-      return { width: 0, height: 0 }
+  if (videoResolutionPattern.test(resolution)) {
+    const match = resolution.match(videoResolutionPattern)
+    if (match) {
+      return { width: Number.parseInt(match[1], 10), height: Number.parseInt(match[2], 10) }
+    }
   }
+  return { width: 0, height: 0 }
 }
 
 // アスペクト比に対応する数値を返す
@@ -259,7 +245,7 @@ export function getValueByAspectRatio(aspectRatio: string): number {
     case '21:9':
       return 20 / 9
     default:
-      return NaN
+      return Number.NaN
   }
 }
 
@@ -376,7 +362,13 @@ export function createVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = { min: parseInt(frameRate, 10), max: parseInt(frameRate, 10) }
+    const fps = Number.parseInt(frameRate, 10)
+    if (!Number.isNaN(fps)) {
+      videoConstraints.frameRate = {
+        min: fps,
+        max: fps,
+      }
+    }
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
@@ -427,7 +419,8 @@ export function createFakeMediaConstraints(
 ): FakeMediaStreamConstraints {
   const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters
   // fake の default frameRate は 30 fps
-  const parsedFrameRate = parseInt(frameRate, 10) || 30
+  const fps = Number.parseInt(frameRate, 10)
+  const parsedFrameRate = Number.isNaN(fps) ? 30 : fps
   // width, height の default はそれぞれ 240 / 160
   const resolutionSize = getVideoSizeByResolution(resolution)
   const width = resolutionSize.width || 240
@@ -440,7 +433,7 @@ export function createFakeMediaConstraints(
     width: width,
     height: height,
     fontSize: fontSize,
-    volume: parseFloat(volume),
+    volume: Number.parseFloat(volume),
   }
   if (video && (aspectRatio || resizeMode)) {
     constraints.videoTrackConstraints = {}
@@ -454,23 +447,64 @@ export function createFakeMediaConstraints(
   return constraints
 }
 
+// getDisplayMedia の audio constraints を生成
+type CreateGetDisplayMediaAudioConstraintsParameters = {
+  audio: SoraDevtoolsState['audio']
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
+}
+export function createGetDisplayMediaAudioConstraints(
+  parameters: CreateGetDisplayMediaAudioConstraintsParameters,
+): boolean | MediaTrackConstraints {
+  const { audio, autoGainControl, noiseSuppression, echoCancellation, echoCancellationType } =
+    parameters
+  if (!audio) {
+    return false
+  }
+  if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType) {
+    return true
+  }
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const parsedAutoGainControl = parseBooleanString(autoGainControl)
+  if (parsedAutoGainControl !== undefined) {
+    audioConstraints.autoGainControl = parsedAutoGainControl
+  }
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression)
+  if (parsedNoiseSuppression !== undefined) {
+    audioConstraints.noiseSuppression = parsedNoiseSuppression
+  }
+  const parsedEchoCancellation = parseBooleanString(echoCancellation)
+  if (parsedEchoCancellation !== undefined) {
+    audioConstraints.echoCancellation = parsedEchoCancellation
+  }
+  if (echoCancellationType) {
+    audioConstraints.echoCancellationType = echoCancellationType
+  }
+  return audioConstraints
+}
+
 // getDisplayMedia の video constraints を生成
-type CreateGetDisplayMediaConstraintsParameters = {
+type CreateGetDisplayMediaVideoConstraintsParameters = {
   frameRate: SoraDevtoolsState['frameRate']
   resolution: SoraDevtoolsState['resolution']
   aspectRatio: SoraDevtoolsState['aspectRatio']
   resizeMode: SoraDevtoolsState['resizeMode']
 }
-export function createGetDisplayMediaConstraints(
-  parameters: CreateGetDisplayMediaConstraintsParameters,
-): MediaStreamConstraints {
+export function createGetDisplayMediaVideoConstraints(
+  parameters: CreateGetDisplayMediaVideoConstraintsParameters,
+): boolean | SoraDevtoolsMediaTrackConstraints {
   const { aspectRatio, frameRate, resizeMode, resolution } = parameters
   if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
-    return { video: true }
+    return true
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
   if (frameRate) {
-    videoConstraints.frameRate = parseInt(frameRate, 10)
+    const fps = Number.parseInt(frameRate, 10)
+    if (!Number.isNaN(fps)) {
+      videoConstraints.frameRate = fps
+    }
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
@@ -485,9 +519,7 @@ export function createGetDisplayMediaConstraints(
   if (resizeMode) {
     videoConstraints.resizeMode = resizeMode
   }
-  return {
-    video: videoConstraints,
-  }
+  return videoConstraints
 }
 
 // Fake 用の MediaStream を生成
@@ -680,7 +712,7 @@ export function createConnectOptions(
       connectionOptions.audioCodecType = connectionOptionsState.audioCodecType
     }
     // audioBitRate
-    const parsedAudioBitRate = parseInt(connectionOptionsState.audioBitRate, 10)
+    const parsedAudioBitRate = Number.parseInt(connectionOptionsState.audioBitRate, 10)
     if (parsedAudioBitRate) {
       connectionOptions.audioBitRate = parsedAudioBitRate
     }
@@ -689,7 +721,7 @@ export function createConnectOptions(
       connectionOptions.videoCodecType = connectionOptionsState.videoCodecType
     }
     // videoBitRate
-    const parsedVideoBitRate = parseInt(connectionOptionsState.videoBitRate, 10)
+    const parsedVideoBitRate = Number.parseInt(connectionOptionsState.videoBitRate, 10)
     if (parsedVideoBitRate) {
       connectionOptions.videoBitRate = parsedVideoBitRate
     }
@@ -720,13 +752,6 @@ export function createConnectOptions(
       connectionOptions.audioStreamingLanguageCode =
         connectionOptionsState.audioStreamingLanguageCode
     }
-    // audioLyraParamsBitrate
-    if (connectionOptionsState.audioLyraParamsBitrate) {
-      connectionOptions.audioLyraParamsBitrate = parseInt(
-        connectionOptionsState.audioLyraParamsBitrate,
-        10,
-      ) as 3200 | 6000 | 9200
-    }
   }
   // multistream
   const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
@@ -743,7 +768,7 @@ export function createConnectOptions(
     connectionOptions.spotlight = parsedSpotlight
     if (parsedSpotlight === true) {
       if (connectionOptionsState.spotlightNumber) {
-        connectionOptions.spotlightNumber = parseInt(connectionOptionsState.spotlightNumber)
+        connectionOptions.spotlightNumber = Number.parseInt(connectionOptionsState.spotlightNumber)
       }
       if (connectionOptionsState.spotlightFocusRid) {
         connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid

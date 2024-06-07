@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { ClipboardIcon } from '@/components/ClipboardIcon'
 import { copy2clipboard } from '@/utils'

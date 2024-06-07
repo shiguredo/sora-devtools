@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoH264Params, setVideoH264Params } from '@/app/actions'

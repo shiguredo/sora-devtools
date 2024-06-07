@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { startRec } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'

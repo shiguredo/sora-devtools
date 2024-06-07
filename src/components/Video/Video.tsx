@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
+import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react'
 
 import type { CustomHTMLVideoElement, SoraDevtoolsState } from '@/types'
 import { getVideoSizeByResolution } from '@/utils'
@@ -72,9 +72,9 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   return (
     <video
       id={props.localVideo ? 'local-video' : undefined}
-      autoPlay
-      playsInline
-      controls
+      autoPlay={true}
+      playsInline={true}
+      controls={true}
       muted={mute}
       ref={videoRef}
       width={0 < videoSize.width ? videoSize.width : undefined}

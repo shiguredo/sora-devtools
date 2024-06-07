@@ -6,7 +6,7 @@
     "description": "クライアントの役割を指定します。"
   },
   "multistream": {
-    "description": "マルチストリームを使用するかどうかを指定します。"
+    "description": "マルチストリームを使用するかどうかを指定します。Sora は未指定の場合、マルチストリームを使用します。"
   },
   "simulcast": {
     "description": "サイマルキャストを使用するかどうかを指定します。"
@@ -83,9 +83,6 @@
   "audioStreamingLanguageCode": {
     "description": "音声解析用の言語コードを指定します。"
   },
-  "audioLyraParamsBitrate": {
-    "description": "音声に Lyra コーデックを使った場合のビットレートを指定します。"
-  },
   "dataChannels": {
     "description": "メッセージング用の DataChannel を指定します。"
   },
@@ -123,7 +120,10 @@
     "description": "MediaStreamTrack video の contentHint を指定します。"
   },
   "resolution": {
-    "description": "解像度を指定します。"
+    "description": "解像度を指定します。任意の解像度を指定する場合は、幅と高さを x 区切りで指定します。 (例: 640x480)"
+  },
+  "mediaStats": {
+    "description": "映像の統計情報を映像に重ねて表示します。"
   },
   "frameRate": {
     "description": "MediaTrackConstraints の frameRate を指定します。"
@@ -150,7 +150,7 @@
     "description": "音声出力を指定します。"
   },
   "displayResolution": {
-    "description": "画面に表示する際の解像度を指定します。"
+    "description": "画面に表示する際の解像度を指定します。任意の解像度を指定する場合は、幅と高さを x 区切りで指定します。 (例: 640x480)"
   },
   "micDevice": {
     "description": "Audio MediaStreamTrack を生成するかどうかを切り替えます。"
@@ -166,5 +166,8 @@
   },
   "facingMode": {
     "description": "モバイルカメラのフロント/バックを切り替えます。"
+  },
+  "changeAllRecvStream": {
+    "description": "サイマルキャストで受信中の全てのストリームの rid を操作します。"
   }
 }

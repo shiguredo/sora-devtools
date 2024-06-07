@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap'
 
 import {

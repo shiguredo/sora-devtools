@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import { setDebugFilterText } from '@/app/actions'

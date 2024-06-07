@@ -1,4 +1,4 @@
-import { SimulcastRid, SpotlightFocusRid } from 'sora-js-sdk'
+import type { SimulcastRid, SpotlightFocusRid } from 'sora-js-sdk'
 
 async function post(
   apiUrl: null | string,

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
@@ -19,7 +20,7 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
   return (
     <FormCheck
       type="radio"
-      inline
+      inline={true}
       id={label}
       label={label}
       value={label}

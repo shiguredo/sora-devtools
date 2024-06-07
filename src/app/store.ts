@@ -1,4 +1,4 @@
-import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit'
+import { type Action, type ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
 
 import { slice } from './slice'
@@ -14,7 +14,7 @@ export const store = configureStore({
         ignoredActions: [
           'soraDevtools/setSora',
           'soraDevtools/setLocalMediaStream',
-          'soraDevtools/setRemoteMediaStream',
+          'soraDevtools/setRemoteClient',
           'soraDevtools/setFakeContentsGainNode',
           'soraDevtools/setDataChannelMessage',
         ],

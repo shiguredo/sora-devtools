@@ -1,6 +1,6 @@
 import NextHead from 'next/head'
 import queryString from 'query-string'
-import React from 'react'
+import type React from 'react'
 import { Container, Navbar } from 'react-bootstrap'
 
 import type { SoraDevtoolsState } from '@/types'
@@ -11,7 +11,6 @@ type LinkProps = {
     role: SoraDevtoolsState['role']
     audio?: SoraDevtoolsState['audio']
     video?: SoraDevtoolsState['video']
-    multistream?: boolean
     simulcast?: boolean
     spotlight?: boolean
     dataChannelSignaling?: boolean
@@ -53,21 +52,17 @@ const Index: React.FC = () => {
             <li className="separator">マルチストリーム</li>
             <Link
               pageName="マルチストリーム送受信"
-              params={{ role: 'sendrecv', multistream: true, videoCodecType: 'VP9' }}
+              params={{ role: 'sendrecv', videoCodecType: 'VP9' }}
             />
             <Link
               pageName="マルチストリーム送信のみ"
-              params={{ role: 'sendonly', multistream: true, videoCodecType: 'VP9' }}
+              params={{ role: 'sendonly', videoCodecType: 'VP9' }}
             />
-            <Link
-              pageName="マルチストリーム受信のみ"
-              params={{ role: 'recvonly', multistream: true }}
-            />
+            <Link pageName="マルチストリーム受信のみ" params={{ role: 'recvonly' }} />
             <Link
               pageName="マルチストリーム送受信 (サイマルキャスト有効)"
               params={{
                 role: 'sendrecv',
-                multistream: true,
                 simulcast: true,
                 videoBitRate: '3000',
                 videoCodecType: 'VP8',
@@ -78,7 +73,6 @@ const Index: React.FC = () => {
               pageName="マルチストリーム送信のみ (サイマルキャスト有効)"
               params={{
                 role: 'sendonly',
-                multistream: true,
                 simulcast: true,
                 videoBitRate: '3000',
                 videoCodecType: 'VP8',
@@ -89,7 +83,6 @@ const Index: React.FC = () => {
               pageName="マルチストリーム受信のみ (サイマルキャスト有効)"
               params={{
                 role: 'recvonly',
-                multistream: true,
                 simulcast: true,
               }}
             />
@@ -98,7 +91,6 @@ const Index: React.FC = () => {
               pageName="スポットライト送受信"
               params={{
                 role: 'sendrecv',
-                multistream: true,
                 simulcast: true,
                 spotlight: true,
                 videoCodecType: 'VP8',
@@ -109,7 +101,6 @@ const Index: React.FC = () => {
               pageName="スポットライト送信のみ"
               params={{
                 role: 'sendonly',
-                multistream: true,
                 simulcast: true,
                 spotlight: true,
                 videoCodecType: 'VP8',
@@ -120,7 +111,6 @@ const Index: React.FC = () => {
               pageName="スポットライト受信のみ"
               params={{
                 role: 'recvonly',
-                multistream: true,
                 simulcast: true,
                 spotlight: true,
               }}
@@ -129,7 +119,6 @@ const Index: React.FC = () => {
               pageName="スポットライト送受信 (サイマルキャスト無効)"
               params={{
                 role: 'sendrecv',
-                multistream: true,
                 spotlight: true,
                 videoCodecType: 'VP8',
                 videoBitRate: '500',
@@ -139,7 +128,6 @@ const Index: React.FC = () => {
               pageName="スポットライト送信のみ (サイマルキャスト無効)"
               params={{
                 role: 'sendonly',
-                multistream: true,
                 spotlight: true,
                 videoCodecType: 'VP8',
                 videoBitRate: '500',
@@ -149,7 +137,6 @@ const Index: React.FC = () => {
               pageName="スポットライト受信のみ (サイマルキャスト無効)"
               params={{
                 role: 'recvonly',
-                multistream: true,
                 spotlight: true,
               }}
             />
@@ -158,7 +145,6 @@ const Index: React.FC = () => {
               pageName="メッセージングのみ"
               params={{
                 role: 'sendrecv',
-                multistream: true,
                 dataChannelSignaling: true,
                 debug: true,
                 debugType: 'messaging',

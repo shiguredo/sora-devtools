@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 
+import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel'
 import { ConnectionStatusBar } from './ConnectionStatusBar'
+import { LocalVideoCapabilities } from './LocalVideoCapabilities'
 import { RequestRtpStreamButton } from './RequestRtpStreamButton'
 import { RequestSpotlightRidButton } from './RequestSpotlightRidButton'
 import { ResetRtpStreamButton } from './ResetRtpStreamButton'
@@ -24,6 +27,7 @@ const VideoBox: React.FC = () => {
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const micDevice = useAppSelector((state) => state.micDevice)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
+  const mediaStats = useAppSelector((state) => state.mediaStats)
   if (audio === false && video === false) {
     return null
   }
@@ -31,17 +35,20 @@ const VideoBox: React.FC = () => {
     <>
       <div className="d-flex">
         <div
-          className={`d-flex·flex-nowrap·align-items-start·video-wrapper${
+          className={`position-relative d-flex·flex-nowrap·align-items-start·video-wrapper${
             focused ? '·spotlight-focused' : ''
           }`}
         >
+          {mediaStats && localMediaStream && localMediaStream.getVideoTracks().length > 0 && (
+            <LocalVideoCapabilities stream={localMediaStream} />
+          )}
           <Video
             stream={localMediaStream}
             setHeight={setHeight}
             audioOutput={audioOutput}
             displayResolution={displayResolution}
-            localVideo
-            mute
+            localVideo={true}
+            mute={true}
           />
           {localMediaStream !== null ? (
             <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} />
@@ -71,7 +78,11 @@ export const LocalVideo: React.FC = () => {
           ) : null}
           {connectionId !== null || clientId !== null ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
-              <ConnectionStatusBar connectionId={connectionId} clientId={clientId} localVideo />
+              <ConnectionStatusBar
+                connectionId={connectionId}
+                clientId={clientId}
+                localVideo={true}
+              />
             </div>
           ) : null}
           {connectionId !== null &&
@@ -79,6 +90,7 @@ export const LocalVideo: React.FC = () => {
           simulcast === 'true' &&
           role !== 'sendonly' ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
+              <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
               <RequestRtpStreamButton rid={'r0'} />
               <RequestRtpStreamButton rid={'r1'} />
               <RequestRtpStreamButton rid={'r2'} />

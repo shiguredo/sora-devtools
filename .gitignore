@@ -1,7 +1,5 @@
 .next
 node_modules/
-.env.local
-.env
 wasm.wasm
 next-env.d.ts
 *.tsbuildinfo
@@ -10,3 +8,14 @@ next-env.d.ts
 
 # next dev は distDir に dev を利用する
 dev/
+
+# .env
+.env*
+!.env.template
+!.env.production
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -4,20 +4,18 @@
 
 ## corepack
 
-```
-$ brew uninstall pnpm npm yarn
-$ brew install corepack
-$ corepack enable pnpm npm yarn
-$ corepack prepare pnpm@latest-8 --activate
+```bash
+brew uninstall pnpm npm yarn
+brew install corepack
+corepack enable pnpm
+corepack prepare pnpm@latest-8 --activate
 ```
 
 ## 開発環境
 
 - nodejs
-  - 18.17.1 以降
   - package.json でバージョンを確認すること
 - pnpm
-  - 8.7.0 以降
   - package.json でバージョンを確認すること
 - pnpm install
   - これで事前に利用するライブラリをインストールする
@@ -33,9 +31,9 @@ $ corepack prepare pnpm@latest-8 --activate
 - `cp .env.example .env` を実行
   - 内容の変更は不要です
 
-## 開発
+## 開発サーバー
 
-- `pnpm run dev` でローカルサーバを起動する
+- `pnpm run dev` でローカルサーバーを起動する
 
 ## パッケージ更新
 

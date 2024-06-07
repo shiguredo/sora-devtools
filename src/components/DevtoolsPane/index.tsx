@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 import { Col, Collapse, Row } from 'react-bootstrap'
 
 import { useAppSelector } from '@/app/hooks'
@@ -12,7 +13,6 @@ import { AudioCodecTypeForm } from './AudioCodecTypeForm'
 import { AudioContentHintForm } from './AudioContentHintForm'
 import { AudioForm } from './AudioForm'
 import { AudioInputForm } from './AudioInputForm'
-import { AudioLyraParamsBitrateForm } from './AudioLyraParamsBitrateForm'
 import { AudioOutputForm } from './AudioOutputForm'
 import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm'
 import { AudioTrackForm } from './AudioTrackForm'
@@ -37,6 +37,7 @@ import { ForwardingFilterForm } from './ForwardingFilterForm'
 import { FrameRateForm } from './FrameRateForm'
 import { LightAdjustmentForm } from './LightAdjustmentForm'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm'
+import { MediaStatsForm } from './MediaStatsForm'
 import { MediaTypeForm } from './MediaTypeForm'
 import { MetadataForm } from './MetadataForm'
 import { MicDeviceForm } from './MicDeviceForm'
@@ -74,7 +75,7 @@ const RowChannelOptions: React.FC = () => {
   return (
     <>
       <Row className="form-row" xs="auto">
-        <Col>
+        <Col xs="12" sm="12" className="form-channel-id">
           <ChannelIdForm />
         </Col>
       </Row>
@@ -240,14 +241,12 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   const enableAudioStreamingLanguageCode = useAppSelector(
     (state) => state.enabledAudioStreamingLanguageCode,
   )
-  const audioLyraParamsBitrate = useAppSelector((state) => state.audioLyraParamsBitrate)
   const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
   const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
   const enabledOptions = [
     enableAudioStreamingLanguageCode,
-    audioLyraParamsBitrate !== '',
     enabledVideoVP9Params,
     enabledVideoH264Params,
     enabledVideoH265Params,
@@ -275,11 +274,6 @@ const RowAdvancedSignalingOptions: React.FC = () => {
       <Collapse in={!collapsed}>
         <div>
           <AudioStreamingLanguageCodeForm />
-          <Row className="form-row">
-            <Col className="col-auto">
-              <AudioLyraParamsBitrateForm />
-            </Col>
-          </Row>
           <VideoVP9ParamsForm />
           <VideoAV1ParamsForm />
           <VideoH264ParamsForm />
@@ -430,9 +424,11 @@ const RowDevices: React.FC = () => {
         ) : null}
       </Row>
       <Row className="form-row" xs="auto">
-        <Col>
-          <AudioOutputForm />
-        </Col>
+        {role !== 'sendonly' ? (
+          <Col>
+            <AudioOutputForm />
+          </Col>
+        ) : null}
         <ReloadDevicesButton />
         {role !== 'recvonly' ? (
           <>
@@ -448,12 +444,17 @@ const RowDevices: React.FC = () => {
 export const RowMediaDevices: React.FC = () => {
   const role = useAppSelector((state) => state.role)
   return (
-    <Row className="form-row" xs="auto">
-      <Col>
-        <DisplayResolutionForm />
-      </Col>
-      {role !== 'recvonly' ? (
-        <>
+    <>
+      <Row className="form-row" xs="auto">
+        <Col>
+          <DisplayResolutionForm />
+        </Col>
+        <Col>
+          <MediaStatsForm />
+        </Col>
+      </Row>
+      {role !== 'recvonly' && (
+        <Row className="form-row" xs="auto">
           <Col>
             <MicDeviceForm />
           </Col>
@@ -466,9 +467,9 @@ export const RowMediaDevices: React.FC = () => {
           <Col>
             <VideoTrackForm />
           </Col>
-        </>
-      ) : null}
-    </Row>
+        </Row>
+      )}
+    </>
   )
 }
 

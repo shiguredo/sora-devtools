@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.8.0/schema.json",
   "organizeImports": {
     "enabled": true
   },
@@ -11,13 +11,16 @@
         "noExplicitAny": "off"
       },
       "style": {
-        "useNamingConvention": "off"
+        "useNamingConvention": "off",
+        "noDefaultExport": "off",
+        "useFilenamingConvention": "off"
       },
       "nursery": {
-        "noUselessLoneBlockStatements": "off"
+        "noUndeclaredDependencies": "off"
       },
       "complexity": {
-        "useSimplifiedLogicExpression": "off"
+        "useSimplifiedLogicExpression": "off",
+        "noExcessiveCognitiveComplexity": "off"
       }
     }
   },
@@ -45,7 +48,7 @@
       "enabled": true,
       "quoteStyle": "single",
       "jsxQuoteStyle": "double",
-      "trailingComma": "all",
+      "trailingCommas": "all",
       "semicolons": "asNeeded",
       "arrowParentheses": "always",
       "indentStyle": "space",

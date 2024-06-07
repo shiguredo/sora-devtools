@@ -10,29 +10,25 @@ import type {
   TransportType,
 } from 'sora-js-sdk'
 
-import {
+import type {
   ASPECT_RATIO_TYPES,
   AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
-  AUDIO_LYRA_PARAMS_BITRATES,
   AUTO_GAIN_CONTROLS,
   BLUR_RADIUS,
   CONNECTION_STATUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  DISPLAY_RESOLUTIONS,
   ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
-  FRAME_RATES,
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
-  RESOLUTIONS,
   SIMULCAST,
   SIMULCAST_RID,
   SPOTLIGHT,
@@ -42,6 +38,12 @@ import {
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from '@/constants'
+
+export type RemoteClient = {
+  mediaStream: MediaStream
+  clientId: string | null
+  connectionId: string
+}
 
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[]
@@ -66,7 +68,7 @@ export type SoraDevtoolsState = {
   dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number]
   dataChannels: string
   dataChannelMessages: DataChannelMessage[]
-  displayResolution: (typeof DISPLAY_RESOLUTIONS)[number]
+  displayResolution: string
   echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
   echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
   e2ee: boolean
@@ -84,14 +86,13 @@ export type SoraDevtoolsState = {
   enabledVideoAV1Params: boolean
   audioStreamingLanguageCode: string
   enabledAudioStreamingLanguageCode: boolean
-  audioLyraParamsBitrate: (typeof AUDIO_LYRA_PARAMS_BITRATES)[number]
   fakeContents: {
     worker: Worker | null
     colorCode: number
     gainNode: GainNode | null
   }
   fakeVolume: string
-  frameRate: (typeof FRAME_RATES)[number]
+  frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
     reconnecting: boolean
@@ -101,14 +102,16 @@ export type SoraDevtoolsState = {
     clientId: string | null
     sessionId: string | null
     localMediaStream: MediaStream | null
-    remoteMediaStreams: MediaStream[]
+    remoteClients: RemoteClient[]
     prevStatsReport: RTCStats[]
     statsReport: RTCStats[]
     datachannels: DataChannelConfiguration[]
+    turnUrl: string | null
   }
   ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number]
   logMessages: LogMessage[]
   mediaProcessorsNoiseSuppression: boolean
+  mediaStats: boolean
   mediaType: (typeof MEDIA_TYPES)[number]
   metadata: string
   multistream: (typeof MULTISTREAM)[number]
@@ -116,7 +119,7 @@ export type SoraDevtoolsState = {
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
   notifyMessages: NotifyMessage[]
   pushMessages: PushMessage[]
-  resolution: (typeof RESOLUTIONS)[number]
+  resolution: string
   showStats: boolean
   signalingMessages: SignalingMessage[]
   signalingNotifyMetadata: string
@@ -199,7 +202,7 @@ export type Json =
 
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
-  setSinkId(audioId: string): void
+  setSinkId(audioId: string): Promise<void>
 }
 
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加
@@ -352,7 +355,6 @@ export type ConnectionOptionsState = Pick<
   | 'enabledVideoH265Params'
   | 'enabledVideoAV1Params'
   | 'ignoreDisconnectWebSocket'
-  | 'audioLyraParamsBitrate'
   | 'multistream'
   | 'signalingNotifyMetadata'
   | 'forwardingFilter'
@@ -408,4 +410,11 @@ export type DownloadReport = {
   timeline: unknown[]
   notify: unknown[]
   stats: unknown[]
+}
+
+export type RTCStatsCodec = RTCStats & RTCRtpCodecParameters
+
+// RTCStats.type === 'local-candidate' の型
+export type RTCIceLocalCandidateStats = RTCStats & {
+  url?: string
 }

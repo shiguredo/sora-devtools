@@ -7,11 +7,11 @@
 
 We will not respond to PRs or issues that have not been discussed on Discord. Also, Discord is only available in Japanese.
 
-Please read https://github.com/shiguredo/oss/blob/master/README.en.md before use.
+Please read <https://github.com/shiguredo/oss/blob/master/README.en.md> before use.
 
 ## 時雨堂のオープンソースソフトウェアについて
 
-利用前に https://github.com/shiguredo/oss をお読みください。
+利用前に <https://github.com/shiguredo/oss> をお読みください。
 
 ## 概要
 
@@ -25,10 +25,10 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 **このサイトだけでは WebRTC SFU を試すことはできません。WebRTC SFU Sora を別途用意してください**
 
 開発版 (develop ブランチ) がデプロイされています。
-https://sora-devtools.shiguredo.app
+<https://sora-devtools.shiguredo.app>
 
 正式版 (master ブランチ) がデプロイされています。
-https://master.sora-devtools.pages.dev
+<https://master.sora-devtools.pages.dev>
 
 ## スクリーンショット
 
@@ -36,28 +36,22 @@ https://master.sora-devtools.pages.dev
 
 ## 利用技術
 
-- Sora JavaScript SDK
-  - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
-- Next.js
-  - [Next\.js by Vercel \- The React Framework](https://nextjs.org/)
-- TypeScript
-  - [TypeScript: Typed JavaScript at Any Scale\.](https://www.typescriptlang.org/)
-- React
-  - [React – A JavaScript library for building user interfaces](https://reactjs.org/)
-- Redux
-  - [Redux \- A predictable state container for JavaScript apps\. \| Redux](https://redux.js.org/)
-- Redux Toolkit
-  - [Redux Toolkit \| Redux Toolkit](https://redux-toolkit.js.org/)
-- Bootstrap
-  - [Bootstrap · The most popular HTML, CSS, and JS library in the world\.](https://getbootstrap.com/)
-- Media Processors
+- [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
+- [Next\.js](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [React](https://reactjs.org/)
+- [Redux](https://redux.js.org/)
+  - [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Bootstrap](https://getbootstrap.com/)
+  - [React Bootstrap \| React Bootstrap](https://react-bootstrap.github.io/)
+- [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
   - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
-- pnpm
-  - [Fast, disk space efficient package manager \| pnpm](https://pnpm.io/)
-- Biome
-  - [Biome](https://biomejs.dev/)
+- [Playwright](https://playwright.dev/)
+- [Vitest](https://vitest.dev/)
+- [pnpm](https://pnpm.io/)
+- [Biome](https://biomejs.dev/)
 
 ## 特徴
 
@@ -88,9 +82,7 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 
 例えば multi_sendrecv で設定を弄らなかった場合は以下のような値になります。
 
-```
-https://example.com/devtools?multistream=true&role=sendrecv
-```
+`https://example.com/devtools?multistream=true&role=sendrecv`
 
 ## 用語集
 
@@ -167,8 +159,8 @@ https://example.com/devtools?multistream=true&role=sendrecv
 
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-```
-Copyright 2017-2023, Shiguredo Inc.
+```text
+Copyright 2017-2024, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
 
 Licensed under the Apache License, Version 2.0 (the "License");

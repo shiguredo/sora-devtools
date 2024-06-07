@@ -1,33 +1,61 @@
-import React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type React from 'react'
+import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setDisplayResolution } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { DISPLAY_RESOLUTIONS } from '@/constants'
-import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel'
+
+type DisplayResolutionData = {
+  label: string
+  value: string
+}
+
+const DISPLAY_RESOLUTION_DATA_LIST = Array<DisplayResolutionData>(
+  { label: '未指定', value: '' },
+  { label: '144p', value: '256x144' },
+  { label: '240p', value: '320x240' },
+  { label: '360p', value: '640x360' },
+  { label: '480p', value: '720x480' },
+  { label: '540p', value: '960x540' },
+  { label: '720p', value: '1280x720' },
+  { label: '1080p', value: '1920x1080' },
+  { label: '1440p', value: '2560x1440' },
+  { label: '2160p', value: '3840x2160' },
+)
+
+const DropdownItem = ({ label, value }: DisplayResolutionData) => {
+  const dispatch = useAppDispatch()
+  return (
+    <Dropdown.Item as="button" onClick={() => dispatch(setDisplayResolution(value))}>
+      {label} {value !== '' && `(${value})`}
+    </Dropdown.Item>
+  )
+}
 
 export const DisplayResolutionForm: React.FC = () => {
   const displayResolution = useAppSelector((state) => state.displayResolution)
   const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, DISPLAY_RESOLUTIONS)) {
-      dispatch(setDisplayResolution(event.target.value))
-    }
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setDisplayResolution(event.target.value))
   }
   return (
     <FormGroup className="form-inline" controlId="displayResolution">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
-      <FormSelect name="displayResolution" value={displayResolution} onChange={onChange}>
-        {DISPLAY_RESOLUTIONS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
-            </option>
-          )
-        })}
-      </FormSelect>
+      <InputGroup>
+        <Form.Control
+          className="form-display-resolution"
+          type="text"
+          value={displayResolution}
+          onChange={onChange}
+          placeholder="未指定"
+        />
+        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
+          {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
+            return <DropdownItem key={value} label={label} value={value} />
+          })}
+        </DropdownButton>
+      </InputGroup>
     </FormGroup>
   )
 }

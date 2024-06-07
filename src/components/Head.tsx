@@ -1,5 +1,5 @@
 import NextHead from 'next/head'
-import React from 'react'
+import type React from 'react'
 
 export const Head: React.FC = () => {
   return (

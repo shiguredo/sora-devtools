@@ -1,5 +1,5 @@
-import React from 'react'
-import { SimulcastRid } from 'sora-js-sdk'
+import type React from 'react'
+import type { SimulcastRid } from 'sora-js-sdk'
 
 import { requestRtpStream } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
