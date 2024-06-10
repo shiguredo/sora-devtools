@@ -68,8 +68,9 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
       )
       if (selected === null) {
         // selected が未指定の場合は frameWidth が最大のものを選択
-        setSelected(
-          videoStats.sort((a, b) => {
+        const selectedVideoStats = videoStats
+          .filter((s) => s.outboundRtpStats.frameWidth !== undefined)
+          .sort((a, b) => {
             if (a.outboundRtpStats.frameWidth === undefined) {
               return 1
             }
@@ -77,8 +78,10 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
               return -1
             }
             return b.outboundRtpStats.frameWidth - a.outboundRtpStats.frameWidth
-          })[0],
-        )
+          })
+        if (selectedVideoStats.length > 0) {
+          setSelected(selectedVideoStats[0])
+        }
       }
     })()
   }, [statsReport, stream, selected])
