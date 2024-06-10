@@ -468,6 +468,15 @@ video {
   font-weight: normal;
 }
 
+.video-overlay .rid {
+  cursor: pointer;
+}
+
+.video-overlay .rid-selected {
+  cursor: pointer;
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;
