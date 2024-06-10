@@ -82,6 +82,13 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
         if (selectedVideoStats.length > 0) {
           setSelected(selectedVideoStats[0])
         }
+      } else {
+        const selectedStats = videoStats.find(
+          (s) => s.outboundRtpStats.rid === selected.outboundRtpStats.rid,
+        )
+        if (selectedStats !== undefined) {
+          setSelected(selectedStats)
+        }
       }
     })()
   }, [statsReport, stream, selected])
