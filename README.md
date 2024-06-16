@@ -1,6 +1,6 @@
 # Sora DevTools
 
-[![Static Badge]](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)
+![Static Badge](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-devtools.svg)](https://github.com/shiguredo/sora-devtools)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
