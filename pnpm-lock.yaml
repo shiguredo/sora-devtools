@@ -51,8 +51,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(redux@5.0.1)
       sora-js-sdk:
-        specifier: 2024.1.0
-        version: 2024.1.0
+        specifier: 2024.1.1
+        version: 2024.1.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.1
@@ -725,8 +725,8 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
-  caniuse-lite@1.0.30001634:
-    resolution: {integrity: sha512-fbBYXQ9q3+yp1q1gBk86tOFs4pyn/yxFm5ZNP18OXJDfA3txImOY9PhfxVggZ4vRHDqoU8NrKU81eN0OtzOgRA==}
+  caniuse-lite@1.0.30001636:
+    resolution: {integrity: sha512-bMg2vmr8XBsbL6Lr0UHXy/21m84FTxDLWn2FSqMd5PrlbMxwJlQnC2YWYxVgp66PZE+BBNF2jYQUBKCo1FDeZg==}
 
   chai@4.4.1:
     resolution: {integrity: sha512-13sOfMv2+DWduEU+/xbun3LScLoqN17nBeTLUsmDfKdoiC1fr0n9PU4guu4AhRcOVFk/sW8LyZWHuhWtQZiF+g==}
@@ -1222,8 +1222,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  sora-js-sdk@2024.1.0:
-    resolution: {integrity: sha512-SDJHZG7jNHsLO/tLORbcOX/9zycpCoCub/wHy/ZhX6cBtwN6XolMoImKolsnbW8RfirOga36rcQl7oWLrD99WQ==}
+  sora-js-sdk@2024.1.1:
+    resolution: {integrity: sha512-wKV7ADPnBZg32hpTiBAyy53JciujI2kuOnG72nJ5YUlu5tMhapb/+xaQtqORdoYeCpZ201bQvf/qyh0oLE0gEA==}
     engines: {node: '>=18'}
 
   source-map-js@1.2.0:
@@ -1431,8 +1431,8 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
-  ws@8.17.0:
-    resolution: {integrity: sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==}
+  ws@8.17.1:
+    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -2012,7 +2012,7 @@ snapshots:
 
   browserslist@4.23.1:
     dependencies:
-      caniuse-lite: 1.0.30001634
+      caniuse-lite: 1.0.30001636
       electron-to-chromium: 1.4.803
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
@@ -2023,7 +2023,7 @@ snapshots:
 
   cac@6.7.14: {}
 
-  caniuse-lite@1.0.30001634: {}
+  caniuse-lite@1.0.30001636: {}
 
   chai@4.4.1:
     dependencies:
@@ -2250,7 +2250,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.0.0
-      ws: 8.17.0
+      ws: 8.17.1
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -2308,7 +2308,7 @@ snapshots:
       '@next/env': 14.2.4
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001634
+      caniuse-lite: 1.0.30001636
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -2547,7 +2547,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  sora-js-sdk@2024.1.0: {}
+  sora-js-sdk@2024.1.1: {}
 
   source-map-js@1.2.0: {}
 
@@ -2726,7 +2726,7 @@ snapshots:
       siginfo: 2.0.0
       stackback: 0.0.2
 
-  ws@8.17.0: {}
+  ws@8.17.1: {}
 
   xml-name-validator@5.0.0: {}
 
