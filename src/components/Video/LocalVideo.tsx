@@ -35,8 +35,8 @@ const VideoBox: React.FC = () => {
     <>
       <div className="d-flex">
         <div
-          className={`position-relative d-flex·flex-nowrap·align-items-start·video-wrapper${
-            focused ? '·spotlight-focused' : ''
+          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
+            focused ? ' spotlight-focused' : ''
           }`}
         >
           {mediaStats && localMediaStream && localMediaStream.getVideoTracks().length > 0 && (
