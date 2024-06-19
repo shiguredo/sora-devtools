@@ -13,6 +13,8 @@
 
 - [FIX] 映像のオーバーレイ表示の `z-index` を調整する
   - @tnamao
+- [FIX] LocalVideo の overflow-y を hidden に設定し RemoteVideo とスタイルを揃える
+  - @tnamao
 
 ## 2024.1.4
 
