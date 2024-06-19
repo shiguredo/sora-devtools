@@ -456,7 +456,7 @@ video {
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 0.5rem;
   color: white;
-  z-index: 1055;
+  z-index: 999;
 }
 
 .video-overlay .table-video-capabilities {
