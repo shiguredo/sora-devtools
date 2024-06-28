@@ -11,6 +11,10 @@
 
 ## develop
 
+- [FIX] AudioCodecTypeForm の `controlId` を `audioCodecType` に直す
+  - `audioBitRate` となっていた
+  - @tnamao
+
 ## 2024.1.5
 
 **2024-06-20**
