@@ -11,6 +11,12 @@
 
 ## develop
 
+## 2024.1.6
+
+**2024-07-09**
+
+- [FIX] sora-js-sdk のバージョンを 2024.1.2 に上げる
+  - @voluntas
 - [FIX] AudioCodecTypeForm の `controlId` を `audioCodecType` に直す
   - `audioBitRate` となっていた
   - @tnamao
