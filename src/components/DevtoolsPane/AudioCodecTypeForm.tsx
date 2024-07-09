@@ -19,7 +19,7 @@ export const AudioCodecTypeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="audioBitRate">
+    <FormGroup className="form-inline" controlId="audioCodecType">
       <TooltipFormLabel kind="audioCodecType">audioCodecType:</TooltipFormLabel>
       <FormSelect
         name="audioCodecType"

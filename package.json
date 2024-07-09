@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2024.1.5",
+  "version": "2024.1.6",
   "description": "WebRTC SFU Sora DevTools",
   "repository": {
     "type": "git",
@@ -25,26 +25,26 @@
     "cleanup": "git clean -ffdx"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.2.5",
+    "@reduxjs/toolkit": "2.2.6",
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.3",
     "query-string": "9.0.0",
     "react": "18.3.1",
-    "react-bootstrap": "2.10.3",
+    "react-bootstrap": "2.10.4",
     "react-dom": "18.3.1",
     "react-draggable": "4.4.6",
     "react-redux": "9.1.2",
     "redux": "5.0.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "3.1.0",
-    "sora-js-sdk": "2024.1.1"
+    "sora-js-sdk": "2024.1.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.1",
-    "@playwright/test": "1.44.1",
-    "@types/node": "20.14.6",
+    "@biomejs/biome": "1.8.3",
+    "@playwright/test": "1.45.1",
+    "@types/node": "20.14.10",
     "@types/react": "18.3.3",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
@@ -52,8 +52,8 @@
     "dotenv": "16.4.5",
     "jsdom": "24.1.0",
     "next": "14.2.4",
-    "typescript": "5.4.5",
-    "vitest": "1.6.0"
+    "typescript": "5.5.3",
+    "vitest": "2.0.1"
   },
   "packageManager": "pnpm@9.3.0",
   "engines": {
