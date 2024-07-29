@@ -25,12 +25,12 @@
     "cleanup": "git clean -ffdx"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.2.6",
+    "@reduxjs/toolkit": "2.2.7",
     "@shiguredo/light-adjustment": "2023.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.3",
-    "query-string": "9.0.0",
+    "query-string": "9.1.0",
     "react": "18.3.1",
     "react-bootstrap": "2.10.4",
     "react-dom": "18.3.1",
@@ -43,17 +43,17 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@playwright/test": "1.45.1",
-    "@types/node": "20.14.10",
+    "@playwright/test": "1.45.3",
+    "@types/node": "22.0.0",
     "@types/react": "18.3.3",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.3.1",
     "dotenv": "16.4.5",
-    "jsdom": "24.1.0",
+    "jsdom": "24.1.1",
     "next": "14.2.5",
-    "typescript": "5.5.3",
-    "vitest": "2.0.3"
+    "typescript": "5.5.4",
+    "vitest": "2.0.4"
   },
   "packageManager": "pnpm@9.3.0",
   "engines": {
