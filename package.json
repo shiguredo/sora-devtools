@@ -53,7 +53,7 @@
     "jsdom": "24.1.1",
     "next": "14.2.5",
     "typescript": "5.5.4",
-    "vitest": "2.0.4"
+    "vitest": "2.0.5"
   },
   "packageManager": "pnpm@9.3.0",
   "engines": {
