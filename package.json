@@ -43,8 +43,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@playwright/test": "1.45.3",
-    "@types/node": "22.0.0",
+    "@playwright/test": "1.46.0",
+    "@types/node": "22.1.0",
     "@types/react": "18.3.3",
     "@types/react-redux": "7.1.33",
     "@types/redux-logger": "3.0.13",
@@ -53,7 +53,7 @@
     "jsdom": "24.1.1",
     "next": "14.2.5",
     "typescript": "5.5.4",
-    "vitest": "2.0.4"
+    "vitest": "2.0.5"
   },
   "packageManager": "pnpm@9.3.0",
   "engines": {
