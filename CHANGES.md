@@ -12,6 +12,7 @@
 ## develop
 
 - [ADD] 音声ビットレートの選択肢に 384 kbps を追加する
+- @blaue-fuchs
 
 ### misc
 
