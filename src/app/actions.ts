@@ -81,9 +81,6 @@ export const setInitialParameter = () => {
     if (qsParams.displayResolution !== undefined) {
       dispatch(slice.actions.setDisplayResolution(qsParams.displayResolution))
     }
-    if (qsParams.e2ee !== undefined) {
-      dispatch(slice.actions.setE2EE(qsParams.e2ee))
-    }
     if (qsParams.echoCancellation !== undefined) {
       dispatch(slice.actions.setEchoCancellation(qsParams.echoCancellation))
     }
@@ -246,14 +243,12 @@ export const setInitialParameter = () => {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
     dispatch(slice.actions.setInitialFakeContents())
-    // e2ee が有効な場合は e2ee 初期化処理をする
     const {
       audioStreamingLanguageCode,
       bundleId,
       clientId,
       dataChannelSignaling,
       dataChannels,
-      e2ee,
       ignoreDisconnectWebSocket,
       metadata,
       signalingNotifyMetadata,
@@ -264,20 +259,6 @@ export const setInitialParameter = () => {
       videoH265Params,
       videoAV1Params,
     } = getState()
-    if (e2ee) {
-      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
-      // wasm url が存在する場合は e2ee の初期化処理をする
-      if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-      try {
-        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
-      } catch (_e) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-    }
     // bundleId が存在した場合は enabledBundleId をセットする
     if (bundleId !== '') {
       dispatch(slice.actions.setEnabledBundleId(true))
@@ -432,7 +413,6 @@ export const copyURL = () => {
         state.dataChannels !== '' && state.enabledDataChannels ? state.dataChannels : undefined,
       // URL の長さ短縮のため true 以外は query string に含めない
       reconnect: state.reconnect === true ? true : undefined,
-      e2ee: state.e2ee === true ? true : undefined,
       mediaProcessorsNoiseSuppression:
         state.mediaProcessorsNoiseSuppression === true ? true : undefined,
       // URL の長さ短縮のため false 以外は query string に含めない
@@ -1055,7 +1035,6 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     clientId: state.clientId,
     dataChannelSignaling: state.dataChannelSignaling,
     dataChannels: state.enabledDataChannels ? state.dataChannels : '',
-    e2ee: state.e2ee,
     enabledAudioStreamingLanguageCode: state.enabledAudioStreamingLanguageCode,
     enabledBundleId: state.enabledBundleId,
     enabledClientId: state.enabledClientId,
@@ -1669,26 +1648,6 @@ export const updateMediaStream = () => {
     })
     dispatch(slice.actions.setLocalMediaStream(mediaStream))
     dispatch(slice.actions.setFakeContentsGainNode(gainNode))
-  }
-}
-
-export const setE2EE = (e2ee: boolean) => {
-  return async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
-    if (e2ee) {
-      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
-      // wasm url が存在する場合は e2ee の初期化処理をする
-      if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-      try {
-        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
-      } catch (_e) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-    }
-    dispatch(slice.actions.setE2EE(e2ee))
   }
 }
 

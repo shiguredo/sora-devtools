@@ -128,7 +128,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     debug: parseBooleanParameter(qs.debug),
     debugType: parseSpecifiedStringParameter(qs.debugType, DEBUG_TYPES),
     displayResolution: parseStringParameter(qs.displayResolution),
-    e2ee: parseBooleanParameter(qs.e2ee),
     echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
     echoCancellationType: parseSpecifiedStringParameter(
       qs.echoCancellationType,
@@ -757,10 +756,6 @@ export function createConnectOptions(
   const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
   if (parsedMultistream !== undefined) {
     connectionOptions.multistream = parsedMultistream
-  }
-  // e2ee
-  if (connectionOptionsState.e2ee) {
-    connectionOptions.e2ee = true
   }
   // spotlight
   const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight)

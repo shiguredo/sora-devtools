@@ -28,7 +28,6 @@ import { DataChannelsForm } from './DataChannelsForm'
 import { DisconnectButton } from './DisconnectButton'
 import { DisplayResolutionForm } from './DisplayResolutionForm'
 import { DisposeMediaButton } from './DisposeMediaButton'
-import { E2EEForm } from './E2EEForm'
 import { EchoCancellationForm } from './EchoCancellationForm'
 import { EchoCancellationTypeForm } from './EchoCancellationTypeForm'
 import { FacingModeForm } from './FacingModeForm'
@@ -173,7 +172,6 @@ const RowSpotlightOptions: React.FC = () => {
 
 const RowSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const e2ee = useAppSelector((state) => state.e2ee)
   const enabledBundleId = useAppSelector((state) => state.enabledBundleId)
   const enabledClientId = useAppSelector((state) => state.enabledClientId)
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel)
@@ -188,7 +186,6 @@ const RowSignalingOptions: React.FC = () => {
   )
   const reconnect = useAppSelector((state) => state.reconnect)
   const enabledOptions = [
-    e2ee,
     enabledBundleId,
     enabledClientId,
     enabledDataChannel,
@@ -220,7 +217,6 @@ const RowSignalingOptions: React.FC = () => {
       </Col>
       <Collapse in={!collapsed}>
         <div>
-          <E2EEForm />
           <ReconnectForm />
           <ClientIdForm />
           <MetadataForm />
