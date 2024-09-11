@@ -51,8 +51,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(redux@5.0.1)
       sora-js-sdk:
-        specifier: 2024.1.2
-        version: 2024.1.2
+        specifier: 2024.2.0-canary.0
+        version: 2024.2.0-canary.0
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -1158,8 +1158,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  sora-js-sdk@2024.1.2:
-    resolution: {integrity: sha512-pOg2J48stxUZtG72eMT+/Ao1SjKY4P0aAqdCRwWIl67dAxvVCJapkLdFvWKBwRGMzoIta+VnRlbNZ7A8yqK6RA==}
+  sora-js-sdk@2024.2.0-canary.0:
+    resolution: {integrity: sha512-NIRQP5QuVNeTPxOK/Duvsk7/cTQPaKM/PPVMAqVWNT5PdujgL9oBdlEnH82G3hqF0Zqli+YdOjxR37Ez+dIOAg==}
     engines: {node: '>=18'}
 
   source-map-js@1.2.1:
@@ -2401,7 +2401,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  sora-js-sdk@2024.1.2: {}
+  sora-js-sdk@2024.2.0-canary.0: {}
 
   source-map-js@1.2.1: {}
 
