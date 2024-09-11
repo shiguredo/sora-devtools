@@ -9,7 +9,6 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
   signaling: '#ff00ff',
   notify: '#ffff00',
   push: '#98fb98',
-  e2ee: '#00ffff',
   stats: '#ffc0cb',
 }
 

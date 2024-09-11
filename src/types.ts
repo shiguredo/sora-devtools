@@ -71,7 +71,6 @@ export type SoraDevtoolsState = {
   displayResolution: string
   echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
   echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
-  e2ee: boolean
   enabledBundleId: boolean
   enabledClientId: boolean
   enabledDataChannels: boolean
@@ -343,7 +342,6 @@ export type ConnectionOptionsState = Pick<
   | 'clientId'
   | 'dataChannelSignaling'
   | 'dataChannels'
-  | 'e2ee'
   | 'enabledAudioStreamingLanguageCode'
   | 'enabledBundleId'
   | 'enabledClientId'

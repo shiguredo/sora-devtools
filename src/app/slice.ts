@@ -49,7 +49,6 @@ const initialState: SoraDevtoolsState = {
   dataChannels: '',
   dataChannelMessages: [],
   displayResolution: '',
-  e2ee: false,
   echoCancellation: '',
   echoCancellationType: '',
   enabledClientId: false,
@@ -200,9 +199,6 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['displayResolution']>,
     ) => {
       state.displayResolution = action.payload
-    },
-    setE2EE: (state, action: PayloadAction<boolean>) => {
-      state.e2ee = action.payload
     },
     setEchoCancellation: (state, action: PayloadAction<SoraDevtoolsState['echoCancellation']>) => {
       state.echoCancellation = action.payload

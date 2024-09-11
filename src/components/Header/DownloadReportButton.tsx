@@ -28,7 +28,6 @@ function createDownloadReport(): DownloadReport {
     dataChannels: state.dataChannels,
     debug: state.debug,
     displayResolution: state.displayResolution,
-    e2ee: state.e2ee,
     echoCancellation: state.echoCancellation,
     echoCancellationType: state.echoCancellationType,
     enabledAudioStreamingLanguageCode: state.enabledAudioStreamingLanguageCode,

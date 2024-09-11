@@ -270,14 +270,6 @@ describe('setInitialParameter tests', () => {
     }
   })
 
-  it("should handle 'e2ee'", async () => {
-    for (const value of [true, false]) {
-      setLocationSearch({ e2ee: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().e2ee).toEqual(value)
-    }
-  })
-
   it("should handle 'showStats'", async () => {
     for (const value of [true, false]) {
       setLocationSearch({ showStats: value })
