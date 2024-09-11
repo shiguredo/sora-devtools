@@ -50,6 +50,9 @@ importers:
       redux-thunk:
         specifier: 3.1.0
         version: 3.1.0(redux@5.0.1)
+      sora-devtools:
+        specifier: 'link:'
+        version: 'link:'
       sora-js-sdk:
         specifier: 2024.2.0-canary.0
         version: 2024.2.0-canary.0
