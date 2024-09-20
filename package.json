@@ -40,7 +40,7 @@
     "redux-logger": "3.0.6",
     "redux-thunk": "3.1.0",
     "sora-devtools": "link:",
-    "sora-js-sdk": "2024.2.0-canary.2"
+    "sora-js-sdk": "2024.2.0-canary.3"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.2",
