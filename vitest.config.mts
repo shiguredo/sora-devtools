@@ -1,8 +1,9 @@
+// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
-import { type UserConfigExport, defineConfig } from 'vitest/config'
 
-// https://vitejs.dev/config/
-const config: UserConfigExport = {
+import { defineConfig, } from 'vitest/config'
+
+export default defineConfig({
   plugins: [react()],
   test: {
     // 一旦 app.spec.ts だけをテストするようにする
@@ -10,6 +11,4 @@ const config: UserConfigExport = {
     globals: true,
     environment: 'jsdom',
   },
-}
-
-export default defineConfig(config)
+})
