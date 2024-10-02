@@ -54,8 +54,8 @@ importers:
         specifier: 'link:'
         version: 'link:'
       sora-js-sdk:
-        specifier: 2024.2.0-canary.6
-        version: 2024.2.0-canary.6
+        specifier: 2024.2.0-canary.7
+        version: 2024.2.0-canary.7
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.3
@@ -708,8 +708,8 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
-  caniuse-lite@1.0.30001664:
-    resolution: {integrity: sha512-AmE7k4dXiNKQipgn7a2xg558IRqPN3jMQY/rOsbxDhrd0tyChwbITBfiwtnqz8bi2M5mIWbxAYBvk7W7QBUS2g==}
+  caniuse-lite@1.0.30001666:
+    resolution: {integrity: sha512-gD14ICmoV5ZZM1OdzPWmpx+q4GyefaK06zi8hmfHV5xe4/2nOQX3+Dw5o+fSqOws2xVwL9j+anOPFwHzdEdV4g==}
 
   chai@5.1.1:
     resolution: {integrity: sha512-pT1ZgP8rPNqUgieVaEY+ryQr6Q4HXNg8Ei9UnLUrjN4IA7dvQC5JB+/kxVcPNDHyBcc/26CXPkbNzq3qwrOEKA==}
@@ -1106,8 +1106,8 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
-  sora-js-sdk@2024.2.0-canary.6:
-    resolution: {integrity: sha512-/PjHpySNpEubAoFwFtBx3S/1gtRPZsJ6M8QMCtcf2ULLTavn4U8Bx1zBRM4UuGxGzwfnXQPSweUhhXBXij+mEw==}
+  sora-js-sdk@2024.2.0-canary.7:
+    resolution: {integrity: sha512-W41VKsGc+coafcw13rptDt6qaveClL2nF1mSwqQaxSghIwOG46pL3R5wOt48qtzX1mQVK0svj+X6SHTKW/0gYg==}
     engines: {node: '>=18'}
 
   source-map-js@1.2.1:
@@ -1859,7 +1859,7 @@ snapshots:
 
   browserslist@4.24.0:
     dependencies:
-      caniuse-lite: 1.0.30001664
+      caniuse-lite: 1.0.30001666
       electron-to-chromium: 1.5.31
       node-releases: 2.0.18
       update-browserslist-db: 1.1.1(browserslist@4.24.0)
@@ -1870,7 +1870,7 @@ snapshots:
 
   cac@6.7.14: {}
 
-  caniuse-lite@1.0.30001664: {}
+  caniuse-lite@1.0.30001666: {}
 
   chai@5.1.1:
     dependencies:
@@ -2101,7 +2101,7 @@ snapshots:
       '@next/env': 14.2.14
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001664
+      caniuse-lite: 1.0.30001666
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -2294,7 +2294,7 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  sora-js-sdk@2024.2.0-canary.6: {}
+  sora-js-sdk@2024.2.0-canary.7: {}
 
   source-map-js@1.2.1: {}
 
