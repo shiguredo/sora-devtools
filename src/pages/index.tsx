@@ -66,7 +66,7 @@ const Index: React.FC = () => {
                 simulcast: true,
                 videoBitRate: '3000',
                 videoCodecType: 'VP8',
-                resolution: '720p (1280x720)',
+                resolution: '1280x720',
               }}
             />
             <Link
@@ -76,7 +76,7 @@ const Index: React.FC = () => {
                 simulcast: true,
                 videoBitRate: '3000',
                 videoCodecType: 'VP8',
-                resolution: '720p (1280x720)',
+                resolution: '1280x720',
               }}
             />
             <Link
