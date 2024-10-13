@@ -73,19 +73,30 @@ def run_pnpm_operations(dry_run: bool) -> None:
 
 
 # git コミット、タグ、プッシュを実行
-def git_operations(new_version: str, dry_run: bool) -> None:
+def git_commit_version(new_version: str, dry_run: bool) -> None:
+    if dry_run:
+        print("Dry-run: Would run 'git add package.json'")
+        print(f"Dry-run: Would run 'git commit -m Bump version to {new_version}'")
+    else:
+        subprocess.run(["git", "add", "package.json"], check=True)
+        subprocess.run(
+            ["git", "commit", "-m", f"Bump version to {new_version}"], check=True
+        )
+        print(f"Version bumped and committed: {new_version}")
+
+
+# git コミット、タグ、プッシュを実行
+def git_operations_after_build(new_version: str, dry_run: bool) -> None:
     if dry_run:
         print("Dry-run: Would run 'git add dist/'")
-        print("Dry-run: Would run 'git add package.json' and 'git add pnpm-lock.yaml'")
-        print(f"Dry-run: Would run 'git commit -m Bump version to {new_version}'")
+        print(f"Dry-run: Would run 'git commit -m Add dist files for {new_version}'")
         print(f"Dry-run: Would run 'git tag {new_version}'")
         print("Dry-run: Would run 'git push'")
         print(f"Dry-run: Would run 'git push origin {new_version}'")
     else:
         subprocess.run(["git", "add", "dist/"], check=True)
-        subprocess.run(["git", "add", "package.json"], check=True)
         subprocess.run(
-            ["git", "commit", "-m", f"Bump version to {new_version}"], check=True
+            ["git", "commit", "-m", f"Add dist files for {new_version}"], check=True
         )
         subprocess.run(["git", "tag", new_version], check=True)
         subprocess.run(["git", "push"], check=True)
@@ -112,11 +123,14 @@ def main() -> None:
     if not new_version:
         return  # ユーザーが確認をキャンセルした場合、処理を中断
 
+    # バージョン更新後にまず git commit
+    git_commit_version(new_version, args.dry_run)
+
     # pnpm install & build 実行
     run_pnpm_operations(args.dry_run)
 
-    # git 操作
-    git_operations(new_version, args.dry_run)
+    # ビルド後のファイルを git commit, タグ付け、プッシュ
+    git_operations_after_build(new_version, args.dry_run)
 
 
 if __name__ == "__main__":
