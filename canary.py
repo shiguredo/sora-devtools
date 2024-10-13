@@ -63,22 +63,6 @@ def update_version(file_path: str, dry_run: bool) -> Optional[str]:
     return new_version
 
 
-# pnpm install を実行し、pnpm-lock.yaml を git に追加
-def run_pnpm_install(dry_run: bool) -> None:
-    if dry_run:
-        print("Dry-run: Would run 'pnpm install' and add 'pnpm-lock.yaml' to git")
-    else:
-        # pnpm install の実行
-        result = subprocess.run(
-            ["pnpm", "install"], check=True, capture_output=True, text=True
-        )
-        print(result.stdout)
-
-        # pnpm-lock.yaml ファイルを git に追加
-        subprocess.run(["git", "add", "pnpm-lock.yaml"], check=True)
-        print("Added 'pnpm-lock.yaml' to git")
-
-
 # git コミット、タグ、プッシュを実行
 def git_operations(new_version: str, dry_run: bool) -> None:
     if dry_run:
@@ -86,7 +70,7 @@ def git_operations(new_version: str, dry_run: bool) -> None:
         print(f"Dry-run: Would run 'git commit -m Bump version to {new_version}'")
         print(f"Dry-run: Would run 'git tag {new_version}'")
         print("Dry-run: Would run 'git push'")
-        print("Dry-run: Would run 'git push --tags'")
+        print(f"Dry-run: Would run 'git push origin {new_version}'")
     else:
         subprocess.run(["git", "add", "package.json"], check=True)
         subprocess.run(
@@ -94,7 +78,7 @@ def git_operations(new_version: str, dry_run: bool) -> None:
         )
         subprocess.run(["git", "tag", new_version], check=True)
         subprocess.run(["git", "push"], check=True)
-        subprocess.run(["git", "push", "--tags"], check=True)
+        subprocess.run(["git", "push", "origin", new_version], check=True)
 
 
 # メイン処理
@@ -116,9 +100,6 @@ def main() -> None:
 
     if not new_version:
         return  # ユーザーが確認をキャンセルした場合、処理を中断
-
-    # pnpm install 実行
-    run_pnpm_install(args.dry_run)
 
     # git 操作
     git_operations(new_version, args.dry_run)
