@@ -63,15 +63,26 @@ def update_version(file_path: str, dry_run: bool) -> Optional[str]:
     return new_version
 
 
+# pnpm install & pnpm build 実行
+def run_pnpm_operations(dry_run: bool) -> None:
+    if dry_run:
+        print("Dry-run: Would run 'pnpm run dist'")
+    else:
+        subprocess.run(["pnpm", "run", "dist"], check=True)
+        print("pnpm run dist executed")
+
+
 # git コミット、タグ、プッシュを実行
 def git_operations(new_version: str, dry_run: bool) -> None:
     if dry_run:
+        print("Dry-run: Would run 'git add dist/'")
         print("Dry-run: Would run 'git add package.json' and 'git add pnpm-lock.yaml'")
         print(f"Dry-run: Would run 'git commit -m Bump version to {new_version}'")
         print(f"Dry-run: Would run 'git tag {new_version}'")
         print("Dry-run: Would run 'git push'")
         print(f"Dry-run: Would run 'git push origin {new_version}'")
     else:
+        subprocess.run(["git", "add", "dist/"], check=True)
         subprocess.run(["git", "add", "package.json"], check=True)
         subprocess.run(
             ["git", "commit", "-m", f"Bump version to {new_version}"], check=True
@@ -84,7 +95,7 @@ def git_operations(new_version: str, dry_run: bool) -> None:
 # メイン処理
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Update package.json version, run npm install, and commit changes."
+        description="Update package.json version, run pnpm install, build, and commit changes."
     )
     parser.add_argument(
         "--dry-run",
@@ -100,6 +111,9 @@ def main() -> None:
 
     if not new_version:
         return  # ユーザーが確認をキャンセルした場合、処理を中断
+
+    # pnpm install & build 実行
+    run_pnpm_operations(args.dry_run)
 
     # git 操作
     git_operations(new_version, args.dry_run)
