@@ -76,11 +76,12 @@ def run_pnpm_operations(dry_run: bool) -> None:
 def git_commit_version(new_version: str, dry_run: bool) -> None:
     if dry_run:
         print("Dry-run: Would run 'git add package.json'")
-        print(f"Dry-run: Would run 'git commit -m Bump version to {new_version}'")
+        print(f"Dry-run: Would run '[canary] Bump version to {new_version}'")
     else:
         subprocess.run(["git", "add", "package.json"], check=True)
         subprocess.run(
-            ["git", "commit", "-m", f"Bump version to {new_version}"], check=True
+            ["git", "commit", "-m", f"[canary] Bump version to {new_version}"],
+            check=True,
         )
         print(f"Version bumped and committed: {new_version}")
 
@@ -89,14 +90,15 @@ def git_commit_version(new_version: str, dry_run: bool) -> None:
 def git_operations_after_build(new_version: str, dry_run: bool) -> None:
     if dry_run:
         print("Dry-run: Would run 'git add dist/'")
-        print(f"Dry-run: Would run 'git commit -m Add dist files for {new_version}'")
+        print(f"Dry-run: Would run '[canary] Add dist files for {new_version}'")
         print(f"Dry-run: Would run 'git tag {new_version}'")
         print("Dry-run: Would run 'git push'")
         print(f"Dry-run: Would run 'git push origin {new_version}'")
     else:
         subprocess.run(["git", "add", "dist/"], check=True)
         subprocess.run(
-            ["git", "commit", "-m", f"Add dist files for {new_version}"], check=True
+            ["git", "commit", "-m", f"[canary] Add dist files for {new_version}"],
+            check=True,
         )
         subprocess.run(["git", "tag", new_version], check=True)
         subprocess.run(["git", "push"], check=True)
