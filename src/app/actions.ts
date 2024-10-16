@@ -670,9 +670,8 @@ async function createMediaStream(
     )
     return [mediaStream, gainNode]
   }
-  if (state.mediaType === 'mp4Media') {
-      throw 'todo'
-      // return [mediaStream, null]
+  if (state.mediaType === 'mp4Media' && state.mp4MediaStream !== undefined) {
+    return [state.mp4MediaStream.play({ repeat: true }), null]
   }
   if (navigator.mediaDevices === undefined) {
     throw new Error('Failed to call getUserMedia. Make sure domain is secure')
@@ -1982,6 +1981,7 @@ export const {
   setAudioStreamingLanguageCode,
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
+  loadMp4File,
   setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
