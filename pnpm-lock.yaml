@@ -12,8 +12,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0(react-redux@9.1.2(@types/react@18.3.11)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
       '@shiguredo/light-adjustment':
-        specifier: 2023.2.0
-        version: 2023.2.0
+        specifier: 2024.1.0
+        version: 2024.1.0
       '@shiguredo/mp4-media-stream':
         specifier: 2024.1.0
         version: 2024.1.0
@@ -576,8 +576,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@shiguredo/light-adjustment@2023.2.0':
-    resolution: {integrity: sha512-QBDOrBJe8nDc2NrldtwA0GI57beDiZXTO0T4/MPElHeShnu27yajo2GTQ3mzIiussFS+YTZMH1Ml4p9s5hML4w==}
+  '@shiguredo/light-adjustment@2024.1.0':
+    resolution: {integrity: sha512-s1kRIoC9RxLrymkz8YQiHo1ngUmzcMff8hVXgYGXeo5U4HUgToBJWbpT5JrITXZGSmAihRpMGk74YrlIcgHrow==}
 
   '@shiguredo/mp4-media-stream@2024.1.0':
     resolution: {integrity: sha512-A0nZwzpvzP+yv8TdQDOWf4JTizRMrAQ7WV98Rp/VTEYrhvNtFmh3iHrBVI3hS7FsQguJIp6nXzN8vh1SMoBEGA==}
@@ -1704,9 +1704,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.24.0':
     optional: true
 
-  '@shiguredo/light-adjustment@2023.2.0':
-    dependencies:
-      '@types/dom-mediacapture-transform': 0.1.10
+  '@shiguredo/light-adjustment@2024.1.0': {}
 
   '@shiguredo/mp4-media-stream@2024.1.0': {}
 
