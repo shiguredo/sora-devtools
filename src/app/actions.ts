@@ -670,6 +670,10 @@ async function createMediaStream(
     )
     return [mediaStream, gainNode]
   }
+  if (state.mediaType === 'mp4Media') {
+      throw 'todo'
+      // return [mediaStream, null]
+  }
   if (navigator.mediaDevices === undefined) {
     throw new Error('Failed to call getUserMedia. Make sure domain is secure')
   }

@@ -74,6 +74,7 @@ export const MediaTypeForm: React.FC = () => {
           onChange={onChange}
         />
       )}
+      <FormRadio label="mp4Media" mediaType={mediaType} disabled={disabled} onChange={onChange} />
     </FormGroup>
   )
 }
