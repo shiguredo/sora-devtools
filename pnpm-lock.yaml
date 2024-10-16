@@ -14,6 +14,9 @@ importers:
       '@shiguredo/light-adjustment':
         specifier: 2023.2.0
         version: 2023.2.0
+      '@shiguredo/mp4-media-stream':
+        specifier: 2024.1.0
+        version: 2024.1.0
       '@shiguredo/noise-suppression':
         specifier: 2022.4.2
         version: 2022.4.2
@@ -575,6 +578,9 @@ packages:
 
   '@shiguredo/light-adjustment@2023.2.0':
     resolution: {integrity: sha512-QBDOrBJe8nDc2NrldtwA0GI57beDiZXTO0T4/MPElHeShnu27yajo2GTQ3mzIiussFS+YTZMH1Ml4p9s5hML4w==}
+
+  '@shiguredo/mp4-media-stream@2024.1.0':
+    resolution: {integrity: sha512-A0nZwzpvzP+yv8TdQDOWf4JTizRMrAQ7WV98Rp/VTEYrhvNtFmh3iHrBVI3hS7FsQguJIp6nXzN8vh1SMoBEGA==}
 
   '@shiguredo/noise-suppression@2022.4.2':
     resolution: {integrity: sha512-cgNgDcqiamc2VDpWYVjZXEIGwEio51QvKcdipf452gTESie1PR6rqZaKVwHxuABgsudKGq/1FrBlui9KCdFAtg==}
@@ -1701,6 +1707,8 @@ snapshots:
   '@shiguredo/light-adjustment@2023.2.0':
     dependencies:
       '@types/dom-mediacapture-transform': 0.1.10
+
+  '@shiguredo/mp4-media-stream@2024.1.0': {}
 
   '@shiguredo/noise-suppression@2022.4.2':
     dependencies:
