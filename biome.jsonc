@@ -9,10 +9,13 @@
       "all": true,
       "suspicious": {
         "noExplicitAny": "off",
+        // React 利用しているので off
         "noReactSpecificProps": "off"
       },
       "style": {
+        // snake_case にしたいので off
         "useNamingConvention": "off",
+        // default export を使いたいので off
         "noDefaultExport": "off",
         "useFilenamingConvention": "off"
       },
