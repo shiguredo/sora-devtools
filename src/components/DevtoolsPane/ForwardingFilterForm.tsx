@@ -5,7 +5,7 @@ import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ForwardingFilterForm: React.FC = () => {
   const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)

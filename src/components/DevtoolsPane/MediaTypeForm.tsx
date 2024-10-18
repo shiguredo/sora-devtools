@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type FormRadioProps = {
   label: string

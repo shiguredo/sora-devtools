@@ -4,7 +4,7 @@ import { FormGroup } from 'react-bootstrap'
 import { setMediaProcessorsNoiseSuppression } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   const mediaProcessorsNoiseSuppression = useAppSelector(

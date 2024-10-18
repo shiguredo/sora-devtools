@@ -25,9 +25,9 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '../constants'
-import { setInitialParameter } from './actions'
-import { store } from './store'
+} from '../constants.ts'
+import { setInitialParameter } from './actions.ts'
+import { store } from './store.ts'
 
 // このテストは query string にしていた値が適切に割り当てられているかをチェックする
 

@@ -4,14 +4,14 @@ import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-boo
 import { setFrameRate } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type FrameRateData = {
   label: string
   value: string
 }
 
-const FRAME_RATE_DATA = Array<FrameRateData>(
+const FRAME_RATE_DATA = new Array(
   { label: '未指定', value: '' },
   { label: '60', value: '60' },
   { label: '30', value: '30' },

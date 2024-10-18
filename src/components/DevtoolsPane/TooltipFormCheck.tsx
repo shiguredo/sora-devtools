@@ -14,7 +14,6 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
   const { children, kind, checked, onChange, disabled } = props
   const instruction = INSTRUCTIONS[kind]
   if (!instruction) {
-    console.warn(`Could not load description "${kind}"`)
     return <FormLabel>{children}</FormLabel>
   }
   return (

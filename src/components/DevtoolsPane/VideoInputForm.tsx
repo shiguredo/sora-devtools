@@ -4,7 +4,7 @@ import { FormGroup, FormSelect } from 'react-bootstrap'
 import { setVideoInput, updateMediaStream } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoInputForm: React.FC = () => {
   const videoInput = useAppSelector((state) => state.videoInput)

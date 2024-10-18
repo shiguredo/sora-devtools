@@ -5,7 +5,7 @@ import { setEnabledVideoAV1Params, setVideoAV1Params } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoAV1ParamsForm: React.FC = () => {
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)

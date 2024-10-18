@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { VIDEO_BIT_RATES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
 const DISPLAY_VIDEO_BIT_RATE: string[] = VIDEO_BIT_RATES.slice()

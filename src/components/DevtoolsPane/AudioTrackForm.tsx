@@ -4,7 +4,7 @@ import { FormGroup } from 'react-bootstrap'
 import { setAudioTrack } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const AudioTrackForm: React.FC = () => {
   const audioTrack = useAppSelector((state) => state.audioTrack)

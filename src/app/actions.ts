@@ -14,7 +14,7 @@ import type {
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
-} from './../types'
+} from './../types.ts'
 import {
   copy2clipboard,
   createAudioConstraints,
@@ -32,8 +32,8 @@ import {
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
-} from './../utils'
-import { slice } from './slice'
+} from './../utils.ts'
+import { slice } from './slice.ts'
 
 // ページ初期化処理
 export const setInitialParameter = () => {
@@ -276,7 +276,7 @@ export const setInitialParameter = () => {
       dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true))
     }
     // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
-    if (0 < signalingUrlCandidates.length) {
+    if (signalingUrlCandidates.length > 0) {
       dispatch(slice.actions.setEnabledSignalingUrlCandidates(true))
     }
     // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
@@ -422,7 +422,7 @@ export const copyURL = () => {
       videoTrack: state.videoTrack === false ? false : undefined,
       // signalingUrlCandidates
       signalingUrlCandidates:
-        0 < state.signalingUrlCandidates.length && state.enabledSignalingUrlCandidates
+        state.signalingUrlCandidates.length > 0 && state.enabledSignalingUrlCandidates
           ? state.signalingUrlCandidates
           : undefined,
       // apiUrl
@@ -869,7 +869,7 @@ function setSoraCallbacks(
     }
     dispatch(
       slice.actions.setNotifyMessages({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: message,
         transportType: transportType,
       }),
@@ -878,7 +878,7 @@ function setSoraCallbacks(
   sora.on('push', (message: SoraPushMessage, transportType: TransportType) => {
     dispatch(
       slice.actions.setPushMessages({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: message,
         transportType: transportType,
       }),
@@ -985,7 +985,7 @@ function setSoraCallbacks(
   })
   sora.on('timeline', (event) => {
     const message = {
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
       type: event.type,
       data: event.data,
       dataChannelId: event.dataChannelId,
@@ -1003,7 +1003,7 @@ function setSoraCallbacks(
   })
   sora.on('signaling', (event) => {
     const message = {
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
       transportType: event.transportType,
       type: event.type,
       data: event.data,
@@ -1013,7 +1013,7 @@ function setSoraCallbacks(
   sora.on('message', (event) => {
     dispatch(
       slice.actions.setDataChannelMessage({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         label: event.label,
         data: event.data,
       }),
@@ -1070,7 +1070,7 @@ function createSoraDevtoolsTimelineMessage(type: string, data?: unknown): Timeli
   return {
     type: type,
     logType: 'sora-devtools',
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     data: data,
   }
 }
@@ -1695,7 +1695,7 @@ export const setMicDevice = (micDevice: boolean) => {
           throw error
         },
       )
-      if (0 < mediaStream.getAudioTracks().length) {
+      if (mediaStream.getAudioTracks().length > 0) {
         if (
           state.soraContents.sora &&
           state.soraContents.connectionStatus === 'connected' &&
@@ -1791,7 +1791,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
           throw error
         },
       )
-      if (0 < mediaStream.getVideoTracks().length) {
+      if (mediaStream.getVideoTracks().length > 0) {
         if (
           state.soraContents.sora &&
           state.soraContents.connectionStatus === 'connected' &&

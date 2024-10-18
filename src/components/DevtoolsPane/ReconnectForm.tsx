@@ -5,7 +5,7 @@ import { setReconnect } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ReconnectForm: React.FC = () => {
   const reconnect = useAppSelector((state) => state.reconnect)

@@ -4,14 +4,14 @@ import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-boo
 import { setDisplayResolution } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type DisplayResolutionData = {
   label: string
   value: string
 }
 
-const DISPLAY_RESOLUTION_DATA_LIST = Array<DisplayResolutionData>(
+const DISPLAY_RESOLUTION_DATA_LIST = new Array(
   { label: '未指定', value: '' },
   { label: '144p', value: '256x144' },
   { label: '240p', value: '320x240' },
