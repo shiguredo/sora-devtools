@@ -14,7 +14,7 @@ import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBy
 import { Video } from './Video.tsx'
 import { VolumeVisualizer } from './VolumeVisualizer.tsx'
 
-const rtcMediaStreamTrackRegex = /^RTCMediaStreamTrack/;
+const rtcMediaStreamTrackRegex = /^RTCMediaStreamTrack/
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
