@@ -16,13 +16,9 @@
         "noDefaultExport": "off",
         "useFilenamingConvention": "off"
       },
-      "nursery":{},
       "complexity": {
         "useSimplifiedLogicExpression": "off",
         "noExcessiveCognitiveComplexity": "off"
-      },
-      "correctness":{
-        "noUndeclaredDependencies": "off"
       }
     }
   },
