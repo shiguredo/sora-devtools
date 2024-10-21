@@ -12,7 +12,6 @@ import type {
 
 import type {
   ASPECT_RATIO_TYPES,
-  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -48,7 +47,7 @@ export type RemoteClient = {
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[]
   audio: boolean
-  audioBitRate: (typeof AUDIO_BIT_RATES)[number]
+  audioBitRate: string
   audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
   audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]
   audioInput: string
