@@ -28,7 +28,6 @@ import {
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from './constants.ts'
@@ -156,7 +155,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     ),
     resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
-    videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
+    videoBitRate: parseStringParameter(qs.videoBitRate),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
     videoVP9Params: parseStringParameter(qs.videoVP9Params),
     videoH264Params: parseStringParameter(qs.videoH264Params),
