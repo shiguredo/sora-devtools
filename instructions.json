@@ -33,7 +33,7 @@
     "description": "音声のコーデックタイプを指定します。"
   },
   "audioBitRate": {
-    "description": "音声のビットレートを指定します。"
+    "description": "音声のビットレートを指定します。\n6 ~ 510 kbps の範囲で指定できます。"
   },
   "video": {
     "description": "映像配信をするかどうかを指定します。"
