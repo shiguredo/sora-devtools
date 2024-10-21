@@ -1,10 +1,10 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setVideoBitRate } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { VIDEO_BIT_RATES } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+import { isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
@@ -12,34 +12,53 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 const DISPLAY_VIDEO_BIT_RATE: string[] = VIDEO_BIT_RATES.slice()
 DISPLAY_VIDEO_BIT_RATE.splice(VIDEO_BIT_RATES.indexOf('15000') + 1, 0, 'support-message')
 
+const dropdownItemLabel = (value: string) => {
+  if (value === 'support-message') {
+    return '以下はサポート外です'
+  }
+  return value === '' ? '未指定' : value
+}
+
 export const VideoBitRateForm: React.FC = () => {
   const videoBitRate = useAppSelector((state) => state.videoBitRate)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
   const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, VIDEO_BIT_RATES)) {
-      dispatch(setVideoBitRate(event.target.value))
-    }
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setVideoBitRate(event.target.value))
   }
   return (
     <FormGroup className="form-inline" controlId="videoBitRate">
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
-      <FormSelect name="videoBitRate" value={videoBitRate} onChange={onChange} disabled={disabled}>
-        {DISPLAY_VIDEO_BIT_RATE.map((value) => {
-          let text = value
-          if (value === '') {
-            text = '未指定'
-          } else if (value === 'support-message') {
-            text = '以下はサポート外です'
-          }
-          return (
-            <option key={value} value={value} disabled={value === 'support-message'}>
-              {text}
-            </option>
-          )
-        })}
-      </FormSelect>
+      <InputGroup>
+        <Form.Control
+          className="form-video-bit-rate"
+          type="text"
+          value={videoBitRate}
+          onChange={onChange}
+          placeholder="未指定"
+          disabled={disabled}
+        />
+        <DropdownButton
+          variant="outline-secondary form-template-dropdown"
+          title=""
+          align="end"
+          disabled={disabled}
+        >
+          {DISPLAY_VIDEO_BIT_RATE.map((value) => {
+            return (
+              <Dropdown.Item
+                key={value}
+                as="button"
+                onClick={() => dispatch(setVideoBitRate(value))}
+                disabled={value === 'support-message'}
+              >
+                {dropdownItemLabel(value)}
+              </Dropdown.Item>
+            )
+          })}
+        </DropdownButton>
+      </InputGroup>
     </FormGroup>
   )
 }

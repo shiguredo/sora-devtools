@@ -7,7 +7,6 @@ import type { ConnectionOptions } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
-  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -29,7 +28,6 @@ import {
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from './constants.ts'
@@ -117,7 +115,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const result: Partial<QueryStringParameters> = {
     apiUrl: parseStringParameter(qs.apiUrl),
     audio: parseBooleanParameter(qs.audio),
-    audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
+    audioBitRate: parseStringParameter(qs.audioBitRate),
     audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
     audioStreamingLanguageCode: parseStringParameter(qs.audioStreamingLanguageCode),
     autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
@@ -157,7 +155,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     ),
     resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
-    videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
+    videoBitRate: parseStringParameter(qs.videoBitRate),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
     videoVP9Params: parseStringParameter(qs.videoVP9Params),
     videoH264Params: parseStringParameter(qs.videoH264Params),

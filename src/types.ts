@@ -12,7 +12,6 @@ import type {
 
 import type {
   ASPECT_RATIO_TYPES,
-  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -34,7 +33,6 @@ import type {
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from '@/constants'
@@ -48,7 +46,7 @@ export type RemoteClient = {
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[]
   audio: boolean
-  audioBitRate: (typeof AUDIO_BIT_RATES)[number]
+  audioBitRate: string
   audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
   audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]
   audioInput: string
@@ -134,7 +132,7 @@ export type SoraDevtoolsState = {
   spotlightFocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number]
   spotlightUnfocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number]
   video: boolean
-  videoBitRate: (typeof VIDEO_BIT_RATES)[number]
+  videoBitRate: string
   videoCodecType: (typeof VIDEO_CODEC_TYPES)[number]
   videoContentHint: (typeof VIDEO_CONTENT_HINTS)[number]
   videoInput: string
