@@ -44,11 +44,11 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@playwright/test": "1.48.1",
-    "@types/node": "22.7.6",
+    "@types/node": "22.7.7",
     "@types/react": "18.3.11",
     "@types/react-redux": "7.1.34",
     "@types/redux-logger": "3.0.13",
-    "@vitejs/plugin-react": "4.3.2",
+    "@vitejs/plugin-react": "4.3.3",
     "dotenv": "16.4.5",
     "jsdom": "25.0.1",
     "next": "14.2.15",
