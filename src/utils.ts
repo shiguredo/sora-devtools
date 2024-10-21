@@ -7,7 +7,6 @@ import type { ConnectionOptions } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
-  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -117,7 +116,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const result: Partial<QueryStringParameters> = {
     apiUrl: parseStringParameter(qs.apiUrl),
     audio: parseBooleanParameter(qs.audio),
-    audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
+    audioBitRate: parseStringParameter(qs.audioBitRate),
     audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
     audioStreamingLanguageCode: parseStringParameter(qs.audioStreamingLanguageCode),
     autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
