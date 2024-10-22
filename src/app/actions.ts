@@ -459,7 +459,7 @@ export const copyURL = () => {
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
-type craeteMediaStreamPickedState = Pick<
+type createMediaStreamPickedState = Pick<
   SoraDevtoolsState,
   | 'aspectRatio'
   | 'audio'
@@ -492,7 +492,7 @@ type craeteMediaStreamPickedState = Pick<
 >
 async function createMediaStream(
   dispatch: Dispatch,
-  state: craeteMediaStreamPickedState,
+  state: createMediaStreamPickedState,
 ): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = 'MEDIA_CONSTRAINTS'
   if (state.mediaType === 'getDisplayMedia') {
