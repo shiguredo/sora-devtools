@@ -6,7 +6,7 @@ import { Form, FormGroup } from 'react-bootstrap'
 import { loadMp4File } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 // TODO: Mp4MediaFileForm にする？
 export const Mp4FileForm: React.FC = () => {
