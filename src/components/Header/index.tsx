@@ -3,9 +3,9 @@ import { Container, Nav, Navbar } from 'react-bootstrap'
 
 import { useAppSelector } from '@/app/hooks'
 
-import { CopyUrlButton } from './CopyUrlButton'
-import { DebugButton } from './DebugButton'
-import { DownloadReportButton } from './DownloadReportButton'
+import { CopyUrlButton } from './CopyUrlButton.tsx'
+import { DebugButton } from './DebugButton.tsx'
+import { DownloadReportButton } from './DownloadReportButton.tsx'
 
 export const Header: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)

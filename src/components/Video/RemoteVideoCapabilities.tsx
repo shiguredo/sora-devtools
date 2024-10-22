@@ -35,7 +35,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
       }
 
       // RTCRtpReceiver の getStats から codecId を取得
-      let codecId = undefined
+      let codecId: string | undefined
       const receiverStatsReport = await receiver.getStats()
       for (const stats of receiverStatsReport) {
         const [_key, value] = stats
@@ -49,7 +49,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
       }
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
-      let codec = undefined
+      let codec: RTCStatsCodec | undefined
       for (const stats of statsReport) {
         if (stats.type === 'codec') {
           const castedStats = stats as RTCStatsCodec

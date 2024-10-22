@@ -11,8 +11,12 @@
 
 ## develop
 
+- [CHANGE] audioBitRate と videoBitRate を自由に設定できるようにする
+  - 自由入力にし、選択肢以外のビットレートでも Sora の接続パラメータとして使用できるようにする
+  - @tnamao
 - [CHANGE] index ページのサイマルキャストのリンクのうち `resolution` の値の指定に誤りがあったので修正する
   - `720p (1280x720)` を解像度のみの `1280x720` に修正する
+  - @tnamao
 - [ADD] 音声ビットレートの選択肢に 384 kbps を追加する
   - @blaue-fuchs
 

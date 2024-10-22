@@ -4,15 +4,17 @@ import { useState } from 'react'
 import { useAppSelector } from '@/app/hooks'
 import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
 
-import { ConnectionStatusBar } from './ConnectionStatusBar'
-import { JitterButter } from './JitterBuffer'
-import { RemoteVideoCapabilities } from './RemoteVideoCapabilities'
-import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton'
-import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton'
-import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton'
-import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton'
-import { Video } from './Video'
-import { VolumeVisualizer } from './VolumeVisualizer'
+import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
+import { JitterButter } from './JitterBuffer.tsx'
+import { RemoteVideoCapabilities } from './RemoteVideoCapabilities.tsx'
+import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton.tsx'
+import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton.tsx'
+import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton.tsx'
+import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton.tsx'
+import { Video } from './Video.tsx'
+import { VolumeVisualizer } from './VolumeVisualizer.tsx'
+
+const rtcMediaStreamTrackRegex = /^RTCMediaStreamTrack/
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
@@ -26,7 +28,7 @@ function mediaStreamStatsReportFilter(
   })
   const result: RTCMediaStreamTrackStats[] = []
   for (const stats of statsReport) {
-    if (stats.id && !stats.id.match(/^RTCMediaStreamTrack/)) {
+    if (stats.id && !rtcMediaStreamTrackRegex.test(stats.id)) {
       continue
     }
     if ('trackIdentifier' in stats) {

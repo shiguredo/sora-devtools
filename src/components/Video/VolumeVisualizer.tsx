@@ -132,7 +132,7 @@ const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
 }
 
 export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {
-  if (props.micDevice && 0 < props.stream.getAudioTracks().length) {
+  if (props.micDevice && props.stream.getAudioTracks().length > 0) {
     return <Visualizer {...props} />
   }
   return <MutedVisualizer {...props} />

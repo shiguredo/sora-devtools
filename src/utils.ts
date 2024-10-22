@@ -7,7 +7,6 @@ import type { ConnectionOptions } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
-  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -29,10 +28,9 @@ import {
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
-  VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from './constants'
+} from './constants.ts'
 import type {
   ConnectionOptionsState,
   CustomHTMLCanvasElement,
@@ -40,7 +38,7 @@ import type {
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
   SoraDevtoolsState,
-} from './types'
+} from './types.ts'
 
 // UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
@@ -117,7 +115,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const result: Partial<QueryStringParameters> = {
     apiUrl: parseStringParameter(qs.apiUrl),
     audio: parseBooleanParameter(qs.audio),
-    audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
+    audioBitRate: parseStringParameter(qs.audioBitRate),
     audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
     audioStreamingLanguageCode: parseStringParameter(qs.audioStreamingLanguageCode),
     autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
@@ -157,7 +155,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     ),
     resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
-    videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
+    videoBitRate: parseStringParameter(qs.videoBitRate),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
     videoVP9Params: parseStringParameter(qs.videoVP9Params),
     videoH264Params: parseStringParameter(qs.videoH264Params),
@@ -371,7 +369,7 @@ export function createVideoConstraints(
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
-    if (0 < width && 0 < height) {
+    if (width > 0 && height > 0) {
       videoConstraints.width = { exact: width }
       videoConstraints.height = { exact: height }
     }
@@ -507,7 +505,7 @@ export function createGetDisplayMediaVideoConstraints(
   }
   if (resolution) {
     const { width, height } = getVideoSizeByResolution(resolution)
-    if (0 < width && 0 < height) {
+    if (width > 0 && height > 0) {
       videoConstraints.width = width
       videoConstraints.height = height
     }
@@ -528,7 +526,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   gainNode: GainNode | null
 } {
   const mediaStream = new MediaStream()
-  let canvas = null
+  let canvas: HTMLCanvasElement | null = null
   if (parameters.video) {
     canvas = document.createElement('canvas') as CustomHTMLCanvasElement
     // Firefox では getContext を呼ばないと captureStream が失敗する
@@ -542,7 +540,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     }
     mediaStream.addTrack(videoTrack)
   }
-  let gainNode = null
+  let gainNode: GainNode | null = null
   if (parameters.audio) {
     const AudioContext = window.AudioContext || window.webkitAudioContext
     const audioContext = new AudioContext()
@@ -820,12 +818,12 @@ export function createConnectOptions(
   }
   // dataChannels
   if (connectionOptionsState.dataChannels !== '') {
+    // biome-ignore lint/suspicious/noEvolvingTypes: SoraDataChannel 型にする
     let dataChannels = []
     try {
       dataChannels = JSON.parse(connectionOptionsState.dataChannels)
     } catch (_) {
-      // サンプル実装なので warning で回避
-      console.warn('Illegal format DataChannels')
+      // 例外が起きた場合は何もしない
     }
     if (Array.isArray(dataChannels)) {
       connectionOptions.dataChannels = dataChannels

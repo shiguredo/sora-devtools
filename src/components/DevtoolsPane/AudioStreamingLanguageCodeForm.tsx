@@ -5,7 +5,7 @@ import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } f
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const AudioStreamingLanguageCodeForm: React.FC = () => {
   const enabledAudioStreamingLanguageCode = useAppSelector(

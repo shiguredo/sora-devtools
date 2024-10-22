@@ -5,7 +5,7 @@ import { setEnabledVideoH265Params, setVideoH265Params } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoH265ParamsForm: React.FC = () => {
   const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)

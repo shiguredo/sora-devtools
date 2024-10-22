@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { NOISE_SUPPRESSIONS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const NoiseSuppressionForm: React.FC = () => {
   const noiseSuppression = useAppSelector((state) => state.noiseSuppression)

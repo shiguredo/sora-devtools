@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { AUDIO_CODEC_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioCodecTypeForm: React.FC = () => {
   const audioCodecType = useAppSelector((state) => state.audioCodecType)

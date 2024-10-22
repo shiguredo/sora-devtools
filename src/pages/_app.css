@@ -49,6 +49,8 @@ footer .btn {
   padding-bottom: 0.5rem;
 }
 
+.form-audio-bit-rate,
+.form-video-bit-rate,
 .form-resolution,
 .form-display-resolution {
   max-width: 130px;
