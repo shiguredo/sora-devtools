@@ -480,6 +480,7 @@ type createMediaStreamPickedState = Pick<
   | 'mediaProcessorsNoiseSuppression'
   | 'mediaType'
   | 'micDevice'
+  | 'mp4MediaStream'
   | 'noiseSuppression'
   | 'noiseSuppressionProcessor'
   | 'resizeMode'
