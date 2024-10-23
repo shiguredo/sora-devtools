@@ -8,8 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-// TODO: Mp4MediaFileForm にする？
-export const Mp4FileForm: React.FC = () => {
+export const Mp4MediaForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType)
   const dispatch = useAppDispatch()
   const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
