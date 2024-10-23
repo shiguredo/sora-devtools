@@ -34,7 +34,6 @@ import {
   parseQueryString,
 } from './../utils.ts'
 import { slice } from './slice.ts'
-import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 
 // ページ初期化処理
 export const setInitialParameter = () => {
