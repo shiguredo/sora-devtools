@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const Mp4MediaForm: React.FC = () => {
+export const Mp4FileForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType)
   const dispatch = useAppDispatch()
   const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -22,9 +22,10 @@ export const Mp4MediaForm: React.FC = () => {
   if (mediaType !== 'mp4Media') {
     return null
   }
+  // TDOO: 接続中は無効にする
   return (
     <FormGroup className="form-inline" controlId="mp4File">
-      <TooltipFormLabel kind="mp4File">inputFile:</TooltipFormLabel>
+      <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
       <Form.Control type="file" onChange={onChange} />
     </FormGroup>
   )
