@@ -40,6 +40,7 @@ import { MediaStatsForm } from './MediaStatsForm.tsx'
 import { MediaTypeForm } from './MediaTypeForm.tsx'
 import { MetadataForm } from './MetadataForm.tsx'
 import { MicDeviceForm } from './MicDeviceForm.tsx'
+import { Mp4FileForm } from './Mp4FileForm.tsx'
 import { MultistreamForm } from './MultistreamForm.tsx'
 import { NoiseSuppressionForm } from './NoiseSuppressionForm.tsx'
 import { ReconnectForm } from './ReconnectForm.tsx'
@@ -291,6 +292,11 @@ export const RowMediaType: React.FC = () => {
       <Row xs="auto" className="form-row">
         <Col>
           <FakeVolumeForm />
+        </Col>
+      </Row>
+      <Row xs="auto" className="form-row">
+        <Col>
+          <Mp4FileForm />
         </Col>
       </Row>
     </>

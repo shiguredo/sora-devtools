@@ -1,5 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
+import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
 import type {
@@ -92,6 +93,7 @@ const initialState: SoraDevtoolsState = {
   mediaStats: false,
   mediaType: 'getUserMedia',
   metadata: '',
+  mp4MediaStream: null,
   multistream: '',
   mute: false,
   noiseSuppression: '',
@@ -286,6 +288,9 @@ export const slice = createSlice({
     },
     setMediaStats: (state, action: PayloadAction<boolean>) => {
       state.mediaStats = action.payload
+    },
+    setMp4MediaStream: (state, action: PayloadAction<Mp4MediaStream>) => {
+      state.mp4MediaStream = action.payload
     },
     setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {
       state.noiseSuppression = action.payload

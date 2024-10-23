@@ -459,7 +459,7 @@ export const copyURL = () => {
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
-type craeteMediaStreamPickedState = Pick<
+type createMediaStreamPickedState = Pick<
   SoraDevtoolsState,
   | 'aspectRatio'
   | 'audio'
@@ -480,6 +480,7 @@ type craeteMediaStreamPickedState = Pick<
   | 'mediaProcessorsNoiseSuppression'
   | 'mediaType'
   | 'micDevice'
+  | 'mp4MediaStream'
   | 'noiseSuppression'
   | 'noiseSuppressionProcessor'
   | 'resizeMode'
@@ -492,7 +493,7 @@ type craeteMediaStreamPickedState = Pick<
 >
 async function createMediaStream(
   dispatch: Dispatch,
-  state: craeteMediaStreamPickedState,
+  state: createMediaStreamPickedState,
 ): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = 'MEDIA_CONSTRAINTS'
   if (state.mediaType === 'getDisplayMedia') {
@@ -669,6 +670,11 @@ async function createMediaStream(
       ),
     )
     return [mediaStream, gainNode]
+  }
+  if (state.mediaType === 'mp4Media' && state.mp4MediaStream !== null) {
+    // 指定の MP4 を再生するための MediaStream を返す
+    // DevTools ではいったん常に繰り返し再生にしておく
+    return [state.mp4MediaStream.play({ repeat: true }), null]
   }
   if (navigator.mediaDevices === undefined) {
     throw new Error('Failed to call getUserMedia. Make sure domain is secure')
@@ -1679,6 +1685,7 @@ export const setMicDevice = (micDevice: boolean) => {
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
+        mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
@@ -1775,6 +1782,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
+        mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
@@ -1988,6 +1996,7 @@ export const {
   setMediaStats,
   setMediaType,
   setMetadata,
+  setMp4MediaStream,
   setMultistream,
   setNoiseSuppression,
   setNotifyMessages,

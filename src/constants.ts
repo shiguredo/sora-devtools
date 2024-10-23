@@ -47,6 +47,7 @@ export const MEDIA_TYPES = [
   'getDisplayMedia',
   'fakeMedia',
   'mediacaptureRegion',
+  'mp4Media',
 ] as const
 
 export const SPOTLIGHT_NUMBERS = ['', '1', '2', '3', '4', '5', '6', '7', '8'] as const
