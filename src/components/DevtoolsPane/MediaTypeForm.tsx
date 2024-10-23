@@ -74,6 +74,7 @@ export const MediaTypeForm: React.FC = () => {
           onChange={onChange}
         />
       )}
+      // TODO: 非対応ブラウザなら非アクティブにする
       <FormRadio label="mp4Media" mediaType={mediaType} disabled={disabled} onChange={onChange} />
     </FormGroup>
   )

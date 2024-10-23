@@ -1,7 +1,7 @@
 import type { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
+import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import type { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import type { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
-import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -90,7 +90,6 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null
   }
   fakeVolume: string
-  mp4MediaStream?: Mp4MediaStream
   frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -113,6 +112,7 @@ export type SoraDevtoolsState = {
   mediaStats: boolean
   mediaType: (typeof MEDIA_TYPES)[number]
   metadata: string
+  mp4MediaStream: Mp4MediaStream | null
   multistream: (typeof MULTISTREAM)[number]
   mute: boolean
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
