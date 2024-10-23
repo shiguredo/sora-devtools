@@ -24,6 +24,7 @@ export const store = configureStore({
           'fakeContents',
           'dataChannelMessages',
           'logMessages',
+          'mp4MediaStream',
           'notifyMessages',
           'pushMessages',
           'signalingMessages',
