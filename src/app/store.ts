@@ -17,7 +17,7 @@ export const store = configureStore({
           'soraDevtools/setRemoteClient',
           'soraDevtools/setFakeContentsGainNode',
           'soraDevtools/setDataChannelMessage',
-          'soraDevtools/loadMp4File',
+          'soraDevtools/setMp4MediaStream',
         ],
         ignoredPaths: [
           'soraContents',
@@ -30,7 +30,6 @@ export const store = configureStore({
           'lightAdjustmentProcessor',
           'virtualBackgroundProcessor',
           'noiseSuppressionProcessor',
-          'mp4MediaStream',
         ],
       },
       immutableCheck: {
@@ -43,7 +42,6 @@ export const store = configureStore({
           'pushMessages',
           'signalingMessages',
           'noiseSuppressionProcessor',
-          'mp4MediaStream',
         ],
       },
     })
