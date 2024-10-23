@@ -5,11 +5,15 @@ import { Form, FormGroup } from 'react-bootstrap'
 
 import { setMp4MediaStream } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const Mp4FileForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType)
+  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
+  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
   const dispatch = useAppDispatch()
   const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const files = event.target.files
@@ -22,11 +26,10 @@ export const Mp4FileForm: React.FC = () => {
   if (mediaType !== 'mp4Media') {
     return null
   }
-  // TDOO: 接続中は無効にする
   return (
     <FormGroup className="form-inline" controlId="mp4File">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
-      <Form.Control type="file" onChange={onChange} />
+      <Form.Control type="file" disabled={disabled} onChange={onChange} />
     </FormGroup>
   )
 }
