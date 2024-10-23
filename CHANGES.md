@@ -11,6 +11,10 @@
 
 ## develop
 
+- [ADD] mediaType に mp4Media を追加する
+  - 指定された H.264 + Opus の MP4 ファイルからメディアストリームを取得して配信できるようにするもの
+  - Chrome / Edge のみで利用可能
+  - @sile
 - [CHANGE] audioBitRate と videoBitRate を自由に設定できるようにする
   - 自由入力にし、選択肢以外のビットレートでも Sora の接続パラメータとして使用できるようにする
   - @tnamao
