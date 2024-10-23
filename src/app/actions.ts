@@ -34,6 +34,7 @@ import {
   parseQueryString,
 } from './../utils.ts'
 import { slice } from './slice.ts'
+import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 
 // ページ初期化処理
 export const setInitialParameter = () => {
@@ -1685,6 +1686,7 @@ export const setMicDevice = (micDevice: boolean) => {
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
+        mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
@@ -1781,6 +1783,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
+        mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,

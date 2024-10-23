@@ -93,6 +93,7 @@ const initialState: SoraDevtoolsState = {
   mediaStats: false,
   mediaType: 'getUserMedia',
   metadata: '',
+  mp4MediaStream: null,
   multistream: '',
   mute: false,
   noiseSuppression: '',

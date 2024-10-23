@@ -388,6 +388,7 @@ export type DownloadReportParameters = Omit<
   | 'localTestMediaStream'
   | 'logMessages'
   | 'mediaProcessorsNoiseSuppression'
+  | 'mp4MediaStream'
   | 'mute'
   | 'noiseSuppressionProcessor'
   | 'notifyMessages'
