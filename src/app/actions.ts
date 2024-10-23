@@ -672,6 +672,8 @@ async function createMediaStream(
     return [mediaStream, gainNode]
   }
   if (state.mediaType === 'mp4Media' && state.mp4MediaStream !== undefined) {
+    // 指定の MP4 を再生するための MediaStream を返す
+    // DevTools ではいったん常に繰り返し再生にしておく
     return [state.mp4MediaStream.play({ repeat: true }), null]
   }
   if (navigator.mediaDevices === undefined) {
@@ -1982,7 +1984,6 @@ export const {
   setAudioStreamingLanguageCode,
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
-  loadMp4File,
   setFacingMode,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
@@ -1993,6 +1994,7 @@ export const {
   setMediaStats,
   setMediaType,
   setMetadata,
+  setMp4MediaStream,
   setMultistream,
   setNoiseSuppression,
   setNotifyMessages,

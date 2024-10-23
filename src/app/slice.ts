@@ -265,10 +265,6 @@ export const slice = createSlice({
         state.fakeContents.gainNode.gain.setValueAtTime(Number.parseFloat(state.fakeVolume), 0)
       }
     },
-    // TODO: 場所移動 & rename
-    loadMp4File: (state, action: PayloadAction<Mp4MediaStream>) => {
-      state.mp4MediaStream = action.payload
-    },
     setFakeContentsGainNode: (state, action: PayloadAction<GainNode | null>) => {
       state.fakeContents.gainNode = action.payload
     },
@@ -291,6 +287,9 @@ export const slice = createSlice({
     },
     setMediaStats: (state, action: PayloadAction<boolean>) => {
       state.mediaStats = action.payload
+    },
+    setMp4MediaStream: (state, action: PayloadAction<Mp4MediaStream>) => {
+      state.mp4MediaStream = action.payload
     },
     setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {
       state.noiseSuppression = action.payload

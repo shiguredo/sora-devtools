@@ -3,7 +3,7 @@ import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import type React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 
-import { loadMp4File } from '@/app/actions'
+import { setMp4MediaStream } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
@@ -18,7 +18,7 @@ export const Mp4FileForm: React.FC = () => {
       return
     }
     const mp4MediaStream = await Mp4MediaStream.load(files[0])
-    dispatch(loadMp4File(mp4MediaStream))
+    dispatch(setMp4MediaStream(mp4MediaStream))
   }
   if (mediaType !== 'mp4Media') {
     return null
