@@ -41,7 +41,7 @@ export const Mp4FileForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="mp4File">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
-      <Form.Control type="file" disabled={disabled} onChange={onChange} />
+      <Form.Control type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
     </FormGroup>
   )
 }
