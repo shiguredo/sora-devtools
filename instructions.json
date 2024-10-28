@@ -75,10 +75,10 @@
     "description": "シグナリングをするURLを改行区切りで複数指定します。"
   },
   "forwardingFilters": {
-    "description": "デフォルトの転送フィルターを指定します。"
+    "description": "転送フィルターを指定します。"
   },
   "forwardingFilter": {
-    "description": "デフォルトの転送フィルターを指定します。"
+    "description": "転送フィルターを指定します。"
   },
   "audioStreamingLanguageCode": {
     "description": "音声解析用の言語コードを指定します。"
