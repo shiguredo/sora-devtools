@@ -3,7 +3,7 @@ import {
   SelfieSegmentationFocusMask,
 } from '@shiguredo/light-adjustment'
 import queryString from 'query-string'
-import type { ConnectionOptions } from 'sora-js-sdk'
+import type { ConnectionOptions, ForwardingFilter } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
@@ -791,7 +791,7 @@ export function createConnectOptions(
     connectionOptions.forwardingFilter = parseMetadata(
       true,
       connectionOptionsState.forwardingFilter,
-    )
+    ) as ForwardingFilter
   }
   // bundleId
   if (connectionOptionsState.enabledBundleId) {

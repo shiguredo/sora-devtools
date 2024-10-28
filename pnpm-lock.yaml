@@ -54,8 +54,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(redux@5.0.1)
       sora-js-sdk:
-        specifier: 2024.2.0-canary.8
-        version: 2024.2.0-canary.8
+        specifier: 2024.2.0-canary.11
+        version: 2024.2.0-canary.11
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -1218,8 +1218,8 @@ packages:
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
 
-  sora-js-sdk@2024.2.0-canary.8:
-    resolution: {integrity: sha512-4Mckmi0KCQo4+0/G633WemsJsMAKc6UJxqqiBTrNkaDxgO8nHxqjjwKh2b3O7JU5l2hKDH0yOUXQDjbWK3TfUA==}
+  sora-js-sdk@2024.2.0-canary.11:
+    resolution: {integrity: sha512-jQ67qDnqxUf9gtB6mJWKMAOAMwuzXeo3VfEW9ZNdayed/2XcHAWROxiWuoWrEX9wfD7XZeLgieXNnATt0117ng==}
     engines: {node: '>=18'}
 
   source-map-js@1.2.1:
@@ -2499,7 +2499,7 @@ snapshots:
       is-arrayish: 0.3.2
     optional: true
 
-  sora-js-sdk@2024.2.0-canary.8: {}
+  sora-js-sdk@2024.2.0-canary.11: {}
 
   source-map-js@1.2.1: {}
 
