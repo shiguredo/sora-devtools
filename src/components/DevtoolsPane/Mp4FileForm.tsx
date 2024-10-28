@@ -20,8 +20,20 @@ export const Mp4FileForm: React.FC = () => {
     if (files === null || files.length === 0) {
       return
     }
-    const mp4MediaStream = await Mp4MediaStream.load(files[0])
-    dispatch(setMp4MediaStream(mp4MediaStream))
+
+    // MP4 ファイルをロードする
+    try {
+      const mp4MediaStream = await Mp4MediaStream.load(files[0])
+      dispatch(setMp4MediaStream(mp4MediaStream))
+    } catch (e) {
+      // ロードに失敗したらファイル選択をクリアする
+      event.target.value = ''
+
+      // 以前の内容が残っていた場合に備えて null を入れておく
+      dispatch(setMp4MediaStream(null))
+
+      throw e
+    }
   }
   if (mediaType !== 'mp4Media') {
     return null
@@ -29,7 +41,7 @@ export const Mp4FileForm: React.FC = () => {
   return (
     <FormGroup className="form-inline" controlId="mp4File">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
-      <Form.Control type="file" disabled={disabled} onChange={onChange} />
+      <Form.Control type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
     </FormGroup>
   )
 }

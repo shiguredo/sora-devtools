@@ -289,7 +289,7 @@ export const slice = createSlice({
     setMediaStats: (state, action: PayloadAction<boolean>) => {
       state.mediaStats = action.payload
     },
-    setMp4MediaStream: (state, action: PayloadAction<Mp4MediaStream>) => {
+    setMp4MediaStream: (state, action: PayloadAction<Mp4MediaStream | null>) => {
       state.mp4MediaStream = action.payload
     },
     setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {

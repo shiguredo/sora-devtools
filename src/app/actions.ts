@@ -671,7 +671,11 @@ async function createMediaStream(
     )
     return [mediaStream, gainNode]
   }
-  if (state.mediaType === 'mp4Media' && state.mp4MediaStream !== null) {
+  if (state.mediaType === 'mp4Media') {
+    if (state.mp4MediaStream === null) {
+      throw new Error('No MP4 file has been selected')
+    }
+
     // 指定の MP4 を再生するための MediaStream を返す
     // DevTools ではいったん常に繰り返し再生にしておく
     return [state.mp4MediaStream.play({ repeat: true }), null]
