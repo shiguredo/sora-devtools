@@ -21,16 +21,17 @@ export const Mp4FileForm: React.FC = () => {
       return
     }
 
-    // 以前の内容が残っていた場合に備えて事前に null を入れておく
-    dispatch(setMp4MediaStream(null))
-
     // MP4 ファイルをロードする
     try {
       const mp4MediaStream = await Mp4MediaStream.load(files[0])
       dispatch(setMp4MediaStream(mp4MediaStream))
     } catch (e) {
       // ロードに失敗したらファイル選択をクリアする
-      event.target.value = ""
+      event.target.value = ''
+
+      // 以前の内容が残っていた場合に備えて null を入れておく
+      dispatch(setMp4MediaStream(null))
+
       throw e
     }
   }
