@@ -74,6 +74,9 @@
   "signalingUrlCandidates": {
     "description": "シグナリングをするURLを改行区切りで複数指定します。"
   },
+  "forwardingFilters": {
+    "description": "デフォルトの転送フィルターを指定します。"
+  },
   "forwardingFilter": {
     "description": "デフォルトの転送フィルターを指定します。"
   },

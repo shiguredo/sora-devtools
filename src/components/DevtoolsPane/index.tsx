@@ -33,6 +33,7 @@ import { EchoCancellationTypeForm } from './EchoCancellationTypeForm.tsx'
 import { FacingModeForm } from './FacingModeForm.tsx'
 import { FakeVolumeForm } from './FakeVolumeForm.tsx'
 import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
+import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
 import { FrameRateForm } from './FrameRateForm.tsx'
 import { LightAdjustmentForm } from './LightAdjustmentForm.tsx'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm.tsx'
@@ -177,6 +178,7 @@ const RowSignalingOptions: React.FC = () => {
   const enabledClientId = useAppSelector((state) => state.enabledClientId)
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel)
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)
+  const enabledForwardingFilters = useAppSelector((state) => state.enabledForwardingFilters)
   const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)
   const enabledMetadata = useAppSelector((state) => state.enabledMetadata)
   const enabledSignalingNotifyMetadata = useAppSelector(
@@ -191,6 +193,7 @@ const RowSignalingOptions: React.FC = () => {
     enabledClientId,
     enabledDataChannel,
     enabledDataChannels,
+    enabledForwardingFilters,
     enabledForwardingFilter,
     enabledMetadata,
     enabledSignalingNotifyMetadata,
@@ -224,6 +227,7 @@ const RowSignalingOptions: React.FC = () => {
           <BundleIdForm />
           <SignalingNotifyMetadataForm />
           <SignalingUrlCandidatesForm />
+          <ForwardingFiltersForm />
           <ForwardingFilterForm />
           <DataChannelsForm />
           <DataChannelForm />
