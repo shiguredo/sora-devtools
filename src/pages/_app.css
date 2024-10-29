@@ -396,6 +396,16 @@ video {
   right: 10px;
 }
 
+.invalid-json {
+  border-color: var(--bs-form-invalid-border-color);
+}
+
+.btn-pretty-format {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
 .hr-form {
   margin: 0.5rem 0 1rem 0;
 }
