@@ -20,6 +20,9 @@ type JSONInputFieldProps = {
   value: string
   disabled: boolean
   setValue: (value: string) => void
+  extraControls?: React.ReactNode
+  rows?: number
+  cols?: number
 }
 
 export const JSONInputField = ({
@@ -28,6 +31,9 @@ export const JSONInputField = ({
   placeholder,
   disabled,
   setValue,
+  extraControls,
+  rows,
+  cols,
 }: JSONInputFieldProps) => {
   const [invalidJsonString, setInvalidJsonString] = useState(false)
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -53,13 +59,13 @@ export const JSONInputField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
-        rows={10}
-        cols={100}
+        rows={rows || 10}
+        cols={cols || 100}
         disabled={disabled}
       />
       <div className="json-input-textarea-overlay">
+        {extraControls}
         <Button
-          className="btn-pretty-format"
           type="button"
           variant="outline-secondary"
           size="sm"
