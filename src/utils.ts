@@ -143,6 +143,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
       ? signalingUrlCandidates
       : undefined,
+    forwardingFilters: parseStringParameter(qs.forwardingFilters),
     forwardingFilter: parseStringParameter(qs.forwardingFilter),
     simulcast: parseSpecifiedStringParameter(qs.simulcast, SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(qs.simulcastRid, SIMULCAST_RID),
@@ -785,6 +786,13 @@ export function createConnectOptions(
       true,
       connectionOptionsState.signalingNotifyMetadata,
     )
+  }
+  // forwardingFilters
+  if (connectionOptionsState.enabledForwardingFilters) {
+    connectionOptions.forwardingFilters = parseMetadata(
+      true,
+      connectionOptionsState.forwardingFilters,
+    ) as ForwardingFilter[]
   }
   // forwardingFilter
   if (connectionOptionsState.enabledForwardingFilter) {

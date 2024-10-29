@@ -55,6 +55,7 @@ const initialState: SoraDevtoolsState = {
   enabledClientId: false,
   enabledDataChannel: false,
   enabledDataChannels: false,
+  enabledForwardingFilters: false,
   enabledForwardingFilter: false,
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
@@ -106,6 +107,7 @@ const initialState: SoraDevtoolsState = {
   signalingMessages: [],
   signalingNotifyMetadata: '',
   signalingUrlCandidates: [],
+  forwardingFilters: '',
   forwardingFilter: '',
   simulcastRid: '',
   spotlightNumber: '',
@@ -232,6 +234,9 @@ export const slice = createSlice({
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
       state.signalingMessages.push(action.payload)
     },
+    setEnabledForwardingFilters: (state, action: PayloadAction<boolean>) => {
+      state.enabledForwardingFilters = action.payload
+    },
     setEnabledForwardingFilter: (state, action: PayloadAction<boolean>) => {
       state.enabledForwardingFilter = action.payload
     },
@@ -318,6 +323,9 @@ export const slice = createSlice({
     },
     setSignalingUrlCandidates: (state, action: PayloadAction<string[]>) => {
       state.signalingUrlCandidates = action.payload
+    },
+    setForwardingFilters: (state, action: PayloadAction<string>) => {
+      state.forwardingFilters = action.payload
     },
     setForwardingFilter: (state, action: PayloadAction<string>) => {
       state.forwardingFilter = action.payload

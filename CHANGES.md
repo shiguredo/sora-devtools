@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] forwardingFilters の入力項目を新規追加する
+  - 既存の forwardingFilter も残しており、両方設定した場合はシグナリング時に両方のパラメータを送信する
+  - @tnamao
 - [ADD] mediaType に mp4Media を追加する
   - 指定された H.264 + Opus の MP4 ファイルからメディアストリームを取得して配信できるようにするもの
   - ファイルの終端に達した場合には、先頭に戻って繰り返し再生する
