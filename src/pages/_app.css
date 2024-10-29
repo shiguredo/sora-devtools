@@ -394,10 +394,19 @@ video {
   border-color: var(--bs-form-invalid-border-color);
 }
 
+.invalid-json:focus {
+  border-color: var(--bs-form-invalid-border-color);
+}
+
 .json-input-textarea-overlay {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 0;
+  display: flex;
+}
+
+.json-input-textarea-overlay button {
+  margin-right: 0.5rem;
 }
 
 .hr-form {
