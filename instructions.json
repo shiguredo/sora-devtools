@@ -75,7 +75,7 @@
     "description": "シグナリングをするURLを改行区切りで複数指定します。"
   },
   "forwardingFilters": {
-    "description": "転送フィルターを指定します。"
+    "description": "転送フィルターを複数指定します。"
   },
   "forwardingFilter": {
     "description": "転送フィルターを指定します。"
