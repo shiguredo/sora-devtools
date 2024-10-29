@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] `forwardingFilter` `forwardingFilters` 入力欄の機能追加
+  - JSON の整形を行う `pretty format` ボタンを追加する
+  - 入力内容が JSON として正しくない場合に入力欄の border を赤くする
+  - @tnamao
 - [ADD] forwardingFilters の入力項目を新規追加する
   - 既存の forwardingFilter も残しており、両方設定した場合はシグナリング時に両方のパラメータを送信する
   - @tnamao
