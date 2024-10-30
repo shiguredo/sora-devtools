@@ -4,7 +4,7 @@ import { Form, FormGroup } from 'react-bootstrap'
 import { setFakeVolume } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const FakeVolumeForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType)

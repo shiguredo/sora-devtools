@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { BLUR_RADIUS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const BlurRadiusForm: React.FC = () => {
   const blurRadius = useAppSelector((state) => state.blurRadius)

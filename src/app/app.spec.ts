@@ -25,9 +25,9 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '../constants.ts'
-import { setInitialParameter } from './actions.ts'
-import { store } from './store.ts'
+} from '../constants'
+import { setInitialParameter } from './actions'
+import { store } from './store'
 
 // このテストは query string にしていた値が適切に割り当てられているかをチェックする
 
@@ -383,13 +383,6 @@ describe('setInitialParameter tests', () => {
     setLocationSearch({ signalingNotifyMetadata: value })
     await store.dispatch(setInitialParameter())
     expect(store.getState().signalingNotifyMetadata).toEqual(value)
-  })
-
-  it("should handle 'forwardingFilters'", async () => {
-    const value = 'forwardingFilters'
-    setLocationSearch({ forwardingFilters: value })
-    await store.dispatch(setInitialParameter())
-    expect(store.getState().forwardingFilters).toEqual(value)
   })
 
   it("should handle 'forwardingFilter'", async () => {

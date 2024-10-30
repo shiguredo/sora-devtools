@@ -4,7 +4,7 @@ import { FormGroup, FormSelect } from 'react-bootstrap'
 import { setAudioInput, updateMediaStream } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const AudioInputForm: React.FC = () => {
   const audioInput = useAppSelector((state) => state.audioInput)

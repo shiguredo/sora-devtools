@@ -10,6 +10,7 @@ type Props = {
 export const TooltipFormLabel: React.FC<Props> = (props) => {
   const instruction = INSTRUCTIONS[props.kind]
   if (!instruction) {
+    console.warn(`Could not load description "${props.kind}"`)
     return <FormLabel>{props.children}</FormLabel>
   }
   return (

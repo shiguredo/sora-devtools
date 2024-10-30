@@ -4,7 +4,7 @@ import { FormGroup } from 'react-bootstrap'
 import { setMediaStats } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const MediaStatsForm: React.FC = () => {
   const mediaStats = useAppSelector((state) => state.mediaStats)

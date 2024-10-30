@@ -4,7 +4,7 @@ import { FormGroup } from 'react-bootstrap'
 import { setMicDevice } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const MicDeviceForm: React.FC = () => {
   const micDevice = useAppSelector((state) => state.micDevice)

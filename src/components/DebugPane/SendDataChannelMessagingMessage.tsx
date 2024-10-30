@@ -49,7 +49,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
           send
         </Button>
       </div>
-      {datachannels.length > 0 ? (
+      {0 < datachannels.length ? (
         <pre
           className="form-control mt-2"
           style={{

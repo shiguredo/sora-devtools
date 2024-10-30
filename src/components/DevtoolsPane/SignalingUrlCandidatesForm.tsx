@@ -5,7 +5,7 @@ import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/a
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const SignalingUrlCandidatesForm: React.FC = () => {
   const enabledSignalingUrlCandidates = useAppSelector(

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { MULTISTREAM } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const MultistreamForm: React.FC = () => {
   const multistream = useAppSelector((state) => state.multistream)

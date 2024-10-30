@@ -3,14 +3,14 @@ import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-boo
 
 import { setResolution } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 type ResolutionData = {
   label: string
   value: string
 }
 
-const RESOLUTION_DATA_LIST = new Array(
+const RESOLUTION_DATA_LIST = Array<ResolutionData>(
   { label: '未指定', value: '' },
   { label: '144p', value: '256x144' },
   { label: '240p', value: '320x240' },

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SIMULCAST } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const SimulcastForm: React.FC = () => {
   const simulcast = useAppSelector((state) => state.simulcast)

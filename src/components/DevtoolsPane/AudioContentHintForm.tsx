@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { AUDIO_CONTENT_HINTS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const AudioContentHintForm: React.FC = () => {
   const audioContentHint = useAppSelector((state) => state.audioContentHint)

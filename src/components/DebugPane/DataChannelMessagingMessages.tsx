@@ -4,7 +4,7 @@ import { clearDataChannelMessages } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import type { DataChannelMessage } from '@/types'
 
-import { Message } from './Message.tsx'
+import { Message } from './Message'
 
 const ButtonClear: React.FC = () => {
   const dispatch = useAppDispatch()

@@ -82,11 +82,11 @@ export const JitterButter: React.FC<Props> = (props) => {
   }
   const currentJitterBufferDelay = Math.floor((jitterBufferDelay / jitterBufferEmittedCount) * 1000)
   let borderClassName = 'normal-jitter-buffer'
-  if (currentJitterBufferDelay > 500) {
+  if (500 < currentJitterBufferDelay) {
     borderClassName = 'critical-jitter-buffer'
-  } else if (currentJitterBufferDelay > 300) {
+  } else if (300 < currentJitterBufferDelay) {
     borderClassName = 'danger-jitter-buffer'
-  } else if (currentJitterBufferDelay > 100) {
+  } else if (100 < currentJitterBufferDelay) {
     borderClassName = 'warning-jitter-buffer'
   }
   return (

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { ECHO_CANCELLATION_TYPES } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const EchoCancellationTypeForm: React.FC = () => {
   const echoCancellationType = useAppSelector((state) => state.echoCancellationType)

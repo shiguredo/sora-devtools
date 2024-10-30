@@ -7,6 +7,7 @@ import type { ConnectionOptions, ForwardingFilter } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
+  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -28,6 +29,7 @@ import {
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
+  VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from './constants.ts'
@@ -115,7 +117,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   const result: Partial<QueryStringParameters> = {
     apiUrl: parseStringParameter(qs.apiUrl),
     audio: parseBooleanParameter(qs.audio),
-    audioBitRate: parseStringParameter(qs.audioBitRate),
+    audioBitRate: parseSpecifiedStringParameter(qs.audioBitRate, AUDIO_BIT_RATES),
     audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
     audioStreamingLanguageCode: parseStringParameter(qs.audioStreamingLanguageCode),
     autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
@@ -143,7 +145,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
       ? signalingUrlCandidates
       : undefined,
-    forwardingFilters: parseStringParameter(qs.forwardingFilters),
     forwardingFilter: parseStringParameter(qs.forwardingFilter),
     simulcast: parseSpecifiedStringParameter(qs.simulcast, SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(qs.simulcastRid, SIMULCAST_RID),
@@ -156,7 +157,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     ),
     resolution: parseStringParameter(qs.resolution),
     video: parseBooleanParameter(qs.video),
-    videoBitRate: parseStringParameter(qs.videoBitRate),
+    videoBitRate: parseSpecifiedStringParameter(qs.videoBitRate, VIDEO_BIT_RATES),
     videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
     videoVP9Params: parseStringParameter(qs.videoVP9Params),
     videoH264Params: parseStringParameter(qs.videoH264Params),
@@ -208,8 +209,8 @@ export function createSignalingURL(
     // 空文字列は取り除く
     return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '')
   }
-  if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
-    return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL
+  if (import.meta.env.NODE_ENV === 'development' && import.meta.env.VITE_SORA_SIGNALING_URL) {
+    return import.meta.env.VITE_SORA_SIGNALING_URL
   }
   const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
   const port = window.location.port ? `:${window.location.port}` : ''
@@ -269,12 +270,12 @@ export function getLightAdjustmentOptions(
     case 'weak':
       return { adjustmentLevel: 30, sharpnessLevel: 0 }
     case 'medium': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
+      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
       const focusMask = new SelfieSegmentationFocusMask(assetsPath)
       return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask }
     }
     case 'strong': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
+      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
       const focusMask = new SelfieSegmentationFocusMask(assetsPath)
       return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask }
     }
@@ -527,7 +528,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   gainNode: GainNode | null
 } {
   const mediaStream = new MediaStream()
-  let canvas: HTMLCanvasElement | null = null
+  let canvas = null
   if (parameters.video) {
     canvas = document.createElement('canvas') as CustomHTMLCanvasElement
     // Firefox では getContext を呼ばないと captureStream が失敗する
@@ -541,7 +542,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     }
     mediaStream.addTrack(videoTrack)
   }
-  let gainNode: GainNode | null = null
+  let gainNode = null
   if (parameters.audio) {
     const AudioContext = window.AudioContext || window.webkitAudioContext
     const audioContext = new AudioContext()
@@ -787,13 +788,6 @@ export function createConnectOptions(
       connectionOptionsState.signalingNotifyMetadata,
     )
   }
-  // forwardingFilters
-  if (connectionOptionsState.enabledForwardingFilters) {
-    connectionOptions.forwardingFilters = parseMetadata(
-      true,
-      connectionOptionsState.forwardingFilters,
-    ) as ForwardingFilter[]
-  }
   // forwardingFilter
   if (connectionOptionsState.enabledForwardingFilter) {
     connectionOptions.forwardingFilter = parseMetadata(
@@ -826,12 +820,12 @@ export function createConnectOptions(
   }
   // dataChannels
   if (connectionOptionsState.dataChannels !== '') {
-    // biome-ignore lint/suspicious/noEvolvingTypes: SoraDataChannel 型にする
     let dataChannels = []
     try {
       dataChannels = JSON.parse(connectionOptionsState.dataChannels)
     } catch (_) {
-      // 例外が起きた場合は何もしない
+      // サンプル実装なので warning で回避
+      console.warn('Illegal format DataChannels')
     }
     if (Array.isArray(dataChannels)) {
       connectionOptions.dataChannels = dataChannels

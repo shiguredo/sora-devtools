@@ -7,8 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
-import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 type FormRadioProps = {
   label: string
@@ -42,7 +41,6 @@ export const MediaTypeForm: React.FC = () => {
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const mediaType = useAppSelector((state) => state.mediaType)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
-  const enabledMp4Media = Mp4MediaStream.isSupported()
   const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {
@@ -73,14 +71,6 @@ export const MediaTypeForm: React.FC = () => {
           label="mediacaptureRegion"
           mediaType={mediaType}
           disabled={disabled || !enabledMediacaptureRegion}
-          onChange={onChange}
-        />
-      )}
-      {mountClient && (
-        <FormRadio
-          label="mp4Media"
-          mediaType={mediaType}
-          disabled={disabled || !enabledMp4Media}
           onChange={onChange}
         />
       )}

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { RESIZE_MODE_TYPES } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const ResizeModeForm: React.FC = () => {
   const resizeMode = useAppSelector((state) => state.resizeMode)

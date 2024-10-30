@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SPOTLIGHT } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const SpotlightForm: React.FC = () => {
   const spotlight = useAppSelector((state) => state.spotlight)

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { VIDEO_CONTENT_HINTS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const VideoContentHintForm: React.FC = () => {
   const videoContentHint = useAppSelector((state) => state.videoContentHint)

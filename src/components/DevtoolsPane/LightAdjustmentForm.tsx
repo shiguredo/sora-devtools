@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { LIGHT_ADJUSTMENT } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const LightAdjustmentForm: React.FC = () => {
   const lightAdjustment = useAppSelector((state) => state.lightAdjustment)

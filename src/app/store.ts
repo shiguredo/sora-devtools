@@ -1,7 +1,7 @@
 import { type Action, type ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
 
-import { slice } from './slice.ts'
+import { slice } from './slice'
 
 /**
  * @see https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type
@@ -17,14 +17,12 @@ export const store = configureStore({
           'soraDevtools/setRemoteClient',
           'soraDevtools/setFakeContentsGainNode',
           'soraDevtools/setDataChannelMessage',
-          'soraDevtools/setMp4MediaStream',
         ],
         ignoredPaths: [
           'soraContents',
           'fakeContents',
           'dataChannelMessages',
           'logMessages',
-          'mp4MediaStream',
           'notifyMessages',
           'pushMessages',
           'signalingMessages',
@@ -46,7 +44,7 @@ export const store = configureStore({
         ],
       },
     })
-    if (process.env.NEXT_PUBLIC_REDUX_LOGGER === 'true') {
+    if (import.meta.env.VITE_REDUX_LOGGER === 'true') {
       middleware.concat(logger)
     }
     return middleware

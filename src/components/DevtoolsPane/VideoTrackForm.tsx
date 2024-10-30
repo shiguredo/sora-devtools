@@ -4,7 +4,7 @@ import { FormGroup } from 'react-bootstrap'
 import { setVideoTrack } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const VideoTrackForm: React.FC = () => {
   const videoTrack = useAppSelector((state) => state.videoTrack)

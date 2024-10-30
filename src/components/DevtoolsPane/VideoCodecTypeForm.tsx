@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { VIDEO_CODEC_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const VideoCodecTypeForm: React.FC = () => {
   const videoCodecType = useAppSelector((state) => state.videoCodecType)

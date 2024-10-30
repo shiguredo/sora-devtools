@@ -4,7 +4,7 @@ import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
 
-import { CopyLogButton } from './CopyLogButton.tsx'
+import { CopyLogButton } from './CopyLogButton'
 
 type DescriptionProps = {
   description: string | number | Record<string, unknown>

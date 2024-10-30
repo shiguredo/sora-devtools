@@ -3,7 +3,7 @@ import React from 'react'
 import { useAppSelector } from '@/app/hooks'
 import type { SignalingMessage } from '@/types'
 
-import { Message } from './Message.tsx'
+import { Message } from './Message'
 
 const SIGNALING_COLORS: { [key: string]: string } = {
   websocket: '#00ff00',
@@ -38,7 +38,7 @@ export const SignalingMessages: React.FC = () => {
       if (filterText === '') {
         return true
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
+      return 0 <= JSON.stringify(message).indexOf(filterText)
     })
   })
   return (

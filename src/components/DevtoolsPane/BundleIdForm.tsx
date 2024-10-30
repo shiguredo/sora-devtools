@@ -5,7 +5,7 @@ import { setBundleId, setEnabledBundleId } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const BundleIdForm: React.FC = () => {
   const enabledBundleId = useAppSelector((state) => state.enabledBundleId)

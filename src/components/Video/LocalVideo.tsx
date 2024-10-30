@@ -3,16 +3,16 @@ import { useState } from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 
-import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel.tsx'
-import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
-import { LocalVideoCapabilities } from './LocalVideoCapabilities.tsx'
-import { RequestRtpStreamButton } from './RequestRtpStreamButton.tsx'
-import { RequestSpotlightRidButton } from './RequestSpotlightRidButton.tsx'
-import { ResetRtpStreamButton } from './ResetRtpStreamButton.tsx'
-import { ResetSpotlightRidButton } from './ResetSpotlightRidButton.tsx'
-import { SessionStatusBar } from './SessionStatusBar.tsx'
-import { Video } from './Video.tsx'
-import { VolumeVisualizer } from './VolumeVisualizer.tsx'
+import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel'
+import { ConnectionStatusBar } from './ConnectionStatusBar'
+import { LocalVideoCapabilities } from './LocalVideoCapabilities'
+import { RequestRtpStreamButton } from './RequestRtpStreamButton'
+import { RequestSpotlightRidButton } from './RequestSpotlightRidButton'
+import { ResetRtpStreamButton } from './ResetRtpStreamButton'
+import { ResetSpotlightRidButton } from './ResetSpotlightRidButton'
+import { SessionStatusBar } from './SessionStatusBar'
+import { Video } from './Video'
+import { VolumeVisualizer } from './VolumeVisualizer'
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0)

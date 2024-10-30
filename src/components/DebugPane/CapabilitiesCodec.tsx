@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Message } from './Message.tsx'
+import { Message } from './Message'
 
 interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodec {
   [x: string]: string | number | undefined

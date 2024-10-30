@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const SpotlightFocusRidForm: React.FC = () => {
   const spotlightFocusRid = useAppSelector((state) => state.spotlightFocusRid)

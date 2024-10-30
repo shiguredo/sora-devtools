@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   // 環境変数 .env.local が読み込まれる
-  globalSetup: require.resolve('./tests/global-setup.ts'),
+  globalSetup: './tests/global-setup.ts',
   testDir: 'tests',
   // fullyParallel: true,
   reporter: 'html',

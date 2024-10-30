@@ -5,7 +5,7 @@ import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const DataChannelsForm: React.FC = () => {
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)

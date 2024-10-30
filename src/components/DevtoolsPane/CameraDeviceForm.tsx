@@ -4,7 +4,7 @@ import { FormGroup } from 'react-bootstrap'
 import { setCameraDevice } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck'
 
 export const CameraDeviceForm: React.FC = () => {
   const cameraDevice = useAppSelector((state) => state.cameraDevice)

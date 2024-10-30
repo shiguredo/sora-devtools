@@ -1,5 +1,4 @@
 import type { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
-import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import type { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import type { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
 import type {
@@ -13,6 +12,7 @@ import type {
 
 import type {
   ASPECT_RATIO_TYPES,
+  AUDIO_BIT_RATES,
   AUDIO_CODEC_TYPES,
   AUDIO_CONTENT_HINTS,
   AUTO_GAIN_CONTROLS,
@@ -34,6 +34,7 @@ import type {
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
+  VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from '@/constants'
@@ -47,7 +48,7 @@ export type RemoteClient = {
 export type SoraDevtoolsState = {
   alertMessages: AlertMessage[]
   audio: boolean
-  audioBitRate: string
+  audioBitRate: (typeof AUDIO_BIT_RATES)[number]
   audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
   audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]
   audioInput: string
@@ -77,7 +78,6 @@ export type SoraDevtoolsState = {
   enabledMetadata: boolean
   enabledSignalingNotifyMetadata: boolean
   enabledSignalingUrlCandidates: boolean
-  enabledForwardingFilters: boolean
   enabledForwardingFilter: boolean
   enabledVideoVP9Params: boolean
   enabledVideoH264Params: boolean
@@ -113,7 +113,6 @@ export type SoraDevtoolsState = {
   mediaStats: boolean
   mediaType: (typeof MEDIA_TYPES)[number]
   metadata: string
-  mp4MediaStream: Mp4MediaStream | null
   multistream: (typeof MULTISTREAM)[number]
   mute: boolean
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
@@ -124,7 +123,6 @@ export type SoraDevtoolsState = {
   signalingMessages: SignalingMessage[]
   signalingNotifyMetadata: string
   signalingUrlCandidates: string[]
-  forwardingFilters: string
   forwardingFilter: string
   simulcast: (typeof SIMULCAST)[number]
   simulcastRid: (typeof SIMULCAST_RID)[number]
@@ -136,7 +134,7 @@ export type SoraDevtoolsState = {
   spotlightFocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number]
   spotlightUnfocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number]
   video: boolean
-  videoBitRate: string
+  videoBitRate: (typeof VIDEO_BIT_RATES)[number]
   videoCodecType: (typeof VIDEO_CODEC_TYPES)[number]
   videoContentHint: (typeof VIDEO_CONTENT_HINTS)[number]
   videoInput: string
@@ -349,7 +347,6 @@ export type ConnectionOptionsState = Pick<
   | 'enabledClientId'
   | 'enabledDataChannel'
   | 'enabledSignalingNotifyMetadata'
-  | 'enabledForwardingFilters'
   | 'enabledForwardingFilter'
   | 'enabledVideoVP9Params'
   | 'enabledVideoH264Params'
@@ -358,7 +355,6 @@ export type ConnectionOptionsState = Pick<
   | 'ignoreDisconnectWebSocket'
   | 'multistream'
   | 'signalingNotifyMetadata'
-  | 'forwardingFilters'
   | 'forwardingFilter'
   | 'simulcast'
   | 'simulcastRid'
@@ -392,7 +388,6 @@ export type DownloadReportParameters = Omit<
   | 'localTestMediaStream'
   | 'logMessages'
   | 'mediaProcessorsNoiseSuppression'
-  | 'mp4MediaStream'
   | 'mute'
   | 'noiseSuppressionProcessor'
   | 'notifyMessages'

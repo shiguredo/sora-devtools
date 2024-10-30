@@ -1,6 +1,5 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
-import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
 import type {
@@ -11,7 +10,7 @@ import type {
 } from 'sora-js-sdk'
 
 import packageJSON from '../../package.json'
-import { WORKER_SCRIPT } from '../constants.ts'
+import { WORKER_SCRIPT } from '../constants'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -23,7 +22,7 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from '../types.ts'
+} from '../types'
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],
@@ -55,7 +54,6 @@ const initialState: SoraDevtoolsState = {
   enabledClientId: false,
   enabledDataChannel: false,
   enabledDataChannels: false,
-  enabledForwardingFilters: false,
   enabledForwardingFilter: false,
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
@@ -94,7 +92,6 @@ const initialState: SoraDevtoolsState = {
   mediaStats: false,
   mediaType: 'getUserMedia',
   metadata: '',
-  mp4MediaStream: null,
   multistream: '',
   mute: false,
   noiseSuppression: '',
@@ -107,7 +104,6 @@ const initialState: SoraDevtoolsState = {
   signalingMessages: [],
   signalingNotifyMetadata: '',
   signalingUrlCandidates: [],
-  forwardingFilters: '',
   forwardingFilter: '',
   simulcastRid: '',
   spotlightNumber: '',
@@ -234,9 +230,6 @@ export const slice = createSlice({
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
       state.signalingMessages.push(action.payload)
     },
-    setEnabledForwardingFilters: (state, action: PayloadAction<boolean>) => {
-      state.enabledForwardingFilters = action.payload
-    },
     setEnabledForwardingFilter: (state, action: PayloadAction<boolean>) => {
       state.enabledForwardingFilter = action.payload
     },
@@ -294,9 +287,6 @@ export const slice = createSlice({
     setMediaStats: (state, action: PayloadAction<boolean>) => {
       state.mediaStats = action.payload
     },
-    setMp4MediaStream: (state, action: PayloadAction<Mp4MediaStream | null>) => {
-      state.mp4MediaStream = action.payload
-    },
     setNoiseSuppression: (state, action: PayloadAction<SoraDevtoolsState['noiseSuppression']>) => {
       state.noiseSuppression = action.payload
     },
@@ -323,9 +313,6 @@ export const slice = createSlice({
     },
     setSignalingUrlCandidates: (state, action: PayloadAction<string[]>) => {
       state.signalingUrlCandidates = action.payload
-    },
-    setForwardingFilters: (state, action: PayloadAction<string>) => {
-      state.forwardingFilters = action.payload
     },
     setForwardingFilter: (state, action: PayloadAction<string>) => {
       state.forwardingFilter = action.payload
@@ -470,7 +457,7 @@ export const slice = createSlice({
         title: 'Sora info',
         type: 'info',
         message: action.payload,
-        timestamp: Date.now(),
+        timestamp: new Date().getTime(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -479,7 +466,7 @@ export const slice = createSlice({
         title: 'Sora error',
         type: 'error',
         message: action.payload,
-        timestamp: Date.now(),
+        timestamp: new Date().getTime(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -488,7 +475,7 @@ export const slice = createSlice({
         title: 'API info',
         type: 'info',
         message: action.payload,
-        timestamp: Date.now(),
+        timestamp: new Date().getTime(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -497,7 +484,7 @@ export const slice = createSlice({
         title: 'API error',
         type: 'error',
         message: action.payload,
-        timestamp: Date.now(),
+        timestamp: new Date().getTime(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -519,7 +506,7 @@ export const slice = createSlice({
     },
     setLogMessages: (state, action: PayloadAction<LogMessage['message']>) => {
       state.logMessages.push({
-        timestamp: Date.now(),
+        timestamp: new Date().getTime(),
         message: {
           title: action.payload.title,
           description: action.payload.description,
@@ -602,7 +589,7 @@ export const slice = createSlice({
     },
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState['blurRadius']>) => {
       if (action.payload !== '' && state.virtualBackgroundProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
+        const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
         const processor = new VirtualBackgroundProcessor(assetsPath)
         state.virtualBackgroundProcessor = processor
       }
@@ -613,7 +600,7 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['mediaProcessorsNoiseSuppression']>,
     ) => {
       if (action.payload && state.noiseSuppressionProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || ''
+        const assetsPath = import.meta.env.VITE_NOISE_SUPPRESSION_ASSETS_PATH || ''
         const processor = new NoiseSuppressionProcessor(assetsPath)
         state.noiseSuppressionProcessor = processor
       }

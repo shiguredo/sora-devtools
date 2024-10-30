@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { AUTO_GAIN_CONTROLS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel'
 
 export const AutoGainControlForm: React.FC = () => {
   const autoGainControl = useAppSelector((state) => state.autoGainControl)

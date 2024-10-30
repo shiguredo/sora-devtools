@@ -7,70 +7,68 @@ import { AlertMessages } from '@/components/AlertMessages'
 import { LocalVideo } from '@/components/Video/LocalVideo'
 import { RemoteVideos } from '@/components/Video/RemoteVideos'
 
-import { AspectRatioForm } from './AspectRatioForm.tsx'
-import { AudioBitRateForm } from './AudioBitRateForm.tsx'
-import { AudioCodecTypeForm } from './AudioCodecTypeForm.tsx'
-import { AudioContentHintForm } from './AudioContentHintForm.tsx'
-import { AudioForm } from './AudioForm.tsx'
-import { AudioInputForm } from './AudioInputForm.tsx'
-import { AudioOutputForm } from './AudioOutputForm.tsx'
-import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm.tsx'
-import { AudioTrackForm } from './AudioTrackForm.tsx'
-import { AutoGainControlForm } from './AutoGainControlForm.tsx'
-import { BlurRadiusForm } from './BlurRadiusForm.tsx'
-import { BundleIdForm } from './BundleIdForm.tsx'
-import { CameraDeviceForm } from './CameraDeviceForm.tsx'
-import { ChannelIdForm } from './ChannelIdForm.tsx'
-import { ClientIdForm } from './ClientIdForm.tsx'
-import { ConnectButton } from './ConnectButton.tsx'
-import { DataChannelForm } from './DataChannelForm.tsx'
-import { DataChannelsForm } from './DataChannelsForm.tsx'
-import { DisconnectButton } from './DisconnectButton.tsx'
-import { DisplayResolutionForm } from './DisplayResolutionForm.tsx'
-import { DisposeMediaButton } from './DisposeMediaButton.tsx'
-import { EchoCancellationForm } from './EchoCancellationForm.tsx'
-import { EchoCancellationTypeForm } from './EchoCancellationTypeForm.tsx'
-import { FacingModeForm } from './FacingModeForm.tsx'
-import { FakeVolumeForm } from './FakeVolumeForm.tsx'
-import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
-import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
-import { FrameRateForm } from './FrameRateForm.tsx'
-import { LightAdjustmentForm } from './LightAdjustmentForm.tsx'
-import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm.tsx'
-import { MediaStatsForm } from './MediaStatsForm.tsx'
-import { MediaTypeForm } from './MediaTypeForm.tsx'
-import { MetadataForm } from './MetadataForm.tsx'
-import { MicDeviceForm } from './MicDeviceForm.tsx'
-import { Mp4FileForm } from './Mp4FileForm.tsx'
-import { MultistreamForm } from './MultistreamForm.tsx'
-import { NoiseSuppressionForm } from './NoiseSuppressionForm.tsx'
-import { ReconnectForm } from './ReconnectForm.tsx'
-import { ReloadDevicesButton } from './ReloadDevicesButton.tsx'
-import { RequestMediaButton } from './RequestMediaButton.tsx'
-import { ResizeModeForm } from './ResizeModeForm.tsx'
-import { ResolutionForm } from './ResolutionForm.tsx'
-import { RoleForm } from './RoleForm.tsx'
-import { SignalingNotifyMetadataForm } from './SignalingNotifyMetadataForm.tsx'
-import { SignalingUrlCandidatesForm } from './SignalingUrlCandidatesForm.tsx'
-import { SimulcastForm } from './SimulcastForm.tsx'
-import { SimulcastRidForm } from './SimulcastRidForm.tsx'
-import { SpotlightFocusRidForm } from './SpotlightFocusRidForm.tsx'
-import { SpotlightForm } from './SpotlightForm.tsx'
-import { SpotlightNumberForm } from './SpotlightNumberForm.tsx'
-import { SpotlightUnfocusRidForm } from './SpotlightUnfocusRidForm.tsx'
-import { StartRecordingButton } from './StartRecordingButton.tsx'
-import { StopRecordingButton } from './StopRecordingButton.tsx'
-import { UpdateMediaStreamButton } from './UpdateMediaStreamButton.tsx'
-import { VideoAV1ParamsForm } from './VideoAV1ParamsForm.tsx'
-import { VideoBitRateForm } from './VideoBitRateForm.tsx'
-import { VideoCodecTypeForm } from './VideoCodecTypeForm.tsx'
-import { VideoContentHintForm } from './VideoContentHintForm.tsx'
-import { VideoForm } from './VideoForm.tsx'
-import { VideoH264ParamsForm } from './VideoH264ParamsForm.tsx'
-import { VideoH265ParamsForm } from './VideoH265ParamsForm.tsx'
-import { VideoInputForm } from './VideoInputForm.tsx'
-import { VideoTrackForm } from './VideoTrackForm.tsx'
-import { VideoVP9ParamsForm } from './VideoVP9ParamsForm.tsx'
+import { AspectRatioForm } from './AspectRatioForm'
+import { AudioBitRateForm } from './AudioBitRateForm'
+import { AudioCodecTypeForm } from './AudioCodecTypeForm'
+import { AudioContentHintForm } from './AudioContentHintForm'
+import { AudioForm } from './AudioForm'
+import { AudioInputForm } from './AudioInputForm'
+import { AudioOutputForm } from './AudioOutputForm'
+import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm'
+import { AudioTrackForm } from './AudioTrackForm'
+import { AutoGainControlForm } from './AutoGainControlForm'
+import { BlurRadiusForm } from './BlurRadiusForm'
+import { BundleIdForm } from './BundleIdForm'
+import { CameraDeviceForm } from './CameraDeviceForm'
+import { ChannelIdForm } from './ChannelIdForm'
+import { ClientIdForm } from './ClientIdForm'
+import { ConnectButton } from './ConnectButton'
+import { DataChannelForm } from './DataChannelForm'
+import { DataChannelsForm } from './DataChannelsForm'
+import { DisconnectButton } from './DisconnectButton'
+import { DisplayResolutionForm } from './DisplayResolutionForm'
+import { DisposeMediaButton } from './DisposeMediaButton'
+import { EchoCancellationForm } from './EchoCancellationForm'
+import { EchoCancellationTypeForm } from './EchoCancellationTypeForm'
+import { FacingModeForm } from './FacingModeForm'
+import { FakeVolumeForm } from './FakeVolumeForm'
+import { ForwardingFilterForm } from './ForwardingFilterForm'
+import { FrameRateForm } from './FrameRateForm'
+import { LightAdjustmentForm } from './LightAdjustmentForm'
+import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm'
+import { MediaStatsForm } from './MediaStatsForm'
+import { MediaTypeForm } from './MediaTypeForm'
+import { MetadataForm } from './MetadataForm'
+import { MicDeviceForm } from './MicDeviceForm'
+import { MultistreamForm } from './MultistreamForm'
+import { NoiseSuppressionForm } from './NoiseSuppressionForm'
+import { ReconnectForm } from './ReconnectForm'
+import { ReloadDevicesButton } from './ReloadDevicesButton'
+import { RequestMediaButton } from './RequestMediaButton'
+import { ResizeModeForm } from './ResizeModeForm'
+import { ResolutionForm } from './ResolutionForm'
+import { RoleForm } from './RoleForm'
+import { SignalingNotifyMetadataForm } from './SignalingNotifyMetadataForm'
+import { SignalingUrlCandidatesForm } from './SignalingUrlCandidatesForm'
+import { SimulcastForm } from './SimulcastForm'
+import { SimulcastRidForm } from './SimulcastRidForm'
+import { SpotlightFocusRidForm } from './SpotlightFocusRidForm'
+import { SpotlightForm } from './SpotlightForm'
+import { SpotlightNumberForm } from './SpotlightNumberForm'
+import { SpotlightUnfocusRidForm } from './SpotlightUnfocusRidForm'
+import { StartRecordingButton } from './StartRecordingButton'
+import { StopRecordingButton } from './StopRecordingButton'
+import { UpdateMediaStreamButton } from './UpdateMediaStreamButton'
+import { VideoAV1ParamsForm } from './VideoAV1ParamsForm'
+import { VideoBitRateForm } from './VideoBitRateForm'
+import { VideoCodecTypeForm } from './VideoCodecTypeForm'
+import { VideoContentHintForm } from './VideoContentHintForm'
+import { VideoForm } from './VideoForm'
+import { VideoH264ParamsForm } from './VideoH264ParamsForm'
+import { VideoH265ParamsForm } from './VideoH265ParamsForm'
+import { VideoInputForm } from './VideoInputForm'
+import { VideoTrackForm } from './VideoTrackForm'
+import { VideoVP9ParamsForm } from './VideoVP9ParamsForm'
 
 const RowChannelOptions: React.FC = () => {
   return (
@@ -178,7 +176,6 @@ const RowSignalingOptions: React.FC = () => {
   const enabledClientId = useAppSelector((state) => state.enabledClientId)
   const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel)
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)
-  const enabledForwardingFilters = useAppSelector((state) => state.enabledForwardingFilters)
   const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)
   const enabledMetadata = useAppSelector((state) => state.enabledMetadata)
   const enabledSignalingNotifyMetadata = useAppSelector(
@@ -193,7 +190,6 @@ const RowSignalingOptions: React.FC = () => {
     enabledClientId,
     enabledDataChannel,
     enabledDataChannels,
-    enabledForwardingFilters,
     enabledForwardingFilter,
     enabledMetadata,
     enabledSignalingNotifyMetadata,
@@ -227,7 +223,6 @@ const RowSignalingOptions: React.FC = () => {
           <BundleIdForm />
           <SignalingNotifyMetadataForm />
           <SignalingUrlCandidatesForm />
-          <ForwardingFiltersForm />
           <ForwardingFilterForm />
           <DataChannelsForm />
           <DataChannelForm />
@@ -296,11 +291,6 @@ export const RowMediaType: React.FC = () => {
       <Row xs="auto" className="form-row">
         <Col>
           <FakeVolumeForm />
-        </Col>
-      </Row>
-      <Row xs="auto" className="form-row">
-        <Col>
-          <Mp4FileForm />
         </Col>
       </Row>
     </>
