@@ -1,11 +1,12 @@
 import type React from 'react'
-import { Button, Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { Button, Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { JSONInputField } from './JSONInputField.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const DataChannelsForm: React.FC = () => {
   const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)
@@ -30,9 +31,6 @@ export const DataChannelsForm: React.FC = () => {
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledDataChannels(event.target.checked))
   }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setDataChannels(event.target.value))
-  }
   return (
     <>
       <Row className="form-row">
@@ -52,27 +50,24 @@ export const DataChannelsForm: React.FC = () => {
       {enabledDataChannels ? (
         <Row className="form-row">
           <Col className="col-auto">
-            <FormGroup className="form-inline position-relative" controlId="dataChannels">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder={textareaPlaceholder}
-                value={dataChannels}
-                onChange={onChangeText}
-                rows={12}
-                cols={100}
-                disabled={disabled}
-              />
-              <Button
-                className="btn-load-template"
-                type="button"
-                variant="outline-secondary"
-                size="sm"
-                onClick={() => dispatch(setDataChannels(exampleJsonString))}
-              >
-                load template
-              </Button>
-            </FormGroup>
+            <JSONInputField
+              controlId="dataChannels"
+              placeholder={textareaPlaceholder}
+              value={dataChannels}
+              setValue={(value) => dispatch(setDataChannels(value))}
+              disabled={disabled}
+              rows={12}
+              extraControls={
+                <Button
+                  type="button"
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => dispatch(setDataChannels(exampleJsonString))}
+                >
+                  load template
+                </Button>
+              }
+            />
           </Col>
         </Row>
       ) : null}
