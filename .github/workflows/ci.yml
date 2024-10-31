@@ -24,7 +24,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm biome --version
       - run: pnpm run lint
       - run: pnpm run test
       - run: pnpm run build
