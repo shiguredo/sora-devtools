@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] Devtools の初期化処理に Service Worker の登録解除処理を追加する
+  - 以前 Sora Devtools 内で使用していた Service Worker の登録を解除するため
+  - @tnamao
 - [CHANGE] JSON を入力する欄に機能を追加する
   - 対象の項目は以下
     - `metadata`
