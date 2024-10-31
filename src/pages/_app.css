@@ -390,20 +390,24 @@ video {
   transform: rotate(-180deg);
 }
 
-.btn-load-template {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+.invalid-json {
+  border-color: var(--bs-form-invalid-border-color);
+  border-width: 2px;
 }
 
-.invalid-json {
+.invalid-json:focus {
   border-color: var(--bs-form-invalid-border-color);
 }
 
-.btn-pretty-format {
+.json-input-textarea-overlay {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 0;
+  display: flex;
+}
+
+.json-input-textarea-overlay button {
+  margin-right: 0.5rem;
 }
 
 .hr-form {

@@ -1,10 +1,11 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoVP9Params, setVideoVP9Params } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
+import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoVP9ParamsForm: React.FC = () => {
@@ -15,9 +16,6 @@ export const VideoVP9ParamsForm: React.FC = () => {
   const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledVideoVP9Params(event.target.checked))
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setVideoVP9Params(event.target.value))
   }
   return (
     <>
@@ -38,18 +36,13 @@ export const VideoVP9ParamsForm: React.FC = () => {
       {enabledVideoVP9Params ? (
         <Row className="form-row">
           <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="videoVP9Params">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder="videoVP9Paramsを指定"
-                value={videoVP9Params}
-                onChange={onChangeText}
-                rows={10}
-                cols={100}
-                disabled={disabled}
-              />
-            </FormGroup>
+            <JSONInputField
+              controlId="videoVP9Params"
+              placeholder="videoVP9Paramsを指定"
+              value={videoVP9Params}
+              setValue={(value) => dispatch(setVideoVP9Params(value))}
+              disabled={disabled}
+            />
           </Col>
         </Row>
       ) : null}

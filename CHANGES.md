@@ -11,9 +11,20 @@
 
 ## develop
 
-- [CHANGE] `forwardingFilter` `forwardingFilters` 入力欄の機能追加
+- [CHANGE] JSON を入力する欄に機能を追加する
+  - 対象の項目は以下
+    - `metadata`
+    - `signalingNotifyMetadata`
+    - `forwardingFilters`
+    - `forwardingFilter`
+    - `dataChannels`
+    - `videoVP9Params`
+    - `videoAV1Params`
+    - `videoH264Params`
+    - `videoH265Params`
   - JSON の整形を行う `pretty format` ボタンを追加する
-  - 入力内容が JSON として正しくない場合に入力欄の border を赤くする
+    - 入力値が JSON として正しい時に有効になる
+  - 入力内容が JSON として正しくない場合に入力欄の枠線を赤くする
   - @tnamao
 - [ADD] forwardingFilters の入力項目を新規追加する
   - 既存の forwardingFilter も残しており、両方設定した場合はシグナリング時に両方のパラメータを送信する
