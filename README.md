@@ -38,8 +38,8 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 ## 利用技術
 
 - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
-- [Next\.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vite.dev/)
 - [React](https://reactjs.org/)
 - [Redux](https://redux.js.org/)
   - [Redux Toolkit](https://redux-toolkit.js.org/)
