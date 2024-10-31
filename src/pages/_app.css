@@ -392,6 +392,7 @@ video {
 
 .invalid-json {
   border-color: var(--bs-form-invalid-border-color);
+  border-width: 2px;
 }
 
 .invalid-json:focus {
