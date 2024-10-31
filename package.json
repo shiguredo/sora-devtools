@@ -22,7 +22,7 @@
     "fix": "biome check --apply ./src",
     "test": "vitest run",
     "e2e-test": "playwright test --project=chromium",
-    "cleanup": "git clean -ffdx"
+    "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
     "@reduxjs/toolkit": "2.3.0",
