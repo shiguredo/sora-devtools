@@ -690,7 +690,7 @@ async function createMediaStream(
 
     // 指定の MP4 を再生するための MediaStream を返す
     // DevTools ではいったん常に繰り返し再生にしておく
-    return [state.mp4MediaStream.play({ repeat: true }), null]
+    return [await state.mp4MediaStream.play({ repeat: true }), null]
   }
   if (navigator.mediaDevices === undefined) {
     throw new Error('Failed to call getUserMedia. Make sure domain is secure')
