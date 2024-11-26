@@ -39,7 +39,7 @@
     - Chrome / Edge のみで利用可能
     - B フレームを含んだ H.264 は正常に再生できない
   - @sile
-- [ADD] @shiguredo/mp4-media-stream (2024.1.2) を依存パッケージに追加する
+- [ADD] @shiguredo/mp4-media-stream (2024.2.0) を依存パッケージに追加する
   - @sile
 - [CHANGE] audioBitRate と videoBitRate を自由に設定できるようにする
   - 自由入力にし、選択肢以外のビットレートでも Sora の接続パラメータとして使用できるようにする
