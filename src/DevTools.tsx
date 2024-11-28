@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useEffect } from 'react'
 
-import { disconnectSora, setMediaDevices } from '@/app/actions'
+import { disconnectSora, setMediaDevices, unregisterServiceWorker } from '@/app/actions'
 import { setInitialParameter } from '@/app/actions'
 import { useAppDispatch } from '@/app/hooks'
 import { DebugPane } from '@/components/DebugPane'
@@ -15,6 +15,7 @@ const Devtools: React.FC = () => {
   useEffect(() => {
     dispatch(setInitialParameter())
     dispatch(setMediaDevices())
+    dispatch(unregisterServiceWorker())
     return () => {
       dispatch(disconnectSora())
     }
