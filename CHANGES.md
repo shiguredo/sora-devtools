@@ -11,6 +11,8 @@
 
 ## develop
 
+## 2024.2.0
+
 - [ADD] Devtools の初期化処理に Service Worker の登録解除処理を追加する
   - 以前 Sora Devtools 内で使用していた Service Worker の登録を解除するため
   - @tnamao
