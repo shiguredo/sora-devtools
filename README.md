@@ -38,13 +38,14 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 ## 利用技術
 
 - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
+- [Node\.js](https://nodejs.org/en)
 - [Next\.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [React](https://reactjs.org/)
 - [Redux](https://redux.js.org/)
   - [Redux Toolkit](https://redux-toolkit.js.org/)
 - [Bootstrap](https://getbootstrap.com/)
-  - [React Bootstrap \| React Bootstrap](https://react-bootstrap.github.io/)
+  - [React Bootstrap](https://react-bootstrap.github.io/)
 - [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
