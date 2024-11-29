@@ -14,7 +14,7 @@ import type {
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
-} from './../types'
+} from './../types.ts'
 import {
   copy2clipboard,
   createAudioConstraints,
@@ -32,8 +32,8 @@ import {
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
-} from './../utils'
-import { slice } from './slice'
+} from './../utils.ts'
+import { slice } from './slice.ts'
 
 // ページ初期化処理
 export const setInitialParameter = () => {
@@ -80,9 +80,6 @@ export const setInitialParameter = () => {
     }
     if (qsParams.displayResolution !== undefined) {
       dispatch(slice.actions.setDisplayResolution(qsParams.displayResolution))
-    }
-    if (qsParams.e2ee !== undefined) {
-      dispatch(slice.actions.setE2EE(qsParams.e2ee))
     }
     if (qsParams.echoCancellation !== undefined) {
       dispatch(slice.actions.setEchoCancellation(qsParams.echoCancellation))
@@ -204,6 +201,9 @@ export const setInitialParameter = () => {
     if (qsParams.signalingUrlCandidates !== undefined) {
       dispatch(slice.actions.setSignalingUrlCandidates(qsParams.signalingUrlCandidates))
     }
+    if (qsParams.forwardingFilters !== undefined) {
+      dispatch(slice.actions.setForwardingFilters(qsParams.forwardingFilters))
+    }
     if (qsParams.forwardingFilter !== undefined) {
       dispatch(slice.actions.setForwardingFilter(qsParams.forwardingFilter))
     }
@@ -246,38 +246,23 @@ export const setInitialParameter = () => {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
     dispatch(slice.actions.setInitialFakeContents())
-    // e2ee が有効な場合は e2ee 初期化処理をする
     const {
       audioStreamingLanguageCode,
       bundleId,
       clientId,
       dataChannelSignaling,
       dataChannels,
-      e2ee,
       ignoreDisconnectWebSocket,
       metadata,
       signalingNotifyMetadata,
       signalingUrlCandidates,
+      forwardingFilters,
       forwardingFilter,
       videoVP9Params,
       videoH264Params,
       videoH265Params,
       videoAV1Params,
     } = getState()
-    if (e2ee) {
-      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
-      // wasm url が存在する場合は e2ee の初期化処理をする
-      if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-      try {
-        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
-      } catch (_e) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-    }
     // bundleId が存在した場合は enabledBundleId をセットする
     if (bundleId !== '') {
       dispatch(slice.actions.setEnabledBundleId(true))
@@ -295,8 +280,12 @@ export const setInitialParameter = () => {
       dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true))
     }
     // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
-    if (0 < signalingUrlCandidates.length) {
+    if (signalingUrlCandidates.length > 0) {
       dispatch(slice.actions.setEnabledSignalingUrlCandidates(true))
+    }
+    // forwardingFilters が存在した場合は enabledForwardingFilters をセットする
+    if (forwardingFilters !== '') {
+      dispatch(slice.actions.setEnabledForwardingFilters(true))
     }
     // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
     if (forwardingFilter !== '') {
@@ -416,6 +405,10 @@ export const copyURL = () => {
         state.signalingNotifyMetadata !== '' && state.enabledSignalingNotifyMetadata
           ? state.signalingNotifyMetadata
           : undefined,
+      forwardingFilters:
+        state.forwardingFilters !== '' && state.enabledForwardingFilters
+          ? state.forwardingFilters
+          : undefined,
       forwardingFilter:
         state.forwardingFilter !== '' && state.enabledForwardingFilter
           ? state.forwardingFilter
@@ -432,7 +425,6 @@ export const copyURL = () => {
         state.dataChannels !== '' && state.enabledDataChannels ? state.dataChannels : undefined,
       // URL の長さ短縮のため true 以外は query string に含めない
       reconnect: state.reconnect === true ? true : undefined,
-      e2ee: state.e2ee === true ? true : undefined,
       mediaProcessorsNoiseSuppression:
         state.mediaProcessorsNoiseSuppression === true ? true : undefined,
       // URL の長さ短縮のため false 以外は query string に含めない
@@ -442,7 +434,7 @@ export const copyURL = () => {
       videoTrack: state.videoTrack === false ? false : undefined,
       // signalingUrlCandidates
       signalingUrlCandidates:
-        0 < state.signalingUrlCandidates.length && state.enabledSignalingUrlCandidates
+        state.signalingUrlCandidates.length > 0 && state.enabledSignalingUrlCandidates
           ? state.signalingUrlCandidates
           : undefined,
       // apiUrl
@@ -479,7 +471,7 @@ export const copyURL = () => {
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
-type craeteMediaStreamPickedState = Pick<
+type createMediaStreamPickedState = Pick<
   SoraDevtoolsState,
   | 'aspectRatio'
   | 'audio'
@@ -500,6 +492,7 @@ type craeteMediaStreamPickedState = Pick<
   | 'mediaProcessorsNoiseSuppression'
   | 'mediaType'
   | 'micDevice'
+  | 'mp4MediaStream'
   | 'noiseSuppression'
   | 'noiseSuppressionProcessor'
   | 'resizeMode'
@@ -512,7 +505,7 @@ type craeteMediaStreamPickedState = Pick<
 >
 async function createMediaStream(
   dispatch: Dispatch,
-  state: craeteMediaStreamPickedState,
+  state: createMediaStreamPickedState,
 ): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = 'MEDIA_CONSTRAINTS'
   if (state.mediaType === 'getDisplayMedia') {
@@ -689,6 +682,15 @@ async function createMediaStream(
       ),
     )
     return [mediaStream, gainNode]
+  }
+  if (state.mediaType === 'mp4Media') {
+    if (state.mp4MediaStream === null) {
+      throw new Error('No MP4 file has been selected')
+    }
+
+    // 指定の MP4 を再生するための MediaStream を返す
+    // DevTools ではいったん常に繰り返し再生にしておく
+    return [await state.mp4MediaStream.play({ repeat: true }), null]
   }
   if (navigator.mediaDevices === undefined) {
     throw new Error('Failed to call getUserMedia. Make sure domain is secure')
@@ -889,7 +891,7 @@ function setSoraCallbacks(
     }
     dispatch(
       slice.actions.setNotifyMessages({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: message,
         transportType: transportType,
       }),
@@ -898,7 +900,7 @@ function setSoraCallbacks(
   sora.on('push', (message: SoraPushMessage, transportType: TransportType) => {
     dispatch(
       slice.actions.setPushMessages({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: message,
         transportType: transportType,
       }),
@@ -1005,7 +1007,7 @@ function setSoraCallbacks(
   })
   sora.on('timeline', (event) => {
     const message = {
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
       type: event.type,
       data: event.data,
       dataChannelId: event.dataChannelId,
@@ -1023,7 +1025,7 @@ function setSoraCallbacks(
   })
   sora.on('signaling', (event) => {
     const message = {
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
       transportType: event.transportType,
       type: event.type,
       data: event.data,
@@ -1033,7 +1035,7 @@ function setSoraCallbacks(
   sora.on('message', (event) => {
     dispatch(
       slice.actions.setDataChannelMessage({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         label: event.label,
         data: event.data,
       }),
@@ -1055,12 +1057,12 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     clientId: state.clientId,
     dataChannelSignaling: state.dataChannelSignaling,
     dataChannels: state.enabledDataChannels ? state.dataChannels : '',
-    e2ee: state.e2ee,
     enabledAudioStreamingLanguageCode: state.enabledAudioStreamingLanguageCode,
     enabledBundleId: state.enabledBundleId,
     enabledClientId: state.enabledClientId,
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    enabledForwardingFilters: state.enabledForwardingFilters,
     enabledForwardingFilter: state.enabledForwardingFilter,
     enabledVideoVP9Params: state.enabledVideoVP9Params,
     enabledVideoH264Params: state.enabledVideoH264Params,
@@ -1069,6 +1071,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
+    forwardingFilters: state.forwardingFilters,
     forwardingFilter: state.forwardingFilter,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
@@ -1091,7 +1094,7 @@ function createSoraDevtoolsTimelineMessage(type: string, data?: unknown): Timeli
   return {
     type: type,
     logType: 'sora-devtools',
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     data: data,
   }
 }
@@ -1602,6 +1605,15 @@ export const setMediaDevices = () => {
   }
 }
 
+export const unregisterServiceWorker = () => {
+  return async (_dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
+    const registrations = await navigator.serviceWorker.getRegistrations()
+    for (const registration of registrations) {
+      await registration.unregister()
+    }
+  }
+}
+
 // デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新
 export const updateMediaStream = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
@@ -1672,26 +1684,6 @@ export const updateMediaStream = () => {
   }
 }
 
-export const setE2EE = (e2ee: boolean) => {
-  return async (dispatch: Dispatch, _getState: () => SoraDevtoolsState): Promise<void> => {
-    if (e2ee) {
-      const message = `Faild to execute WebAssembly '${process.env.NEXT_PUBLIC_E2EE_WASM_URL}'.`
-      // wasm url が存在する場合は e2ee の初期化処理をする
-      if (!process.env.NEXT_PUBLIC_E2EE_WASM_URL) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-      try {
-        await Sora.initE2EE(process.env.NEXT_PUBLIC_E2EE_WASM_URL)
-      } catch (_e) {
-        dispatch(slice.actions.setSoraErrorAlertMessage(message))
-        return
-      }
-    }
-    dispatch(slice.actions.setE2EE(e2ee))
-  }
-}
-
 export const setMicDevice = (micDevice: boolean) => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     const state = getState()
@@ -1720,6 +1712,7 @@ export const setMicDevice = (micDevice: boolean) => {
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: micDevice,
+        mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
@@ -1736,7 +1729,7 @@ export const setMicDevice = (micDevice: boolean) => {
           throw error
         },
       )
-      if (0 < mediaStream.getAudioTracks().length) {
+      if (mediaStream.getAudioTracks().length > 0) {
         if (
           state.soraContents.sora &&
           state.soraContents.connectionStatus === 'connected' &&
@@ -1816,6 +1809,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
         micDevice: state.micDevice,
+        mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
         resizeMode: state.resizeMode,
@@ -1832,7 +1826,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
           throw error
         },
       )
-      if (0 < mediaStream.getVideoTracks().length) {
+      if (mediaStream.getVideoTracks().length > 0) {
         if (
           state.soraContents.sora &&
           state.soraContents.connectionStatus === 'connected' &&
@@ -2008,6 +2002,7 @@ export const {
   setEnabledClientId,
   setEnabledDataChannels,
   setEnabledDataChannel,
+  setEnabledForwardingFilters,
   setEnabledForwardingFilter,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
@@ -2029,6 +2024,7 @@ export const {
   setMediaStats,
   setMediaType,
   setMetadata,
+  setMp4MediaStream,
   setMultistream,
   setNoiseSuppression,
   setNotifyMessages,
@@ -2038,6 +2034,7 @@ export const {
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
+  setForwardingFilters,
   setForwardingFilter,
   setSimulcast,
   setSimulcastRid,

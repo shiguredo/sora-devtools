@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SIMULCAST_RID } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const SimulcastRidForm: React.FC = () => {
   const simulcastRid = useAppSelector((state) => state.simulcastRid)

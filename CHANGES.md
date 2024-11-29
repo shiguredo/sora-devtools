@@ -11,9 +11,56 @@
 
 ## develop
 
+## 2024.2.0
+
+**リリース日**: 2024-11-29
+
+- [CHANGE] JSON を入力する欄に機能を追加する
+  - 対象の項目は以下
+    - `metadata`
+    - `signalingNotifyMetadata`
+    - `forwardingFilters`
+    - `forwardingFilter`
+    - `dataChannels`
+    - `videoVP9Params`
+    - `videoAV1Params`
+    - `videoH264Params`
+    - `videoH265Params`
+  - JSON の整形を行う `pretty format` ボタンを追加する
+    - 入力値が JSON として正しい時に有効になる
+  - 入力内容が JSON として正しくない場合に入力欄の枠線を赤くする
+  - @tnamao
+- [CHANGE] audioBitRate と videoBitRate を自由に設定できるようにする
+  - 自由入力にし、選択肢以外のビットレートでも Sora の接続パラメータとして使用できるようにする
+  - @tnamao
+- [CHANGE] index ページのサイマルキャストのリンクのうち `resolution` の値の指定に誤りがあったので修正する
+  - `720p (1280x720)` を解像度のみの `1280x720` に修正する
+  - @tnamao
+- [UPDATE] sora-js-sdk のバージョンを 2024.2.0 に上げる
+  - @voluntas
+- [ADD] Devtools の初期化処理に Service Worker の登録解除処理を追加する
+  - 以前 Sora Devtools 内で使用していた Service Worker の登録を解除するため
+  - @tnamao
+- [ADD] forwardingFilters の入力項目を新規追加する
+  - 既存の forwardingFilter も残しており、両方設定した場合はシグナリング時に両方のパラメータを送信する
+  - @tnamao
+- [ADD] mediaType に mp4Media を追加する
+  - 指定された H.264 + Opus の MP4 ファイルからメディアストリームを取得して配信できるようにするもの
+  - ファイルの終端に達した場合には、先頭に戻って繰り返し再生する
+  - 制限:
+    - Chrome / Edge のみで利用可能
+    - B フレームを含んだ H.264 は正常に再生できない
+  - @sile
+- [ADD] @shiguredo/mp4-media-stream (2024.2.0) を依存パッケージに追加する
+  - @sile
+- [ADD] 音声ビットレートの選択肢に 384 kbps を追加する
+  - @blaue-fuchs
+
+### misc
+
 ## 2024.1.6
 
-**2024-07-09**
+**リリース日**: 2024-07-09
 
 - [FIX] sora-js-sdk のバージョンを 2024.1.2 に上げる
   - @voluntas
@@ -23,7 +70,7 @@
 
 ## 2024.1.5
 
-**2024-06-20**
+**リリース日**: 2024-06-20
 
 - [FIX] 映像のオーバーレイ表示の `z-index` を調整する
   - @tnamao
@@ -32,7 +79,7 @@
 
 ## 2024.1.4
 
-**2024-06-17**
+**リリース日**: 2024-06-17
 
 - [FIX] LocalVideo のスポットライトフォーカス時の表示を修正する
   - CSS クラスの指定が正しくなかった
@@ -40,21 +87,21 @@
 
 ## 2024.1.3
 
-**2024-06-17**
+**リリース日**: 2024-06-17
 
 - [FIX] リリースミスを修正する
   - @voluntas
 
 ## 2024.1.2
 
-**2024-06-17**
+**リリース日**: 2024-06-17
 
 - [FIX] sora-js-sdk のバージョンを 2024.1.1 に上げる
   - @voluntas
 
 ## 2024.1.1
 
-**2024-06-10**
+**リリース日**: 2024-06-10
 
 - [FIX] サイマルキャスト時の Media Stats の表示ができない問題を修正する
   - rid 毎に切り替え可能にする
@@ -62,7 +109,7 @@
 
 ## 2024.1.0
 
-**2024-06-07**
+**リリース日**: 2024-06-07
 
 - [UPDATE] sora-js-sdk のバージョンを 2024.1.0 に上げる
   - @voluntas

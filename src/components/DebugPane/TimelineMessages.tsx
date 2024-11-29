@@ -3,13 +3,12 @@ import React from 'react'
 import { useAppSelector } from '@/app/hooks'
 import type { TimelineMessage } from '@/types'
 
-import { Message } from './Message'
+import { Message } from './Message.tsx'
 
 const DATA_CHANNEL_COLORS: { [key: string]: string } = {
   signaling: '#ff00ff',
   notify: '#ffff00',
   push: '#98fb98',
-  e2ee: '#00ffff',
   stats: '#ffc0cb',
 }
 
@@ -93,7 +92,7 @@ export const TimelineMessages: React.FC = () => {
       if (filterText === '') {
         return true
       }
-      return 0 <= JSON.stringify(message).indexOf(filterText)
+      return JSON.stringify(message).indexOf(filterText) >= 0
     })
   })
   return (

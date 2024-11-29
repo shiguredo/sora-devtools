@@ -1,11 +1,12 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { JSONInputField } from './JSONInputField.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const SignalingNotifyMetadataForm: React.FC = () => {
   const enabledSignalingNotifyMetadata = useAppSelector(
@@ -17,9 +18,6 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
   const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledSignalingNotifyMetadata(event.target.checked))
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setSignalingNotifyMetadata(event.target.value))
   }
   return (
     <>
@@ -40,18 +38,13 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
       {enabledSignalingNotifyMetadata ? (
         <Row className="form-row">
           <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder="signalingNotifyMetadataを指定"
-                value={signalingNotifyMetadata}
-                onChange={onChangeText}
-                rows={10}
-                cols={100}
-                disabled={disabled}
-              />
-            </FormGroup>
+            <JSONInputField
+              controlId="signalingNotifyMetadata"
+              placeholder="signalingNotifyMetadataを指定"
+              value={signalingNotifyMetadata}
+              setValue={(value) => dispatch(setSignalingNotifyMetadata(value))}
+              disabled={disabled}
+            />
           </Col>
         </Row>
       ) : null}

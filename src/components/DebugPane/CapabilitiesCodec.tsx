@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Message } from './Message'
+import { Message } from './Message.tsx'
 
-interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodecCapability {
+interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodec {
   [x: string]: string | number | undefined
 }
 
@@ -22,7 +22,7 @@ const Log = React.memo((props: LogProps) => {
 const getCapabilitiesCodec = (
   getCapabilities: (kind: string) => RTCRtpCapabilities | null,
   kind: string,
-): RTCRtpCodecCapability[] => {
+): RTCRtpCodec[] => {
   if (!getCapabilities) {
     return []
   }

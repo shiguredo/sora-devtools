@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
   const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket)

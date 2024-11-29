@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "organizeImports": {
     "enabled": true
   },
@@ -8,15 +8,16 @@
     "rules": {
       "all": true,
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        // React 利用しているので off
+        "noReactSpecificProps": "off"
       },
       "style": {
+        // snake_case にしたいので off
         "useNamingConvention": "off",
+        // default export を使いたいので off
         "noDefaultExport": "off",
         "useFilenamingConvention": "off"
-      },
-      "nursery": {
-        "noUndeclaredDependencies": "off"
       },
       "complexity": {
         "useSimplifiedLogicExpression": "off",

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useAppSelector } from '@/app/hooks'
 
-import { Message } from './Message'
+import { Message } from './Message.tsx'
 
 interface RTCStatsWithIndexSignature extends RTCStats {
   [x: string]: string | number | undefined
@@ -24,7 +24,7 @@ export const Stats: React.FC = () => {
       if (filterText === '') {
         return true
       }
-      return 0 <= JSON.stringify(message).indexOf(filterText)
+      return JSON.stringify(message).indexOf(filterText) >= 0
     })
   })
   return (

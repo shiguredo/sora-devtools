@@ -4,7 +4,7 @@ import Sora from 'sora-js-sdk'
 
 import { useAppSelector } from '@/app/hooks'
 
-import { DebugButton } from './DebugButton'
+import { DebugButton } from './DebugButton.tsx'
 
 export const Footer: React.FC = () => {
   const version = useAppSelector((state) => state.version)

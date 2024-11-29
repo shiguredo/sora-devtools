@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { ASPECT_RATIO_TYPES } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AspectRatioForm: React.FC = () => {
   const aspectRatio = useAppSelector((state) => state.aspectRatio)

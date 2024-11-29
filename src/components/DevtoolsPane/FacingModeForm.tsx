@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { FACING_MODES } from '@/constants'
 import { checkFormValue } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const FacingModeForm: React.FC = () => {
   const facingMode = useAppSelector((state) => state.facingMode)

@@ -1,11 +1,12 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
-import { TooltipFormCheck } from './TooltipFormCheck'
+import { JSONInputField } from './JSONInputField.tsx'
+import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ForwardingFilterForm: React.FC = () => {
   const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)
@@ -15,9 +16,6 @@ export const ForwardingFilterForm: React.FC = () => {
   const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setEnabledForwardingFilter(event.target.checked))
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setForwardingFilter(event.target.value))
   }
   return (
     <>
@@ -38,18 +36,13 @@ export const ForwardingFilterForm: React.FC = () => {
       {enabledForwardingFilter ? (
         <Row className="form-row">
           <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="forwardingFilter">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder="forwardingFilterを指定"
-                value={forwardingFilter}
-                onChange={onChangeText}
-                rows={10}
-                cols={100}
-                disabled={disabled}
-              />
-            </FormGroup>
+            <JSONInputField
+              controlId="forwardingFilter"
+              placeholder="forwardingFilterを指定"
+              value={forwardingFilter}
+              setValue={(value) => dispatch(setForwardingFilter(value))}
+              disabled={disabled}
+            />
           </Col>
         </Row>
       ) : null}

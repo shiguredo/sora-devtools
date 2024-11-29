@@ -33,7 +33,7 @@
     "description": "音声のコーデックタイプを指定します。"
   },
   "audioBitRate": {
-    "description": "音声のビットレートを指定します。"
+    "description": "音声のビットレートを指定します。\n6 ~ 510 kbps の範囲で指定できます。"
   },
   "video": {
     "description": "映像配信をするかどうかを指定します。"
@@ -42,7 +42,7 @@
     "description": "映像のコーデックタイプを指定します。"
   },
   "videoBitRate": {
-    "description": "映像のビットレートを指定します。"
+    "description": "映像のビットレートを指定します。\n15,000 kbps までがサポート対象、それ以上のビットレートはサポート対象外です。"
   },
   "videoVP9Params": {
     "description": "映像のコーデックタイプに VP9 を指定した場合の設定を指定します。"
@@ -55,9 +55,6 @@
   },
   "videoAV1Params": {
     "description": "映像のコーデックタイプに AV1 を指定した場合の設定を指定します。"
-  },
-  "e2ee": {
-    "description": "E2EE(End-to-End Encryption) を使用するかどうかを指定します。"
   },
   "reconnect": {
     "description": "一度接続に成功したあとに意図しない切断があった場合に再接続するかどうかを指定します。"
@@ -77,8 +74,11 @@
   "signalingUrlCandidates": {
     "description": "シグナリングをするURLを改行区切りで複数指定します。"
   },
+  "forwardingFilters": {
+    "description": "転送フィルターを複数指定します。"
+  },
   "forwardingFilter": {
-    "description": "デフォルトの転送フィルターを指定します。"
+    "description": "転送フィルターを指定します。"
   },
   "audioStreamingLanguageCode": {
     "description": "音声解析用の言語コードを指定します。"
@@ -97,6 +97,9 @@
   },
   "fakeVolume": {
     "description": "mediaType に fakeMedia を選択した際の音量を指定します。"
+  },
+  "mp4File": {
+    "description": "mediaType に mp4Media を選択した際に使用する MP4 ファイル (H.264 + Opus のみ対応) を指定します。"
   },
   "audioContentHint": {
     "description": "MediaStreamTrack audio の contentHint を指定します。"

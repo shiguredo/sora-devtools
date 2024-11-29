@@ -25,9 +25,9 @@ import {
   VIDEO_BIT_RATES,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '../constants'
-import { setInitialParameter } from './actions'
-import { store } from './store'
+} from '../constants.ts'
+import { setInitialParameter } from './actions.ts'
+import { store } from './store.ts'
 
 // このテストは query string にしていた値が適切に割り当てられているかをチェックする
 
@@ -270,14 +270,6 @@ describe('setInitialParameter tests', () => {
     }
   })
 
-  it("should handle 'e2ee'", async () => {
-    for (const value of [true, false]) {
-      setLocationSearch({ e2ee: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().e2ee).toEqual(value)
-    }
-  })
-
   it("should handle 'showStats'", async () => {
     for (const value of [true, false]) {
       setLocationSearch({ showStats: value })
@@ -391,6 +383,13 @@ describe('setInitialParameter tests', () => {
     setLocationSearch({ signalingNotifyMetadata: value })
     await store.dispatch(setInitialParameter())
     expect(store.getState().signalingNotifyMetadata).toEqual(value)
+  })
+
+  it("should handle 'forwardingFilters'", async () => {
+    const value = 'forwardingFilters'
+    setLocationSearch({ forwardingFilters: value })
+    await store.dispatch(setInitialParameter())
+    expect(store.getState().forwardingFilters).toEqual(value)
   })
 
   it("should handle 'forwardingFilter'", async () => {
