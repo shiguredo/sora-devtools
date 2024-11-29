@@ -11,9 +11,10 @@
 
 ## develop
 
-- [ADD] Devtools の初期化処理に Service Worker の登録解除処理を追加する
-  - 以前 Sora Devtools 内で使用していた Service Worker の登録を解除するため
-  - @tnamao
+## 2024.2.0
+
+**リリース日**: 2024-11-29
+
 - [CHANGE] JSON を入力する欄に機能を追加する
   - 対象の項目は以下
     - `metadata`
@@ -29,6 +30,17 @@
     - 入力値が JSON として正しい時に有効になる
   - 入力内容が JSON として正しくない場合に入力欄の枠線を赤くする
   - @tnamao
+- [CHANGE] audioBitRate と videoBitRate を自由に設定できるようにする
+  - 自由入力にし、選択肢以外のビットレートでも Sora の接続パラメータとして使用できるようにする
+  - @tnamao
+- [CHANGE] index ページのサイマルキャストのリンクのうち `resolution` の値の指定に誤りがあったので修正する
+  - `720p (1280x720)` を解像度のみの `1280x720` に修正する
+  - @tnamao
+- [UPDATE] sora-js-sdk のバージョンを 2024.2.0 に上げる
+  - @voluntas
+- [ADD] Devtools の初期化処理に Service Worker の登録解除処理を追加する
+  - 以前 Sora Devtools 内で使用していた Service Worker の登録を解除するため
+  - @tnamao
 - [ADD] forwardingFilters の入力項目を新規追加する
   - 既存の forwardingFilter も残しており、両方設定した場合はシグナリング時に両方のパラメータを送信する
   - @tnamao
@@ -41,12 +53,6 @@
   - @sile
 - [ADD] @shiguredo/mp4-media-stream (2024.2.0) を依存パッケージに追加する
   - @sile
-- [CHANGE] audioBitRate と videoBitRate を自由に設定できるようにする
-  - 自由入力にし、選択肢以外のビットレートでも Sora の接続パラメータとして使用できるようにする
-  - @tnamao
-- [CHANGE] index ページのサイマルキャストのリンクのうち `resolution` の値の指定に誤りがあったので修正する
-  - `720p (1280x720)` を解像度のみの `1280x720` に修正する
-  - @tnamao
 - [ADD] 音声ビットレートの選択肢に 384 kbps を追加する
   - @blaue-fuchs
 
