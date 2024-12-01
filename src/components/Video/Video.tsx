@@ -40,7 +40,12 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   }, [mute])
 
   useEffect(() => {
-    if (videoRef.current && stream) {
+    const videoElement = videoRef.current
+    if (!videoElement) {
+      return
+    }
+
+    if (stream) {
       // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
       // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
       // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
@@ -49,7 +54,7 @@ const VideoElement: React.FC<VideoProps> = (props) => {
         originalEnabled = track.enabled
         track.enabled = false
       }
-      videoRef.current.onloadedmetadata = (_) => {
+      videoElement.onloadedmetadata = (_) => {
         for (const track of stream.getVideoTracks()) {
           if (originalEnabled !== undefined) {
             track.enabled = originalEnabled
@@ -57,12 +62,23 @@ const VideoElement: React.FC<VideoProps> = (props) => {
         }
       }
 
-      videoRef.current.srcObject = stream
+      videoElement.srcObject = stream
       if (audioOutput && stream.getAudioTracks().length > 0) {
-        videoRef.current.setSinkId(audioOutput)
+        videoElement.setSinkId(audioOutput)
       }
-    } else if (videoRef.current && stream === null) {
-      videoRef.current.srcObject = null
+
+      return () => {
+        for (const track of stream.getVideoTracks()) {
+          if (originalEnabled !== undefined) {
+            track.enabled = originalEnabled
+          }
+        }
+      }
+    }
+
+    if (stream === null) {
+      // stream が null の場合は video 要素をリセットする
+      videoElement.srcObject = null
     }
   }, [stream, audioOutput])
 
