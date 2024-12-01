@@ -112,6 +112,7 @@ export type SoraDevtoolsState = {
   mediaProcessorsNoiseSuppression: boolean
   mediaStats: boolean
   mediaType: (typeof MEDIA_TYPES)[number]
+  mp4MediaStream: Mp4MediaStream | null
   metadata: string
   mp4MediaStream: Mp4MediaStream | null
   multistream: (typeof MULTISTREAM)[number]

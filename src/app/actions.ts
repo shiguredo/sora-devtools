@@ -491,6 +491,7 @@ type createMediaStreamPickedState = Pick<
   | 'lightAdjustmentProcessor'
   | 'mediaProcessorsNoiseSuppression'
   | 'mediaType'
+  | 'mp4MediaStream'
   | 'micDevice'
   | 'mp4MediaStream'
   | 'noiseSuppression'
@@ -1711,6 +1712,7 @@ export const setMicDevice = (micDevice: boolean) => {
         lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
+        mp4MediaStream: state.mp4MediaStream,
         micDevice: micDevice,
         mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
@@ -1808,6 +1810,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
+        mp4MediaStream: state.mp4MediaStream,
         micDevice: state.micDevice,
         mp4MediaStream: state.mp4MediaStream,
         noiseSuppression: state.noiseSuppression,
