@@ -1,5 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
+import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
 import type {
@@ -135,6 +136,9 @@ const initialState: SoraDevtoolsState = {
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: '',
+  enabledForwardingFilters: false,
+  mp4MediaStream: null,
+  forwardingFilters: '',
 }
 
 export const slice = createSlice({
@@ -229,6 +233,9 @@ export const slice = createSlice({
     },
     setSignalingMessage: (state, action: PayloadAction<SignalingMessage>) => {
       state.signalingMessages.push(action.payload)
+    },
+    setEnabledForwardingFilters: (state, action: PayloadAction<boolean>) => {
+      state.enabledForwardingFilters = action.payload
     },
     setEnabledForwardingFilter: (state, action: PayloadAction<boolean>) => {
       state.enabledForwardingFilter = action.payload
@@ -626,6 +633,12 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['enabledAudioStreamingLanguageCode']>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload
+    },
+    setForwardingFilters: (state, action: PayloadAction<string>) => {
+      state.forwardingFilters = action.payload
+    },
+    setMp4MediaStream: (state, action: PayloadAction<Mp4MediaStream | null>) => {
+      state.mp4MediaStream = action.payload
     },
   },
 })

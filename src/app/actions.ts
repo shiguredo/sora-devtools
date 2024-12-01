@@ -14,7 +14,7 @@ import type {
   SoraNotifyMessage,
   SoraPushMessage,
   TimelineMessage,
-} from './../types'
+} from './../types.ts'
 import {
   copy2clipboard,
   createAudioConstraints,
@@ -32,8 +32,8 @@ import {
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
-} from './../utils'
-import { slice } from './slice'
+} from './../utils.ts'
+import { slice } from './slice.ts'
 
 // ページ初期化処理
 export const setInitialParameter = () => {
@@ -201,6 +201,9 @@ export const setInitialParameter = () => {
     if (qsParams.signalingUrlCandidates !== undefined) {
       dispatch(slice.actions.setSignalingUrlCandidates(qsParams.signalingUrlCandidates))
     }
+    if (qsParams.forwardingFilters !== undefined) {
+      dispatch(slice.actions.setForwardingFilters(qsParams.forwardingFilters))
+    }
     if (qsParams.forwardingFilter !== undefined) {
       dispatch(slice.actions.setForwardingFilter(qsParams.forwardingFilter))
     }
@@ -253,6 +256,7 @@ export const setInitialParameter = () => {
       metadata,
       signalingNotifyMetadata,
       signalingUrlCandidates,
+      forwardingFilters,
       forwardingFilter,
       videoVP9Params,
       videoH264Params,
@@ -278,6 +282,10 @@ export const setInitialParameter = () => {
     // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
     if (signalingUrlCandidates.length > 0) {
       dispatch(slice.actions.setEnabledSignalingUrlCandidates(true))
+    }
+    // forwardingFilters が存在した場合は enabledForwardingFilters をセットする
+    if (forwardingFilters !== '') {
+      dispatch(slice.actions.setEnabledForwardingFilters(true))
     }
     // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
     if (forwardingFilter !== '') {
@@ -397,6 +405,10 @@ export const copyURL = () => {
         state.signalingNotifyMetadata !== '' && state.enabledSignalingNotifyMetadata
           ? state.signalingNotifyMetadata
           : undefined,
+      forwardingFilters:
+        state.forwardingFilters !== '' && state.enabledForwardingFilters
+          ? state.forwardingFilters
+          : undefined,
       forwardingFilter:
         state.forwardingFilter !== '' && state.enabledForwardingFilter
           ? state.forwardingFilter
@@ -459,7 +471,7 @@ export const copyURL = () => {
 
 // State に応じて MediaStream インスタンスを生成する
 // Fake の場合には volume control 用の GainNode も同時に生成する
-type craeteMediaStreamPickedState = Pick<
+type createMediaStreamPickedState = Pick<
   SoraDevtoolsState,
   | 'aspectRatio'
   | 'audio'
@@ -479,7 +491,9 @@ type craeteMediaStreamPickedState = Pick<
   | 'lightAdjustmentProcessor'
   | 'mediaProcessorsNoiseSuppression'
   | 'mediaType'
+  | 'mp4MediaStream'
   | 'micDevice'
+  | 'mp4MediaStream'
   | 'noiseSuppression'
   | 'noiseSuppressionProcessor'
   | 'resizeMode'
@@ -492,7 +506,7 @@ type craeteMediaStreamPickedState = Pick<
 >
 async function createMediaStream(
   dispatch: Dispatch,
-  state: craeteMediaStreamPickedState,
+  state: createMediaStreamPickedState,
 ): Promise<[MediaStream, GainNode | null]> {
   const LOG_TITLE = 'MEDIA_CONSTRAINTS'
   if (state.mediaType === 'getDisplayMedia') {
@@ -878,7 +892,7 @@ function setSoraCallbacks(
     }
     dispatch(
       slice.actions.setNotifyMessages({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: message,
         transportType: transportType,
       }),
@@ -887,7 +901,7 @@ function setSoraCallbacks(
   sora.on('push', (message: SoraPushMessage, transportType: TransportType) => {
     dispatch(
       slice.actions.setPushMessages({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: message,
         transportType: transportType,
       }),
@@ -994,7 +1008,7 @@ function setSoraCallbacks(
   })
   sora.on('timeline', (event) => {
     const message = {
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
       type: event.type,
       data: event.data,
       dataChannelId: event.dataChannelId,
@@ -1012,7 +1026,7 @@ function setSoraCallbacks(
   })
   sora.on('signaling', (event) => {
     const message = {
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
       transportType: event.transportType,
       type: event.type,
       data: event.data,
@@ -1022,7 +1036,7 @@ function setSoraCallbacks(
   sora.on('message', (event) => {
     dispatch(
       slice.actions.setDataChannelMessage({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         label: event.label,
         data: event.data,
       }),
@@ -1049,6 +1063,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledClientId: state.enabledClientId,
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
+    enabledForwardingFilters: state.enabledForwardingFilters,
     enabledForwardingFilter: state.enabledForwardingFilter,
     enabledVideoVP9Params: state.enabledVideoVP9Params,
     enabledVideoH264Params: state.enabledVideoH264Params,
@@ -1057,6 +1072,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
+    forwardingFilters: state.forwardingFilters,
     forwardingFilter: state.forwardingFilter,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
@@ -1079,7 +1095,7 @@ function createSoraDevtoolsTimelineMessage(type: string, data?: unknown): Timeli
   return {
     type: type,
     logType: 'sora-devtools',
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     data: data,
   }
 }
@@ -1696,6 +1712,7 @@ export const setMicDevice = (micDevice: boolean) => {
         lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
+        mp4MediaStream: state.mp4MediaStream,
         micDevice: micDevice,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
@@ -1792,6 +1809,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
         lightAdjustmentProcessor: state.lightAdjustmentProcessor,
         mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
         mediaType: state.mediaType,
+        mp4MediaStream: state.mp4MediaStream,
         micDevice: state.micDevice,
         noiseSuppression: state.noiseSuppression,
         noiseSuppressionProcessor: state.noiseSuppressionProcessor,
@@ -1985,6 +2003,7 @@ export const {
   setEnabledClientId,
   setEnabledDataChannels,
   setEnabledDataChannel,
+  setEnabledForwardingFilters,
   setEnabledForwardingFilter,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
@@ -2006,6 +2025,7 @@ export const {
   setMediaStats,
   setMediaType,
   setMetadata,
+  setMp4MediaStream,
   setMultistream,
   setNoiseSuppression,
   setNotifyMessages,
@@ -2015,6 +2035,7 @@ export const {
   setResolution,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
+  setForwardingFilters,
   setForwardingFilter,
   setSimulcast,
   setSimulcastRid,
