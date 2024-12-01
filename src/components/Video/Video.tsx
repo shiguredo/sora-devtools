@@ -77,8 +77,8 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       controls={true}
       muted={mute}
       ref={videoRef}
-      width={0 < videoSize.width ? videoSize.width : undefined}
-      height={0 < videoSize.height ? videoSize.height : undefined}
+      width={videoSize.width > 0 ? videoSize.width : undefined}
+      height={videoSize.height > 0 ? videoSize.height : undefined}
     />
   )
 }
