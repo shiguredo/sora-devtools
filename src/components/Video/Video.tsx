@@ -45,16 +45,16 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
       // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
       let originalEnabled: boolean | undefined
-      stream.getVideoTracks().filter((track) => {
+      for (const track of stream.getVideoTracks()) {
         originalEnabled = track.enabled
         track.enabled = false
-      })
+      }
       videoRef.current.onloadedmetadata = (_) => {
-        stream.getVideoTracks().filter((track) => {
+        for (const track of stream.getVideoTracks()) {
           if (originalEnabled !== undefined) {
             track.enabled = originalEnabled
           }
-        })
+        }
       }
 
       videoRef.current.srcObject = stream
