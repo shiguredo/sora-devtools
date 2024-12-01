@@ -13,10 +13,9 @@
   },
   "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "scripts": {
-    "next": "next",
-    "dev": "next dev -p 3333",
-    "build": "next build --no-lint",
-    "dist": "pnpm run cleanup && pnpm install && next build --no-lint",
+    "dev": "vite --port 3333",
+    "build": "vite build",
+    "dist": "pnpm run cleanup && pnpm install && vite build",
     "fmt": "biome format --write ./src",
     "lint": "biome lint ./src",
     "fix": "biome check --apply ./src",

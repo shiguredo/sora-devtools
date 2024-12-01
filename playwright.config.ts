@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   // 環境変数 .env.local が読み込まれる
-  globalSetup: require.resolve('./tests/global-setup.ts'),
+  globalSetup: './tests/global-setup.ts',
   testDir: 'tests',
   // fullyParallel: true,
   reporter: 'html',
@@ -32,7 +32,7 @@ export default defineConfig({
     // },
   ],
   webServer: {
-    // next.js で起動している
+    // vite で起動している
     // TODO: ポート指定方法を後で調べる
     command: 'pnpm run dev',
     url: 'http://localhost:3333/',
