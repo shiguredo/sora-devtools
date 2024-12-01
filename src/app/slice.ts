@@ -11,7 +11,7 @@ import type {
 } from 'sora-js-sdk'
 
 import packageJSON from '../../package.json'
-import { WORKER_SCRIPT } from '../constants'
+import { WORKER_SCRIPT } from '../constants.ts'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -23,7 +23,7 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from '../types'
+} from '../types.ts'
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],
@@ -464,7 +464,7 @@ export const slice = createSlice({
         title: 'Sora info',
         type: 'info',
         message: action.payload,
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -473,7 +473,7 @@ export const slice = createSlice({
         title: 'Sora error',
         type: 'error',
         message: action.payload,
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -482,7 +482,7 @@ export const slice = createSlice({
         title: 'API info',
         type: 'info',
         message: action.payload,
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -491,7 +491,7 @@ export const slice = createSlice({
         title: 'API error',
         type: 'error',
         message: action.payload,
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
       }
       setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
     },
@@ -513,7 +513,7 @@ export const slice = createSlice({
     },
     setLogMessages: (state, action: PayloadAction<LogMessage['message']>) => {
       state.logMessages.push({
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         message: {
           title: action.payload.title,
           description: action.payload.description,

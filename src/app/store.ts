@@ -1,7 +1,7 @@
 import { type Action, type ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
 
-import { slice } from './slice'
+import { slice } from './slice.ts'
 
 /**
  * @see https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type

@@ -106,7 +106,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
   }
   const qs = queryString.parse(location.search)
   // signalingUrlCandidates のパース
-  let signalingUrlCandidates: any
+  let signalingUrlCandidates: string[] | undefined
   if (typeof qs.signalingUrlCandidates === 'string') {
     try {
       signalingUrlCandidates = JSON.parse(qs.signalingUrlCandidates)
