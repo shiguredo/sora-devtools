@@ -21,11 +21,12 @@
     "lint": "biome lint ./src",
     "fix": "biome check --apply ./src",
     "test": "vitest run",
+    "check": "tsc --noEmit",
     "e2e-test": "playwright test --project=chromium",
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.3.0",
+    "@reduxjs/toolkit": "2.4.0",
     "@shiguredo/light-adjustment": "2024.1.0",
     "@shiguredo/mp4-media-stream": "2024.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",

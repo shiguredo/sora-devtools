@@ -114,7 +114,6 @@ export type SoraDevtoolsState = {
   mediaType: (typeof MEDIA_TYPES)[number]
   mp4MediaStream: Mp4MediaStream | null
   metadata: string
-  mp4MediaStream: Mp4MediaStream | null
   multistream: (typeof MULTISTREAM)[number]
   mute: boolean
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
