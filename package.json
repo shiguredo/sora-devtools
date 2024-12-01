@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2024.2.0-canary.17",
+  "version": "2024.2.3",
   "description": "WebRTC SFU Sora DevTools",
   "type": "module",
   "repository": {
@@ -25,7 +25,7 @@
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.3.0",
+    "@reduxjs/toolkit": "2.4.0",
     "@shiguredo/light-adjustment": "2024.1.0",
     "@shiguredo/mp4-media-stream": "2024.2.0",
     "@shiguredo/noise-suppression": "2022.4.2",
@@ -40,7 +40,7 @@
     "redux": "5.0.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "3.1.0",
-    "sora-js-sdk": "2024.2.0-canary.12"
+    "sora-js-sdk": "2024.2.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -56,8 +56,8 @@
     "vite": "6.0.1",
     "vitest": "2.1.6"
   },
-  "packageManager": "pnpm@9.13.2",
+  "packageManager": "pnpm@9.14.3",
   "engines": {
-    "node": ">=18.18"
+    "node": ">=20.18"
   }
 }

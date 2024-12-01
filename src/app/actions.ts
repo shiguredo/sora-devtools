@@ -276,7 +276,7 @@ export const setInitialParameter = () => {
       dispatch(slice.actions.setEnabledSignalingNotifyMetadata(true))
     }
     // signalingUrlCandidates が存在した場合は enabledSignalingUrlCandidates をセットする
-    if (0 < signalingUrlCandidates.length) {
+    if (signalingUrlCandidates.length > 0) {
       dispatch(slice.actions.setEnabledSignalingUrlCandidates(true))
     }
     // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
@@ -422,7 +422,7 @@ export const copyURL = () => {
       videoTrack: state.videoTrack === false ? false : undefined,
       // signalingUrlCandidates
       signalingUrlCandidates:
-        0 < state.signalingUrlCandidates.length && state.enabledSignalingUrlCandidates
+        state.signalingUrlCandidates.length > 0 && state.enabledSignalingUrlCandidates
           ? state.signalingUrlCandidates
           : undefined,
       // apiUrl
@@ -669,6 +669,15 @@ async function createMediaStream(
       ),
     )
     return [mediaStream, gainNode]
+  }
+  if (state.mediaType === 'mp4Media') {
+    if (state.mp4MediaStream === null) {
+      throw new Error('No MP4 file has been selected')
+    }
+
+    // 指定の MP4 を再生するための MediaStream を返す
+    // DevTools ではいったん常に繰り返し再生にしておく
+    return [await state.mp4MediaStream.play({ repeat: true }), null]
   }
   if (navigator.mediaDevices === undefined) {
     throw new Error('Failed to call getUserMedia. Make sure domain is secure')
@@ -1704,7 +1713,7 @@ export const setMicDevice = (micDevice: boolean) => {
           throw error
         },
       )
-      if (0 < mediaStream.getAudioTracks().length) {
+      if (mediaStream.getAudioTracks().length > 0) {
         if (
           state.soraContents.sora &&
           state.soraContents.connectionStatus === 'connected' &&
@@ -1800,7 +1809,7 @@ export const setCameraDevice = (cameraDevice: boolean) => {
           throw error
         },
       )
-      if (0 < mediaStream.getVideoTracks().length) {
+      if (mediaStream.getVideoTracks().length > 0) {
         if (
           state.soraContents.sora &&
           state.soraContents.connectionStatus === 'connected' &&
