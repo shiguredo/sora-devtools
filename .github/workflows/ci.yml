@@ -26,6 +26,7 @@ jobs:
       - run: pnpm install
       - run: pnpm biome --version
       - run: pnpm run lint
+      - run: pnpm run check
       - run: pnpm run test
       - run: pnpm run build
       - name: Slack Notification
