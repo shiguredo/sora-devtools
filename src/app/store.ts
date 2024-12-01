@@ -46,7 +46,7 @@ export const store = configureStore({
         ],
       },
     })
-    if (process.env.VITE_PUBLIC_REDUX_LOGGER === 'true') {
+    if (import.meta.VITE_PUBLIC_REDUX_LOGGER === 'true') {
       middleware.concat(logger)
     }
     return middleware
