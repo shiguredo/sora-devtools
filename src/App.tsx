@@ -1,8 +1,9 @@
+import type React from 'react'
 import { Provider } from 'react-redux'
 import DevTools from './DevTools.tsx'
 import { store } from './app/store.ts'
 
-function App() {
+const App = (): React.JSX.Element => {
   return (
     <Provider store={store}>
       <DevTools />
