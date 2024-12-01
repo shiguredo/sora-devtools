@@ -208,8 +208,8 @@ export function createSignalingURL(
     // 空文字列は取り除く
     return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '')
   }
-  if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
-    return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL
+  if (process.env.NODE_ENV === 'development' && process.env.VITE_PUBLIC_SORA_SIGNALING_URL) {
+    return process.env.VITE_PUBLIC_SORA_SIGNALING_URL
   }
   const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
   const port = window.location.port ? `:${window.location.port}` : ''
@@ -269,12 +269,12 @@ export function getLightAdjustmentOptions(
     case 'weak':
       return { adjustmentLevel: 30, sharpnessLevel: 0 }
     case 'medium': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
+      const assetsPath = process.env.VITE_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
       const focusMask = new SelfieSegmentationFocusMask(assetsPath)
       return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask }
     }
     case 'strong': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
+      const assetsPath = process.env.VITE_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
       const focusMask = new SelfieSegmentationFocusMask(assetsPath)
       return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask }
     }
