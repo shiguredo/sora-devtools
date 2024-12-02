@@ -25,12 +25,9 @@
   },
   "exclude": ["node_modules"],
   "include": [
-    "next-env.d.ts",
     "global.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "dist/types/**/*.ts",
-    "dev/types/**/*.ts",
-    "vitest.config.mts"
+    "vitest.config.mjs"
   ]
 }
