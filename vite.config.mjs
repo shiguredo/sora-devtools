@@ -5,10 +5,14 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: process.env.NODE_ENV === 'production' ? 'dist' : 'dev',
     minify: true,
     target: 'esnext',
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, './index.html'),
+        // 下位互換維持
+        devtools: path.resolve(__dirname, './index.html'),
+      },
       output: {
         manualChunks: {
           react: ['react', 'react-dom', 'react-bootstrap', 'react-draggable', 'react-redux'],
