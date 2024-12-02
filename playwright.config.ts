@@ -33,7 +33,6 @@ export default defineConfig({
   ],
   webServer: {
     // vite で起動している
-    // TODO: ポート指定方法を後で調べる
     command: 'pnpm run dev',
     url: 'http://localhost:3333/',
     reuseExistingServer: !process.env.CI,
