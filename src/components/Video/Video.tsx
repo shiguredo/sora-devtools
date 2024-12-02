@@ -45,6 +45,11 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       return
     }
 
+    if (stream === null) {
+      // stream が null の場合は video 要素をリセットする
+      videoElement.srcObject = null
+    }
+
     if (stream) {
       // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
       // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
@@ -68,17 +73,13 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       }
 
       return () => {
+        // onloadedmetadata が呼ばれない場合にアンマウントされた場合は track.enabled をオリジナルの状態に戻す
         for (const track of stream.getVideoTracks()) {
           if (originalEnabled !== undefined) {
             track.enabled = originalEnabled
           }
         }
       }
-    }
-
-    if (stream === null) {
-      // stream が null の場合は video 要素をリセットする
-      videoElement.srcObject = null
     }
   }, [stream, audioOutput])
 
