@@ -6,9 +6,6 @@ next-env.d.ts
 .DS_Store
 .pnpm-store/
 
-# next dev は distDir に dev を利用する
-dev/
-
 # .env
 .env*
 !.env.template
@@ -19,3 +16,6 @@ dev/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# dist
+dist/
