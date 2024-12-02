@@ -11,6 +11,20 @@
 
 ## develop
 
+- [CHANGE] リンク集を削除する
+  - @voluntas
+
+### misc
+
+- [ADD] `vite` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `@types/react-dom` を `devDependencies` に追加する
+  - @voluntas
+- [CHANGE] Nextjs を package.json から削除する
+  - @voluntas
+- [CHANGE] Next.js から Vite / React へ以降する
+  - @voluntas
+
 ## 2024.2.3
 
 **リリース日**: 2024-11-29
