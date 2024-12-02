@@ -11,11 +11,15 @@
 
 ## develop
 
-- [CHANGE] リンク集を削除する
+- [CHANGE] 対応 Node.js のバージョンを 22.11 以上に上げる
+  - @voluntas
+- [CHANGE] index.html にあったリンク集を削除する
   - @voluntas
 
 ### misc
 
+- [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
+  - @voluntas
 - [ADD] `vite` を `devDependencies` に追加する
   - @voluntas
 - [ADD] `@types/react-dom` を `devDependencies` に追加する
