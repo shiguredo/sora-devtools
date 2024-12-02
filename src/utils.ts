@@ -3,7 +3,7 @@ import {
   SelfieSegmentationFocusMask,
 } from '@shiguredo/light-adjustment'
 import queryString from 'query-string'
-import type { ConnectionOptions, ForwardingFilter } from 'sora-js-sdk'
+import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
@@ -826,10 +826,9 @@ export function createConnectOptions(
   }
   // dataChannels
   if (connectionOptionsState.dataChannels !== '') {
-    // biome-ignore lint/suspicious/noEvolvingTypes: SoraDataChannel 型にする
-    let dataChannels = []
+    let dataChannels: DataChannelConfiguration[] = []
     try {
-      dataChannels = JSON.parse(connectionOptionsState.dataChannels)
+      dataChannels = JSON.parse(connectionOptionsState.dataChannels) as DataChannelConfiguration[]
     } catch (_) {
       // 例外が起きた場合は何もしない
     }
