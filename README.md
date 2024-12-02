@@ -50,6 +50,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
   - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
+  - [@shiguredo/mp4\-media\-stream \- npm](https://www.npmjs.com/package/@shiguredo/mp4-media-stream)
 - [Playwright](https://playwright.dev/)
 - [Vitest](https://vitest.dev/)
 - [pnpm](https://pnpm.io/)
