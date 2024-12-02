@@ -24,6 +24,8 @@
   - @voluntas
 - [CHANGE] Next.js から Vite / React へ以降する
   - @voluntas
+- [CHANGE] `.gitignore` に `dist` を追加する
+  - @voluntas
 
 ## 2024.2.3
 
