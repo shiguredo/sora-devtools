@@ -18,12 +18,6 @@
 
 ### misc
 
-- [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
-  - @voluntas
-- [ADD] `vite` を `devDependencies` に追加する
-  - @voluntas
-- [ADD] `@types/react-dom` を `devDependencies` に追加する
-  - @voluntas
 - [CHANGE] Nextjs を package.json から削除する
   - @voluntas
 - [CHANGE] Next.js から Vite / React へ以降する
@@ -31,6 +25,12 @@
 - [CHANGE] `.gitignore` に `dist` を追加する
   - @voluntas
 - [CHANGE] biome の設定で src/ と tests/ を include する
+  - @voluntas
+- [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
+  - @voluntas
+- [ADD] `vite` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `@types/react-dom` を `devDependencies` に追加する
   - @voluntas
 
 ## 2024.2.3
