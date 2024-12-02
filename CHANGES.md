@@ -26,6 +26,8 @@
   - @voluntas
 - [CHANGE] `.gitignore` に `dist` を追加する
   - @voluntas
+- [CHANGE] biome の設定で src/ と tests/ を include する
+  - @voluntas
 
 ## 2024.2.3
 

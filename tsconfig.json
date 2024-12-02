@@ -21,7 +21,7 @@
     },
     "baseUrl": ".",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "incremental": true,
+    "incremental": true
   },
   "exclude": ["node_modules"],
   "include": [

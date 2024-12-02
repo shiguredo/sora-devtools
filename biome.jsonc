@@ -1,10 +1,15 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "include": ["src/**", "tests/**"]
+  },
   "organizeImports": {
     "enabled": true
   },
   "linter": {
     "enabled": true,
+    // tests/ 以下は linter は無視する
+    "ignore": ["tests/**"],
     "rules": {
       "all": true,
       "suspicious": {

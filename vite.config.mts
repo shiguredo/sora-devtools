@@ -1,9 +1,9 @@
-// biome-ignore lint/correctness/noNodejsModules: vite.config.ts では Node.js のモジュールを使う
-import path from 'node:path'
+// <reference types="vite/config" />
+
+import path from 'path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
