@@ -28,7 +28,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "2.4.0",
     "@shiguredo/light-adjustment": "2024.1.0",
-    "@shiguredo/mp4-media-stream": "2024.2.0",
+    "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2022.4.2",
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.3",
