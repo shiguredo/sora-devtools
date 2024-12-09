@@ -9,9 +9,7 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, './index.html'),
-        // 下位互換維持
-        'devtools.html': path.resolve(__dirname, './index.html'),
+        index: path.resolve(__dirname, './index.html'),
       },
       output: {
         manualChunks: {
