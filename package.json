@@ -15,6 +15,7 @@
   "scripts": {
     "dev": "vite --port 3333",
     "build": "vite build",
+    "preview": "vite preview",
     "dist": "pnpm run cleanup && pnpm install && vite build && pnpm run copy",
     "copy": "cp dist/index.html dist/devtools.html",
     "fmt": "biome format --write",
