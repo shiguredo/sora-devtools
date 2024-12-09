@@ -11,6 +11,27 @@
 
 ## develop
 
+- [CHANGE] 対応 Node.js のバージョンを 22.11 以上に上げる
+  - @voluntas
+- [CHANGE] index.html にあったリンク集を削除する
+  - @voluntas
+
+### misc
+
+- [CHANGE] `Next.js` を `package.json` から削除する
+  - @voluntas
+- [CHANGE] `Next.js` から `Vite` / `React` へ移行する
+  - @voluntas
+- [CHANGE] `.gitignore` に `dist` を追加する
+  - @voluntas
+- [CHANGE] `biome` の設定で `src/` と `tests/` を `include` する
+  - @voluntas
+- [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
+  - @voluntas
+- [ADD] `vite` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `@types/react-dom` を `devDependencies` に追加する
+  - @voluntas
 - [UPDATE] @shiguredo/mp4-media-stream のバージョンを 2024.3.0 に上げる
   - H.265 / VP8 / VP9 / AV1 / AAC が対応コーデックに追加された
   - @sile
