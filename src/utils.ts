@@ -3,7 +3,7 @@ import {
   SelfieSegmentationFocusMask,
 } from '@shiguredo/light-adjustment'
 import queryString from 'query-string'
-import type { ConnectionOptions, ForwardingFilter } from 'sora-js-sdk'
+import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from 'sora-js-sdk'
 
 import {
   ASPECT_RATIO_TYPES,
@@ -208,8 +208,8 @@ export function createSignalingURL(
     // 空文字列は取り除く
     return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '')
   }
-  if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_SORA_SIGNALING_URL) {
-    return process.env.NEXT_PUBLIC_SORA_SIGNALING_URL
+  if (import.meta.env.NODE_ENV === 'development' && import.meta.env.VITE_SORA_SIGNALING_URL) {
+    return import.meta.env.VITE_SORA_SIGNALING_URL
   }
   const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
   const port = window.location.port ? `:${window.location.port}` : ''
@@ -269,12 +269,12 @@ export function getLightAdjustmentOptions(
     case 'weak':
       return { adjustmentLevel: 30, sharpnessLevel: 0 }
     case 'medium': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
+      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
       const focusMask = new SelfieSegmentationFocusMask(assetsPath)
       return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask }
     }
     case 'strong': {
-      const assetsPath = process.env.NEXT_PUBLIC_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
+      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
       const focusMask = new SelfieSegmentationFocusMask(assetsPath)
       return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask }
     }
@@ -826,10 +826,9 @@ export function createConnectOptions(
   }
   // dataChannels
   if (connectionOptionsState.dataChannels !== '') {
-    // biome-ignore lint/suspicious/noEvolvingTypes: SoraDataChannel 型にする
-    let dataChannels = []
+    let dataChannels: DataChannelConfiguration[] = []
     try {
-      dataChannels = JSON.parse(connectionOptionsState.dataChannels)
+      dataChannels = JSON.parse(connectionOptionsState.dataChannels) as DataChannelConfiguration[]
     } catch (_) {
       // 例外が起きた場合は何もしない
     }

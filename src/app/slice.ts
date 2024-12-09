@@ -602,7 +602,7 @@ export const slice = createSlice({
     },
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState['blurRadius']>) => {
       if (action.payload !== '' && state.virtualBackgroundProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
+        const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
         const processor = new VirtualBackgroundProcessor(assetsPath)
         state.virtualBackgroundProcessor = processor
       }
@@ -613,7 +613,7 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['mediaProcessorsNoiseSuppression']>,
     ) => {
       if (action.payload && state.noiseSuppressionProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || ''
+        const assetsPath = import.meta.env.VITE_NOISE_SUPPRESSION_ASSETS_PATH || ''
         const processor = new NoiseSuppressionProcessor(assetsPath)
         state.noiseSuppressionProcessor = processor
       }

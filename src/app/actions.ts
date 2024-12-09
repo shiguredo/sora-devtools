@@ -1117,13 +1117,14 @@ async function setStatsReport(
     const stats = await sora.pc.getStats()
     const statsReport: RTCStats[] = []
     const localCandidateStats: RTCIceLocalCandidateStats[] = []
-    // biome-ignore lint/complexity/noForEach: stats は Array ではなく RTCStatsReport なので forEach で回す
-    stats.forEach((s) => {
-      statsReport.push(s)
-      if (s.type === 'local-candidate') {
-        localCandidateStats.push(s)
+    for (const s of stats.values()) {
+      const stat = s as RTCStats
+      statsReport.push(stat)
+      if (stat.type === 'local-candidate') {
+        localCandidateStats.push(stat as RTCIceLocalCandidateStats)
       }
-    })
+    }
+
     dispatch(slice.actions.setStatsReport(statsReport))
 
     // local-candidate の最初に出現する TURN サーバーの URL を取得
