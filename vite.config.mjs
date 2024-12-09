@@ -11,7 +11,7 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, './index.html'),
         // 下位互換維持
-        devtools: path.resolve(__dirname, './index.html'),
+        'devtools.html': path.resolve(__dirname, './index.html'),
       },
       output: {
         manualChunks: {
