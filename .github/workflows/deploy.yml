@@ -26,7 +26,7 @@ jobs:
       #   with:
       #     static_site_generator: next
       - run: pnpm install
-      - run: pnpm run build
+      - run: pnpm run dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
