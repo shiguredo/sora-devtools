@@ -18,13 +18,13 @@
 
 ### misc
 
-- [CHANGE] Nextjs を package.json から削除する
+- [CHANGE] `Next.js` を `package.json` から削除する
   - @voluntas
-- [CHANGE] Next.js から Vite / React へ以降する
+- [CHANGE] `Next.js` から `Vite` / `React` へ移行する
   - @voluntas
 - [CHANGE] `.gitignore` に `dist` を追加する
   - @voluntas
-- [CHANGE] biome の設定で src/ と tests/ を include する
+- [CHANGE] `biome` の設定で `src/` と `tests/` を `include` する
   - @voluntas
 - [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
   - @voluntas
