@@ -18,6 +18,8 @@
 
 ### misc
 
+- [CHANGE] GitHub Actions の ubuntu-latest を ubuntu-24.04 に変更する
+  - @voluntas
 - [CHANGE] `Next.js` を `package.json` から削除する
   - @voluntas
 - [CHANGE] `Next.js` から `Vite` / `React` へ移行する
