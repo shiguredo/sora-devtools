@@ -15,10 +15,16 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    // 未使用のローカル変数をエラーにする
+    "noUnusedLocals": true,
+    // 未使用のパラメータをエラーにする
+    "noUnusedParameters": true,
+    // 関数の引数の型を厳密にチェックする
+    "strictFunctionTypes": true,
+    // プロパティの初期化を厳密にチェックする
+    "strictPropertyInitialization": true,
     "types": ["vitest/globals"],
-    "paths": {
-      "@/*": ["src/*"]
-    },
+    "paths": {"@/*": ["src/*"]},
     "baseUrl": ".",
     "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true
