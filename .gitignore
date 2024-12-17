@@ -18,4 +18,5 @@ next-env.d.ts
 /playwright/.cache/
 
 # dist
-dist/
+# 一旦 dist/ 以下を含めるようにする
+# dist/
