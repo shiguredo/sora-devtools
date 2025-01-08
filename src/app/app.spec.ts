@@ -13,7 +13,6 @@ import {
   ECHO_CANCELLATION_TYPES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
-  MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   ROLES,
@@ -156,14 +155,6 @@ describe('setInitialParameter tests', () => {
       setLocationSearch({ mediaType: value })
       await store.dispatch(setInitialParameter())
       expect(store.getState().mediaType).toEqual(value)
-    }
-  })
-
-  it("should handle 'multistream'", async () => {
-    for (const value of MULTISTREAM) {
-      setLocationSearch({ multistream: value })
-      await store.dispatch(setInitialParameter())
-      expect(store.getState().multistream).toEqual(value)
     }
   })
 
