@@ -102,9 +102,6 @@ export const setInitialParameter = () => {
     if (qsParams.frameRate !== undefined) {
       dispatch(slice.actions.setFrameRate(qsParams.frameRate))
     }
-    if (qsParams.multistream !== undefined) {
-      dispatch(slice.actions.setMultistream(qsParams.multistream))
-    }
     if (qsParams.noiseSuppression !== undefined) {
       dispatch(slice.actions.setNoiseSuppression(qsParams.noiseSuppression))
     }
@@ -328,10 +325,7 @@ export const setInitialParameter = () => {
 export const copyURL = () => {
   return (_: Dispatch, getState: () => SoraDevtoolsState): void => {
     const state = getState()
-    const appendAudioVideoParams = !(
-      state.role === 'recvonly' &&
-      (state.multistream === 'true' || state.multistream === '')
-    )
+    const appendAudioVideoParams = state.role !== 'recvonly'
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
       role: state.role,
@@ -379,7 +373,6 @@ export const copyURL = () => {
       resizeMode: state.resizeMode !== '' ? state.resizeMode : undefined,
       blurRadius: state.blurRadius !== '' ? state.blurRadius : undefined,
       lightAdjustment: state.lightAdjustment !== '' ? state.lightAdjustment : undefined,
-      multistream: state.multistream !== '' ? state.multistream : undefined,
       simulcast: state.simulcast !== '' ? state.simulcast : undefined,
       simulcastRid: state.simulcastRid !== '' ? state.simulcastRid : undefined,
       spotlight: state.spotlight !== '' ? state.spotlight : undefined,
@@ -1070,7 +1063,6 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledVideoH265Params: state.enabledVideoH265Params,
     enabledVideoAV1Params: state.enabledVideoAV1Params,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
-    multistream: state.multistream,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     forwardingFilters: state.forwardingFilters,
     forwardingFilter: state.forwardingFilter,
@@ -2027,7 +2019,6 @@ export const {
   setMediaType,
   setMetadata,
   setMp4MediaStream,
-  setMultistream,
   setNoiseSuppression,
   setNotifyMessages,
   setReconnect,

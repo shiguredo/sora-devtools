@@ -42,7 +42,6 @@ import { MediaTypeForm } from './MediaTypeForm.tsx'
 import { MetadataForm } from './MetadataForm.tsx'
 import { MicDeviceForm } from './MicDeviceForm.tsx'
 import { Mp4FileForm } from './Mp4FileForm.tsx'
-import { MultistreamForm } from './MultistreamForm.tsx'
 import { NoiseSuppressionForm } from './NoiseSuppressionForm.tsx'
 import { ReconnectForm } from './ReconnectForm.tsx'
 import { ReloadDevicesButton } from './ReloadDevicesButton.tsx'
@@ -85,9 +84,6 @@ const RowChannelOptions: React.FC = () => {
           <RoleForm />
         </Col>
         <Col>
-          <MultistreamForm />
-        </Col>
-        <Col>
           <SimulcastForm />
         </Col>
         <Col>
@@ -100,8 +96,7 @@ const RowChannelOptions: React.FC = () => {
 
 const RowGetUserMediaConstraints: React.FC = () => {
   const role = useAppSelector((state) => state.role)
-  const multistream = useAppSelector((state) => state.multistream)
-  const showCodecForms = !(role === 'recvonly' && (multistream === 'true' || multistream === ''))
+  const showCodecForms = role !== 'recvonly'
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -482,11 +477,7 @@ export const RowMediaDevices: React.FC = () => {
 export const DevtoolsPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug)
   const role = useAppSelector((state) => state.role)
-  const multistream = useAppSelector((state) => state.multistream)
-  const showAdvancedSignalingForms = !(
-    role === 'recvonly' &&
-    (multistream === 'true' || multistream === '')
-  )
+  const showAdvancedSignalingForms = role !== 'recvonly'
   return (
     <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />

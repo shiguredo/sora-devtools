@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] multistream 項目を削除する
+  - @voluntas
 - [CHANGE] 対応 Node.js のバージョンを 22.11 以上に上げる
   - @voluntas
 - [CHANGE] index.html にあったリンク集を削除する

@@ -19,7 +19,6 @@ import {
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
-  MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   ROLES,
@@ -187,7 +186,6 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     blurRadius: parseSpecifiedStringParameter(qs.blurRadius, BLUR_RADIUS),
     lightAdjustment: parseSpecifiedStringParameter(qs.lightAdjustment, LIGHT_ADJUSTMENT),
     mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
-    multistream: parseSpecifiedStringParameter(qs.multistream, MULTISTREAM),
     role: parseSpecifiedStringParameter(qs.role, ROLES),
   }
   // undefined の項目を削除する
@@ -699,11 +697,8 @@ export function createConnectOptions(
     audio: connectionOptionsState.audio,
     video: connectionOptionsState.video,
   }
-  // recvonly かつ multistream の時は audio/video のパラメータを送らない
-  const sendAudioVideoParams = !(
-    connectionOptionsState.role === 'recvonly' &&
-    (connectionOptionsState.multistream === 'true' || connectionOptionsState.multistream === '')
-  )
+  // recvonly の時は audio/video のパラメータを送らない
+  const sendAudioVideoParams = !(connectionOptionsState.role === 'recvonly')
   if (sendAudioVideoParams) {
     // audioCodecType
     if (connectionOptionsState.audioCodecType) {
@@ -727,6 +722,10 @@ export function createConnectOptions(
     if (connectionOptionsState.enabledVideoVP9Params) {
       connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
     }
+    // videoAV1Params
+    if (connectionOptionsState.enabledVideoAV1Params) {
+      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
+    }
     // videoH264Params
     if (connectionOptionsState.enabledVideoH264Params) {
       connectionOptions.videoH264Params = parseMetadata(
@@ -741,20 +740,11 @@ export function createConnectOptions(
         connectionOptionsState.videoH265Params,
       )
     }
-    // videoVP9Params
-    if (connectionOptionsState.enabledVideoAV1Params) {
-      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
-    }
     // audioStreamingLanguageCode
     if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
       connectionOptions.audioStreamingLanguageCode =
         connectionOptionsState.audioStreamingLanguageCode
     }
-  }
-  // multistream
-  const parsedMultistream = parseBooleanString(connectionOptionsState.multistream)
-  if (parsedMultistream !== undefined) {
-    connectionOptions.multistream = parsedMultistream
   }
   // spotlight
   const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight)

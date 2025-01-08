@@ -54,7 +54,6 @@ function createDownloadReport(): DownloadReport {
     mediaType: state.mediaType,
     metadata: state.metadata,
     micDevice: state.micDevice,
-    multistream: state.multistream,
     noiseSuppression: state.noiseSuppression,
     reconnect: state.reconnect,
     resizeMode: state.resizeMode,

@@ -1,7 +1,5 @@
 import instructionsJSON from '../instructions.json'
 
-export const MULTISTREAM = ['', 'true', 'false'] as const
-
 export const SIMULCAST = ['', 'true', 'false'] as const
 
 export const SPOTLIGHT = ['', 'true', 'false'] as const
