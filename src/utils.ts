@@ -722,6 +722,10 @@ export function createConnectOptions(
     if (connectionOptionsState.enabledVideoVP9Params) {
       connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
     }
+    // videoAV1Params
+    if (connectionOptionsState.enabledVideoAV1Params) {
+      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
+    }
     // videoH264Params
     if (connectionOptionsState.enabledVideoH264Params) {
       connectionOptions.videoH264Params = parseMetadata(
@@ -735,10 +739,6 @@ export function createConnectOptions(
         true,
         connectionOptionsState.videoH265Params,
       )
-    }
-    // videoVP9Params
-    if (connectionOptionsState.enabledVideoAV1Params) {
-      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
     }
     // audioStreamingLanguageCode
     if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
