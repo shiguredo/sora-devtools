@@ -95,7 +95,6 @@ const initialState: SoraDevtoolsState = {
   mediaType: 'getUserMedia',
   metadata: '',
   mp4MediaStream: null,
-  multistream: '',
   mute: false,
   noiseSuppression: '',
   notifyMessages: [],
@@ -568,9 +567,6 @@ export const slice = createSlice({
     },
     setRole: (state, action: PayloadAction<Role>) => {
       state.role = action.payload
-    },
-    setMultistream: (state, action: PayloadAction<SoraDevtoolsState['multistream']>) => {
-      state.multistream = action.payload
     },
     setSimulcast: (state, action: PayloadAction<SoraDevtoolsState['simulcast']>) => {
       state.simulcast = action.payload

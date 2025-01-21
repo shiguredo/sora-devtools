@@ -26,7 +26,6 @@ import type {
   IGNORE_DISCONNECT_WEBSOCKET,
   LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
-  MULTISTREAM,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   SIMULCAST,
@@ -114,7 +113,6 @@ export type SoraDevtoolsState = {
   mediaType: (typeof MEDIA_TYPES)[number]
   mp4MediaStream: Mp4MediaStream | null
   metadata: string
-  multistream: (typeof MULTISTREAM)[number]
   mute: boolean
   noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
   notifyMessages: NotifyMessage[]
@@ -356,7 +354,6 @@ export type ConnectionOptionsState = Pick<
   | 'enabledVideoH265Params'
   | 'enabledVideoAV1Params'
   | 'ignoreDisconnectWebSocket'
-  | 'multistream'
   | 'signalingNotifyMetadata'
   | 'forwardingFilters'
   | 'forwardingFilter'
