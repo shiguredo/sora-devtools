@@ -2,15 +2,16 @@ import type React from 'react'
 
 import { resetSpotlightRid } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch } from '@/app/hooks'
+import { useStore } from '@/app/store2'
 
 type Props = {
   sendConnectionId: string
 }
 export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const channelId = useAppSelector((state) => state.channelId)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
+  const sora = useStore((state) => state.soraContents.sora)
+  const channelId = useStore((state) => state.channelId)
+  const apiUrl = useStore((state) => state.apiUrl)
   const dispatch = useAppDispatch()
   const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {

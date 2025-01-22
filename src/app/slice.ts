@@ -85,7 +85,7 @@ const initialState: SoraDevtoolsState = {
     remoteClients: [],
     prevStatsReport: [],
     statsReport: [],
-    datachannels: [],
+    dataChannels: [],
     turnUrl: null,
   },
   ignoreDisconnectWebSocket: '',
@@ -382,7 +382,7 @@ export const slice = createSlice({
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       state.soraContents.sora = <any>action.payload
       if (!state.soraContents.sora) {
-        state.soraContents.datachannels = []
+        state.soraContents.dataChannels = []
       }
     },
     setSoraSessionId: (state, action: PayloadAction<string | null>) => {
@@ -419,7 +419,7 @@ export const slice = createSlice({
       state.soraContents.reconnectingTrials = action.payload
     },
     setSoraDataChannels: (state, action: PayloadAction<DataChannelConfiguration>) => {
-      state.soraContents.datachannels.push(action.payload)
+      state.soraContents.dataChannels.push(action.payload)
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
