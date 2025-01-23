@@ -6,8 +6,9 @@ on:
     #   - master
     #   - develop
     #   - "feature/*"
-    branches-ignore:
-      - "zustand*"
+    branches:
+      - develop
+      # - "feature/*"
     paths-ignore:
       - "**.md"
       - "LICENSE"
