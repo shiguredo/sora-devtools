@@ -36,6 +36,8 @@
   - @voluntas
 - [ADD] `@types/react-dom` を `devDependencies` に追加する
   - @voluntas
+- [UPDATE] pnpm 10 系に上げる
+  - @voluntas
 - [UPDATE] @shiguredo/mp4-media-stream のバージョンを 2024.3.0 に上げる
   - H.265 / VP8 / VP9 / AV1 / AAC が対応コーデックに追加された
   - @sile
