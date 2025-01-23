@@ -95,6 +95,8 @@ type StoreDevToolsState = {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
   }) => void
 
+  setMediaDevices: (devices: MediaDeviceInfo[]) => void
+
   setClipboard: () => void
   setURLSearchParams: (params: URLSearchParams) => void
 }
@@ -140,6 +142,28 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
 
   setSoraContents: (soraContents) => set({ soraContents }),
 
+  setMediaDevices: (devices: MediaDeviceInfo[]) => {
+    const audioInputDevices: MediaDeviceInfo[] = []
+    const audioOutputDevices: MediaDeviceInfo[] = []
+    const videoInputDevices: MediaDeviceInfo[] = []
+    devices.filter((deviceInfo) => {
+      if (deviceInfo.deviceId === '') {
+        return
+      }
+      if (deviceInfo.kind === 'audioinput') {
+        audioInputDevices.push(deviceInfo.toJSON())
+      } else if (deviceInfo.kind === 'audiooutput') {
+        audioOutputDevices.push(deviceInfo.toJSON())
+      } else if (deviceInfo.kind === 'videoinput') {
+        videoInputDevices.push(deviceInfo.toJSON())
+      }
+    })
+    set({ audioInputDevices })
+    set({ audioOutputDevices })
+    // 未実装
+    // set({ videoInputDevices })
+  },
+
   // URLSearchParams を状態から生成する
   // Zustand と Redux の状態を同居するための仕組み
   // 最終的には内部で new URLSearchParams() を生成するようにする
@@ -166,17 +190,29 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // URLParams から状態に反映する
   setURLSearchParams: (params: URLSearchParams) => {
     const audioParam = params.get('audio')
-    const audioBitRateParam = params.get('audioBitRate')
-    const audioCodecTypeParam = params.get('audioCodecType')
     // audioParam が null の場合は audio の値をそのまま使用する
     // ここのバリデーションがちょっと怖いので、どうするか考える
     set({ audio: audioParam === null ? get().audio : audioParam === 'true' })
+
+    const audioBitRateParam = params.get('audioBitRate')
     set({ audioBitRate: audioBitRateParam === null ? get().audioBitRate : audioBitRateParam })
+
+    const audioCodecTypeParam = params.get('audioCodecType')
     set({
       audioCodecType:
         audioCodecTypeParam === null
           ? get().audioCodecType
           : (audioCodecTypeParam as (typeof AUDIO_CODEC_TYPES)[number]),
     })
+
+    // const audioInputDevice = get().audioInputDevices.find(
+    //   (d) => d.kind === 'audioinput' && d.deviceId === params.get('audioInput'),
+    // )
+    // set({ audioInput: audioInputDevice ? audioInputDevice.deviceId : '' })
+
+    // const audioOutputDevice = get().audioOutputDevices.find(
+    //   (d) => d.kind === 'audiooutput' && d.deviceId === params.get('audioOutput'),
+    // )
+    // set({ audioOutput: audioOutputDevice ? audioOutputDevice.deviceId : '' })
   },
 }))
