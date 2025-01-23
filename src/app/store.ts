@@ -3,6 +3,7 @@ import { logger } from 'redux-logger'
 import { create } from 'zustand'
 
 import type { CONNECTION_STATUS } from '@/constants'
+import { copy2clipboard } from '@/utils'
 
 import { slice } from './slice.ts'
 
@@ -81,7 +82,7 @@ type StoreDevToolsState = {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
   }) => void
 
-  getURLSearchParams: () => URLSearchParams
+  setClipboard: () => void
   setURLSearchParams: (params: URLSearchParams) => void
 }
 
@@ -99,11 +100,14 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // URLSearchParams を状態から生成する
   // Zustand と Redux の状態を同居するための仕組み
   // 最終的には内部で new URLSearchParams() を生成するようにする
-  getURLSearchParams: () => {
+  // 名前は copyURL とかにしたいが、重複してしまうので、避ける
+  // redux 側を reduxCopyURL とかにする方がいい気がする
+  setClipboard: () => {
     const { audio } = get()
-    const params = new URLSearchParams()
+    const params = new URLSearchParams(window.location.search)
     params.set('audio', audio.toString())
-    return params
+    copy2clipboard(`${location.origin}${location.pathname}?${params.toString()}`)
+    window.history.replaceState(null, '', `${location.pathname}?${params.toString()}`)
   },
 
   // URLParams から状態に反映する

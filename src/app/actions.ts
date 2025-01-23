@@ -330,7 +330,8 @@ export const copyURL = () => {
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
       role: state.role,
-      audio: state.audio,
+      // Zustand で管理するのでコメントアウト
+      // audio: state.audio,
       video: state.video,
       debug: state.debug,
       // URL の長さ短縮のため初期値と同じ場合は query string に含めない
