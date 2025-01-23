@@ -1,5 +1,8 @@
 import { type Action, type ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
+import { create } from 'zustand'
+
+import type { CONNECTION_STATUS } from '@/constants'
 
 import { slice } from './slice.ts'
 
@@ -61,3 +64,28 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
+
+type StoreState = {
+  audio: boolean
+
+  soraContents: {
+    connectionStatus: (typeof CONNECTION_STATUS)[number]
+  }
+
+  setAudio: (audio: boolean) => void
+  setSoraContents: (soraContents: {
+    connectionStatus: (typeof CONNECTION_STATUS)[number]
+  }) => void
+}
+
+export const userStore = create<StoreState>()((set) => ({
+  audio: true,
+  soraContents: {
+    connectionStatus: 'initializing',
+  },
+
+  setAudio: (audio) => {
+    set({ audio })
+  },
+  setSoraContents: (soraContents) => set({ soraContents }),
+}))
