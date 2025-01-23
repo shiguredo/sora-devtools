@@ -1,20 +1,18 @@
 import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
-import { setAudioBitRate } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useStore } from '@/app/store2'
 import { AUDIO_BIT_RATES } from '@/constants'
 import { isFormDisabled } from '@/utils'
-
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioBitRateForm: React.FC = () => {
-  const audioBitRate = useAppSelector((state) => state.audioBitRate)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const audioBitRate = useStore((state) => state.audioBitRate)
+  const connectionStatus = useStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
+  const setAudioBitRate = useStore((state) => state.setAudioBitRate)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setAudioBitRate(event.target.value))
+    setAudioBitRate(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="audioBitRate">
@@ -36,11 +34,7 @@ export const AudioBitRateForm: React.FC = () => {
         >
           {AUDIO_BIT_RATES.map((value) => {
             return (
-              <Dropdown.Item
-                key={value}
-                as="button"
-                onClick={() => dispatch(setAudioBitRate(value))}
-              >
+              <Dropdown.Item key={value} as="button" onClick={() => setAudioBitRate(value)}>
                 {value === '' ? '未指定' : value}
               </Dropdown.Item>
             )

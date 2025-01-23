@@ -165,10 +165,33 @@ type StoreState = {
   setAudio: (audio: boolean) => void
   setAudioInput: (audioInput: string) => void
   setAudioOutput: (audioOutput: string) => void
+  setAudioCodecType: (audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]) => void
+  setAudioBitRate: (audioBitRate: string) => void
+  setAudioContentHint: (audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]) => void
 
   setVideo: (video: boolean) => void
   setVideoInput: (videoInput: string) => void
   setVideoInputDevices: (videoInputDevices: MediaDeviceInfo[]) => void
+
+  setAspectRatio: (aspectRatio: (typeof ASPECT_RATIO_TYPES)[number]) => void
+
+  updateMediaStream: () => void
+
+  setEnabledAudioStreamingLanguageCode: (enabledAudioStreamingLanguageCode: boolean) => void
+  setAudioStreamingLanguageCode: (audioStreamingLanguageCode: string) => void
+
+  setAudioTrack: (audioTrack: boolean) => void
+
+  copyURL: () => void
+  setDebug: (debug: boolean) => void
+  setAutoGainControl: (autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]) => void
+
+  setBlurRadius: (blurRadius: (typeof BLUR_RADIUS)[number]) => void
+
+  setBundleId: (bundleId: string) => void
+  setEnabledBundleId: (enabledBundleId: boolean) => void
+
+  setCameraDevice: (cameraDevice: boolean) => void
 }
 
 export const useStore = create<StoreState>()((set) => ({
@@ -319,5 +342,41 @@ export const useStore = create<StoreState>()((set) => ({
   },
   setVideoInputDevices: (videoInputDevices: MediaDeviceInfo[]) => {
     set({ videoInputDevices })
+  },
+  setAspectRatio: (aspectRatio: (typeof ASPECT_RATIO_TYPES)[number]) => {
+    set({ aspectRatio })
+  },
+  updateMediaStream: () => {
+    set({})
+  },
+  setEnabledAudioStreamingLanguageCode: (enabledAudioStreamingLanguageCode: boolean) => {
+    set({ enabledAudioStreamingLanguageCode })
+  },
+  setAudioStreamingLanguageCode: (audioStreamingLanguageCode: string) => {
+    set({ audioStreamingLanguageCode })
+  },
+  setAudioTrack: (audioTrack: boolean) => {
+    set({ audioTrack })
+  },
+  copyURL: () => {
+    set({})
+  },
+  setDebug: (debug: boolean) => {
+    set({ debug })
+  },
+  setAutoGainControl: (autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]) => {
+    set({ autoGainControl })
+  },
+  setBlurRadius: (blurRadius: (typeof BLUR_RADIUS)[number]) => {
+    set({ blurRadius })
+  },
+  setBundleId: (bundleId: string) => {
+    set({ bundleId })
+  },
+  setEnabledBundleId: (enabledBundleId: boolean) => {
+    set({ enabledBundleId })
+  },
+  setCameraDevice: (cameraDevice: boolean) => {
+    set({ cameraDevice })
   },
 }))

@@ -1,13 +1,12 @@
 import type React from 'react'
 
-import { setDebug } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useStore } from '@/app/store2'
 
 export const DebugButton: React.FC = () => {
-  const debug = useAppSelector((state) => state.debug)
-  const dispatch = useAppDispatch()
+  const debug = useStore((state) => state.debug)
+  const setDebug = useStore((state) => state.setDebug)
   const onClick = (): void => {
-    dispatch(setDebug(!debug))
+    setDebug(!debug)
   }
   const classNames = ['btn', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
   if (debug) {

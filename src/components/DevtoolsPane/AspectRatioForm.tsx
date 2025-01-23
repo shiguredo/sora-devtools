@@ -1,19 +1,17 @@
 import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
-import { setAspectRatio } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useStore } from '@/app/store2'
 import { ASPECT_RATIO_TYPES } from '@/constants'
 import { checkFormValue } from '@/utils'
-
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AspectRatioForm: React.FC = () => {
-  const aspectRatio = useAppSelector((state) => state.aspectRatio)
-  const dispatch = useAppDispatch()
+  const aspectRatio = useStore((state) => state.aspectRatio)
+  const setAspectRatio = useStore((state) => state.setAspectRatio)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ASPECT_RATIO_TYPES)) {
-      dispatch(setAspectRatio(event.target.value))
+      setAspectRatio(event.target.value)
     }
   }
   return (

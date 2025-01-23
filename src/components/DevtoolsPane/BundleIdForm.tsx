@@ -1,23 +1,23 @@
 import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
-import { setBundleId, setEnabledBundleId } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useStore } from '@/app/store2'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const BundleIdForm: React.FC = () => {
-  const enabledBundleId = useAppSelector((state) => state.enabledBundleId)
-  const bundleId = useAppSelector((state) => state.bundleId)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledBundleId = useStore((state) => state.enabledBundleId)
+  const bundleId = useStore((state) => state.bundleId)
+  const connectionStatus = useStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
+  const setEnabledBundleId = useStore((state) => state.setEnabledBundleId)
+  const setBundleId = useStore((state) => state.setBundleId)
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledBundleId(event.target.checked))
+    setEnabledBundleId(event.target.checked)
   }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setBundleId(event.target.value))
+    setBundleId(event.target.value)
   }
   return (
     <>

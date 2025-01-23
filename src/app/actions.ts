@@ -2050,7 +2050,3 @@ export const {
   setVideoH265Params,
   setVideoAV1Params,
 } = slice.actions
-
-// 機能ごとにストアを分割することも可能
-export const useUserStore = create<UserStore>((set) => ({ ... }))
-export const useSettingsStore = create<SettingsStore>((set) => ({ ... }))

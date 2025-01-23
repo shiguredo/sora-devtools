@@ -1,19 +1,17 @@
 import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
-import { setAudioContentHint } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useStore } from '@/app/store2'
 import { AUDIO_CONTENT_HINTS } from '@/constants'
 import { checkFormValue } from '@/utils'
-
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioContentHintForm: React.FC = () => {
-  const audioContentHint = useAppSelector((state) => state.audioContentHint)
-  const dispatch = useAppDispatch()
+  const audioContentHint = useStore((state) => state.audioContentHint)
+  const setAudioContentHint = useStore((state) => state.setAudioContentHint)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUDIO_CONTENT_HINTS)) {
-      dispatch(setAudioContentHint(event.target.value))
+      setAudioContentHint(event.target.value)
     }
   }
   return (

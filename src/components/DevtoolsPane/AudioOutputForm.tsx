@@ -1,17 +1,15 @@
 import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
-import { setAudioOutput } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-
+import { useStore } from '@/app/store2'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioOutputForm: React.FC = () => {
-  const audioOutput = useAppSelector((state) => state.audioOutput)
-  const audioOutputDevices = useAppSelector((state) => state.audioOutputDevices)
-  const dispatch = useAppDispatch()
+  const audioOutput = useStore((state) => state.audioOutput)
+  const audioOutputDevices = useStore((state) => state.audioOutputDevices)
+  const setAudioOutput = useStore((state) => state.setAudioOutput)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    dispatch(setAudioOutput(event.target.value))
+    setAudioOutput(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="audioOutput">
