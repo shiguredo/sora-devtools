@@ -8,10 +8,9 @@ import { isFormDisabled } from '@/utils'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const AudioForm: React.FC = () => {
-  const audio = useStore((state) => state.audio)
+  const { audio, setAudio } = useStore()
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const setAudio = useStore((state) => state.setAudio)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setAudio(event.target.checked)
   }

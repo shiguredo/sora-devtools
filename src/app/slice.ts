@@ -147,20 +147,11 @@ export const slice = createSlice({
     resetState: (state) => {
       Object.assign(state, initialState)
     },
-    setAudio: (state, action: PayloadAction<boolean>) => {
-      state.audio = action.payload
-    },
     setAudioInput: (state, action: PayloadAction<string>) => {
       state.audioInput = action.payload
     },
     setAudioOutput: (state, action: PayloadAction<string>) => {
       state.audioOutput = action.payload
-    },
-    setAudioBitRate: (state, action: PayloadAction<SoraDevtoolsState['audioBitRate']>) => {
-      state.audioBitRate = action.payload
-    },
-    setAudioCodecType: (state, action: PayloadAction<SoraDevtoolsState['audioCodecType']>) => {
-      state.audioCodecType = action.payload
     },
     setAudioContentHint: (state, action: PayloadAction<SoraDevtoolsState['audioContentHint']>) => {
       state.audioContentHint = action.payload

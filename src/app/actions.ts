@@ -40,16 +40,7 @@ export const setInitialParameter = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.resetState())
     const qsParams = parseQueryString()
-    // Zustand 並行したのでコメントアウトする
-    // if (qsParams.audio !== undefined) {
-    //   dispatch(slice.actions.setAudio(qsParams.audio))
-    // }
-    if (qsParams.audioBitRate !== undefined) {
-      dispatch(slice.actions.setAudioBitRate(qsParams.audioBitRate))
-    }
-    if (qsParams.audioCodecType !== undefined) {
-      dispatch(slice.actions.setAudioCodecType(qsParams.audioCodecType))
-    }
+
     // 存在しない Device の場合はセットしない
     const deviceInfos = await getDevices()
     // audioinput
@@ -1974,9 +1965,6 @@ export const {
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,
   setAspectRatio,
-  setAudio,
-  setAudioBitRate,
-  setAudioCodecType,
   setAudioContentHint,
   setAudioInput,
   setAudioOutput,

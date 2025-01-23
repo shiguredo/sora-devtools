@@ -2,7 +2,7 @@ import { type Action, type ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
 import { create } from 'zustand'
 
-import type { CONNECTION_STATUS } from '@/constants'
+import type { AUDIO_CODEC_TYPES, AUDIO_CONTENT_HINTS, CONNECTION_STATUS } from '@/constants'
 import { copy2clipboard } from '@/utils'
 
 import { slice } from './slice.ts'
@@ -69,6 +69,13 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 // types にある SoraDevToolsState と同じ構造にしていく
 type StoreDevToolsState = {
   audio: boolean
+  audioBitRate: string
+  audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
+  audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]
+  audioInput: string
+  audioInputDevices: MediaDeviceInfo[]
+  audioOutput: string
+  audioOutputDevices: MediaDeviceInfo[]
 
   // 現時点では書いてるだけ
   soraContents: {
@@ -76,7 +83,13 @@ type StoreDevToolsState = {
   }
 
   setAudio: (audio: boolean) => void
-
+  setAudioBitRate: (audioBitRate: string) => void
+  setAudioCodecType: (audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]) => void
+  setAudioContentHint: (audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]) => void
+  setAudioInput: (audioInput: string) => void
+  setAudioInputDevices: (audioInputDevices: MediaDeviceInfo[]) => void
+  setAudioOutput: (audioOutput: string) => void
+  setAudioOutputDevices: (audioOutputDevices: MediaDeviceInfo[]) => void
   // 現時点では書いてるだけ
   setSoraContents: (soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -88,6 +101,14 @@ type StoreDevToolsState = {
 
 export const useStore = create<StoreDevToolsState>()((set, get) => ({
   audio: true,
+  audioBitRate: '',
+  audioCodecType: '',
+  audioContentHint: '',
+  audioInput: '',
+  audioInputDevices: [],
+  audioOutput: '',
+  audioOutputDevices: [],
+
   soraContents: {
     connectionStatus: 'initializing',
   },
@@ -95,6 +116,28 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   setAudio: (audio) => {
     set({ audio })
   },
+  setAudioBitRate: (audioBitRate) => {
+    set({ audioBitRate })
+  },
+  setAudioCodecType: (audioCodecType) => {
+    set({ audioCodecType })
+  },
+  setAudioContentHint: (audioContentHint) => {
+    set({ audioContentHint })
+  },
+  setAudioInput: (audioInput) => {
+    set({ audioInput })
+  },
+  setAudioInputDevices: (audioInputDevices) => {
+    set({ audioInputDevices })
+  },
+  setAudioOutput: (audioOutput) => {
+    set({ audioOutput })
+  },
+  setAudioOutputDevices: (audioOutputDevices) => {
+    set({ audioOutputDevices })
+  },
+
   setSoraContents: (soraContents) => set({ soraContents }),
 
   // URLSearchParams を状態から生成する
@@ -103,9 +146,19 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // 名前は copyURL とかにしたいが、重複してしまうので、避ける
   // redux 側を reduxCopyURL とかにする方がいい気がする
   setClipboard: () => {
-    const { audio } = get()
+    const { audio, audioBitRate, audioCodecType } = get()
     const params = new URLSearchParams(window.location.search)
+
     params.set('audio', audio.toString())
+
+    if (audioBitRate) {
+      params.set('audioBitRate', audioBitRate)
+    }
+
+    if (audioCodecType) {
+      params.set('audioCodecType', audioCodecType)
+    }
+
     copy2clipboard(`${location.origin}${location.pathname}?${params.toString()}`)
     window.history.replaceState(null, '', `${location.pathname}?${params.toString()}`)
   },
@@ -113,7 +166,17 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // URLParams から状態に反映する
   setURLSearchParams: (params: URLSearchParams) => {
     const audioParam = params.get('audio')
+    const audioBitRateParam = params.get('audioBitRate')
+    const audioCodecTypeParam = params.get('audioCodecType')
     // audioParam が null の場合は audio の値をそのまま使用する
+    // ここのバリデーションがちょっと怖いので、どうするか考える
     set({ audio: audioParam === null ? get().audio : audioParam === 'true' })
+    set({ audioBitRate: audioBitRateParam === null ? get().audioBitRate : audioBitRateParam })
+    set({
+      audioCodecType:
+        audioCodecTypeParam === null
+          ? get().audioCodecType
+          : (audioCodecTypeParam as (typeof AUDIO_CODEC_TYPES)[number]),
+    })
   },
 }))
