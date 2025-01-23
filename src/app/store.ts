@@ -65,20 +65,27 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >
 
-type StoreState = {
+// types にある SoraDevToolsState と同じ構造にしていく
+type StoreDevToolsState = {
   audio: boolean
 
+  // 現時点では書いてるだけ
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
   }
 
   setAudio: (audio: boolean) => void
+
+  // 現時点では書いてるだけ
   setSoraContents: (soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
   }) => void
+
+  getURLSearchParams: (params: URLSearchParams) => URLSearchParams
+  setURLSearchParams: (params: URLSearchParams) => void
 }
 
-export const userStore = create<StoreState>()((set) => ({
+export const useStore = create<StoreDevToolsState>()((set, get) => ({
   audio: true,
   soraContents: {
     connectionStatus: 'initializing',
@@ -88,4 +95,18 @@ export const userStore = create<StoreState>()((set) => ({
     set({ audio })
   },
   setSoraContents: (soraContents) => set({ soraContents }),
+
+  // URLSearchParams を状態から生成する
+  // Zustand と Redux の状態を同居するための仕組み
+  // 最終的には内部で new URLSearchParams() を生成するようにする
+  getURLSearchParams: (params: URLSearchParams) => {
+    const { audio } = get()
+    params.set('audio', audio.toString())
+    return params
+  },
+
+  // URLParams から状態に反映する
+  setURLSearchParams: (params: URLSearchParams) => {
+    set({ audio: params.get('audio') === 'true' })
+  },
 }))
