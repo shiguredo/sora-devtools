@@ -81,7 +81,7 @@ type StoreDevToolsState = {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
   }) => void
 
-  getURLSearchParams: (params: URLSearchParams) => URLSearchParams
+  getURLSearchParams: () => URLSearchParams
   setURLSearchParams: (params: URLSearchParams) => void
 }
 
@@ -99,14 +99,17 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // URLSearchParams を状態から生成する
   // Zustand と Redux の状態を同居するための仕組み
   // 最終的には内部で new URLSearchParams() を生成するようにする
-  getURLSearchParams: (params: URLSearchParams) => {
+  getURLSearchParams: () => {
     const { audio } = get()
+    const params = new URLSearchParams()
     params.set('audio', audio.toString())
     return params
   },
 
   // URLParams から状態に反映する
   setURLSearchParams: (params: URLSearchParams) => {
-    set({ audio: params.get('audio') === 'true' })
+    const audioParam = params.get('audio')
+    // audioParam が null の場合は audio の値をそのまま使用する
+    set({ audio: audioParam === null ? get().audio : audioParam === 'true' })
   },
 }))
