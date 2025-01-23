@@ -2,9 +2,11 @@ name: e2e-test
 
 on:
   push:
-    branches:
-      - develop
-      - "feature/*"
+    # branches:
+    #   - develop
+    #   - "feature/*"
+    branches-ignore:
+      - "zustand*"
     paths-ignore:
       - "**.md"
       - "LICENSE"

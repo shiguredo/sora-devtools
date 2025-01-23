@@ -2,10 +2,12 @@ name: ci
 
 on:
   push:
-    branches:
-      - master
-      - develop
-      - "feature/*"
+    # branches:
+    #   - master
+    #   - develop
+    #   - "feature/*"
+    branches-ignore:
+      - "zustand*"
     paths-ignore:
       - "**.md"
       - "LICENSE"
