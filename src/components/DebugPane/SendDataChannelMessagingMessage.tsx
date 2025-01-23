@@ -9,7 +9,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
   const textareaRef = useRef<HTMLInputElement>(null)
   const sora = useAppSelector((state) => state.soraContents.sora)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const datachannels = useAppSelector((state) => state.soraContents.datachannels)
+  const dataChannels = useAppSelector((state) => state.soraContents.dataChannels)
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
       return
@@ -24,7 +24,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
       <div className="d-flex mt-2">
         <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
           <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
-            {datachannels.map((datachannel) => {
+            {dataChannels.map((datachannel) => {
               return (
                 <option key={datachannel.label} value={datachannel.label}>
                   {datachannel.label}
@@ -44,12 +44,12 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
         <Button
           variant="secondary"
           onClick={handleSendMessage}
-          disabled={datachannels.length === 0}
+          disabled={dataChannels.length === 0}
         >
           send
         </Button>
       </div>
-      {datachannels.length > 0 ? (
+      {dataChannels.length > 0 ? (
         <pre
           className="form-control mt-2"
           style={{
@@ -59,7 +59,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
             minHeight: '250px',
           }}
         >
-          {JSON.stringify(datachannels, null, 2)}
+          {JSON.stringify(dataChannels, null, 2)}
         </pre>
       ) : null}
     </>

@@ -103,7 +103,7 @@ export type SoraDevtoolsState = {
     remoteClients: RemoteClient[]
     prevStatsReport: RTCStats[]
     statsReport: RTCStats[]
-    datachannels: DataChannelConfiguration[]
+    dataChannels: DataChannelConfiguration[]
     turnUrl: string | null
   }
   ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number]
