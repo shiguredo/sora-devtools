@@ -164,9 +164,6 @@ export const slice = createSlice({
     setAutoGainControl: (state, action: PayloadAction<SoraDevtoolsState['autoGainControl']>) => {
       state.autoGainControl = action.payload
     },
-    setClientId: (state, action: PayloadAction<string>) => {
-      state.clientId = action.payload
-    },
     setChannelId: (state, action: PayloadAction<string>) => {
       state.channelId = action.payload
     },
@@ -202,9 +199,6 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['echoCancellationType']>,
     ) => {
       state.echoCancellationType = action.payload
-    },
-    setEnabledClientId: (state, action: PayloadAction<boolean>) => {
-      state.enabledClientId = action.payload
     },
     setEnabledDataChannels: (state, action: PayloadAction<boolean>) => {
       state.enabledDataChannels = action.payload
@@ -605,12 +599,6 @@ export const slice = createSlice({
         state.noiseSuppressionProcessor = processor
       }
       state.mediaProcessorsNoiseSuppression = action.payload
-    },
-    setBundleId: (state, action: PayloadAction<SoraDevtoolsState['bundleId']>) => {
-      state.bundleId = action.payload
-    },
-    setEnabledBundleId: (state, action: PayloadAction<SoraDevtoolsState['enabledBundleId']>) => {
-      state.enabledBundleId = action.payload
     },
     setFacingMode: (state, action: PayloadAction<SoraDevtoolsState['facingMode']>) => {
       state.facingMode = action.payload

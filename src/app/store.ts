@@ -77,6 +77,11 @@ type StoreDevToolsState = {
   audioOutput: string
   audioOutputDevices: MediaDeviceInfo[]
 
+  clientId: string
+  enabledClientId: boolean
+  bundleId: string
+  enabledBundleId: boolean
+
   // 現時点では書いてるだけ
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -90,6 +95,13 @@ type StoreDevToolsState = {
   setAudioInputDevices: (audioInputDevices: MediaDeviceInfo[]) => void
   setAudioOutput: (audioOutput: string) => void
   setAudioOutputDevices: (audioOutputDevices: MediaDeviceInfo[]) => void
+
+  setClientId: (clientId: string) => void
+  setEnabledClientId: (enabledClientId: boolean) => void
+
+  setBundleId: (bundleId: string) => void
+  setEnabledBundleId: (enabledBundleId: boolean) => void
+
   // 現時点では書いてるだけ
   setSoraContents: (soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -110,6 +122,11 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   audioInputDevices: [],
   audioOutput: '',
   audioOutputDevices: [],
+
+  clientId: '',
+  enabledClientId: false,
+  bundleId: '',
+  enabledBundleId: false,
 
   soraContents: {
     connectionStatus: 'initializing',
@@ -138,6 +155,20 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   },
   setAudioOutputDevices: (audioOutputDevices) => {
     set({ audioOutputDevices })
+  },
+
+  setClientId: (clientId) => {
+    set({ clientId })
+  },
+  setEnabledClientId: (enabledClientId) => {
+    set({ enabledClientId })
+  },
+
+  setBundleId: (bundleId) => {
+    set({ bundleId })
+  },
+  setEnabledBundleId: (enabledBundleId) => {
+    set({ enabledBundleId })
   },
 
   setSoraContents: (soraContents) => set({ soraContents }),
@@ -170,7 +201,7 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // 名前は copyURL とかにしたいが、重複してしまうので、避ける
   // redux 側を reduxCopyURL とかにする方がいい気がする
   setClipboard: () => {
-    const { audio, audioBitRate, audioCodecType } = get()
+    const { audio, audioBitRate, audioCodecType, clientId, bundleId } = get()
     const params = new URLSearchParams(window.location.search)
 
     params.set('audio', audio.toString())
@@ -183,27 +214,43 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
       params.set('audioCodecType', audioCodecType)
     }
 
+    if (clientId) {
+      params.set('clientId', clientId)
+    }
+
+    if (bundleId) {
+      params.set('bundleId', bundleId)
+    }
+
     copy2clipboard(`${location.origin}${location.pathname}?${params.toString()}`)
     window.history.replaceState(null, '', `${location.pathname}?${params.toString()}`)
   },
 
   // URLParams から状態に反映する
   setURLSearchParams: (params: URLSearchParams) => {
-    const audioParam = params.get('audio')
+    // TODO: validator を経由してからここに入ってくるべき
+
+    const audio = params.get('audio')
     // audioParam が null の場合は audio の値をそのまま使用する
     // ここのバリデーションがちょっと怖いので、どうするか考える
-    set({ audio: audioParam === null ? get().audio : audioParam === 'true' })
+    if (audio !== null) {
+      set({ audio: audio === 'true' })
+    }
 
-    const audioBitRateParam = params.get('audioBitRate')
-    set({ audioBitRate: audioBitRateParam === null ? get().audioBitRate : audioBitRateParam })
+    const audioBitRate = params.get('audioBitRate')
+    if (audioBitRate !== null) {
+      set({ audioBitRate: audioBitRate })
+    }
 
-    const audioCodecTypeParam = params.get('audioCodecType')
-    set({
-      audioCodecType:
-        audioCodecTypeParam === null
-          ? get().audioCodecType
-          : (audioCodecTypeParam as (typeof AUDIO_CODEC_TYPES)[number]),
-    })
+    const audioCodecType = params.get('audioCodecType')
+    if (audioCodecType !== null) {
+      set({
+        audioCodecType:
+          audioCodecType === null
+            ? get().audioCodecType
+            : (audioCodecType as (typeof AUDIO_CODEC_TYPES)[number]),
+      })
+    }
 
     // const audioInputDevice = get().audioInputDevices.find(
     //   (d) => d.kind === 'audioinput' && d.deviceId === params.get('audioInput'),
@@ -214,5 +261,19 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
     //   (d) => d.kind === 'audiooutput' && d.deviceId === params.get('audioOutput'),
     // )
     // set({ audioOutput: audioOutputDevice ? audioOutputDevice.deviceId : '' })
+
+    // null ではなくかつ空文字でなければ clientId をセットする
+    const clientId = params.get('clientId')
+    if (clientId !== null && clientId !== '') {
+      set({ clientId })
+      set({ enabledClientId: true })
+    }
+
+    // null ではなくかつ空文字でなければ bundleId をセットする
+    const bundleId = params.get('bundleId')
+    if (bundleId !== null && bundleId !== '') {
+      set({ bundleId })
+      set({ enabledBundleId: true })
+    }
   },
 }))

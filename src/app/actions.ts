@@ -175,12 +175,6 @@ export const setInitialParameter = () => {
     ) {
       dispatch(slice.actions.setGoogCpuOveruseDetection(qsParams.googCpuOveruseDetection))
     }
-    if (qsParams.bundleId !== undefined) {
-      dispatch(slice.actions.setBundleId(qsParams.bundleId))
-    }
-    if (qsParams.clientId !== undefined) {
-      dispatch(slice.actions.setClientId(qsParams.clientId))
-    }
     if (qsParams.metadata !== undefined) {
       dispatch(slice.actions.setMetadata(qsParams.metadata))
     }
@@ -237,8 +231,6 @@ export const setInitialParameter = () => {
     dispatch(slice.actions.setInitialFakeContents())
     const {
       audioStreamingLanguageCode,
-      bundleId,
-      clientId,
       dataChannelSignaling,
       dataChannels,
       ignoreDisconnectWebSocket,
@@ -252,14 +244,6 @@ export const setInitialParameter = () => {
       videoH265Params,
       videoAV1Params,
     } = getState()
-    // bundleId が存在した場合は enabledBundleId をセットする
-    if (bundleId !== '') {
-      dispatch(slice.actions.setEnabledBundleId(true))
-    }
-    // clientId が存在した場合は enabledClientId をセットする
-    if (clientId !== '') {
-      dispatch(slice.actions.setEnabledClientId(true))
-    }
     // metadata が存在した場合は enabledMetadata をセットする
     if (metadata !== '') {
       dispatch(slice.actions.setEnabledMetadata(true))
@@ -1971,9 +1955,7 @@ export const {
   setAudioTrack,
   setAutoGainControl,
   setBlurRadius,
-  setBundleId,
   setChannelId,
-  setClientId,
   setDataChannels,
   setDataChannelSignaling,
   setDebug,
@@ -1982,8 +1964,6 @@ export const {
   setDisplayResolution,
   setEchoCancellation,
   setEchoCancellationType,
-  setEnabledBundleId,
-  setEnabledClientId,
   setEnabledDataChannels,
   setEnabledDataChannel,
   setEnabledForwardingFilters,
