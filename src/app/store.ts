@@ -1,10 +1,12 @@
 import { type Action, type ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { logger } from 'redux-logger'
+import type { ConnectionPublisher, ConnectionSubscriber } from 'sora-js-sdk'
 import { create } from 'zustand'
 
 import type { AUDIO_CODEC_TYPES, AUDIO_CONTENT_HINTS, CONNECTION_STATUS } from '@/constants'
-import { copy2clipboard } from '@/utils'
+import { copy2clipboard, createSignalingURL } from '@/utils'
 
+import type { LogMessage, SoraDevtoolsState, TimelineMessage } from '@/types.ts'
 import { slice } from './slice.ts'
 
 /**
@@ -67,7 +69,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >
 
 // types にある SoraDevToolsState と同じ構造にしていく
-type StoreDevToolsState = {
+export type SoraDevToolsState = {
   audio: boolean
   audioBitRate: string
   audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
@@ -82,10 +84,15 @@ type StoreDevToolsState = {
   bundleId: string
   enabledBundleId: boolean
 
-  // 現時点では書いてるだけ
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
+    sora: ConnectionPublisher | ConnectionSubscriber | null
   }
+
+  timelineMessages: TimelineMessage[]
+  signalingUrlCandidates: string[]
+  enabledSignalingUrlCandidates: boolean
+  logMessages: LogMessage[]
 
   setAudio: (audio: boolean) => void
   setAudioBitRate: (audioBitRate: string) => void
@@ -102,18 +109,23 @@ type StoreDevToolsState = {
   setBundleId: (bundleId: string) => void
   setEnabledBundleId: (enabledBundleId: boolean) => void
 
-  // 現時点では書いてるだけ
-  setSoraContents: (soraContents: {
-    connectionStatus: (typeof CONNECTION_STATUS)[number]
-  }) => void
-
   setMediaDevices: (devices: MediaDeviceInfo[]) => void
+
+  setSoraConnectionStatus: (
+    connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
+  ) => void
+
+  setTimelineMessage: (message: TimelineMessage) => void
+  setLogMessages: (message: LogMessage['message']) => void
 
   setClipboard: () => void
   setURLSearchParams: (params: URLSearchParams) => void
+
+  connectSora: () => void
+  disconnectSora: () => void
 }
 
-export const useStore = create<StoreDevToolsState>()((set, get) => ({
+export const useStore = create<SoraDevToolsState>()((set, get) => ({
   audio: true,
   audioBitRate: '',
   audioCodecType: '',
@@ -130,7 +142,13 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
 
   soraContents: {
     connectionStatus: 'initializing',
+    sora: null,
   },
+
+  timelineMessages: [],
+  signalingUrlCandidates: [],
+  enabledSignalingUrlCandidates: false,
+  logMessages: [],
 
   setAudio: (audio) => {
     set({ audio })
@@ -171,7 +189,34 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
     set({ enabledBundleId })
   },
 
-  setSoraContents: (soraContents) => set({ soraContents }),
+  setSoraConnectionStatus: (
+    connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
+  ) => {
+    set((state) => ({
+      soraContents: {
+        ...state.soraContents,
+        connectionStatus,
+      },
+    }))
+  },
+
+  setTimelineMessage: (message: TimelineMessage) => {
+    set((state) => ({
+      timelineMessages: [...state.timelineMessages, message],
+    }))
+  },
+
+  setLogMessages: (message: LogMessage['message']) => {
+    set((state) => ({
+      logMessages: [
+        ...state.logMessages,
+        {
+          timestamp: Date.now(),
+          message,
+        },
+      ],
+    }))
+  },
 
   setMediaDevices: (devices: MediaDeviceInfo[]) => {
     const audioInputDevices: MediaDeviceInfo[] = []
@@ -274,6 +319,36 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
     if (bundleId !== null && bundleId !== '') {
       set({ bundleId })
       set({ enabledBundleId: true })
+    }
+  },
+
+  connectSora: async () => {
+    const state = get()
+    state.setSoraConnectionStatus('preparing')
+    // 強制的に state.soraContents.localMediaStream を作り直すかどうか
+    let forceCreateMediaStream = false
+    // 接続中の場合は切断する
+    if (state.soraContents.sora && state.soraContents.connectionStatus === 'disconnected') {
+      await state.soraContents.sora.disconnect()
+      // 接続中の再接続の場合は、MediaStream を作り直し、state.soraContents.localMediaStream を更新する
+      forceCreateMediaStream = true
+    }
+    // シグナリング候補のURLリストを作成する
+    const signalingUrlCandidates = createSignalingURL(
+      state.enabledSignalingUrlCandidates,
+      state.signalingUrlCandidates,
+    )
+    state.setLogMessages({
+      title: 'SIGNALING_URL',
+      description: JSON.stringify(signalingUrlCandidates),
+    })
+  },
+  disconnectSora: async () => {
+    const { soraContents, setSoraConnectionStatus } = get()
+    if (soraContents.sora && soraContents.connectionStatus === 'connected') {
+      setSoraConnectionStatus('disconnecting')
+      await soraContents.sora.disconnect()
+      setSoraConnectionStatus('disconnected')
     }
   },
 }))
