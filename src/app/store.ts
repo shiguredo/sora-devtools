@@ -77,6 +77,7 @@ type StoreDevToolsState = {
   audioOutput: string
   audioOutputDevices: MediaDeviceInfo[]
 
+  channelId: string
   clientId: string
   enabledClientId: boolean
   bundleId: string
@@ -96,6 +97,7 @@ type StoreDevToolsState = {
   setAudioOutput: (audioOutput: string) => void
   setAudioOutputDevices: (audioOutputDevices: MediaDeviceInfo[]) => void
 
+  setChannelId: (channelId: string) => void
   setClientId: (clientId: string) => void
   setEnabledClientId: (enabledClientId: boolean) => void
 
@@ -123,6 +125,7 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   audioOutput: '',
   audioOutputDevices: [],
 
+  channelId: 'sora',
   clientId: '',
   enabledClientId: false,
   bundleId: '',
@@ -157,6 +160,9 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
     set({ audioOutputDevices })
   },
 
+  setChannelId: (channelId) => {
+    set({ channelId })
+  },
   setClientId: (clientId) => {
     set({ clientId })
   },
@@ -201,7 +207,7 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
   // 名前は copyURL とかにしたいが、重複してしまうので、避ける
   // redux 側を reduxCopyURL とかにする方がいい気がする
   setClipboard: () => {
-    const { audio, audioBitRate, audioCodecType, clientId, bundleId } = get()
+    const { audio, audioBitRate, audioCodecType, channelId, clientId, bundleId } = get()
     const params = new URLSearchParams(window.location.search)
 
     params.set('audio', audio.toString())
@@ -212,6 +218,10 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
 
     if (audioCodecType) {
       params.set('audioCodecType', audioCodecType)
+    }
+
+    if (channelId) {
+      params.set('channelId', channelId)
     }
 
     if (clientId) {
@@ -261,6 +271,11 @@ export const useStore = create<StoreDevToolsState>()((set, get) => ({
     //   (d) => d.kind === 'audiooutput' && d.deviceId === params.get('audioOutput'),
     // )
     // set({ audioOutput: audioOutputDevice ? audioOutputDevice.deviceId : '' })
+
+    const channelId = params.get('channelId')
+    if (channelId !== null && channelId !== '') {
+      set({ channelId })
+    }
 
     // null ではなくかつ空文字でなければ clientId をセットする
     const clientId = params.get('clientId')
