@@ -68,9 +68,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >
 
-// types にある SoraDevToolsState と同じ構造にしていく
-type SoraDevToolsState = {
-  // Store
+type SoraDevToolsStore = {
   audio: boolean
   audioBitRate: string
   audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
@@ -85,6 +83,7 @@ type SoraDevToolsState = {
   bundleId: string
   enabledBundleId: boolean
 
+  // SoraContents をフラットにしている
   soraConnectionStatus: (typeof CONNECTION_STATUS)[number]
   sora: ConnectionPublisher | ConnectionSubscriber | null
 
@@ -92,8 +91,9 @@ type SoraDevToolsState = {
   signalingUrlCandidates: string[]
   enabledSignalingUrlCandidates: boolean
   logMessages: LogMessage[]
+}
 
-  // Action
+type SoraDevToolsActions = {
   setAudio: (audio: boolean) => void
   setAudioBitRate: (audioBitRate: string) => void
   setAudioCodecType: (audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]) => void
@@ -122,6 +122,9 @@ type SoraDevToolsState = {
   connectSora: () => void
   disconnectSora: () => void
 }
+
+// types にある SoraDevToolsState と同じ構造にしていく
+type SoraDevToolsState = SoraDevToolsStore & SoraDevToolsActions
 
 export const useStore = create<SoraDevToolsState>()((set, get) => ({
   audio: true,
