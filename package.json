@@ -27,7 +27,7 @@
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "2.5.0",
+    "@reduxjs/toolkit": "2.5.1",
     "@shiguredo/light-adjustment": "2024.1.0",
     "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2022.4.2",
@@ -35,7 +35,7 @@
     "bootstrap": "5.3.3",
     "query-string": "9.1.1",
     "react": "19.0.0",
-    "react-bootstrap": "2.10.8",
+    "react-bootstrap": "2.10.9",
     "react-dom": "19.0.0",
     "react-draggable": "4.4.6",
     "react-redux": "9.2.0",
@@ -46,9 +46,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@playwright/test": "1.49.1",
-    "@types/node": "22.10.7",
-    "@types/react": "19.0.7",
+    "@playwright/test": "1.50.0",
+    "@types/node": "22.12.0",
+    "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@types/react-redux": "7.1.34",
     "@types/redux-logger": "3.0.13",
@@ -57,7 +57,7 @@
     "jsdom": "26.0.0",
     "typescript": "5.7.3",
     "vite": "6.0.11",
-    "vitest": "3.0.2"
+    "vitest": "3.0.4"
   },
   "packageManager": "pnpm@10.0.0",
   "engines": {
