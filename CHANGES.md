@@ -17,6 +17,8 @@
   - @voluntas
 - [CHANGE] index.html にあったリンク集を削除する
   - @voluntas
+- [UPDATE] pnpm 10 系に上げる
+  - @voluntas
 
 ### misc
 
