@@ -410,6 +410,11 @@ video {
   margin-right: 0.5rem;
 }
 
+/* json-input-textarea-overlay 配下のボタンは disabled にしても透明度を無効にする */
+.json-input-textarea-overlay .btn.btn-light:disabled{
+  opacity: unset;
+}
+
 .hr-form {
   margin: 0.5rem 0 1rem 0;
 }
