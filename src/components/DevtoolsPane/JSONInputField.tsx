@@ -67,7 +67,7 @@ export const JSONInputField = ({
         {extraControls}
         <Button
           type="button"
-          variant="outline-secondary"
+          variant="light"
           size="sm"
           onClick={() => prettyFormat(value, setValue)}
           disabled={invalidJsonString}
