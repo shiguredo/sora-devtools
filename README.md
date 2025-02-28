@@ -33,7 +33,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/cbf507d3708083adb21a8947149bf3e2.png)](https://gyazo.com/cbf507d3708083adb21a8947149bf3e2)
+[![Image from Gyazo](https://i.gyazo.com/e74879a751d32637a62a2a2a874e78cf.png)](https://gyazo.com/e74879a751d32637a62a2a2a874e78cf)
 
 ## 利用技術
 
@@ -63,25 +63,25 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
 
-[![Image from Gyazo](https://i.gyazo.com/266b2f6869dc44ad66ca5e54fcb21784.jpg)](https://gyazo.com/266b2f6869dc44ad66ca5e54fcb21784)
+[![Image from Gyazo](https://i.gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51.jpg)](https://gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51)
 
 ### レポート機能
 
 現在のクライアントのクライアントのログ、Sora からの通知、クライアント統計情報などをファイル化してダウンロードできます。
 
-[![Image from Gyazo](https://i.gyazo.com/2b246030142149c95a424576e360e959.jpg)](https://gyazo.com/2b246030142149c95a424576e360e959)
+[![Image from Gyazo](https://i.gyazo.com/a6a21343c85b4854c99fb15eb3a2fccc.jpg)](https://gyazo.com/a6a21343c85b4854c99fb15eb3a2fccc)
 
 ### デバッグ機能
 
 デバッグを有効にすると、ログ、通知、統計が有効になります。
 
-[![Image from Gyazo](https://i.gyazo.com/3f7fe3e011d99dfb87181ea6b252247d.png)](https://gyazo.com/3f7fe3e011d99dfb87181ea6b252247d)
+[![Image from Gyazo](https://i.gyazo.com/c15b137e3d99d235845af5da0405ef4a.png)](https://gyazo.com/c15b137e3d99d235845af5da0405ef4a)
 
 ### コピー URL 機能
 
 現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。既存の URL も変更されます
 
-[![Image from Gyazo](https://i.gyazo.com/2d0ddb0eb1f7006f249baf15bf072009.jpg)](https://gyazo.com/2d0ddb0eb1f7006f249baf15bf072009)
+[![Image from Gyazo](https://i.gyazo.com/163e12ab790340fa7a83bc7b6aa5c456.jpg)](https://gyazo.com/163e12ab790340fa7a83bc7b6aa5c456)
 
 初期状態の URL をコピーすると以下のような設定になります。
 
