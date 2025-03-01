@@ -68,7 +68,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >
 
-type SoraDevToolsStore = {
+type SoraDevToolsState = {
   audio: boolean
   audioBitRate: string
   audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
@@ -124,9 +124,9 @@ type SoraDevToolsActions = {
 }
 
 // types にある SoraDevToolsState と同じ構造にしていく
-type SoraDevToolsState = SoraDevToolsStore & SoraDevToolsActions
+type SoraDevToolsStore = SoraDevToolsState & SoraDevToolsActions
 
-export const useStore = create<SoraDevToolsState>()((set, get) => ({
+export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   audio: true,
   audioBitRate: '',
   audioCodecType: '',
@@ -239,7 +239,8 @@ export const useStore = create<SoraDevToolsState>()((set, get) => ({
   // 名前は copyURL とかにしたいが、重複してしまうので、避ける
   // redux 側を reduxCopyURL とかにする方がいい気がする
   setClipboard: () => {
-    const { audio, audioBitRate, audioCodecType, clientId, bundleId } = get()
+    const { audio, audioBitRate, audioCodecType, clientId, bundleId, audioInput, audioOutput } =
+      get()
     const params = new URLSearchParams(window.location.search)
 
     params.set('audio', audio.toString())
@@ -260,6 +261,14 @@ export const useStore = create<SoraDevToolsState>()((set, get) => ({
       params.set('bundleId', bundleId)
     }
 
+    if (audioInput) {
+      params.set('audioInput', audioInput)
+    }
+
+    if (audioOutput) {
+      params.set('audioOutput', audioOutput)
+    }
+
     copy2clipboard(`${location.origin}${location.pathname}?${params.toString()}`)
     window.history.replaceState(null, '', `${location.pathname}?${params.toString()}`)
   },
@@ -275,6 +284,8 @@ export const useStore = create<SoraDevToolsState>()((set, get) => ({
       setEnabledClientId,
       setBundleId,
       setEnabledBundleId,
+      setAudioInput,
+      setAudioOutput,
     } = get()
 
     const audio = params.get('audio')
@@ -294,15 +305,15 @@ export const useStore = create<SoraDevToolsState>()((set, get) => ({
       setAudioCodecType(audioCodecType as (typeof AUDIO_CODEC_TYPES)[number])
     }
 
-    // const audioInputDevice = get().audioInputDevices.find(
-    //   (d) => d.kind === 'audioinput' && d.deviceId === params.get('audioInput'),
-    // )
-    // set({ audioInput: audioInputDevice ? audioInputDevice.deviceId : '' })
+    const audioInputDevice = get().audioInputDevices.find(
+      (d) => d.kind === 'audioinput' && d.deviceId === params.get('audioInput'),
+    )
+    setAudioInput(audioInputDevice ? audioInputDevice.deviceId : '')
 
-    // const audioOutputDevice = get().audioOutputDevices.find(
-    //   (d) => d.kind === 'audiooutput' && d.deviceId === params.get('audioOutput'),
-    // )
-    // set({ audioOutput: audioOutputDevice ? audioOutputDevice.deviceId : '' })
+    const audioOutputDevice = get().audioOutputDevices.find(
+      (d) => d.kind === 'audiooutput' && d.deviceId === params.get('audioOutput'),
+    )
+    setAudioOutput(audioOutputDevice ? audioOutputDevice.deviceId : '')
 
     // null ではなくかつ空文字でなければ clientId をセットする
     const clientId = params.get('clientId')
