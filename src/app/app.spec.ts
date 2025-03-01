@@ -1,4 +1,3 @@
-import queryString from 'query-string'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
@@ -31,9 +30,20 @@ import { store } from './store.ts'
 // このテストは query string にしていた値が適切に割り当てられているかをチェックする
 
 function setLocationSearch(parameters: Record<string, unknown>): void {
-  const search = queryString.stringify(parameters)
+  const searchParams = new URLSearchParams()
+  for (const [key, value] of Object.entries(parameters)) {
+    if (value !== undefined && value !== null) {
+      if (typeof value === 'object') {
+        // オブジェクトや配列の場合は JSON 文字列に変換
+        searchParams.set(key, JSON.stringify(value))
+      } else {
+        // それ以外の場合は文字列に変換
+        searchParams.set(key, String(value))
+      }
+    }
+  }
   // location.search を parseQueryString で引っ張るので location.search にダミーを入れる
-  vi.stubGlobal('location', { search: search })
+  vi.stubGlobal('location', { search: `?${searchParams.toString()}` })
 }
 
 // XXX(v): 悲しいけど Mock 化するしかない
