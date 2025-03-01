@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useEffect } from 'react'
 
-import { disconnectSora, setMediaDevices, unregisterServiceWorker } from '@/app/actions'
+import { disconnectSora, unregisterServiceWorker } from '@/app/actions'
 import { setInitialParameter } from '@/app/actions'
 import { useAppDispatch } from '@/app/hooks'
 import { useStore } from '@/app/store'
@@ -12,12 +12,18 @@ import { Header } from '@/components/Header'
 import { MediacaptureRegionTarget } from '@/components/MediacaptureRegionTarget'
 
 const Devtools: React.FC = () => {
+  const getMediaDevices = useStore((state) => state.getMediaDevices)
+  const setMediaDevices = useStore((state) => state.setMediaDevices)
   const setURLSearchParams = useStore((state) => state.setURLSearchParams)
   const dispatch = useAppDispatch()
+
   useEffect(() => {
     dispatch(setInitialParameter())
 
-    dispatch(setMediaDevices())
+    getMediaDevices().then((mediaDevices) => {
+      setMediaDevices(mediaDevices)
+    })
+
     dispatch(unregisterServiceWorker())
 
     // Zustand 化
@@ -28,7 +34,7 @@ const Devtools: React.FC = () => {
     return () => {
       dispatch(disconnectSora())
     }
-  }, [dispatch, setURLSearchParams])
+  }, [dispatch, setURLSearchParams, getMediaDevices, setMediaDevices])
   return (
     <>
       <MediacaptureRegionTarget />

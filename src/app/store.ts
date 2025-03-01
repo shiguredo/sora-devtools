@@ -4,7 +4,7 @@ import type { ConnectionPublisher, ConnectionSubscriber } from 'sora-js-sdk'
 import { create } from 'zustand'
 
 import type { AUDIO_CODEC_TYPES, AUDIO_CONTENT_HINTS, CONNECTION_STATUS } from '@/constants'
-import { copy2clipboard, createSignalingURL } from '@/utils'
+import { copy2clipboard, createSignalingURL, getDevices } from '@/utils'
 
 import type { LogMessage, TimelineMessage } from '@/types.ts'
 import { slice } from './slice.ts'
@@ -119,6 +119,8 @@ type SoraDevToolsActions = {
   setClipboard: () => void
   setURLSearchParams: (params: URLSearchParams) => void
 
+  getMediaDevices: () => Promise<MediaDeviceInfo[]>
+
   connectSora: () => void
   disconnectSora: () => void
 }
@@ -209,6 +211,10 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
         },
       ],
     }))
+  },
+
+  getMediaDevices: async () => {
+    return await getDevices()
   },
 
   setMediaDevices: (devices: MediaDeviceInfo[]) => {
