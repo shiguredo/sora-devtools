@@ -71,12 +71,9 @@ export function checkFormValue<T extends readonly string[]>(
 }
 
 // クエリ文字列パーサー
-export function parseQueryString(): Partial<QueryStringParameters> {
+export function parseQueryString(searchParams: URLSearchParams): Partial<QueryStringParameters> {
   // URLSearchParams から値を取得して string | undefined を返す
-  const parseStringParameter = (
-    searchParams: URLSearchParams,
-    key: string,
-  ): string | undefined => {
+  const parseStringParameter = (searchParams: URLSearchParams, key: string): string | undefined => {
     const value = searchParams.get(key)
     if (value !== null) {
       return value
@@ -106,9 +103,7 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     }
     return
   }
-  
-  const searchParams = new URLSearchParams(location.search)
-  
+
   // signalingUrlCandidates のパース
   let signalingUrlCandidates: any
   const signalingUrlCandidatesValue = searchParams.get('signalingUrlCandidates')
@@ -119,14 +114,22 @@ export function parseQueryString(): Partial<QueryStringParameters> {
       // 例外の場合は何もしない
     }
   }
-  
+
   const result: Partial<QueryStringParameters> = {
     apiUrl: parseStringParameter(searchParams, 'apiUrl'),
     audio: parseBooleanParameter(searchParams, 'audio'),
     audioBitRate: parseStringParameter(searchParams, 'audioBitRate'),
-    audioCodecType: parseSpecifiedStringParameter(searchParams, 'audioCodecType', AUDIO_CODEC_TYPES),
+    audioCodecType: parseSpecifiedStringParameter(
+      searchParams,
+      'audioCodecType',
+      AUDIO_CODEC_TYPES,
+    ),
     audioStreamingLanguageCode: parseStringParameter(searchParams, 'audioStreamingLanguageCode'),
-    autoGainControl: parseSpecifiedStringParameter(searchParams, 'autoGainControl', AUTO_GAIN_CONTROLS),
+    autoGainControl: parseSpecifiedStringParameter(
+      searchParams,
+      'autoGainControl',
+      AUTO_GAIN_CONTROLS,
+    ),
     bundleId: parseStringParameter(searchParams, 'bundleId'),
     channelId: parseStringParameter(searchParams, 'channelId'),
     clientId: parseStringParameter(searchParams, 'clientId'),
@@ -134,13 +137,21 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     debug: parseBooleanParameter(searchParams, 'debug'),
     debugType: parseSpecifiedStringParameter(searchParams, 'debugType', DEBUG_TYPES),
     displayResolution: parseStringParameter(searchParams, 'displayResolution'),
-    echoCancellation: parseSpecifiedStringParameter(searchParams, 'echoCancellation', ECHO_CANCELLATIONS),
+    echoCancellation: parseSpecifiedStringParameter(
+      searchParams,
+      'echoCancellation',
+      ECHO_CANCELLATIONS,
+    ),
     echoCancellationType: parseSpecifiedStringParameter(
       searchParams,
       'echoCancellationType',
       ECHO_CANCELLATION_TYPES,
     ),
-    noiseSuppression: parseSpecifiedStringParameter(searchParams, 'noiseSuppression', NOISE_SUPPRESSIONS),
+    noiseSuppression: parseSpecifiedStringParameter(
+      searchParams,
+      'noiseSuppression',
+      NOISE_SUPPRESSIONS,
+    ),
     facingMode: parseSpecifiedStringParameter(searchParams, 'facingMode', FACING_MODES),
     fakeVolume: parseStringParameter(searchParams, 'fakeVolume'),
     frameRate: parseStringParameter(searchParams, 'frameRate'),
@@ -157,8 +168,16 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     simulcast: parseSpecifiedStringParameter(searchParams, 'simulcast', SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(searchParams, 'simulcastRid', SIMULCAST_RID),
     spotlight: parseSpecifiedStringParameter(searchParams, 'spotlight', SPOTLIGHT),
-    spotlightNumber: parseSpecifiedStringParameter(searchParams, 'spotlightNumber', SPOTLIGHT_NUMBERS),
-    spotlightFocusRid: parseSpecifiedStringParameter(searchParams, 'spotlightFocusRid', SPOTLIGHT_FOCUS_RIDS),
+    spotlightNumber: parseSpecifiedStringParameter(
+      searchParams,
+      'spotlightNumber',
+      SPOTLIGHT_NUMBERS,
+    ),
+    spotlightFocusRid: parseSpecifiedStringParameter(
+      searchParams,
+      'spotlightFocusRid',
+      SPOTLIGHT_FOCUS_RIDS,
+    ),
     spotlightUnfocusRid: parseSpecifiedStringParameter(
       searchParams,
       'spotlightUnfocusRid',
@@ -167,7 +186,11 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     resolution: parseStringParameter(searchParams, 'resolution'),
     video: parseBooleanParameter(searchParams, 'video'),
     videoBitRate: parseStringParameter(searchParams, 'videoBitRate'),
-    videoCodecType: parseSpecifiedStringParameter(searchParams, 'videoCodecType', VIDEO_CODEC_TYPES),
+    videoCodecType: parseSpecifiedStringParameter(
+      searchParams,
+      'videoCodecType',
+      VIDEO_CODEC_TYPES,
+    ),
     videoVP9Params: parseStringParameter(searchParams, 'videoVP9Params'),
     videoH264Params: parseStringParameter(searchParams, 'videoH264Params'),
     videoH265Params: parseStringParameter(searchParams, 'videoH265Params'),
@@ -192,16 +215,31 @@ export function parseQueryString(): Partial<QueryStringParameters> {
     videoTrack: parseBooleanParameter(searchParams, 'videoTrack'),
     dataChannels: parseStringParameter(searchParams, 'dataChannels'),
     reconnect: parseBooleanParameter(searchParams, 'reconnect'),
-    audioContentHint: parseSpecifiedStringParameter(searchParams, 'audioContentHint', AUDIO_CONTENT_HINTS),
-    videoContentHint: parseSpecifiedStringParameter(searchParams, 'videoContentHint', VIDEO_CONTENT_HINTS),
+    audioContentHint: parseSpecifiedStringParameter(
+      searchParams,
+      'audioContentHint',
+      AUDIO_CONTENT_HINTS,
+    ),
+    videoContentHint: parseSpecifiedStringParameter(
+      searchParams,
+      'videoContentHint',
+      VIDEO_CONTENT_HINTS,
+    ),
     aspectRatio: parseSpecifiedStringParameter(searchParams, 'aspectRatio', ASPECT_RATIO_TYPES),
     resizeMode: parseSpecifiedStringParameter(searchParams, 'resizeMode', RESIZE_MODE_TYPES),
     blurRadius: parseSpecifiedStringParameter(searchParams, 'blurRadius', BLUR_RADIUS),
-    lightAdjustment: parseSpecifiedStringParameter(searchParams, 'lightAdjustment', LIGHT_ADJUSTMENT),
-    mediaProcessorsNoiseSuppression: parseBooleanParameter(searchParams, 'mediaProcessorsNoiseSuppression'),
+    lightAdjustment: parseSpecifiedStringParameter(
+      searchParams,
+      'lightAdjustment',
+      LIGHT_ADJUSTMENT,
+    ),
+    mediaProcessorsNoiseSuppression: parseBooleanParameter(
+      searchParams,
+      'mediaProcessorsNoiseSuppression',
+    ),
     role: parseSpecifiedStringParameter(searchParams, 'role', ROLES),
   }
-  
+
   // undefined の項目を削除する
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
     if (result[key] === undefined) {
