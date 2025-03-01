@@ -1,17 +1,19 @@
 import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
-import { setVideoInput, updateMediaStream } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { updateMediaStream } from '@/app/actions'
+import { useAppDispatch } from '@/app/hooks'
+import { useStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoInputForm: React.FC = () => {
-  const videoInput = useAppSelector((state) => state.videoInput)
-  const videoInputDevices = useAppSelector((state) => state.videoInputDevices)
+  const videoInput = useStore((state) => state.videoInput)
+  const videoInputDevices = useStore((state) => state.videoInputDevices)
+  const setVideoInput = useStore((state) => state.setVideoInput)
   const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    dispatch(setVideoInput(event.target.value))
+    setVideoInput(event.target.value)
     dispatch(updateMediaStream())
   }
   return (

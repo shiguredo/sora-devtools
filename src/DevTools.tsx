@@ -18,18 +18,19 @@ const Devtools: React.FC = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(setInitialParameter())
-
     getMediaDevices().then((mediaDevices) => {
       setMediaDevices(mediaDevices)
+
+      // setMediaDevices 後じゃないと qs からデバイスを反映させられない
+      // Zustand 化
+      // URLSearchParams を取得して setURLSearchParams に渡す
+      const params = new URLSearchParams(window.location.search)
+      setURLSearchParams(params)
     })
 
-    dispatch(unregisterServiceWorker())
+    dispatch(setInitialParameter())
 
-    // Zustand 化
-    // URLSearchParams を取得して setURLSearchParams に渡す
-    const params = new URLSearchParams(window.location.search)
-    setURLSearchParams(params)
+    dispatch(unregisterServiceWorker())
 
     return () => {
       dispatch(disconnectSora())

@@ -78,6 +78,9 @@ type SoraDevToolsState = {
   audioOutput: string
   audioOutputDevices: MediaDeviceInfo[]
 
+  videoInput: string
+  videoInputDevices: MediaDeviceInfo[]
+
   clientId: string
   enabledClientId: boolean
   bundleId: string
@@ -102,6 +105,9 @@ type SoraDevToolsActions = {
   setAudioInputDevices: (audioInputDevices: MediaDeviceInfo[]) => void
   setAudioOutput: (audioOutput: string) => void
   setAudioOutputDevices: (audioOutputDevices: MediaDeviceInfo[]) => void
+
+  setVideoInput: (videoInput: string) => void
+  setVideoInputDevices: (videoInputDevices: MediaDeviceInfo[]) => void
 
   setClientId: (clientId: string) => void
   setEnabledClientId: (enabledClientId: boolean) => void
@@ -137,6 +143,9 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   audioInputDevices: [],
   audioOutput: '',
   audioOutputDevices: [],
+
+  videoInput: '',
+  videoInputDevices: [],
 
   clientId: '',
   enabledClientId: false,
@@ -175,6 +184,13 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   },
   setAudioOutputDevices: (audioOutputDevices) => {
     set({ audioOutputDevices })
+  },
+
+  setVideoInput: (videoInput) => {
+    set({ videoInput })
+  },
+  setVideoInputDevices: (videoInputDevices) => {
+    set({ videoInputDevices })
   },
 
   setClientId: (clientId) => {
@@ -235,8 +251,7 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
     })
     set({ audioInputDevices })
     set({ audioOutputDevices })
-    // 未実装
-    // set({ videoInputDevices })
+    set({ videoInputDevices })
   },
 
   // URLSearchParams を状態から生成する
@@ -245,8 +260,16 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   // 名前は copyURL とかにしたいが、重複してしまうので、避ける
   // redux 側を reduxCopyURL とかにする方がいい気がする
   setClipboard: () => {
-    const { audio, audioBitRate, audioCodecType, clientId, bundleId, audioInput, audioOutput } =
-      get()
+    const {
+      audio,
+      audioBitRate,
+      audioCodecType,
+      clientId,
+      bundleId,
+      audioInput,
+      audioOutput,
+      videoInput,
+    } = get()
     const params = new URLSearchParams(window.location.search)
 
     params.set('audio', audio.toString())
@@ -275,6 +298,10 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
       params.set('audioOutput', audioOutput)
     }
 
+    if (videoInput) {
+      params.set('videoInput', videoInput)
+    }
+
     copy2clipboard(`${location.origin}${location.pathname}?${params.toString()}`)
     window.history.replaceState(null, '', `${location.pathname}?${params.toString()}`)
   },
@@ -291,7 +318,11 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
       setBundleId,
       setEnabledBundleId,
       setAudioInput,
+      audioInputDevices,
       setAudioOutput,
+      audioOutputDevices,
+      videoInputDevices,
+      setVideoInput,
     } = get()
 
     const audio = params.get('audio')
@@ -311,15 +342,22 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
       setAudioCodecType(audioCodecType as (typeof AUDIO_CODEC_TYPES)[number])
     }
 
-    const audioInputDevice = get().audioInputDevices.find(
+    // FIXME: ここ上手く動作していない
+    const audioInputDevice = audioInputDevices.find(
       (d) => d.kind === 'audioinput' && d.deviceId === params.get('audioInput'),
     )
     setAudioInput(audioInputDevice ? audioInputDevice.deviceId : '')
 
-    const audioOutputDevice = get().audioOutputDevices.find(
+    // FIXME: ここ上手く動作していない
+    const audioOutputDevice = audioOutputDevices.find(
       (d) => d.kind === 'audiooutput' && d.deviceId === params.get('audioOutput'),
     )
     setAudioOutput(audioOutputDevice ? audioOutputDevice.deviceId : '')
+
+    const videoInputDevice = videoInputDevices.find(
+      (d) => d.kind === 'videoinput' && d.deviceId === params.get('videoInput'),
+    )
+    setVideoInput(videoInputDevice ? videoInputDevice.deviceId : '')
 
     // null ではなくかつ空文字でなければ clientId をセットする
     const clientId = params.get('clientId')
