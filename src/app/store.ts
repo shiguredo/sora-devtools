@@ -78,6 +78,7 @@ type SoraDevToolsState = {
   audioOutput: string
   audioOutputDevices: MediaDeviceInfo[]
 
+  video: boolean
   videoInput: string
   videoInputDevices: MediaDeviceInfo[]
 
@@ -85,6 +86,11 @@ type SoraDevToolsState = {
   enabledClientId: boolean
   bundleId: string
   enabledBundleId: boolean
+
+  audioTrack: boolean
+  micDevice: boolean
+  videoTrack: boolean
+  cameraDevice: boolean
 
   // SoraContents をフラットにしている
   soraConnectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -106,6 +112,7 @@ type SoraDevToolsActions = {
   setAudioOutput: (audioOutput: string) => void
   setAudioOutputDevices: (audioOutputDevices: MediaDeviceInfo[]) => void
 
+  setVideo: (video: boolean) => void
   setVideoInput: (videoInput: string) => void
   setVideoInputDevices: (videoInputDevices: MediaDeviceInfo[]) => void
 
@@ -116,6 +123,11 @@ type SoraDevToolsActions = {
   setEnabledBundleId: (enabledBundleId: boolean) => void
 
   setMediaDevices: (devices: MediaDeviceInfo[]) => void
+
+  setAudioTrack: (audioTrack: boolean) => void
+  setMicDevice: (micDevice: boolean) => void
+  setVideoTrack: (videoTrack: boolean) => void
+  setCameraDevice: (cameraDevice: boolean) => void
 
   setSoraConnectionStatus: (connectionStatus: (typeof CONNECTION_STATUS)[number]) => void
 
@@ -144,6 +156,7 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   audioOutput: '',
   audioOutputDevices: [],
 
+  video: true,
   videoInput: '',
   videoInputDevices: [],
 
@@ -151,6 +164,11 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   enabledClientId: false,
   bundleId: '',
   enabledBundleId: false,
+
+  audioTrack: true,
+  micDevice: true,
+  videoTrack: true,
+  cameraDevice: true,
 
   soraConnectionStatus: 'initializing',
   sora: null,
@@ -186,6 +204,9 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
     set({ audioOutputDevices })
   },
 
+  setVideo: (video) => {
+    set({ video })
+  },
   setVideoInput: (videoInput) => {
     set({ videoInput })
   },
@@ -205,6 +226,19 @@ export const useStore = create<SoraDevToolsStore>()((set, get) => ({
   },
   setEnabledBundleId: (enabledBundleId) => {
     set({ enabledBundleId })
+  },
+
+  setAudioTrack: (audioTrack) => {
+    set({ audioTrack })
+  },
+  setMicDevice: (micDevice) => {
+    set({ micDevice })
+  },
+  setVideoTrack: (videoTrack) => {
+    set({ videoTrack })
+  },
+  setCameraDevice: (cameraDevice) => {
+    set({ cameraDevice })
   },
 
   setSoraConnectionStatus: (connectionStatus: (typeof CONNECTION_STATUS)[number]) => {

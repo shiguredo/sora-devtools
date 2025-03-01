@@ -144,10 +144,10 @@ export type SoraDevtoolsState = {
   videoH265Params: string
   videoAV1Params: string
   version: string
-  cameraDevice: boolean
-  videoTrack: boolean
-  micDevice: boolean
   audioTrack: boolean
+  micDevice: boolean
+  videoTrack: boolean
+  cameraDevice: boolean
   role: Role
   reconnect: boolean
   apiUrl: null | string
