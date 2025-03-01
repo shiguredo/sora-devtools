@@ -8,8 +8,10 @@ import { isFormDisabled } from '@/utils'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ClientIdForm: React.FC = () => {
-  const { setClientId, clientId } = useStore()
-  const { setEnabledClientId, enabledClientId } = useStore()
+  const clientId = useStore((state) => state.clientId)
+  const setClientId = useStore((state) => state.setClientId)
+  const enabledClientId = useStore((state) => state.enabledClientId)
+  const setEnabledClientId = useStore((state) => state.setEnabledClientId)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {

@@ -1,18 +1,17 @@
 import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
-import { setAudioInput, updateMediaStream } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-
+import { updateMediaStream } from '@/app/actions'
+import { useStore } from '@/app/store'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioInputForm: React.FC = () => {
-  const audioInput = useAppSelector((state) => state.audioInput)
-  const audioInputDevices = useAppSelector((state) => state.audioInputDevices)
-  const dispatch = useAppDispatch()
+  const audioInput = useStore((state) => state.audioInput)
+  const setAudioInput = useStore((state) => state.setAudioInput)
+  const audioInputDevices = useStore((state) => state.audioInputDevices)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    dispatch(setAudioInput(event.target.value))
-    dispatch(updateMediaStream())
+    setAudioInput(event.target.value)
+    updateMediaStream()
   }
   return (
     <FormGroup className="form-inline" controlId="audioInput">
