@@ -411,7 +411,7 @@ video {
 }
 
 /* json-input-textarea-overlay 配下のボタンは disabled にしても透明度を無効にする */
-.json-input-textarea-overlay .btn.btn-light:disabled{
+.json-input-textarea-overlay .btn.btn-light:disabled {
   opacity: unset;
 }
 
