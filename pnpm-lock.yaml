@@ -57,6 +57,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@fast-check/vitest':
+        specifier: 0.1.5
+        version: 0.1.5(vitest@3.0.7(@types/node@22.13.8)(jsdom@26.0.0))
       '@playwright/test':
         specifier: 1.50.1
         version: 1.50.1
@@ -419,6 +422,11 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fast-check/vitest@0.1.5':
+    resolution: {integrity: sha512-TxtdmzHFzHu1zLDc08SjJHH3jxxtf8oO/fZagsH3MXwkLu2bl0CSo6DWq03kNOxzd5uGT+jSUvZqFajy08+9sg==}
+    peerDependencies:
+      vitest: '>=0.28.1 <1.0.0 || ^1 || ^2 || ^3'
 
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
@@ -1576,6 +1584,11 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.0':
     optional: true
+
+  '@fast-check/vitest@0.1.5(vitest@3.0.7(@types/node@22.13.8)(jsdom@26.0.0))':
+    dependencies:
+      fast-check: 3.23.2
+      vitest: 3.0.7(@types/node@22.13.8)(jsdom@26.0.0)
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:

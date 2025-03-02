@@ -35,6 +35,10 @@
   - @voluntas
 - [CHANGE] `biome` の設定で `src/` と `tests/` を `include` する
   - @voluntas
+- [ADD] PBT 用に `fast-check` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `fast-check` を `vitest` で利用できるようにするため `@fast-check/vitest` を `devDependencies` に追加する
+  - @voluntas
 - [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
   - @voluntas
 - [ADD] `vite` を `devDependencies` に追加する

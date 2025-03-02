@@ -2,8 +2,8 @@
 
 // biome-ignore lint/correctness/noUndeclaredDependencies: test のため
 // biome-ignore lint/style/noNamespaceImport: test のため
-import * as fc from 'fast-check'
-import { expect, test } from 'vitest'
+import { fc, test } from '@fast-check/vitest'
+import { expect } from 'vitest'
 import {
   ASPECT_RATIO_TYPES,
   AUDIO_CODEC_TYPES,
@@ -161,233 +161,186 @@ const parametersArb = fc.record({
   displayResolution: fc.option(resolutionArb, { nil: undefined }),
 })
 
-test('parseQueryString は有効な入力に対して例外をスローしないこと', () => {
-  fc.assert(
-    fc.property(parametersArb, (params) => {
-      const searchParams = createSearchParams(params)
-      // 有効な入力に対して例外をスローしないこと
-      const result = parseQueryString(searchParams)
-      // 結果はオブジェクトであること
-      expect(typeof result).toBe('object')
-      return true
-    }),
-  )
+test.prop([parametersArb])(
+  'parseQueryString は有効な入力に対して例外をスローしないこと',
+  (params) => {
+    const searchParams = createSearchParams(params)
+    // 有効な入力に対して例外をスローしないこと
+    const result = parseQueryString(searchParams)
+    // 結果はオブジェクトであること
+    expect(typeof result).toBe('object')
+  },
+)
+
+test.prop([fc.constant(new URLSearchParams())])(
+  'parseQueryString は空の入力に対して空のオブジェクトを返すこと',
+  (searchParams) => {
+    const result = parseQueryString(searchParams)
+    expect(result).toEqual({})
+  },
+)
+
+test.prop([fc.string(), fc.string()])(
+  'parseQueryString は文字列パラメータを正しく解析すること',
+  (channelId, clientId) => {
+    const params = { channelId, clientId }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.channelId).toBe(channelId)
+    expect(result.clientId).toBe(clientId)
+  },
+)
+
+test.prop([fc.boolean(), fc.boolean()])(
+  'parseQueryString は真偽値パラメータを正しく解析すること',
+  (audio, video) => {
+    const params = { audio, video }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.audio).toBe(audio)
+    expect(result.video).toBe(video)
+  },
+)
+
+test.prop([fc.boolean(), fc.boolean()])(
+  'parseQueryString は真偽値を表す文字列を正しく解析すること',
+  (audio, video) => {
+    // 真偽値を文字列に変換
+    const params = {
+      audio: audio ? 'true' : 'false',
+      video: video ? 'true' : 'false',
+    }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.audio).toBe(audio)
+    expect(result.video).toBe(video)
+  },
+)
+
+test.prop([audioCodecTypeArb, roleArb, videoCodecTypeArb])(
+  'parseQueryString は指定された文字列パラメータを正しく解析すること',
+  (audioCodecType, role, videoCodecType) => {
+    // 定数から正確な型でパラメータを作成
+    const params: Record<string, unknown> = {}
+    params.audioCodecType = audioCodecType
+    params.role = role
+    params.videoCodecType = videoCodecType
+
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.audioCodecType).toBe(audioCodecType)
+    expect(result.role).toBe(role)
+    expect(result.videoCodecType).toBe(videoCodecType)
+  },
+)
+
+test.prop([
+  fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS')),
+  fc.string().filter((s) => !ROLES.includes(s as 'sendrecv' | 'sendonly' | 'recvonly')),
+])(
+  'parseQueryString は無効な指定文字列パラメータを無視すること',
+  (invalidAudioCodec, invalidRole) => {
+    const params = { audioCodecType: invalidAudioCodec, role: invalidRole }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.audioCodecType).toBeUndefined()
+    expect(result.role).toBeUndefined()
+  },
+)
+
+test.prop([fc.array(fc.webUrl(), { minLength: 1, maxLength: 5 })])(
+  'parseQueryString は signalingUrlCandidates を正しく解析すること',
+  (candidates) => {
+    const params = { signalingUrlCandidates: candidates }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.signalingUrlCandidates).toEqual(candidates)
+  },
+)
+
+test.prop([
+  fc.string().filter((s) => {
+    try {
+      JSON.parse(s)
+      return false // 有効なJSONの場合は除外
+    } catch {
+      return true // 無効なJSONの場合は保持
+    }
+  }),
+])('parseQueryString は無効な JSON の signalingUrlCandidates を処理すること', (invalidJson) => {
+  const searchParams = new URLSearchParams()
+  searchParams.set('signalingUrlCandidates', invalidJson)
+  const result = parseQueryString(searchParams)
+
+  expect(result.signalingUrlCandidates).toBeUndefined()
 })
 
-test('parseQueryString は空の入力に対して空のオブジェクトを返すこと', () => {
-  fc.assert(
-    fc.property(fc.constant(new URLSearchParams()), (searchParams) => {
-      const result = parseQueryString(searchParams)
-      expect(result).toEqual({})
-      return true
-    }),
-  )
+test.prop([fc.string(), fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS'))])(
+  'parseQueryString は undefined のプロパティを削除すること',
+  (channelId, invalidAudioCodec) => {
+    const params = { channelId, audioCodecType: invalidAudioCodec }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.channelId).toBe(channelId)
+    expect(result).not.toHaveProperty('audioCodecType')
+  },
+)
+
+test.prop([fc.tuple(fc.integer({ min: 1, max: 3840 }), fc.integer({ min: 1, max: 2160 }))])(
+  'parseQueryString は解像度の形式を正しく処理すること',
+  ([width, height]) => {
+    const resolution = `${width}x${height}`
+    const params = { resolution }
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
+
+    expect(result.resolution).toBe(resolution)
+  },
+)
+
+test.prop([parametersArb])('parseQueryString は有効な入力に対して冪等であること', (params) => {
+  const searchParams = createSearchParams(params)
+  const result1 = parseQueryString(searchParams)
+
+  // 結果から新しい searchParams を作成して再度解析
+  const searchParams2 = createSearchParams(result1 as Record<string, unknown>)
+  const result2 = parseQueryString(searchParams2)
+
+  // 結果は同じであるべき
+  expect(result2).toEqual(result1)
 })
 
-test('parseQueryString は文字列パラメータを正しく解析すること', () => {
-  fc.assert(
-    fc.property(fc.string(), fc.string(), (channelId, clientId) => {
-      const params = { channelId, clientId }
-      const searchParams = createSearchParams(params)
-      const result = parseQueryString(searchParams)
+test.prop({
+  channelId: fc.string(),
+  audio: fc.boolean(),
+  audioCodecType: audioCodecTypeArb,
+  signalingUrlCandidates: fc.array(fc.webUrl(), { minLength: 1, maxLength: 3 }),
+  resolution: resolutionArb,
+})(
+  'parseQueryString はすべてのパラメータタイプの混合を処理すること',
+  ({ channelId, audio, audioCodecType, signalingUrlCandidates, resolution }) => {
+    // 定数から正確な型でパラメータを作成
+    const params: Record<string, unknown> = {}
+    params.channelId = channelId
+    params.audio = audio
+    params.audioCodecType = audioCodecType
+    params.signalingUrlCandidates = signalingUrlCandidates
+    params.resolution = resolution
 
-      expect(result.channelId).toBe(channelId)
-      expect(result.clientId).toBe(clientId)
-      return true
-    }),
-  )
-})
+    const searchParams = createSearchParams(params)
+    const result = parseQueryString(searchParams)
 
-test('parseQueryString は真偽値パラメータを正しく解析すること', () => {
-  fc.assert(
-    fc.property(fc.boolean(), fc.boolean(), (audio, video) => {
-      const params = { audio, video }
-      const searchParams = createSearchParams(params)
-      const result = parseQueryString(searchParams)
-
-      expect(result.audio).toBe(audio)
-      expect(result.video).toBe(video)
-      return true
-    }),
-  )
-})
-
-test('parseQueryString は真偽値を表す文字列を正しく解析すること', () => {
-  fc.assert(
-    fc.property(fc.boolean(), fc.boolean(), (audio, video) => {
-      // 真偽値を文字列に変換
-      const params = {
-        audio: audio ? 'true' : 'false',
-        video: video ? 'true' : 'false',
-      }
-      const searchParams = createSearchParams(params)
-      const result = parseQueryString(searchParams)
-
-      expect(result.audio).toBe(audio)
-      expect(result.video).toBe(video)
-      return true
-    }),
-  )
-})
-
-test('parseQueryString は指定された文字列パラメータを正しく解析すること', () => {
-  fc.assert(
-    fc.property(
-      audioCodecTypeArb,
-      roleArb,
-      videoCodecTypeArb,
-      (audioCodecType, role, videoCodecType) => {
-        // 定数から正確な型でパラメータを作成
-        const params: Record<string, unknown> = {}
-        params.audioCodecType = audioCodecType
-        params.role = role
-        params.videoCodecType = videoCodecType
-
-        const searchParams = createSearchParams(params)
-        const result = parseQueryString(searchParams)
-
-        expect(result.audioCodecType).toBe(audioCodecType)
-        expect(result.role).toBe(role)
-        expect(result.videoCodecType).toBe(videoCodecType)
-        return true
-      },
-    ),
-  )
-})
-
-test('parseQueryString は無効な指定文字列パラメータを無視すること', () => {
-  fc.assert(
-    fc.property(
-      fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS')),
-      fc.string().filter((s) => !ROLES.includes(s as 'sendrecv' | 'sendonly' | 'recvonly')),
-      (invalidAudioCodec, invalidRole) => {
-        const params = { audioCodecType: invalidAudioCodec, role: invalidRole }
-        const searchParams = createSearchParams(params)
-        const result = parseQueryString(searchParams)
-
-        expect(result.audioCodecType).toBeUndefined()
-        expect(result.role).toBeUndefined()
-        return true
-      },
-    ),
-  )
-})
-
-test('parseQueryString は signalingUrlCandidates を正しく解析すること', () => {
-  fc.assert(
-    fc.property(fc.array(fc.webUrl(), { minLength: 1, maxLength: 5 }), (candidates) => {
-      const params = { signalingUrlCandidates: candidates }
-      const searchParams = createSearchParams(params)
-      const result = parseQueryString(searchParams)
-
-      expect(result.signalingUrlCandidates).toEqual(candidates)
-      return true
-    }),
-  )
-})
-
-test('parseQueryString は無効な JSON の signalingUrlCandidates を処理すること', () => {
-  fc.assert(
-    fc.property(
-      fc.string().filter((s) => {
-        try {
-          JSON.parse(s)
-          return false // 有効なJSONの場合は除外
-        } catch {
-          return true // 無効なJSONの場合は保持
-        }
-      }),
-      (invalidJson) => {
-        const searchParams = new URLSearchParams()
-        searchParams.set('signalingUrlCandidates', invalidJson)
-        const result = parseQueryString(searchParams)
-
-        expect(result.signalingUrlCandidates).toBeUndefined()
-        return true
-      },
-    ),
-  )
-})
-
-test('parseQueryString は undefined のプロパティを削除すること', () => {
-  fc.assert(
-    fc.property(
-      fc.string(),
-      fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS')),
-      (channelId, invalidAudioCodec) => {
-        const params = { channelId, audioCodecType: invalidAudioCodec }
-        const searchParams = createSearchParams(params)
-        const result = parseQueryString(searchParams)
-
-        expect(result.channelId).toBe(channelId)
-        expect(result).not.toHaveProperty('audioCodecType')
-        return true
-      },
-    ),
-  )
-})
-
-test('parseQueryString は解像度の形式を正しく処理すること', () => {
-  fc.assert(
-    fc.property(
-      fc.tuple(fc.integer({ min: 1, max: 3840 }), fc.integer({ min: 1, max: 2160 })),
-      ([width, height]) => {
-        const resolution = `${width}x${height}`
-        const params = { resolution }
-        const searchParams = createSearchParams(params)
-        const result = parseQueryString(searchParams)
-
-        expect(result.resolution).toBe(resolution)
-        return true
-      },
-    ),
-  )
-})
-
-test('parseQueryString は有効な入力に対して冪等であること', () => {
-  fc.assert(
-    fc.property(parametersArb, (params) => {
-      const searchParams = createSearchParams(params)
-      const result1 = parseQueryString(searchParams)
-
-      // 結果から新しい searchParams を作成して再度解析
-      const searchParams2 = createSearchParams(result1 as Record<string, unknown>)
-      const result2 = parseQueryString(searchParams2)
-
-      // 結果は同じであるべき
-      expect(result2).toEqual(result1)
-      return true
-    }),
-  )
-})
-
-test('parseQueryString はすべてのパラメータタイプの混合を処理すること', () => {
-  fc.assert(
-    fc.property(
-      fc.string(),
-      fc.boolean(),
-      audioCodecTypeArb,
-      fc.array(fc.webUrl(), { minLength: 1, maxLength: 3 }),
-      resolutionArb,
-      (channelId, audio, audioCodecType, signalingUrlCandidates, resolution) => {
-        // 定数から正確な型でパラメータを作成
-        const params: Record<string, unknown> = {}
-        params.channelId = channelId
-        params.audio = audio
-        params.audioCodecType = audioCodecType
-        params.signalingUrlCandidates = signalingUrlCandidates
-        params.resolution = resolution
-
-        const searchParams = createSearchParams(params)
-        const result = parseQueryString(searchParams)
-
-        expect(result.channelId).toBe(channelId)
-        expect(result.audio).toBe(audio)
-        expect(result.audioCodecType).toBe(audioCodecType)
-        expect(result.signalingUrlCandidates).toEqual(signalingUrlCandidates)
-        expect(result.resolution).toBe(resolution)
-        return true
-      },
-    ),
-  )
-})
+    expect(result.channelId).toBe(channelId)
+    expect(result.audio).toBe(audio)
+    expect(result.audioCodecType).toBe(audioCodecType)
+    expect(result.signalingUrlCandidates).toEqual(signalingUrlCandidates)
+    expect(result.resolution).toBe(resolution)
+  },
+)
