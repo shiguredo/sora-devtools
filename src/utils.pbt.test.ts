@@ -3,7 +3,7 @@
 // biome-ignore lint/correctness/noUndeclaredDependencies: test のため
 // biome-ignore lint/style/noNamespaceImport: test のため
 import { fc, test } from '@fast-check/vitest'
-import { expect } from 'vitest'
+import { assert } from 'vitest'
 import {
   ASPECT_RATIO_TYPES,
   AUDIO_CODEC_TYPES,
@@ -168,7 +168,7 @@ test.prop([parametersArb])(
     // 有効な入力に対して例外をスローしないこと
     const result = parseQueryString(searchParams)
     // 結果はオブジェクトであること
-    expect(typeof result).toBe('object')
+    assert.equal(typeof result, 'object')
   },
 )
 
@@ -176,7 +176,7 @@ test.prop([fc.constant(new URLSearchParams())])(
   'parseQueryString は空の入力に対して空のオブジェクトを返すこと',
   (searchParams) => {
     const result = parseQueryString(searchParams)
-    expect(result).toEqual({})
+    assert.deepEqual(result, {})
   },
 )
 
@@ -187,8 +187,8 @@ test.prop([fc.string(), fc.string()])(
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.channelId).toBe(channelId)
-    expect(result.clientId).toBe(clientId)
+    assert.equal(result.channelId, channelId)
+    assert.equal(result.clientId, clientId)
   },
 )
 
@@ -199,8 +199,8 @@ test.prop([fc.boolean(), fc.boolean()])(
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.audio).toBe(audio)
-    expect(result.video).toBe(video)
+    assert.equal(result.audio, audio)
+    assert.equal(result.video, video)
   },
 )
 
@@ -215,8 +215,8 @@ test.prop([fc.boolean(), fc.boolean()])(
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.audio).toBe(audio)
-    expect(result.video).toBe(video)
+    assert.equal(result.audio, audio)
+    assert.equal(result.video, video)
   },
 )
 
@@ -232,9 +232,9 @@ test.prop([audioCodecTypeArb, roleArb, videoCodecTypeArb])(
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.audioCodecType).toBe(audioCodecType)
-    expect(result.role).toBe(role)
-    expect(result.videoCodecType).toBe(videoCodecType)
+    assert.equal(result.audioCodecType, audioCodecType)
+    assert.equal(result.role, role)
+    assert.equal(result.videoCodecType, videoCodecType)
   },
 )
 
@@ -248,8 +248,8 @@ test.prop([
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.audioCodecType).toBeUndefined()
-    expect(result.role).toBeUndefined()
+    assert.isUndefined(result.audioCodecType)
+    assert.isUndefined(result.role)
   },
 )
 
@@ -260,7 +260,7 @@ test.prop([fc.array(fc.webUrl(), { minLength: 1, maxLength: 5 })])(
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.signalingUrlCandidates).toEqual(candidates)
+    assert.deepEqual(result.signalingUrlCandidates, candidates)
   },
 )
 
@@ -278,7 +278,7 @@ test.prop([
   searchParams.set('signalingUrlCandidates', invalidJson)
   const result = parseQueryString(searchParams)
 
-  expect(result.signalingUrlCandidates).toBeUndefined()
+  assert.isUndefined(result.signalingUrlCandidates)
 })
 
 test.prop([fc.string(), fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS'))])(
@@ -288,8 +288,8 @@ test.prop([fc.string(), fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s 
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.channelId).toBe(channelId)
-    expect(result).not.toHaveProperty('audioCodecType')
+    assert.equal(result.channelId, channelId)
+    assert.notProperty(result, 'audioCodecType')
   },
 )
 
@@ -301,7 +301,7 @@ test.prop([fc.tuple(fc.integer({ min: 1, max: 3840 }), fc.integer({ min: 1, max:
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.resolution).toBe(resolution)
+    assert.equal(result.resolution, resolution)
   },
 )
 
@@ -314,7 +314,7 @@ test.prop([parametersArb])('parseQueryString は有効な入力に対して冪�
   const result2 = parseQueryString(searchParams2)
 
   // 結果は同じであるべき
-  expect(result2).toEqual(result1)
+  assert.deepEqual(result2, result1)
 })
 
 test.prop({
@@ -337,10 +337,10 @@ test.prop({
     const searchParams = createSearchParams(params)
     const result = parseQueryString(searchParams)
 
-    expect(result.channelId).toBe(channelId)
-    expect(result.audio).toBe(audio)
-    expect(result.audioCodecType).toBe(audioCodecType)
-    expect(result.signalingUrlCandidates).toEqual(signalingUrlCandidates)
-    expect(result.resolution).toBe(resolution)
+    assert.equal(result.channelId, channelId)
+    assert.equal(result.audio, audio)
+    assert.equal(result.audioCodecType, audioCodecType)
+    assert.deepEqual(result.signalingUrlCandidates, signalingUrlCandidates)
+    assert.equal(result.resolution, resolution)
   },
 )

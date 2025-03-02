@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { assert, test } from 'vitest'
 import {
   ASPECT_RATIO_TYPES,
   AUDIO_CODEC_TYPES,
@@ -45,13 +45,13 @@ function createSearchParams(parameters: Record<string, unknown>): URLSearchParam
 test('空のクエリ文字列の場合、空のオブジェクトを返す', () => {
   const searchParams = new URLSearchParams()
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({})
+  assert.deepEqual(result, {})
 })
 
 test('単一の文字列パラメータを解析する', () => {
   const searchParams = createSearchParams({ channelId: 'test-channel' })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({ channelId: 'test-channel' })
+  assert.deepEqual(result, { channelId: 'test-channel' })
 })
 
 test('複数のパラメータを解析する', () => {
@@ -61,7 +61,7 @@ test('複数のパラメータを解析する', () => {
     metadata: 'test-metadata',
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({
+  assert.deepEqual(result, {
     channelId: 'test-channel',
     clientId: 'test-client',
     metadata: 'test-metadata',
@@ -76,7 +76,7 @@ test('真偽値パラメータを解析する', () => {
     showStats: false,
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({
+  assert.deepEqual(result, {
     audio: true,
     video: false,
     debug: true,
@@ -92,7 +92,7 @@ test('文字列として渡された真偽値パラメータを解析する', ()
     showStats: 'false',
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({
+  assert.deepEqual(result, {
     audio: true,
     video: false,
     debug: true,
@@ -104,7 +104,7 @@ test('特定の文字列リストからの値を解析する - audioCodecType', 
   for (const value of AUDIO_CODEC_TYPES) {
     const searchParams = createSearchParams({ audioCodecType: value })
     const result = parseQueryString(searchParams)
-    expect(result).toEqual({ audioCodecType: value })
+    assert.deepEqual(result, { audioCodecType: value })
   }
 })
 
@@ -112,7 +112,7 @@ test('特定の文字列リストからの値を解析する - role', () => {
   for (const value of ROLES) {
     const searchParams = createSearchParams({ role: value })
     const result = parseQueryString(searchParams)
-    expect(result).toEqual({ role: value })
+    assert.deepEqual(result, { role: value })
   }
 })
 
@@ -120,7 +120,7 @@ test('特定の文字列リストからの値を解析する - videoCodecType', 
   for (const value of VIDEO_CODEC_TYPES) {
     const searchParams = createSearchParams({ videoCodecType: value })
     const result = parseQueryString(searchParams)
-    expect(result).toEqual({ videoCodecType: value })
+    assert.deepEqual(result, { videoCodecType: value })
   }
 })
 
@@ -131,27 +131,27 @@ test('特定の文字列リストに含まれない値は無視される', () =>
     videoCodecType: 'invalid-codec',
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({})
+  assert.deepEqual(result, {})
 })
 
 test('signalingUrlCandidates を JSON として解析する', () => {
   const candidates = ['ws://example.com/signaling', 'wss://example.com/signaling']
   const searchParams = createSearchParams({ signalingUrlCandidates: candidates })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({ signalingUrlCandidates: candidates })
+  assert.deepEqual(result, { signalingUrlCandidates: candidates })
 })
 
 test('無効な JSON の signalingUrlCandidates は undefined になる', () => {
   const searchParams = new URLSearchParams()
   searchParams.set('signalingUrlCandidates', '{invalid-json}')
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({})
+  assert.deepEqual(result, {})
 })
 
 test('signalingUrlCandidates が配列でない場合は undefined になる', () => {
   const searchParams = createSearchParams({ signalingUrlCandidates: { key: 'value' } })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({})
+  assert.deepEqual(result, {})
 })
 
 test('undefined の項目は削除される', () => {
@@ -161,12 +161,12 @@ test('undefined の項目は削除される', () => {
     role: 'sendrecv',
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({
+  assert.deepEqual(result, {
     channelId: 'test-channel',
     role: 'sendrecv',
   })
   // audioCodecType が結果に含まれていないことを確認
-  expect(result).not.toHaveProperty('audioCodecType')
+  assert.notExists(result.audioCodecType)
 })
 
 test('数値パラメータを文字列として解析する', () => {
@@ -175,7 +175,7 @@ test('数値パラメータを文字列として解析する', () => {
     fakeVolume: 0.5,
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({
+  assert.deepEqual(result, {
     frameRate: '30',
     fakeVolume: '0.5',
   })
@@ -187,7 +187,7 @@ test('解像度パラメータを解析する', () => {
     displayResolution: '1920x1080',
   })
   const result = parseQueryString(searchParams)
-  expect(result).toEqual({
+  assert.deepEqual(result, {
     resolution: '1280x720',
     displayResolution: '1920x1080',
   })
@@ -223,5 +223,5 @@ test('すべての特定の文字列リストからの値を解析する', () =>
 
   const searchParams = createSearchParams(params)
   const result = parseQueryString(searchParams)
-  expect(result).toEqual(params)
+  assert.deepEqual(result, params)
 })
