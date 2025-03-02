@@ -53,12 +53,13 @@
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.3.4",
     "dotenv": "16.4.7",
+    "fast-check": "3.23.2",
     "jsdom": "26.0.0",
     "typescript": "5.8.2",
     "vite": "6.2.0",
     "vitest": "3.0.7"
   },
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@10.5.2",
   "engines": {
     "node": ">=22.11"
   }

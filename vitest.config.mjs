@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   plugins: [react()],
   test: {
-    include: ['src/app/app.spec.ts', 'src/utils.test.ts'],
+    include: ['src/app/app.spec.ts', 'src/utils.test.ts', 'src/utils.pbt.test.ts'],
     globals: true,
     environment: 'jsdom',
   },
