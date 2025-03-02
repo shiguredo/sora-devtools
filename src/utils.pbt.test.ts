@@ -259,8 +259,8 @@ describe('parseQueryString プロパティベーステスト', () => {
   test('parseQueryStringは無効な指定文字列パラメータを無視すること', () => {
     fc.assert(
       fc.property(
-        fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s)),
-        fc.string().filter((s) => !ROLES.includes(s)),
+        fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS')),
+        fc.string().filter((s) => !ROLES.includes(s as 'sendrecv' | 'sendonly' | 'recvonly')),
         (invalidAudioCodec, invalidRole) => {
           const params = { audioCodecType: invalidAudioCodec, role: invalidRole }
           const searchParams = createSearchParams(params)
@@ -314,7 +314,7 @@ describe('parseQueryString プロパティベーステスト', () => {
     fc.assert(
       fc.property(
         fc.string(),
-        fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s)),
+        fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS')),
         (channelId, invalidAudioCodec) => {
           const params = { channelId, audioCodecType: invalidAudioCodec }
           const searchParams = createSearchParams(params)
