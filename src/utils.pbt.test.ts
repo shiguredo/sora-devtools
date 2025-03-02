@@ -1,7 +1,5 @@
 // このテストは Cline https://cline.bot/ による自動生成です。
 
-// biome-ignore lint/correctness/noUndeclaredDependencies: test のため
-// biome-ignore lint/style/noNamespaceImport: test のため
 import { fc, test } from '@fast-check/vitest'
 import { assert } from 'vitest'
 import {
