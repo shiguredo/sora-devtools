@@ -39,7 +39,7 @@ import { slice } from './slice.ts'
 export const setInitialParameter = () => {
   return async (dispatch: Dispatch, getState: () => SoraDevtoolsState): Promise<void> => {
     dispatch(slice.actions.resetState())
-    const qsParams = parseQueryString()
+    const qsParams = parseQueryString(new URLSearchParams(location.search))
     if (qsParams.audio !== undefined) {
       dispatch(slice.actions.setAudio(qsParams.audio))
     }

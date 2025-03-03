@@ -23,6 +23,8 @@
 
 ### misc
 
+- [CHANGE] `query-string` の依存を削除する
+  - @voluntas
 - [CHANGE] GitHub Actions の ubuntu-latest を ubuntu-24.04 に変更する
   - @voluntas
 - [CHANGE] `Next.js` を `package.json` から削除する
@@ -32,6 +34,10 @@
 - [CHANGE] `.gitignore` に `dist` を追加する
   - @voluntas
 - [CHANGE] `biome` の設定で `src/` と `tests/` を `include` する
+  - @voluntas
+- [ADD] PBT 用に `fast-check` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `fast-check` を `vitest` で利用できるようにするため `@fast-check/vitest` を `devDependencies` に追加する
   - @voluntas
 - [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
   - @voluntas

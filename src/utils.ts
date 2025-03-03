@@ -2,7 +2,6 @@ import {
   type LightAdjustmentProcessorOptions,
   SelfieSegmentationFocusMask,
 } from '@shiguredo/light-adjustment'
-import queryString from 'query-string'
 import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from 'sora-js-sdk'
 
 import {
@@ -72,122 +71,175 @@ export function checkFormValue<T extends readonly string[]>(
 }
 
 // クエリ文字列パーサー
-export function parseQueryString(): Partial<QueryStringParameters> {
-  // パラメーターが文字列かどうかを判定して string | undefined を返す
-  const parseStringParameter = (
-    parameter: string | (string | null)[] | null,
-  ): string | undefined => {
-    if (typeof parameter === 'string') {
-      return parameter
+export function parseQueryString(searchParams: URLSearchParams): Partial<QueryStringParameters> {
+  // URLSearchParams から値を取得して string | undefined を返す
+  const parseStringParameter = (searchParams: URLSearchParams, key: string): string | undefined => {
+    const value = searchParams.get(key)
+    if (value !== null) {
+      return value
     }
     return
   }
-  // パラメーターが boolean かどうかを判定して boolean | undefined を返す
+  // URLSearchParams から値を取得して boolean | undefined を返す
   const parseBooleanParameter = (
-    parameter: string | (string | null)[] | null,
+    searchParams: URLSearchParams,
+    key: string,
   ): boolean | undefined => {
-    if (typeof parameter === 'string') {
-      return parseBooleanString(parameter)
+    const value = searchParams.get(key)
+    if (value !== null) {
+      return parseBooleanString(value)
     }
     return
   }
-  // パラメーターが特定の文字列かどうかを判定して string | undefined を返す
+  // URLSearchParams から値を取得して特定の文字列かどうかを判定して string | undefined を返す
   const parseSpecifiedStringParameter = <T extends readonly string[]>(
-    parameter: string | (string | null)[] | null,
+    searchParams: URLSearchParams,
+    key: string,
     candidates: T,
   ): (typeof candidates)[number] | undefined => {
-    if (checkFormValue(parameter, candidates)) {
-      return parameter
+    const value = searchParams.get(key)
+    if (value !== null && checkFormValue(value, candidates)) {
+      return value
     }
     return
   }
-  const qs = queryString.parse(location.search)
+
   // signalingUrlCandidates のパース
   let signalingUrlCandidates: any
-  if (typeof qs.signalingUrlCandidates === 'string') {
+  const signalingUrlCandidatesValue = searchParams.get('signalingUrlCandidates')
+  if (signalingUrlCandidatesValue !== null) {
     try {
-      signalingUrlCandidates = JSON.parse(qs.signalingUrlCandidates)
+      signalingUrlCandidates = JSON.parse(signalingUrlCandidatesValue)
     } catch (_) {
       // 例外の場合は何もしない
     }
   }
+
   const result: Partial<QueryStringParameters> = {
-    apiUrl: parseStringParameter(qs.apiUrl),
-    audio: parseBooleanParameter(qs.audio),
-    audioBitRate: parseStringParameter(qs.audioBitRate),
-    audioCodecType: parseSpecifiedStringParameter(qs.audioCodecType, AUDIO_CODEC_TYPES),
-    audioStreamingLanguageCode: parseStringParameter(qs.audioStreamingLanguageCode),
-    autoGainControl: parseSpecifiedStringParameter(qs.autoGainControl, AUTO_GAIN_CONTROLS),
-    bundleId: parseStringParameter(qs.bundleId),
-    channelId: parseStringParameter(qs.channelId),
-    clientId: parseStringParameter(qs.clientId),
-    googCpuOveruseDetection: parseBooleanParameter(qs.googCpuOveruseDetection),
-    debug: parseBooleanParameter(qs.debug),
-    debugType: parseSpecifiedStringParameter(qs.debugType, DEBUG_TYPES),
-    displayResolution: parseStringParameter(qs.displayResolution),
-    echoCancellation: parseSpecifiedStringParameter(qs.echoCancellation, ECHO_CANCELLATIONS),
+    apiUrl: parseStringParameter(searchParams, 'apiUrl'),
+    audio: parseBooleanParameter(searchParams, 'audio'),
+    audioBitRate: parseStringParameter(searchParams, 'audioBitRate'),
+    audioCodecType: parseSpecifiedStringParameter(
+      searchParams,
+      'audioCodecType',
+      AUDIO_CODEC_TYPES,
+    ),
+    audioStreamingLanguageCode: parseStringParameter(searchParams, 'audioStreamingLanguageCode'),
+    autoGainControl: parseSpecifiedStringParameter(
+      searchParams,
+      'autoGainControl',
+      AUTO_GAIN_CONTROLS,
+    ),
+    bundleId: parseStringParameter(searchParams, 'bundleId'),
+    channelId: parseStringParameter(searchParams, 'channelId'),
+    clientId: parseStringParameter(searchParams, 'clientId'),
+    googCpuOveruseDetection: parseBooleanParameter(searchParams, 'googCpuOveruseDetection'),
+    debug: parseBooleanParameter(searchParams, 'debug'),
+    debugType: parseSpecifiedStringParameter(searchParams, 'debugType', DEBUG_TYPES),
+    displayResolution: parseStringParameter(searchParams, 'displayResolution'),
+    echoCancellation: parseSpecifiedStringParameter(
+      searchParams,
+      'echoCancellation',
+      ECHO_CANCELLATIONS,
+    ),
     echoCancellationType: parseSpecifiedStringParameter(
-      qs.echoCancellationType,
+      searchParams,
+      'echoCancellationType',
       ECHO_CANCELLATION_TYPES,
     ),
-    noiseSuppression: parseSpecifiedStringParameter(qs.noiseSuppression, NOISE_SUPPRESSIONS),
-    facingMode: parseSpecifiedStringParameter(qs.facingMode, FACING_MODES),
-    fakeVolume: parseStringParameter(qs.fakeVolume),
-    frameRate: parseStringParameter(qs.frameRate),
-    mediaStats: parseBooleanParameter(qs.mediaStats),
-    mediaType: parseSpecifiedStringParameter(qs.mediaType, MEDIA_TYPES),
-    metadata: parseStringParameter(qs.metadata),
-    showStats: parseBooleanParameter(qs.showStats),
-    signalingNotifyMetadata: parseStringParameter(qs.signalingNotifyMetadata),
+    noiseSuppression: parseSpecifiedStringParameter(
+      searchParams,
+      'noiseSuppression',
+      NOISE_SUPPRESSIONS,
+    ),
+    facingMode: parseSpecifiedStringParameter(searchParams, 'facingMode', FACING_MODES),
+    fakeVolume: parseStringParameter(searchParams, 'fakeVolume'),
+    frameRate: parseStringParameter(searchParams, 'frameRate'),
+    mediaStats: parseBooleanParameter(searchParams, 'mediaStats'),
+    mediaType: parseSpecifiedStringParameter(searchParams, 'mediaType', MEDIA_TYPES),
+    metadata: parseStringParameter(searchParams, 'metadata'),
+    showStats: parseBooleanParameter(searchParams, 'showStats'),
+    signalingNotifyMetadata: parseStringParameter(searchParams, 'signalingNotifyMetadata'),
     signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
       ? signalingUrlCandidates
       : undefined,
-    forwardingFilters: parseStringParameter(qs.forwardingFilters),
-    forwardingFilter: parseStringParameter(qs.forwardingFilter),
-    simulcast: parseSpecifiedStringParameter(qs.simulcast, SIMULCAST),
-    simulcastRid: parseSpecifiedStringParameter(qs.simulcastRid, SIMULCAST_RID),
-    spotlight: parseSpecifiedStringParameter(qs.spotlight, SPOTLIGHT),
-    spotlightNumber: parseSpecifiedStringParameter(qs.spotlightNumber, SPOTLIGHT_NUMBERS),
-    spotlightFocusRid: parseSpecifiedStringParameter(qs.spotlightFocusRid, SPOTLIGHT_FOCUS_RIDS),
-    spotlightUnfocusRid: parseSpecifiedStringParameter(
-      qs.spotlightUnfocusRid,
+    forwardingFilters: parseStringParameter(searchParams, 'forwardingFilters'),
+    forwardingFilter: parseStringParameter(searchParams, 'forwardingFilter'),
+    simulcast: parseSpecifiedStringParameter(searchParams, 'simulcast', SIMULCAST),
+    simulcastRid: parseSpecifiedStringParameter(searchParams, 'simulcastRid', SIMULCAST_RID),
+    spotlight: parseSpecifiedStringParameter(searchParams, 'spotlight', SPOTLIGHT),
+    spotlightNumber: parseSpecifiedStringParameter(
+      searchParams,
+      'spotlightNumber',
+      SPOTLIGHT_NUMBERS,
+    ),
+    spotlightFocusRid: parseSpecifiedStringParameter(
+      searchParams,
+      'spotlightFocusRid',
       SPOTLIGHT_FOCUS_RIDS,
     ),
-    resolution: parseStringParameter(qs.resolution),
-    video: parseBooleanParameter(qs.video),
-    videoBitRate: parseStringParameter(qs.videoBitRate),
-    videoCodecType: parseSpecifiedStringParameter(qs.videoCodecType, VIDEO_CODEC_TYPES),
-    videoVP9Params: parseStringParameter(qs.videoVP9Params),
-    videoH264Params: parseStringParameter(qs.videoH264Params),
-    videoH265Params: parseStringParameter(qs.videoH265Params),
-    videoAV1Params: parseStringParameter(qs.videoAV1Params),
-    audioInput: parseStringParameter(qs.audioInput),
-    videoInput: parseStringParameter(qs.videoInput),
-    audioOutput: parseStringParameter(qs.audioOutput),
-    mute: parseBooleanParameter(qs.mute),
+    spotlightUnfocusRid: parseSpecifiedStringParameter(
+      searchParams,
+      'spotlightUnfocusRid',
+      SPOTLIGHT_FOCUS_RIDS,
+    ),
+    resolution: parseStringParameter(searchParams, 'resolution'),
+    video: parseBooleanParameter(searchParams, 'video'),
+    videoBitRate: parseStringParameter(searchParams, 'videoBitRate'),
+    videoCodecType: parseSpecifiedStringParameter(
+      searchParams,
+      'videoCodecType',
+      VIDEO_CODEC_TYPES,
+    ),
+    videoVP9Params: parseStringParameter(searchParams, 'videoVP9Params'),
+    videoH264Params: parseStringParameter(searchParams, 'videoH264Params'),
+    videoH265Params: parseStringParameter(searchParams, 'videoH265Params'),
+    videoAV1Params: parseStringParameter(searchParams, 'videoAV1Params'),
+    audioInput: parseStringParameter(searchParams, 'audioInput'),
+    videoInput: parseStringParameter(searchParams, 'videoInput'),
+    audioOutput: parseStringParameter(searchParams, 'audioOutput'),
+    mute: parseBooleanParameter(searchParams, 'mute'),
     dataChannelSignaling: parseSpecifiedStringParameter(
-      qs.dataChannelSignaling,
+      searchParams,
+      'dataChannelSignaling',
       DATA_CHANNEL_SIGNALING,
     ),
     ignoreDisconnectWebSocket: parseSpecifiedStringParameter(
-      qs.ignoreDisconnectWebSocket,
+      searchParams,
+      'ignoreDisconnectWebSocket',
       IGNORE_DISCONNECT_WEBSOCKET,
     ),
-    micDevice: parseBooleanParameter(qs.micDevice),
-    cameraDevice: parseBooleanParameter(qs.cameraDevice),
-    audioTrack: parseBooleanParameter(qs.audioTrack),
-    videoTrack: parseBooleanParameter(qs.videoTrack),
-    dataChannels: parseStringParameter(qs.dataChannels),
-    reconnect: parseBooleanParameter(qs.reconnect),
-    audioContentHint: parseSpecifiedStringParameter(qs.audioContentHint, AUDIO_CONTENT_HINTS),
-    videoContentHint: parseSpecifiedStringParameter(qs.videoContentHint, VIDEO_CONTENT_HINTS),
-    aspectRatio: parseSpecifiedStringParameter(qs.aspectRatio, ASPECT_RATIO_TYPES),
-    resizeMode: parseSpecifiedStringParameter(qs.resizeMode, RESIZE_MODE_TYPES),
-    blurRadius: parseSpecifiedStringParameter(qs.blurRadius, BLUR_RADIUS),
-    lightAdjustment: parseSpecifiedStringParameter(qs.lightAdjustment, LIGHT_ADJUSTMENT),
-    mediaProcessorsNoiseSuppression: parseBooleanParameter(qs.mediaProcessorsNoiseSuppression),
-    role: parseSpecifiedStringParameter(qs.role, ROLES),
+    micDevice: parseBooleanParameter(searchParams, 'micDevice'),
+    cameraDevice: parseBooleanParameter(searchParams, 'cameraDevice'),
+    audioTrack: parseBooleanParameter(searchParams, 'audioTrack'),
+    videoTrack: parseBooleanParameter(searchParams, 'videoTrack'),
+    dataChannels: parseStringParameter(searchParams, 'dataChannels'),
+    reconnect: parseBooleanParameter(searchParams, 'reconnect'),
+    audioContentHint: parseSpecifiedStringParameter(
+      searchParams,
+      'audioContentHint',
+      AUDIO_CONTENT_HINTS,
+    ),
+    videoContentHint: parseSpecifiedStringParameter(
+      searchParams,
+      'videoContentHint',
+      VIDEO_CONTENT_HINTS,
+    ),
+    aspectRatio: parseSpecifiedStringParameter(searchParams, 'aspectRatio', ASPECT_RATIO_TYPES),
+    resizeMode: parseSpecifiedStringParameter(searchParams, 'resizeMode', RESIZE_MODE_TYPES),
+    blurRadius: parseSpecifiedStringParameter(searchParams, 'blurRadius', BLUR_RADIUS),
+    lightAdjustment: parseSpecifiedStringParameter(
+      searchParams,
+      'lightAdjustment',
+      LIGHT_ADJUSTMENT,
+    ),
+    mediaProcessorsNoiseSuppression: parseBooleanParameter(
+      searchParams,
+      'mediaProcessorsNoiseSuppression',
+    ),
+    role: parseSpecifiedStringParameter(searchParams, 'role', ROLES),
   }
+
   // undefined の項目を削除する
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
     if (result[key] === undefined) {
