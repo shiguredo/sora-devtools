@@ -47,7 +47,7 @@
     "@biomejs/biome": "1.9.4",
     "@fast-check/vitest": "0.1.5",
     "@playwright/test": "1.50.1",
-    "@types/node": "22.13.8",
+    "@types/node": "22.13.9",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@types/react-redux": "7.1.34",
