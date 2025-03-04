@@ -8,7 +8,6 @@ import { DebugPane } from '@/components/DebugPane'
 import { DevtoolsPane } from '@/components/DevtoolsPane'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
-import { MediacaptureRegionTarget } from '@/components/MediacaptureRegionTarget'
 
 const Devtools: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -22,7 +21,6 @@ const Devtools: React.FC = () => {
   }, [dispatch])
   return (
     <>
-      <MediacaptureRegionTarget />
       <Header />
       <main>
         <div className="container">

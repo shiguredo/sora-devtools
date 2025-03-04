@@ -44,7 +44,6 @@ export const MEDIA_TYPES = [
   'getUserMedia',
   'getDisplayMedia',
   'fakeMedia',
-  'mediacaptureRegion',
   'mp4Media',
 ] as const
 

@@ -157,11 +157,6 @@ test("should handle 'ignoreDisconnectWebSocket'", async () => {
 
 test("should handle 'mediaType'", async () => {
   for (const value of MEDIA_TYPES) {
-    // TODO(v): mediacapture は setInitialParameter に対応していない場合の処理が含まれている
-    //          そのためテスト時に判定が getUserMedia になってしまうのでスキップする
-    if (value === 'mediacaptureRegion') {
-      continue
-    }
     setLocationSearch({ mediaType: value })
     await store.dispatch(setInitialParameter())
     assert.equal(store.getState().mediaType, value)
