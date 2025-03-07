@@ -13,7 +13,7 @@ export default defineConfig({
       },
       output: {
         manualChunks: {
-          react: ['react', 'react-dom', 'react-bootstrap', 'react-draggable', 'react-redux'],
+          react: ['react', 'react-dom', 'react-bootstrap', 'react-redux'],
           redux: ['@reduxjs/toolkit', 'redux', 'redux-logger', 'redux-thunk'],
           'light-adjustment': ['@shiguredo/light-adjustment'],
           'mp4-media-stream': ['@shiguredo/mp4-media-stream'],
