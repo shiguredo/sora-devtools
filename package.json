@@ -36,7 +36,6 @@
     "react": "19.0.0",
     "react-bootstrap": "2.10.9",
     "react-dom": "19.0.0",
-    "react-draggable": "4.4.6",
     "react-redux": "9.2.0",
     "redux": "5.0.1",
     "redux-logger": "3.0.6",
@@ -60,7 +59,7 @@
     "vite": "6.2.0",
     "vitest": "3.0.7"
   },
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.6.1",
   "engines": {
     "node": ">=22.11"
   }
