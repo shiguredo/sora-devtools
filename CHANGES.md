@@ -11,6 +11,9 @@
 
 ## develop
 
+- [CHANGE] Region Capture 機能を削除する
+  - 将来的に別の形で復活させる可能性はあり
+  - @voluntas
 - [CHANGE] テキストボックスにオーバーレイしたボタンに背景色をつける
   - `pretty format` と `load template` のオーバーレイボタン
   - @tnamao
