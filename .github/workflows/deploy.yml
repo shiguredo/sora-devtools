@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: "22"
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       # - uses: actions/configure-pages@v5
       #   with:
       #     static_site_generator: next
