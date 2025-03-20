@@ -62,5 +62,11 @@
   "packageManager": "pnpm@10.6.1",
   "engines": {
     "node": ">=22.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "esbuild"
+    ]
   }
 }
