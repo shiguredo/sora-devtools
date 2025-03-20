@@ -11,7 +11,7 @@
 
 ## develop
 
-- [CHANGE] react-draggable の依存を削除
+- [CHANGE] `react-draggable` の依存を削除
   - Region Capture 機能を実現するために利用していたため
   - @voluntas
 - [CHANGE] Region Capture 機能を削除する
@@ -22,9 +22,11 @@
   - @tnamao
 - [CHANGE] multistream 項目を削除する
   - @voluntas
-- [CHANGE] 対応 Node.js のバージョンを 22.11 以上に上げる
+- [CHANGE] 対応 Node.js のバージョンを 22 以上にする
   - @voluntas
 - [CHANGE] index.html にあったリンク集を削除する
+  - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.2 に上げる
   - @voluntas
 
 ### misc
