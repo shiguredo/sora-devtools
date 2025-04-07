@@ -26,7 +26,7 @@
   - @voluntas
 - [CHANGE] index.html にあったリンク集を削除する
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.2 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.4 に上げる
   - @voluntas
 
 ### misc
