@@ -600,8 +600,7 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['mediaProcessorsNoiseSuppression']>,
     ) => {
       if (action.payload && state.noiseSuppressionProcessor === null) {
-        const assetsPath = import.meta.env.VITE_NOISE_SUPPRESSION_ASSETS_PATH || ''
-        const processor = new NoiseSuppressionProcessor(assetsPath)
+        const processor = new NoiseSuppressionProcessor()
         state.noiseSuppressionProcessor = processor
       }
       state.mediaProcessorsNoiseSuppression = action.payload
