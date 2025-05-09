@@ -1,7 +1,3 @@
-import {
-  type LightAdjustmentProcessorOptions,
-  SelfieSegmentationFocusMask,
-} from '@shiguredo/light-adjustment'
 import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from 'sora-js-sdk'
 
 import {
@@ -308,28 +304,6 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
       return 15
     default:
       return 0
-  }
-}
-
-// devtools の lightAdjustment 文字列に対するオプションを返す
-export function getLightAdjustmentOptions(
-  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number],
-): LightAdjustmentProcessorOptions {
-  switch (lightAdjustment) {
-    case 'weak':
-      return { adjustmentLevel: 30, sharpnessLevel: 0 }
-    case 'medium': {
-      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
-      const focusMask = new SelfieSegmentationFocusMask(assetsPath)
-      return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask }
-    }
-    case 'strong': {
-      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
-      const focusMask = new SelfieSegmentationFocusMask(assetsPath)
-      return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask }
-    }
-    default:
-      return {}
   }
 }
 

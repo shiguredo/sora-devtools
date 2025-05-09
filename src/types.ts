@@ -1,4 +1,3 @@
-import type { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import type { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import type { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -154,7 +153,6 @@ export type SoraDevtoolsState = {
   aspectRatio: (typeof ASPECT_RATIO_TYPES)[number]
   resizeMode: (typeof RESIZE_MODE_TYPES)[number]
   lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number]
-  lightAdjustmentProcessor: LightAdjustmentProcessor | null
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null
   facingMode: (typeof FACING_MODES)[number]

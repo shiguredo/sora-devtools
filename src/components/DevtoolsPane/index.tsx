@@ -35,7 +35,6 @@ import { FakeVolumeForm } from './FakeVolumeForm.tsx'
 import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
 import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
 import { FrameRateForm } from './FrameRateForm.tsx'
-import { LightAdjustmentForm } from './LightAdjustmentForm.tsx'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm.tsx'
 import { MediaStatsForm } from './MediaStatsForm.tsx'
 import { MediaTypeForm } from './MediaTypeForm.tsx'
@@ -389,9 +388,6 @@ const RowMediaOptions: React.FC = () => {
             </Col>
             <Col className="col-auto">
               <BlurRadiusForm />
-            </Col>
-            <Col className="col-auto">
-              <LightAdjustmentForm />
             </Col>
             <Col className="col-auto">
               <FacingModeForm />
