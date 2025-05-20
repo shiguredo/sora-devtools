@@ -18,8 +18,8 @@ importers:
         specifier: 2024.3.0
         version: 2024.3.0
       '@shiguredo/noise-suppression':
-        specifier: 2025.1.0-canary.0
-        version: 2025.1.0-canary.0
+        specifier: 2022.4.2
+        version: 2022.4.2
       '@shiguredo/virtual-background':
         specifier: 2023.2.0
         version: 2023.2.0
@@ -591,8 +591,8 @@ packages:
   '@shiguredo/mp4-media-stream@2024.3.0':
     resolution: {integrity: sha512-COXSg2by2oMmYdXRDwBSfBqpj3udXN7DN7Bp72ZSSsahceaCTEsJg72dxOYzPj6Vs5mEuNzSell2GGsMyVUr1w==}
 
-  '@shiguredo/noise-suppression@2025.1.0-canary.0':
-    resolution: {integrity: sha512-N2xv4QYQx0U/sxmJPISx9caACPLh0nd53GPgcsO1o46u1Eswy1MVSJR5z2XrFBpAoj4p3Rmlgok9O0GQrmQ9Wg==}
+  '@shiguredo/noise-suppression@2022.4.2':
+    resolution: {integrity: sha512-cgNgDcqiamc2VDpWYVjZXEIGwEio51QvKcdipf452gTESie1PR6rqZaKVwHxuABgsudKGq/1FrBlui9KCdFAtg==}
 
   '@shiguredo/virtual-background@2023.2.0':
     resolution: {integrity: sha512-nvJAsf29ThXMN7tEvlvZ45MeIoXW2uoJxvBwsesYInjoSy0RASQr7qxrLMglX2yyztOeYZqJknQBttjJTGH/QA==}
@@ -1650,7 +1650,9 @@ snapshots:
 
   '@shiguredo/mp4-media-stream@2024.3.0': {}
 
-  '@shiguredo/noise-suppression@2025.1.0-canary.0': {}
+  '@shiguredo/noise-suppression@2022.4.2':
+    dependencies:
+      '@types/dom-mediacapture-transform': 0.1.11
 
   '@shiguredo/virtual-background@2023.2.0':
     dependencies:
