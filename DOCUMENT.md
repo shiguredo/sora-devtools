@@ -187,10 +187,6 @@ MediaTrackConstraints の resizeMode を指定します。
 
 shiguredo Media Processors の背景ぼかしを使用するかどうか指定します。
 
-## lightAdjustment
-
-shiguredo Media Processors のライト調整を使用するかどうかを指定します。
-
 ## facingMode
 
 モバイルカメラのフロント/バックを切り替えます。
