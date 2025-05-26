@@ -10,7 +10,6 @@ import {
   ECHO_CANCELLATIONS,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
-  LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
@@ -218,7 +217,6 @@ test('すべての特定の文字列リストからの値を解析する', () =>
     spotlightUnfocusRid: SPOTLIGHT_FOCUS_RIDS[0],
     facingMode: FACING_MODES[0],
     blurRadius: BLUR_RADIUS[0],
-    lightAdjustment: LIGHT_ADJUSTMENT[0],
   }
 
   const searchParams = createSearchParams(params)

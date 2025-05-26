@@ -14,7 +14,6 @@ import {
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
-  LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
@@ -77,7 +76,6 @@ const spotlightNumberArb = fc.constantFrom(...SPOTLIGHT_NUMBERS)
 const spotlightFocusRidArb = fc.constantFrom(...SPOTLIGHT_FOCUS_RIDS)
 const facingModeArb = fc.constantFrom(...FACING_MODES)
 const blurRadiusArb = fc.constantFrom(...BLUR_RADIUS)
-const lightAdjustmentArb = fc.constantFrom(...LIGHT_ADJUSTMENT)
 
 // signalingUrlCandidates 用の文字列配列の Arbitrary
 const signalingUrlCandidatesArb = fc.array(fc.webUrl())
@@ -151,7 +149,6 @@ const parametersArb = fc.record({
   spotlightUnfocusRid: fc.option(spotlightFocusRidArb, { nil: undefined }),
   facingMode: fc.option(facingModeArb, { nil: undefined }),
   blurRadius: fc.option(blurRadiusArb, { nil: undefined }),
-  lightAdjustment: fc.option(lightAdjustmentArb, { nil: undefined }),
 
   // Special parameters
   signalingUrlCandidates: fc.option(signalingUrlCandidatesArb, { nil: undefined }),

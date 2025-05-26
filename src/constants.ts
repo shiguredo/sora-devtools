@@ -40,12 +40,7 @@ export const ECHO_CANCELLATIONS = ['', 'true', 'false'] as const
 
 export const ECHO_CANCELLATION_TYPES = ['', 'browser', 'system'] as const
 
-export const MEDIA_TYPES = [
-  'getUserMedia',
-  'getDisplayMedia',
-  'fakeMedia',
-  'mp4Media',
-] as const
+export const MEDIA_TYPES = ['getUserMedia', 'getDisplayMedia', 'fakeMedia', 'mp4Media'] as const
 
 export const SPOTLIGHT_NUMBERS = ['', '1', '2', '3', '4', '5', '6', '7', '8'] as const
 
@@ -77,8 +72,6 @@ export const ASPECT_RATIO_TYPES = ['', '4:3', '16:9', '21:9'] as const
 export const RESIZE_MODE_TYPES = ['', 'none', 'crop-and-scale'] as const
 
 export const BLUR_RADIUS = ['', 'weak', 'medium', 'strong'] as const
-
-export const LIGHT_ADJUSTMENT = ['', 'weak', 'medium', 'strong'] as const
 
 export const CONNECTION_STATUS = [
   'initializing',
