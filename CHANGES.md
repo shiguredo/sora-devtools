@@ -30,6 +30,9 @@
   - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.4 に上げる
   - @voluntas
+- [CHANGE] `@shiguredo/light-adjustment` の依存を削除
+  - @voluntas
+  - @tnamao
 
 ### misc
 
