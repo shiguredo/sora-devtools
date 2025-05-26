@@ -140,9 +140,6 @@
   "blurRadius": {
     "description": "shiguredo Media Processors の背景ぼかしを使用するかどうか指定します。"
   },
-  "lightAdjustment": {
-    "description": "shiguredo Media Processors のライト調整を使用するかどうか指定します。"
-  },
   "audioInput": {
     "description": "音声入力を指定します。"
   },
