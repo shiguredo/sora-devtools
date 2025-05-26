@@ -367,7 +367,6 @@ export const copyURL = () => {
       aspectRatio: state.aspectRatio !== '' ? state.aspectRatio : undefined,
       resizeMode: state.resizeMode !== '' ? state.resizeMode : undefined,
       blurRadius: state.blurRadius !== '' ? state.blurRadius : undefined,
-      lightAdjustment: state.lightAdjustment !== '' ? state.lightAdjustment : undefined,
       simulcast: state.simulcast !== '' ? state.simulcast : undefined,
       simulcastRid: state.simulcastRid !== '' ? state.simulcastRid : undefined,
       spotlight: state.spotlight !== '' ? state.spotlight : undefined,

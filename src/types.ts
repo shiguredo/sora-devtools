@@ -23,7 +23,6 @@ import type {
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
-  LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
@@ -152,7 +151,6 @@ export type SoraDevtoolsState = {
   apiUrl: null | string
   aspectRatio: (typeof ASPECT_RATIO_TYPES)[number]
   resizeMode: (typeof RESIZE_MODE_TYPES)[number]
-  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number]
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null
   facingMode: (typeof FACING_MODES)[number]
@@ -382,8 +380,6 @@ export type DownloadReportParameters = Omit<
   | 'debugType'
   | 'fakeContents'
   | 'focusedSpotlightConnectionIds'
-  | 'lightAdjustment'
-  | 'lightAdjustmentProcessor'
   | 'localTestMediaStream'
   | 'logMessages'
   | 'mediaProcessorsNoiseSuppression'

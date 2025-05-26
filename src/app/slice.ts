@@ -132,7 +132,6 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: '',
   resizeMode: '',
-  lightAdjustment: '',
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: '',

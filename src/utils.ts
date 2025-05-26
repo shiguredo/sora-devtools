@@ -12,7 +12,6 @@ import {
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
-  LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
@@ -224,11 +223,6 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     aspectRatio: parseSpecifiedStringParameter(searchParams, 'aspectRatio', ASPECT_RATIO_TYPES),
     resizeMode: parseSpecifiedStringParameter(searchParams, 'resizeMode', RESIZE_MODE_TYPES),
     blurRadius: parseSpecifiedStringParameter(searchParams, 'blurRadius', BLUR_RADIUS),
-    lightAdjustment: parseSpecifiedStringParameter(
-      searchParams,
-      'lightAdjustment',
-      LIGHT_ADJUSTMENT,
-    ),
     mediaProcessorsNoiseSuppression: parseBooleanParameter(
       searchParams,
       'mediaProcessorsNoiseSuppression',
