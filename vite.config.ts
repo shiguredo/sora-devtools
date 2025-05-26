@@ -15,7 +15,6 @@ export default defineConfig({
         manualChunks: {
           react: ['react', 'react-dom', 'react-bootstrap', 'react-redux'],
           redux: ['@reduxjs/toolkit', 'redux', 'redux-logger', 'redux-thunk'],
-          'light-adjustment': ['@shiguredo/light-adjustment'],
           'mp4-media-stream': ['@shiguredo/mp4-media-stream'],
           'noise-suppression': ['@shiguredo/noise-suppression'],
           'virtual-background': ['@shiguredo/virtual-background'],

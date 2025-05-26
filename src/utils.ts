@@ -1,7 +1,3 @@
-import {
-  type LightAdjustmentProcessorOptions,
-  SelfieSegmentationFocusMask,
-} from '@shiguredo/light-adjustment'
 import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from 'sora-js-sdk'
 
 import {
@@ -16,7 +12,6 @@ import {
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
-  LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
@@ -228,11 +223,6 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     aspectRatio: parseSpecifiedStringParameter(searchParams, 'aspectRatio', ASPECT_RATIO_TYPES),
     resizeMode: parseSpecifiedStringParameter(searchParams, 'resizeMode', RESIZE_MODE_TYPES),
     blurRadius: parseSpecifiedStringParameter(searchParams, 'blurRadius', BLUR_RADIUS),
-    lightAdjustment: parseSpecifiedStringParameter(
-      searchParams,
-      'lightAdjustment',
-      LIGHT_ADJUSTMENT,
-    ),
     mediaProcessorsNoiseSuppression: parseBooleanParameter(
       searchParams,
       'mediaProcessorsNoiseSuppression',
@@ -308,28 +298,6 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
       return 15
     default:
       return 0
-  }
-}
-
-// devtools の lightAdjustment 文字列に対するオプションを返す
-export function getLightAdjustmentOptions(
-  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number],
-): LightAdjustmentProcessorOptions {
-  switch (lightAdjustment) {
-    case 'weak':
-      return { adjustmentLevel: 30, sharpnessLevel: 0 }
-    case 'medium': {
-      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
-      const focusMask = new SelfieSegmentationFocusMask(assetsPath)
-      return { adjustmentLevel: 50, sharpnessLevel: 10, focusMask }
-    }
-    case 'strong': {
-      const assetsPath = import.meta.env.VITE_LIGHT_ADJUSTMENT_ASSETS_PATH || ''
-      const focusMask = new SelfieSegmentationFocusMask(assetsPath)
-      return { adjustmentLevel: 70, sharpnessLevel: 20, minIntensity: 10, focusMask }
-    }
-    default:
-      return {}
   }
 }
 

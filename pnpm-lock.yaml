@@ -11,9 +11,6 @@ importers:
       '@reduxjs/toolkit':
         specifier: 2.8.2
         version: 2.8.2(react-redux@9.2.0(@types/react@19.1.4)(react@19.1.0)(redux@5.0.1))(react@19.1.0)
-      '@shiguredo/light-adjustment':
-        specifier: 2024.1.0
-        version: 2024.1.0
       '@shiguredo/mp4-media-stream':
         specifier: 2024.3.0
         version: 2024.3.0
@@ -583,10 +580,6 @@ packages:
     resolution: {integrity: sha512-h1J+Yzjo/X+0EAvR2kIXJDuTuyT7drc+t2ALY0nIcGPbTatNOf0VWdhEA2Z4AAjv6X1NJV7SYo5oCTYRJhSlVA==}
     cpu: [x64]
     os: [win32]
-
-  '@shiguredo/light-adjustment@2024.1.0':
-    resolution: {integrity: sha512-s1kRIoC9RxLrymkz8YQiHo1ngUmzcMff8hVXgYGXeo5U4HUgToBJWbpT5JrITXZGSmAihRpMGk74YrlIcgHrow==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@shiguredo/mp4-media-stream@2024.3.0':
     resolution: {integrity: sha512-COXSg2by2oMmYdXRDwBSfBqpj3udXN7DN7Bp72ZSSsahceaCTEsJg72dxOYzPj6Vs5mEuNzSell2GGsMyVUr1w==}
@@ -1645,8 +1638,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.41.0':
     optional: true
-
-  '@shiguredo/light-adjustment@2024.1.0': {}
 
   '@shiguredo/mp4-media-stream@2024.3.0': {}
 

@@ -28,7 +28,6 @@ export const store = configureStore({
           'notifyMessages',
           'pushMessages',
           'signalingMessages',
-          'lightAdjustmentProcessor',
           'virtualBackgroundProcessor',
           'noiseSuppressionProcessor',
         ],

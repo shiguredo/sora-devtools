@@ -35,7 +35,6 @@ import { FakeVolumeForm } from './FakeVolumeForm.tsx'
 import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
 import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
 import { FrameRateForm } from './FrameRateForm.tsx'
-import { LightAdjustmentForm } from './LightAdjustmentForm.tsx'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm.tsx'
 import { MediaStatsForm } from './MediaStatsForm.tsx'
 import { MediaTypeForm } from './MediaTypeForm.tsx'
@@ -313,7 +312,6 @@ const RowMediaOptions: React.FC = () => {
   const resolution = useAppSelector((state) => state.resolution)
   const frameRate = useAppSelector((state) => state.frameRate)
   const blurRadius = useAppSelector((state) => state.blurRadius)
-  const lightAdjustment = useAppSelector((state) => state.lightAdjustment)
   const mediaProcessorsNoiseSuppression = useAppSelector(
     (state) => state.mediaProcessorsNoiseSuppression,
   )
@@ -327,7 +325,6 @@ const RowMediaOptions: React.FC = () => {
     resolution !== '',
     frameRate !== '',
     blurRadius !== '',
-    lightAdjustment !== '',
     mediaProcessorsNoiseSuppression,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
@@ -389,9 +386,6 @@ const RowMediaOptions: React.FC = () => {
             </Col>
             <Col className="col-auto">
               <BlurRadiusForm />
-            </Col>
-            <Col className="col-auto">
-              <LightAdjustmentForm />
             </Col>
             <Col className="col-auto">
               <FacingModeForm />
