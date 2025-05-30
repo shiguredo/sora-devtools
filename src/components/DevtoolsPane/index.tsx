@@ -233,6 +233,9 @@ const RowSignalingOptions: React.FC = () => {
 }
 
 const RowAdvancedSignalingOptions: React.FC = () => {
+  const role = useAppSelector((state) => state.role)
+  const showSenderParams = role !== 'recvonly'
+  const showReceiverParams = role !== 'sendonly'
   const [collapsed, setCollapsed] = useState(true)
   const enableAudioStreamingLanguageCode = useAppSelector(
     (state) => state.enabledAudioStreamingLanguageCode,
@@ -242,14 +245,20 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
   const forceStereoOutput = useAppSelector((state) => state.forceStereoOutput)
-  const enabledOptions = [
-    enableAudioStreamingLanguageCode,
-    enabledVideoVP9Params,
-    enabledVideoH264Params,
-    enabledVideoH265Params,
-    enabledVideoAV1Params,
-    forceStereoOutput,
-  ].some((e) => e)
+  const showOptions = [] as boolean[]
+  if (showSenderParams) {
+    showOptions.push(
+      enableAudioStreamingLanguageCode,
+      enabledVideoVP9Params,
+      enabledVideoH264Params,
+      enabledVideoH265Params,
+      enabledVideoAV1Params,
+    )
+  }
+  if (showReceiverParams) {
+    showOptions.push(forceStereoOutput)
+  }
+  const enabledOptions = showOptions.some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
     linkClassNames.push('collapsed')
@@ -271,12 +280,16 @@ const RowAdvancedSignalingOptions: React.FC = () => {
       </Col>
       <Collapse in={!collapsed}>
         <div>
-          <AudioStreamingLanguageCodeForm />
-          <VideoVP9ParamsForm />
-          <VideoAV1ParamsForm />
-          <VideoH264ParamsForm />
-          <VideoH265ParamsForm />
-          <ForceStereoOutputForm />
+          {showSenderParams && (
+            <>
+              <AudioStreamingLanguageCodeForm />
+              <VideoVP9ParamsForm />
+              <VideoAV1ParamsForm />
+              <VideoH264ParamsForm />
+              <VideoH265ParamsForm />
+            </>
+          )}
+          {showReceiverParams && <ForceStereoOutputForm />}
         </div>
       </Collapse>
     </Row>
@@ -475,7 +488,6 @@ export const RowMediaDevices: React.FC = () => {
 export const DevtoolsPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug)
   const role = useAppSelector((state) => state.role)
-  const showAdvancedSignalingForms = role !== 'recvonly'
   return (
     <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />
@@ -485,7 +497,7 @@ export const DevtoolsPane: React.FC = () => {
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
-      {showAdvancedSignalingForms && <RowAdvancedSignalingOptions />}
+      <RowAdvancedSignalingOptions />
       <hr className="hr-form" />
       {role !== 'recvonly' ? (
         <>
