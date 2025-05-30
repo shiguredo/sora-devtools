@@ -767,6 +767,11 @@ export function createConnectOptions(
         connectionOptionsState.audioStreamingLanguageCode
     }
   }
+  // forceStereoOutput
+  // role が sendrecv か recvonly の場合は forceStereoOutput の設定を反映する
+  if (connectionOptionsState.role !== 'sendonly' && connectionOptionsState.forceStereoOutput) {
+    connectionOptions.forceStereoOutput = connectionOptionsState.forceStereoOutput
+  }
   // spotlight
   const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight)
   if (parsedSpotlight !== undefined) {

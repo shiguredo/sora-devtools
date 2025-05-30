@@ -1003,6 +1003,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoH264Params: state.videoH264Params,
     videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
+    forceStereoOutput: state.forceStereoOutput,
     role: state.role,
   }
 }

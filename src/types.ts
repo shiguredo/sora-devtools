@@ -367,6 +367,7 @@ export type ConnectionOptionsState = Pick<
   | 'videoH264Params'
   | 'videoH265Params'
   | 'videoAV1Params'
+  | 'forceStereoOutput'
   | 'role'
 >
 
