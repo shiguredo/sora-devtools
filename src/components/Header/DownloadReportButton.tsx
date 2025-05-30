@@ -46,6 +46,7 @@ function createDownloadReport(): DownloadReport {
     enabledVideoAV1Params: state.enabledVideoAV1Params,
     facingMode: state.facingMode,
     fakeVolume: state.fakeVolume,
+    forceStereoOutput: state.forceStereoOutput,
     forwardingFilters: state.forwardingFilters,
     forwardingFilter: state.forwardingFilter,
     frameRate: state.frameRate,
