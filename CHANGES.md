@@ -33,6 +33,9 @@
 - [CHANGE] `@shiguredo/light-adjustment` の依存を削除
   - @voluntas
   - @tnamao
+- [CHANGE] `forceStereoOutput` の設定を追加する
+  - 受信した音声を出力する際にステレオを強制する
+  - @tnamao
 
 ### misc
 

@@ -190,6 +190,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     videoH264Params: parseStringParameter(searchParams, 'videoH264Params'),
     videoH265Params: parseStringParameter(searchParams, 'videoH265Params'),
     videoAV1Params: parseStringParameter(searchParams, 'videoAV1Params'),
+    forceStereoOutput: parseBooleanParameter(searchParams, 'forceStereoOutput'),
     audioInput: parseStringParameter(searchParams, 'audioInput'),
     videoInput: parseStringParameter(searchParams, 'videoInput'),
     audioOutput: parseStringParameter(searchParams, 'audioOutput'),

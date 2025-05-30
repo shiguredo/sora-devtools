@@ -32,6 +32,7 @@ import { EchoCancellationForm } from './EchoCancellationForm.tsx'
 import { EchoCancellationTypeForm } from './EchoCancellationTypeForm.tsx'
 import { FacingModeForm } from './FacingModeForm.tsx'
 import { FakeVolumeForm } from './FakeVolumeForm.tsx'
+import { ForceStereoOutputForm } from './ForceStereoOutputForm.tsx'
 import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
 import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
 import { FrameRateForm } from './FrameRateForm.tsx'
@@ -240,12 +241,14 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
   const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
+  const forceStereoOutput = useAppSelector((state) => state.forceStereoOutput)
   const enabledOptions = [
     enableAudioStreamingLanguageCode,
     enabledVideoVP9Params,
     enabledVideoH264Params,
     enabledVideoH265Params,
     enabledVideoAV1Params,
+    forceStereoOutput,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
@@ -273,6 +276,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
           <VideoAV1ParamsForm />
           <VideoH264ParamsForm />
           <VideoH265ParamsForm />
+          <ForceStereoOutputForm />
         </div>
       </Collapse>
     </Row>

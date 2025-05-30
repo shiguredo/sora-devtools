@@ -65,6 +65,7 @@ const initialState: SoraDevtoolsState = {
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
+  forceStereoOutput: false,
   fakeVolume: '0',
   fakeContents: {
     worker: null,
@@ -615,6 +616,12 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['enabledAudioStreamingLanguageCode']>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload
+    },
+    setForceStereoOutput: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['forceStereoOutput']>,
+    ) => {
+      state.forceStereoOutput = action.payload
     },
   },
 })

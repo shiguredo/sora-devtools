@@ -88,6 +88,7 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null
   }
   fakeVolume: string
+  forceStereoOutput: boolean
   frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]

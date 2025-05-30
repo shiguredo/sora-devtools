@@ -237,6 +237,9 @@ export const setInitialParameter = () => {
     if (qsParams.audioStreamingLanguageCode !== undefined) {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
+    if (qsParams.forceStereoOutput !== undefined) {
+      dispatch(slice.actions.setForceStereoOutput(qsParams.forceStereoOutput))
+    }
     dispatch(slice.actions.setInitialFakeContents())
     const {
       audioStreamingLanguageCode,
@@ -354,6 +357,7 @@ export const copyURL = () => {
         appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
           ? state.videoAV1Params
           : undefined,
+      forceStereoOutput: state.forceStereoOutput === true ? true : undefined,
       audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
       autoGainControl: state.autoGainControl !== '' ? state.autoGainControl : undefined,
       noiseSuppression: state.noiseSuppression !== '' ? state.noiseSuppression : undefined,
@@ -1897,6 +1901,7 @@ export const {
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
   setFacingMode,
+  setForceStereoOutput,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,
