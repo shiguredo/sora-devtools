@@ -324,6 +324,7 @@ export const copyURL = () => {
   return (_: Dispatch, getState: () => SoraDevtoolsState): void => {
     const state = getState()
     const appendAudioVideoParams = state.role !== 'recvonly'
+    const appendReceiverParams = state.role !== 'sendonly'
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
       role: state.role,
@@ -357,7 +358,8 @@ export const copyURL = () => {
         appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
           ? state.videoAV1Params
           : undefined,
-      forceStereoOutput: state.forceStereoOutput === true ? true : undefined,
+      forceStereoOutput:
+        appendReceiverParams && state.forceStereoOutput === true ? true : undefined,
       audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
       autoGainControl: state.autoGainControl !== '' ? state.autoGainControl : undefined,
       noiseSuppression: state.noiseSuppression !== '' ? state.noiseSuppression : undefined,
