@@ -35,6 +35,7 @@
   - @tnamao
 - [CHANGE] `forceStereoOutput` の設定を追加する
   - 受信した音声を出力する際にステレオを強制する
+  - role が `sendrecv` か `recvonly` の時に設定可能になる
   - @tnamao
 
 ### misc
