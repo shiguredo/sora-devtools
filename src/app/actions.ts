@@ -237,6 +237,9 @@ export const setInitialParameter = () => {
     if (qsParams.audioStreamingLanguageCode !== undefined) {
       dispatch(slice.actions.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode))
     }
+    if (qsParams.forceStereoOutput !== undefined) {
+      dispatch(slice.actions.setForceStereoOutput(qsParams.forceStereoOutput))
+    }
     dispatch(slice.actions.setInitialFakeContents())
     const {
       audioStreamingLanguageCode,
@@ -321,6 +324,7 @@ export const copyURL = () => {
   return (_: Dispatch, getState: () => SoraDevtoolsState): void => {
     const state = getState()
     const appendAudioVideoParams = state.role !== 'recvonly'
+    const appendReceiverParams = state.role !== 'sendonly'
     const parameters: Partial<QueryStringParameters> = {
       channelId: state.channelId,
       role: state.role,
@@ -354,6 +358,8 @@ export const copyURL = () => {
         appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
           ? state.videoAV1Params
           : undefined,
+      forceStereoOutput:
+        appendReceiverParams && state.forceStereoOutput === true ? true : undefined,
       audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
       autoGainControl: state.autoGainControl !== '' ? state.autoGainControl : undefined,
       noiseSuppression: state.noiseSuppression !== '' ? state.noiseSuppression : undefined,
@@ -999,6 +1005,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoH264Params: state.videoH264Params,
     videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
+    forceStereoOutput: state.forceStereoOutput,
     role: state.role,
   }
 }
@@ -1897,6 +1904,7 @@ export const {
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
   setFacingMode,
+  setForceStereoOutput,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
   setLocalMediaStream,

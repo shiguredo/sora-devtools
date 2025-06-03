@@ -56,6 +56,9 @@
   "videoAV1Params": {
     "description": "映像のコーデックタイプに AV1 を指定した場合の設定を指定します。"
   },
+  "forceStereoOutput": {
+    "description": "audioOutput をステレオに強制する。"
+  },
   "reconnect": {
     "description": "一度接続に成功したあとに意図しない切断があった場合に再接続するかどうかを指定します。"
   },

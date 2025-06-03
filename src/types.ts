@@ -88,6 +88,7 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null
   }
   fakeVolume: string
+  forceStereoOutput: boolean
   frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -366,6 +367,7 @@ export type ConnectionOptionsState = Pick<
   | 'videoH264Params'
   | 'videoH265Params'
   | 'videoAV1Params'
+  | 'forceStereoOutput'
   | 'role'
 >
 
