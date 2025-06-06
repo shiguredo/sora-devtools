@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2025.1.0-canary
+
+**リリース予定日**: 2025-06-11
+
 - [CHANGE] `react-draggable` の依存を削除
   - Region Capture 機能を実現するために利用していたため
   - @voluntas
@@ -26,14 +30,14 @@
   - @voluntas
 - [CHANGE] index.html にあったリンク集を削除する
   - @voluntas
-- [UPDATE] @shiguredo/noise-suppression のバージョンを 2025.1.0-canary.0 に上げる
+- [UPDATE] @shiguredo/noise-suppression のバージョンを 2025.1.0 に上げる
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.4 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.8 に上げる
   - @voluntas
 - [CHANGE] `@shiguredo/light-adjustment` の依存を削除
   - @voluntas
   - @tnamao
-- [CHANGE] `forceStereoOutput` の設定を追加する
+- [ADD] `forceStereoOutput` の設定を追加する
   - 受信した音声を出力する際にステレオを強制する
   - role が `sendrecv` か `recvonly` の時に設定可能になる
   - @tnamao

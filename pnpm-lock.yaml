@@ -45,8 +45,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(redux@5.0.1)
       sora-js-sdk:
-        specifier: 2025.1.0-canary.4
-        version: 2025.1.0-canary.4
+        specifier: 2025.1.0-canary.8
+        version: 2025.1.0-canary.8
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -1056,9 +1056,9 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
-  sora-js-sdk@2025.1.0-canary.4:
-    resolution: {integrity: sha512-Y+PcFuLN8Rwh9BJ2ztr9RBA6ASobT6KDg7L2mqFLTCgW8MNG7RE1nk5TEvU34yt30gT3+hYQ+CYLgV9yL/Gi9w==}
-    engines: {node: '>=20', pnpm: '>=10'}
+  sora-js-sdk@2025.1.0-canary.8:
+    resolution: {integrity: sha512-c893hZU/SS9MCO613V9CmC9covIgi5hg957Ho/lGuaHI/RgIusg70pPi824I8Wa+/LBXdWQOJdScK/veiVR3SQ==}
+    engines: {node: '>=20', pnpm: '>=8'}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2163,7 +2163,7 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  sora-js-sdk@2025.1.0-canary.4: {}
+  sora-js-sdk@2025.1.0-canary.8: {}
 
   source-map-js@1.2.1: {}
 
