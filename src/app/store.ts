@@ -844,7 +844,7 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
     })),
     {
       name: 'sora-devtools',
-      enabled: import.meta.env.VITE_REDUX_LOGGER === 'true',
+      enabled: import.meta.env.VITE_ZUSTAND_DEVTOOLS === 'true',
     },
   ),
 )

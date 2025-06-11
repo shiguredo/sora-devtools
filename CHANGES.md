@@ -11,6 +11,18 @@
 
 ## develop
 
+### misc
+
+- [ADD] immer を依存に追加する
+  - zustand/immer を利用するため
+  - @voluntas
+- [CHANGE] redux から zustand を利用する
+  - @voluntas
+- [CHANGE] react-compiler を利用する
+  - @voluntas
+- [CHANGE] 対応 Node.js のバージョンを 24 以上にする
+  - @voluntas
+
 ## 2025.1.0-canary
 
 **リリース予定日**: 2025-06-11
