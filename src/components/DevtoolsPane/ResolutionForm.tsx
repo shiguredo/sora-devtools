@@ -24,7 +24,7 @@ const RESOLUTION_DATA_LIST = new Array(
 )
 
 const DropdownItem = ({ label, value }: ResolutionData) => {
-    return (
+  return (
     <Dropdown.Item as="button" onClick={() => setResolution(value)}>
       {label} {value !== '' && `(${value})`}
     </Dropdown.Item>
@@ -33,7 +33,7 @@ const DropdownItem = ({ label, value }: ResolutionData) => {
 
 export const ResolutionForm: React.FC = () => {
   const resolution = useSoraDevtoolsStore((state) => state.resolution)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setResolution(event.target.value)
   }
   return (

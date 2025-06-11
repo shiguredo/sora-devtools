@@ -12,7 +12,7 @@ export const SpotlightNumberForm: React.FC = () => {
   const spotlightNumber = useSoraDevtoolsStore((state) => state.spotlightNumber)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_NUMBERS)) {
       setSpotlightNumber(event.target.value)
     }

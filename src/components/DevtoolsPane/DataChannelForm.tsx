@@ -14,7 +14,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
   const ignoreDisconnectWebSocket = useSoraDevtoolsStore((state) => state.ignoreDisconnectWebSocket)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
       setIgnoreDisconnectWebSocket(event.target.value)
     }
@@ -44,7 +44,7 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
 
 const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
   const dataChannelSignaling = useSoraDevtoolsStore((state) => state.dataChannelSignaling)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, DATA_CHANNEL_SIGNALING)) {
       setDataChannelSignaling(event.target.value)
     }
@@ -74,7 +74,7 @@ export const DataChannelForm: React.FC = () => {
   const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledDataChannel(event.target.checked)
   }
   return (

@@ -5,7 +5,7 @@ import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 export const DisposeMediaButton: React.FC = () => {
-    const onClick = (): void => {
+  const onClick = (): void => {
     disposeMedia()
   }
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)

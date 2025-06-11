@@ -13,7 +13,7 @@ export const VideoAV1ParamsForm: React.FC = () => {
   const videoAV1Params = useSoraDevtoolsStore((state) => state.videoAV1Params)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledVideoAV1Params(event.target.checked)
   }
   return (

@@ -12,7 +12,7 @@ export const VideoCodecTypeForm: React.FC = () => {
   const videoCodecType = useSoraDevtoolsStore((state) => state.videoCodecType)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, VIDEO_CODEC_TYPES)) {
       setVideoCodecType(event.target.value)
     }

@@ -12,7 +12,7 @@ export const AudioBitRateForm: React.FC = () => {
   const audioBitRate = useSoraDevtoolsStore((state) => state.audioBitRate)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setAudioBitRate(event.target.value)
   }
   return (
@@ -35,11 +35,7 @@ export const AudioBitRateForm: React.FC = () => {
         >
           {AUDIO_BIT_RATES.map((value) => {
             return (
-              <Dropdown.Item
-                key={value}
-                as="button"
-                onClick={() => setAudioBitRate(value)}
-              >
+              <Dropdown.Item key={value} as="button" onClick={() => setAudioBitRate(value)}>
                 {value === '' ? '未指定' : value}
               </Dropdown.Item>
             )

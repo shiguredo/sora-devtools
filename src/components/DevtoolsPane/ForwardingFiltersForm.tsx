@@ -13,7 +13,7 @@ export const ForwardingFiltersForm: React.FC = () => {
   const forwardingFilters = useSoraDevtoolsStore((state) => state.forwardingFilters)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledForwardingFilters(event.target.checked)
   }
   return (

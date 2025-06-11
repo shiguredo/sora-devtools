@@ -12,7 +12,7 @@ export const MicDeviceForm: React.FC = () => {
   const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const audio = useSoraDevtoolsStore((state) => state.audio)
   const disabled = !(sora && connectionStatus === 'connected' ? sora.audio : audio)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setMicDevice(event.target.checked)
   }
   return (

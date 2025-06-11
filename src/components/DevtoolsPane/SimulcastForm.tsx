@@ -12,7 +12,7 @@ export const SimulcastForm: React.FC = () => {
   const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SIMULCAST)) {
       setSimulcast(event.target.value)
     }

@@ -13,7 +13,7 @@ export const RoleForm: React.FC = () => {
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ROLES)) {
       setRole(event.target.value)
     }

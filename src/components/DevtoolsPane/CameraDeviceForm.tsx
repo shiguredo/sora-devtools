@@ -12,7 +12,7 @@ export const CameraDeviceForm: React.FC = () => {
   const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const video = useSoraDevtoolsStore((state) => state.video)
   const disabled = !(sora && connectionStatus === 'connected' ? sora.video : video)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setCameraDevice(event.target.checked)
   }
   return (

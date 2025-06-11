@@ -11,7 +11,7 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
     (state) => state.mediaProcessorsNoiseSuppression,
   )
   const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setMediaProcessorsNoiseSuppression(event.target.checked)
   }
   const disabled = mediaType !== 'getUserMedia'

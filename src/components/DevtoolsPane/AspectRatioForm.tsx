@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AspectRatioForm: React.FC = () => {
   const aspectRatio = useSoraDevtoolsStore((state) => state.aspectRatio)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ASPECT_RATIO_TYPES)) {
       setAspectRatio(event.target.value)
     }

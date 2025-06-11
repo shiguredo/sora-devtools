@@ -11,7 +11,7 @@ export const ResetRtpStreamBySendConnectionIdButton: React.FC<Props> = (props) =
   const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const channelId = useSoraDevtoolsStore((state) => state.channelId)
   const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
-    const onClick = async (): Promise<void> => {
+  const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return
     }

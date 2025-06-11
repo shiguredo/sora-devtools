@@ -13,7 +13,7 @@ export const VideoVP9ParamsForm: React.FC = () => {
   const videoVP9Params = useSoraDevtoolsStore((state) => state.videoVP9Params)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledVideoVP9Params(event.target.checked)
   }
   return (

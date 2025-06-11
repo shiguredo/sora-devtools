@@ -9,7 +9,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const AudioInputForm: React.FC = () => {
   const audioInput = useSoraDevtoolsStore((state) => state.audioInput)
   const audioInputDevices = useSoraDevtoolsStore((state) => state.audioInputDevices)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setAudioInput(event.target.value)
     updateMediaStream()
   }

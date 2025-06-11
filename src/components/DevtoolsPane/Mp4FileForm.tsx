@@ -14,7 +14,7 @@ export const Mp4FileForm: React.FC = () => {
   const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
-    const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const files = event.target.files
     if (files === null || files.length === 0) {
       return

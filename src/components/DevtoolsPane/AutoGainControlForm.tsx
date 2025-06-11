@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AutoGainControlForm: React.FC = () => {
   const autoGainControl = useSoraDevtoolsStore((state) => state.autoGainControl)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUTO_GAIN_CONTROLS)) {
       setAutoGainControl(event.target.value)
     }

@@ -11,7 +11,7 @@ export const ReconnectForm: React.FC = () => {
   const reconnect = useSoraDevtoolsStore((state) => state.reconnect)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setReconnect(event.target.checked)
   }
   return (

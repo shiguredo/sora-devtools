@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoContentHintForm: React.FC = () => {
   const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, VIDEO_CONTENT_HINTS)) {
       setVideoContentHint(event.target.value)
     }

@@ -3,7 +3,7 @@ import type React from 'react'
 import { updateMediaStream } from '@/app/actions'
 
 export const UpdateMediaStreamButton: React.FC = () => {
-    const onClick = (): void => {
+  const onClick = (): void => {
     updateMediaStream()
   }
   return (

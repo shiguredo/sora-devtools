@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const NoiseSuppressionForm: React.FC = () => {
   const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, NOISE_SUPPRESSIONS)) {
       setNoiseSuppression(event.target.value)
     }

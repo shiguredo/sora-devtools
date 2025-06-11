@@ -23,7 +23,7 @@ const FRAME_RATE_DATA = new Array(
 )
 
 const DropdownItem = ({ label, value }: FrameRateData) => {
-    return (
+  return (
     <Dropdown.Item as="button" onClick={() => setFrameRate(value)}>
       {label}
     </Dropdown.Item>
@@ -32,7 +32,7 @@ const DropdownItem = ({ label, value }: FrameRateData) => {
 
 export const FrameRateForm: React.FC = () => {
   const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setFrameRate(event.target.value)
   }
   return (

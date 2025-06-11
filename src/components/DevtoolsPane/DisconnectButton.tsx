@@ -5,7 +5,7 @@ import { useSoraDevtoolsStore } from '@/app/store'
 
 export const DisconnectButton: React.FC = () => {
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-    const disconnect = (): void => {
+  const disconnect = (): void => {
     disconnectSora()
   }
   return (

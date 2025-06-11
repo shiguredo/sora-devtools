@@ -12,7 +12,7 @@ export const AudioCodecTypeForm: React.FC = () => {
   const audioCodecType = useSoraDevtoolsStore((state) => state.audioCodecType)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUDIO_CODEC_TYPES)) {
       setAudioCodecType(event.target.value)
     }

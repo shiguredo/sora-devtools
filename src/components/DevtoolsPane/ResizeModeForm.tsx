@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const ResizeModeForm: React.FC = () => {
   const resizeMode = useSoraDevtoolsStore((state) => state.resizeMode)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, RESIZE_MODE_TYPES)) {
       setResizeMode(event.target.value)
     }

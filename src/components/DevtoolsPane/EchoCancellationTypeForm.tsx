@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const EchoCancellationTypeForm: React.FC = () => {
   const echoCancellationType = useSoraDevtoolsStore((state) => state.echoCancellationType)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ECHO_CANCELLATION_TYPES)) {
       setEchoCancellationType(event.target.value)
     }

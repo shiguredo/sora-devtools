@@ -9,7 +9,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const FakeVolumeForm: React.FC = () => {
   const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
   const fakeVolume = useSoraDevtoolsStore((state) => state.fakeVolume)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setFakeVolume(event.target.value)
   }
   if (mediaType !== 'fakeMedia') {

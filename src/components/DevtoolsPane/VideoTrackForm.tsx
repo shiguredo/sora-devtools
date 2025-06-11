@@ -8,7 +8,7 @@ import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoTrackForm: React.FC = () => {
   const videoTrack = useSoraDevtoolsStore((state) => state.videoTrack)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setVideoTrack(event.target.checked)
   }
   return (

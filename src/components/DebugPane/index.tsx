@@ -18,7 +18,7 @@ import { TimelineMessages } from './TimelineMessages.tsx'
 export const DebugPane: React.FC = () => {
   const debug = useSoraDevtoolsStore((state) => state.debug)
   const debugType = useSoraDevtoolsStore((state) => state.debugType)
-    if (!debug) {
+  if (!debug) {
     return null
   }
   const onSelect = (key: string | null): void => {

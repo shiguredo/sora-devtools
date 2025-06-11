@@ -11,7 +11,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const FacingModeForm: React.FC = () => {
   const facingMode = useSoraDevtoolsStore((state) => state.facingMode)
   const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, FACING_MODES)) {
       setFacingMode(event.target.value)
     }

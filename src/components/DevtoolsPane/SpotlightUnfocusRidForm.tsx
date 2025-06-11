@@ -12,7 +12,7 @@ export const SpotlightUnfocusRidForm: React.FC = () => {
   const spotlightUnfocusRid = useSoraDevtoolsStore((state) => state.spotlightUnfocusRid)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
       setSpotlightUnfocusRid(event.target.value)
     }

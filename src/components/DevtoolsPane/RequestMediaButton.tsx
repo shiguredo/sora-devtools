@@ -5,7 +5,7 @@ import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 export const RequestMediaButton: React.FC = () => {
-    const onClick = (): void => {
+  const onClick = (): void => {
     requestMedia()
   }
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)

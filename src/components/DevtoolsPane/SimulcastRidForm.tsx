@@ -12,7 +12,7 @@ export const SimulcastRidForm: React.FC = () => {
   const simulcastRid = useSoraDevtoolsStore((state) => state.simulcastRid)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SIMULCAST_RID)) {
       setSimulcastRid(event.target.value)
     }

@@ -11,10 +11,12 @@ export const AudioStreamingLanguageCodeForm: React.FC = () => {
   const enabledAudioStreamingLanguageCode = useSoraDevtoolsStore(
     (state) => state.enabledAudioStreamingLanguageCode,
   )
-  const audioStreamingLanguageCode = useSoraDevtoolsStore((state) => state.audioStreamingLanguageCode)
+  const audioStreamingLanguageCode = useSoraDevtoolsStore(
+    (state) => state.audioStreamingLanguageCode,
+  )
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledAudioStreamingLanguageCode(event.target.checked)
   }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {

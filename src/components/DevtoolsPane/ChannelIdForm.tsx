@@ -11,7 +11,7 @@ export const ChannelIdForm: React.FC = () => {
   const channelId = useSoraDevtoolsStore((state) => state.channelId)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setChannelId(event.target.value)
   }
   return (

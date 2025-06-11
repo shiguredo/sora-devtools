@@ -14,7 +14,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
   const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const channelId = useSoraDevtoolsStore((state) => state.channelId)
   const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
-    if (!sora?.connectionId) {
+  if (!sora?.connectionId) {
     return null
   }
   const onClick = async (): Promise<void> => {

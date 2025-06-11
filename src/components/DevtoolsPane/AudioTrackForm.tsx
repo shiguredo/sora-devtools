@@ -8,7 +8,7 @@ import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const AudioTrackForm: React.FC = () => {
   const audioTrack = useSoraDevtoolsStore((state) => state.audioTrack)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setAudioTrack(event.target.checked)
   }
   return (

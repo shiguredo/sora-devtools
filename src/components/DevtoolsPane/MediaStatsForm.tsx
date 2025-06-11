@@ -8,7 +8,7 @@ import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MediaStatsForm: React.FC = () => {
   const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setMediaStats(event.target.checked)
   }
   return (

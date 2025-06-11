@@ -13,7 +13,7 @@ export const VideoH264ParamsForm: React.FC = () => {
   const videoH264Params = useSoraDevtoolsStore((state) => state.videoH264Params)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledVideoH264Params(event.target.checked)
   }
   return (

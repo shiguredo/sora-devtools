@@ -15,7 +15,7 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
   const signalingNotifyMetadata = useSoraDevtoolsStore((state) => state.signalingNotifyMetadata)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledSignalingNotifyMetadata(event.target.checked)
   }
   return (

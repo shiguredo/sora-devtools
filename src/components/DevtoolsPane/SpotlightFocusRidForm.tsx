@@ -12,7 +12,7 @@ export const SpotlightFocusRidForm: React.FC = () => {
   const spotlightFocusRid = useSoraDevtoolsStore((state) => state.spotlightFocusRid)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
       setSpotlightFocusRid(event.target.value)
     }

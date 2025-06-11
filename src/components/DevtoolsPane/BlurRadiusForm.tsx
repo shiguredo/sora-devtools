@@ -11,7 +11,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const BlurRadiusForm: React.FC = () => {
   const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius)
   const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, BLUR_RADIUS)) {
       setBlurRadius(event.target.value)
     }

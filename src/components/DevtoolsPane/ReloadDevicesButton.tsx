@@ -3,7 +3,7 @@ import type React from 'react'
 import { setMediaDevices } from '@/app/actions'
 
 export const ReloadDevicesButton: React.FC = () => {
-    const onClick = (): void => {
+  const onClick = (): void => {
     setMediaDevices()
   }
   return (

@@ -8,7 +8,7 @@ export const StopRecordingButton: React.FC = () => {
   const channelId = useSoraDevtoolsStore((state) => state.channelId)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
-    const onClick = async (): Promise<void> => {
+  const onClick = async (): Promise<void> => {
     try {
       const response = await stopRec(apiUrl, channelId)
       setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`)

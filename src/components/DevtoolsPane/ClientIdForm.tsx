@@ -12,7 +12,7 @@ export const ClientIdForm: React.FC = () => {
   const clientId = useSoraDevtoolsStore((state) => state.clientId)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledClientId(event.target.checked)
   }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {

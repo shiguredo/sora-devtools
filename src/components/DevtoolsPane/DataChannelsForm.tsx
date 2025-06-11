@@ -13,7 +13,7 @@ export const DataChannelsForm: React.FC = () => {
   const dataChannels = useSoraDevtoolsStore((state) => state.dataChannels)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const exampleJsonString = JSON.stringify(
+  const exampleJsonString = JSON.stringify(
     [
       {
         label: '#devtools',

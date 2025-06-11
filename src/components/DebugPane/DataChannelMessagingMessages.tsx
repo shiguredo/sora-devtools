@@ -7,7 +7,7 @@ import type { DataChannelMessage } from '@/types'
 import { Message } from './Message.tsx'
 
 const ButtonClear: React.FC = () => {
-    const onClick = (): void => {
+  const onClick = (): void => {
     clearDataChannelMessages()
   }
   return (

@@ -14,7 +14,7 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
   const signalingUrlCandidates = useSoraDevtoolsStore((state) => state.signalingUrlCandidates)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledSignalingUrlCandidates(event.target.checked)
   }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {

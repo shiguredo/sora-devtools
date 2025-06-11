@@ -9,7 +9,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const VideoInputForm: React.FC = () => {
   const videoInput = useSoraDevtoolsStore((state) => state.videoInput)
   const videoInputDevices = useSoraDevtoolsStore((state) => state.videoInputDevices)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setVideoInput(event.target.value)
     updateMediaStream()
   }

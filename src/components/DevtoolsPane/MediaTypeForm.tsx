@@ -42,7 +42,7 @@ export const MediaTypeForm: React.FC = () => {
   const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
   const enabledMp4Media = Mp4MediaStream.isSupported()
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {
       setMediaType(event.target.value)
     }

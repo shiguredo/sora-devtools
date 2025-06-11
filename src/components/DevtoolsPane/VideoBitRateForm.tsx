@@ -23,7 +23,7 @@ export const VideoBitRateForm: React.FC = () => {
   const videoBitRate = useSoraDevtoolsStore((state) => state.videoBitRate)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setVideoBitRate(event.target.value)
   }
   return (

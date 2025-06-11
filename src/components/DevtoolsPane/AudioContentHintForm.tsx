@@ -10,7 +10,7 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioContentHintForm: React.FC = () => {
   const audioContentHint = useSoraDevtoolsStore((state) => state.audioContentHint)
-    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUDIO_CONTENT_HINTS)) {
       setAudioContentHint(event.target.value)
     }
