@@ -1,5 +1,4 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -66,6 +65,7 @@ const initialState: SoraDevtoolsState = {
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
+  forceStereoOutput: false,
   fakeVolume: '0',
   fakeContents: {
     worker: null,
@@ -133,8 +133,6 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: '',
   resizeMode: '',
-  lightAdjustment: '',
-  lightAdjustmentProcessor: null,
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: '',
@@ -580,13 +578,6 @@ export const slice = createSlice({
     setResizeMode: (state, action: PayloadAction<SoraDevtoolsState['resizeMode']>) => {
       state.resizeMode = action.payload
     },
-    setLightAdjustment: (state, action: PayloadAction<SoraDevtoolsState['lightAdjustment']>) => {
-      if (action.payload !== '' && state.lightAdjustmentProcessor === null) {
-        const processor = new LightAdjustmentProcessor()
-        state.lightAdjustmentProcessor = processor
-      }
-      state.lightAdjustment = action.payload
-    },
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState['blurRadius']>) => {
       if (action.payload !== '' && state.virtualBackgroundProcessor === null) {
         const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
@@ -625,6 +616,12 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['enabledAudioStreamingLanguageCode']>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload
+    },
+    setForceStereoOutput: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['forceStereoOutput']>,
+    ) => {
+      state.forceStereoOutput = action.payload
     },
   },
 })

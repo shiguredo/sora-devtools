@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -133,7 +132,6 @@ interface SoraDevtoolsActions {
   clearDataChannelMessages: () => void
   setAspectRatio: (aspectRatio: SoraDevtoolsState['aspectRatio']) => void
   setResizeMode: (resizeMode: SoraDevtoolsState['resizeMode']) => void
-  setLightAdjustment: (lightAdjustment: SoraDevtoolsState['lightAdjustment']) => void
   setBlurRadius: (blurRadius: SoraDevtoolsState['blurRadius']) => void
   setMediaProcessorsNoiseSuppression: (mediaProcessorsNoiseSuppression: SoraDevtoolsState['mediaProcessorsNoiseSuppression']) => void
   setBundleId: (bundleId: SoraDevtoolsState['bundleId']) => void
@@ -141,6 +139,7 @@ interface SoraDevtoolsActions {
   setFacingMode: (facingMode: SoraDevtoolsState['facingMode']) => void
   setAudioStreamingLanguageCode: (audioStreamingLanguageCode: SoraDevtoolsState['audioStreamingLanguageCode']) => void
   setEnabledAudioStreamingLanguageCode: (enabledAudioStreamingLanguageCode: SoraDevtoolsState['enabledAudioStreamingLanguageCode']) => void
+  setForceStereoOutput: (forceStereoOutput: SoraDevtoolsState['forceStereoOutput']) => void
 }
 
 const initialState: SoraDevtoolsState = {
@@ -184,6 +183,7 @@ const initialState: SoraDevtoolsState = {
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
+  forceStereoOutput: false,
   fakeVolume: '0',
   fakeContents: {
     worker: null,
@@ -251,8 +251,6 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: '',
   resizeMode: '',
-  lightAdjustment: '',
-  lightAdjustmentProcessor: null,
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: '',
@@ -518,13 +516,6 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       clearDataChannelMessages: () => set((state) => { state.dataChannelMessages = [] }),
       setAspectRatio: (aspectRatio) => set((state) => { state.aspectRatio = aspectRatio }),
       setResizeMode: (resizeMode) => set((state) => { state.resizeMode = resizeMode }),
-      setLightAdjustment: (lightAdjustment) => set((state) => {
-        if (lightAdjustment !== '' && state.lightAdjustmentProcessor === null) {
-          const processor = new LightAdjustmentProcessor()
-          state.lightAdjustmentProcessor = processor
-        }
-        state.lightAdjustment = lightAdjustment
-      }),
       setBlurRadius: (blurRadius) => set((state) => {
         if (blurRadius !== '' && state.virtualBackgroundProcessor === null) {
           const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
@@ -545,6 +536,7 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setFacingMode: (facingMode) => set((state) => { state.facingMode = facingMode }),
       setAudioStreamingLanguageCode: (audioStreamingLanguageCode) => set((state) => { state.audioStreamingLanguageCode = audioStreamingLanguageCode }),
       setEnabledAudioStreamingLanguageCode: (enabledAudioStreamingLanguageCode) => set((state) => { state.enabledAudioStreamingLanguageCode = enabledAudioStreamingLanguageCode }),
+      setForceStereoOutput: (forceStereoOutput) => set((state) => { state.forceStereoOutput = forceStereoOutput }),
     })),
     {
       name: 'sora-devtools',

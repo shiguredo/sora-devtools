@@ -1,4 +1,3 @@
-import type { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import type { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import type { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -24,7 +23,6 @@ import type {
   ECHO_CANCELLATION_TYPES,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
-  LIGHT_ADJUSTMENT,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
@@ -90,6 +88,7 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null
   }
   fakeVolume: string
+  forceStereoOutput: boolean
   frameRate: string
   soraContents: {
     connectionStatus: (typeof CONNECTION_STATUS)[number]
@@ -153,8 +152,6 @@ export type SoraDevtoolsState = {
   apiUrl: null | string
   aspectRatio: (typeof ASPECT_RATIO_TYPES)[number]
   resizeMode: (typeof RESIZE_MODE_TYPES)[number]
-  lightAdjustment: (typeof LIGHT_ADJUSTMENT)[number]
-  lightAdjustmentProcessor: LightAdjustmentProcessor | null
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null
   facingMode: (typeof FACING_MODES)[number]
@@ -370,6 +367,7 @@ export type ConnectionOptionsState = Pick<
   | 'videoH264Params'
   | 'videoH265Params'
   | 'videoAV1Params'
+  | 'forceStereoOutput'
   | 'role'
 >
 
@@ -384,8 +382,6 @@ export type DownloadReportParameters = Omit<
   | 'debugType'
   | 'fakeContents'
   | 'focusedSpotlightConnectionIds'
-  | 'lightAdjustment'
-  | 'lightAdjustmentProcessor'
   | 'localTestMediaStream'
   | 'logMessages'
   | 'mediaProcessorsNoiseSuppression'

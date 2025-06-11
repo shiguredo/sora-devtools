@@ -1,4 +1,3 @@
-import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
 import type { ConnectionPublisher, ConnectionSubscriber, TransportType } from 'sora-js-sdk'
@@ -27,7 +26,6 @@ import {
   drawFakeCanvas,
   getBlurRadiusNumber,
   getDevices,
-  getLightAdjustmentOptions,
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
@@ -222,9 +220,6 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.blurRadius !== undefined) {
     store.setBlurRadius(qsParams.blurRadius)
   }
-  if (qsParams.lightAdjustment !== undefined) {
-    store.setLightAdjustment(qsParams.lightAdjustment)
-  }
   if (qsParams.mediaProcessorsNoiseSuppression !== undefined) {
     store.setMediaProcessorsNoiseSuppression(qsParams.mediaProcessorsNoiseSuppression)
   }
@@ -236,6 +231,9 @@ export const setInitialParameter = async (): Promise<void> => {
   }
   if (qsParams.audioStreamingLanguageCode !== undefined) {
     store.setAudioStreamingLanguageCode(qsParams.audioStreamingLanguageCode)
+  }
+  if (qsParams.forceStereoOutput !== undefined) {
+    store.setForceStereoOutput(qsParams.forceStereoOutput)
   }
   store.setInitialFakeContents()
   
@@ -320,6 +318,7 @@ export const setInitialParameter = async (): Promise<void> => {
 export const copyURL = (): void => {
   const state = useSoraDevtoolsStore.getState()
   const appendAudioVideoParams = state.role !== 'recvonly'
+  const appendReceiverParams = state.role !== 'sendonly'
   const parameters: Partial<QueryStringParameters> = {
     channelId: state.channelId,
     role: state.role,
@@ -353,6 +352,8 @@ export const copyURL = (): void => {
       appendAudioVideoParams && state.videoAV1Params !== '' && state.enabledVideoAV1Params
         ? state.videoAV1Params
         : undefined,
+    forceStereoOutput:
+      appendReceiverParams && state.forceStereoOutput === true ? true : undefined,
     audioContentHint: state.audioContentHint !== '' ? state.audioContentHint : undefined,
     autoGainControl: state.autoGainControl !== '' ? state.autoGainControl : undefined,
     noiseSuppression: state.noiseSuppression !== '' ? state.noiseSuppression : undefined,
@@ -366,7 +367,6 @@ export const copyURL = (): void => {
     aspectRatio: state.aspectRatio !== '' ? state.aspectRatio : undefined,
     resizeMode: state.resizeMode !== '' ? state.resizeMode : undefined,
     blurRadius: state.blurRadius !== '' ? state.blurRadius : undefined,
-    lightAdjustment: state.lightAdjustment !== '' ? state.lightAdjustment : undefined,
     simulcast: state.simulcast !== '' ? state.simulcast : undefined,
     simulcastRid: state.simulcastRid !== '' ? state.simulcastRid : undefined,
     spotlight: state.spotlight !== '' ? state.spotlight : undefined,
@@ -473,13 +473,10 @@ type createMediaStreamPickedState = Pick<
   | 'fakeContents'
   | 'fakeVolume'
   | 'frameRate'
-  | 'lightAdjustment'
-  | 'lightAdjustmentProcessor'
   | 'mediaProcessorsNoiseSuppression'
   | 'mediaType'
   | 'mp4MediaStream'
   | 'micDevice'
-  | 'mp4MediaStream'
   | 'noiseSuppression'
   | 'noiseSuppressionProcessor'
   | 'resizeMode'
@@ -669,16 +666,6 @@ async function createMediaStream(
       store.setTimelineMessage(
         createSoraDevtoolsMediaStreamTrackLog('start', videoTrack),
       )
-      if (state.lightAdjustment !== '' && LightAdjustmentProcessor.isSupported()) {
-        if (state.lightAdjustmentProcessor === null) {
-          throw new Error(
-            "Failed to start LightAdjustmentProcessor. LightAdjustmentProcessor is 'null'",
-          )
-        }
-        const options = getLightAdjustmentOptions(state.lightAdjustment)
-        state.lightAdjustmentProcessor.stopProcessing()
-        videoTrack = await state.lightAdjustmentProcessor.startProcessing(videoTrack, options)
-      }
       if (state.blurRadius !== '' && VirtualBackgroundProcessor.isSupported()) {
         if (state.virtualBackgroundProcessor === null) {
           throw new Error(
@@ -846,13 +833,12 @@ function setSoraCallbacks(
       fakeContents,
       soraContents,
       reconnect,
-      lightAdjustmentProcessor,
       virtualBackgroundProcessor,
       noiseSuppressionProcessor,
     } = useSoraDevtoolsStore.getState()
     const { localMediaStream, remoteClients } = soraContents
     // media processor は同期処理で停止する
-    const originalTrack = stopVideoProcessors(lightAdjustmentProcessor, virtualBackgroundProcessor)
+    const originalTrack = stopVideoProcessors(virtualBackgroundProcessor)
     // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
     ;(async () => {
       // ローカルの MediaStream の Track と MediaProcessor を止める
@@ -958,6 +944,7 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     videoH264Params: state.videoH264Params,
     videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
+    forceStereoOutput: state.forceStereoOutput,
     role: state.role,
   }
 }
@@ -1029,10 +1016,6 @@ export const requestMedia = async (): Promise<void> => {
     }
     // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
     let originalTrack: MediaStreamVideoTrack | undefined
-    if (state.lightAdjustmentProcessor?.isProcessing()) {
-      originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
-      state.lightAdjustmentProcessor.stopProcessing()
-    }
     if (state.virtualBackgroundProcessor?.isProcessing()) {
       if (originalTrack === undefined) {
         originalTrack = state.virtualBackgroundProcessor.getOriginalTrack()
@@ -1079,20 +1062,13 @@ export const disposeMedia = async (): Promise<void> => {
   const {
     fakeContents,
     soraContents,
-    lightAdjustmentProcessor,
     noiseSuppressionProcessor,
     virtualBackgroundProcessor,
   } = useSoraDevtoolsStore.getState()
   const { localMediaStream } = soraContents
   let originalTrack: MediaStreamTrack | undefined
-  if (lightAdjustmentProcessor?.isProcessing()) {
-    originalTrack = lightAdjustmentProcessor.getOriginalTrack()
-    lightAdjustmentProcessor.stopProcessing()
-  }
   if (virtualBackgroundProcessor?.isProcessing()) {
-    if (originalTrack === undefined) {
-      originalTrack = virtualBackgroundProcessor.getOriginalTrack()
-    }
+    originalTrack = virtualBackgroundProcessor.getOriginalTrack()
     virtualBackgroundProcessor.stopProcessing()
   }
   if (originalTrack !== undefined) {
@@ -1224,10 +1200,6 @@ export const connectSora = async (): Promise<void> => {
     }
     // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
     let originalTrack: MediaStreamVideoTrack | undefined
-    if (state.lightAdjustmentProcessor?.isProcessing()) {
-      originalTrack = state.lightAdjustmentProcessor.getOriginalTrack()
-      state.lightAdjustmentProcessor.stopProcessing()
-    }
     if (state.virtualBackgroundProcessor?.isProcessing()) {
       if (originalTrack === undefined) {
         originalTrack = state.virtualBackgroundProcessor.getOriginalTrack()
@@ -1527,8 +1499,6 @@ export const setMicDevice = async (micDevice: boolean): Promise<void> => {
       fakeContents: state.fakeContents,
       fakeVolume: state.fakeVolume,
       frameRate: state.frameRate,
-      lightAdjustment: state.lightAdjustment,
-      lightAdjustmentProcessor: state.lightAdjustmentProcessor,
       mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
       mediaType: state.mediaType,
       mp4MediaStream: state.mp4MediaStream,
@@ -1621,8 +1591,6 @@ export const setCameraDevice = async (cameraDevice: boolean): Promise<void> => {
       fakeContents: state.fakeContents,
       fakeVolume: state.fakeVolume,
       frameRate: state.frameRate,
-      lightAdjustment: state.lightAdjustment,
-      lightAdjustmentProcessor: state.lightAdjustmentProcessor,
       mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
       mediaType: state.mediaType,
       mp4MediaStream: state.mp4MediaStream,
@@ -1673,7 +1641,6 @@ export const setCameraDevice = async (cameraDevice: boolean): Promise<void> => {
   ) {
     // Sora 接続中の場合
     const originalTrack = stopVideoProcessors(
-      state.lightAdjustmentProcessor,
       state.virtualBackgroundProcessor,
     )
     await stopLocalVideoTrack(state.soraContents.localMediaStream, originalTrack)
@@ -1682,7 +1649,6 @@ export const setCameraDevice = async (cameraDevice: boolean): Promise<void> => {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
     const originalTrack = stopVideoProcessors(
-      state.lightAdjustmentProcessor,
       state.virtualBackgroundProcessor,
     )
     await stopLocalVideoTrack(state.soraContents.localMediaStream, originalTrack)
@@ -1695,19 +1661,12 @@ export const setCameraDevice = async (cameraDevice: boolean): Promise<void> => {
  * media processor が実行中でない場合は undefined を返す
  */
 const stopVideoProcessors = (
-  lightAdjustmentProcessor: LightAdjustmentProcessor | null,
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null,
 ): MediaStreamTrack | undefined => {
   // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
   let originalTrack: MediaStreamVideoTrack | undefined
-  if (lightAdjustmentProcessor?.isProcessing()) {
-    originalTrack = lightAdjustmentProcessor.getOriginalTrack()
-    lightAdjustmentProcessor.stopProcessing()
-  }
   if (virtualBackgroundProcessor?.isProcessing()) {
-    if (originalTrack === undefined) {
-      originalTrack = virtualBackgroundProcessor.getOriginalTrack()
-    }
+    originalTrack = virtualBackgroundProcessor.getOriginalTrack()
     virtualBackgroundProcessor.stopProcessing()
   }
   return originalTrack
@@ -1823,9 +1782,9 @@ export const {
   setEnabledAudioStreamingLanguageCode,
   setFakeVolume,
   setFacingMode,
+  setForceStereoOutput,
   setFrameRate,
   setIgnoreDisconnectWebSocket,
-  setLightAdjustment,
   setLocalMediaStream,
   setLogMessages,
   setMediaProcessorsNoiseSuppression,
