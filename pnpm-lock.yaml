@@ -21,7 +21,7 @@ importers:
         specifier: 5.3.6
         version: 5.3.6(@popperjs/core@2.11.8)
       immer:
-        specifier: ^10.1.1
+        specifier: 10.1.1
         version: 10.1.1
       react:
         specifier: 19.1.0
