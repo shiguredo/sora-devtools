@@ -2,17 +2,17 @@ import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const AudioStreamingLanguageCodeForm: React.FC = () => {
-  const enabledAudioStreamingLanguageCode = useAppSelector(
+  const enabledAudioStreamingLanguageCode = useSoraDevtoolsStore(
     (state) => state.enabledAudioStreamingLanguageCode,
   )
-  const audioStreamingLanguageCode = useAppSelector((state) => state.audioStreamingLanguageCode)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const audioStreamingLanguageCode = useSoraDevtoolsStore((state) => state.audioStreamingLanguageCode)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledAudioStreamingLanguageCode(event.target.checked)

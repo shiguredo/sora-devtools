@@ -2,14 +2,14 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setNoiseSuppression } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { NOISE_SUPPRESSIONS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const NoiseSuppressionForm: React.FC = () => {
-  const noiseSuppression = useAppSelector((state) => state.noiseSuppression)
+  const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression)
     const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, NOISE_SUPPRESSIONS)) {
       setNoiseSuppression(event.target.value)

@@ -1,10 +1,10 @@
 import type React from 'react'
 
 import { setDebug } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const DebugButton: React.FC = () => {
-  const debug = useAppSelector((state) => state.debug)
+  const debug = useSoraDevtoolsStore((state) => state.debug)
   const onClick = (): void => {
     setDebug(!debug)
   }

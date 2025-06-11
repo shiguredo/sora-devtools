@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { RTCStatsCodec } from '@/types'
 import { useEffect, useState } from 'react'
 
@@ -8,7 +8,7 @@ type RTCStatsCodecPair = {
 }
 
 const useLocalVideoTrackStats = (stream: MediaStream) => {
-  const statsReport = useAppSelector((state) => state.soraContents.statsReport)
+  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
   const [trackStats, setTrackStats] = useState<RTCStatsCodecPair[]>([])
   const [selected, setSelected] = useState<RTCStatsCodecPair | null>(null)
   useEffect(() => {

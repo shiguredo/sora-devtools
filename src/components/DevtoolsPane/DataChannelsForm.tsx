@@ -2,16 +2,16 @@ import type React from 'react'
 import { Button, Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const DataChannelsForm: React.FC = () => {
-  const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)
-  const dataChannels = useAppSelector((state) => state.dataChannels)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels)
+  const dataChannels = useSoraDevtoolsStore((state) => state.dataChannels)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const exampleJsonString = JSON.stringify(
     [

@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setDisplayResolution } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
@@ -33,7 +33,7 @@ const DropdownItem = ({ label, value }: DisplayResolutionData) => {
 }
 
 export const DisplayResolutionForm: React.FC = () => {
-  const displayResolution = useAppSelector((state) => state.displayResolution)
+  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setDisplayResolution(event.target.value)
   }

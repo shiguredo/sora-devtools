@@ -5,7 +5,7 @@ import type { SpotlightFocusRid } from 'sora-js-sdk'
 
 import { requestSpotlightRid } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
 
 type Props = {
@@ -14,9 +14,9 @@ type Props = {
 export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
   const focusRidRef = useRef<HTMLSelectElement>(null)
   const unfocusRidRef = useRef<HTMLSelectElement>(null)
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const channelId = useAppSelector((state) => state.channelId)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const channelId = useSoraDevtoolsStore((state) => state.channelId)
+  const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
     if (!sora?.connectionId) {
     return null
   }

@@ -2,16 +2,16 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoH265Params, setVideoH265Params } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoH265ParamsForm: React.FC = () => {
-  const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
-  const videoH265Params = useAppSelector((state) => state.videoH265Params)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params)
+  const videoH265Params = useSoraDevtoolsStore((state) => state.videoH265Params)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledVideoH265Params(event.target.checked)

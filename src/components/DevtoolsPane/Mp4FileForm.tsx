@@ -4,15 +4,15 @@ import type React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 
 import { setMp4MediaStream } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const Mp4FileForm: React.FC = () => {
-  const mediaType = useAppSelector((state) => state.mediaType)
-  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
     const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const files = event.target.files

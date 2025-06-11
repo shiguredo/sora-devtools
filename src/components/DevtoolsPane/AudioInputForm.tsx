@@ -2,13 +2,13 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioInput, updateMediaStream } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioInputForm: React.FC = () => {
-  const audioInput = useAppSelector((state) => state.audioInput)
-  const audioInputDevices = useAppSelector((state) => state.audioInputDevices)
+  const audioInput = useSoraDevtoolsStore((state) => state.audioInput)
+  const audioInputDevices = useSoraDevtoolsStore((state) => state.audioInputDevices)
     const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setAudioInput(event.target.value)
     updateMediaStream()

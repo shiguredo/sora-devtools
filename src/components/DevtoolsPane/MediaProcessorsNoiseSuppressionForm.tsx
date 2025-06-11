@@ -2,15 +2,15 @@ import type React from 'react'
 import { FormGroup } from 'react-bootstrap'
 
 import { setMediaProcessorsNoiseSuppression } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
-  const mediaProcessorsNoiseSuppression = useAppSelector(
+  const mediaProcessorsNoiseSuppression = useSoraDevtoolsStore(
     (state) => state.mediaProcessorsNoiseSuppression,
   )
-  const mediaType = useAppSelector((state) => state.mediaType)
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setMediaProcessorsNoiseSuppression(event.target.checked)
   }

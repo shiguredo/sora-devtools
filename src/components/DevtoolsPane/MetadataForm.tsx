@@ -2,16 +2,16 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledMetadata, setMetadata } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MetadataForm: React.FC = () => {
-  const enabledMetadata = useAppSelector((state) => state.enabledMetadata)
-  const metadata = useAppSelector((state) => state.metadata)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata)
+  const metadata = useSoraDevtoolsStore((state) => state.metadata)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledMetadata(event.target.checked)

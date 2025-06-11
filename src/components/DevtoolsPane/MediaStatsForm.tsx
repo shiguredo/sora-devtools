@@ -2,12 +2,12 @@ import type React from 'react'
 import { FormGroup } from 'react-bootstrap'
 
 import { setMediaStats } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MediaStatsForm: React.FC = () => {
-  const mediaStats = useAppSelector((state) => state.mediaStats)
+  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setMediaStats(event.target.checked)
   }

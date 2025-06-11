@@ -2,7 +2,7 @@ import type React from 'react'
 import { Tab, Tabs } from 'react-bootstrap'
 
 import { setDebugType } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { CapabilitiesCodec } from './CapabilitiesCodec.tsx'
 import { DataChannelMessagingMessages } from './DataChannelMessagingMessages.tsx'
@@ -16,8 +16,8 @@ import { Stats } from './Stats.tsx'
 import { TimelineMessages } from './TimelineMessages.tsx'
 
 export const DebugPane: React.FC = () => {
-  const debug = useAppSelector((state) => state.debug)
-  const debugType = useAppSelector((state) => state.debugType)
+  const debug = useSoraDevtoolsStore((state) => state.debug)
+  const debugType = useSoraDevtoolsStore((state) => state.debugType)
     if (!debug) {
     return null
   }

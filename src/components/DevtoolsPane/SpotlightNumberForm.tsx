@@ -2,15 +2,15 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlightNumber } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { SPOTLIGHT_NUMBERS } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const SpotlightNumberForm: React.FC = () => {
-  const spotlightNumber = useAppSelector((state) => state.spotlightNumber)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const spotlightNumber = useSoraDevtoolsStore((state) => state.spotlightNumber)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_NUMBERS)) {

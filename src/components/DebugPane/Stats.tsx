@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { Message } from './Message.tsx'
 
@@ -17,8 +17,8 @@ const Log = React.memo((props: RTCStatsWithIndexSignature) => {
 })
 
 export const Stats: React.FC = () => {
-  const statsReport = useAppSelector((state) => state.soraContents.statsReport)
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
+  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const filteredMessages = statsReport.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
       if (filterText === '') {

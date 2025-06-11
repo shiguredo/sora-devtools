@@ -3,12 +3,12 @@ import { useEffect } from 'react'
 import { Toast } from 'react-bootstrap'
 
 import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { AlertMessage } from '@/types'
 import { formatUnixtime } from '@/utils'
 
 const Reconnect: React.FC = () => {
-  const reconnectingTrials = useAppSelector((state) => state.soraContents.reconnectingTrials)
+  const reconnectingTrials = useSoraDevtoolsStore((state) => state.soraContents.reconnectingTrials)
   const onClose = (): void => {
     setSoraReconnecting(false)
   }
@@ -48,8 +48,8 @@ const Alert: React.FC<AlertMessage> = (props) => {
 }
 
 export const AlertMessages: React.FC = () => {
-  const alertMessages = useAppSelector((state) => state.alertMessages)
-  const reconnecting = useAppSelector((state) => state.soraContents.reconnecting)
+  const alertMessages = useSoraDevtoolsStore((state) => state.alertMessages)
+  const reconnecting = useSoraDevtoolsStore((state) => state.soraContents.reconnecting)
   return (
     <div className="alert-messages">
       {reconnecting ? <Reconnect /> : null}

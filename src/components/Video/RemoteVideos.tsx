@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useState } from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
 
 import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
@@ -42,9 +42,9 @@ function mediaStreamStatsReportFilter(
 }
 
 const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
-  const showStats = useAppSelector((state) => state.showStats)
-  const statsReport = useAppSelector((state) => state.soraContents.statsReport)
-  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport)
+  const showStats = useSoraDevtoolsStore((state) => state.showStats)
+  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
+  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
   if (!showStats) {
     return null
   }
@@ -91,16 +91,16 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
 const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
   const { mediaStream, connectionId, clientId } = client
   const [height, setHeight] = useState<number>(0)
-  const audioOutput = useAppSelector((state) => state.audioOutput)
-  const displayResolution = useAppSelector((state) => state.displayResolution)
-  const focusedSpotlightConnectionIds = useAppSelector(
+  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
+  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
+  const focusedSpotlightConnectionIds = useSoraDevtoolsStore(
     (state) => state.focusedSpotlightConnectionIds,
   )
-  const mute = useAppSelector((state) => state.mute)
-  const simulcast = useAppSelector((state) => state.simulcast)
-  const spotlight = useAppSelector((state) => state.spotlight)
+  const mute = useSoraDevtoolsStore((state) => state.mute)
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
+  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
-  const mediaStats = useAppSelector((state) => state.mediaStats)
+  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -152,7 +152,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
 }
 
 export const RemoteVideos: React.FC = () => {
-  const remoteClients = useAppSelector((state) => state.soraContents.remoteClients)
+  const remoteClients = useSoraDevtoolsStore((state) => state.soraContents.remoteClients)
   return (
     <div className="row my-2">
       {remoteClients.map((client) => {

@@ -1,10 +1,10 @@
 import type React from 'react'
 
 import { connectSora } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const ConnectButton: React.FC = () => {
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const connect = (): void => {
     connectSora()
   }

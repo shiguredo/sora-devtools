@@ -2,15 +2,15 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setAudioBitRate } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { AUDIO_BIT_RATES } from '@/constants'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioBitRateForm: React.FC = () => {
-  const audioBitRate = useAppSelector((state) => state.audioBitRate)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const audioBitRate = useSoraDevtoolsStore((state) => state.audioBitRate)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setAudioBitRate(event.target.value)

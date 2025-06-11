@@ -2,10 +2,10 @@ import type React from 'react'
 import { FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import { setDebugFilterText } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const DebugFilter: React.FC = () => {
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setDebugFilterText(event.target.value)
   }

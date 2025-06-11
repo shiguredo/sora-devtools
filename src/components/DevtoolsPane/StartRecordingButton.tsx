@@ -2,12 +2,12 @@ import type React from 'react'
 
 import { startRec } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const StartRecordingButton: React.FC = () => {
-  const channelId = useAppSelector((state) => state.channelId)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
+  const channelId = useSoraDevtoolsStore((state) => state.channelId)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
     const onClick = async (): Promise<void> => {
     try {
       const response = await startRec(apiUrl, channelId)

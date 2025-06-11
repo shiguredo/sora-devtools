@@ -2,15 +2,15 @@ import type React from 'react'
 
 import { resetRtpStream } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 type Props = {
   sendConnectionId: string
 }
 export const ResetRtpStreamBySendConnectionIdButton: React.FC<Props> = (props) => {
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const channelId = useAppSelector((state) => state.channelId)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const channelId = useSoraDevtoolsStore((state) => state.channelId)
+  const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
     const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return

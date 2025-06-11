@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setVideoBitRate } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { VIDEO_BIT_RATES } from '@/constants'
 import { isFormDisabled } from '@/utils'
 
@@ -20,8 +20,8 @@ const dropdownItemLabel = (value: string) => {
 }
 
 export const VideoBitRateForm: React.FC = () => {
-  const videoBitRate = useAppSelector((state) => state.videoBitRate)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const videoBitRate = useSoraDevtoolsStore((state) => state.videoBitRate)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setVideoBitRate(event.target.value)

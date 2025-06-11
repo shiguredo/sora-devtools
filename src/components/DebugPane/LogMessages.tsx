@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { LogMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -21,8 +21,8 @@ const Log = React.memo((props: LogMessage) => {
 })
 
 export const LogMessages: React.FC = () => {
-  const logMessages = useAppSelector((state) => state.logMessages)
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
+  const logMessages = useSoraDevtoolsStore((state) => state.logMessages)
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const filteredMessages = logMessages.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
       if (filterText === '') {

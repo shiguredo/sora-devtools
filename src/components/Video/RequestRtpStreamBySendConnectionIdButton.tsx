@@ -3,16 +3,16 @@ import type { SimulcastRid } from 'sora-js-sdk'
 
 import { requestRtpStream } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 type Props = {
   rid: SimulcastRid
   sendConnectionId: string
 }
 export const RequestRtpStreamBySendConnectionIdButton: React.FC<Props> = (props) => {
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
-  const channelId = useAppSelector((state) => state.channelId)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
+  const channelId = useSoraDevtoolsStore((state) => state.channelId)
     const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return

@@ -2,15 +2,15 @@ import type React from 'react'
 import { FormGroup } from 'react-bootstrap'
 
 import { setCameraDevice } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const CameraDeviceForm: React.FC = () => {
-  const cameraDevice = useAppSelector((state) => state.cameraDevice)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const video = useAppSelector((state) => state.video)
+  const cameraDevice = useSoraDevtoolsStore((state) => state.cameraDevice)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const video = useSoraDevtoolsStore((state) => state.video)
   const disabled = !(sora && connectionStatus === 'connected' ? sora.video : video)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setCameraDevice(event.target.checked)

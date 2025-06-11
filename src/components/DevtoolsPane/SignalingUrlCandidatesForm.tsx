@@ -2,17 +2,17 @@ import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const SignalingUrlCandidatesForm: React.FC = () => {
-  const enabledSignalingUrlCandidates = useAppSelector(
+  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
     (state) => state.enabledSignalingUrlCandidates,
   )
-  const signalingUrlCandidates = useAppSelector((state) => state.signalingUrlCandidates)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const signalingUrlCandidates = useSoraDevtoolsStore((state) => state.signalingUrlCandidates)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
     const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledSignalingUrlCandidates(event.target.checked)
