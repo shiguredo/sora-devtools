@@ -2,11 +2,11 @@ import type React from 'react'
 import { useRef } from 'react'
 import Sora from 'sora-js-sdk'
 
-import { store } from '@/app/store'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { DownloadReport, DownloadReportParameters } from '@/types'
 
 function createDownloadReport(): DownloadReport {
-  const state = store.getState()
+  const state = useSoraDevtoolsStore.getState()
   const parameters: DownloadReportParameters = {
     aspectRatio: state.aspectRatio,
     audio: state.audio,

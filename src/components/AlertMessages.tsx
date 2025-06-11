@@ -3,19 +3,18 @@ import { useEffect } from 'react'
 import { Toast } from 'react-bootstrap'
 
 import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import type { AlertMessage } from '@/types'
 import { formatUnixtime } from '@/utils'
 
 const Reconnect: React.FC = () => {
-  const dispatch = useAppDispatch()
   const reconnectingTrials = useAppSelector((state) => state.soraContents.reconnectingTrials)
   const onClose = (): void => {
-    dispatch(setSoraReconnecting(false))
+    setSoraReconnecting(false)
   }
   useEffect(() => {
-    dispatch(reconnectSora())
-  }, [dispatch])
+    reconnectSora()
+  }, [])
   return (
     <Toast delay={20000} onClose={onClose}>
       <Toast.Header className={'bg-warning text-white'}>
@@ -31,9 +30,8 @@ const Reconnect: React.FC = () => {
 }
 
 const Alert: React.FC<AlertMessage> = (props) => {
-  const dispatch = useAppDispatch()
   const onClose = (): void => {
-    dispatch(deleteAlertMessage(props.timestamp))
+    deleteAlertMessage(props.timestamp)
   }
   const bgClassName = props.type === 'error' ? 'bg-danger' : 'bg-info'
   return (

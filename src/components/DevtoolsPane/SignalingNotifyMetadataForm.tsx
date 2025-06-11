@@ -2,7 +2,7 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
@@ -15,9 +15,8 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
   const signalingNotifyMetadata = useAppSelector((state) => state.signalingNotifyMetadata)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledSignalingNotifyMetadata(event.target.checked))
+    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEnabledSignalingNotifyMetadata(event.target.checked)
   }
   return (
     <>
@@ -42,7 +41,7 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
               controlId="signalingNotifyMetadata"
               placeholder="signalingNotifyMetadataを指定"
               value={signalingNotifyMetadata}
-              setValue={(value) => dispatch(setSignalingNotifyMetadata(value))}
+              setValue={(value) => setSignalingNotifyMetadata(value)}
               disabled={disabled}
             />
           </Col>

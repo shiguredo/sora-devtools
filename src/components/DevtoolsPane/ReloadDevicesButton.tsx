@@ -1,12 +1,10 @@
 import type React from 'react'
 
 import { setMediaDevices } from '@/app/actions'
-import { useAppDispatch } from '@/app/hooks'
 
 export const ReloadDevicesButton: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const onClick = (): void => {
-    dispatch(setMediaDevices())
+    const onClick = (): void => {
+    setMediaDevices()
   }
   return (
     <div className="col-auto mb-1">

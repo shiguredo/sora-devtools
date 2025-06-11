@@ -2,7 +2,7 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoH265Params, setVideoH265Params } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
@@ -13,9 +13,8 @@ export const VideoH265ParamsForm: React.FC = () => {
   const videoH265Params = useAppSelector((state) => state.videoH265Params)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledVideoH265Params(event.target.checked))
+    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEnabledVideoH265Params(event.target.checked)
   }
   return (
     <>
@@ -40,7 +39,7 @@ export const VideoH265ParamsForm: React.FC = () => {
               controlId="videoH265Params"
               placeholder="videoH265Paramsを指定"
               value={videoH265Params}
-              setValue={(value) => dispatch(setVideoH265Params(value))}
+              setValue={(value) => setVideoH265Params(value)}
               disabled={disabled}
             />
           </Col>

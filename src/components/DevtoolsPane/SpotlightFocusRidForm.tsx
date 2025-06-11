@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlightFocusRid } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
@@ -12,10 +12,9 @@ export const SpotlightFocusRidForm: React.FC = () => {
   const spotlightFocusRid = useAppSelector((state) => state.spotlightFocusRid)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
-      dispatch(setSpotlightFocusRid(event.target.value))
+      setSpotlightFocusRid(event.target.value)
     }
   }
   return (

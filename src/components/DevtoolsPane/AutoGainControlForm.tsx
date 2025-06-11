@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAutoGainControl } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { AUTO_GAIN_CONTROLS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
@@ -10,10 +10,9 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AutoGainControlForm: React.FC = () => {
   const autoGainControl = useAppSelector((state) => state.autoGainControl)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUTO_GAIN_CONTROLS)) {
-      dispatch(setAutoGainControl(event.target.value))
+      setAutoGainControl(event.target.value)
     }
   }
   return (

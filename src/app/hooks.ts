@@ -1,9 +1,4 @@
-import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import type { Action } from 'redux'
-import type { ThunkDispatch } from 'redux-thunk'
+import { useSoraDevtoolsStore } from './store.ts'
 
-import type { AppDispatch, RootState } from './store.ts'
-
-export const useAppDispatch = (): ThunkDispatch<RootState, undefined, Action> =>
-  useDispatch<AppDispatch>()
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useAppDispatch = () => useSoraDevtoolsStore.getState()
+export const useAppSelector = <T>(selector: (state: import('./store.ts').RootState) => T) => useSoraDevtoolsStore(selector)

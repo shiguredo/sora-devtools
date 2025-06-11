@@ -2,17 +2,16 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoInput, updateMediaStream } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoInputForm: React.FC = () => {
   const videoInput = useAppSelector((state) => state.videoInput)
   const videoInputDevices = useAppSelector((state) => state.videoInputDevices)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    dispatch(setVideoInput(event.target.value))
-    dispatch(updateMediaStream())
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setVideoInput(event.target.value)
+    updateMediaStream()
   }
   return (
     <FormGroup className="form-inline" controlId="videoInput">

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
@@ -42,10 +42,9 @@ export const MediaTypeForm: React.FC = () => {
   const mediaType = useAppSelector((state) => state.mediaType)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
   const enabledMp4Media = Mp4MediaStream.isSupported()
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {
-      dispatch(setMediaType(event.target.value))
+      setMediaType(event.target.value)
     }
   }
   useEffect(() => {

@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoContentHint } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { VIDEO_CONTENT_HINTS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
@@ -10,10 +10,9 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoContentHintForm: React.FC = () => {
   const videoContentHint = useAppSelector((state) => state.videoContentHint)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, VIDEO_CONTENT_HINTS)) {
-      dispatch(setVideoContentHint(event.target.value))
+      setVideoContentHint(event.target.value)
     }
   }
   return (

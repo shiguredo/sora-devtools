@@ -2,7 +2,7 @@ import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setClientId, setEnabledClientId } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
@@ -12,12 +12,11 @@ export const ClientIdForm: React.FC = () => {
   const clientId = useAppSelector((state) => state.clientId)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledClientId(event.target.checked))
+    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEnabledClientId(event.target.checked)
   }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setClientId(event.target.value))
+    setClientId(event.target.value)
   }
   return (
     <>

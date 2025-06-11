@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setRole } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { ROLES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
@@ -13,10 +13,9 @@ export const RoleForm: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ROLES)) {
-      dispatch(setRole(event.target.value))
+      setRole(event.target.value)
     }
   }
   return (

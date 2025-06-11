@@ -2,7 +2,7 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoVP9Params, setVideoVP9Params } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
@@ -13,9 +13,8 @@ export const VideoVP9ParamsForm: React.FC = () => {
   const videoVP9Params = useAppSelector((state) => state.videoVP9Params)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledVideoVP9Params(event.target.checked))
+    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEnabledVideoVP9Params(event.target.checked)
   }
   return (
     <>
@@ -40,7 +39,7 @@ export const VideoVP9ParamsForm: React.FC = () => {
               controlId="videoVP9Params"
               placeholder="videoVP9Paramsを指定"
               value={videoVP9Params}
-              setValue={(value) => dispatch(setVideoVP9Params(value))}
+              setValue={(value) => setVideoVP9Params(value)}
               disabled={disabled}
             />
           </Col>

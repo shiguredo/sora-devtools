@@ -1,12 +1,10 @@
 import type React from 'react'
 
 import { copyURL } from '@/app/actions'
-import { useAppDispatch } from '@/app/hooks'
 
 export const CopyUrlButton: React.FC = () => {
-  const dispatch = useAppDispatch()
   const onClick = (): void => {
-    dispatch(copyURL())
+    copyURL()
   }
   return (
     <input

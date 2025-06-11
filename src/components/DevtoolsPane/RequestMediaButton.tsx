@@ -1,13 +1,12 @@
 import type React from 'react'
 
 import { requestMedia } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 export const RequestMediaButton: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const onClick = (): void => {
-    dispatch(requestMedia())
+    const onClick = (): void => {
+    requestMedia()
   }
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const sora = useAppSelector((state) => state.soraContents.sora)

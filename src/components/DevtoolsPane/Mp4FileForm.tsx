@@ -4,7 +4,7 @@ import type React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 
 import { setMp4MediaStream } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
@@ -14,8 +14,7 @@ export const Mp4FileForm: React.FC = () => {
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const files = event.target.files
     if (files === null || files.length === 0) {
       return
@@ -24,13 +23,13 @@ export const Mp4FileForm: React.FC = () => {
     // MP4 ファイルをロードする
     try {
       const mp4MediaStream = await Mp4MediaStream.load(files[0])
-      dispatch(setMp4MediaStream(mp4MediaStream))
+      setMp4MediaStream(mp4MediaStream)
     } catch (e) {
       // ロードに失敗したらファイル選択をクリアする
       event.target.value = ''
 
       // 以前の内容が残っていた場合に備えて null を入れておく
-      dispatch(setMp4MediaStream(null))
+      setMp4MediaStream(null)
 
       throw e
     }

@@ -1,13 +1,12 @@
 import type React from 'react'
 
 import { disposeMedia } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 export const DisposeMediaButton: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const onClick = (): void => {
-    dispatch(disposeMedia())
+    const onClick = (): void => {
+    disposeMedia()
   }
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const sora = useAppSelector((state) => state.soraContents.sora)

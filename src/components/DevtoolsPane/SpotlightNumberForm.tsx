@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlightNumber } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { SPOTLIGHT_NUMBERS } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
@@ -12,10 +12,9 @@ export const SpotlightNumberForm: React.FC = () => {
   const spotlightNumber = useAppSelector((state) => state.spotlightNumber)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_NUMBERS)) {
-      dispatch(setSpotlightNumber(event.target.value))
+      setSpotlightNumber(event.target.value)
     }
   }
   return (

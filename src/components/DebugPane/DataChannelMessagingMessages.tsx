@@ -1,15 +1,14 @@
 import React from 'react'
 
 import { clearDataChannelMessages } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import type { DataChannelMessage } from '@/types'
 
 import { Message } from './Message.tsx'
 
 const ButtonClear: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const onClick = (): void => {
-    dispatch(clearDataChannelMessages())
+    const onClick = (): void => {
+    clearDataChannelMessages()
   }
   return (
     <input

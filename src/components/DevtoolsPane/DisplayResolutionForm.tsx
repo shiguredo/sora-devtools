@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setDisplayResolution } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
@@ -25,9 +25,8 @@ const DISPLAY_RESOLUTION_DATA_LIST = new Array(
 )
 
 const DropdownItem = ({ label, value }: DisplayResolutionData) => {
-  const dispatch = useAppDispatch()
-  return (
-    <Dropdown.Item as="button" onClick={() => dispatch(setDisplayResolution(value))}>
+    return (
+    <Dropdown.Item as="button" onClick={() => setDisplayResolution(value)}>
       {label} {value !== '' && `(${value})`}
     </Dropdown.Item>
   )
@@ -35,9 +34,8 @@ const DropdownItem = ({ label, value }: DisplayResolutionData) => {
 
 export const DisplayResolutionForm: React.FC = () => {
   const displayResolution = useAppSelector((state) => state.displayResolution)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setDisplayResolution(event.target.value))
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setDisplayResolution(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="displayResolution">

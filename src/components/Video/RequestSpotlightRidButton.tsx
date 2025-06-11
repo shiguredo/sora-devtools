@@ -5,7 +5,7 @@ import type { SpotlightFocusRid } from 'sora-js-sdk'
 
 import { requestSpotlightRid } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
 
 export const RequestSpotlightRidButton: React.FC = () => {
@@ -14,8 +14,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
   const sora = useAppSelector((state) => state.soraContents.sora)
   const channelId = useAppSelector((state) => state.channelId)
   const apiUrl = useAppSelector((state) => state.apiUrl)
-  const dispatch = useAppDispatch()
-  if (!sora?.connectionId) {
+    if (!sora?.connectionId) {
     return null
   }
   const onClick = async (): Promise<void> => {
@@ -35,10 +34,10 @@ export const RequestSpotlightRidButton: React.FC = () => {
         focusRid,
         unfocusRid,
       )
-      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`))
+      setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`)
     } catch (error) {
       if (error instanceof Error) {
-        dispatch(setAPIErrorAlertMessage(error.message))
+        setAPIErrorAlertMessage(error.message)
       }
     }
   }

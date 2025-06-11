@@ -2,7 +2,7 @@ import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
@@ -14,12 +14,11 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
   const signalingUrlCandidates = useAppSelector((state) => state.signalingUrlCandidates)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledSignalingUrlCandidates(event.target.checked))
+    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEnabledSignalingUrlCandidates(event.target.checked)
   }
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setSignalingUrlCandidates(event.target.value.split('\n')))
+    setSignalingUrlCandidates(event.target.value.split('\n'))
   }
   const textareaPlaceholder = `signalingUrlCandidatesを指定
 (例)

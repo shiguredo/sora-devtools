@@ -2,7 +2,7 @@ import type React from 'react'
 import { Button, Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
@@ -13,8 +13,7 @@ export const DataChannelsForm: React.FC = () => {
   const dataChannels = useAppSelector((state) => state.dataChannels)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const exampleJsonString = JSON.stringify(
+    const exampleJsonString = JSON.stringify(
     [
       {
         label: '#devtools',
@@ -29,7 +28,7 @@ export const DataChannelsForm: React.FC = () => {
   )
   const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledDataChannels(event.target.checked))
+    setEnabledDataChannels(event.target.checked)
   }
   return (
     <>
@@ -54,7 +53,7 @@ export const DataChannelsForm: React.FC = () => {
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
               value={dataChannels}
-              setValue={(value) => dispatch(setDataChannels(value))}
+              setValue={(value) => setDataChannels(value)}
               disabled={disabled}
               rows={12}
               extraControls={
@@ -62,7 +61,7 @@ export const DataChannelsForm: React.FC = () => {
                   type="button"
                   variant="light"
                   size="sm"
-                  onClick={() => dispatch(setDataChannels(exampleJsonString))}
+                  onClick={() => setDataChannels(exampleJsonString)}
                 >
                   load template
                 </Button>

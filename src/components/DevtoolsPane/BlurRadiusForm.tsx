@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setBlurRadius } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { BLUR_RADIUS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
@@ -11,10 +11,9 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const BlurRadiusForm: React.FC = () => {
   const blurRadius = useAppSelector((state) => state.blurRadius)
   const mediaType = useAppSelector((state) => state.mediaType)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, BLUR_RADIUS)) {
-      dispatch(setBlurRadius(event.target.value))
+      setBlurRadius(event.target.value)
     }
   }
   const disabled = mediaType !== 'getUserMedia'

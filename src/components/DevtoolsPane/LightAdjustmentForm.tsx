@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setLightAdjustment } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { LIGHT_ADJUSTMENT } from '@/constants'
 import { checkFormValue } from '@/utils'
 
@@ -11,10 +11,9 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 export const LightAdjustmentForm: React.FC = () => {
   const lightAdjustment = useAppSelector((state) => state.lightAdjustment)
   const mediaType = useAppSelector((state) => state.mediaType)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, LIGHT_ADJUSTMENT)) {
-      dispatch(setLightAdjustment(event.target.value))
+      setLightAdjustment(event.target.value)
     }
   }
   const disabled = mediaType !== 'getUserMedia'

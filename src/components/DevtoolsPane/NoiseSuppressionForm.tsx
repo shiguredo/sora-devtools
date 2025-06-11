@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setNoiseSuppression } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { NOISE_SUPPRESSIONS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
@@ -10,10 +10,9 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const NoiseSuppressionForm: React.FC = () => {
   const noiseSuppression = useAppSelector((state) => state.noiseSuppression)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, NOISE_SUPPRESSIONS)) {
-      dispatch(setNoiseSuppression(event.target.value))
+      setNoiseSuppression(event.target.value)
     }
   }
   return (

@@ -1,13 +1,12 @@
 import type React from 'react'
 
 import { connectSora } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 
 export const ConnectButton: React.FC = () => {
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const dispatch = useAppDispatch()
   const connect = (): void => {
-    dispatch(connectSora())
+    connectSora()
   }
   return (
     <div className="col-auto mb-1">

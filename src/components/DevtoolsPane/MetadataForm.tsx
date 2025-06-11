@@ -2,7 +2,7 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledMetadata, setMetadata } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
@@ -13,9 +13,8 @@ export const MetadataForm: React.FC = () => {
   const metadata = useAppSelector((state) => state.metadata)
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledMetadata(event.target.checked))
+    const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEnabledMetadata(event.target.checked)
   }
   return (
     <>
@@ -40,7 +39,7 @@ export const MetadataForm: React.FC = () => {
               controlId="metadata"
               placeholder="Metadataを指定"
               value={metadata}
-              setValue={(value) => dispatch(setMetadata(value))}
+              setValue={(value) => setMetadata(value)}
               disabled={disabled}
             />
           </Col>

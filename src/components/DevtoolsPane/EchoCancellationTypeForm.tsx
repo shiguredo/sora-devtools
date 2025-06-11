@@ -2,7 +2,7 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setEchoCancellationType } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/hooks'
 import { ECHO_CANCELLATION_TYPES } from '@/constants'
 import { checkFormValue } from '@/utils'
 
@@ -10,10 +10,9 @@ import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const EchoCancellationTypeForm: React.FC = () => {
   const echoCancellationType = useAppSelector((state) => state.echoCancellationType)
-  const dispatch = useAppDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ECHO_CANCELLATION_TYPES)) {
-      dispatch(setEchoCancellationType(event.target.value))
+      setEchoCancellationType(event.target.value)
     }
   }
   return (
