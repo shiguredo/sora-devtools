@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 
@@ -12,9 +12,9 @@ const Collapse: React.FC<RTCStatsWithIndexSignature> = (props) => {
   return <Message title={`${props.id}(${props.type})`} timestamp={null} description={props} />
 }
 
-const Log = React.memo((props: RTCStatsWithIndexSignature) => {
+const Log: React.FC<RTCStatsWithIndexSignature> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const Stats: React.FC = () => {
   const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)

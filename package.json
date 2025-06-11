@@ -46,9 +46,11 @@
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react": "4.5.1",
+    "babel-plugin-react-compiler": "19.0.0-beta-af1b7da-20250417",
     "dotenv": "16.5.0",
     "fast-check": "4.1.1",
     "jsdom": "26.1.0",
+    "react-compiler-runtime": "19.1.0-rc.2",
     "typescript": "5.8.3",
     "vite": "6.3.5",
     "vitest": "3.2.2"

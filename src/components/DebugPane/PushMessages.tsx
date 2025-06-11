@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import type { PushMessage } from '@/types'
@@ -33,9 +33,9 @@ const Collapse: React.FC<CollapsePushProps> = (props) => {
   )
 }
 
-const Log = React.memo((props: CollapsePushProps) => {
+const Log: React.FC<CollapsePushProps> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const PushMessages: React.FC = () => {
   const pushMessages = useSoraDevtoolsStore((state) => state.pushMessages)

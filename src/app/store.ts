@@ -1,6 +1,3 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import { immer } from 'zustand/middleware/immer'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -10,6 +7,9 @@ import type {
   DataChannelConfiguration,
   Role,
 } from 'sora-js-sdk'
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 import packageJSON from '../../package.json'
 import { WORKER_SCRIPT } from '../constants.ts'

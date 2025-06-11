@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import type React from 'react'
+import { useEffect, useRef } from 'react'
 
 const CANVAS_WIDTH = 25 as const
 const MARGIN = 2.5 as const
@@ -131,9 +132,9 @@ const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
   )
 }
 
-export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {
+export const VolumeVisualizer: React.FC<VisualizerProps> = (props) => {
   if (props.micDevice && props.stream.getAudioTracks().length > 0) {
     return <Visualizer {...props} />
   }
   return <MutedVisualizer {...props} />
-})
+}

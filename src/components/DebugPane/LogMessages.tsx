@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import type { LogMessage } from '@/types'
@@ -16,9 +16,9 @@ const Collapse: React.FC<LogMessage> = (props) => {
   )
 }
 
-const Log = React.memo((props: LogMessage) => {
+const Log: React.FC<LogMessage> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const LogMessages: React.FC = () => {
   const logMessages = useSoraDevtoolsStore((state) => state.logMessages)

@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { Message } from './Message.tsx'
 
@@ -15,9 +15,9 @@ const Collapse: React.FC<LogProps> = ({ title, codecs }) => {
   return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />
 }
 
-const Log = React.memo((props: LogProps) => {
+const Log: React.FC<LogProps> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 const getCapabilitiesCodec = (
   getCapabilities: (kind: string) => RTCRtpCapabilities | null,

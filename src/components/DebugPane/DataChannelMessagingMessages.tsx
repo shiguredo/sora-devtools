@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { clearDataChannelMessages } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -54,9 +54,9 @@ const Collapse: React.FC<DataChannelMessage> = (props) => {
   )
 }
 
-const Log = React.memo((props: DataChannelMessage) => {
+const Log: React.FC<DataChannelMessage> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const DataChannelMessagingMessages: React.FC = () => {
   const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages)

@@ -60,6 +60,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: 4.5.1
         version: 4.5.1(vite@6.3.5(@types/node@22.15.30))
+      babel-plugin-react-compiler:
+        specifier: 19.0.0-beta-af1b7da-20250417
+        version: 19.0.0-beta-af1b7da-20250417
       dotenv:
         specifier: 16.5.0
         version: 16.5.0
@@ -69,6 +72,9 @@ importers:
       jsdom:
         specifier: 26.1.0
         version: 26.1.0
+      react-compiler-runtime:
+        specifier: 19.1.0-rc.2
+        version: 19.1.0-rc.2(react@19.1.0)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -668,6 +674,9 @@ packages:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
 
+  babel-plugin-react-compiler@19.0.0-beta-af1b7da-20250417:
+    resolution: {integrity: sha512-UyTCRmzpxa4H1EqJk8fWeUOzHdEA12NQZ5DrF5hyhCs+Y6f7B4pg1fkul49sRn9GPPGFgkrH4IxOtnQJ7tNXIA==}
+
   bootstrap@5.3.6:
     resolution: {integrity: sha512-jX0GAcRzvdwISuvArXn3m7KZscWWFAf1MKBcnzaN02qWMb3jpMoUX4/qgeiGzqyIb4ojulRzs89UCUmGcFSzTA==}
     peerDependencies:
@@ -929,6 +938,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-compiler-runtime@19.1.0-rc.2:
+    resolution: {integrity: sha512-852AwyIsbWJ5o1LkQVAZsVK3iLjMxOfKZuxqeGd/RfD+j1GqHb6j3DSHLtpu4HhFbQHsP2DzxjJyKR6luv4D8w==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0 || ^0.0.0-experimental
 
   react-dom@19.1.0:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
@@ -1708,6 +1722,10 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
+  babel-plugin-react-compiler@19.0.0-beta-af1b7da-20250417:
+    dependencies:
+      '@babel/types': 7.27.6
+
   bootstrap@5.3.6(@popperjs/core@2.11.8):
     dependencies:
       '@popperjs/core': 2.11.8
@@ -1976,6 +1994,10 @@ snapshots:
       warning: 4.0.3
     optionalDependencies:
       '@types/react': 19.1.6
+
+  react-compiler-runtime@19.1.0-rc.2(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   react-dom@19.1.0(react@19.1.0):
     dependencies:

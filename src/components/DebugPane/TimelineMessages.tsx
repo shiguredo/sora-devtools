@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import type { TimelineMessage } from '@/types'
@@ -80,9 +80,9 @@ const Collapse: React.FC<TimelineMessage> = (props) => {
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />
 }
 
-const Log = React.memo((props: TimelineMessage) => {
+const Log: React.FC<TimelineMessage> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const TimelineMessages: React.FC = () => {
   const timelineMessages = useSoraDevtoolsStore((state) => state.timelineMessages)

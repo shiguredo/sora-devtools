@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import type { NotifyMessage } from '@/types'
@@ -36,9 +36,9 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
   )
 }
 
-const Log = React.memo((props: CollapseNotifyProps) => {
+const Log: React.FC<CollapseNotifyProps> = (props) => {
   return <CollapseNotify {...props} />
-})
+}
 
 export const NotifyMessages: React.FC = () => {
   const notifyMessages = useSoraDevtoolsStore((state) => state.notifyMessages)
