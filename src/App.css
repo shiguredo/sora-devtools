@@ -339,9 +339,20 @@ video {
   border-color: #f8f9fa;
 }
 
+.btn-header-debug-mode:hover {
+  color: #000;
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+
 .btn-header-debug-mode.active {
   background-color: #ff4c93;
   color: #ffffff;
+}
+
+.btn-header-debug-mode.active:hover {
+  background-color: #ff1a6f;
+  border-color: #ff1a6f;
 }
 
 .btn-footer-debug-mode {
