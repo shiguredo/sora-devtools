@@ -11,9 +11,9 @@
 
 ## develop
 
-## 2025.1.0-canary
+## 2025.1.0
 
-**リリース予定日**: 2025-06-11
+**リリース予定**: 2025-06-12
 
 - [CHANGE] `react-draggable` の依存を削除
   - Region Capture 機能を実現するために利用していたため
@@ -32,7 +32,7 @@
   - @voluntas
 - [UPDATE] @shiguredo/noise-suppression のバージョンを 2025.1.0 に上げる
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2025.1.0-canary.8 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2025.1.0 に上げる
   - @voluntas
 - [CHANGE] `@shiguredo/light-adjustment` の依存を削除
   - @voluntas
