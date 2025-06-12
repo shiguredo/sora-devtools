@@ -2,18 +2,17 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setEchoCancellation } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { ECHO_CANCELLATIONS } from '@/constants'
 import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const EchoCancellationForm: React.FC = () => {
-  const echoCancellation = useAppSelector((state) => state.echoCancellation)
-  const dispatch = useAppDispatch()
+  const echoCancellation = useSoraDevtoolsStore((state) => state.echoCancellation)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, ECHO_CANCELLATIONS)) {
-      dispatch(setEchoCancellation(event.target.value))
+      setEchoCancellation(event.target.value)
     }
   }
   return (

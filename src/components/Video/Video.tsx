@@ -1,4 +1,5 @@
-import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react'
+import type React from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useRef } from 'react'
 
 import type { CustomHTMLVideoElement, SoraDevtoolsState } from '@/types'
 import { getVideoSizeByResolution } from '@/utils'
@@ -100,6 +101,6 @@ const VideoElement: React.FC<VideoProps> = (props) => {
   )
 }
 
-export const Video = React.memo((props: VideoProps) => {
+export const Video: React.FC<VideoProps> = (props) => {
   return <VideoElement {...props} />
-})
+}

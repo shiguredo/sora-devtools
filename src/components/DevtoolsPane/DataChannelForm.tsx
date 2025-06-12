@@ -6,18 +6,17 @@ import {
   setEnabledDataChannel,
   setIgnoreDisconnectWebSocket,
 } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
-  const ignoreDisconnectWebSocket = useAppSelector((state) => state.ignoreDisconnectWebSocket)
-  const dispatch = useAppDispatch()
+  const ignoreDisconnectWebSocket = useSoraDevtoolsStore((state) => state.ignoreDisconnectWebSocket)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
-      dispatch(setIgnoreDisconnectWebSocket(event.target.value))
+      setIgnoreDisconnectWebSocket(event.target.value)
     }
   }
   return (
@@ -44,11 +43,10 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
 }
 
 const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
-  const dataChannelSignaling = useAppSelector((state) => state.dataChannelSignaling)
-  const dispatch = useAppDispatch()
+  const dataChannelSignaling = useSoraDevtoolsStore((state) => state.dataChannelSignaling)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, DATA_CHANNEL_SIGNALING)) {
-      dispatch(setDataChannelSignaling(event.target.value))
+      setDataChannelSignaling(event.target.value)
     }
   }
   return (
@@ -73,12 +71,11 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
 }
 
 export const DataChannelForm: React.FC = () => {
-  const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledDataChannel(event.target.checked))
+    setEnabledDataChannel(event.target.checked)
   }
   return (
     <>

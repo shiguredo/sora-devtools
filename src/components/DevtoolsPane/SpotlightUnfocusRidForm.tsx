@@ -2,20 +2,19 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlightUnfocusRid } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const SpotlightUnfocusRidForm: React.FC = () => {
-  const spotlightUnfocusRid = useAppSelector((state) => state.spotlightUnfocusRid)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const spotlightUnfocusRid = useSoraDevtoolsStore((state) => state.spotlightUnfocusRid)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
-      dispatch(setSpotlightUnfocusRid(event.target.value))
+      setSpotlightUnfocusRid(event.target.value)
     }
   }
   return (

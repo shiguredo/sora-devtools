@@ -1,15 +1,14 @@
-import React from 'react'
+import type React from 'react'
 
 import { clearDataChannelMessages } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { DataChannelMessage } from '@/types'
 
 import { Message } from './Message.tsx'
 
 const ButtonClear: React.FC = () => {
-  const dispatch = useAppDispatch()
   const onClick = (): void => {
-    dispatch(clearDataChannelMessages())
+    clearDataChannelMessages()
   }
   return (
     <input
@@ -55,12 +54,12 @@ const Collapse: React.FC<DataChannelMessage> = (props) => {
   )
 }
 
-const Log = React.memo((props: DataChannelMessage) => {
+const Log: React.FC<DataChannelMessage> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const DataChannelMessagingMessages: React.FC = () => {
-  const dataChannelMessages = useAppSelector((state) => state.dataChannelMessages)
+  const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages)
   return (
     <>
       <div className="py-1">

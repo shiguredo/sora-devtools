@@ -2,15 +2,14 @@ import type React from 'react'
 import { FormGroup } from 'react-bootstrap'
 
 import { setVideoTrack } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoTrackForm: React.FC = () => {
-  const videoTrack = useAppSelector((state) => state.videoTrack)
-  const dispatch = useAppDispatch()
+  const videoTrack = useSoraDevtoolsStore((state) => state.videoTrack)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setVideoTrack(event.target.checked))
+    setVideoTrack(event.target.checked)
   }
   return (
     <FormGroup className="form-inline" controlId="videoTrack">

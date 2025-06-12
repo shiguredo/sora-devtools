@@ -1,6 +1,6 @@
-import React from 'react'
+import type React from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { TimelineMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -80,13 +80,13 @@ const Collapse: React.FC<TimelineMessage> = (props) => {
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />
 }
 
-const Log = React.memo((props: TimelineMessage) => {
+const Log: React.FC<TimelineMessage> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const TimelineMessages: React.FC = () => {
-  const timelineMessages = useAppSelector((state) => state.timelineMessages)
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
+  const timelineMessages = useSoraDevtoolsStore((state) => state.timelineMessages)
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const filteredMessages = timelineMessages.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
       if (filterText === '') {

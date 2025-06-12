@@ -2,20 +2,19 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ForwardingFilterForm: React.FC = () => {
-  const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)
-  const forwardingFilter = useAppSelector((state) => state.forwardingFilter)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter)
+  const forwardingFilter = useSoraDevtoolsStore((state) => state.forwardingFilter)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledForwardingFilter(event.target.checked))
+    setEnabledForwardingFilter(event.target.checked)
   }
   return (
     <>
@@ -40,7 +39,7 @@ export const ForwardingFilterForm: React.FC = () => {
               controlId="forwardingFilter"
               placeholder="forwardingFilterを指定"
               value={forwardingFilter}
-              setValue={(value) => dispatch(setForwardingFilter(value))}
+              setValue={(value) => setForwardingFilter(value)}
               disabled={disabled}
             />
           </Col>

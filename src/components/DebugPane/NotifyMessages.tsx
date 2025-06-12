@@ -1,6 +1,6 @@
-import React from 'react'
+import type React from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { NotifyMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -36,13 +36,13 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
   )
 }
 
-const Log = React.memo((props: CollapseNotifyProps) => {
+const Log: React.FC<CollapseNotifyProps> = (props) => {
   return <CollapseNotify {...props} />
-})
+}
 
 export const NotifyMessages: React.FC = () => {
-  const notifyMessages = useAppSelector((state) => state.notifyMessages)
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
+  const notifyMessages = useSoraDevtoolsStore((state) => state.notifyMessages)
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const filteredMessages = notifyMessages.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
       if (filterText === '') {

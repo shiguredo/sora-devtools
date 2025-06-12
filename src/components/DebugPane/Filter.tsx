@@ -2,13 +2,12 @@ import type React from 'react'
 import { FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import { setDebugFilterText } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const DebugFilter: React.FC = () => {
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
-  const dispatch = useAppDispatch()
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setDebugFilterText(event.target.value))
+    setDebugFilterText(event.target.value)
   }
   return (
     <FormGroup className="form-inline debug-filter" controlId="channelId">

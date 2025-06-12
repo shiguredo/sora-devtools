@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useState } from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel.tsx'
 import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
@@ -16,18 +16,18 @@ import { VolumeVisualizer } from './VolumeVisualizer.tsx'
 
 const VideoBox: React.FC = () => {
   const [height, setHeight] = useState<number>(0)
-  const audio = useAppSelector((state) => state.audio)
-  const video = useAppSelector((state) => state.video)
-  const audioOutput = useAppSelector((state) => state.audioOutput)
-  const displayResolution = useAppSelector((state) => state.displayResolution)
-  const focusedSpotlightConnectionIds = useAppSelector(
+  const audio = useSoraDevtoolsStore((state) => state.audio)
+  const video = useSoraDevtoolsStore((state) => state.video)
+  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
+  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
+  const focusedSpotlightConnectionIds = useSoraDevtoolsStore(
     (state) => state.focusedSpotlightConnectionIds,
   )
-  const connectionId = useAppSelector((state) => state.soraContents.connectionId)
-  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
-  const micDevice = useAppSelector((state) => state.micDevice)
+  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId)
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
+  const micDevice = useSoraDevtoolsStore((state) => state.micDevice)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
-  const mediaStats = useAppSelector((state) => state.mediaStats)
+  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
   if (audio === false && video === false) {
     return null
   }
@@ -60,13 +60,13 @@ const VideoBox: React.FC = () => {
 }
 
 export const LocalVideo: React.FC = () => {
-  const connectionId = useAppSelector((state) => state.soraContents.connectionId)
-  const clientId = useAppSelector((state) => state.soraContents.clientId)
-  const sessionId = useAppSelector((state) => state.soraContents.sessionId)
-  const simulcast = useAppSelector((state) => state.simulcast)
-  const spotlight = useAppSelector((state) => state.spotlight)
-  const role = useAppSelector((state) => state.role)
-  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
+  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId)
+  const clientId = useSoraDevtoolsStore((state) => state.soraContents.clientId)
+  const sessionId = useSoraDevtoolsStore((state) => state.soraContents.sessionId)
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
+  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
+  const role = useSoraDevtoolsStore((state) => state.role)
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
   return (
     <div className="row my-1">
       <div className="col-auto">

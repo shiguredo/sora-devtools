@@ -2,20 +2,19 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledMetadata, setMetadata } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MetadataForm: React.FC = () => {
-  const enabledMetadata = useAppSelector((state) => state.enabledMetadata)
-  const metadata = useAppSelector((state) => state.metadata)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata)
+  const metadata = useSoraDevtoolsStore((state) => state.metadata)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledMetadata(event.target.checked))
+    setEnabledMetadata(event.target.checked)
   }
   return (
     <>
@@ -40,7 +39,7 @@ export const MetadataForm: React.FC = () => {
               controlId="metadata"
               placeholder="Metadataを指定"
               value={metadata}
-              setValue={(value) => dispatch(setMetadata(value))}
+              setValue={(value) => setMetadata(value)}
               disabled={disabled}
             />
           </Col>

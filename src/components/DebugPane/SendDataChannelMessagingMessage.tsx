@@ -2,14 +2,14 @@ import type React from 'react'
 import { useRef } from 'react'
 import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const SendDataChannelMessagingMessage: React.FC = () => {
   const selectRef = useRef<HTMLSelectElement>(null)
   const textareaRef = useRef<HTMLInputElement>(null)
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const dataChannels = useAppSelector((state) => state.soraContents.dataChannels)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const dataChannels = useSoraDevtoolsStore((state) => state.soraContents.dataChannels)
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
       return

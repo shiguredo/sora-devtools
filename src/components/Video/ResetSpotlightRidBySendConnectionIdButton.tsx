@@ -2,16 +2,15 @@ import type React from 'react'
 
 import { resetSpotlightRid } from '@/api'
 import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 type Props = {
   sendConnectionId: string
 }
 export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const channelId = useAppSelector((state) => state.channelId)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
-  const dispatch = useAppDispatch()
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const channelId = useSoraDevtoolsStore((state) => state.channelId)
+  const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
   const onClick = async (): Promise<void> => {
     if (!sora?.connectionId) {
       return
@@ -23,10 +22,10 @@ export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props
         sora.connectionId,
         props.sendConnectionId,
       )
-      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`))
+      setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`)
     } catch (error) {
       if (error instanceof Error) {
-        dispatch(setAPIErrorAlertMessage(error.message))
+        setAPIErrorAlertMessage(error.message)
       }
     }
   }

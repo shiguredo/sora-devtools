@@ -2,20 +2,19 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioCodecType } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { AUDIO_CODEC_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const AudioCodecTypeForm: React.FC = () => {
-  const audioCodecType = useAppSelector((state) => state.audioCodecType)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const audioCodecType = useSoraDevtoolsStore((state) => state.audioCodecType)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUDIO_CODEC_TYPES)) {
-      dispatch(setAudioCodecType(event.target.value))
+      setAudioCodecType(event.target.value)
     }
   }
   return (

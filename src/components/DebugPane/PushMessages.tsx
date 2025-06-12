@@ -1,6 +1,6 @@
-import React from 'react'
+import type React from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { PushMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -33,13 +33,13 @@ const Collapse: React.FC<CollapsePushProps> = (props) => {
   )
 }
 
-const Log = React.memo((props: CollapsePushProps) => {
+const Log: React.FC<CollapsePushProps> = (props) => {
   return <Collapse {...props} />
-})
+}
 
 export const PushMessages: React.FC = () => {
-  const pushMessages = useAppSelector((state) => state.pushMessages)
-  const debugFilterText = useAppSelector((state) => state.debugFilterText)
+  const pushMessages = useSoraDevtoolsStore((state) => state.pushMessages)
+  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const filteredMessages = pushMessages.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
       if (filterText === '') {

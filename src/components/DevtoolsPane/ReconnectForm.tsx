@@ -2,18 +2,17 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setReconnect } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ReconnectForm: React.FC = () => {
-  const reconnect = useAppSelector((state) => state.reconnect)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const reconnect = useSoraDevtoolsStore((state) => state.reconnect)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setReconnect(event.target.checked))
+    setReconnect(event.target.checked)
   }
   return (
     <Row className="form-row">

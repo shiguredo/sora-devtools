@@ -2,20 +2,19 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSimulcast } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { SIMULCAST } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const SimulcastForm: React.FC = () => {
-  const simulcast = useAppSelector((state) => state.simulcast)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, SIMULCAST)) {
-      dispatch(setSimulcast(event.target.value))
+      setSimulcast(event.target.value)
     }
   }
   return (

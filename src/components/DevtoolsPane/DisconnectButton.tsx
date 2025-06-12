@@ -1,13 +1,12 @@
 import type React from 'react'
 
 import { disconnectSora } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const DisconnectButton: React.FC = () => {
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const dispatch = useAppDispatch()
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disconnect = (): void => {
-    dispatch(disconnectSora())
+    disconnectSora()
   }
   return (
     <div className="col-auto mb-1">

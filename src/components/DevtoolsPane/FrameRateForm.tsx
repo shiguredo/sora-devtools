@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setFrameRate } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
@@ -23,19 +23,17 @@ const FRAME_RATE_DATA = new Array(
 )
 
 const DropdownItem = ({ label, value }: FrameRateData) => {
-  const dispatch = useAppDispatch()
   return (
-    <Dropdown.Item as="button" onClick={() => dispatch(setFrameRate(value))}>
+    <Dropdown.Item as="button" onClick={() => setFrameRate(value)}>
       {label}
     </Dropdown.Item>
   )
 }
 
 export const FrameRateForm: React.FC = () => {
-  const frameRate = useAppSelector((state) => state.frameRate)
-  const dispatch = useAppDispatch()
+  const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setFrameRate(event.target.value))
+    setFrameRate(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="frameRate">

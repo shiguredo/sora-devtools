@@ -2,7 +2,7 @@ import type React from 'react'
 import { useState } from 'react'
 import { Col, Collapse, Row } from 'react-bootstrap'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { AlertMessages } from '@/components/AlertMessages'
 import { LocalVideo } from '@/components/Video/LocalVideo'
 import { RemoteVideos } from '@/components/Video/RemoteVideos'
@@ -95,7 +95,7 @@ const RowChannelOptions: React.FC = () => {
 }
 
 const RowGetUserMediaConstraints: React.FC = () => {
-  const role = useAppSelector((state) => state.role)
+  const role = useSoraDevtoolsStore((state) => state.role)
   const showCodecForms = role !== 'recvonly'
   return (
     <>
@@ -134,7 +134,7 @@ const RowGetUserMediaConstraints: React.FC = () => {
 }
 
 const RowSimulcastOptions: React.FC = () => {
-  const simulcast = useAppSelector((state) => state.simulcast)
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
   if (simulcast !== 'true') {
     return null
   }
@@ -148,7 +148,7 @@ const RowSimulcastOptions: React.FC = () => {
 }
 
 const RowSpotlightOptions: React.FC = () => {
-  const spotlight = useAppSelector((state) => state.spotlight)
+  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
   if (spotlight !== 'true') {
     return null
   }
@@ -169,20 +169,20 @@ const RowSpotlightOptions: React.FC = () => {
 
 const RowSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const enabledBundleId = useAppSelector((state) => state.enabledBundleId)
-  const enabledClientId = useAppSelector((state) => state.enabledClientId)
-  const enabledDataChannel = useAppSelector((state) => state.enabledDataChannel)
-  const enabledDataChannels = useAppSelector((state) => state.enabledDataChannels)
-  const enabledForwardingFilters = useAppSelector((state) => state.enabledForwardingFilters)
-  const enabledForwardingFilter = useAppSelector((state) => state.enabledForwardingFilter)
-  const enabledMetadata = useAppSelector((state) => state.enabledMetadata)
-  const enabledSignalingNotifyMetadata = useAppSelector(
+  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId)
+  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId)
+  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
+  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels)
+  const enabledForwardingFilters = useSoraDevtoolsStore((state) => state.enabledForwardingFilters)
+  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter)
+  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata)
+  const enabledSignalingNotifyMetadata = useSoraDevtoolsStore(
     (state) => state.enabledSignalingNotifyMetadata,
   )
-  const enabledSignalingUrlCandidates = useAppSelector(
+  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
     (state) => state.enabledSignalingUrlCandidates,
   )
-  const reconnect = useAppSelector((state) => state.reconnect)
+  const reconnect = useSoraDevtoolsStore((state) => state.reconnect)
   const enabledOptions = [
     enabledBundleId,
     enabledClientId,
@@ -233,18 +233,18 @@ const RowSignalingOptions: React.FC = () => {
 }
 
 const RowAdvancedSignalingOptions: React.FC = () => {
-  const role = useAppSelector((state) => state.role)
+  const role = useSoraDevtoolsStore((state) => state.role)
   const showSenderParams = role !== 'recvonly'
   const showReceiverParams = role !== 'sendonly'
   const [collapsed, setCollapsed] = useState(true)
-  const enableAudioStreamingLanguageCode = useAppSelector(
+  const enableAudioStreamingLanguageCode = useSoraDevtoolsStore(
     (state) => state.enabledAudioStreamingLanguageCode,
   )
-  const enabledVideoVP9Params = useAppSelector((state) => state.enabledVideoVP9Params)
-  const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
-  const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
-  const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
-  const forceStereoOutput = useAppSelector((state) => state.forceStereoOutput)
+  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params)
+  const enabledVideoH264Params = useSoraDevtoolsStore((state) => state.enabledVideoH264Params)
+  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params)
+  const enabledVideoAV1Params = useSoraDevtoolsStore((state) => state.enabledVideoAV1Params)
+  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput)
   const showOptions = [] as boolean[]
   if (showSenderParams) {
     showOptions.push(
@@ -320,16 +320,16 @@ export const RowMediaType: React.FC = () => {
 
 const RowMediaOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const audioContentHint = useAppSelector((state) => state.audioContentHint)
-  const autoGainControl = useAppSelector((state) => state.autoGainControl)
-  const noiseSuppression = useAppSelector((state) => state.noiseSuppression)
-  const echoCancellation = useAppSelector((state) => state.echoCancellation)
-  const echoCancellationType = useAppSelector((state) => state.echoCancellationType)
-  const videoContentHint = useAppSelector((state) => state.videoContentHint)
-  const resolution = useAppSelector((state) => state.resolution)
-  const frameRate = useAppSelector((state) => state.frameRate)
-  const blurRadius = useAppSelector((state) => state.blurRadius)
-  const mediaProcessorsNoiseSuppression = useAppSelector(
+  const audioContentHint = useSoraDevtoolsStore((state) => state.audioContentHint)
+  const autoGainControl = useSoraDevtoolsStore((state) => state.autoGainControl)
+  const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression)
+  const echoCancellation = useSoraDevtoolsStore((state) => state.echoCancellation)
+  const echoCancellationType = useSoraDevtoolsStore((state) => state.echoCancellationType)
+  const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint)
+  const resolution = useSoraDevtoolsStore((state) => state.resolution)
+  const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
+  const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius)
+  const mediaProcessorsNoiseSuppression = useSoraDevtoolsStore(
     (state) => state.mediaProcessorsNoiseSuppression,
   )
   const enabledOptions = [
@@ -416,8 +416,8 @@ const RowMediaOptions: React.FC = () => {
 }
 
 const RowDevices: React.FC = () => {
-  const role = useAppSelector((state) => state.role)
-  const mediaType = useAppSelector((state) => state.mediaType)
+  const role = useSoraDevtoolsStore((state) => state.role)
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -454,7 +454,7 @@ const RowDevices: React.FC = () => {
 }
 
 export const RowMediaDevices: React.FC = () => {
-  const role = useAppSelector((state) => state.role)
+  const role = useSoraDevtoolsStore((state) => state.role)
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -486,8 +486,8 @@ export const RowMediaDevices: React.FC = () => {
 }
 
 export const DevtoolsPane: React.FC = () => {
-  const debug = useAppSelector((state) => state.debug)
-  const role = useAppSelector((state) => state.role)
+  const debug = useSoraDevtoolsStore((state) => state.debug)
+  const role = useSoraDevtoolsStore((state) => state.role)
   return (
     <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />
