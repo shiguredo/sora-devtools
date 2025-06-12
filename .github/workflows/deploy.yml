@@ -2,7 +2,7 @@ name: Deploy sora-devtools to Pages
 
 on:
   push:
-    branches: ["develop", "feature/github-pages"]
+    branches: ["develop"]
 
 permissions:
   contents: read
@@ -15,18 +15,20 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       # - uses: actions/configure-pages@v5
       #   with:
       #     static_site_generator: next
       - run: pnpm install
-      - run: pnpm run build
+      - run: pnpm run dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
@@ -36,7 +38,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

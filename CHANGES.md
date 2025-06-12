@@ -11,6 +11,76 @@
 
 ## develop
 
+## 2025.1.0
+
+**リリース予定**: 2025-06-12
+
+- [CHANGE] `react-draggable` の依存を削除
+  - Region Capture 機能を実現するために利用していたため
+  - @voluntas
+- [CHANGE] Region Capture 機能を削除する
+  - 将来的に別の形で復活させる可能性はあり
+  - @voluntas
+- [CHANGE] テキストボックスにオーバーレイしたボタンに背景色をつける
+  - `pretty format` と `load template` のオーバーレイボタン
+  - @tnamao
+- [CHANGE] multistream 項目を削除する
+  - @voluntas
+- [CHANGE] 対応 Node.js のバージョンを 22 以上にする
+  - @voluntas
+- [CHANGE] index.html にあったリンク集を削除する
+  - @voluntas
+- [UPDATE] @shiguredo/noise-suppression のバージョンを 2025.1.0 に上げる
+  - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2025.1.0 に上げる
+  - @voluntas
+- [CHANGE] `@shiguredo/light-adjustment` の依存を削除
+  - @voluntas
+  - @tnamao
+- [ADD] `forceStereoOutput` の設定を追加する
+  - 受信した音声を出力する際にステレオを強制する
+  - role が `sendrecv` か `recvonly` の時に設定可能になる
+  - @tnamao
+
+### misc
+
+- [CHANGE] `query-string` の依存を削除する
+  - @voluntas
+- [CHANGE] GitHub Actions の ubuntu-latest を ubuntu-24.04 に変更する
+  - @voluntas
+- [CHANGE] `Next.js` を `package.json` から削除する
+  - @voluntas
+- [CHANGE] `Next.js` から `Vite` / `React` へ移行する
+  - @voluntas
+- [CHANGE] `.gitignore` に `dist` を追加する
+  - @voluntas
+- [CHANGE] `biome` の設定で `src/` と `tests/` を `include` する
+  - @voluntas
+- [ADD] GitHub Actions の nodejs に 24 を追加する
+  - @voluntas
+- [ADD] PBT 用に `fast-check` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `fast-check` を `vitest` で利用できるようにするため `@fast-check/vitest` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] 下位互換維持のため `/devtools.html` を生成するようにする
+  - @voluntas
+- [ADD] `vite` を `devDependencies` に追加する
+  - @voluntas
+- [ADD] `@types/react-dom` を `devDependencies` に追加する
+  - @voluntas
+- [UPDATE] pnpm 10 系に上げる
+  - @voluntas
+- [UPDATE] @shiguredo/mp4-media-stream のバージョンを 2024.3.0 に上げる
+  - H.265 / VP8 / VP9 / AV1 / AAC が対応コーデックに追加された
+  - @sile
+
+## 2024.2.3
+
+**リリース日**: 2024-11-29
+
+- [FIX] sora-js-sdk のバージョンを 2024.2.2 に上げる
+  - @voluntas
+
 ## 2024.2.2
 
 **リリース日**: 2024-11-29

@@ -60,7 +60,7 @@ export const DataChannelsForm: React.FC = () => {
               extraControls={
                 <Button
                   type="button"
-                  variant="outline-secondary"
+                  variant="light"
                   size="sm"
                   onClick={() => dispatch(setDataChannels(exampleJsonString))}
                 >

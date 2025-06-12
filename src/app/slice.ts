@@ -1,5 +1,4 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { LightAdjustmentProcessor } from '@shiguredo/light-adjustment'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
@@ -66,6 +65,7 @@ const initialState: SoraDevtoolsState = {
   enabledVideoAV1Params: false,
   audioStreamingLanguageCode: '',
   enabledAudioStreamingLanguageCode: false,
+  forceStereoOutput: false,
   fakeVolume: '0',
   fakeContents: {
     worker: null,
@@ -85,7 +85,7 @@ const initialState: SoraDevtoolsState = {
     remoteClients: [],
     prevStatsReport: [],
     statsReport: [],
-    datachannels: [],
+    dataChannels: [],
     turnUrl: null,
   },
   ignoreDisconnectWebSocket: '',
@@ -95,7 +95,6 @@ const initialState: SoraDevtoolsState = {
   mediaType: 'getUserMedia',
   metadata: '',
   mp4MediaStream: null,
-  multistream: '',
   mute: false,
   noiseSuppression: '',
   notifyMessages: [],
@@ -134,8 +133,6 @@ const initialState: SoraDevtoolsState = {
   apiUrl: null,
   aspectRatio: '',
   resizeMode: '',
-  lightAdjustment: '',
-  lightAdjustmentProcessor: null,
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: '',
@@ -301,16 +298,7 @@ export const slice = createSlice({
       state.noiseSuppression = action.payload
     },
     setMediaType: (state, action: PayloadAction<SoraDevtoolsState['mediaType']>) => {
-      // TODO(yuito): 現時点で window.CropTarget は正式リリースではないので、API がない場合は使用できないようにする
-      if (
-        // FIXME(v): これだと mediaType のテストが通らなくなる
-        action.payload === 'mediacaptureRegion' &&
-        (typeof window === 'undefined' || window.CropTarget === undefined)
-      ) {
-        state.mediaType = 'getUserMedia'
-      } else {
-        state.mediaType = action.payload
-      }
+      state.mediaType = action.payload
     },
     setMetadata: (state, action: PayloadAction<string>) => {
       state.metadata = action.payload
@@ -383,7 +371,7 @@ export const slice = createSlice({
     setSora: (state, action: PayloadAction<ConnectionPublisher | ConnectionSubscriber | null>) => {
       state.soraContents.sora = <any>action.payload
       if (!state.soraContents.sora) {
-        state.soraContents.datachannels = []
+        state.soraContents.dataChannels = []
       }
     },
     setSoraSessionId: (state, action: PayloadAction<string | null>) => {
@@ -420,7 +408,7 @@ export const slice = createSlice({
       state.soraContents.reconnectingTrials = action.payload
     },
     setSoraDataChannels: (state, action: PayloadAction<DataChannelConfiguration>) => {
-      state.soraContents.datachannels.push(action.payload)
+      state.soraContents.dataChannels.push(action.payload)
     },
     setLocalMediaStream: (state, action: PayloadAction<MediaStream | null>) => {
       if (state.soraContents.localMediaStream) {
@@ -569,9 +557,6 @@ export const slice = createSlice({
     setRole: (state, action: PayloadAction<Role>) => {
       state.role = action.payload
     },
-    setMultistream: (state, action: PayloadAction<SoraDevtoolsState['multistream']>) => {
-      state.multistream = action.payload
-    },
     setSimulcast: (state, action: PayloadAction<SoraDevtoolsState['simulcast']>) => {
       state.simulcast = action.payload
     },
@@ -593,16 +578,9 @@ export const slice = createSlice({
     setResizeMode: (state, action: PayloadAction<SoraDevtoolsState['resizeMode']>) => {
       state.resizeMode = action.payload
     },
-    setLightAdjustment: (state, action: PayloadAction<SoraDevtoolsState['lightAdjustment']>) => {
-      if (action.payload !== '' && state.lightAdjustmentProcessor === null) {
-        const processor = new LightAdjustmentProcessor()
-        state.lightAdjustmentProcessor = processor
-      }
-      state.lightAdjustment = action.payload
-    },
     setBlurRadius: (state, action: PayloadAction<SoraDevtoolsState['blurRadius']>) => {
       if (action.payload !== '' && state.virtualBackgroundProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
+        const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
         const processor = new VirtualBackgroundProcessor(assetsPath)
         state.virtualBackgroundProcessor = processor
       }
@@ -613,8 +591,7 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['mediaProcessorsNoiseSuppression']>,
     ) => {
       if (action.payload && state.noiseSuppressionProcessor === null) {
-        const assetsPath = process.env.NEXT_PUBLIC_NOISE_SUPPRESSION_ASSETS_PATH || ''
-        const processor = new NoiseSuppressionProcessor(assetsPath)
+        const processor = new NoiseSuppressionProcessor()
         state.noiseSuppressionProcessor = processor
       }
       state.mediaProcessorsNoiseSuppression = action.payload
@@ -639,6 +616,12 @@ export const slice = createSlice({
       action: PayloadAction<SoraDevtoolsState['enabledAudioStreamingLanguageCode']>,
     ) => {
       state.enabledAudioStreamingLanguageCode = action.payload
+    },
+    setForceStereoOutput: (
+      state,
+      action: PayloadAction<SoraDevtoolsState['forceStereoOutput']>,
+    ) => {
+      state.forceStereoOutput = action.payload
     },
   },
 })

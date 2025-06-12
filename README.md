@@ -33,13 +33,13 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 ## スクリーンショット
 
-[![Image from Gyazo](https://i.gyazo.com/cbf507d3708083adb21a8947149bf3e2.png)](https://gyazo.com/cbf507d3708083adb21a8947149bf3e2)
+[![Image from Gyazo](https://i.gyazo.com/e74879a751d32637a62a2a2a874e78cf.png)](https://gyazo.com/e74879a751d32637a62a2a2a874e78cf)
 
 ## 利用技術
 
 - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - [Node\.js](https://nodejs.org/en)
-- [Next\.js](https://nextjs.org/)
+- [Vite](https://vite.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [React](https://reactjs.org/)
 - [Redux](https://redux.js.org/)
@@ -49,7 +49,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 - [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
-  - [@shiguredo/light\-adjustment \- npm](https://www.npmjs.com/package/@shiguredo/light-adjustment)
+  - [@shiguredo/mp4\-media\-stream \- npm](https://www.npmjs.com/package/@shiguredo/mp4-media-stream)
 - [Playwright](https://playwright.dev/)
 - [Vitest](https://vitest.dev/)
 - [pnpm](https://pnpm.io/)
@@ -62,46 +62,46 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
 
-[![Image from Gyazo](https://i.gyazo.com/266b2f6869dc44ad66ca5e54fcb21784.jpg)](https://gyazo.com/266b2f6869dc44ad66ca5e54fcb21784)
+[![Image from Gyazo](https://i.gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51.jpg)](https://gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51)
 
 ### レポート機能
 
 現在のクライアントのクライアントのログ、Sora からの通知、クライアント統計情報などをファイル化してダウンロードできます。
 
-[![Image from Gyazo](https://i.gyazo.com/2b246030142149c95a424576e360e959.jpg)](https://gyazo.com/2b246030142149c95a424576e360e959)
+[![Image from Gyazo](https://i.gyazo.com/a6a21343c85b4854c99fb15eb3a2fccc.jpg)](https://gyazo.com/a6a21343c85b4854c99fb15eb3a2fccc)
 
 ### デバッグ機能
 
 デバッグを有効にすると、ログ、通知、統計が有効になります。
 
-[![Image from Gyazo](https://i.gyazo.com/3f7fe3e011d99dfb87181ea6b252247d.png)](https://gyazo.com/3f7fe3e011d99dfb87181ea6b252247d)
+[![Image from Gyazo](https://i.gyazo.com/c15b137e3d99d235845af5da0405ef4a.png)](https://gyazo.com/c15b137e3d99d235845af5da0405ef4a)
 
 ### コピー URL 機能
 
-現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。
+現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。既存の URL も変更されます
 
-[![Image from Gyazo](https://i.gyazo.com/2d0ddb0eb1f7006f249baf15bf072009.jpg)](https://gyazo.com/2d0ddb0eb1f7006f249baf15bf072009)
+[![Image from Gyazo](https://i.gyazo.com/163e12ab790340fa7a83bc7b6aa5c456.jpg)](https://gyazo.com/163e12ab790340fa7a83bc7b6aa5c456)
 
-例えば multi_sendrecv で設定を弄らなかった場合は以下のような値になります。
+初期状態の URL をコピーすると以下のような設定になります。
 
-`https://example.com/devtools?multistream=true&role=sendrecv`
+`https://sora-devtools.shiguredo.app/?channelId=sora&role=sendrecv&audio=true&video=true&debug=false`
 
 ## 用語集
 
+- マルチストリーム
+  - 1 接続で配信と視聴の両方を行う仕組みです
+- サイマルキャスト
+  - 配信時に複数の画質を同時に配信を行う仕組みです
+- スポットライト
+  - 直近で発話した N 人にスポットライトを当てるような仕組みです
+- リアルタイムメッセージング
+  - WebRTC のデータチャネルを利用してリアルタイムにメッセージの送受信を行う仕組みです
 - 送受信
   - 自分の音声や映像を配信し、視聴も行う仕組みです
 - 送信のみ
   - 自分の音声や映像をのみを配信し、視聴を行わない仕組みです
 - 受信のみ
   - 自分の音声や映像を配信せず、視聴だけを行う仕組みです
-- マルチストリーム
-  - 配信と視聴の両方を行う仕組みです
-- サイマルキャスト
-  - 配信時に複数の画質を同時に配信を行う仕組みです
-- スポットライト
-  - 直近で発話した N 人にスポットライトを当てるような仕組みです
-- データチャネルメッセージング
-  - WebRTC の機能を利用してデータの送受信を行う仕組みです
 
 ## 機能一覧
 
@@ -116,23 +116,14 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 
 ### マルチストリーム
 
-音声と映像を双方向でやり取りする仕組みです。
+音声と映像を双方向、または片方向でやり取りする仕組みです。
+Sora ではマルチストリームが標準機能となります。
 
-- マルチストリーム送受信
-- マルチストリーム送信のみ
-- マルチストリーム受信のみ
-
-### マルチストリームマルチキャスト
-
-音声と映像を双方向でやり取りする仕組みです。
+### サイマルキャスト
 
 配信側は複数の画質を同時に配信し、視聴側は画質を選択して視聴します。
 
 **Chrome と Edge と Safari のみで動作します**
-
-- マルチストリーム送受信 (サイマルキャスト有効)
-- マルチストリーム送信のみ (サイマルキャスト有効)
-- マルチストリーム受信のみ (サイマルキャスト有効)
 
 ### スポットライト
 
@@ -140,29 +131,21 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 
 **Chrome と Edge と Safari のみで動作します**
 
-- スポットライト送受信
-- スポットライト送信のみ
-- スポットライト受信のみ
-
 ### スポットライト (サイマルキャスト無効)
 
 配信時に複数の画質を配信しないため、発話をしていない時も画質の変更は行われません。
 サイマルキャストに対応していないブラウザも利用することができます。
 
-- スポットライト送受信 (サイマルキャスト無効)
-- スポットライト送信のみ (サイマルキャスト無効)
-- スポットライト受信のみ (サイマルキャスト無効)
+### リアルタイムメッセージング
 
-### データチャネルメッセージング
-
-音声と映像の送受信は行わず、データチャネルメッセージングのみを利用します。
+音声と映像の送受信は行わず、データチャネルを利用したリアルタイムメッセージングが利用できます。
 
 ## ライセンス
 
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```text
-Copyright 2017-2024, Shiguredo Inc.
+Copyright 2017-2025, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
 
 Licensed under the Apache License, Version 2.0 (the "License");

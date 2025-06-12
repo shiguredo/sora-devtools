@@ -8,7 +8,7 @@
 brew uninstall pnpm npm yarn
 brew install corepack
 corepack enable pnpm
-corepack prepare pnpm@latest-8 --activate
+corepack prepare pnpm@latest --activate
 ```
 
 ## 開発環境

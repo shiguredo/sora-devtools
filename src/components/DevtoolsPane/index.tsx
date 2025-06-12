@@ -32,17 +32,16 @@ import { EchoCancellationForm } from './EchoCancellationForm.tsx'
 import { EchoCancellationTypeForm } from './EchoCancellationTypeForm.tsx'
 import { FacingModeForm } from './FacingModeForm.tsx'
 import { FakeVolumeForm } from './FakeVolumeForm.tsx'
+import { ForceStereoOutputForm } from './ForceStereoOutputForm.tsx'
 import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
 import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
 import { FrameRateForm } from './FrameRateForm.tsx'
-import { LightAdjustmentForm } from './LightAdjustmentForm.tsx'
 import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm.tsx'
 import { MediaStatsForm } from './MediaStatsForm.tsx'
 import { MediaTypeForm } from './MediaTypeForm.tsx'
 import { MetadataForm } from './MetadataForm.tsx'
 import { MicDeviceForm } from './MicDeviceForm.tsx'
 import { Mp4FileForm } from './Mp4FileForm.tsx'
-import { MultistreamForm } from './MultistreamForm.tsx'
 import { NoiseSuppressionForm } from './NoiseSuppressionForm.tsx'
 import { ReconnectForm } from './ReconnectForm.tsx'
 import { ReloadDevicesButton } from './ReloadDevicesButton.tsx'
@@ -85,9 +84,6 @@ const RowChannelOptions: React.FC = () => {
           <RoleForm />
         </Col>
         <Col>
-          <MultistreamForm />
-        </Col>
-        <Col>
           <SimulcastForm />
         </Col>
         <Col>
@@ -100,8 +96,7 @@ const RowChannelOptions: React.FC = () => {
 
 const RowGetUserMediaConstraints: React.FC = () => {
   const role = useAppSelector((state) => state.role)
-  const multistream = useAppSelector((state) => state.multistream)
-  const showCodecForms = !(role === 'recvonly' && (multistream === 'true' || multistream === ''))
+  const showCodecForms = role !== 'recvonly'
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -238,6 +233,9 @@ const RowSignalingOptions: React.FC = () => {
 }
 
 const RowAdvancedSignalingOptions: React.FC = () => {
+  const role = useAppSelector((state) => state.role)
+  const showSenderParams = role !== 'recvonly'
+  const showReceiverParams = role !== 'sendonly'
   const [collapsed, setCollapsed] = useState(true)
   const enableAudioStreamingLanguageCode = useAppSelector(
     (state) => state.enabledAudioStreamingLanguageCode,
@@ -246,13 +244,21 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   const enabledVideoH264Params = useAppSelector((state) => state.enabledVideoH264Params)
   const enabledVideoH265Params = useAppSelector((state) => state.enabledVideoH265Params)
   const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
-  const enabledOptions = [
-    enableAudioStreamingLanguageCode,
-    enabledVideoVP9Params,
-    enabledVideoH264Params,
-    enabledVideoH265Params,
-    enabledVideoAV1Params,
-  ].some((e) => e)
+  const forceStereoOutput = useAppSelector((state) => state.forceStereoOutput)
+  const showOptions = [] as boolean[]
+  if (showSenderParams) {
+    showOptions.push(
+      enableAudioStreamingLanguageCode,
+      enabledVideoVP9Params,
+      enabledVideoH264Params,
+      enabledVideoH265Params,
+      enabledVideoAV1Params,
+    )
+  }
+  if (showReceiverParams) {
+    showOptions.push(forceStereoOutput)
+  }
+  const enabledOptions = showOptions.some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
     linkClassNames.push('collapsed')
@@ -274,11 +280,16 @@ const RowAdvancedSignalingOptions: React.FC = () => {
       </Col>
       <Collapse in={!collapsed}>
         <div>
-          <AudioStreamingLanguageCodeForm />
-          <VideoVP9ParamsForm />
-          <VideoAV1ParamsForm />
-          <VideoH264ParamsForm />
-          <VideoH265ParamsForm />
+          {showSenderParams && (
+            <>
+              <AudioStreamingLanguageCodeForm />
+              <VideoVP9ParamsForm />
+              <VideoAV1ParamsForm />
+              <VideoH264ParamsForm />
+              <VideoH265ParamsForm />
+            </>
+          )}
+          {showReceiverParams && <ForceStereoOutputForm />}
         </div>
       </Collapse>
     </Row>
@@ -318,7 +329,6 @@ const RowMediaOptions: React.FC = () => {
   const resolution = useAppSelector((state) => state.resolution)
   const frameRate = useAppSelector((state) => state.frameRate)
   const blurRadius = useAppSelector((state) => state.blurRadius)
-  const lightAdjustment = useAppSelector((state) => state.lightAdjustment)
   const mediaProcessorsNoiseSuppression = useAppSelector(
     (state) => state.mediaProcessorsNoiseSuppression,
   )
@@ -332,7 +342,6 @@ const RowMediaOptions: React.FC = () => {
     resolution !== '',
     frameRate !== '',
     blurRadius !== '',
-    lightAdjustment !== '',
     mediaProcessorsNoiseSuppression,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
@@ -394,9 +403,6 @@ const RowMediaOptions: React.FC = () => {
             </Col>
             <Col className="col-auto">
               <BlurRadiusForm />
-            </Col>
-            <Col className="col-auto">
-              <LightAdjustmentForm />
             </Col>
             <Col className="col-auto">
               <FacingModeForm />
@@ -482,11 +488,6 @@ export const RowMediaDevices: React.FC = () => {
 export const DevtoolsPane: React.FC = () => {
   const debug = useAppSelector((state) => state.debug)
   const role = useAppSelector((state) => state.role)
-  const multistream = useAppSelector((state) => state.multistream)
-  const showAdvancedSignalingForms = !(
-    role === 'recvonly' &&
-    (multistream === 'true' || multistream === '')
-  )
   return (
     <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />
@@ -496,7 +497,7 @@ export const DevtoolsPane: React.FC = () => {
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
-      {showAdvancedSignalingForms && <RowAdvancedSignalingOptions />}
+      <RowAdvancedSignalingOptions />
       <hr className="hr-form" />
       {role !== 'recvonly' ? (
         <>

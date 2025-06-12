@@ -96,7 +96,6 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
   const focusedSpotlightConnectionIds = useAppSelector(
     (state) => state.focusedSpotlightConnectionIds,
   )
-  const multistream = useAppSelector((state) => state.multistream)
   const mute = useAppSelector((state) => state.mute)
   const simulcast = useAppSelector((state) => state.simulcast)
   const spotlight = useAppSelector((state) => state.spotlight)
@@ -111,7 +110,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
           <JitterButter type="video" stream={mediaStream} />
         </div>
         <div className="d-flex align-items-center mb-1 video-status-inner">
-          {spotlight !== 'true' && multistream === 'true' && simulcast === 'true' ? (
+          {spotlight !== 'true' && simulcast === 'true' ? (
             <>
               <RequestRtpStreamBySendConnectionIdButton rid="r0" sendConnectionId={connectionId} />
               <RequestRtpStreamBySendConnectionIdButton rid="r1" sendConnectionId={connectionId} />
@@ -119,7 +118,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
               <ResetRtpStreamBySendConnectionIdButton sendConnectionId={connectionId} />
             </>
           ) : null}
-          {spotlight === 'true' && multistream === 'true' && simulcast === 'true' ? (
+          {spotlight === 'true' && simulcast === 'true' ? (
             <>
               <RequestSpotlightRidBySendConnectionIdButton sendConnectionId={connectionId} />
               <ResetSpotlightRidBySendConnectionIdButton sendConnectionId={connectionId} />

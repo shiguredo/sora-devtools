@@ -56,6 +56,9 @@
   "videoAV1Params": {
     "description": "映像のコーデックタイプに AV1 を指定した場合の設定を指定します。"
   },
+  "forceStereoOutput": {
+    "description": "audioOutput をステレオに強制する。"
+  },
   "reconnect": {
     "description": "一度接続に成功したあとに意図しない切断があった場合に再接続するかどうかを指定します。"
   },
@@ -99,7 +102,7 @@
     "description": "mediaType に fakeMedia を選択した際の音量を指定します。"
   },
   "mp4File": {
-    "description": "mediaType に mp4Media を選択した際に使用する MP4 ファイル (H.264 + Opus のみ対応) を指定します。"
+    "description": "mediaType に mp4Media を選択した際に使用する MP4 ファイルを指定します。"
   },
   "audioContentHint": {
     "description": "MediaStreamTrack audio の contentHint を指定します。"
@@ -139,9 +142,6 @@
   },
   "blurRadius": {
     "description": "shiguredo Media Processors の背景ぼかしを使用するかどうか指定します。"
-  },
-  "lightAdjustment": {
-    "description": "shiguredo Media Processors のライト調整を使用するかどうか指定します。"
   },
   "audioInput": {
     "description": "音声入力を指定します。"

@@ -7,8 +7,8 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type FormRadioProps = {
   label: string
@@ -37,7 +37,6 @@ export const MediaTypeForm: React.FC = () => {
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
   const [mountClient, setMountClient] = useState(false)
-  const enabledMediacaptureRegion = typeof window !== 'undefined' && window.CropTarget !== undefined
   const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
   const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
   const mediaType = useAppSelector((state) => state.mediaType)
@@ -68,14 +67,6 @@ export const MediaTypeForm: React.FC = () => {
         onChange={onChange}
       />
       <FormRadio label="fakeMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
-      {mountClient && (
-        <FormRadio
-          label="mediacaptureRegion"
-          mediaType={mediaType}
-          disabled={disabled || !enabledMediacaptureRegion}
-          onChange={onChange}
-        />
-      )}
       {mountClient && (
         <FormRadio
           label="mp4Media"

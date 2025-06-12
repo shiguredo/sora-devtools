@@ -28,7 +28,6 @@ export const store = configureStore({
           'notifyMessages',
           'pushMessages',
           'signalingMessages',
-          'lightAdjustmentProcessor',
           'virtualBackgroundProcessor',
           'noiseSuppressionProcessor',
         ],
@@ -46,7 +45,7 @@ export const store = configureStore({
         ],
       },
     })
-    if (process.env.NEXT_PUBLIC_REDUX_LOGGER === 'true') {
+    if (import.meta.env.VITE_REDUX_LOGGER === 'true') {
       middleware.concat(logger)
     }
     return middleware
