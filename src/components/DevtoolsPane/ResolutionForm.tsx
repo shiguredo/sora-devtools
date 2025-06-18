@@ -10,7 +10,7 @@ type ResolutionData = {
   value: string
 }
 
-const RESOLUTION_DATA_LIST = new Array(
+const RESOLUTION_DATA_LIST = [
   { label: '未指定', value: '' },
   { label: '144p', value: '256x144' },
   { label: '240p', value: '320x240' },
@@ -21,7 +21,7 @@ const RESOLUTION_DATA_LIST = new Array(
   { label: '1080p', value: '1920x1080' },
   { label: '1440p', value: '2560x1440' },
   { label: '2160p', value: '3840x2160' },
-)
+]
 
 const DropdownItem = ({ label, value }: ResolutionData) => {
   return (

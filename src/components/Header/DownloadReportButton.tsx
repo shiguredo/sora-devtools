@@ -122,8 +122,8 @@ export const DownloadReportButton: React.FC = () => {
         defaultValue="Download report"
         onClick={onClick}
       />
-      {/* biome-ignore lint/a11y/useAnchorContent: <explanation> */}
-      {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+      {/* biome-ignore lint/a11y/useAnchorContent: This is a hidden anchor used for programmatic file download */}
+      {/* biome-ignore lint/a11y/useValidAnchor: This is a hidden anchor used for programmatic file download */}
       <a ref={anchorRef} style={{ display: 'none' }} />
     </>
   )
