@@ -232,6 +232,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
   }
 
   // undefined の項目を削除する
+
   ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
     if (result[key] === undefined) {
       delete result[key]
