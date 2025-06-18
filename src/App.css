@@ -344,6 +344,10 @@ video {
   color: #ffffff;
 }
 
+.btn-header-debug-mode.active:hover {
+  background-color: #ff1a6f;
+}
+
 .btn-footer-debug-mode {
   display: none;
   width: 65px;

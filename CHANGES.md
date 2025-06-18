@@ -11,6 +11,9 @@
 
 ## develop
 
+- [FIX] debug ボタンのマウスオーバー時の色を修正する
+  - @voluntas
+
 ### misc
 
 - [ADD] immer を依存に追加する
