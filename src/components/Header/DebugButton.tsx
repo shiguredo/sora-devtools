@@ -8,7 +8,7 @@ export const DebugButton: React.FC = () => {
   const onClick = (): void => {
     setDebug(!debug)
   }
-  const classNames = ['btn', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
+  const classNames = ['btn', 'btn-light', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
   if (debug) {
     classNames.push('active')
   }
