@@ -53,7 +53,7 @@ export const Message: React.FC<Props> = (props) => {
       <div className="d-flex justify-content-between align-items-center text-break">
         <a
           className={`debug-title ${disabled ? 'disabled' : ''}`}
-          // biome-ignore lint/a11y/useValidAnchor: <explanation>
+          // biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling content visibility
           onClick={() => setShow(!show)}
           aria-controls={ariaControls}
           aria-expanded={show}
