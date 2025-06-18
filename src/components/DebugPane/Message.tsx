@@ -51,9 +51,9 @@ export const Message: React.FC<Props> = (props) => {
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="d-flex justify-content-between align-items-center text-break">
-        <a
+        <button
+          type="button"
           className={`debug-title ${disabled ? 'disabled' : ''}`}
-          // biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling content visibility
           onClick={() => setShow(!show)}
           aria-controls={ariaControls}
           aria-expanded={show}
@@ -64,7 +64,7 @@ export const Message: React.FC<Props> = (props) => {
           ) : null}
           {label}
           <span>{title}</span>
-        </a>
+        </button>
         <div className="border-left">
           <CopyLogButton
             text={
