@@ -11,7 +11,7 @@ type FrameRateData = {
   value: string
 }
 
-const FRAME_RATE_DATA = new Array(
+const FRAME_RATE_DATA = [
   { label: '未指定', value: '' },
   { label: '60', value: '60' },
   { label: '30', value: '30' },
@@ -20,7 +20,7 @@ const FRAME_RATE_DATA = new Array(
   { label: '15', value: '15' },
   { label: '10', value: '10' },
   { label: '5', value: '5' },
-)
+]
 
 const DropdownItem = ({ label, value }: FrameRateData) => {
   return (

@@ -210,11 +210,17 @@ video {
   opacity: 0.1;
 }
 
-.debug-title {
+button.debug-title {
   cursor: pointer;
   color: #ffffff !important;
   width: 100%;
   text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  display: block;
 }
 
 .debug-title.disabled {

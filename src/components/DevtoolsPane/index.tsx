@@ -209,7 +209,7 @@ const RowSignalingOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+        {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Signaling options
         </a>
@@ -273,7 +273,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+        {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Advanced signaling options
         </a>
@@ -358,7 +358,7 @@ const RowMediaOptions: React.FC = () => {
   return (
     <Row className="form-row">
       <Col>
-        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+        {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Media options
         </a>

@@ -989,7 +989,6 @@ export const requestMedia = async (): Promise<void> => {
       })
       store.setAPIErrorAlertMessage(`Failed to get user devices. ${error.message}`)
     }
-    // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
     let originalTrack: MediaStreamVideoTrack | undefined
     if (state.virtualBackgroundProcessor?.isProcessing()) {
       if (originalTrack === undefined) {
@@ -1161,7 +1160,6 @@ export const connectSora = async (): Promise<void> => {
     if (error instanceof Error) {
       store.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`)
     }
-    // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
     let originalTrack: MediaStreamVideoTrack | undefined
     if (state.virtualBackgroundProcessor?.isProcessing()) {
       if (originalTrack === undefined) {
@@ -1602,7 +1600,6 @@ export const setCameraDevice = async (cameraDevice: boolean): Promise<void> => {
 const stopVideoProcessors = (
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null,
 ): MediaStreamTrack | undefined => {
-  // biome-ignore lint/correctness/noUndeclaredVariables: @types/dom-mediacapture-transform にはある
   let originalTrack: MediaStreamVideoTrack | undefined
   if (virtualBackgroundProcessor?.isProcessing()) {
     originalTrack = virtualBackgroundProcessor.getOriginalTrack()
