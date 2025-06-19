@@ -41,7 +41,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
     "@fast-check/vitest": "0.2.1",
-    "@playwright/test": "1.53.0",
+    "@playwright/test": "1.53.1",
     "@types/node": "24.0.3",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
