@@ -3,20 +3,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [
-    react({
-      babel: {
-        plugins: [
-          ['babel-plugin-react-compiler', {
-            runtimeModule: 'react-compiler-runtime',
-            // コンパイラのオプション
-            compilationMode: 'infer', // 'infer' | 'annotation' | 'all'
-            panicThreshold: 'NONE', // エラーを無視しない
-          }]
-        ],
-      },
-    })
-  ],
+  plugins: [react()],
   build: {
     minify: true,
     target: 'esnext',

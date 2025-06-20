@@ -1,6 +1,6 @@
-import type React from 'react'
+import React from 'react'
 
-export const ClipboardIcon: React.FC = () => {
+export const ClipboardIcon = React.memo(() => {
   return (
     <svg
       width="1em"
@@ -21,4 +21,4 @@ export const ClipboardIcon: React.FC = () => {
       />
     </svg>
   )
-}
+})
