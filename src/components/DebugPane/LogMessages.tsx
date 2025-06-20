@@ -1,11 +1,11 @@
-import type React from 'react'
+import React from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import type { LogMessage } from '@/types'
 
 import { Message } from './Message.tsx'
 
-const Collapse: React.FC<LogMessage> = (props) => {
+const Collapse = React.memo<LogMessage>((props) => {
   const { message, timestamp } = props
   return (
     <Message
@@ -14,11 +14,11 @@ const Collapse: React.FC<LogMessage> = (props) => {
       description={JSON.parse(message.description)}
     />
   )
-}
+})
 
-const Log: React.FC<LogMessage> = (props) => {
+const Log = React.memo<LogMessage>((props) => {
   return <Collapse {...props} />
-}
+})
 
 export const LogMessages: React.FC = () => {
   const logMessages = useSoraDevtoolsStore((state) => state.logMessages)

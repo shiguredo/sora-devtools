@@ -1,5 +1,4 @@
-import type React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
@@ -41,7 +40,7 @@ function mediaStreamStatsReportFilter(
   return result
 }
 
-const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
+const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
   const showStats = useSoraDevtoolsStore((state) => state.showStats)
   const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
   const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
@@ -86,9 +85,9 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
       })}
     </>
   )
-}
+})
 
-const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
+const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
   const { mediaStream, connectionId, clientId } = client
   const [height, setHeight] = useState<number>(0)
   const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
@@ -149,7 +148,7 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
       </div>
     </div>
   )
-}
+})
 
 export const RemoteVideos: React.FC = () => {
   const remoteClients = useSoraDevtoolsStore((state) => state.soraContents.remoteClients)

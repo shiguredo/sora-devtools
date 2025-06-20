@@ -1,5 +1,4 @@
-import type React from 'react'
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 const CANVAS_WIDTH = 25 as const
 const MARGIN = 2.5 as const
@@ -42,7 +41,7 @@ type VisualizerProps = {
   stream: MediaStream
   height: number
 }
-const Visualizer: React.FC<VisualizerProps> = (props) => {
+const Visualizer = React.memo<VisualizerProps>((props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -99,12 +98,12 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
       ref={canvasRef}
     />
   )
-}
+})
 
 type MutedVisualizerProps = {
   height: number
 }
-const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
+const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -130,11 +129,11 @@ const MutedVisualizer: React.FC<MutedVisualizerProps> = (props) => {
       ref={canvasRef}
     />
   )
-}
+})
 
-export const VolumeVisualizer: React.FC<VisualizerProps> = (props) => {
+export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {
   if (props.micDevice && props.stream.getAudioTracks().length > 0) {
     return <Visualizer {...props} />
   }
   return <MutedVisualizer {...props} />
-}
+})

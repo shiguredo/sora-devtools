@@ -1,5 +1,4 @@
-import type React from 'react'
-import { type Dispatch, type SetStateAction, useEffect, useRef } from 'react'
+import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react'
 
 import type { CustomHTMLVideoElement, SoraDevtoolsState } from '@/types'
 import { getVideoSizeByResolution } from '@/utils'
@@ -12,7 +11,7 @@ type VideoProps = {
   audioOutput: string
   setHeight: Dispatch<SetStateAction<number>>
 }
-const VideoElement: React.FC<VideoProps> = (props) => {
+const VideoElement = React.memo<VideoProps>((props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
@@ -99,8 +98,8 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       height={videoSize.height > 0 ? videoSize.height : undefined}
     />
   )
-}
+})
 
-export const Video: React.FC<VideoProps> = (props) => {
+export const Video = React.memo<VideoProps>((props) => {
   return <VideoElement {...props} />
-}
+})

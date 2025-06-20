@@ -1,5 +1,4 @@
-import type React from 'react'
-import { type JSX, useState } from 'react'
+import React, { type JSX, useState } from 'react'
 import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
@@ -10,7 +9,7 @@ type DescriptionProps = {
   description: string | number | Record<string, unknown>
   wordBreak?: boolean
 }
-const Description: React.FC<DescriptionProps> = (props) => {
+const Description = React.memo<DescriptionProps>((props) => {
   const { description } = props
   if (description === undefined) {
     return null
@@ -33,7 +32,7 @@ const Description: React.FC<DescriptionProps> = (props) => {
       </div>
     </div>
   )
-}
+})
 
 type Props = {
   timestamp: number | null
@@ -43,7 +42,7 @@ type Props = {
   label?: JSX.Element | null
   wordBreak?: boolean
 }
-export const Message: React.FC<Props> = (props) => {
+export const Message = React.memo<Props>((props) => {
   const { defaultShow, description, title, timestamp, label } = props
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow)
   const ariaControls = timestamp ? title + timestamp : title
@@ -81,4 +80,4 @@ export const Message: React.FC<Props> = (props) => {
       </Collapse>
     </div>
   )
-}
+})
