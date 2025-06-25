@@ -39,18 +39,18 @@
     "zustand": "5.0.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.0",
+    "@biomejs/biome": "2.0.5",
     "@fast-check/vitest": "0.2.1",
     "@playwright/test": "1.53.1",
-    "@types/node": "24.0.3",
+    "@types/node": "24.0.4",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
-    "@vitejs/plugin-react": "4.5.2",
+    "@vitejs/plugin-react": "4.6.0",
     "dotenv": "16.5.0",
     "fast-check": "4.1.1",
     "jsdom": "26.1.0",
     "typescript": "5.8.3",
-    "vite": "6.3.5",
+    "vite": "7.0.0",
     "vitest": "3.2.4"
   },
   "engines": {
