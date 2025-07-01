@@ -36,17 +36,17 @@
     "react-bootstrap": "2.10.10",
     "react-dom": "19.1.0",
     "sora-js-sdk": "2025.1.0",
-    "zustand": "5.0.5"
+    "zustand": "5.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.5",
+    "@biomejs/biome": "2.0.6",
     "@fast-check/vitest": "0.2.1",
-    "@playwright/test": "1.53.1",
-    "@types/node": "24.0.4",
+    "@playwright/test": "1.53.2",
+    "@types/node": "24.0.8",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react": "4.6.0",
-    "dotenv": "16.5.0",
+    "dotenv": "17.0.0",
     "fast-check": "4.1.1",
     "jsdom": "26.1.0",
     "typescript": "5.8.3",
