@@ -10,11 +10,13 @@ type VideoProps = {
   mute: boolean
   audioOutput: string
   setHeight: Dispatch<SetStateAction<number>>
+  onAudioOutputError?: (error: Error) => void
 }
 const VideoElement = React.memo<VideoProps>((props) => {
-  const { displayResolution, stream, mute, audioOutput, setHeight } = props
+  const { displayResolution, stream, mute, audioOutput, setHeight, onAudioOutputError } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
+  const previousAudioOutputRef = useRef<string>('')
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
@@ -83,20 +85,36 @@ const VideoElement = React.memo<VideoProps>((props) => {
     if (!videoElement || !audioOutput || !stream || stream.getAudioTracks().length === 0) {
       return
     }
+    
+    // audioOutput が変更されていない場合はスキップ
+    if (previousAudioOutputRef.current === audioOutput) {
+      return
+    }
+    previousAudioOutputRef.current = audioOutput
 
     // setSinkId は非同期処理なので適切にハンドリング
     const updateAudioOutput = async () => {
       try {
         await videoElement.setSinkId(audioOutput)
-        console.log(`Audio output successfully changed to: ${audioOutput}`)
       } catch (error) {
-        console.error('Failed to set audio output device:', error)
+        const errorObject = error instanceof Error ? error : new Error(String(error))
+        
+        // 親コンポーネントにエラーを通知
+        if (onAudioOutputError) {
+          onAudioOutputError(errorObject)
+        }
+        
         // エラー時の処理: デフォルトデバイスに戻す
         try {
           await videoElement.setSinkId('')
-          console.log('Fallback to default audio output device')
         } catch (fallbackError) {
-          console.error('Failed to fallback to default device:', fallbackError)
+          // フォールバックも失敗した場合
+          const fallbackErrorObject = fallbackError instanceof Error 
+            ? fallbackError 
+            : new Error(String(fallbackError))
+          if (onAudioOutputError) {
+            onAudioOutputError(fallbackErrorObject)
+          }
         }
       }
     }
@@ -110,10 +128,13 @@ const VideoElement = React.memo<VideoProps>((props) => {
       }
       videoElement.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true })
       return () => {
-        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata)
+        // videoElement が null になっている可能性があるため、videoRef.current をチェック
+        if (videoRef.current) {
+          videoRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata)
+        }
       }
     }
-  }, [audioOutput, stream])
+  }, [audioOutput, stream, onAudioOutputError])
 
   return (
     <video
