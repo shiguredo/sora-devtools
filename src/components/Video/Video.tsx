@@ -116,14 +116,10 @@ const VideoElement = React.memo<VideoProps>((props) => {
           previousAudioOutputRef.current = ''
         }
         // フォールバックは成功したが、元のデバイスは使用できなかったことを通知
-        const warningError = new Error('音声出力デバイスの設定に失敗しました')
-        if (onAudioOutputError && !signal.aborted) {
-          onAudioOutputError(warningError)
-        }
+        // 元エラーは既に通知済みなので、ここでは追加通知しない
       } catch (_fallbackError) {
         // 元エラーとフォールバックエラーを統合
-        // const fallbackErrorObject = toError(fallbackError) // 現在使用していない
-        const combinedError = new Error('音声出力デバイスの設定に失敗しました')
+        const combinedError = new Error('指定された音声出力デバイスが利用できず、デフォルトデバイスへの切り替えも失敗しました')
         if (onAudioOutputError && !signal.aborted) {
           onAudioOutputError(combinedError)
         }
@@ -147,13 +143,14 @@ const VideoElement = React.memo<VideoProps>((props) => {
         
         const errorObject = toError(error)
         
-        // 親コンポーネントにエラーを通知
+        // デフォルトデバイスにフォールバックを試みる
+        await fallbackToDefaultDevice(errorObject)
+        
+        // フォールバックが完了した後にエラーを通知
+        // （フォールバックが失敗した場合は fallbackToDefaultDevice 内で別途通知される）
         if (onAudioOutputError) {
           onAudioOutputError(errorObject)
         }
-        
-        // エラー時の処理: デフォルトデバイスに戻す
-        await fallbackToDefaultDevice(errorObject)
       }
     }
 
