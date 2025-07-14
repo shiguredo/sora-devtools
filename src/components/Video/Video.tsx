@@ -22,6 +22,7 @@ const VideoElement = React.memo<VideoProps>((props) => {
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
   const previousAudioOutputRef = useRef<string>('')
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
@@ -96,25 +97,54 @@ const VideoElement = React.memo<VideoProps>((props) => {
       return
     }
 
+    // 新しい処理を開始する前に、前の非同期処理をキャンセル
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    abortControllerRef.current = new AbortController()
+    const { signal } = abortControllerRef.current
+
     // フォールバック処理を別関数に分離
-    const fallbackToDefaultDevice = async () => {
+    const fallbackToDefaultDevice = async (_originalError: Error) => {
+      // キャンセルされた場合は処理を中断
+      if (signal.aborted) return
+      
       try {
         await videoElement.setSinkId('')
-      } catch (fallbackError) {
-        const fallbackErrorObject = toError(fallbackError)
-        if (onAudioOutputError) {
-          onAudioOutputError(fallbackErrorObject)
+        // フォールバック成功時も previousAudioOutputRef を更新
+        if (!signal.aborted) {
+          previousAudioOutputRef.current = ''
+        }
+        // フォールバックは成功したが、元のデバイスは使用できなかったことを通知
+        const warningError = new Error('音声出力デバイスの設定に失敗しました')
+        if (onAudioOutputError && !signal.aborted) {
+          onAudioOutputError(warningError)
+        }
+      } catch (_fallbackError) {
+        // 元エラーとフォールバックエラーを統合
+        // const fallbackErrorObject = toError(fallbackError) // 現在使用していない
+        const combinedError = new Error('音声出力デバイスの設定に失敗しました')
+        if (onAudioOutputError && !signal.aborted) {
+          onAudioOutputError(combinedError)
         }
       }
     }
 
     // setSinkId は非同期処理なので適切にハンドリング
     const updateAudioOutput = async () => {
+      // キャンセルされた場合は早期リターン
+      if (signal.aborted) return
+      
       try {
         await videoElement.setSinkId(audioOutput)
         // 成功時のみ previousAudioOutputRef を更新
-        previousAudioOutputRef.current = audioOutput
+        if (!signal.aborted) {
+          previousAudioOutputRef.current = audioOutput
+        }
       } catch (error) {
+        // キャンセルされた場合は処理を中断
+        if (signal.aborted) return
+        
         const errorObject = toError(error)
         
         // 親コンポーネントにエラーを通知
@@ -123,21 +153,39 @@ const VideoElement = React.memo<VideoProps>((props) => {
         }
         
         // エラー時の処理: デフォルトデバイスに戻す
-        await fallbackToDefaultDevice()
+        await fallbackToDefaultDevice(errorObject)
       }
     }
 
     // メタデータがロードされていることを確認してから実行
     if (videoElement.readyState >= 1) {
-      updateAudioOutput()
+      // 直接呼び出す場合もエラーハンドリングを一貫させる
+      updateAudioOutput().catch(() => {
+        // エラーは updateAudioOutput 内で完全に処理される
+      })
     } else {
       const handleLoadedMetadata = () => {
-        updateAudioOutput()
+        updateAudioOutput().catch(() => {
+          // エラーは updateAudioOutput 内で完全に処理される
+        })
       }
       videoElement.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true })
       // クロージャで videoElement を保持して、同じオブジェクトからリスナーを削除
       return () => {
         videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata)
+        // アンマウント時に非同期処理をキャンセル
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort()
+          abortControllerRef.current = null
+        }
+      }
+    }
+
+    // クリーンアップ関数
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
       }
     }
   }, [audioOutput, stream, onAudioOutputError])
