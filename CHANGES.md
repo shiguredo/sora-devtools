@@ -21,8 +21,6 @@
   - @voluntas
 - [CHANGE] redux から zustand を利用する
   - @voluntas
-- [CHANGE] react-compiler を利用する
-  - @voluntas
 - [CHANGE] 対応 Node.js のバージョンを 24 以上にする
   - @voluntas
 
