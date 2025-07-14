@@ -105,10 +105,10 @@ const VideoElement = React.memo<VideoProps>((props) => {
     const { signal } = abortControllerRef.current
 
     // フォールバック処理を別関数に分離
-    // フォールバック失敗時のみエラーを通知し、成功時は静かに切り替える
-    const fallbackToDefaultDevice = async (_originalError: Error) => {
+    // フォールバック成功時はtrueを返し、失敗時はfalseを返す
+    const fallbackToDefaultDevice = async (_originalError: Error): Promise<boolean> => {
       // キャンセルされた場合は処理を中断
-      if (signal.aborted) return
+      if (signal.aborted) return false
       
       try {
         await videoElement.setSinkId('')
@@ -117,12 +117,15 @@ const VideoElement = React.memo<VideoProps>((props) => {
         if (!signal.aborted) {
           previousAudioOutputRef.current = audioOutput
         }
+        // フォールバック成功
+        return true
       } catch (_fallbackError) {
-        // 元エラーとフォールバックエラーを統合
-        const combinedError = new Error('指定された音声出力デバイスが利用できず、デフォルトデバイスへの切り替えも失敗しました')
+        // フォールバック失敗: 統合エラーを通知
+        const combinedError = new Error('音声出力デバイスの設定に失敗しました')
         if (onAudioOutputError && !signal.aborted) {
           onAudioOutputError(combinedError)
         }
+        return false
       }
     }
 
@@ -143,14 +146,13 @@ const VideoElement = React.memo<VideoProps>((props) => {
         
         const errorObject = toError(error)
         
-        // 元エラーを通知
-        if (onAudioOutputError) {
-          onAudioOutputError(errorObject)
-        }
-        
         // デフォルトデバイスにフォールバックを試みる
-        // フォールバック失敗時のみ追加エラーを通知
-        await fallbackToDefaultDevice(errorObject)
+        const fallbackSuccess = await fallbackToDefaultDevice(errorObject)
+        
+        if (!fallbackSuccess) {
+          // フォールバック失敗: 統合エラーは fallbackToDefaultDevice 内で通知済み
+        }
+        // フォールバック成功時はエラーを通知せず静かに切り替え
       }
     }
 
