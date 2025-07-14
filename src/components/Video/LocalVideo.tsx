@@ -32,7 +32,8 @@ const VideoBox: React.FC = () => {
     return null
   }
   return (
-    <div className="d-flex">
+    <>
+      <div className="d-flex">
         <div
           className={`position-relative d-flex flex-nowrap align-items-start video-wrapper overflow-y-hidden${
             focused ? ' spotlight-focused' : ''
@@ -54,6 +55,7 @@ const VideoBox: React.FC = () => {
           ) : null}
         </div>
       </div>
+    </>
   )
 }
 

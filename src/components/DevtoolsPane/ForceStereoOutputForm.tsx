@@ -14,7 +14,8 @@ export const ForceStereoOutputForm: React.FC = () => {
     useSoraDevtoolsStore.getState().setForceStereoOutput(event.target.checked)
   }
   return (
-    <Row className="form-row">
+    <>
+      <Row className="form-row">
         <Col className="col-auto">
           <FormGroup className="form-inline" controlId="forceStereoOutput">
             <TooltipFormCheck
@@ -28,5 +29,6 @@ export const ForceStereoOutputForm: React.FC = () => {
           </FormGroup>
         </Col>
       </Row>
+    </>
   )
 }

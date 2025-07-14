@@ -23,12 +23,15 @@ const VideoElement = React.memo<VideoProps>((props) => {
       })
     })
     if (videoRef.current) {
+      if (audioOutput && stream && stream.getAudioTracks().length > 0) {
+        videoRef.current.setSinkId(audioOutput)
+      }
       resizeObserver.observe(videoRef.current)
     }
     return () => {
       resizeObserver.disconnect()
     }
-  }, [setHeight])
+  }, [setHeight, audioOutput, stream])
 
   useEffect(() => {
     if (videoRef.current && mute) {
@@ -65,6 +68,9 @@ const VideoElement = React.memo<VideoProps>((props) => {
       }
 
       videoElement.srcObject = stream
+      if (audioOutput && stream.getAudioTracks().length > 0) {
+        videoElement.setSinkId(audioOutput)
+      }
 
       return () => {
         // onloadedmetadata が呼ばれない場合にアンマウントされた場合は track.enabled をオリジナルの状態に戻す
@@ -75,46 +81,11 @@ const VideoElement = React.memo<VideoProps>((props) => {
         }
       }
     }
-  }, [stream])
+  }, [stream, audioOutput])
 
-  // audioOutput が変更された時のみ setSinkId を実行する
-  useEffect(() => {
-    const videoElement = videoRef.current
-    if (!videoElement || !audioOutput || !stream || stream.getAudioTracks().length === 0) {
-      return
-    }
-
-    // setSinkId は非同期処理なので適切にハンドリング
-    const updateAudioOutput = async () => {
-      try {
-        await videoElement.setSinkId(audioOutput)
-        console.log(`Audio output successfully changed to: ${audioOutput}`)
-      } catch (error) {
-        console.error('Failed to set audio output device:', error)
-        // エラー時の処理: デフォルトデバイスに戻す
-        try {
-          await videoElement.setSinkId('')
-          console.log('Fallback to default audio output device')
-        } catch (fallbackError) {
-          console.error('Failed to fallback to default device:', fallbackError)
-        }
-      }
-    }
-
-    // メタデータがロードされていることを確認してから実行
-    if (videoElement.readyState >= 1) {
-      updateAudioOutput()
-    } else {
-      const handleLoadedMetadata = () => {
-        updateAudioOutput()
-      }
-      videoElement.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true })
-      return () => {
-        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata)
-      }
-    }
-  }, [audioOutput, stream])
-
+  if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
+    videoRef.current.setSinkId(audioOutput)
+  }
   return (
     <video
       id={props.localVideo ? 'local-video' : undefined}
