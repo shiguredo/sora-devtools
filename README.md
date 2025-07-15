@@ -21,7 +21,7 @@ Please read <https://github.com/shiguredo/oss/blob/master/README.en.md> before u
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
 
-## デモサイト
+## オンラインサイト
 
 **このサイトだけでは WebRTC SFU を試すことはできません。WebRTC SFU Sora を別途用意してください**
 
