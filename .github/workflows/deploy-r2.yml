@@ -43,4 +43,4 @@ jobs:
           aws s3 sync ./dist/ s3://sora-devtools-canary/ \
             --endpoint-url https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com \
             --delete \
-            --cache-control "public, max-age=3600"
+            --cache-control "public, max-age=300"
