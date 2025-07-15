@@ -19,6 +19,14 @@
 - [ADD] immer を依存に追加する
   - zustand/immer を利用するため
   - @voluntas
+- [ADD] Cloudflare R2 へｎのプロイを追加する
+  - <https://sora-devtools.shiguredo.app/>
+    - master ブランチ
+  - <https://canary.sora-devtools.shiguredo.app/>
+    - develop ブランチ
+  - @voluntas
+- [CHANGE] GitHub Pages へのプロイを削除する
+  - @voluntas
 - [CHANGE] redux から zustand を利用する
   - @voluntas
 - [CHANGE] 対応 Node.js のバージョンを 24 以上にする
