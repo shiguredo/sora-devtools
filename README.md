@@ -21,15 +21,14 @@ Please read <https://github.com/shiguredo/oss/blob/master/README.en.md> before u
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
 
-## オンラインサイト
+## オンライン版 Sora-DevTools
 
 **このサイトだけでは WebRTC SFU を試すことはできません。WebRTC SFU Sora を別途用意してください**
 
-正式版 (master ブランチ) がデプロイされています。
-<https://sora-devtools.shiguredo.app>
-
-開発版 (develop ブランチ) がデプロイされています。
-<https://canary.sora-devtools.shiguredo.app>
+- 正式版
+  - <https://sora-devtools.shiguredo.app>
+- 開発版
+  - <https://canary.sora-devtools.shiguredo.app>
 
 ## スクリーンショット
 
