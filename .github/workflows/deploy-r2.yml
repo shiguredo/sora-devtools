@@ -1,0 +1,46 @@
+name: Deploy sora-devtools to Cloudflare R2
+
+on:
+  push:
+    branches: ["develop", "master"]
+
+permissions:
+  contents: read
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run dist
+      # R2 へのアップロード
+      - name: Configure AWS CLI for R2
+        run: |
+          aws configure set region auto
+      # ブランチが master の場合のみデプロイする
+      - name: Upload to R2 (Production)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          aws s3 sync ./dist/ s3://sora-devtools/ \
+            --endpoint-url https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com \
+            --delete \
+            --cache-control "public, max-age=3600"
+      - name: Upload to R2 (Canary)
+        # ブランチが develop の場合のみデプロイする
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          aws s3 sync ./dist/ s3://sora-devtools-canary/ \
+            --endpoint-url https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com \
+            --delete \
+            --cache-control "public, max-age=300"
