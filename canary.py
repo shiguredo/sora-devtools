@@ -66,10 +66,10 @@ def update_version(file_path: str, dry_run: bool) -> Optional[str]:
 # pnpm install & pnpm build 実行
 def run_pnpm_operations(dry_run: bool) -> None:
     if dry_run:
-        print("Dry-run: Would run 'pnpm run dist'")
+        print("Dry-run: Would run 'pnpm run build'")
     else:
-        subprocess.run(["pnpm", "run", "dist"], check=True)
-        print("pnpm run dist executed")
+        subprocess.run(["pnpm", "run", "build"], check=True)
+        print("pnpm run build executed")
 
 
 # git コミット、タグ、プッシュを実行
@@ -89,8 +89,6 @@ def git_commit_version(new_version: str, dry_run: bool) -> None:
 # git コミット、タグ、プッシュを実行
 def git_operations_after_build(new_version: str, dry_run: bool) -> None:
     if dry_run:
-        print("Dry-run: Would run 'git add dist/'")
-        print(f"Dry-run: Would run '[canary] Add dist files for {new_version}'")
         print(f"Dry-run: Would run 'git tag {new_version}'")
         print("Dry-run: Would run 'git push'")
         print(f"Dry-run: Would run 'git push origin {new_version}'")
