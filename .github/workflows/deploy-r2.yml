@@ -28,7 +28,7 @@ jobs:
       - name: Configure AWS CLI for R2
         run: |
           aws configure set region auto
-      # ブランチが main or master の場合のみデプロイする
+      # ブランチが master の場合のみデプロイする
       - name: Upload to R2
         if: github.ref == 'refs/heads/master'
         run: |
