@@ -66,8 +66,11 @@ def update_version(file_path: str, dry_run: bool) -> Optional[str]:
 # pnpm install & pnpm build 実行
 def run_pnpm_operations(dry_run: bool) -> None:
     if dry_run:
+        print("Dry-run: Would run 'pnpm install'")
         print("Dry-run: Would run 'pnpm run build'")
     else:
+        subprocess.run(["pnpm", "install"], check=True)
+        print("pnpm install executed")
         subprocess.run(["pnpm", "run", "build"], check=True)
         print("pnpm run build executed")
 
