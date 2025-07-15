@@ -29,7 +29,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 <https://sora-devtools.shiguredo.app>
 
 開発版 (develop ブランチ) がデプロイされています。
-<https://develo.sora-devtools.shiguredo.app>
+<https://canary.sora-devtools.shiguredo.app>
 
 ## スクリーンショット
 
