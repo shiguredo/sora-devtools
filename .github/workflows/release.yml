@@ -42,5 +42,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ steps.get_version.outputs.VERSION }}" \
-            sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz \
+          if [[ "${{ steps.get_version.outputs.VERSION }}" == *"canary"* ]]; then
+            gh release create "${{ steps.get_version.outputs.VERSION }}" \
+              sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz \
+              --prerelease
+          else
+            gh release create "${{ steps.get_version.outputs.VERSION }}" \
+              sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          fi
