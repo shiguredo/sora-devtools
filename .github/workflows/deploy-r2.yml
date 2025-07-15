@@ -27,8 +27,6 @@ jobs:
       # R2 へのアップロード
       - name: Configure AWS CLI for R2
         run: |
-          aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws configure set region auto
       # ブランチが main or master の場合のみデプロイする
       - name: Upload to R2
