@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -23,8 +27,8 @@ jobs:
       # R2 へのアップロード
       - name: Configure AWS CLI for R2
         run: |
-          aws configure set aws_access_key_id ${{ secrets.R2_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws configure set region auto
       # ブランチが main or master の場合のみデプロイする
       - name: Upload to R2
