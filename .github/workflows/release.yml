@@ -45,8 +45,10 @@ jobs:
           if [[ "${{ steps.get_version.outputs.VERSION }}" == *"canary"* ]]; then
             gh release create "${{ steps.get_version.outputs.VERSION }}" \
               sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz \
+              --title "Release ${{ steps.get_version.outputs.VERSION }}" \
               --prerelease
           else
             gh release create "${{ steps.get_version.outputs.VERSION }}" \
-              sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz
+              sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz \
+              --title "Release ${{ steps.get_version.outputs.VERSION }}"
           fi
