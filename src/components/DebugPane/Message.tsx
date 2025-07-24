@@ -1,9 +1,10 @@
-import React, { type JSX, useState } from 'react'
+import React, { type JSX, useState, useRef } from 'react'
 import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
 
 import { CopyLogButton } from './CopyLogButton.tsx'
+import { JsonTree } from './JsonTree.tsx'
 
 type DescriptionProps = {
   description: string | number | Record<string, unknown>
@@ -11,6 +12,8 @@ type DescriptionProps = {
 }
 const Description = React.memo<DescriptionProps>((props) => {
   const { description } = props
+  const prevDescriptionRef = useRef<unknown>()
+  
   if (description === undefined) {
     return null
   }
@@ -23,12 +26,14 @@ const Description = React.memo<DescriptionProps>((props) => {
       </div>
     )
   }
+  
+  const prevData = prevDescriptionRef.current
+  prevDescriptionRef.current = description
+  
   return (
     <div className="debug-message">
-      <div className="col-sm-12">
-        <pre className={props.wordBreak ? 'word-break' : ''}>
-          {JSON.stringify(description, null, 2)}
-        </pre>
+      <div className="col-sm-12 p-2">
+        <JsonTree data={description} prevData={prevData} />
       </div>
     </div>
   )
