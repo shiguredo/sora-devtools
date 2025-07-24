@@ -97,7 +97,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
             <span className="text-[#7a8690] mx-1">:</span>
           </>
         )}
-        <span className="text-gray-600">{bracketOpen}</span>
+        <span className="text-slate-800 font-semibold">{bracketOpen}</span>
       </div>
       <div className="ml-5">
         {entries.map((entry, index) => {
@@ -120,7 +120,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
         })}
       </div>
       <div>
-        <span className="text-gray-600">{bracketClose}</span>
+        <span className="text-slate-800 font-semibold">{bracketClose}</span>
         {!isLast && <span className="text-[#7a8690]">,</span>}
       </div>
     </div>
