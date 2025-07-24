@@ -2,6 +2,7 @@
   "name": "sora-devtools",
   "version": "2025.2.0-canary.3",
   "description": "WebRTC SFU Sora DevTools",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shiguredo/sora-devtools.git"
@@ -37,18 +38,20 @@
     "zustand": "5.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.1",
+    "@biomejs/biome": "2.1.2",
     "@fast-check/vitest": "0.2.2",
     "@playwright/test": "1.54.1",
-    "@types/node": "24.0.14",
+    "@tailwindcss/vite": "4.1.11",
+    "@types/node": "24.1.0",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
-    "@vitejs/plugin-react": "4.6.0",
+    "@vitejs/plugin-react": "4.7.0",
     "dotenv": "17.2.0",
     "fast-check": "4.2.0",
     "jsdom": "26.1.0",
+    "tailwindcss": "4.1.11",
     "typescript": "5.8.3",
-    "vite": "7.0.5",
+    "vite": "7.0.6",
     "vitest": "3.2.4"
   },
   "engines": {

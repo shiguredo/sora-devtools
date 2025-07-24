@@ -1,3 +1,7 @@
+/* biome-ignore format: Tailwind v4 syntax */
+/* biome-ignore lint/style/noUnknownFunction: Tailwind v4 source function */
+@import "tailwindcss" source(".");
+
 body {
   padding-top: 56px;
   padding-bottom: 56px;

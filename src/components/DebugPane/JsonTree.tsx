@@ -1,40 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
-
-const jsonColors = {
-  light: {
-    background: '#fafbfc',
-    text: '#24292e',
-    key: '#5a8bb0',
-    string: '#6aab73',
-    number: '#d68a3a',
-    boolean: '#c678dd',
-    null: '#999',
-    punctuation: '#586069'
-  },
-  dark: {
-    background: '#1e2329',
-    text: '#abb2bf',
-    key: '#a0d8ef',
-    string: '#89ca78',
-    number: '#e6b673',
-    boolean: '#d19a66',
-    null: '#5c6370',
-    punctuation: '#7a8290'
-  },
-  changes: {
-    modified: '#fff3cd',
-    modifiedStrong: '#ffe0b2',
-    added: '#d4f5d4',
-    removed: '#ffdddd'
-  }
-}
+import type React from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 type JsonTreeProps = {
   data: unknown
   prevData?: unknown
   name?: string
   isLast?: boolean
-  isArrayElement?: boolean
   level?: number
 }
 
@@ -43,7 +14,6 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   prevData,
   name, 
   isLast = true, 
-  isArrayElement = false,
   level = 0 
 }) => {
   const [isHighlighted, setIsHighlighted] = useState(false)
@@ -60,12 +30,8 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   }, [data])
   
   const renderPrimitive = (value: unknown) => {
-    const baseStyle = { transition: 'all 0.3s ease' }
-    const highlightStyle = isHighlighted ? {
-      backgroundColor: 'rgba(160, 216, 239, 0.2)',
-      borderRadius: '3px',
-      padding: '1px 4px',
-    } : {}
+    const baseClasses = 'transition-all duration-300 ease-in-out'
+    const highlightClasses = isHighlighted ? 'bg-cyan-200/20 rounded px-1 py-0.5' : ''
     
     // ハイライト時は明るい色に
     const nullColor = isHighlighted ? '#a8b2be' : '#8b95a1'
@@ -74,12 +40,12 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
     const booleanColor = isHighlighted ? '#f4c5db' : '#e4b5cb'
     const defaultColor = isHighlighted ? '#d5eaf8' : '#c5dae8'
     
-    if (value === null) return <span style={{ color: nullColor, fontStyle: 'italic', ...baseStyle, ...highlightStyle }}>null</span>
-    if (value === undefined) return <span style={{ color: nullColor, fontStyle: 'italic', ...baseStyle, ...highlightStyle }}>undefined</span>
-    if (typeof value === 'string') return <span style={{ color: stringColor, ...baseStyle, ...highlightStyle }}>"{value}"</span>
-    if (typeof value === 'number') return <span style={{ color: numberColor, fontWeight: '500', ...baseStyle, ...highlightStyle }}>{value}</span>
-    if (typeof value === 'boolean') return <span style={{ color: booleanColor, ...baseStyle, ...highlightStyle }}>{value.toString()}</span>
-    return <span style={{ color: defaultColor, ...baseStyle, ...highlightStyle }}>{String(value)}</span>
+    if (value === null) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: nullColor }}>null</span>
+    if (value === undefined) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: nullColor }}>undefined</span>
+    if (typeof value === 'string') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: stringColor }}>"{value}"</span>
+    if (typeof value === 'number') return <span className={`font-medium ${baseClasses} ${highlightClasses}`} style={{ color: numberColor }}>{value}</span>
+    if (typeof value === 'boolean') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: booleanColor }}>{value.toString()}</span>
+    return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: defaultColor }}>{String(value)}</span>
   }
   
   const isPrimitive = (value: unknown) => {
@@ -96,24 +62,19 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
     return value !== null && typeof value === 'object' && !Array.isArray(value)
   }
   
-  const highlightStyle = isHighlighted ? {
-    backgroundColor: 'rgba(160, 216, 239, 0.15)',
-    borderRadius: '4px',
-    padding: '3px',
-    transition: 'all 0.3s ease'
-  } : {}
+  const highlightClasses = isHighlighted ? 'bg-cyan-200/15 rounded p-0.5 transition-all duration-300' : ''
   
   if (isPrimitive(data)) {
     return (
       <div>
         {name && (
           <>
-            <span style={{ color: '#a0d8ef' }}>{name}</span>
-            <span style={{ color: '#7a8690' }}>: </span>
+            <span className="text-[#a0d8ef]">{name}</span>
+            <span className="text-[#7a8690]">: </span>
           </>
         )}
         {renderPrimitive(data)}
-        {!isLast && <span style={{ color: '#7a8690' }}>,</span>}
+        {!isLast && <span className="text-[#7a8690]">,</span>}
       </div>
     )
   }
@@ -128,17 +89,17 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   const bracketClose = isArray(data) ? ']' : '}'
   
   return (
-    <div style={highlightStyle}>
+    <div className={highlightClasses}>
       <div>
         {name && (
           <>
-            <span style={{ color: '#a0d8ef' }}>{name}</span>
-            <span style={{ color: '#7a8690' }} className="mx-1">:</span>
+            <span className="text-[#a0d8ef]">{name}</span>
+            <span className="text-[#7a8690] mx-1">:</span>
           </>
         )}
-        <span style={{ color: '#4a5568' }}>{bracketOpen}</span>
+        <span className="text-gray-600">{bracketOpen}</span>
       </div>
-      <div style={{ marginLeft: '20px' }}>
+      <div className="ml-5">
         {entries.map((entry, index) => {
           const prevValue = isArray(prevData) 
             ? prevData[Number(entry.key)]
@@ -153,15 +114,14 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
               prevData={prevValue}
               name={isArray(data) ? undefined : entry.key}
               isLast={index === entries.length - 1}
-              isArrayElement={isArray(data)}
               level={level + 1}
             />
           )
         })}
       </div>
       <div>
-        <span style={{ color: '#4a5568' }}>{bracketClose}</span>
-        {!isLast && <span style={{ color: '#7a8690' }}>,</span>}
+        <span className="text-gray-600">{bracketClose}</span>
+        {!isLast && <span className="text-[#7a8690]">,</span>}
       </div>
     </div>
   )
