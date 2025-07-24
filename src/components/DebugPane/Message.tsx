@@ -32,7 +32,7 @@ const Description = React.memo<DescriptionProps>((props) => {
   
   return (
     <div className="debug-message">
-      <div className="col-sm-12 p-2">
+      <div className="col-sm-12 p-2 bg-[#000814] rounded">
         <JsonTree data={description} prevData={prevData} />
       </div>
     </div>

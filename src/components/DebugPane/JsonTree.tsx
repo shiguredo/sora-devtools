@@ -1,6 +1,19 @@
 import type React from 'react'
 import { useState, useEffect, useRef } from 'react'
 
+// Color Universal Design - Deep Navy theme
+// Based on CUD guidelines with very dark blue background
+const cudBlueTheme = {
+  background: '#000814',  // 濃紺 (Deep Navy) - Very dark blue
+  // CUD colors with maximum contrast for dark background
+  key: '#7DD3FC',        // 明るい青 (Light Blue) - Maximum contrast
+  string: '#6EE7B7',     // 明るいエメラルド (Light Emerald)  
+  number: '#93C5FD',     // 明るいスカイブルー (Light Sky Blue)
+  boolean: '#FDE047',    // 明るい黄 (Bright Yellow) - Maximum contrast
+  null: '#CBD5E1',       // 明るいグレー (Light Gray)
+  punctuation: '#7DD3FC', // 明るい青 (Light Blue)
+}
+
 type JsonTreeProps = {
   data: unknown
   prevData?: unknown
@@ -31,21 +44,14 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   
   const renderPrimitive = (value: unknown) => {
     const baseClasses = 'transition-all duration-300 ease-in-out'
-    const highlightClasses = isHighlighted ? 'bg-cyan-200/20 rounded px-1 py-0.5' : ''
+    const highlightClasses = isHighlighted ? 'bg-blue-400/20 rounded px-1 py-0.5' : ''
     
-    // ハイライト時は明るい色に
-    const nullColor = isHighlighted ? '#a8b2be' : '#8b95a1'
-    const stringColor = isHighlighted ? '#b8e5ca' : '#a8d5ba'
-    const numberColor = isHighlighted ? '#7ba9d3' : '#5b8fb9'
-    const booleanColor = isHighlighted ? '#f4c5db' : '#e4b5cb'
-    const defaultColor = isHighlighted ? '#d5eaf8' : '#c5dae8'
-    
-    if (value === null) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: nullColor }}>null</span>
-    if (value === undefined) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: nullColor }}>undefined</span>
-    if (typeof value === 'string') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: stringColor }}>"{value}"</span>
-    if (typeof value === 'number') return <span className={`font-medium ${baseClasses} ${highlightClasses}`} style={{ color: numberColor }}>{value}</span>
-    if (typeof value === 'boolean') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: booleanColor }}>{value.toString()}</span>
-    return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: defaultColor }}>{String(value)}</span>
+    if (value === null) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.null }}>null</span>
+    if (value === undefined) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.null }}>undefined</span>
+    if (typeof value === 'string') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.string }}>"{value}"</span>
+    if (typeof value === 'number') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.number }}>{value}</span>
+    if (typeof value === 'boolean') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.boolean }}>{value.toString()}</span>
+    return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.foreground }}>{String(value)}</span>
   }
   
   const isPrimitive = (value: unknown) => {
@@ -62,19 +68,19 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
     return value !== null && typeof value === 'object' && !Array.isArray(value)
   }
   
-  const highlightClasses = isHighlighted ? 'bg-cyan-200/15 rounded p-0.5 transition-all duration-300' : ''
+  const highlightClasses = isHighlighted ? 'bg-blue-400/15 rounded p-0.5 transition-all duration-300' : ''
   
   if (isPrimitive(data)) {
     return (
       <div>
         {name && (
           <>
-            <span className="text-[#a0d8ef]">{name}</span>
-            <span className="text-[#7a8690]">: </span>
+            <span style={{ color: cudBlueTheme.key }}>{name}</span>
+            <span style={{ color: cudBlueTheme.punctuation }}>: </span>
           </>
         )}
         {renderPrimitive(data)}
-        {!isLast && <span className="text-[#7a8690]">,</span>}
+        {!isLast && <span style={{ color: cudBlueTheme.punctuation }}>,</span>}
       </div>
     )
   }
@@ -93,11 +99,11 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
       <div>
         {name && (
           <>
-            <span className="text-[#a0d8ef]">{name}</span>
-            <span className="text-[#7a8690] mx-1">:</span>
+            <span style={{ color: cudBlueTheme.key }}>{name}</span>
+            <span className="mx-1" style={{ color: cudBlueTheme.punctuation }}>:</span>
           </>
         )}
-        <span className="text-slate-800 font-semibold">{bracketOpen}</span>
+        <span style={{ color: cudBlueTheme.punctuation }}>{bracketOpen}</span>
       </div>
       <div className="ml-5">
         {entries.map((entry, index) => {
@@ -120,8 +126,8 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
         })}
       </div>
       <div>
-        <span className="text-slate-800 font-semibold">{bracketClose}</span>
-        {!isLast && <span className="text-[#7a8690]">,</span>}
+        <span style={{ color: cudBlueTheme.punctuation }}>{bracketClose}</span>
+        {!isLast && <span style={{ color: cudBlueTheme.punctuation }}>,</span>}
       </div>
     </div>
   )
