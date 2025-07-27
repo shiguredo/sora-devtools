@@ -1,5 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
 import type React from 'react'
-import { useState, useEffect, useRef } from 'react'
 
 // Color Universal Design - Deep Navy theme
 // Based on CUD guidelines with very dark blue background
@@ -44,14 +44,14 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   
   const renderPrimitive = (value: unknown) => {
     const baseClasses = 'transition-all duration-300 ease-in-out'
-    const highlightClasses = isHighlighted ? 'bg-blue-400/20 rounded px-1 py-0.5' : ''
+    const highlightClasses = isHighlighted ? 'bg-blue-400/25 px-0.5 rounded' : ''
     
     if (value === null) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.null }}>null</span>
     if (value === undefined) return <span className={`italic ${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.null }}>undefined</span>
     if (typeof value === 'string') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.string }}>"{value}"</span>
     if (typeof value === 'number') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.number }}>{value}</span>
     if (typeof value === 'boolean') return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.boolean }}>{value.toString()}</span>
-    return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.foreground }}>{String(value)}</span>
+    return <span className={`${baseClasses} ${highlightClasses}`} style={{ color: cudBlueTheme.string }}>{String(value)}</span>
   }
   
   const isPrimitive = (value: unknown) => {
@@ -68,7 +68,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
     return value !== null && typeof value === 'object' && !Array.isArray(value)
   }
   
-  const highlightClasses = isHighlighted ? 'bg-blue-400/15 rounded p-0.5 transition-all duration-300' : ''
+  const highlightClasses = isHighlighted ? 'bg-blue-400/15 rounded transition-all duration-300' : ''
   
   if (isPrimitive(data)) {
     return (
