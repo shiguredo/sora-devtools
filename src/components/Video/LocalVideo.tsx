@@ -33,27 +33,27 @@ const VideoBox: React.FC = () => {
   }
   return (
     <div className="d-flex">
-        <div
-          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper overflow-y-hidden${
-            focused ? ' spotlight-focused' : ''
-          }`}
-        >
-          {mediaStats && localMediaStream && localMediaStream.getVideoTracks().length > 0 && (
-            <LocalVideoCapabilities stream={localMediaStream} />
-          )}
-          <Video
-            stream={localMediaStream}
-            setHeight={setHeight}
-            audioOutput={audioOutput}
-            displayResolution={displayResolution}
-            localVideo={true}
-            mute={true}
-          />
-          {localMediaStream !== null ? (
-            <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} />
-          ) : null}
-        </div>
+      <div
+        className={`position-relative d-flex flex-nowrap align-items-start video-wrapper overflow-y-hidden${
+          focused ? ' spotlight-focused' : ''
+        }`}
+      >
+        {mediaStats && localMediaStream && localMediaStream.getVideoTracks().length > 0 && (
+          <LocalVideoCapabilities stream={localMediaStream} />
+        )}
+        <Video
+          stream={localMediaStream}
+          setHeight={setHeight}
+          audioOutput={audioOutput}
+          displayResolution={displayResolution}
+          localVideo={true}
+          mute={true}
+        />
+        {localMediaStream !== null ? (
+          <VolumeVisualizer micDevice={micDevice} stream={localMediaStream} height={height} />
+        ) : null}
       </div>
+    </div>
   )
 }
 
