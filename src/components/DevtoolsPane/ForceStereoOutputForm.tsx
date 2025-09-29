@@ -15,18 +15,18 @@ export const ForceStereoOutputForm: React.FC = () => {
   }
   return (
     <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="forceStereoOutput">
-            <TooltipFormCheck
-              kind="forceStereoOutput"
-              checked={forceStereoOutput}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            >
-              forceStereoOutput
-            </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+      <Col className="col-auto">
+        <FormGroup className="form-inline" controlId="forceStereoOutput">
+          <TooltipFormCheck
+            kind="forceStereoOutput"
+            checked={forceStereoOutput}
+            onChange={onChangeSwitch}
+            disabled={disabled}
+          >
+            forceStereoOutput
+          </TooltipFormCheck>
+        </FormGroup>
+      </Col>
+    </Row>
   )
 }

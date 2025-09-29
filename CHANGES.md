@@ -33,6 +33,8 @@
   - @voluntas
 - [CHANGE] 対応 Node.js のバージョンを 24 以上にする
   - @voluntas
+- [UPDATE] actions/checkout を v5 に上げる
+  - @miosakuma
 
 ## 2025.1.0
 
