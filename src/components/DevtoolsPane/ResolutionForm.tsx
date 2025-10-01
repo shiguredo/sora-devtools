@@ -2,6 +2,8 @@ import type React from 'react'
 
 import { setResolution } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
+
+import { DropdownSelect } from './DropdownSelect.tsx'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type ResolutionData = {
@@ -27,34 +29,32 @@ export const ResolutionForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setResolution(event.target.value)
   }
-  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setResolution(event.target.value)
+  const onTemplateChange = (value: string): void => {
+    setResolution(value)
   }
   return (
     <div className="flex items-center">
       <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
-      <div className="flex flex-1 gap-1">
+      <div className="flex form-resolution">
         <input
-          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-resolution"
+          className="w-full px-3 py-1.5 text-base border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed min-w-0"
           type="text"
           value={resolution}
           onChange={onChange}
           placeholder="未指定"
         />
-        <select
+        <DropdownSelect
+          options={RESOLUTION_DATA_LIST.map((item) => item.value)}
+          value={resolution}
           onChange={onTemplateChange}
-          value=""
-          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        >
-          <option value="">未指定</option>
-          {RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return (
-              <option key={value} value={value}>
-                {label} {value !== '' && `(${value})`}
-              </option>
-            )
-          })}
-        </select>
+          renderOption={(value) => {
+            const item = RESOLUTION_DATA_LIST.find((d) => d.value === value)
+            return {
+              label: item ? `${item.label} ${value !== '' ? `(${value})` : ''}` : value,
+              disabled: false,
+            }
+          }}
+        />
       </div>
     </div>
   )

@@ -16,7 +16,7 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
   const instruction = INSTRUCTIONS[kind]
 
   if (!instruction) {
-    return <label className="block text-sm font-medium text-gray-700">{children}</label>
+    return <label className="block text-base font-medium text-gray-700">{children}</label>
   }
 
   return (
@@ -28,18 +28,18 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
           checked={checked}
           onChange={onChange}
           disabled={disabled}
-          className="w-11 h-6 bg-gray-200 rounded-full appearance-none cursor-pointer transition-colors
+          className="w-8 h-4 bg-gray-200 rounded-full appearance-none cursor-pointer transition-colors
                      checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed
-                     relative before:content-[''] before:absolute before:w-5 before:h-5 before:rounded-full
+                     relative before:content-[''] before:absolute before:w-3 before:h-3 before:rounded-full
                      before:bg-white before:top-0.5 before:left-0.5 before:transition-transform
-                     checked:before:translate-x-5"
+                     checked:before:translate-x-4"
         />
       </div>
       <div className="relative inline-block">
         <label
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          className="block text-sm font-medium text-gray-700 cursor-help ml-2"
+          className="block text-base font-medium text-gray-700 cursor-help ml-2"
         >
           {children}
         </label>

@@ -12,15 +12,15 @@ export const TooltipFormLabel: React.FC<Props> = (props) => {
   const instruction = INSTRUCTIONS[props.kind]
 
   if (!instruction) {
-    return <label className="block text-sm font-medium text-gray-700">{props.children}</label>
+    return <label className="text-base font-medium text-gray-700 mr-2">{props.children}</label>
   }
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block mr-2">
       <label
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        className="block text-sm font-medium text-gray-700 cursor-help mr-2"
+        className="text-base font-medium text-gray-700 cursor-help whitespace-nowrap"
       >
         {props.children}
       </label>

@@ -19,7 +19,7 @@ export const Header: React.FC = () => {
   return (
     <header>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-sora">
-        <div className="container max-w-none">
+        <div className="container max-w-none px-3">
           <div className="flex items-center justify-between py-2">
             <a href="/" className="text-white text-xl font-bold no-underline">
               Sora DevTools

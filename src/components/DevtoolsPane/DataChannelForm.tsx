@@ -90,7 +90,7 @@ export const DataChannelForm: React.FC = () => {
                 checked={enabledDataChannel}
                 onChange={onChangeSwitch}
                 disabled={disabled}
-                className="w-10 h-5 relative appearance-none bg-gray-300 rounded-full cursor-pointer transition-colors duration-200 ease-in-out checked:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 before:content-[''] before:absolute before:top-0.5 before:left-0.5 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 before:ease-in-out checked:before:translate-x-5"
+                className="w-8 h-4 relative appearance-none bg-gray-200 rounded-full cursor-pointer transition-colors checked:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50 before:content-[''] before:absolute before:top-0.5 before:left-0.5 before:w-3 before:h-3 before:bg-white before:rounded-full before:transition-transform checked:before:translate-x-4"
               />
               <span className="ml-2 text-base">dataChannel</span>
             </label>

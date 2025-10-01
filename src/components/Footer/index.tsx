@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
   return (
     <footer>
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-sora">
-        <div className="container max-w-none">
+        <div className="container max-w-none px-3">
           <div className="flex items-center justify-between py-2">
             <div className="flex-grow" />
             <div className="flex items-center gap-2">

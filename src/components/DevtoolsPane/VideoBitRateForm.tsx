@@ -5,6 +5,7 @@ import { useSoraDevtoolsStore } from '@/app/store'
 import { VIDEO_BIT_RATES } from '@/constants'
 import { isFormDisabled } from '@/utils'
 
+import { DropdownSelect } from './DropdownSelect.tsx'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
@@ -25,38 +26,33 @@ export const VideoBitRateForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setVideoBitRate(event.target.value)
   }
-  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (event.target.value !== 'support-message') {
-      setVideoBitRate(event.target.value)
+  const onTemplateChange = (value: string): void => {
+    if (value !== 'support-message') {
+      setVideoBitRate(value)
     }
   }
   return (
     <div className="flex items-center">
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
-      <div className="flex flex-1 gap-1">
+      <div className="flex form-video-bit-rate">
         <input
-          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-video-bit-rate"
+          className="w-full px-3 py-1.5 text-base border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed min-w-0"
           type="text"
           value={videoBitRate}
           onChange={onChange}
           placeholder="未指定"
           disabled={disabled}
         />
-        <select
+        <DropdownSelect
+          options={DISPLAY_VIDEO_BIT_RATE}
+          value={videoBitRate}
           onChange={onTemplateChange}
-          value=""
           disabled={disabled}
-          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        >
-          <option value="">未指定</option>
-          {DISPLAY_VIDEO_BIT_RATE.map((value) => {
-            return (
-              <option key={value} value={value} disabled={value === 'support-message'}>
-                {dropdownItemLabel(value)}
-              </option>
-            )
+          renderOption={(value) => ({
+            label: dropdownItemLabel(value),
+            disabled: value === 'support-message',
           })}
-        </select>
+        />
       </div>
     </div>
   )

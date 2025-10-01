@@ -3,6 +3,7 @@ import type React from 'react'
 import { setFrameRate } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
 
+import { DropdownSelect } from './DropdownSelect.tsx'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type FrameRateData = {
@@ -26,34 +27,29 @@ export const FrameRateForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setFrameRate(event.target.value)
   }
-  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setFrameRate(event.target.value)
+  const onTemplateChange = (value: string): void => {
+    setFrameRate(value)
   }
   return (
     <div className="flex items-center">
       <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
-      <div className="flex flex-1 gap-1">
+      <div className="flex form-frame-rate">
         <input
-          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-frame-rate"
+          className="w-full px-3 py-1.5 text-base border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed min-w-0"
           type="text"
           value={frameRate}
           onChange={onChange}
           placeholder="未指定"
         />
-        <select
+        <DropdownSelect
+          options={FRAME_RATE_DATA.map((item) => item.value)}
+          value={frameRate}
           onChange={onTemplateChange}
-          value=""
-          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        >
-          <option value="">未指定</option>
-          {FRAME_RATE_DATA.map(({ label, value }) => {
-            return (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            )
+          renderOption={(value) => ({
+            label: value === '' ? '未指定' : value,
+            disabled: false,
           })}
-        </select>
+        />
       </div>
     </div>
   )

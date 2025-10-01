@@ -3,6 +3,7 @@ import type React from 'react'
 import { setDisplayResolution } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
 
+import { DropdownSelect } from './DropdownSelect.tsx'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type DisplayResolutionData = {
@@ -28,26 +29,33 @@ export const DisplayResolutionForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setDisplayResolution(event.target.value)
   }
-  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setDisplayResolution(event.target.value)
+  const onTemplateChange = (value: string): void => {
+    setDisplayResolution(value)
   }
   return (
     <div className="flex items-center">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
-      <select
-        onChange={onTemplateChange}
-        value=""
-        className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-display-resolution"
-      >
-        <option value="">未指定</option>
-        {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
-          return (
-            <option key={value} value={value}>
-              {label} {value !== '' && `(${value})`}
-            </option>
-          )
-        })}
-      </select>
+      <div className="flex form-display-resolution">
+        <input
+          className="w-full px-3 py-1.5 text-base border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed min-w-0"
+          type="text"
+          value={displayResolution}
+          onChange={onChange}
+          placeholder="未指定"
+        />
+        <DropdownSelect
+          options={DISPLAY_RESOLUTION_DATA_LIST.map((item) => item.value)}
+          value={displayResolution}
+          onChange={onTemplateChange}
+          renderOption={(value) => {
+            const item = DISPLAY_RESOLUTION_DATA_LIST.find((d) => d.value === value)
+            return {
+              label: item ? `${item.label} ${value !== '' ? `(${value})` : ''}` : value,
+              disabled: false,
+            }
+          }}
+        />
+      </div>
     </div>
   )
 }
