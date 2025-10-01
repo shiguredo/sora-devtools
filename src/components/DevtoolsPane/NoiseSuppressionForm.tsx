@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setNoiseSuppression } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -16,9 +15,14 @@ export const NoiseSuppressionForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="noiseSuppression">
+    <div className="flex items-center">
       <TooltipFormLabel kind="noiseSuppression">noiseSuppression:</TooltipFormLabel>
-      <FormSelect name="noiseSuppression" value={noiseSuppression} onChange={onChange}>
+      <select
+        name="noiseSuppression"
+        value={noiseSuppression}
+        onChange={onChange}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {NOISE_SUPPRESSIONS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +30,7 @@ export const NoiseSuppressionForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

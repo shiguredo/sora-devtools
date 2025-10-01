@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioOutput } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -13,13 +12,14 @@ export const AudioOutputForm: React.FC = () => {
     setAudioOutput(event.target.value)
   }
   return (
-    <FormGroup className="form-inline" controlId="audioOutput">
+    <div className="flex items-center">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
-      <FormSelect
+      <select
         name="audioOutput"
         value={audioOutput}
         onChange={onChange}
         disabled={audioOutputDevices.length === 0}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         <option value="">未指定</option>
         {audioOutputDevices.map((deviceInfo) => {
@@ -29,7 +29,7 @@ export const AudioOutputForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoCodecType } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,13 +17,14 @@ export const VideoCodecTypeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="videoCodecType">
+    <div className="flex items-center">
       <TooltipFormLabel kind="videoCodecType">videoCodecType:</TooltipFormLabel>
-      <FormSelect
+      <select
         name="videoCodecType"
         value={videoCodecType}
         onChange={onChange}
         disabled={disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         {VIDEO_CODEC_TYPES.map((value) => {
           return (
@@ -33,7 +33,7 @@ export const VideoCodecTypeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

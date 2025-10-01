@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setMediaProcessorsNoiseSuppression } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -16,7 +15,7 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   }
   const disabled = mediaType !== 'getUserMedia'
   return (
-    <FormGroup className="form-inline" controlId="mediaProcessorsNoiseSuppression">
+    <div className="flex items-center">
       <TooltipFormCheck
         kind="mediaProcessorsNoiseSuppression"
         checked={mediaProcessorsNoiseSuppression}
@@ -25,6 +24,6 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
       >
         mediaProcessorsNoiseSuppression
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

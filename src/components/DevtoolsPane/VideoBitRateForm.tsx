@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setVideoBitRate } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -26,38 +25,39 @@ export const VideoBitRateForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setVideoBitRate(event.target.value)
   }
+  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    if (event.target.value !== 'support-message') {
+      setVideoBitRate(event.target.value)
+    }
+  }
   return (
-    <FormGroup className="form-inline" controlId="videoBitRate">
+    <div className="flex items-center">
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-video-bit-rate"
+      <div className="flex flex-1 gap-1">
+        <input
+          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-video-bit-rate"
           type="text"
           value={videoBitRate}
           onChange={onChange}
           placeholder="未指定"
           disabled={disabled}
         />
-        <DropdownButton
-          variant="outline-secondary form-template-dropdown"
-          title=""
-          align="end"
+        <select
+          onChange={onTemplateChange}
+          value=""
           disabled={disabled}
+          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
         >
+          <option value="">未指定</option>
           {DISPLAY_VIDEO_BIT_RATE.map((value) => {
             return (
-              <Dropdown.Item
-                key={value}
-                as="button"
-                onClick={() => setVideoBitRate(value)}
-                disabled={value === 'support-message'}
-              >
+              <option key={value} value={value} disabled={value === 'support-message'}>
                 {dropdownItemLabel(value)}
-              </Dropdown.Item>
+              </option>
             )
           })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+        </select>
+      </div>
+    </div>
   )
 }

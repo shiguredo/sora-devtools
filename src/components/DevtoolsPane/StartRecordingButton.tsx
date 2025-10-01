@@ -19,15 +19,16 @@ export const StartRecordingButton: React.FC = () => {
     }
   }
   return (
-    <div className="col-auto mb-1">
-      <input
-        className="btn btn-secondary"
+    <div className="w-auto mb-1">
+      <button
+        className="inline-block px-3 py-1.5 text-base font-normal text-center text-white align-middle cursor-pointer select-none bg-gray-custom-600 border border-gray-custom-600 rounded transition-colors hover:bg-gray-custom-700 hover:border-gray-custom-700 disabled:opacity-65 disabled:pointer-events-none"
         type="button"
         name="startRec"
-        defaultValue="start rec"
         onClick={onClick}
         disabled={connectionStatus === 'initializing'}
-      />
+      >
+        start rec
+      </button>
     </div>
   )
 }

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoAV1Params, setVideoAV1Params } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,9 @@ export const VideoAV1ParamsForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledVideoAV1Params">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="videoAV1Params"
               checked={enabledVideoAV1Params}
@@ -29,12 +28,12 @@ export const VideoAV1ParamsForm: React.FC = () => {
             >
               videoAV1Params
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledVideoAV1Params ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div>
             <JSONInputField
               controlId="videoAV1Params"
               placeholder="videoAV1Paramsを指定"
@@ -42,8 +41,8 @@ export const VideoAV1ParamsForm: React.FC = () => {
               setValue={(value) => setVideoAV1Params(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

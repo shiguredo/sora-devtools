@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setAudioBitRate } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -15,33 +14,37 @@ export const AudioBitRateForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setAudioBitRate(event.target.value)
   }
+  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setAudioBitRate(event.target.value)
+  }
   return (
-    <FormGroup className="form-inline" controlId="audioBitRate">
+    <div className="flex items-center">
       <TooltipFormLabel kind="audioBitRate">audioBitRate:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-audio-bit-rate"
+      <div className="flex flex-1 gap-1">
+        <input
+          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-audio-bit-rate"
           type="text"
           value={audioBitRate}
           onChange={onChange}
           placeholder="未指定"
           disabled={disabled}
         />
-        <DropdownButton
-          variant="outline-secondary form-template-dropdown"
-          title=""
-          align="end"
+        <select
+          onChange={onTemplateChange}
+          value=""
           disabled={disabled}
+          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
         >
+          <option value="">未指定</option>
           {AUDIO_BIT_RATES.map((value) => {
             return (
-              <Dropdown.Item key={value} as="button" onClick={() => setAudioBitRate(value)}>
+              <option key={value} value={value}>
                 {value === '' ? '未指定' : value}
-              </Dropdown.Item>
+              </option>
             )
           })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+        </select>
+      </div>
+    </div>
   )
 }

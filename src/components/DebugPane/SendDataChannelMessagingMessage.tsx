@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useRef } from 'react'
-import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 
@@ -21,9 +20,13 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
   }
   return (
     <>
-      <div className="d-flex mt-2">
-        <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
-          <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
+      <div className="flex mt-2 gap-2">
+        <div className="flex-shrink-0">
+          <select
+            name="sendDataChannelMessageLabel"
+            ref={selectRef}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
             {dataChannels.map((datachannel) => {
               return (
                 <option key={datachannel.label} value={datachannel.label}>
@@ -31,27 +34,28 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
                 </option>
               )
             })}
-          </FormSelect>
-        </FormGroup>
-        <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
-          <FormControl
-            className="flex-fill"
+          </select>
+        </div>
+        <div className="flex-grow">
+          <input
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="sendDataChannelMessageを指定"
             type="text"
             ref={textareaRef}
           />
-        </FormGroup>
-        <Button
-          variant="secondary"
+        </div>
+        <button
+          type="button"
+          className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSendMessage}
           disabled={dataChannels.length === 0}
         >
           send
-        </Button>
+        </button>
       </div>
       {dataChannels.length > 0 ? (
         <pre
-          className="form-control mt-2"
+          className="mt-2 p-3 border border-gray-300 rounded-md overflow-auto"
           style={{
             color: '#fff',
             backgroundColor: '#222222',

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,9 @@ export const ForwardingFilterForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledForwardingFilter">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="forwardingFilter"
               checked={enabledForwardingFilter}
@@ -29,12 +28,12 @@ export const ForwardingFilterForm: React.FC = () => {
             >
               forwardingFilter
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledForwardingFilter ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div>
             <JSONInputField
               controlId="forwardingFilter"
               placeholder="forwardingFilterを指定"
@@ -42,8 +41,8 @@ export const ForwardingFilterForm: React.FC = () => {
               setValue={(value) => setForwardingFilter(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

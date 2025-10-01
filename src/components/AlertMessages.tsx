@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useEffect } from 'react'
-import { Toast } from 'react-bootstrap'
 
 import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -15,17 +14,26 @@ const Reconnect: React.FC = () => {
   useEffect(() => {
     reconnectSora()
   }, [])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose()
+    }, 20000)
+    return () => clearTimeout(timer)
+  }, [])
   return (
-    <Toast delay={20000} onClose={onClose}>
-      <Toast.Header className={'bg-warning text-white'}>
-        <strong className="me-auto">Reconnect</strong>
-      </Toast.Header>
-      <Toast.Body className="bg-light">
-        <p className="text-break font-weight-bold mb-0">
+    <div className="flex flex-col w-[450px] mt-2.5 rounded overflow-hidden shadow-lg">
+      <div className="flex items-center justify-between px-3 py-2 bg-yellow-500 text-white">
+        <strong className="flex-1">Reconnect</strong>
+        <button onClick={onClose} className="ml-2 text-xl leading-none hover:opacity-80">
+          ×
+        </button>
+      </div>
+      <div className="px-3 py-2 bg-gray-100">
+        <p className="break-words font-bold m-0">
           Reconnecting... (trials {reconnectingTrials})
         </p>
-      </Toast.Body>
-    </Toast>
+      </div>
+    </div>
   )
 }
 
@@ -33,17 +41,26 @@ const Alert: React.FC<AlertMessage> = (props) => {
   const onClose = (): void => {
     deleteAlertMessage(props.timestamp)
   }
-  const bgClassName = props.type === 'error' ? 'bg-danger' : 'bg-info'
+  const bgClassName = props.type === 'error' ? 'bg-red-600' : 'bg-blue-500'
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose()
+    }, 20000)
+    return () => clearTimeout(timer)
+  }, [])
   return (
-    <Toast autohide={true} delay={20000} onClose={onClose}>
-      <Toast.Header className={`${bgClassName} text-white`}>
-        <strong className="me-auto">{props.title}</strong>
-        <span>{formatUnixtime(props.timestamp)}</span>
-      </Toast.Header>
-      <Toast.Body className="bg-light">
-        <p className="text-break font-weight-bold mb-0">{props.message}</p>
-      </Toast.Body>
-    </Toast>
+    <div className="flex flex-col w-[450px] mt-2.5 rounded overflow-hidden shadow-lg">
+      <div className={`flex items-center justify-between px-3 py-2 ${bgClassName} text-white`}>
+        <strong className="flex-1">{props.title}</strong>
+        <span className="text-sm">{formatUnixtime(props.timestamp)}</span>
+        <button onClick={onClose} className="ml-2 text-xl leading-none hover:opacity-80">
+          ×
+        </button>
+      </div>
+      <div className="px-3 py-2 bg-gray-100">
+        <p className="break-words font-bold m-0">{props.message}</p>
+      </div>
+    </div>
   )
 }
 

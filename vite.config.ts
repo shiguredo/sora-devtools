@@ -1,9 +1,10 @@
 import path from 'path'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   build: {
     minify: true,
     target: 'esnext',
@@ -13,7 +14,7 @@ export default defineConfig({
       },
       output: {
         manualChunks: {
-          react: ['react', 'react-dom', 'react-bootstrap'],
+          react: ['react', 'react-dom'],
           zustand: ['zustand', 'immer'],
           'mp4-media-stream': ['@shiguredo/mp4-media-stream'],
           'noise-suppression': ['@shiguredo/noise-suppression'],

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setBlurRadius } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,14 @@ export const BlurRadiusForm: React.FC = () => {
   }
   const disabled = mediaType !== 'getUserMedia'
   return (
-    <FormGroup className="form-inline" controlId="blurRadius">
+    <div className="flex items-center">
       <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
-      <FormSelect value={blurRadius} onChange={onChange} disabled={disabled}>
+      <select
+        value={blurRadius}
+        onChange={onChange}
+        disabled={disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {BLUR_RADIUS.map((value) => {
           return (
             <option suppressHydrationWarning={true} key={value} value={value}>
@@ -28,7 +32,7 @@ export const BlurRadiusForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

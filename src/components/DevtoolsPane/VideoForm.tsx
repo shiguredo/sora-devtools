@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setVideo } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -15,10 +14,10 @@ export const VideoForm: React.FC = () => {
     setVideo(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="video">
+    <div className="flex items-center">
       <TooltipFormCheck kind="video" checked={video} onChange={onChange} disabled={disabled}>
         video
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

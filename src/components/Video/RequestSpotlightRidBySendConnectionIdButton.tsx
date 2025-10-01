@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useRef } from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 import type { SpotlightFocusRid } from 'sora-js-sdk'
 
 import { requestSpotlightRid } from '@/api'
@@ -46,40 +45,44 @@ export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (pro
     }
   }
   return (
-    <div className="mx-1">
-      <FormGroup className="form-inline">
-        <FormSelect ref={focusRidRef}>
-          {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === '') {
-              return null
-            }
-            return (
-              <option key={value} value={value}>
-                SpotlightFocusRid: {value}
-              </option>
-            )
-          })}
-        </FormSelect>
-        <FormSelect ref={unfocusRidRef}>
-          {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === '') {
-              return null
-            }
-            return (
-              <option key={value} value={value}>
-                SpotlightUnfocusRid: {value}&nbsp;&nbsp;&nbsp;
-              </option>
-            )
-          })}
-        </FormSelect>
-        <input
-          className="btn btn-secondary"
-          type="button"
-          name="requestSpotlightRidBySendConnectionId"
-          defaultValue="requestSpotlightRid"
-          onClick={onClick}
-        />
-      </FormGroup>
+    <div className="mx-1 flex items-center gap-2">
+      <select
+        ref={focusRidRef}
+        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {SPOTLIGHT_FOCUS_RIDS.map((value) => {
+          if (value === '') {
+            return null
+          }
+          return (
+            <option key={value} value={value}>
+              SpotlightFocusRid: {value}
+            </option>
+          )
+        })}
+      </select>
+      <select
+        ref={unfocusRidRef}
+        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {SPOTLIGHT_FOCUS_RIDS.map((value) => {
+          if (value === '') {
+            return null
+          }
+          return (
+            <option key={value} value={value}>
+              SpotlightUnfocusRid: {value}&nbsp;&nbsp;&nbsp;
+            </option>
+          )
+        })}
+      </select>
+      <input
+        className="btn btn-secondary"
+        type="button"
+        name="requestSpotlightRidBySendConnectionId"
+        defaultValue="requestSpotlightRid"
+        onClick={onClick}
+      />
     </div>
   )
 }

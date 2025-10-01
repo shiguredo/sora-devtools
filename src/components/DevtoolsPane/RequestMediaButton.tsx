@@ -13,15 +13,16 @@ export const RequestMediaButton: React.FC = () => {
   const role = useSoraDevtoolsStore((state) => state.role)
   const disabled = role === 'recvonly' || sora !== null || isFormDisabled(connectionStatus)
   return (
-    <div className="col-auto mb-1">
-      <input
-        className="btn btn-outline-secondary"
+    <div className="w-auto mb-1">
+      <button
+        className="inline-block px-3 py-1.5 text-base font-normal text-center text-gray-custom-600 align-middle cursor-pointer select-none bg-transparent border border-gray-custom-600 rounded transition-all hover:bg-gray-custom-600 hover:text-white disabled:opacity-65 disabled:pointer-events-none"
         type="button"
         name="media_access"
-        defaultValue="request media"
         onClick={onClick}
         disabled={disabled}
-      />
+      >
+        request media
+      </button>
     </div>
   )
 }

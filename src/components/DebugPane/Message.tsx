@@ -1,5 +1,4 @@
 import React, { type JSX, useState } from 'react'
-import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
 
@@ -73,11 +72,9 @@ export const Message = React.memo<Props>((props) => {
           />
         </div>
       </div>
-      <Collapse in={show}>
-        <div className="border-top">
-          <Description description={description} wordBreak={props.wordBreak} />
-        </div>
-      </Collapse>
+      <div className={`border-top ${show ? 'block' : 'hidden'}`}>
+        <Description description={description} wordBreak={props.wordBreak} />
+      </div>
     </div>
   )
 })

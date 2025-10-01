@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setResolution } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -23,36 +22,40 @@ const RESOLUTION_DATA_LIST = [
   { label: '2160p', value: '3840x2160' },
 ]
 
-const DropdownItem = ({ label, value }: ResolutionData) => {
-  return (
-    <Dropdown.Item as="button" onClick={() => setResolution(value)}>
-      {label} {value !== '' && `(${value})`}
-    </Dropdown.Item>
-  )
-}
-
 export const ResolutionForm: React.FC = () => {
   const resolution = useSoraDevtoolsStore((state) => state.resolution)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setResolution(event.target.value)
   }
+  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setResolution(event.target.value)
+  }
   return (
-    <FormGroup className="form-inline" controlId="resolution">
+    <div className="flex items-center">
       <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-resolution"
+      <div className="flex flex-1 gap-1">
+        <input
+          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-resolution"
           type="text"
           value={resolution}
           onChange={onChange}
           placeholder="未指定"
         />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
+        <select
+          onChange={onTemplateChange}
+          value=""
+          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
+          <option value="">未指定</option>
           {RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />
+            return (
+              <option key={value} value={value}>
+                {label} {value !== '' && `(${value})`}
+              </option>
+            )
           })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+        </select>
+      </div>
+    </div>
   )
 }

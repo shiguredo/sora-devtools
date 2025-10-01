@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setFrameRate } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -22,36 +21,40 @@ const FRAME_RATE_DATA = [
   { label: '5', value: '5' },
 ]
 
-const DropdownItem = ({ label, value }: FrameRateData) => {
-  return (
-    <Dropdown.Item as="button" onClick={() => setFrameRate(value)}>
-      {label}
-    </Dropdown.Item>
-  )
-}
-
 export const FrameRateForm: React.FC = () => {
   const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setFrameRate(event.target.value)
   }
+  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setFrameRate(event.target.value)
+  }
   return (
-    <FormGroup className="form-inline" controlId="frameRate">
+    <div className="flex items-center">
       <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-frame-rate"
+      <div className="flex flex-1 gap-1">
+        <input
+          className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-frame-rate"
           type="text"
           value={frameRate}
           onChange={onChange}
           placeholder="未指定"
         />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
+        <select
+          onChange={onTemplateChange}
+          value=""
+          className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
+          <option value="">未指定</option>
           {FRAME_RATE_DATA.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />
+            return (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            )
           })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+        </select>
+      </div>
+    </div>
   )
 }

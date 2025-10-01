@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setFacingMode } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,15 @@ export const FacingModeForm: React.FC = () => {
   }
   const disabled = mediaType !== 'getUserMedia'
   return (
-    <FormGroup className="form-inline" controlId="facingMode">
+    <div className="flex items-center">
       <TooltipFormLabel kind="facingMode">facingMode:</TooltipFormLabel>
-      <FormSelect name="facingMode" value={facingMode} onChange={onChange} disabled={disabled}>
+      <select
+        name="facingMode"
+        value={facingMode}
+        onChange={onChange}
+        disabled={disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {FACING_MODES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -28,7 +33,7 @@ export const FacingModeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

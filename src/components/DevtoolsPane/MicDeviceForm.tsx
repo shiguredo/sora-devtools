@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setMicDevice } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -16,7 +15,7 @@ export const MicDeviceForm: React.FC = () => {
     setMicDevice(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="micDevice">
+    <div className="flex items-center">
       <TooltipFormCheck
         kind="micDevice"
         checked={micDevice}
@@ -25,6 +24,6 @@ export const MicDeviceForm: React.FC = () => {
       >
         Enable mic device
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

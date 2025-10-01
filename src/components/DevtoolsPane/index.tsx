@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useState } from 'react'
-import { Col, Collapse, Row } from 'react-bootstrap'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import { AlertMessages } from '@/components/AlertMessages'
@@ -74,22 +73,22 @@ import { VideoVP9ParamsForm } from './VideoVP9ParamsForm.tsx'
 const RowChannelOptions: React.FC = () => {
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col xs="12" sm="12" className="form-channel-id">
+      <div className="form-row flex flex-wrap gap-2 pb-2">
+        <div className="w-full form-channel-id">
           <ChannelIdForm />
-        </Col>
-      </Row>
-      <Row className="form-row" xs="auto">
-        <Col>
+        </div>
+      </div>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <RoleForm />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <SimulcastForm />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <SpotlightForm />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </>
   )
 }
@@ -99,36 +98,36 @@ const RowGetUserMediaConstraints: React.FC = () => {
   const showCodecForms = role !== 'recvonly'
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <AudioForm />
-        </Col>
+        </div>
         {showCodecForms && (
           <>
-            <Col>
+            <div>
               <AudioCodecTypeForm />
-            </Col>
-            <Col>
+            </div>
+            <div>
               <AudioBitRateForm />
-            </Col>
+            </div>
           </>
         )}
-      </Row>
-      <Row className="form-row" xs="auto">
-        <Col>
+      </div>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <VideoForm />
-        </Col>
+        </div>
         {showCodecForms && (
           <>
-            <Col>
+            <div>
               <VideoCodecTypeForm />
-            </Col>
-            <Col>
+            </div>
+            <div>
               <VideoBitRateForm />
-            </Col>
+            </div>
           </>
         )}
-      </Row>
+      </div>
     </>
   )
 }
@@ -139,11 +138,11 @@ const RowSimulcastOptions: React.FC = () => {
     return null
   }
   return (
-    <Row className="form-row" xs="auto">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+      <div>
         <SimulcastRidForm />
-      </Col>
-    </Row>
+      </div>
+    </div>
   )
 }
 
@@ -153,17 +152,17 @@ const RowSpotlightOptions: React.FC = () => {
     return null
   }
   return (
-    <Row className="form-row" xs="auto">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+      <div>
         <SpotlightNumberForm />
-      </Col>
-      <Col>
+      </div>
+      <div>
         <SpotlightFocusRidForm />
-      </Col>
-      <Col>
+      </div>
+      <div>
         <SpotlightUnfocusRidForm />
-      </Col>
-    </Row>
+      </div>
+    </div>
   )
 }
 
@@ -207,28 +206,26 @@ const RowSignalingOptions: React.FC = () => {
     setCollapsed(!collapsed)
   }
   return (
-    <Row className="form-row">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2 pb-2">
+      <div>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Signaling options
         </a>
-      </Col>
-      <Collapse in={!collapsed}>
-        <div>
-          <ReconnectForm />
-          <ClientIdForm />
-          <MetadataForm />
-          <BundleIdForm />
-          <SignalingNotifyMetadataForm />
-          <SignalingUrlCandidatesForm />
-          <ForwardingFiltersForm />
-          <ForwardingFilterForm />
-          <DataChannelsForm />
-          <DataChannelForm />
-        </div>
-      </Collapse>
-    </Row>
+      </div>
+      <div className={!collapsed ? 'block' : 'hidden'}>
+        <ReconnectForm />
+        <ClientIdForm />
+        <MetadataForm />
+        <BundleIdForm />
+        <SignalingNotifyMetadataForm />
+        <SignalingUrlCandidatesForm />
+        <ForwardingFiltersForm />
+        <ForwardingFilterForm />
+        <DataChannelsForm />
+        <DataChannelForm />
+      </div>
+    </div>
   )
 }
 
@@ -271,49 +268,47 @@ const RowAdvancedSignalingOptions: React.FC = () => {
     setCollapsed(!collapsed)
   }
   return (
-    <Row className="form-row">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2 pb-2">
+      <div>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Advanced signaling options
         </a>
-      </Col>
-      <Collapse in={!collapsed}>
-        <div>
-          {showSenderParams && (
-            <>
-              <AudioStreamingLanguageCodeForm />
-              <VideoVP9ParamsForm />
-              <VideoAV1ParamsForm />
-              <VideoH264ParamsForm />
-              <VideoH265ParamsForm />
-            </>
-          )}
-          {showReceiverParams && <ForceStereoOutputForm />}
-        </div>
-      </Collapse>
-    </Row>
+      </div>
+      <div className={!collapsed ? 'block' : 'hidden'}>
+        {showSenderParams && (
+          <>
+            <AudioStreamingLanguageCodeForm />
+            <VideoVP9ParamsForm />
+            <VideoAV1ParamsForm />
+            <VideoH264ParamsForm />
+            <VideoH265ParamsForm />
+          </>
+        )}
+        {showReceiverParams && <ForceStereoOutputForm />}
+      </div>
+    </div>
   )
 }
 
 export const RowMediaType: React.FC = () => {
   return (
     <>
-      <Row xs="auto" className="form-row">
-        <Col>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <MediaTypeForm />
-        </Col>
-      </Row>
-      <Row xs="auto" className="form-row">
-        <Col>
+        </div>
+      </div>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <FakeVolumeForm />
-        </Col>
-      </Row>
-      <Row xs="auto" className="form-row">
-        <Col>
+        </div>
+      </div>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <Mp4FileForm />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </>
   )
 }
@@ -356,62 +351,60 @@ const RowMediaOptions: React.FC = () => {
     setCollapsed(!collapsed)
   }
   return (
-    <Row className="form-row">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2 pb-2">
+      <div>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Media options
         </a>
-      </Col>
-      <Collapse in={!collapsed}>
-        <div>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <AudioContentHintForm />
-            </Col>
-            <Col className="col-auto">
-              <AutoGainControlForm />
-            </Col>
-            <Col className="col-auto">
-              <NoiseSuppressionForm />
-            </Col>
-            <Col className="col-auto">
-              <EchoCancellationForm />
-            </Col>
-            <Col className="col-auto">
-              <EchoCancellationTypeForm />
-            </Col>
-            <Col className="col-auto">
-              <MediaProcessorsNoiseSuppressionForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
-              <VideoContentHintForm />
-            </Col>
-            <Col className="col-auto">
-              <ResolutionForm />
-            </Col>
-            <Col className="col-auto">
-              <FrameRateForm />
-            </Col>
-            <Col className="col-auto">
-              <AspectRatioForm />
-            </Col>
-            <Col className="col-auto">
-              <ResizeModeForm />
-            </Col>
-            <Col className="col-auto">
-              <BlurRadiusForm />
-            </Col>
-            <Col className="col-auto">
-              <FacingModeForm />
-            </Col>
-          </Row>
-          <UpdateMediaStreamButton />
+      </div>
+      <div className={!collapsed ? 'block' : 'hidden'}>
+        <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+          <div className="col-auto">
+            <AudioContentHintForm />
+          </div>
+          <div className="col-auto">
+            <AutoGainControlForm />
+          </div>
+          <div className="col-auto">
+            <NoiseSuppressionForm />
+          </div>
+          <div className="col-auto">
+            <EchoCancellationForm />
+          </div>
+          <div className="col-auto">
+            <EchoCancellationTypeForm />
+          </div>
+          <div className="col-auto">
+            <MediaProcessorsNoiseSuppressionForm />
+          </div>
         </div>
-      </Collapse>
-    </Row>
+        <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+          <div className="col-auto">
+            <VideoContentHintForm />
+          </div>
+          <div className="col-auto">
+            <ResolutionForm />
+          </div>
+          <div className="col-auto">
+            <FrameRateForm />
+          </div>
+          <div className="col-auto">
+            <AspectRatioForm />
+          </div>
+          <div className="col-auto">
+            <ResizeModeForm />
+          </div>
+          <div className="col-auto">
+            <BlurRadiusForm />
+          </div>
+          <div className="col-auto">
+            <FacingModeForm />
+          </div>
+        </div>
+        <UpdateMediaStreamButton />
+      </div>
+    </div>
   )
 }
 
@@ -420,26 +413,26 @@ const RowDevices: React.FC = () => {
   const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
   return (
     <>
-      <Row className="form-row" xs="auto">
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
         {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
           <>
-            <Col>
+            <div>
               <AudioInputForm />
-            </Col>
-            <Col>
+            </div>
+            <div>
               <VideoInputForm />
-            </Col>
+            </div>
           </>
         ) : null}
-      </Row>
-      <Row className="form-row" xs="auto">
+      </div>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
         {role !== 'sendonly' ? (
-          <Col>
+          <div>
             <AudioOutputForm />
-          </Col>
+          </div>
         ) : null}
         <ReloadDevicesButton />
         {role !== 'recvonly' ? (
@@ -448,7 +441,7 @@ const RowDevices: React.FC = () => {
             <DisposeMediaButton />
           </>
         ) : null}
-      </Row>
+      </div>
     </>
   )
 }
@@ -457,29 +450,29 @@ export const RowMediaDevices: React.FC = () => {
   const role = useSoraDevtoolsStore((state) => state.role)
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col>
+      <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+        <div>
           <DisplayResolutionForm />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <MediaStatsForm />
-        </Col>
-      </Row>
+        </div>
+      </div>
       {role !== 'recvonly' && (
-        <Row className="form-row" xs="auto">
-          <Col>
+        <div className="form-row flex flex-wrap gap-2 items-center pb-2">
+          <div>
             <MicDeviceForm />
-          </Col>
-          <Col>
+          </div>
+          <div>
             <CameraDeviceForm />
-          </Col>
-          <Col>
+          </div>
+          <div>
             <AudioTrackForm />
-          </Col>
-          <Col>
+          </div>
+          <div>
             <VideoTrackForm />
-          </Col>
-        </Row>
+          </div>
+        </div>
       )}
     </>
   )

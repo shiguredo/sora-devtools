@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setDisplayResolution } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -24,36 +23,31 @@ const DISPLAY_RESOLUTION_DATA_LIST = [
   { label: '2160p', value: '3840x2160' },
 ]
 
-const DropdownItem = ({ label, value }: DisplayResolutionData) => {
-  return (
-    <Dropdown.Item as="button" onClick={() => setDisplayResolution(value)}>
-      {label} {value !== '' && `(${value})`}
-    </Dropdown.Item>
-  )
-}
-
 export const DisplayResolutionForm: React.FC = () => {
   const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setDisplayResolution(event.target.value)
   }
+  const onTemplateChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setDisplayResolution(event.target.value)
+  }
   return (
-    <FormGroup className="form-inline" controlId="displayResolution">
+    <div className="flex items-center">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-display-resolution"
-          type="text"
-          value={displayResolution}
-          onChange={onChange}
-          placeholder="未指定"
-        />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
-          {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />
-          })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+      <select
+        onChange={onTemplateChange}
+        value=""
+        className="form-template-select px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed form-display-resolution"
+      >
+        <option value="">未指定</option>
+        {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
+          return (
+            <option key={value} value={value}>
+              {label} {value !== '' && `(${value})`}
+            </option>
+          )
+        })}
+      </select>
+    </div>
   )
 }

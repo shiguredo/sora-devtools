@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Button, Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -32,9 +31,9 @@ export const DataChannelsForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannels">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="dataChannels"
               checked={enabledDataChannels}
@@ -43,12 +42,12 @@ export const DataChannelsForm: React.FC = () => {
             >
               dataChannels
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledDataChannels ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div>
             <JSONInputField
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
@@ -57,18 +56,17 @@ export const DataChannelsForm: React.FC = () => {
               disabled={disabled}
               rows={12}
               extraControls={
-                <Button
+                <button
                   type="button"
-                  variant="light"
-                  size="sm"
                   onClick={() => setDataChannels(exampleJsonString)}
+                  className="px-3 py-1 text-sm border border-gray-300 rounded bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   load template
-                </Button>
+                </button>
               }
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

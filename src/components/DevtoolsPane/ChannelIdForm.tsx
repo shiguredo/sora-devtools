@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormControl, FormGroup } from 'react-bootstrap'
 
 import { setChannelId } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -15,15 +14,17 @@ export const ChannelIdForm: React.FC = () => {
     setChannelId(event.target.value)
   }
   return (
-    <FormGroup className="form-inline" controlId="channelId">
+    <div className="flex items-center">
       <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
-      <FormControl
+      <input
+        id="channelId"
         type="text"
         placeholder="ChannelIdを指定"
         value={channelId}
         onChange={onChange}
         disabled={disabled}
+        className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       />
-    </FormGroup>
+    </div>
   )
 }

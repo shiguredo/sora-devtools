@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setMediaStats } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -12,10 +11,10 @@ export const MediaStatsForm: React.FC = () => {
     setMediaStats(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="mediaStats">
+    <div className="flex items-center">
       <TooltipFormCheck kind="mediaStats" checked={mediaStats} onChange={onChange} disabled={false}>
         Show media stats
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

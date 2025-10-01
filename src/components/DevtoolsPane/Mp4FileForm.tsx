@@ -1,7 +1,6 @@
 import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 
 import type React from 'react'
-import { Form, FormGroup } from 'react-bootstrap'
 
 import { setMp4MediaStream } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -38,9 +37,15 @@ export const Mp4FileForm: React.FC = () => {
     return null
   }
   return (
-    <FormGroup className="form-inline" controlId="mp4File">
+    <div className="flex items-center">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
-      <Form.Control type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
-    </FormGroup>
+      <input
+        type="file"
+        accept="video/mp4"
+        disabled={disabled}
+        onChange={onChange}
+        className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      />
+    </div>
   )
 }

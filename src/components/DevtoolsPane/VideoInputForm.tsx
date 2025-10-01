@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoInput, updateMediaStream } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -14,13 +13,14 @@ export const VideoInputForm: React.FC = () => {
     updateMediaStream()
   }
   return (
-    <FormGroup className="form-inline" controlId="videoInput">
+    <div className="flex items-center">
       <TooltipFormLabel kind="videoInput">videoInput:</TooltipFormLabel>
-      <FormSelect
+      <select
         name="videoInput"
         value={videoInput}
         onChange={onChange}
         disabled={videoInputDevices.length === 0}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         <option value="">未指定</option>
         {videoInputDevices.map((deviceInfo) => {
@@ -30,7 +30,7 @@ export const VideoInputForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

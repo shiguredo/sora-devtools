@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlightUnfocusRid } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,14 @@ export const SpotlightUnfocusRidForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="spotlightUnfocusRid">
+    <div className="flex items-center">
       <TooltipFormLabel kind="spotlightUnfocusRid">spotlightUnfocusRid:</TooltipFormLabel>
-      <FormSelect value={spotlightUnfocusRid} onChange={onChange} disabled={disabled}>
+      <select
+        value={spotlightUnfocusRid}
+        onChange={onChange}
+        disabled={disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {SPOTLIGHT_FOCUS_RIDS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -28,7 +32,7 @@ export const SpotlightUnfocusRidForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

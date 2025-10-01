@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Form, FormGroup } from 'react-bootstrap'
 
 import { setFakeVolume } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -16,9 +15,17 @@ export const FakeVolumeForm: React.FC = () => {
     return null
   }
   return (
-    <FormGroup className="form-inline" controlId="fakeVolume">
+    <div className="flex items-center">
       <TooltipFormLabel kind="fakeVolume">fakeVolume:</TooltipFormLabel>
-      <Form.Range min="0" max="1" step="0.25" value={fakeVolume} onChange={onChange} />
-    </FormGroup>
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.25"
+        value={fakeVolume}
+        onChange={onChange}
+        className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+      />
+    </div>
   )
 }

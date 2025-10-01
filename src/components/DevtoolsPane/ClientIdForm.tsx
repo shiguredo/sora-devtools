@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setClientId, setEnabledClientId } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -20,9 +19,9 @@ export const ClientIdForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledClientId">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="clientId"
               checked={enabledClientId}
@@ -31,24 +30,24 @@ export const ClientIdForm: React.FC = () => {
             >
               clientId
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledClientId ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="clientId">
-              <FormControl
-                className="flex-fill w-500"
+        <div className="form-row">
+          <div>
+            <div className="flex items-center">
+              <input
+                className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed w-500"
                 type="text"
                 placeholder="ClientIdを指定"
                 value={clientId}
                 onChange={onChangeText}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

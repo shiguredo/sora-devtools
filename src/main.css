@@ -1,0 +1,33 @@
+@import "tailwindcss" source(".");
+
+@theme {
+  /* Sora ブランドカラー */
+  --color-sora: #0071bc;
+
+  /* Bootstrap 互換カラー */
+  --color-bs-primary: #0d6efd;
+  --color-bs-dark: #212529;
+  --color-bs-yellow: #ffc107;
+  --color-bs-orange: #fd7e14;
+  --color-bs-red: #dc3545;
+  --color-bs-light: #f8f9fa;
+  --color-bs-border: #dee2e6;
+
+  /* デバッグモード用カラー */
+  --color-debug-pink: #ff0066;
+  --color-debug-pink-light: #ff4c93;
+  --color-debug-pink-hover: #ff1a6f;
+
+  /* グレー系 */
+  --color-gray-custom-100: #e5e5e5;
+  --color-gray-custom-200: #bbbbbb;
+  --color-gray-custom-600: #6c757d;
+  --color-gray-custom-700: #5a6268;
+  --color-gray-custom-800: #343a40;
+  --color-gray-custom-850: #666666;
+  --color-gray-custom-900: #222222;
+
+  /* アクセントカラー */
+  --color-blue-custom-500: #0375ff;
+  --color-blue-custom-600: #015dc8;
+}

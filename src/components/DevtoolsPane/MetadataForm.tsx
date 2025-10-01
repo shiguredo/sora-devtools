@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledMetadata, setMetadata } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,9 @@ export const MetadataForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledMetadata">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="metadata"
               checked={enabledMetadata}
@@ -29,12 +28,12 @@ export const MetadataForm: React.FC = () => {
             >
               metadata
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledMetadata ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div>
             <JSONInputField
               controlId="metadata"
               placeholder="Metadataを指定"
@@ -42,8 +41,8 @@ export const MetadataForm: React.FC = () => {
               setValue={(value) => setMetadata(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

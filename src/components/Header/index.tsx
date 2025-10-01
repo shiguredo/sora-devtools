@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Container, Nav, Navbar } from 'react-bootstrap'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 
@@ -19,36 +18,34 @@ export const Header: React.FC = () => {
   })()
   return (
     <header>
-      <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
-        <Container>
-          <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-collapse" />
-          <Navbar.Collapse id="navbar-collapse">
-            <Nav className="me-auto" />
-            <Nav>
-              <Navbar.Text className="py-0 my-1 mx-1">
-                <p className="navbar-signaling-url border rounded">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-sora">
+        <div className="container max-w-none">
+          <div className="flex items-center justify-between py-2">
+            <a href="/" className="text-white text-xl font-bold no-underline">
+              Sora DevTools
+            </a>
+            <button className="lg:hidden" aria-controls="navbar-collapse">
+              Menu
+            </button>
+            <div id="navbar-collapse" className="hidden lg:flex lg:items-center lg:w-auto lg:gap-2">
+              <div className="flex-grow" />
+              <div className="flex items-center gap-2">
+                <p className="min-w-[250px] text-sm text-white border border-white rounded px-2 py-1 m-0 whitespace-nowrap">
                   {sora && connectionStatus === 'connected'
                     ? sora.connectedSignalingUrl
                     : 'Signaling URL'}
                 </p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
-                <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+                <p className="min-w-[250px] text-sm text-white border border-white rounded px-2 py-1 m-0 whitespace-nowrap">
+                  {turnUrlLabel}
+                </p>
                 <DebugButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
                 <DownloadReportButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 ms-1">
                 <CopyUrlButton />
-              </Navbar.Text>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
     </header>
   )
 }

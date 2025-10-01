@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
@@ -14,9 +13,9 @@ export const ForceStereoOutputForm: React.FC = () => {
     useSoraDevtoolsStore.getState().setForceStereoOutput(event.target.checked)
   }
   return (
-    <Row className="form-row">
-      <Col className="col-auto">
-        <FormGroup className="form-inline" controlId="forceStereoOutput">
+    <div className="form-row">
+      <div>
+        <div className="flex items-center">
           <TooltipFormCheck
             kind="forceStereoOutput"
             checked={forceStereoOutput}
@@ -25,8 +24,8 @@ export const ForceStereoOutputForm: React.FC = () => {
           >
             forceStereoOutput
           </TooltipFormCheck>
-        </FormGroup>
-      </Col>
-    </Row>
+        </div>
+      </div>
+    </div>
   )
 }

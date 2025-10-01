@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -24,9 +23,9 @@ export const AudioStreamingLanguageCodeForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledAudioStreamingLanguageCode">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="audioStreamingLanguageCode"
               checked={enabledAudioStreamingLanguageCode}
@@ -35,24 +34,24 @@ export const AudioStreamingLanguageCodeForm: React.FC = () => {
             >
               audioStreamingLanguageCode
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledAudioStreamingLanguageCode ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="audioStreamingLanguageCode">
-              <FormControl
-                className="flex-fill w-500"
+        <div className="form-row">
+          <div>
+            <div className="flex items-center">
+              <input
+                className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed w-500"
                 type="text"
                 placeholder="audioStreamingLanguageCodeを指定"
                 value={audioStreamingLanguageCode}
                 onChange={onChangeText}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

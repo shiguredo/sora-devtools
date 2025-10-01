@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Nav, Navbar } from 'react-bootstrap'
 import Sora from 'sora-js-sdk'
 
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -10,25 +9,27 @@ export const Footer: React.FC = () => {
   const version = useSoraDevtoolsStore((state) => state.version)
   return (
     <footer>
-      <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
-        <Nav className="me-auto" />
-        <Nav>
-          <Navbar.Collapse id="navbar-collapse">
-            <a
-              href="https://github.com/shiguredo/sora-devtools"
-              className="btn btn-outline-light m-1"
-            >
-              GitHub: shiguredo/sora-devtools: {version}
-            </a>
-            <a
-              href="https://github.com/shiguredo/sora-js-sdk"
-              className="btn btn-outline-light m-1"
-            >
-              GitHub: shiguredo/sora-js-sdk: {Sora.version()}
-            </a>
-          </Navbar.Collapse>
-        </Nav>
-      </Navbar>
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-sora">
+        <div className="container max-w-none">
+          <div className="flex items-center justify-between py-2">
+            <div className="flex-grow" />
+            <div className="flex items-center gap-2">
+              <a
+                href="https://github.com/shiguredo/sora-devtools"
+                className="border border-white text-white px-3 py-1.5 rounded hover:bg-white hover:text-sora m-1"
+              >
+                GitHub: shiguredo/sora-devtools: {version}
+              </a>
+              <a
+                href="https://github.com/shiguredo/sora-js-sdk"
+                className="border border-white text-white px-3 py-1.5 rounded hover:bg-white hover:text-sora m-1"
+              >
+                GitHub: shiguredo/sora-js-sdk: {Sora.version()}
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
       <DebugButton />
     </footer>
   )

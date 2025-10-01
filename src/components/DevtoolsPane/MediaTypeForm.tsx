@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -19,16 +18,18 @@ type FormRadioProps = {
 const FormRadio: React.FC<FormRadioProps> = (props) => {
   const { label, disabled, onChange, mediaType } = props
   return (
-    <FormCheck
-      type="radio"
-      inline={true}
-      id={label}
-      label={label}
-      value={label}
-      checked={mediaType === label}
-      onChange={onChange}
-      disabled={disabled}
-    />
+    <label className="inline-flex items-center mr-4 cursor-pointer">
+      <input
+        type="radio"
+        id={label}
+        value={label}
+        checked={mediaType === label}
+        onChange={onChange}
+        disabled={disabled}
+        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed"
+      />
+      <span className="ml-2 text-base">{label}</span>
+    </label>
   )
 }
 
@@ -51,7 +52,7 @@ export const MediaTypeForm: React.FC = () => {
     setMountClient(true)
   }, [])
   return (
-    <FormGroup className="form-inline flex-wrap">
+    <div className="flex items-center flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio
         label="getUserMedia"
@@ -74,6 +75,6 @@ export const MediaTypeForm: React.FC = () => {
           onChange={onChange}
         />
       )}
-    </FormGroup>
+    </div>
   )
 }

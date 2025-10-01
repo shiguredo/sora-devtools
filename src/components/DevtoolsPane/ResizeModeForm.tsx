@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setResizeMode } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -16,9 +15,14 @@ export const ResizeModeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="resizeMode">
+    <div className="flex items-center">
       <TooltipFormLabel kind="resizeMode">resizeMode:</TooltipFormLabel>
-      <FormSelect name="resizeMode" value={resizeMode} onChange={onChange}>
+      <select
+        name="resizeMode"
+        value={resizeMode}
+        onChange={onChange}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {RESIZE_MODE_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +30,7 @@ export const ResizeModeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

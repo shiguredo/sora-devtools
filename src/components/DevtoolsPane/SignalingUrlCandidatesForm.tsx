@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -17,7 +16,7 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledSignalingUrlCandidates(event.target.checked)
   }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeText = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setSignalingUrlCandidates(event.target.value.split('\n'))
   }
   const textareaPlaceholder = `signalingUrlCandidatesを指定
@@ -27,9 +26,9 @@ wss://sora1.example.com/signaling
 `
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
             <TooltipFormCheck
               kind="signalingUrlCandidates"
               checked={enabledSignalingUrlCandidates}
@@ -38,16 +37,15 @@ wss://sora1.example.com/signaling
             >
               signalingUrlCandidates
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {enabledSignalingUrlCandidates ? (
-        <Row className="form-row" xs="auto">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
+        <div className="form-row">
+          <div>
+            <div className="flex items-center">
+              <textarea
+                className="flex-1 px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder={textareaPlaceholder}
                 value={signalingUrlCandidates.join('\n')}
                 onChange={onChangeText}
@@ -55,9 +53,9 @@ wss://sora1.example.com/signaling
                 cols={100}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

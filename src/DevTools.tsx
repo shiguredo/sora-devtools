@@ -21,8 +21,8 @@ const Devtools: React.FC = () => {
     <>
       <Header />
       <main>
-        <div className="container">
-          <div className="row">
+        <div className="container max-w-none">
+          <div className="flex flex-wrap">
             <DevtoolsPane />
             <DebugPane />
           </div>

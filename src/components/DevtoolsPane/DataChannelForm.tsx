@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap'
 
 import {
   setDataChannelSignaling,
@@ -20,15 +19,16 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
+    <div className="flex items-center">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
         ignoreDisconnectWebSocket:
       </TooltipFormLabel>
-      <FormSelect
+      <select
         name="ignoreDisconnectWebSocket"
         value={ignoreDisconnectWebSocket}
         onChange={onChange}
         disabled={props.disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
           return (
@@ -37,8 +37,8 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }
 
@@ -50,13 +50,14 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="dataChannelSignaling">
+    <div className="flex items-center">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
-      <FormSelect
+      <select
         name="dataChannelSignaling"
         value={dataChannelSignaling}
         onChange={onChange}
         disabled={props.disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         {DATA_CHANNEL_SIGNALING.map((value) => {
           return (
@@ -65,8 +66,8 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }
 
@@ -79,33 +80,32 @@ export const DataChannelForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannel">
-            <FormCheck
-              type="switch"
-              name="enabledDataChannel"
-              label="dataChannel"
-              checked={enabledDataChannel}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
+      <div className="form-row">
+        <div>
+          <div className="flex items-center">
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="enabledDataChannel"
+                checked={enabledDataChannel}
+                onChange={onChangeSwitch}
+                disabled={disabled}
+                className="w-10 h-5 relative appearance-none bg-gray-300 rounded-full cursor-pointer transition-colors duration-200 ease-in-out checked:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 before:content-[''] before:absolute before:top-0.5 before:left-0.5 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 before:ease-in-out checked:before:translate-x-5"
+              />
+              <span className="ml-2 text-base">dataChannel</span>
+            </label>
+          </div>
+        </div>
+      </div>
       {enabledDataChannel ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <Row xs="auto">
-              <Col>
-                <DataChannelSignalingForm disabled={disabled} />
-              </Col>
-              <Col>
-                <IgnoreDisconnectWebSocketForm disabled={disabled} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        <div className="form-row">
+          <div>
+            <div className="flex flex-wrap gap-4">
+              <DataChannelSignalingForm disabled={disabled} />
+              <IgnoreDisconnectWebSocketForm disabled={disabled} />
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

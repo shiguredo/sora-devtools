@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setEchoCancellationType } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -16,9 +15,14 @@ export const EchoCancellationTypeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="echoCancellationType">
+    <div className="flex items-center">
       <TooltipFormLabel kind="echoCancellationType">echoCancellationType:</TooltipFormLabel>
-      <FormSelect name="echoCancellationType" value={echoCancellationType} onChange={onChange}>
+      <select
+        name="echoCancellationType"
+        value={echoCancellationType}
+        onChange={onChange}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {ECHO_CANCELLATION_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +30,7 @@ export const EchoCancellationTypeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

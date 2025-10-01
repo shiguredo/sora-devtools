@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSimulcastRid } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -18,9 +17,15 @@ export const SimulcastRidForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="simulcastRid">
+    <div className="flex items-center">
       <TooltipFormLabel kind="simulcastRid">simulcastRid:</TooltipFormLabel>
-      <FormSelect name="simulcastRid" value={simulcastRid} onChange={onChange} disabled={disabled}>
+      <select
+        name="simulcastRid"
+        value={simulcastRid}
+        onChange={onChange}
+        disabled={disabled}
+        className="px-3 py-1.5 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
         {SIMULCAST_RID.map((value) => {
           return (
             <option key={value} value={value}>
@@ -28,7 +33,7 @@ export const SimulcastRidForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setReconnect } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -15,9 +14,9 @@ export const ReconnectForm: React.FC = () => {
     setReconnect(event.target.checked)
   }
   return (
-    <Row className="form-row">
-      <Col className="col-auto">
-        <FormGroup className="form-inline" controlId="reconnect">
+    <div className="form-row">
+      <div>
+        <div className="flex items-center">
           <TooltipFormCheck
             kind="reconnect"
             checked={reconnect}
@@ -26,8 +25,8 @@ export const ReconnectForm: React.FC = () => {
           >
             reconnect
           </TooltipFormCheck>
-        </FormGroup>
-      </Col>
-    </Row>
+        </div>
+      </div>
+    </div>
   )
 }

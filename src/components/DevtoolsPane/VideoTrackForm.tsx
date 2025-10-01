@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setVideoTrack } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
@@ -12,10 +11,10 @@ export const VideoTrackForm: React.FC = () => {
     setVideoTrack(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="videoTrack">
+    <div className="flex items-center">
       <TooltipFormCheck kind="videoTrack" checked={videoTrack} onChange={onChange} disabled={false}>
         Enable video track
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }
