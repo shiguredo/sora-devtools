@@ -20,15 +20,23 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   const prevDataRef = useRef(prevData)
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+
     if (
       prevDataRef.current !== undefined &&
       JSON.stringify(prevDataRef.current) !== JSON.stringify(data)
     ) {
       setIsHighlighted(true)
-      const timer = setTimeout(() => setIsHighlighted(false), 1000)
-      return () => clearTimeout(timer)
+      timer = setTimeout(() => setIsHighlighted(false), 1000)
     }
+
     prevDataRef.current = data
+
+    return () => {
+      if (timer !== undefined) {
+        clearTimeout(timer)
+      }
+    }
   }, [data])
 
   const renderPrimitive = (value: unknown) => {

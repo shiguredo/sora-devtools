@@ -30,9 +30,9 @@ const Description = React.memo<DescriptionProps>((props) => {
     return (
       <div className="debug-message">
         <div className="col-sm-12">
-          <pre>
+          <div className={props.wordBreak ? 'word-break' : ''}>
             <JsonTree data={description} prevData={prevDescription} />
-          </pre>
+          </div>
         </div>
       </div>
     )
