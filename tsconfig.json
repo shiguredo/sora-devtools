@@ -5,7 +5,7 @@
     "jsx": "preserve",
     "module": "esnext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "sourceMap": true,
     "strict": true,
