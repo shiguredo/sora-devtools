@@ -31,6 +31,10 @@
   - <https://canary.sora-devtools.shiguredo.app/>
     - develop ブランチ
   - @voluntas
+- [CHANGE] `tsconfig.json` の `moduleResolution` を `bundler` に変更する
+  - @voluntas
+- [CHANGE] 型チェックコマンドを `typecheck` に変更する
+  - @voluntas
 - [CHANGE] GitHub Pages へのデプロイを削除する
   - @voluntas
 - [CHANGE] redux から zustand を利用する
