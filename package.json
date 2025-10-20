@@ -20,7 +20,7 @@
     "lint": "biome lint",
     "fix": "biome check --apply",
     "test": "vitest run",
-    "check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "e2e-test": "playwright test --project=chromium",
     "cleanup": "git clean -ffdx --exclude .env"
   },

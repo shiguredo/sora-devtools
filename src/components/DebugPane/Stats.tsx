@@ -5,12 +5,12 @@ import { useSoraDevtoolsStore } from '@/app/store'
 import { Message } from './Message.tsx'
 
 interface RTCStatsWithIndexSignature extends RTCStats {
-  [x: string]: string | number | undefined
+  [x: string]: unknown
 }
 
-type CollapseProps = RTCStatsWithIndexSignature & {
+type CollapseProps = {
   prevStats?: RTCStatsWithIndexSignature
-}
+} & RTCStatsWithIndexSignature
 
 const Collapse: React.FC<CollapseProps> = (props) => {
   const { prevStats, ...stats } = props
