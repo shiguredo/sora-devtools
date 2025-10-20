@@ -19,3 +19,6 @@ next-env.d.ts
 
 # dist
 dist/
+
+# claude
+.claude/
