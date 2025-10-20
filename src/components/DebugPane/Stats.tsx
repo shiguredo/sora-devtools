@@ -8,16 +8,29 @@ interface RTCStatsWithIndexSignature extends RTCStats {
   [x: string]: string | number | undefined
 }
 
-const Collapse: React.FC<RTCStatsWithIndexSignature> = (props) => {
-  return <Message title={`${props.id}(${props.type})`} timestamp={null} description={props} />
+type CollapseProps = RTCStatsWithIndexSignature & {
+  prevStats?: RTCStatsWithIndexSignature
 }
 
-const Log: React.FC<RTCStatsWithIndexSignature> = (props) => {
+const Collapse: React.FC<CollapseProps> = (props) => {
+  const { prevStats, ...stats } = props
+  return (
+    <Message
+      title={`${stats.id}(${stats.type})`}
+      timestamp={null}
+      description={stats}
+      prevDescription={prevStats}
+    />
+  )
+}
+
+const Log: React.FC<CollapseProps> = (props) => {
   return <Collapse {...props} />
 }
 
 export const Stats: React.FC = () => {
   const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
+  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
   const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
   const filteredMessages = statsReport.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
@@ -30,7 +43,15 @@ export const Stats: React.FC = () => {
   return (
     <div className="debug-messages">
       {filteredMessages.map((stats) => {
-        return <Log key={stats.id} {...(stats as RTCStatsWithIndexSignature)} />
+        // 前回の同じ id の stats を探す
+        const prevStats = prevStatsReport.find((prev) => prev.id === stats.id)
+        return (
+          <Log
+            key={stats.id}
+            {...(stats as RTCStatsWithIndexSignature)}
+            prevStats={prevStats as RTCStatsWithIndexSignature | undefined}
+          />
+        )
       })}
     </div>
   )
