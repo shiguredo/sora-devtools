@@ -602,7 +602,7 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setLocalMediaStream: (mediaStream) =>
         set((state) => {
           if (state.soraContents.localMediaStream) {
-            state.soraContents.localMediaStream.getTracks().filter((track) => {
+            state.soraContents.localMediaStream.getTracks().forEach((track) => {
               track.stop()
             })
           }

@@ -437,7 +437,7 @@ export const copyURL = (): void => {
     .map((key) => {
       const value = (parameters as Record<string, unknown>)[key]
       if (value === undefined) {
-        return
+        return undefined
       }
       // signalingUrlCandidates は Array なので JSON.stringify する
       if (key === 'signalingUrlCandidates') {
@@ -626,7 +626,7 @@ async function createMediaStream(
       .getUserMedia(mediaStreamConstraints)
       .catch((error) => {
         // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-        mediaStream.getTracks().filter((t) => {
+        mediaStream.getTracks().forEach((t) => {
           t.stop()
         })
         throw error
@@ -786,6 +786,7 @@ function setSoraCallbacks(sora: ConnectionPublisher | ConnectionSubscriber): voi
       if (event?.target) {
         return client.connectionId === (event.target as MediaStream).id
       }
+      return false
     })
     if (remoteClient) {
       store.removeRemoteClient(remoteClient.connectionId)
@@ -822,8 +823,8 @@ function setSoraCallbacks(sora: ConnectionPublisher | ConnectionSubscriber): voi
       await stopLocalVideoTrack(localMediaStream, originalTrack)
     })()
     stopLocalAudioTrack(localMediaStream, noiseSuppressionProcessor)
-    remoteClients.filter((client) => {
-      client.mediaStream.getTracks().filter((track) => {
+    remoteClients.forEach((client) => {
+      client.mediaStream.getTracks().forEach((track) => {
         track.stop()
       })
     })
@@ -1000,7 +1001,7 @@ export const requestMedia = async (): Promise<void> => {
       originalTrack.stop()
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack))
     } else if (mediaStream) {
-      mediaStream.getVideoTracks().filter((track) => {
+      mediaStream.getVideoTracks().forEach((track) => {
         track.stop()
         store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
       })
@@ -1014,7 +1015,7 @@ export const requestMedia = async (): Promise<void> => {
       }
       state.noiseSuppressionProcessor.stopProcessing()
     } else if (mediaStream) {
-      mediaStream.getAudioTracks().filter((track) => {
+      mediaStream.getAudioTracks().forEach((track) => {
         track.stop()
         store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
       })
@@ -1042,7 +1043,7 @@ export const disposeMedia = async (): Promise<void> => {
     localMediaStream?.removeTrack(originalTrack)
     store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack))
   } else if (localMediaStream) {
-    localMediaStream.getVideoTracks().filter((track) => {
+    localMediaStream.getVideoTracks().forEach((track) => {
       track.stop()
       localMediaStream.removeTrack(track)
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
@@ -1058,7 +1059,7 @@ export const disposeMedia = async (): Promise<void> => {
     }
     noiseSuppressionProcessor.stopProcessing()
   } else if (localMediaStream) {
-    localMediaStream.getAudioTracks().filter((track) => {
+    localMediaStream.getAudioTracks().forEach((track) => {
       track.stop()
       localMediaStream.removeTrack(track)
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
@@ -1171,7 +1172,7 @@ export const connectSora = async (): Promise<void> => {
       originalTrack.stop()
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', originalTrack))
     } else if (mediaStream) {
-      mediaStream.getVideoTracks().filter((track) => {
+      mediaStream.getVideoTracks().forEach((track) => {
         track.stop()
         store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
       })
@@ -1185,7 +1186,7 @@ export const connectSora = async (): Promise<void> => {
       }
       state.noiseSuppressionProcessor.stopProcessing()
     } else if (mediaStream) {
-      mediaStream.getAudioTracks().filter((track) => {
+      mediaStream.getAudioTracks().forEach((track) => {
         track.stop()
         store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
       })
@@ -1346,7 +1347,7 @@ export const setMediaDevices = async (): Promise<void> => {
   const audioInputDevices: MediaDeviceInfo[] = []
   const videoInputDevices: MediaDeviceInfo[] = []
   const audioOutputDevices: MediaDeviceInfo[] = []
-  deviceInfos.filter((deviceInfo) => {
+  deviceInfos.forEach((deviceInfo) => {
     if (deviceInfo.deviceId === '') {
       return
     }
@@ -1385,7 +1386,7 @@ export const updateMediaStream = async (): Promise<void> => {
     }
     state.virtualBackgroundProcessor.stopProcessing()
   } else if (state.soraContents.localMediaStream) {
-    state.soraContents.localMediaStream.getVideoTracks().filter((track) => {
+    state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
       track.stop()
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
     })
@@ -1399,7 +1400,7 @@ export const updateMediaStream = async (): Promise<void> => {
     }
     state.noiseSuppressionProcessor.stopProcessing()
   } else if (state.soraContents.localMediaStream) {
-    state.soraContents.localMediaStream.getAudioTracks().filter((track) => {
+    state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
       track.stop()
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
     })
@@ -1409,7 +1410,7 @@ export const updateMediaStream = async (): Promise<void> => {
     store.setSoraConnectionStatus('disconnected')
     throw error
   })
-  mediaStream.getTracks().filter((track) => {
+  mediaStream.getTracks().forEach((track) => {
     if (!state.soraContents.sora || !state.soraContents.sora.pc) {
       return
     }
@@ -1482,7 +1483,7 @@ export const setMicDevice = async (micDevice: boolean): Promise<void> => {
       } else if (state.soraContents.localMediaStream) {
         // Sora は未接続で media access での表示を行っている場合
         // 現在の AudioTrack を停止、削除してから、新しい AudioTrack を追加する
-        state.soraContents.localMediaStream.getAudioTracks().filter((track) => {
+        state.soraContents.localMediaStream.getAudioTracks().forEach((track) => {
           track.enabled = false
           track.stop()
           state.soraContents.localMediaStream?.removeTrack(track)
@@ -1566,7 +1567,7 @@ export const setCameraDevice = async (cameraDevice: boolean): Promise<void> => {
       } else if (state.soraContents.localMediaStream) {
         // Sora は未接続で media access での表示を行っている場合
         // 現在の VideoTrack を停止、削除してから、新しい VideoTrack を追加する
-        state.soraContents.localMediaStream.getVideoTracks().filter((track) => {
+        state.soraContents.localMediaStream.getVideoTracks().forEach((track) => {
           track.enabled = false
           track.stop()
           state.soraContents.localMediaStream?.removeTrack(track)
@@ -1630,13 +1631,13 @@ const stopLocalVideoTrack = async (
     if (!localMediaStream) {
       return
     }
-    localMediaStream.getVideoTracks().filter((track) => {
+    localMediaStream.getVideoTracks().forEach((track) => {
       track.enabled = false
     })
     // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
     // safari はこれで対応できるが firefox は残ってしまう
     await new Promise((resolve) => setTimeout(resolve, 100))
-    localMediaStream.getVideoTracks().filter((track) => {
+    localMediaStream.getVideoTracks().forEach((track) => {
       track.stop()
       localMediaStream.removeTrack(track)
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))
@@ -1663,7 +1664,7 @@ const stopLocalAudioTrack = (
     }
     noiseSuppressionProcessor.stopProcessing()
   } else if (localMediaStream) {
-    localMediaStream.getAudioTracks().filter((track) => {
+    localMediaStream.getAudioTracks().forEach((track) => {
       track.stop()
       localMediaStream.removeTrack(track)
       store.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog('stop', track))

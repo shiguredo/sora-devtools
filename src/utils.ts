@@ -232,7 +232,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
   }
 
   // undefined の項目を削除する
-  ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
+  ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).forEach((key) => {
     if (result[key] === undefined) {
       delete result[key]
     }
@@ -778,7 +778,10 @@ export function createConnectOptions(
     connectionOptions.spotlight = parsedSpotlight
     if (parsedSpotlight === true) {
       if (connectionOptionsState.spotlightNumber) {
-        connectionOptions.spotlightNumber = Number.parseInt(connectionOptionsState.spotlightNumber)
+        connectionOptions.spotlightNumber = Number.parseInt(
+          connectionOptionsState.spotlightNumber,
+          10,
+        )
       }
       if (connectionOptionsState.spotlightFocusRid) {
         connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid

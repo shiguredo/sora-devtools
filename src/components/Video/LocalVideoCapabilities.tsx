@@ -30,6 +30,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
             return true
           }
         }
+        return false
       })
       if (stats.length === 0) {
         return
@@ -44,6 +45,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
             const castedStats = stats as RTCStatsCodec
             return castedStats.id === outboundRtpStats.codecId
           }
+          return false
         })
         if (codec === undefined) {
           return {

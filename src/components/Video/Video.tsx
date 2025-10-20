@@ -18,7 +18,7 @@ const VideoElement = React.memo<VideoProps>((props) => {
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      entries.filter((entry) => {
+      entries.forEach((entry) => {
         setHeight(entry.contentRect.height)
       })
     })
