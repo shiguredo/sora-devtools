@@ -1,4 +1,5 @@
 import type React from 'react'
+import { useMemo } from 'react'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 
@@ -32,6 +33,13 @@ export const Stats: React.FC = () => {
   const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
   const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
   const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
+
+  // prevStatsReport を Map 化して O(1) で参照できるようにする
+  const prevStatsMap = useMemo(
+    () => new Map(prevStatsReport.map((stats) => [stats.id, stats])),
+    [prevStatsReport],
+  )
+
   const filteredMessages = statsReport.filter((message) => {
     return debugFilterText.split(' ').every((filterText) => {
       if (filterText === '') {
@@ -43,8 +51,8 @@ export const Stats: React.FC = () => {
   return (
     <div className="debug-messages">
       {filteredMessages.map((stats) => {
-        // 前回の同じ id の stats を探す
-        const prevStats = prevStatsReport.find((prev) => prev.id === stats.id)
+        // O(1) で前回の同じ id の stats を取得
+        const prevStats = prevStatsMap.get(stats.id)
         return (
           <Log
             key={stats.id}
