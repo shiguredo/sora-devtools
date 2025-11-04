@@ -81,8 +81,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
 
   // 変更検出: 深い比較で値の変更を検出
   useEffect(() => {
-    // 前回の値が存在し、今回と等しくない場合のみハイライト
-    // deepEqual が false を返す = 値が異なる = 変更あり
+    // 前回の値が存在し、値が変更された場合はハイライト表示
     if (prevDataRef.current !== undefined && !deepEqual(prevDataRef.current, data)) {
       setIsHighlighted(true)
       const timer = setTimeout(() => setIsHighlighted(false), 1000)
@@ -93,7 +92,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
       return () => clearTimeout(timer)
     }
 
-    // 変更がない場合も data を更新
+    // 初回またはハイライト不要時も、次回比較用に現在の値を保存
     prevDataRef.current = data
   }, [data])
 
