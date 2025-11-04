@@ -4,13 +4,15 @@ import { Collapse } from 'react-bootstrap'
 import { formatUnixtime } from '@/utils'
 
 import { CopyLogButton } from './CopyLogButton.tsx'
+import { JsonTree } from './JsonTree.tsx'
 
 type DescriptionProps = {
   description: string | number | Record<string, unknown>
+  prevDescription?: unknown
   wordBreak?: boolean
 }
 const Description = React.memo<DescriptionProps>((props) => {
-  const { description } = props
+  const { description, prevDescription } = props
   if (description === undefined) {
     return null
   }
@@ -23,6 +25,19 @@ const Description = React.memo<DescriptionProps>((props) => {
       </div>
     )
   }
+  // prevDescription が渡されている場合は JsonTree を使用（差分更新あり）
+  if (prevDescription !== undefined) {
+    return (
+      <div className="debug-message">
+        <div className="col-sm-12">
+          <div className={props.wordBreak ? 'word-break' : ''}>
+            <JsonTree data={description} prevData={prevDescription} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+  // prevDescription がない場合は従来通り JSON.stringify
   return (
     <div className="debug-message">
       <div className="col-sm-12">
@@ -38,12 +53,13 @@ type Props = {
   timestamp: number | null
   title: string
   description: string | number | Record<string, unknown>
+  prevDescription?: unknown
   defaultShow?: boolean
   label?: JSX.Element | null
   wordBreak?: boolean
 }
 export const Message = React.memo<Props>((props) => {
-  const { defaultShow, description, title, timestamp, label } = props
+  const { defaultShow, description, prevDescription, title, timestamp, label } = props
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow)
   const ariaControls = timestamp ? title + timestamp : title
   const disabled = description === undefined
@@ -75,7 +91,11 @@ export const Message = React.memo<Props>((props) => {
       </div>
       <Collapse in={show}>
         <div className="border-top">
-          <Description description={description} wordBreak={props.wordBreak} />
+          <Description
+            description={description}
+            prevDescription={prevDescription}
+            wordBreak={props.wordBreak}
+          />
         </div>
       </Collapse>
     </div>

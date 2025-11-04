@@ -11,6 +11,10 @@
 
 ## develop
 
+- [ADD] Stats タブの JSON 表示を JsonTree コンポーネントで実装し、 1 秒ごとの更新時に範囲選択がしやすくなるようにする
+  - 差分更新により変更されていない部分の DOM を維持し、テキスト選択を保持
+  - 変更された部分は 1 秒間ハイライト表示
+  - @voluntas
 - [FIX] debug ボタンのマウスオーバー時の色を修正する
   - @voluntas
 
@@ -26,6 +30,10 @@
     - master ブランチ
   - <https://canary.sora-devtools.shiguredo.app/>
     - develop ブランチ
+  - @voluntas
+- [CHANGE] `tsconfig.json` の `moduleResolution` を `bundler` に変更する
+  - @voluntas
+- [CHANGE] 型チェックコマンドを `typecheck` に変更する
   - @voluntas
 - [CHANGE] GitHub Pages へのデプロイを削除する
   - @voluntas
