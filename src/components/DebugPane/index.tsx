@@ -10,6 +10,7 @@ import { DebugFilter } from './Filter.tsx'
 import { LogMessages } from './LogMessages.tsx'
 import { NotifyMessages } from './NotifyMessages.tsx'
 import { PushMessages } from './PushMessages.tsx'
+import { Rpc } from './Rpc.tsx'
 import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage.tsx'
 import { SignalingMessages } from './SignalingMessages.tsx'
 import { Stats } from './Stats.tsx'
@@ -30,6 +31,7 @@ export const DebugPane: React.FC = () => {
       key === 'timeline' ||
       key === 'signaling' ||
       key === 'messaging' ||
+      key === 'rpc' ||
       key === 'codec'
     ) {
       setDebugType(key)
@@ -65,6 +67,9 @@ export const DebugPane: React.FC = () => {
         <Tab eventKey="messaging" title="Messaging">
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
+        </Tab>
+        <Tab eventKey="rpc" title="RPC">
+          <Rpc />
         </Tab>
         <Tab eventKey="codec" title="Codec">
           <CapabilitiesCodec />
