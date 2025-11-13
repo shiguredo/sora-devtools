@@ -1684,6 +1684,7 @@ const stopLocalAudioTrack = (
 
 export const {
   clearDataChannelMessages,
+  clearRpcObjects,
   deleteAlertMessage,
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,
@@ -1741,6 +1742,7 @@ export const {
   setResizeMode,
   setRole,
   setResolution,
+  setRpcObject,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
   setForwardingFilters,

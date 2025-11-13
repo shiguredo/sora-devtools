@@ -148,6 +148,8 @@ interface SoraDevtoolsActions {
   setAudioStreamingLanguageCode: (
     audioStreamingLanguageCode: SoraDevtoolsState['audioStreamingLanguageCode'],
   ) => void
+  setRpcObject: (rpcObject: SoraDevtoolsState['rpcObjects'][number]) => void
+  clearRpcObjects: () => void
   setEnabledAudioStreamingLanguageCode: (
     enabledAudioStreamingLanguageCode: SoraDevtoolsState['enabledAudioStreamingLanguageCode'],
   ) => void
@@ -268,6 +270,7 @@ const initialState: SoraDevtoolsState = {
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
   facingMode: '',
+  rpcObjects: [],
 }
 
 function setAlertMessagesAndLogMessages(
@@ -803,6 +806,14 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       clearDataChannelMessages: () =>
         set((state) => {
           state.dataChannelMessages = []
+        }),
+      setRpcObject: (rpcObject) =>
+        set((state) => {
+          state.rpcObjects.unshift(rpcObject)
+        }),
+      clearRpcObjects: () =>
+        set((state) => {
+          state.rpcObjects = []
         }),
       setAspectRatio: (aspectRatio) =>
         set((state) => {
