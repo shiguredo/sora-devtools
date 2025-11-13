@@ -1,0 +1,11 @@
+[
+  {
+    "method": "Sora_20201124.PutSignalingNotifyMetadata",
+    "params": {
+        "metadata": {
+            "spam": "egg"
+        },
+        "push": true
+    }
+  }
+]

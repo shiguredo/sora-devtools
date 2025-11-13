@@ -1,4 +1,10 @@
 import instructionsJSON from '../instructions.json'
+import rpcJSON from '../rpc.json'
+
+export const RPC_TEMPLATES = rpcJSON as ReadonlyArray<{
+  method: string
+  params?: Record<string, unknown> | unknown[]
+}>
 
 export const SIMULCAST = ['', 'true', 'false'] as const
 
