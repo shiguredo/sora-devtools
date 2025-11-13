@@ -65,6 +65,8 @@ function createDownloadReport(): DownloadReport {
     signalingUrlCandidates: state.signalingUrlCandidates,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
+    simulcastRequestRid: state.simulcastRequestRid,
+    simulcastRidAuto: state.simulcastRidAuto,
     spotlight: state.spotlight,
     spotlightFocusRid: state.spotlightFocusRid,
     spotlightNumber: state.spotlightNumber,

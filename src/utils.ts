@@ -18,6 +18,8 @@ import {
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
+  SIMULCAST_REQUEST_RID,
+  SIMULCAST_RID_AUTO,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
@@ -162,6 +164,16 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     forwardingFilter: parseStringParameter(searchParams, 'forwardingFilter'),
     simulcast: parseSpecifiedStringParameter(searchParams, 'simulcast', SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(searchParams, 'simulcastRid', SIMULCAST_RID),
+    simulcastRequestRid: parseSpecifiedStringParameter(
+      searchParams,
+      'simulcastRequestRid',
+      SIMULCAST_REQUEST_RID,
+    ),
+    simulcastRidAuto: parseSpecifiedStringParameter(
+      searchParams,
+      'simulcastRidAuto',
+      SIMULCAST_RID_AUTO,
+    ),
     spotlight: parseSpecifiedStringParameter(searchParams, 'spotlight', SPOTLIGHT),
     spotlightNumber: parseSpecifiedStringParameter(
       searchParams,
@@ -795,8 +807,17 @@ export function createConnectOptions(
   const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast)
   if (parsedSimulcast !== undefined) {
     connectionOptions.simulcast = parsedSimulcast
-    if (parsedSimulcast === true && connectionOptionsState.simulcastRid) {
-      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid
+    if (parsedSimulcast === true) {
+      if (connectionOptionsState.simulcastRid) {
+        connectionOptions.simulcastRid = connectionOptionsState.simulcastRid
+      }
+      if (connectionOptionsState.simulcastRequestRid) {
+        connectionOptions.simulcastRequestRid = connectionOptionsState.simulcastRequestRid
+      }
+      const parsedSimulcastRidAuto = parseBooleanString(connectionOptionsState.simulcastRidAuto)
+      if (parsedSimulcastRidAuto !== undefined) {
+        connectionOptions.simulcastRidAuto = parsedSimulcastRidAuto
+      }
     }
   }
   // signalingNotifyMetadata
