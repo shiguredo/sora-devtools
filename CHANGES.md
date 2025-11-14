@@ -22,6 +22,9 @@
   - Copy URL で現在のタブ状態を含めた URL をコピーできる
   - URL から直接特定のタブを開いた状態で表示できる
   - @voluntas
+- [FIX] rpcObjects のメモリリークを修正する
+  - 最大30件を超えたら古いものから削除するようにする
+  - @voluntas
 - [FIX] debug ボタンのマウスオーバー時の色を修正する
   - @voluntas
 

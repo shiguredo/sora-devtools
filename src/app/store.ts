@@ -810,6 +810,10 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setRpcObject: (rpcObject) =>
         set((state) => {
           state.rpcObjects.unshift(rpcObject)
+          // 最大30件を超えたら古いものから削除
+          if (state.rpcObjects.length > 30) {
+            state.rpcObjects.pop()
+          }
         }),
       clearRpcObjects: () =>
         set((state) => {
