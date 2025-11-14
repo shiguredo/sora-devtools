@@ -98,19 +98,37 @@ const RpcForm: React.FC = () => {
       } catch (error) {
         const endTime = performance.now()
         const duration = endTime - startTime
-        if (error instanceof Error) {
-          setRpcObject({
-            timestamp,
-            method,
-            params: parsedParams,
-            options,
-            error: {
-              code: -1,
-              message: error.message,
-            },
-            duration,
-          })
+
+        // エラーオブジェクトの構造を解析
+        let errorCode = -1
+        let errorMessage = 'Unknown error'
+
+        if (error && typeof error === 'object') {
+          // JSON-RPC エラーの場合
+          if ('code' in error && typeof error.code === 'number') {
+            errorCode = error.code
+          }
+          // エラーメッセージを取得
+          if ('message' in error && typeof error.message === 'string') {
+            errorMessage = error.message
+          } else if (error instanceof Error) {
+            errorMessage = error.message
+          }
+        } else if (typeof error === 'string') {
+          errorMessage = error
         }
+
+        setRpcObject({
+          timestamp,
+          method,
+          params: parsedParams,
+          options,
+          error: {
+            code: errorCode,
+            message: errorMessage,
+          },
+          duration,
+        })
       }
     }
   }
