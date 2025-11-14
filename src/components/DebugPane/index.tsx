@@ -35,6 +35,11 @@ export const DebugPane: React.FC = () => {
       key === 'codec'
     ) {
       setDebugType(key)
+      // URL の query string を更新
+      const searchParams = new URLSearchParams(location.search)
+      searchParams.set('debugType', key)
+      const newUrl = `${location.pathname}?${searchParams.toString()}`
+      window.history.replaceState(null, '', newUrl)
     }
   }
   return (
