@@ -273,6 +273,8 @@ const initialState: SoraDevtoolsState = {
   rpcObjects: [],
 }
 
+const MAX_RPC_OBJECTS = 30
+
 function setAlertMessagesAndLogMessages(
   alertMessages: SoraDevtoolsState['alertMessages'],
   logMessages: SoraDevtoolsState['logMessages'],
@@ -810,8 +812,8 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setRpcObject: (rpcObject) =>
         set((state) => {
           state.rpcObjects.unshift(rpcObject)
-          // 最大30件を超えたら古いものから削除
-          if (state.rpcObjects.length > 30) {
+          // 最大件数を超えたら古いものから削除
+          if (state.rpcObjects.length > MAX_RPC_OBJECTS) {
             state.rpcObjects.pop()
           }
         }),
