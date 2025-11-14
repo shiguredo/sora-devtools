@@ -25,6 +25,10 @@
 - [FIX] rpcObjects のメモリリークを修正する
   - 最大30件を超えたら古いものから削除するようにする
   - @voluntas
+- [FIX] RPC タブの params に JSON パースエラーがある場合の UX を改善する
+  - JSON パースエラー時に入力フィールドが赤枠で表示される
+  - JSON パースエラー時に call ボタンが無効化される
+  - @voluntas
 - [FIX] debug ボタンのマウスオーバー時の色を修正する
   - @voluntas
 

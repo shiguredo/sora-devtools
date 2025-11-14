@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react-bootstrap'
 
 import { setRpcObject } from '@/app/actions'
@@ -30,9 +30,24 @@ const RpcForm: React.FC = () => {
   const [notification, setNotification] = useState(false)
   const [method, setMethod] = useState('')
   const [params, setParams] = useState('')
+  const [paramsHasError, setParamsHasError] = useState(false)
 
   const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+
+  // params の JSON パースエラーをチェック
+  useEffect(() => {
+    if (params.trim() === '') {
+      setParamsHasError(false)
+      return
+    }
+    try {
+      JSON.parse(params)
+      setParamsHasError(false)
+    } catch {
+      setParamsHasError(true)
+    }
+  }, [params])
 
   const handleCallRpc = async (): Promise<void> => {
     if (!methodRef.current || !timeoutRef.current) {
@@ -181,7 +196,7 @@ const RpcForm: React.FC = () => {
           className="ms-auto"
           variant="secondary"
           onClick={handleCallRpc}
-          disabled={connectionStatus !== 'connected'}
+          disabled={connectionStatus !== 'connected' || paramsHasError}
         >
           call
         </Button>
