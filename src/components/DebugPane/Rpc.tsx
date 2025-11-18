@@ -3,7 +3,7 @@ import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react
 
 import { setRpcObject } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
-import { RPC_TEMPLATES } from '@/constants'
+import { MAX_RPC_OBJECTS, RPC_TEMPLATES } from '@/constants'
 import type { RpcObject } from '@/types'
 import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 
@@ -327,6 +327,9 @@ export const Rpc: React.FC = () => {
         <>
           <div className="py-1 mt-3">
             <h5>RPC Results</h5>
+            <div className="mb-2" style={{ color: '#aaa', fontSize: '0.85rem' }}>
+              最新 {rpcObjects.length} 件を表示 (最大 {MAX_RPC_OBJECTS} 件まで保存)
+            </div>
             <ButtonClear />
           </div>
           <div className="debug-messages">

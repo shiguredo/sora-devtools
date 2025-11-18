@@ -12,7 +12,7 @@ import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import packageJSON from '../../package.json'
-import { WORKER_SCRIPT } from '../constants.ts'
+import { MAX_RPC_OBJECTS, WORKER_SCRIPT } from '../constants.ts'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -272,8 +272,6 @@ const initialState: SoraDevtoolsState = {
   facingMode: '',
   rpcObjects: [],
 }
-
-const MAX_RPC_OBJECTS = 30
 
 function setAlertMessagesAndLogMessages(
   alertMessages: SoraDevtoolsState['alertMessages'],
