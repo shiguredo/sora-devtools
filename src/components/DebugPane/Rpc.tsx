@@ -332,7 +332,7 @@ export const Rpc: React.FC = () => {
             </div>
             <ButtonClear />
           </div>
-          <div className="debug-messages">
+          <div>
             {rpcObjects.map((rpcObject, index) => {
               const key = `${rpcObject.timestamp}-${index}`
               return <RpcObjectItem key={key} rpcObject={rpcObject} />
