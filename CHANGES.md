@@ -13,6 +13,9 @@
 
 - [UPDATE] sora-js-sdk のバージョンを 2025.2.0-canary.5 に上げる
   - @voluntas
+- [ADD] debug ペインに RPC タブを追加
+  - Sora 2025.2.0 で追加された RPC 機能を確認できるようにする
+  - @voluntas
 - [ADD] Stats タブの JSON 表示を JsonTree コンポーネントで実装し、 1 秒ごとの更新時に範囲選択がしやすくなるようにする
   - 差分更新により変更されていない部分の DOM を維持し、テキスト選択を保持
   - 変更された部分は 1 秒間ハイライト表示
@@ -21,17 +24,6 @@
   - タブを切り替えると URL に `debugType` パラメータが追加される
   - Copy URL で現在のタブ状態を含めた URL をコピーできる
   - URL から直接特定のタブを開いた状態で表示できる
-  - @voluntas
-- [FIX] rpcObjects のメモリリークを修正する
-  - 最大30件を超えたら古いものから削除するようにする
-  - @voluntas
-- [FIX] RPC タブの params に JSON パースエラーがある場合の UX を改善する
-  - JSON パースエラー時に入力フィールドが赤枠で表示される
-  - JSON パースエラー時に call ボタンが無効化される
-  - @voluntas
-- [FIX] RPC タブのエラーハンドリングを改善する
-  - JSON-RPC エラーの実際のエラーコードを取得して表示する
-  - Error インスタンスでない場合も適切に記録する
   - @voluntas
 - [FIX] debug ボタンのマウスオーバー時の色を修正する
   - @voluntas
