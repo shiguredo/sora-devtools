@@ -59,8 +59,6 @@ import { SpotlightFocusRidForm } from './SpotlightFocusRidForm.tsx'
 import { SpotlightForm } from './SpotlightForm.tsx'
 import { SpotlightNumberForm } from './SpotlightNumberForm.tsx'
 import { SpotlightUnfocusRidForm } from './SpotlightUnfocusRidForm.tsx'
-import { StartRecordingButton } from './StartRecordingButton.tsx'
-import { StopRecordingButton } from './StopRecordingButton.tsx'
 import { UpdateMediaStreamButton } from './UpdateMediaStreamButton.tsx'
 import { VideoAV1ParamsForm } from './VideoAV1ParamsForm.tsx'
 import { VideoBitRateForm } from './VideoBitRateForm.tsx'
@@ -520,8 +518,6 @@ export const DevtoolsPane: React.FC = () => {
       <div className="row">
         <ConnectButton />
         <DisconnectButton />
-        <StartRecordingButton />
-        <StopRecordingButton />
       </div>
       <hr className="hr-form" />
       <LocalVideo />

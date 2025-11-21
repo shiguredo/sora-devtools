@@ -347,7 +347,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
           onClick={handleCallApi}
           disabled={!selectedMethod || paramsHasError || params.trim() === ''}
         >
-          call
+          Call
         </Button>
       </div>
     </div>
@@ -380,11 +380,11 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
   }
 
   return (
-    <div className="mb-3 p-3 border rounded" style={{ backgroundColor: '#1a1a1a', color: '#fff' }}>
+    <div className="mb-3 me-2 p-3 border rounded" style={{ backgroundColor: '#1a1a1a', color: '#fff' }}>
       <div className="mb-3 d-flex justify-content-between align-items-center" style={{ color: '#ccc' }}>
         <small>{fullTimeString}</small>
         <div className="d-flex align-items-center gap-2">
-          <Button variant="outline-secondary" size="sm" onClick={() => onReuse(apiObject)}>
+          <Button variant="secondary" size="sm" onClick={() => onReuse(apiObject)}>
             Reuse
           </Button>
           {apiObject.duration !== undefined && <small>{apiObject.duration.toFixed(2)} ms</small>}
@@ -556,12 +556,14 @@ export const Api: React.FC = () => {
       />
       {apiObjects.length > 0 && (
         <>
-          <div className="py-1 mt-3">
+          <div className="py-1">
             <h5>API Results</h5>
-            <div className="mb-2" style={{ color: '#aaa', fontSize: '0.85rem' }}>
-              {apiObjects.length} 件を表示
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <ClearButton />
+              <div style={{ color: '#aaa', fontSize: '0.85rem' }}>
+                {apiObjects.length} 件を表示
+              </div>
             </div>
-            <ClearButton />
           </div>
           <div className="debug-messages">
             {apiObjects.map((apiObject, index) => {
