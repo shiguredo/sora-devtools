@@ -9,7 +9,7 @@ import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 
 import { JsonTree } from './JsonTree.tsx'
 
-const ButtonClear = React.memo(() => {
+const ClearButton = React.memo(() => {
   const onClick = (): void => {
     useSoraDevtoolsStore.getState().clearRpcObjects()
   }
@@ -330,7 +330,7 @@ export const Rpc: React.FC = () => {
             <div className="mb-2" style={{ color: '#aaa', fontSize: '0.85rem' }}>
               最新 {rpcObjects.length} 件を表示 (最大 {MAX_RPC_OBJECTS} 件まで保存)
             </div>
-            <ButtonClear />
+            <ClearButton />
           </div>
           <div>
             {rpcObjects.map((rpcObject, index) => {
