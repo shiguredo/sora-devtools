@@ -36,16 +36,6 @@ async function post(
   return responseJson
 }
 
-export function startRec(apiUrl: null | string, channelId: string): Promise<unknown> {
-  const params = { channel_id: channelId, expire_time: 3600 }
-  return post(apiUrl, '20231220', 'StartRecording', params)
-}
-
-export function stopRec(apiUrl: null | string, channelId: string): Promise<unknown> {
-  const params = { channel_id: channelId }
-  return post(apiUrl, '20231220', 'StopRecording', params)
-}
-
 export function requestRtpStream(
   apiUrl: null | string,
   channelId: string,
