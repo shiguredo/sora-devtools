@@ -27,6 +27,7 @@ function createDownloadReport(): DownloadReport {
     dataChannelSignaling: state.dataChannelSignaling,
     dataChannels: state.dataChannels,
     debug: state.debug,
+    debugApiUrl: state.debugApiUrl,
     displayResolution: state.displayResolution,
     echoCancellation: state.echoCancellation,
     echoCancellationType: state.echoCancellationType,

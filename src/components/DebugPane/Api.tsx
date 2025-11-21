@@ -380,8 +380,14 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
   }
 
   return (
-    <div className="mb-3 me-2 p-3 border rounded" style={{ backgroundColor: '#1a1a1a', color: '#fff' }}>
-      <div className="mb-3 d-flex justify-content-between align-items-center" style={{ color: '#ccc' }}>
+    <div
+      className="mb-3 me-2 p-3 border rounded"
+      style={{ backgroundColor: '#1a1a1a', color: '#fff' }}
+    >
+      <div
+        className="mb-3 d-flex justify-content-between align-items-center"
+        style={{ color: '#ccc' }}
+      >
         <small>{fullTimeString}</small>
         <div className="d-flex align-items-center gap-2">
           <Button variant="secondary" size="sm" onClick={() => onReuse(apiObject)}>
@@ -412,7 +418,10 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
                 headers
               </div>
               <div className="mb-2 ps-3">
-                <div className="p-2 rounded" style={{ backgroundColor: '#333', fontSize: '0.85rem' }}>
+                <div
+                  className="p-2 rounded"
+                  style={{ backgroundColor: '#333', fontSize: '0.85rem' }}
+                >
                   {Object.entries(apiObject.requestHeaders).map(([key, value]) => (
                     <div key={key}>
                       <span style={{ color: '#aaa' }}>{key}:</span> {value}
@@ -463,7 +472,10 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
                   headers
                 </div>
                 <div className="mb-2 ps-3">
-                  <div className="p-2 rounded" style={{ backgroundColor: '#333', fontSize: '0.85rem' }}>
+                  <div
+                    className="p-2 rounded"
+                    style={{ backgroundColor: '#333', fontSize: '0.85rem' }}
+                  >
                     {Object.entries(apiObject.responseHeaders).map(([key, value]) => (
                       <div key={key}>
                         <span style={{ color: '#aaa' }}>{key}:</span> {value}
@@ -502,10 +514,7 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
           <div className="ps-3">
             {apiObject.errorType === 'timeout' && (
               <div className="mb-2">
-                <span
-                  className="badge"
-                  style={{ backgroundColor: '#ffc107', fontSize: '0.85rem' }}
-                >
+                <span className="badge" style={{ backgroundColor: '#ffc107', fontSize: '0.85rem' }}>
                   タイムアウト
                 </span>
               </div>
@@ -560,9 +569,7 @@ export const Api: React.FC = () => {
             <h5>API Results</h5>
             <div className="d-flex justify-content-between align-items-center mb-2">
               <ClearButton />
-              <div style={{ color: '#aaa', fontSize: '0.85rem' }}>
-                {apiObjects.length} 件を表示
-              </div>
+              <div style={{ color: '#aaa', fontSize: '0.85rem' }}>{apiObjects.length} 件を表示</div>
             </div>
           </div>
           <div className="debug-messages">
