@@ -357,6 +357,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
           variant="secondary"
           onClick={handleCallApi}
           disabled={!selectedMethod || paramsHasError}
+          style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
           Call
         </Button>
@@ -596,7 +597,7 @@ export const Api: React.FC = () => {
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {showModal && (
         <div
           style={{
@@ -709,7 +710,7 @@ export const Api: React.FC = () => {
               <div style={{ color: '#aaa', fontSize: '0.85rem' }}>{apiObjects.length} 件を表示</div>
             </div>
           </div>
-          <div className="debug-messages">
+          <div style={{ overflowY: 'scroll', flex: 1 }}>
             {apiObjects.map((apiObject, index) => {
               const key = `${apiObject.timestamp}-${index}`
               return <ApiObjectItem key={key} apiObject={apiObject} onReuse={handleReuse} />

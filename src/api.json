@@ -100,17 +100,11 @@
   },
   {
     "group": "Stats",
-    "method": "Sora_20171101.GetStatsAllConnections",
-    "params": {
-      "local": true
-    }
+    "method": "Sora_20171101.GetStatsAllConnections"
   },
   {
     "group": "RTC Stats",
-    "method": "Sora_20211215.ListRtcStats",
-    "params": {
-      "local": true
-    }
+    "method": "Sora_20211215.ListRtcStats"
   },
   {
     "group": "RTC Stats",
@@ -202,10 +196,7 @@
   },
   {
     "group": "Connection",
-    "method": "Sora_20201013.ListConnections",
-    "params": {
-      "local": true
-    }
+    "method": "Sora_20201013.ListConnections"
   },
   {
     "group": "Connection",
