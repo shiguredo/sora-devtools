@@ -810,6 +810,8 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setRpcObject: (rpcObject) =>
         set((state) => {
           state.rpcObjects.unshift(rpcObject)
+          // 開発ツールとして RPC の結果を全て保持するため、意図的に件数制限は行わない
+          // メモリーリークの可能性があるが、開発目的のため許容する
         }),
       clearRpcObjects: () =>
         set((state) => {
