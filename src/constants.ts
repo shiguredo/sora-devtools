@@ -1,5 +1,5 @@
 import instructionsJSON from '../instructions.json'
-import rpcJSON from '../rpc.json'
+import rpcJSON from './rpc.json'
 
 export const RPC_TEMPLATES = rpcJSON as ReadonlyArray<{
   method: string
