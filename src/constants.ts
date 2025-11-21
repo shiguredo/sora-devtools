@@ -119,6 +119,4 @@ self.onmessage = (event) => {
 };
 ` as const
 
-export const MAX_RPC_OBJECTS = 30
-
 export const INSTRUCTIONS = instructionsJSON as Record<string, { description: string } | null>

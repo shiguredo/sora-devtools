@@ -12,7 +12,7 @@ import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import packageJSON from '../../package.json'
-import { MAX_RPC_OBJECTS, WORKER_SCRIPT } from '../constants.ts'
+import { WORKER_SCRIPT } from '../constants.ts'
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -810,10 +810,6 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setRpcObject: (rpcObject) =>
         set((state) => {
           state.rpcObjects.unshift(rpcObject)
-          // 最大件数を超えたら古いものから削除
-          if (state.rpcObjects.length > MAX_RPC_OBJECTS) {
-            state.rpcObjects.pop()
-          }
         }),
       clearRpcObjects: () =>
         set((state) => {
