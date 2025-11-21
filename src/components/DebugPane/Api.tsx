@@ -23,22 +23,18 @@ type ApiFormProps = {
   url: string
   setUrl: (url: string) => void
   selectedMethod: string
-  setSelectedMethod: (method: string) => void
   params: string
   setParams: (params: string) => void
-  showModal: boolean
   setShowModal: (show: boolean) => void
-  buttonRef: React.RefObject<HTMLButtonElement>
+  buttonRef: React.RefObject<HTMLButtonElement | null>
 }
 
 const ApiForm: React.FC<ApiFormProps> = ({
   url,
   setUrl,
   selectedMethod,
-  setSelectedMethod,
   params,
   setParams,
-  showModal,
   setShowModal,
   buttonRef,
 }) => {
@@ -360,7 +356,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         <Button
           variant="secondary"
           onClick={handleCallApi}
-          disabled={!selectedMethod || paramsHasError || params.trim() === ''}
+          disabled={!selectedMethod || paramsHasError}
         >
           Call
         </Button>
@@ -588,7 +584,10 @@ export const Api: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleMethodSelect = (method: string, methodParams?: Record<string, unknown> | unknown[]): void => {
+  const handleMethodSelect = (
+    method: string,
+    methodParams?: Record<string, unknown> | unknown[],
+  ): void => {
     setSelectedMethod(method)
     if (methodParams) {
       setParams(JSON.stringify(methodParams, null, 2))
@@ -610,6 +609,11 @@ export const Api: React.FC = () => {
             zIndex: 998,
           }}
           onClick={() => setShowModal(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setShowModal(false)
+            }
+          }}
         />
       )}
       {showModal && (
@@ -643,7 +647,7 @@ export const Api: React.FC = () => {
             ×
           </Button>
           {(() => {
-            type TemplateType = typeof API_TEMPLATES[number]
+            type TemplateType = (typeof API_TEMPLATES)[number]
             const groups = API_TEMPLATES.reduce((acc: Record<string, TemplateType[]>, template) => {
               const group = template.group || 'Other'
               if (!acc[group]) acc[group] = []
@@ -653,7 +657,14 @@ export const Api: React.FC = () => {
 
             return Object.entries(groups).map(([groupName, templates]) => (
               <div key={groupName} className="mb-4">
-                <div style={{ color: '#ffa500', fontWeight: 'bold', marginBottom: '12px', fontSize: '1.1rem' }}>
+                <div
+                  style={{
+                    color: '#ffa500',
+                    fontWeight: 'bold',
+                    marginBottom: '12px',
+                    fontSize: '1.1rem',
+                  }}
+                >
                   {groupName}
                 </div>
                 <Row>
@@ -684,10 +695,8 @@ export const Api: React.FC = () => {
         url={url}
         setUrl={setUrl}
         selectedMethod={selectedMethod}
-        setSelectedMethod={setSelectedMethod}
         params={params}
         setParams={setParams}
-        showModal={showModal}
         setShowModal={setShowModal}
         buttonRef={buttonRef}
       />

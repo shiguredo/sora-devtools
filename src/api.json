@@ -129,13 +129,11 @@
   },
   {
     "group": "License",
-    "method": "Sora_20171218.GetLicense",
-    "params": {}
+    "method": "Sora_20171218.GetLicense"
   },
   {
     "group": "License",
-    "method": "Sora_20171218.UpdateLicense",
-    "params": {}
+    "method": "Sora_20171218.UpdateLicense"
   },
   {
     "group": "Spotlight",
@@ -233,8 +231,7 @@
   },
   {
     "group": "Mode",
-    "method": "Sora_20211215.GetMode",
-    "params": {}
+    "method": "Sora_20211215.GetMode"
   },
   {
     "group": "Cluster",
@@ -245,13 +242,11 @@
   },
   {
     "group": "Cluster",
-    "method": "Sora_20211215.ListClusterNodes",
-    "params": {}
+    "method": "Sora_20211215.ListClusterNodes"
   },
   {
     "group": "Cluster",
-    "method": "Sora_20211215.ListClusterChannels",
-    "params": {}
+    "method": "Sora_20211215.ListClusterChannels"
   },
   {
     "group": "Cluster",
@@ -264,11 +259,7 @@
     "group": "Cluster",
     "method": "Sora_20221221.InitCluster",
     "params": {
-      "node_name_list": [
-        "node-02@192.0.2.7",
-        "node-03@192.0.2.8",
-        "node-01@192.0.2.5"
-      ]
+      "node_name_list": ["node-02@192.0.2.7", "node-03@192.0.2.8", "node-01@192.0.2.5"]
     }
   },
   {
@@ -327,9 +318,7 @@
           {
             "field": "connection_id",
             "operator": "is_in",
-            "values": [
-              ""
-            ]
+            "values": [""]
           }
         ]
       ]
@@ -346,9 +335,7 @@
           {
             "field": "connection_id",
             "operator": "is_in",
-            "values": [
-              ""
-            ]
+            "values": [""]
           }
         ]
       ]
@@ -373,9 +360,7 @@
           {
             "field": "connection_id",
             "operator": "is_in",
-            "values": [
-              ""
-            ]
+            "values": [""]
           }
         ]
       ]
@@ -393,9 +378,7 @@
           {
             "field": "connection_id",
             "operator": "is_in",
-            "values": [
-              ""
-            ]
+            "values": [""]
           }
         ]
       ]
