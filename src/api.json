@@ -1,0 +1,40 @@
+[
+  {
+    "method": "Sora_20151104.DisconnectChannel",
+    "params": {
+      "channel_id": "sora",
+      "reason": {
+        "type": "normal"
+      }
+    }
+  },
+  {
+    "method": "Sora_20151104.DisconnectClient",
+    "params": {
+      "channel_id": "sora",
+      "client_id": "client_12345",
+      "reason": {
+        "type": "normal"
+      }
+    }
+  },
+  {
+    "method": "Sora_20231220.StartRecording",
+    "params": {
+      "channel_id": "sora",
+      "expire_time": 360,
+      "split_duration": 3600,
+      "split_only": true,
+      "metadata": {
+        "key": "value"
+      },
+      "format": "mp4"
+    }
+  },
+  {
+    "method": "Sora_20231220.StopRecording",
+    "params": {
+      "channel_id": "sora"
+    }
+  }
+]

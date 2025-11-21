@@ -135,6 +135,7 @@ interface SoraDevtoolsActions {
   setSpotlight: (spotlight: SoraDevtoolsState['spotlight']) => void
   setReconnect: (reconnect: boolean) => void
   setApiUrl: (apiUrl: string) => void
+  setDebugApiUrl: (debugApiUrl: string) => void
   clearDataChannelMessages: () => void
   setAspectRatio: (aspectRatio: SoraDevtoolsState['aspectRatio']) => void
   setResizeMode: (resizeMode: SoraDevtoolsState['resizeMode']) => void
@@ -150,6 +151,8 @@ interface SoraDevtoolsActions {
   ) => void
   setRpcObject: (rpcObject: SoraDevtoolsState['rpcObjects'][number]) => void
   clearRpcObjects: () => void
+  setApiObject: (apiObject: SoraDevtoolsState['apiObjects'][number]) => void
+  clearApiObjects: () => void
   setEnabledAudioStreamingLanguageCode: (
     enabledAudioStreamingLanguageCode: SoraDevtoolsState['enabledAudioStreamingLanguageCode'],
   ) => void
@@ -177,6 +180,7 @@ const initialState: SoraDevtoolsState = {
   debug: false,
   debugFilterText: '',
   debugType: 'timeline',
+  debugApiUrl: 'http://localhost:3000',
   dataChannelSignaling: '',
   dataChannels: '',
   dataChannelMessages: [],
@@ -271,6 +275,7 @@ const initialState: SoraDevtoolsState = {
   virtualBackgroundProcessor: null,
   facingMode: '',
   rpcObjects: [],
+  apiObjects: [],
 }
 
 function setAlertMessagesAndLogMessages(
@@ -803,6 +808,10 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
         set((state) => {
           state.apiUrl = apiUrl
         }),
+      setDebugApiUrl: (debugApiUrl) =>
+        set((state) => {
+          state.debugApiUrl = debugApiUrl
+        }),
       clearDataChannelMessages: () =>
         set((state) => {
           state.dataChannelMessages = []
@@ -816,6 +825,16 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       clearRpcObjects: () =>
         set((state) => {
           state.rpcObjects = []
+        }),
+      setApiObject: (apiObject) =>
+        set((state) => {
+          state.apiObjects.unshift(apiObject)
+          // 開発ツールとして API の結果を全て保持するため、意図的に件数制限は行わない
+          // メモリーリークの可能性があるが、開発目的のため許容する
+        }),
+      clearApiObjects: () =>
+        set((state) => {
+          state.apiObjects = []
         }),
       setAspectRatio: (aspectRatio) =>
         set((state) => {

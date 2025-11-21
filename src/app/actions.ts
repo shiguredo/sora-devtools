@@ -160,6 +160,9 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.debugType !== undefined) {
     store.setDebugType(qsParams.debugType)
   }
+  if (qsParams.debugApiUrl !== undefined) {
+    store.setDebugApiUrl(qsParams.debugApiUrl)
+  }
   if (qsParams.mute !== undefined) {
     store.setMute(qsParams.mute)
   }
@@ -333,6 +336,9 @@ export const copyURL = (): void => {
     debug: state.debug,
     // debug が true の場合のみ debugType を含める
     debugType: state.debug && state.debugType !== 'timeline' ? state.debugType : undefined,
+    // debug が true の場合のみ debugApiUrl を含める
+    debugApiUrl:
+      state.debug && state.debugApiUrl !== 'http://localhost:3000' ? state.debugApiUrl : undefined,
     // URL の長さ短縮のため初期値と同じ場合は query string に含めない
     mediaType: state.mediaType !== 'getUserMedia' ? state.mediaType : undefined,
     // URL の長さ短縮のため空文字列は query string に含めない
@@ -1685,6 +1691,7 @@ const stopLocalAudioTrack = (
 }
 
 export const {
+  clearApiObjects,
   clearDataChannelMessages,
   clearRpcObjects,
   deleteAlertMessage,
@@ -1706,6 +1713,7 @@ export const {
   setDataChannels,
   setDataChannelSignaling,
   setDebug,
+  setDebugApiUrl,
   setDebugFilterText,
   setDebugType,
   setDisplayResolution,
@@ -1744,6 +1752,7 @@ export const {
   setResizeMode,
   setRole,
   setResolution,
+  setApiObject,
   setRpcObject,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,

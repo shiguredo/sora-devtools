@@ -63,6 +63,7 @@ export type SoraDevtoolsState = {
   debug: boolean
   debugFilterText: string
   debugType: DebugType
+  debugApiUrl: string
   dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number]
   dataChannels: string
   dataChannelMessages: DataChannelMessage[]
@@ -160,6 +161,7 @@ export type SoraDevtoolsState = {
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null
   facingMode: (typeof FACING_MODES)[number]
   rpcObjects: RpcObject[]
+  apiObjects: ApiObject[]
 }
 
 export type RpcObject = {
@@ -175,6 +177,20 @@ export type RpcObject = {
     code: number
     message: string
   }
+  duration?: number
+}
+
+export type ApiObject = {
+  timestamp: number
+  url: string
+  method: string
+  requestHeaders?: Record<string, string>
+  requestBody?: unknown
+  status?: number
+  responseHeaders?: Record<string, string>
+  responseBody?: unknown
+  error?: string
+  errorType?: 'cors' | 'timeout' | 'network' | 'unknown'
   duration?: number
 }
 
@@ -398,6 +414,7 @@ export type ConnectionOptionsState = Pick<
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
   | 'alertMessages'
+  | 'apiObjects'
   | 'apiUrl'
   | 'blurRadius'
   | 'dataChannelMessages'
@@ -413,6 +430,7 @@ export type DownloadReportParameters = Omit<
   | 'noiseSuppressionProcessor'
   | 'notifyMessages'
   | 'pushMessages'
+  | 'rpcObjects'
   | 'showStats'
   | 'signalingMessages'
   | 'soraContents'

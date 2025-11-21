@@ -1,5 +1,11 @@
 import instructionsJSON from '../instructions.json'
+import apiJSON from './api.json'
 import rpcJSON from './rpc.json'
+
+export const API_TEMPLATES = apiJSON as ReadonlyArray<{
+  method: string
+  params?: Record<string, unknown> | unknown[]
+}>
 
 export const RPC_TEMPLATES = rpcJSON as ReadonlyArray<{
   method: string
@@ -70,6 +76,7 @@ export const DEBUG_TYPES = [
   'timeline',
   'signaling',
   'messaging',
+  'api',
   'rpc',
   'codec',
 ] as const

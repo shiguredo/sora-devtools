@@ -4,6 +4,7 @@ import { Tab, Tabs } from 'react-bootstrap'
 import { setDebugType } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
 
+import { Api } from './Api.tsx'
 import { CapabilitiesCodec } from './CapabilitiesCodec.tsx'
 import { DataChannelMessagingMessages } from './DataChannelMessagingMessages.tsx'
 import { DebugFilter } from './Filter.tsx'
@@ -31,6 +32,7 @@ export const DebugPane: React.FC = () => {
       key === 'timeline' ||
       key === 'signaling' ||
       key === 'messaging' ||
+      key === 'api' ||
       key === 'rpc' ||
       key === 'codec'
     ) {
@@ -72,6 +74,9 @@ export const DebugPane: React.FC = () => {
         <Tab eventKey="messaging" title="Messaging">
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
+        </Tab>
+        <Tab eventKey="api" title="API">
+          <Api />
         </Tab>
         <Tab eventKey="rpc" title="RPC">
           <Rpc />

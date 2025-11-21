@@ -21,7 +21,7 @@
     }
   },
   {
-    "method": "2025.2.0/PutSignalingNotifyMetadataItem",
+    "method": "2025.2.0/PutSignalingNotifyMetadata",
     "params": {
       "metadata": {
         "spam": "egg"
@@ -32,9 +32,8 @@
   {
     "method": "2025.2.0/PutSignalingNotifyMetadataItem",
     "params": {
-      "metadata": {
-        "spam": "egg"
-      },
+      "key": "spam",
+      "value": "ham",
       "push": true
     }
   }

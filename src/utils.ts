@@ -133,6 +133,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     googCpuOveruseDetection: parseBooleanParameter(searchParams, 'googCpuOveruseDetection'),
     debug: parseBooleanParameter(searchParams, 'debug'),
     debugType: parseSpecifiedStringParameter(searchParams, 'debugType', DEBUG_TYPES),
+    debugApiUrl: parseStringParameter(searchParams, 'debugApiUrl'),
     displayResolution: parseStringParameter(searchParams, 'displayResolution'),
     echoCancellation: parseSpecifiedStringParameter(
       searchParams,
