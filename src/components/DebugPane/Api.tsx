@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Dropdown, DropdownButton, FormControl } from 'react-bootstrap'
+import { Button, Col, FormControl, Row } from 'react-bootstrap'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import { API_TEMPLATES } from '@/constants'
@@ -26,6 +26,9 @@ type ApiFormProps = {
   setSelectedMethod: (method: string) => void
   params: string
   setParams: (params: string) => void
+  showModal: boolean
+  setShowModal: (show: boolean) => void
+  buttonRef: React.RefObject<HTMLButtonElement>
 }
 
 const ApiForm: React.FC<ApiFormProps> = ({
@@ -35,15 +38,20 @@ const ApiForm: React.FC<ApiFormProps> = ({
   setSelectedMethod,
   params,
   setParams,
+  showModal,
+  setShowModal,
+  buttonRef,
 }) => {
   const urlRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<HTMLInputElement>(null)
   const [paramsHasError, setParamsHasError] = useState(false)
   const [replaceChannelId, setReplaceChannelId] = useState(true)
   const [replaceConnectionId, setReplaceConnectionId] = useState(true)
+  const [replaceSessionId, setReplaceSessionId] = useState(true)
 
   const channelId = useSoraDevtoolsStore((state) => state.channelId)
   const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId)
+  const sessionId = useSoraDevtoolsStore((state) => state.soraContents.sessionId)
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
@@ -74,6 +82,9 @@ const ApiForm: React.FC<ApiFormProps> = ({
         if (replaceConnectionId && 'connection_id' in replaced && connectionId) {
           replaced.connection_id = connectionId
         }
+        if (replaceSessionId && 'session_id' in replaced && sessionId) {
+          replaced.session_id = sessionId
+        }
         return JSON.stringify(replaced, null, 2)
       }
       return JSON.stringify(parsed, null, 2)
@@ -99,10 +110,13 @@ const ApiForm: React.FC<ApiFormProps> = ({
     if (paramsText) {
       try {
         parsedParams = JSON.parse(paramsText)
-        // トップレベルの channel_id と connection_id を置き換える
+        // トップレベルの channel_id, session_id, connection_id を置き換える
         if (parsedParams && typeof parsedParams === 'object' && !Array.isArray(parsedParams)) {
           if (replaceChannelId && 'channel_id' in parsedParams) {
             parsedParams.channel_id = channelId
+          }
+          if (replaceSessionId && 'session_id' in parsedParams && sessionId) {
+            parsedParams.session_id = sessionId
           }
           if (replaceConnectionId && 'connection_id' in parsedParams && connectionId) {
             parsedParams.connection_id = connectionId
@@ -230,29 +244,14 @@ const ApiForm: React.FC<ApiFormProps> = ({
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>method:</strong>
           </div>
-          <DropdownButton
+          <Button
+            ref={buttonRef}
             variant="secondary"
-            title={
-              <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>
-                {selectedMethod || 'Select method'}
-              </span>
-            }
-            onSelect={(eventKey) => {
-              const template = API_TEMPLATES.find((t) => t.method === eventKey)
-              if (template) {
-                setSelectedMethod(template.method)
-                if (template.params) {
-                  setParams(JSON.stringify(template.params, null, 2))
-                }
-              }
-            }}
+            onClick={() => setShowModal(true)}
+            style={{ width: '100%', fontSize: '1rem', fontWeight: 'bold' }}
           >
-            {API_TEMPLATES.map((template) => (
-              <Dropdown.Item key={template.method} eventKey={template.method}>
-                {template.method}
-              </Dropdown.Item>
-            ))}
-          </DropdownButton>
+            {selectedMethod || 'Select method'}
+          </Button>
         </div>
 
         <div style={{ width: '150px' }}>
@@ -303,6 +302,22 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   style={{ fontSize: '0.85rem', color: '#fff' }}
                 >
                   channel_id
+                </label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="replaceSessionId"
+                  checked={replaceSessionId}
+                  onChange={(e) => setReplaceSessionId(e.target.checked)}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor="replaceSessionId"
+                  style={{ fontSize: '0.85rem', color: '#fff' }}
+                >
+                  session_id
                 </label>
               </div>
               <div className="form-check form-check-inline">
@@ -540,6 +555,26 @@ export const Api: React.FC = () => {
   }
   const [selectedMethod, setSelectedMethod] = useState('')
   const [params, setParams] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [modalTop, setModalTop] = useState(0)
+  const [modalLeft, setModalLeft] = useState(0)
+  const [modalWidth, setModalWidth] = useState(0)
+
+  // ボタンの位置が変わったときにモーダルの位置を更新
+  useEffect(() => {
+    if (showModal && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      // API タブページの幅を取得するため、親要素を探す
+      const container = buttonRef.current.closest('[style*="position: relative"]')
+      if (container) {
+        const containerRect = container.getBoundingClientRect()
+        setModalTop(rect.bottom + 4)
+        setModalLeft(containerRect.left)
+        setModalWidth(containerRect.width)
+      }
+    }
+  }, [showModal])
 
   const handleReuse = (apiObject: ApiObject): void => {
     setUrl(apiObject.url)
@@ -553,8 +588,98 @@ export const Api: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleMethodSelect = (method: string, methodParams?: Record<string, unknown> | unknown[]): void => {
+    setSelectedMethod(method)
+    if (methodParams) {
+      setParams(JSON.stringify(methodParams, null, 2))
+    }
+    setShowModal(false)
+  }
+
   return (
-    <>
+    <div style={{ position: 'relative' }}>
+      {showModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 998,
+          }}
+          onClick={() => setShowModal(false)}
+        />
+      )}
+      {showModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: `${modalTop}px`,
+            left: `${modalLeft}px`,
+            width: `${modalWidth}px`,
+            backgroundColor: '#1a1a1a',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            maxHeight: `calc(100vh - ${modalTop}px - 20px)`,
+            overflowY: 'auto',
+            zIndex: 1000,
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+            padding: '20px',
+          }}
+        >
+          <Button
+            variant="outline-light"
+            size="sm"
+            onClick={() => setShowModal(false)}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              zIndex: 1,
+            }}
+          >
+            ×
+          </Button>
+          {(() => {
+            type TemplateType = typeof API_TEMPLATES[number]
+            const groups = API_TEMPLATES.reduce((acc: Record<string, TemplateType[]>, template) => {
+              const group = template.group || 'Other'
+              if (!acc[group]) acc[group] = []
+              acc[group].push(template)
+              return acc
+            }, {})
+
+            return Object.entries(groups).map(([groupName, templates]) => (
+              <div key={groupName} className="mb-4">
+                <div style={{ color: '#ffa500', fontWeight: 'bold', marginBottom: '12px', fontSize: '1.1rem' }}>
+                  {groupName}
+                </div>
+                <Row>
+                  {templates.map((template) => (
+                    <Col key={template.method} xs={6} className="mb-2">
+                      <Button
+                        variant={selectedMethod === template.method ? 'primary' : 'secondary'}
+                        size="sm"
+                        style={{
+                          width: '100%',
+                          fontSize: '1.1rem',
+                          padding: '12px',
+                          fontWeight: 'bold',
+                        }}
+                        onClick={() => handleMethodSelect(template.method, template.params)}
+                      >
+                        {template.method.replace('Sora_', '')}
+                      </Button>
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+            ))
+          })()}
+        </div>
+      )}
       <ApiForm
         url={url}
         setUrl={setUrl}
@@ -562,6 +687,9 @@ export const Api: React.FC = () => {
         setSelectedMethod={setSelectedMethod}
         params={params}
         setParams={setParams}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        buttonRef={buttonRef}
       />
       {apiObjects.length > 0 && (
         <>
@@ -580,6 +708,6 @@ export const Api: React.FC = () => {
           </div>
         </>
       )}
-    </>
+    </div>
   )
 }

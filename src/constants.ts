@@ -3,6 +3,7 @@ import apiJSON from './api.json'
 import rpcJSON from './rpc.json'
 
 export const API_TEMPLATES = apiJSON as ReadonlyArray<{
+  group?: string
   method: string
   params?: Record<string, unknown> | unknown[]
 }>

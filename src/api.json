@@ -1,5 +1,6 @@
 [
   {
+    "group": "Signaling",
     "method": "Sora_20151104.DisconnectChannel",
     "params": {
       "channel_id": "sora",
@@ -9,21 +10,435 @@
     }
   },
   {
+    "group": "Signaling",
     "method": "Sora_20151104.DisconnectClient",
     "params": {
       "channel_id": "sora",
-      "client_id": "client_12345",
+      "client_id": "",
       "reason": {
         "type": "normal"
       }
     }
   },
   {
+    "group": "Signaling",
+    "method": "Sora_20151104.DisconnectConnection",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": "",
+      "reason": {
+        "type": "normal"
+      }
+    }
+  },
+  {
+    "group": "Signaling",
+    "method": "Sora_20201120.DisconnectChannelByRole",
+    "params": {
+      "channel_id": "sora",
+      "role": "sendrecv"
+    }
+  },
+  {
+    "group": "Push",
+    "method": "Sora_20160711.PushChannel",
+    "params": {
+      "channel_id": "sora",
+      "data": {
+        "spam": "egg"
+      }
+    }
+  },
+  {
+    "group": "Push",
+    "method": "Sora_20160711.PushClient",
+    "params": {
+      "channel_id": "sora",
+      "client_id": "",
+      "data": {
+        "spam": "egg"
+      }
+    }
+  },
+  {
+    "group": "Push",
+    "method": "Sora_20160711.PushConnection",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": "",
+      "data": {
+        "spam": "egg"
+      }
+    }
+  },
+  {
+    "group": "Push",
+    "method": "Sora_20201120.PushChannelByRole",
+    "params": {
+      "channel_id": "sora",
+      "role": "sendrecv",
+      "data": {
+        "spam": "egg"
+      }
+    }
+  },
+  {
+    "group": "Stats",
+    "method": "Sora_20170529.GetStatsConnection",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Stats",
+    "method": "Sora_20170529.GetStatsClient",
+    "params": {
+      "channel_id": "sora",
+      "client_id": ""
+    }
+  },
+  {
+    "group": "Stats",
+    "method": "Sora_20171101.GetStatsAllConnections",
+    "params": {
+      "local": true
+    }
+  },
+  {
+    "group": "RTC Stats",
+    "method": "Sora_20211215.ListRtcStats",
+    "params": {
+      "local": true
+    }
+  },
+  {
+    "group": "RTC Stats",
+    "method": "Sora_20211215.ListChannelRtcStats",
+    "params": {
+      "channel_id": "sora"
+    }
+  },
+  {
+    "group": "RTC Stats",
+    "method": "Sora_20211215.GetRtcStats",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "License",
+    "method": "Sora_20171218.GetLicense",
+    "params": {}
+  },
+  {
+    "group": "License",
+    "method": "Sora_20171218.UpdateLicense",
+    "params": {}
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20200807.FocusSpotlightFixed",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20200807.FocusSpotlight",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20200807.UnfocusSpotlight",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20200807.ChangeSpotlightNumber",
+    "params": {
+      "channel_id": "sora",
+      "spotlight_number": 1
+    }
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20211215.RequestSpotlightRid",
+    "params": {
+      "channel_id": "sora",
+      "recv_connection_id": "",
+      "spotlight_focus_rid": "none",
+      "spotlight_unfocus_rid": "none"
+    }
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20211215.ResetSpotlightRid",
+    "params": {
+      "channel_id": "sora",
+      "recv_connection_id": ""
+    }
+  },
+  {
+    "group": "Spotlight",
+    "method": "Sora_20211215.BatchRequestSpotlightRid",
+    "params": {
+      "channel_id": "sora",
+      "item_list": [
+        {
+          "recv_connection_id": "",
+          "send_connection_id": "",
+          "spotlight_focus_rid": "none",
+          "spotlight_unfocus_rid": "none"
+        }
+      ]
+    }
+  },
+  {
+    "group": "Connection",
+    "method": "Sora_20201013.ListConnections",
+    "params": {
+      "local": true
+    }
+  },
+  {
+    "group": "Connection",
+    "method": "Sora_20201013.ListChannelConnections",
+    "params": {
+      "channel_id": "sora"
+    }
+  },
+  {
+    "group": "Connection",
+    "method": "Sora_20241218.RequestKeyFrame",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Mode",
+    "method": "Sora_20211215.ChangeMode",
+    "params": {
+      "mode": "block_new_connection"
+    }
+  },
+  {
+    "group": "Mode",
+    "method": "Sora_20211215.GetMode",
+    "params": {}
+  },
+  {
+    "group": "Cluster",
+    "method": "Sora_20211215.RegisterClusterNode",
+    "params": {
+      "contact_node_name": "node-03@192.0.2.8"
+    }
+  },
+  {
+    "group": "Cluster",
+    "method": "Sora_20211215.ListClusterNodes",
+    "params": {}
+  },
+  {
+    "group": "Cluster",
+    "method": "Sora_20211215.ListClusterChannels",
+    "params": {}
+  },
+  {
+    "group": "Cluster",
+    "method": "Sora_20220629.PurgeClusterNode",
+    "params": {
+      "target_node_name": "node-03@192.0.2.8"
+    }
+  },
+  {
+    "group": "Cluster",
+    "method": "Sora_20221221.InitCluster",
+    "params": {
+      "node_name_list": [
+        "node-02@192.0.2.7",
+        "node-03@192.0.2.8",
+        "node-01@192.0.2.5"
+      ]
+    }
+  },
+  {
+    "group": "Audio Streaming",
+    "method": "Sora_20221221.StartAudioStreaming",
+    "params": {
+      "channel_id": "sora"
+    }
+  },
+  {
+    "group": "Audio Streaming",
+    "method": "Sora_20221221.StopAudioStreaming",
+    "params": {
+      "channel_id": "sora"
+    }
+  },
+  {
+    "group": "Audio Streaming",
+    "method": "Sora_20221221.SubscribeAudioStreamingResultPush",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Audio Streaming",
+    "method": "Sora_20221221.UnsubscribeAudioStreamingResultPush",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Audio Streaming",
+    "method": "Sora_20230628.ListAudioStreamingResultPushState",
+    "params": {
+      "channel_id": "sora"
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.ListForwardingFilters",
+    "params": {
+      "channel_id": "sora",
+      "blocked": true
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.CreateChannelForwardingFilter",
+    "params": {
+      "channel_id": "sora",
+      "action": "block",
+      "rules": [
+        [
+          {
+            "field": "connection_id",
+            "operator": "is_in",
+            "values": [
+              ""
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.UpdateChannelForwardingFilter",
+    "params": {
+      "channel_id": "sora",
+      "action": "block",
+      "rules": [
+        [
+          {
+            "field": "connection_id",
+            "operator": "is_in",
+            "values": [
+              ""
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.DeleteChannelForwardingFilter",
+    "params": {
+      "channel_id": "sora"
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.CreateConnectionForwardingFilter",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": "",
+      "action": "block",
+      "rules": [
+        [
+          {
+            "field": "connection_id",
+            "operator": "is_in",
+            "values": [
+              ""
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.UpdateConnectionForwardingFilter",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": "",
+      "action": "block",
+      "rules": [
+        [
+          {
+            "field": "connection_id",
+            "operator": "is_in",
+            "values": [
+              ""
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "group": "Forwarding Filter",
+    "method": "Sora_20230628.DeleteConnectionForwardingFilter",
+    "params": {
+      "channel_id": "sora",
+      "connection_id": ""
+    }
+  },
+  {
+    "group": "Session",
+    "method": "Sora_20230628.TerminateSession",
+    "params": {
+      "channel_id": "sora",
+      "session_id": ""
+    }
+  },
+  {
+    "group": "Session",
+    "method": "Sora_20231220.GetSession",
+    "params": {
+      "channel_id": "sora",
+      "session_id": ""
+    }
+  },
+  {
+    "group": "Session",
+    "method": "Sora_20231220.ListSessions",
+    "params": {
+      "group_id": ""
+    }
+  },
+  {
+    "group": "Recording",
     "method": "Sora_20231220.StartRecording",
     "params": {
       "channel_id": "sora",
-      "expire_time": 360,
-      "split_duration": 3600,
+      "expire_time": 3600,
+      "split_duration": 360,
       "split_only": true,
       "metadata": {
         "key": "value"
@@ -32,9 +447,20 @@
     }
   },
   {
+    "group": "Recording",
     "method": "Sora_20231220.StopRecording",
     "params": {
       "channel_id": "sora"
+    }
+  },
+  {
+    "group": "Simulcast",
+    "method": "Sora_20251217.RequestSimulcastRid",
+    "params": {
+      "channel_id": "sora",
+      "receiver_connection_id": "",
+      "rid": "r1",
+      "sender_connection_id": ""
     }
   }
 ]
