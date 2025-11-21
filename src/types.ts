@@ -159,6 +159,23 @@ export type SoraDevtoolsState = {
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null
   facingMode: (typeof FACING_MODES)[number]
+  rpcObjects: RpcObject[]
+}
+
+export type RpcObject = {
+  timestamp: number
+  method: string
+  params?: Record<string, unknown> | unknown[]
+  options?: {
+    timeout?: number
+    notification?: boolean
+  }
+  result?: unknown
+  error?: {
+    code: number
+    message: string
+  }
+  duration?: number
 }
 
 // 画面表示する message の Type

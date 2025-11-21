@@ -82,6 +82,7 @@ function createDownloadReport(): DownloadReport {
     videoH264Params: state.videoH264Params,
     videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
+    rpcObjects: state.rpcObjects,
   }
   const report = {
     userAgent: navigator.userAgent,

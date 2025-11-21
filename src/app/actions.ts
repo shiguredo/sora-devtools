@@ -331,6 +331,8 @@ export const copyURL = (): void => {
     audio: state.audio,
     video: state.video,
     debug: state.debug,
+    // debug が true の場合のみ debugType を含める
+    debugType: state.debug && state.debugType !== 'timeline' ? state.debugType : undefined,
     // URL の長さ短縮のため初期値と同じ場合は query string に含めない
     mediaType: state.mediaType !== 'getUserMedia' ? state.mediaType : undefined,
     // URL の長さ短縮のため空文字列は query string に含めない
@@ -1684,6 +1686,7 @@ const stopLocalAudioTrack = (
 
 export const {
   clearDataChannelMessages,
+  clearRpcObjects,
   deleteAlertMessage,
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,
@@ -1741,6 +1744,7 @@ export const {
   setResizeMode,
   setRole,
   setResolution,
+  setRpcObject,
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
   setForwardingFilters,

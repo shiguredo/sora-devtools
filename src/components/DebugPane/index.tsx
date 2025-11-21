@@ -10,6 +10,7 @@ import { DebugFilter } from './Filter.tsx'
 import { LogMessages } from './LogMessages.tsx'
 import { NotifyMessages } from './NotifyMessages.tsx'
 import { PushMessages } from './PushMessages.tsx'
+import { Rpc } from './Rpc.tsx'
 import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage.tsx'
 import { SignalingMessages } from './SignalingMessages.tsx'
 import { Stats } from './Stats.tsx'
@@ -30,9 +31,15 @@ export const DebugPane: React.FC = () => {
       key === 'timeline' ||
       key === 'signaling' ||
       key === 'messaging' ||
+      key === 'rpc' ||
       key === 'codec'
     ) {
       setDebugType(key)
+      // URL の query string を更新
+      const searchParams = new URLSearchParams(location.search)
+      searchParams.set('debugType', key)
+      const newUrl = `${location.pathname}?${searchParams.toString()}`
+      window.history.replaceState(null, '', newUrl)
     }
   }
   return (
@@ -65,6 +72,9 @@ export const DebugPane: React.FC = () => {
         <Tab eventKey="messaging" title="Messaging">
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
+        </Tab>
+        <Tab eventKey="rpc" title="RPC">
+          <Rpc />
         </Tab>
         <Tab eventKey="codec" title="Codec">
           <CapabilitiesCodec />
