@@ -135,38 +135,69 @@ const RpcForm: React.FC = () => {
 
   return (
     <div className="mt-2">
-      <div className="mb-2">
-        <div className="mb-1" style={{ color: '#fff' }}>
-          <strong>method:</strong>
+      <div className="mb-2 d-flex gap-2">
+        <div style={{ width: '600px' }}>
+          <div className="mb-1" style={{ color: '#fff' }}>
+            <strong>method:</strong>
+          </div>
+          <InputGroup>
+            <FormControl
+              type="text"
+              placeholder="method name"
+              ref={methodRef}
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+            />
+            <DropdownButton variant="outline-secondary" title="" align="end">
+              {RPC_TEMPLATES.map((template) => (
+                <Dropdown.Item
+                  key={template.method}
+                  as="button"
+                  onClick={() => {
+                    setMethod(template.method)
+                    if (methodRef.current) {
+                      methodRef.current.value = template.method
+                    }
+                    if (template.params) {
+                      setParams(JSON.stringify(template.params, null, 2))
+                    }
+                  }}
+                >
+                  {template.method}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+          </InputGroup>
         </div>
-        <InputGroup>
-          <FormControl
-            type="text"
-            placeholder="method name"
-            ref={methodRef}
-            value={method}
-            onChange={(e) => setMethod(e.target.value)}
-          />
-          <DropdownButton variant="outline-secondary" title="" align="end">
-            {RPC_TEMPLATES.map((template) => (
-              <Dropdown.Item
-                key={template.method}
-                as="button"
-                onClick={() => {
-                  setMethod(template.method)
-                  if (methodRef.current) {
-                    methodRef.current.value = template.method
-                  }
-                  if (template.params) {
-                    setParams(JSON.stringify(template.params, null, 2))
-                  }
-                }}
-              >
-                {template.method}
-              </Dropdown.Item>
-            ))}
-          </DropdownButton>
-        </InputGroup>
+
+        <div style={{ width: '150px' }}>
+          <div className="mb-1" style={{ color: '#fff' }}>
+            <strong>timeout (ms):</strong>
+          </div>
+          <FormControl type="number" placeholder="5000" defaultValue="5000" ref={timeoutRef} />
+        </div>
+
+        <div style={{ width: '200px' }}>
+          <div className="mb-1" style={{ color: '#fff' }}>
+            <strong>notification:</strong>
+          </div>
+          <div className="form-check" style={{ paddingTop: '0.5rem' }}>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="rpcNotificationCheck"
+              checked={notification}
+              onChange={(e) => setNotification(e.target.checked)}
+            />
+            <label
+              className="form-check-label"
+              htmlFor="rpcNotificationCheck"
+              style={{ color: '#fff' }}
+            >
+              送信のみ (レスポンス不要)
+            </label>
+          </div>
+        </div>
       </div>
 
       <div className="mb-2">
@@ -184,39 +215,14 @@ const RpcForm: React.FC = () => {
         />
       </div>
 
-      <div className="d-flex align-items-end mb-2">
-        <div className="me-2" style={{ width: '150px' }}>
-          <div className="mb-1" style={{ color: '#fff' }}>
-            <strong>timeout:</strong>
-          </div>
-          <FormControl type="number" placeholder="5000" defaultValue="5000" ref={timeoutRef} />
-        </div>
-
-        <div className="me-2">
-          <div className="mb-1" style={{ color: '#fff' }}>
-            <strong>notification:</strong>
-          </div>
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="rpcNotificationCheck"
-              checked={notification}
-              onChange={(e) => setNotification(e.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="rpcNotificationCheck">
-              送信のみ (レスポンス不要)
-            </label>
-          </div>
-        </div>
-
+      <div className="d-flex justify-content-end mb-2">
         <Button
-          className="ms-auto"
           variant="secondary"
           onClick={handleCallRpc}
           disabled={connectionStatus !== 'connected' || paramsHasError}
+          style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
-          call
+          Call
         </Button>
       </div>
     </div>

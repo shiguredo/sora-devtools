@@ -222,7 +222,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
   return (
     <div className="mt-2">
       <div className="mb-2 d-flex gap-2">
-        <div style={{ width: '400px' }}>
+        <div style={{ width: '600px' }}>
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>URL:</strong>
           </div>
@@ -592,6 +592,8 @@ export const Api: React.FC = () => {
     setSelectedMethod(method)
     if (methodParams) {
       setParams(JSON.stringify(methodParams, null, 2))
+    } else {
+      setParams('')
     }
     setShowModal(false)
   }
