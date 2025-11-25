@@ -170,14 +170,7 @@ const RpcForm: React.FC = () => {
           </InputGroup>
         </div>
 
-        <div style={{ width: '150px' }}>
-          <div className="mb-1" style={{ color: '#fff' }}>
-            <strong>timeout (ms):</strong>
-          </div>
-          <FormControl type="number" placeholder="5000" defaultValue="5000" ref={timeoutRef} />
-        </div>
-
-        <div style={{ width: '200px' }}>
+        <div style={{ width: '250px' }}>
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>notification:</strong>
           </div>
@@ -197,6 +190,13 @@ const RpcForm: React.FC = () => {
               送信のみ (レスポンス不要)
             </label>
           </div>
+        </div>
+
+        <div style={{ width: '150px' }}>
+          <div className="mb-1" style={{ color: '#fff' }}>
+            <strong>timeout (ms):</strong>
+          </div>
+          <FormControl type="number" placeholder="5000" defaultValue="5000" ref={timeoutRef} />
         </div>
       </div>
 
