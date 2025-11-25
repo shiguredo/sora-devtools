@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] immer の依存をやめる
+  - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2025.2.0-canary.5 に上げる
   - @voluntas
 - [ADD] debug ペインに RPC タブを追加
