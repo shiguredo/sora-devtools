@@ -660,7 +660,7 @@ export const Api: React.FC = () => {
               <div key={groupName} className="mb-4">
                 <div
                   style={{
-                    color: '#ffa500',
+                    color: '#fff',
                     fontWeight: 'bold',
                     marginBottom: '12px',
                     fontSize: '1.1rem',
