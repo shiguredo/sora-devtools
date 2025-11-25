@@ -1,6 +1,7 @@
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
+import { setAutoFreeze } from 'immer'
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -10,6 +11,10 @@ import type {
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
+
+// Immer 11 では state が凍結されるため、sora-js-sdk の Connection オブジェクトが
+// 内部状態を変更できなくなる問題を回避するために凍結を無効化する
+setAutoFreeze(false)
 
 import packageJSON from '../../package.json'
 import { WORKER_SCRIPT } from '../constants.ts'

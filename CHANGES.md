@@ -11,6 +11,12 @@
 
 ## develop
 
+- [CHANGE] 録画開始/停止ボタンを削除
+  - API タブで録画の開始/停止ができるようになったため
+  - @voluntas
+- [CHANGE] Immer 11 で state が凍結され sora-js-sdk の Connection オブジェクトが動作しない問題を修正する
+  - `setAutoFreeze(false)` を設定して凍結を無効化
+  - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2025.2.0-canary.5 に上げる
   - @voluntas
 - [ADD] debug ペインに RPC タブを追加
@@ -21,9 +27,6 @@
   - URL、メソッド、params、timeout を指定して API を実行できる
   - リクエスト/レスポンスのヘッダーとボディを表示
   - 過去の実行結果から Reuse ボタンで再実行可能
-  - @voluntas
-- [CHANGE] 録画開始/停止ボタンを削除
-  - API タブで録画の開始/停止ができるようになったため
   - @voluntas
 - [ADD] Stats タブの JSON 表示を JsonTree コンポーネントで実装し、 1 秒ごとの更新時に範囲選択がしやすくなるようにする
   - 差分更新により変更されていない部分の DOM を維持し、テキスト選択を保持
