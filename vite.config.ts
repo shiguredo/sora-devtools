@@ -14,7 +14,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           react: ['react', 'react-dom', 'react-bootstrap'],
-          zustand: ['zustand', 'immer'],
+          zustand: ['zustand'],
           'mp4-media-stream': ['@shiguredo/mp4-media-stream'],
           'noise-suppression': ['@shiguredo/noise-suppression'],
           'virtual-background': ['@shiguredo/virtual-background'],
