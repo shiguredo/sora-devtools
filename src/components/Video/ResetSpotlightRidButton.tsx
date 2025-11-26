@@ -1,26 +1,20 @@
 import type React from 'react'
 
-import { resetSpotlightRid } from '@/api'
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
+import { rpc } from '@/rpc'
 
 export const ResetSpotlightRidButton: React.FC = () => {
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const channelId = useSoraDevtoolsStore((state) => state.channelId)
-  const apiUrl = useSoraDevtoolsStore((state) => state.apiUrl)
+  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+
   const onClick = async (): Promise<void> => {
-    if (!sora?.connectionId) {
+    if (!conn || connectionStatus !== 'connected') {
       return
     }
-    try {
-      const response = await resetSpotlightRid(apiUrl, channelId, sora.connectionId)
-      setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`)
-    } catch (error) {
-      if (error instanceof Error) {
-        setAPIErrorAlertMessage(error.message)
-      }
-    }
+
+    await rpc(conn, '2025.2.0/ResetSpotlightRid', {}, { notification: false })
   }
+
   return (
     <div className="mx-1">
       <input
