@@ -6,9 +6,8 @@ import { useSoraDevtoolsStore } from '@/app/store'
 import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel.tsx'
 import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
 import { LocalVideoCapabilities } from './LocalVideoCapabilities.tsx'
-import { RequestRtpStreamButton } from './RequestRtpStreamButton.tsx'
+import { RequestSimulcastRidButton } from './RequestSimulcastRidButton.tsx'
 import { RequestSpotlightRidButton } from './RequestSpotlightRidButton.tsx'
-import { ResetRtpStreamButton } from './ResetRtpStreamButton.tsx'
 import { ResetSpotlightRidButton } from './ResetSpotlightRidButton.tsx'
 import { SessionStatusBar } from './SessionStatusBar.tsx'
 import { Video } from './Video.tsx'
@@ -89,10 +88,10 @@ export const LocalVideo: React.FC = () => {
           role !== 'sendonly' ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
-              <RequestRtpStreamButton rid={'r0'} />
-              <RequestRtpStreamButton rid={'r1'} />
-              <RequestRtpStreamButton rid={'r2'} />
-              <ResetRtpStreamButton />
+              <RequestSimulcastRidButton rid={'r0'} />
+              <RequestSimulcastRidButton rid={'r1'} />
+              <RequestSimulcastRidButton rid={'r2'} />
+              <RequestSimulcastRidButton rid={'none'} />
             </div>
           ) : null}
           {connectionId !== null && spotlight === 'true' ? (

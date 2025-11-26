@@ -6,9 +6,8 @@ import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
 import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
 import { JitterButter } from './JitterBuffer.tsx'
 import { RemoteVideoCapabilities } from './RemoteVideoCapabilities.tsx'
-import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton.tsx'
+import { RequestSimulcastRidButton } from './RequestSimulcastRidButton.tsx'
 import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton.tsx'
-import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton.tsx'
 import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton.tsx'
 import { Video } from './Video.tsx'
 import { VolumeVisualizer } from './VolumeVisualizer.tsx'
@@ -111,10 +110,10 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
         <div className="d-flex align-items-center mb-1 video-status-inner">
           {spotlight !== 'true' && simulcast === 'true' ? (
             <>
-              <RequestRtpStreamBySendConnectionIdButton rid="r0" sendConnectionId={connectionId} />
-              <RequestRtpStreamBySendConnectionIdButton rid="r1" sendConnectionId={connectionId} />
-              <RequestRtpStreamBySendConnectionIdButton rid="r2" sendConnectionId={connectionId} />
-              <ResetRtpStreamBySendConnectionIdButton sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="r0" sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="r1" sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="r2" sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
             </>
           ) : null}
           {spotlight === 'true' && simulcast === 'true' ? (
