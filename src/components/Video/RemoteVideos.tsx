@@ -110,10 +110,10 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
         <div className="d-flex align-items-center mb-1 video-status-inner">
           {spotlight !== 'true' && simulcast === 'true' ? (
             <>
+              <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
               <RequestSimulcastRidButton rid="r0" sendConnectionId={connectionId} />
               <RequestSimulcastRidButton rid="r1" sendConnectionId={connectionId} />
               <RequestSimulcastRidButton rid="r2" sendConnectionId={connectionId} />
-              <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
             </>
           ) : null}
           {spotlight === 'true' && simulcast === 'true' ? (

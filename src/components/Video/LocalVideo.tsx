@@ -88,10 +88,10 @@ export const LocalVideo: React.FC = () => {
           role !== 'sendonly' ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
+              <RequestSimulcastRidButton rid={'none'} />
               <RequestSimulcastRidButton rid={'r0'} />
               <RequestSimulcastRidButton rid={'r1'} />
               <RequestSimulcastRidButton rid={'r2'} />
-              <RequestSimulcastRidButton rid={'none'} />
             </div>
           ) : null}
           {connectionId !== null && spotlight === 'true' ? (
