@@ -30,7 +30,7 @@ export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
       params.send_connection_id = props.sendConnectionId
     }
 
-    await rpc(conn, '2025.2.0/RequestSimulcastRid', params)
+    await rpc(conn, '2025.2.0/RequestSimulcastRid', params, { notification: false })
   }
 
   return (
