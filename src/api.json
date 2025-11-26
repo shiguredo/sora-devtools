@@ -122,14 +122,6 @@
     }
   },
   {
-    "group": "License",
-    "method": "Sora_20171218.GetLicense"
-  },
-  {
-    "group": "License",
-    "method": "Sora_20171218.UpdateLicense"
-  },
-  {
     "group": "Spotlight",
     "method": "Sora_20200807.FocusSpotlightFixed",
     "params": {
@@ -211,46 +203,6 @@
     "params": {
       "channel_id": "sora",
       "connection_id": ""
-    }
-  },
-  {
-    "group": "Mode",
-    "method": "Sora_20211215.ChangeMode",
-    "params": {
-      "mode": "block_new_connection"
-    }
-  },
-  {
-    "group": "Mode",
-    "method": "Sora_20211215.GetMode"
-  },
-  {
-    "group": "Cluster",
-    "method": "Sora_20211215.RegisterClusterNode",
-    "params": {
-      "contact_node_name": "node-03@192.0.2.8"
-    }
-  },
-  {
-    "group": "Cluster",
-    "method": "Sora_20211215.ListClusterNodes"
-  },
-  {
-    "group": "Cluster",
-    "method": "Sora_20211215.ListClusterChannels"
-  },
-  {
-    "group": "Cluster",
-    "method": "Sora_20220629.PurgeClusterNode",
-    "params": {
-      "target_node_name": "node-03@192.0.2.8"
-    }
-  },
-  {
-    "group": "Cluster",
-    "method": "Sora_20221221.InitCluster",
-    "params": {
-      "node_name_list": ["node-02@192.0.2.7", "node-03@192.0.2.8", "node-01@192.0.2.5"]
     }
   },
   {
