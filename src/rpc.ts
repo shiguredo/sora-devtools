@@ -3,6 +3,7 @@ import type { ConnectionPublisher, ConnectionSubscriber } from 'sora-js-sdk'
 import { setRpcObject } from '@/app/actions'
 
 type RpcOptions = {
+  timeout?: number
   notification?: boolean
 }
 
@@ -13,17 +14,23 @@ export async function rpc(
   options: RpcOptions = { notification: true },
 ): Promise<void> {
   const timestamp = Date.now()
+  const startTime = performance.now()
 
   try {
-    await conn.rpc(method, params, options)
+    const result = await conn.rpc(method, params, options)
+    const duration = performance.now() - startTime
 
     setRpcObject({
       timestamp,
       method,
       params,
       options,
+      result,
+      duration,
     })
   } catch (error) {
+    const duration = performance.now() - startTime
+
     let errorCode = -1
     let errorMessage = 'Unknown error'
 
@@ -49,6 +56,7 @@ export async function rpc(
         code: errorCode,
         message: errorMessage,
       },
+      duration,
     })
   }
 }
