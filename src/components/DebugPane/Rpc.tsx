@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react-bootstrap'
 
-import { setRpcObject } from '@/app/actions'
 import { useSoraDevtoolsStore } from '@/app/store'
 import { RPC_TEMPLATES } from '@/constants'
+import { rpc } from '@/rpc'
 import type { RpcObject } from '@/types'
 import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 
@@ -32,7 +32,7 @@ const RpcForm: React.FC = () => {
   const [params, setParams] = useState('')
   const [paramsHasError, setParamsHasError] = useState(false)
 
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
 
   // params の JSON パースエラーをチェック
@@ -50,7 +50,7 @@ const RpcForm: React.FC = () => {
   }, [params])
 
   const handleCallRpc = async (): Promise<void> => {
-    if (!methodRef.current || !timeoutRef.current) {
+    if (!methodRef.current || !timeoutRef.current || !conn || connectionStatus !== 'connected') {
       return
     }
 
@@ -59,7 +59,7 @@ const RpcForm: React.FC = () => {
       return
     }
 
-    let parsedParams: Record<string, unknown> | unknown[] | undefined
+    let parsedParams: Record<string, unknown> | undefined
     const paramsText = params.trim()
     if (paramsText) {
       try {
@@ -79,58 +79,7 @@ const RpcForm: React.FC = () => {
       options.notification = true
     }
 
-    const timestamp = Date.now()
-    const startTime = performance.now()
-
-    if (sora && connectionStatus === 'connected') {
-      try {
-        const result = await sora.rpc(method, parsedParams, options)
-        const endTime = performance.now()
-        const duration = endTime - startTime
-        setRpcObject({
-          timestamp,
-          method,
-          params: parsedParams,
-          options,
-          result,
-          duration,
-        })
-      } catch (error) {
-        const endTime = performance.now()
-        const duration = endTime - startTime
-
-        // エラーオブジェクトの構造を解析
-        let errorCode = -1
-        let errorMessage = 'Unknown error'
-
-        if (error && typeof error === 'object') {
-          // JSON-RPC エラーの場合
-          if ('code' in error && typeof error.code === 'number') {
-            errorCode = error.code
-          }
-          // エラーメッセージを取得
-          if ('message' in error && typeof error.message === 'string') {
-            errorMessage = error.message
-          } else if (error instanceof Error) {
-            errorMessage = error.message
-          }
-        } else if (typeof error === 'string') {
-          errorMessage = error
-        }
-
-        setRpcObject({
-          timestamp,
-          method,
-          params: parsedParams,
-          options,
-          error: {
-            code: errorCode,
-            message: errorMessage,
-          },
-          duration,
-        })
-      }
-    }
+    await rpc(conn, method, parsedParams, options)
   }
 
   return (

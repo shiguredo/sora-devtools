@@ -1,4 +1,4 @@
-import type { SimulcastRid, SpotlightFocusRid } from 'sora-js-sdk'
+import type { SpotlightFocusRid } from 'sora-js-sdk'
 
 async function post(
   apiUrl: null | string,
@@ -34,45 +34,6 @@ async function post(
     throw error
   }
   return responseJson
-}
-
-export function requestRtpStream(
-  apiUrl: null | string,
-  channelId: string,
-  recvConnectionId: string,
-  rid: SimulcastRid,
-  sendConnectionId?: string,
-): Promise<unknown> {
-  const params: {
-    channel_id: string
-    recv_connection_id: string
-    send_connection_id?: string
-    rid: SimulcastRid
-  } = {
-    channel_id: channelId,
-    recv_connection_id: recvConnectionId,
-    rid: rid,
-  }
-  if (sendConnectionId) {
-    params.send_connection_id = sendConnectionId
-  }
-  return post(apiUrl, '20201005', 'RequestRtpStream', params)
-}
-
-export function resetRtpStream(
-  apiUrl: null | string,
-  channelId: string,
-  connectionId: string,
-  sendConnectionId?: string,
-): Promise<unknown> {
-  const params: { channel_id: string; recv_connection_id: string; send_connection_id?: string } = {
-    channel_id: channelId,
-    recv_connection_id: connectionId,
-  }
-  if (sendConnectionId) {
-    params.send_connection_id = sendConnectionId
-  }
-  return post(apiUrl, '20201005', 'ResetRtpStream', params)
 }
 
 export function requestSpotlightRid(

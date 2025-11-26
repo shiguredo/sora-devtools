@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] RequestSimulcastRid を API から RPC に変更する
+  - @voluntas
 - [CHANGE] 録画開始/停止ボタンを削除
   - API タブで録画の開始/停止ができるようになったため
   - @voluntas
