@@ -14,12 +14,41 @@ export async function rpc(
 ): Promise<void> {
   const timestamp = Date.now()
 
-  await conn.rpc(method, params, options)
+  try {
+    await conn.rpc(method, params, options)
 
-  setRpcObject({
-    timestamp,
-    method,
-    params,
-    options,
-  })
+    setRpcObject({
+      timestamp,
+      method,
+      params,
+      options,
+    })
+  } catch (error) {
+    let errorCode = -1
+    let errorMessage = 'Unknown error'
+
+    if (error && typeof error === 'object') {
+      if ('code' in error && typeof error.code === 'number') {
+        errorCode = error.code
+      }
+      if ('message' in error && typeof error.message === 'string') {
+        errorMessage = error.message
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = error
+    }
+
+    setRpcObject({
+      timestamp,
+      method,
+      params,
+      options,
+      error: {
+        code: errorCode,
+        message: errorMessage,
+      },
+    })
+  }
 }
