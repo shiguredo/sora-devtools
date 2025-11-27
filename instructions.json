@@ -17,9 +17,6 @@
   "simulcastRequestRid": {
     "description": "サイマルキャストで配信されている映像を受信する rid を指定します。"
   },
-  "simulcastRidAuto": {
-    "description": "サイマルキャストで配信されている映像を受信する際に、帯域幅に応じて自動的に rid を切り替えるかどうかを指定します。"
-  },
   "spotlight": {
     "description": "スポットライトを使用するかどうかを指定します。"
   },

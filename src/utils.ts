@@ -19,7 +19,6 @@ import {
   SIMULCAST,
   SIMULCAST_RID,
   SIMULCAST_REQUEST_RID,
-  SIMULCAST_RID_AUTO,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
@@ -169,11 +168,6 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
       searchParams,
       'simulcastRequestRid',
       SIMULCAST_REQUEST_RID,
-    ),
-    simulcastRidAuto: parseSpecifiedStringParameter(
-      searchParams,
-      'simulcastRidAuto',
-      SIMULCAST_RID_AUTO,
     ),
     spotlight: parseSpecifiedStringParameter(searchParams, 'spotlight', SPOTLIGHT),
     spotlightNumber: parseSpecifiedStringParameter(
@@ -814,10 +808,6 @@ export function createConnectOptions(
       }
       if (connectionOptionsState.simulcastRequestRid) {
         connectionOptions.simulcastRequestRid = connectionOptionsState.simulcastRequestRid
-      }
-      const parsedSimulcastRidAuto = parseBooleanString(connectionOptionsState.simulcastRidAuto)
-      if (parsedSimulcastRidAuto !== undefined) {
-        connectionOptions.simulcastRidAuto = parsedSimulcastRidAuto
       }
     }
   }

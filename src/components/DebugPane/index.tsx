@@ -75,7 +75,7 @@ export const DebugPane: React.FC = () => {
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
         </Tab>
-{/*
+        {/*
         <Tab eventKey="api" title="API">
           <Api />
         </Tab>

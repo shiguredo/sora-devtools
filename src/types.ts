@@ -29,7 +29,6 @@ import type {
   SIMULCAST,
   SIMULCAST_RID,
   SIMULCAST_REQUEST_RID,
-  SIMULCAST_RID_AUTO,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
@@ -129,7 +128,6 @@ export type SoraDevtoolsState = {
   simulcast: (typeof SIMULCAST)[number]
   simulcastRid: (typeof SIMULCAST_RID)[number]
   simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number]
-  simulcastRidAuto: (typeof SIMULCAST_RID_AUTO)[number]
   spotlight: (typeof SPOTLIGHT)[number]
   focusedSpotlightConnectionIds: {
     [key: string]: boolean
@@ -394,7 +392,6 @@ export type ConnectionOptionsState = Pick<
   | 'simulcast'
   | 'simulcastRid'
   | 'simulcastRequestRid'
-  | 'simulcastRidAuto'
   | 'spotlight'
   | 'spotlightFocusRid'
   | 'spotlightNumber'

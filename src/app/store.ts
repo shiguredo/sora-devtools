@@ -83,7 +83,6 @@ interface SoraDevtoolsActions {
   setForwardingFilter: (forwardingFilter: string) => void
   setSimulcastRid: (simulcastRid: SoraDevtoolsState['simulcastRid']) => void
   setSimulcastRequestRid: (simulcastRequestRid: SoraDevtoolsState['simulcastRequestRid']) => void
-  setSimulcastRidAuto: (simulcastRidAuto: SoraDevtoolsState['simulcastRidAuto']) => void
   setSpotlightNumber: (spotlightNumber: SoraDevtoolsState['spotlightNumber']) => void
   setSpotlightFocusRid: (spotlightFocusRid: SoraDevtoolsState['spotlightFocusRid']) => void
   setSpotlightUnfocusRid: (spotlightUnfocusRid: SoraDevtoolsState['spotlightUnfocusRid']) => void
@@ -251,7 +250,6 @@ const initialState: SoraDevtoolsState = {
   forwardingFilter: '',
   simulcastRid: '',
   simulcastRequestRid: '',
-  simulcastRidAuto: '',
   spotlightNumber: '',
   spotlightFocusRid: '',
   spotlightUnfocusRid: '',
@@ -524,10 +522,6 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setSimulcastRequestRid: (simulcastRequestRid) =>
         set((state) => {
           state.simulcastRequestRid = simulcastRequestRid
-        }),
-      setSimulcastRidAuto: (simulcastRidAuto) =>
-        set((state) => {
-          state.simulcastRidAuto = simulcastRidAuto
         }),
       setSpotlightNumber: (spotlightNumber) =>
         set((state) => {

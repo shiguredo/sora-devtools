@@ -118,9 +118,6 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.simulcastRequestRid !== undefined) {
     store.setSimulcastRequestRid(qsParams.simulcastRequestRid)
   }
-  if (qsParams.simulcastRidAuto !== undefined) {
-    store.setSimulcastRidAuto(qsParams.simulcastRidAuto)
-  }
   if (qsParams.spotlight !== undefined) {
     store.setSpotlight(qsParams.spotlight)
   }
@@ -383,7 +380,6 @@ export const copyURL = (): void => {
     simulcast: state.simulcast !== '' ? state.simulcast : undefined,
     simulcastRid: state.simulcastRid !== '' ? state.simulcastRid : undefined,
     simulcastRequestRid: state.simulcastRequestRid !== '' ? state.simulcastRequestRid : undefined,
-    simulcastRidAuto: state.simulcastRidAuto !== '' ? state.simulcastRidAuto : undefined,
     spotlight: state.spotlight !== '' ? state.spotlight : undefined,
     spotlightNumber: state.spotlightNumber !== '' ? state.spotlightNumber : undefined,
     spotlightFocusRid: state.spotlightFocusRid !== '' ? state.spotlightFocusRid : undefined,
@@ -928,7 +924,6 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
     simulcastRequestRid: state.simulcastRequestRid,
-    simulcastRidAuto: state.simulcastRidAuto,
     spotlight: state.spotlight,
     spotlightFocusRid: state.spotlightFocusRid,
     spotlightNumber: state.spotlightNumber,
@@ -1761,7 +1756,6 @@ export const {
   setSimulcast,
   setSimulcastRid,
   setSimulcastRequestRid,
-  setSimulcastRidAuto,
   setSora,
   setSoraReconnecting,
   setSoraErrorAlertMessage,

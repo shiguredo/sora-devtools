@@ -53,7 +53,6 @@ import { SignalingNotifyMetadataForm } from './SignalingNotifyMetadataForm.tsx'
 import { SignalingUrlCandidatesForm } from './SignalingUrlCandidatesForm.tsx'
 import { SimulcastForm } from './SimulcastForm.tsx'
 import { SimulcastRequestRidForm } from './SimulcastRequestRidForm.tsx'
-import { SimulcastRidAutoForm } from './SimulcastRidAutoForm.tsx'
 import { SimulcastRidForm } from './SimulcastRidForm.tsx'
 import { SpotlightFocusRidForm } from './SpotlightFocusRidForm.tsx'
 import { SpotlightForm } from './SpotlightForm.tsx'
@@ -142,9 +141,6 @@ const RowSimulcastOptions: React.FC = () => {
     <Row className="form-row" xs="auto">
       <Col>
         <SimulcastRequestRidForm />
-      </Col>
-      <Col>
-        <SimulcastRidAutoForm />
       </Col>
       <Col>
         <SimulcastRidForm />

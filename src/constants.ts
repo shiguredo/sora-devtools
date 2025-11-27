@@ -63,8 +63,6 @@ export const SIMULCAST_RID = ['', 'r0', 'r1', 'r2'] as const
 
 export const SIMULCAST_REQUEST_RID = ['', 'none', 'r0', 'r1', 'r2'] as const
 
-export const SIMULCAST_RID_AUTO = ['', 'true', 'false'] as const
-
 export const DATA_CHANNEL_SIGNALING = ['', 'true', 'false'] as const
 
 export const IGNORE_DISCONNECT_WEBSOCKET = ['', 'true', 'false'] as const
