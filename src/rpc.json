@@ -2,8 +2,7 @@
   {
     "method": "2025.2.0/RequestSimulcastRid",
     "params": {
-      "rid": "r1",
-      "auto": false
+      "rid": "r1"
     }
   },
   {
