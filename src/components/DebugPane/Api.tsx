@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Button, Col, FormControl, Row } from 'react-bootstrap'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Button, Dropdown, FormControl } from 'react-bootstrap'
 
 import { useSoraDevtoolsStore } from '@/app/store'
 import { API_TEMPLATES } from '@/constants'
@@ -7,6 +7,9 @@ import type { ApiObject } from '@/types'
 import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 
 import { JsonTree } from './JsonTree.tsx'
+
+type ApiTemplate = (typeof API_TEMPLATES)[number]
+type ApiTemplateGroups = Record<string, ApiTemplate[]>
 
 const ClearButton = React.memo(() => {
   const onClick = (): void => {
@@ -25,8 +28,8 @@ type ApiFormProps = {
   selectedMethod: string
   params: string
   setParams: (params: string) => void
-  setShowModal: (show: boolean) => void
-  buttonRef: React.RefObject<HTMLButtonElement | null>
+  templateGroups: ApiTemplateGroups
+  onSelectMethod: (method: string, methodParams?: Record<string, unknown> | unknown[]) => void
 }
 
 const ApiForm: React.FC<ApiFormProps> = ({
@@ -35,8 +38,8 @@ const ApiForm: React.FC<ApiFormProps> = ({
   selectedMethod,
   params,
   setParams,
-  setShowModal,
-  buttonRef,
+  templateGroups,
+  onSelectMethod,
 }) => {
   const urlRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<HTMLInputElement>(null)
@@ -240,14 +243,37 @@ const ApiForm: React.FC<ApiFormProps> = ({
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>method:</strong>
           </div>
-          <Button
-            ref={buttonRef}
-            variant="secondary"
-            onClick={() => setShowModal(true)}
-            style={{ width: '100%', fontSize: '1rem', fontWeight: 'bold' }}
-          >
-            {selectedMethod || 'Select method'}
-          </Button>
+          <Dropdown className="w-100">
+            <Dropdown.Toggle
+              id="debug-api-method-dropdown"
+              variant="secondary"
+              style={{ width: '100%', fontSize: '1rem', fontWeight: 'bold', textAlign: 'left' }}
+            >
+              {selectedMethod || 'Select method'}
+            </Dropdown.Toggle>
+            <Dropdown.Menu
+              className="w-100"
+              style={{ maxHeight: '420px', overflowY: 'auto', minWidth: '480px', width: '100%' }}
+              data-testid="debug-api-method-menu"
+            >
+              {Object.entries(templateGroups).map(([groupName, templates], index, entries) => (
+                <React.Fragment key={groupName}>
+                  <Dropdown.Header>{groupName}</Dropdown.Header>
+                  {templates.map((template) => (
+                    <Dropdown.Item
+                      key={template.method}
+                      active={selectedMethod === template.method}
+                      onClick={() => onSelectMethod(template.method, template.params)}
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {template.method.replace('Sora_', '')}
+                    </Dropdown.Item>
+                  ))}
+                  {index < entries.length - 1 && <Dropdown.Divider />}
+                </React.Fragment>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
 
         <div style={{ width: '150px' }}>
@@ -552,26 +578,14 @@ export const Api: React.FC = () => {
   }
   const [selectedMethod, setSelectedMethod] = useState('')
   const [params, setParams] = useState('')
-  const [showModal, setShowModal] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const [modalTop, setModalTop] = useState(0)
-  const [modalLeft, setModalLeft] = useState(0)
-  const [modalWidth, setModalWidth] = useState(0)
-
-  // ボタンの位置が変わったときにモーダルの位置を更新
-  useEffect(() => {
-    if (showModal && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect()
-      // API タブページの幅を取得するため、親要素を探す
-      const container = buttonRef.current.closest('[style*="position: relative"]')
-      if (container) {
-        const containerRect = container.getBoundingClientRect()
-        setModalTop(rect.bottom + 4)
-        setModalLeft(containerRect.left)
-        setModalWidth(containerRect.width)
-      }
-    }
-  }, [showModal])
+  const templateGroups = useMemo(() => {
+    return API_TEMPLATES.reduce((acc: ApiTemplateGroups, template) => {
+      const group = template.group || 'Other'
+      if (!acc[group]) acc[group] = []
+      acc[group].push(template)
+      return acc
+    }, {})
+  }, [])
 
   const handleReuse = (apiObject: ApiObject): void => {
     setUrl(apiObject.url)
@@ -595,113 +609,18 @@ export const Api: React.FC = () => {
     } else {
       setParams('')
     }
-    setShowModal(false)
   }
 
   return (
     <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {showModal && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 998,
-          }}
-          onClick={() => setShowModal(false)}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setShowModal(false)
-            }
-          }}
-        />
-      )}
-      {showModal && (
-        <div
-          style={{
-            position: 'fixed',
-            top: `${modalTop}px`,
-            left: `${modalLeft}px`,
-            width: `${modalWidth}px`,
-            backgroundColor: '#1a1a1a',
-            border: '1px solid #444',
-            borderRadius: '8px',
-            maxHeight: `calc(100vh - ${modalTop}px - 20px)`,
-            overflowY: 'auto',
-            zIndex: 1000,
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
-            padding: '20px',
-          }}
-        >
-          <Button
-            variant="outline-light"
-            size="sm"
-            onClick={() => setShowModal(false)}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              zIndex: 1,
-            }}
-          >
-            ×
-          </Button>
-          {(() => {
-            type TemplateType = (typeof API_TEMPLATES)[number]
-            const groups = API_TEMPLATES.reduce((acc: Record<string, TemplateType[]>, template) => {
-              const group = template.group || 'Other'
-              if (!acc[group]) acc[group] = []
-              acc[group].push(template)
-              return acc
-            }, {})
-
-            return Object.entries(groups).map(([groupName, templates]) => (
-              <div key={groupName} className="mb-4">
-                <div
-                  style={{
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    marginBottom: '12px',
-                    fontSize: '1.1rem',
-                  }}
-                >
-                  {groupName}
-                </div>
-                <Row>
-                  {templates.map((template) => (
-                    <Col key={template.method} xs={6} className="mb-2">
-                      <Button
-                        variant={selectedMethod === template.method ? 'primary' : 'secondary'}
-                        size="sm"
-                        style={{
-                          width: '100%',
-                          fontSize: '1.1rem',
-                          padding: '12px',
-                          fontWeight: 'bold',
-                        }}
-                        onClick={() => handleMethodSelect(template.method, template.params)}
-                      >
-                        {template.method.replace('Sora_', '')}
-                      </Button>
-                    </Col>
-                  ))}
-                </Row>
-              </div>
-            ))
-          })()}
-        </div>
-      )}
       <ApiForm
         url={url}
         setUrl={setUrl}
         selectedMethod={selectedMethod}
         params={params}
         setParams={setParams}
-        setShowModal={setShowModal}
-        buttonRef={buttonRef}
+        templateGroups={templateGroups}
+        onSelectMethod={handleMethodSelect}
       />
       {apiObjects.length > 0 && (
         <>
