@@ -33,6 +33,7 @@ export async function rpc(
 
     let errorCode = -1
     let errorMessage = 'Unknown error'
+    let errorData: unknown
 
     if (error && typeof error === 'object') {
       if ('code' in error && typeof error.code === 'number') {
@@ -43,8 +44,19 @@ export async function rpc(
       } else if (error instanceof Error) {
         errorMessage = error.message
       }
+      if ('data' in error) {
+        errorData = error.data
+      }
     } else if (typeof error === 'string') {
       errorMessage = error
+    }
+
+    const errorObj: { code: number; message: string; data?: unknown } = {
+      code: errorCode,
+      message: errorMessage,
+    }
+    if (errorData !== undefined) {
+      errorObj.data = errorData
     }
 
     setRpcObject({
@@ -52,10 +64,7 @@ export async function rpc(
       method,
       params,
       options,
-      error: {
-        code: errorCode,
-        message: errorMessage,
-      },
+      error: errorObj,
       duration,
     })
   }

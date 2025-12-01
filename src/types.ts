@@ -174,6 +174,7 @@ export type RpcObject = {
   error?: {
     code: number
     message: string
+    data?: unknown
   }
   duration?: number
 }
