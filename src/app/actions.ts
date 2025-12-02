@@ -1692,6 +1692,7 @@ export const {
   deleteAlertMessage,
   setAPIErrorAlertMessage,
   setAPIInfoAlertMessage,
+  setRPCErrorAlertMessage,
   setAspectRatio,
   setAudio,
   setAudioBitRate,

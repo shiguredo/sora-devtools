@@ -119,6 +119,7 @@ interface SoraDevtoolsActions {
   setSoraErrorAlertMessage: (message: string) => void
   setAPIInfoAlertMessage: (message: string) => void
   setAPIErrorAlertMessage: (message: string) => void
+  setRPCErrorAlertMessage: (message: string) => void
   deleteAlertMessage: (timestamp: number) => void
   setDebug: (debug: boolean) => void
   setDebugFilterText: (text: string) => void
@@ -701,6 +702,16 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
         set((state) => {
           const alertMessage: AlertMessage = {
             title: 'API error',
+            type: 'error',
+            message: message,
+            timestamp: Date.now(),
+          }
+          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
+        }),
+      setRPCErrorAlertMessage: (message) =>
+        set((state) => {
+          const alertMessage: AlertMessage = {
+            title: 'RPC error',
             type: 'error',
             message: message,
             timestamp: Date.now(),
