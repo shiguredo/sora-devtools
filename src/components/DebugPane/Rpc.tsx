@@ -34,6 +34,8 @@ const RpcForm: React.FC = () => {
 
   const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  // rpcMethods は sora-js-sdk 2025.2.0 以降で利用可能
+  const rpcMethods: string[] = (conn as unknown as { rpcMethods?: string[] })?.rpcMethods ?? []
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
@@ -98,23 +100,27 @@ const RpcForm: React.FC = () => {
               onChange={(e) => setMethod(e.target.value)}
             />
             <DropdownButton variant="outline-secondary" title="" align="end">
-              {RPC_TEMPLATES.map((template) => (
-                <Dropdown.Item
-                  key={template.method}
-                  as="button"
-                  onClick={() => {
-                    setMethod(template.method)
-                    if (methodRef.current) {
-                      methodRef.current.value = template.method
-                    }
-                    if (template.params) {
-                      setParams(JSON.stringify(template.params, null, 2))
-                    }
-                  }}
-                >
-                  {template.method}
-                </Dropdown.Item>
-              ))}
+              {RPC_TEMPLATES.map((template) => {
+                const isAvailable = rpcMethods.includes(template.method)
+                return (
+                  <Dropdown.Item
+                    key={template.method}
+                    as="button"
+                    onClick={() => {
+                      setMethod(template.method)
+                      if (methodRef.current) {
+                        methodRef.current.value = template.method
+                      }
+                      if (template.params) {
+                        setParams(JSON.stringify(template.params, null, 2))
+                      }
+                    }}
+                    style={isAvailable ? { color: '#0071bc', fontWeight: 'bold' } : undefined}
+                  >
+                    {template.method}
+                  </Dropdown.Item>
+                )
+              })}
             </DropdownButton>
           </InputGroup>
         </div>
