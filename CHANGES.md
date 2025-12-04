@@ -25,6 +25,7 @@
   - @voluntas
 - [ADD] debug ペインに RPC タブを追加
   - Sora 2025.2.0 で追加された RPC 機能を確認できるようにする
+  - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
   - @voluntas
 - [ADD] debug ペインに API タブを追加
   - Sora の API 機能をテストできるようにする
