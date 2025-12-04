@@ -30,7 +30,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
         spotlight_focus_rid: focusRid,
         spotlight_unfocus_rid: unfocusRid,
       },
-      { notification: false },
+      { notification: false, showMethodAlert: true },
     )
   }
 

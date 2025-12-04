@@ -12,7 +12,12 @@ export const ResetSpotlightRidButton: React.FC = () => {
       return
     }
 
-    await rpc(conn, '2025.2.0/ResetSpotlightRid', {}, { notification: false })
+    await rpc(
+      conn,
+      '2025.2.0/ResetSpotlightRid',
+      {},
+      { notification: false, showMethodAlert: true },
+    )
   }
 
   return (

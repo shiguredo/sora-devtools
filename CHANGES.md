@@ -12,8 +12,10 @@
 ## develop
 
 - [CHANGE] RequestSpotlightRid / ResetSpotlightRid を API から RPC に変更する
+  - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
   - @voluntas
 - [CHANGE] RequestSimulcastRid を API から RPC に変更する
+  - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
   - @voluntas
 - [CHANGE] 録画開始/停止ボタンを削除
   - API タブで録画の開始/停止ができるようになったため
@@ -25,7 +27,6 @@
   - @voluntas
 - [ADD] debug ペインに RPC タブを追加
   - Sora 2025.2.0 で追加された RPC 機能を確認できるようにする
-  - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
   - @voluntas
 - [ADD] debug ペインに API タブを追加
   - Sora の API 機能をテストできるようにする
