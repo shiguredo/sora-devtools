@@ -29,6 +29,7 @@
   - @voluntas
 - [ADD] debug ペインに RPC タブを追加
   - Sora 2025.2.0 で追加された RPC 機能を確認できるようにする
+  - RPC メソッド選択で rpc_methods に含まれているメソッドをハイライト表示する
   - @voluntas
 - [ADD] debug ペインに API タブを追加
   - Sora の API 機能をテストできるようにする
