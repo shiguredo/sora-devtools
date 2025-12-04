@@ -30,10 +30,10 @@
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.8",
     "immer": "11.0.1",
-    "react": "19.2.0",
+    "react": "19.2.1",
     "react-bootstrap": "2.10.10",
-    "react-dom": "19.2.0",
-    "sora-js-sdk": "2025.2.0-canary.7",
+    "react-dom": "19.2.1",
+    "sora-js-sdk": "2025.2.0-canary.8",
     "zustand": "5.0.9"
   },
   "devDependencies": {
@@ -49,7 +49,7 @@
     "jsdom": "27.2.0",
     "typescript": "5.9.3",
     "vite": "7.2.6",
-    "vitest": "4.0.14"
+    "vitest": "4.0.15"
   },
   "engines": {
     "node": ">=24",
