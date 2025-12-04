@@ -34,7 +34,7 @@ export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (pro
         spotlight_unfocus_rid: unfocusRid,
         send_connection_id: props.sendConnectionId,
       },
-      { notification: false },
+      { notification: false, showMethodAlert: true },
     )
   }
 

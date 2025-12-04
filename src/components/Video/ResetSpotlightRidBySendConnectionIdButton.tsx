@@ -21,7 +21,7 @@ export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props
       {
         send_connection_id: props.sendConnectionId,
       },
-      { notification: false },
+      { notification: false, showMethodAlert: true },
     )
   }
 

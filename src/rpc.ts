@@ -5,6 +5,7 @@ import { setRpcObject, setRPCErrorAlertMessage } from '@/app/actions'
 type RpcOptions = {
   timeout?: number
   notification?: boolean
+  showMethodAlert?: boolean
 }
 
 export async function rpc(
@@ -14,10 +15,12 @@ export async function rpc(
   options: RpcOptions = { notification: true },
 ): Promise<void> {
   // Show alert if method is not in rpcMethods
-  if (conn.rpcMethods.length === 0) {
-    setRPCErrorAlertMessage('rpc_methods in type: offer is empty')
-  } else if (!conn.rpcMethods.includes(method)) {
-    setRPCErrorAlertMessage(`"${method}" is not in rpc_methods in type: offer`)
+  if (options.showMethodAlert) {
+    if (conn.rpcMethods.length === 0) {
+      setRPCErrorAlertMessage('rpc_methods in type: offer is empty')
+    } else if (!conn.rpcMethods.includes(method)) {
+      setRPCErrorAlertMessage(`"${method}" is not in rpc_methods in type: offer`)
+    }
   }
 
   const timestamp = Date.now()
