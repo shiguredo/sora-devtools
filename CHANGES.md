@@ -11,6 +11,8 @@
 
 ## develop
 
+- [CHANGE] role が sendonly の場合は simulcastRequestRid / simulcastRid を表示しないようにする
+  - @voluntas
 - [CHANGE] RequestSpotlightRid / ResetSpotlightRid を API から RPC に変更する
   - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
   - @voluntas

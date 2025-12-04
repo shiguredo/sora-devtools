@@ -134,7 +134,9 @@ const RowGetUserMediaConstraints: React.FC = () => {
 
 const RowSimulcastOptions: React.FC = () => {
   const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
-  if (simulcast !== 'true') {
+  const role = useSoraDevtoolsStore((state) => state.role)
+  // sendonly の場合は simulcastRequestRid / simulcastRid を表示しない
+  if (simulcast !== 'true' || role === 'sendonly') {
     return null
   }
   return (
