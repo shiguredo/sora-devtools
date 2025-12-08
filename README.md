@@ -70,9 +70,10 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 
 ### デバッグ機能
 
-デバッグを有効にすると、ログ、通知、統計が有効になります。
+デバッグを有効にすると、ログ、通知、統計や各種イベントを確認することができます。またリアルタイムメッセージングや RPC を利用することもできます。
 
 [![Image from Gyazo](https://i.gyazo.com/c15b137e3d99d235845af5da0405ef4a.png)](https://gyazo.com/c15b137e3d99d235845af5da0405ef4a)
+
 
 ### コピー URL 機能
 
@@ -94,6 +95,8 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
   - 直近で発話した N 人にスポットライトを当てるような仕組みです
 - リアルタイムメッセージング
   - WebRTC のデータチャネルを利用してリアルタイムにメッセージの送受信を行う仕組みです
+- RPC (Remote Procedure Call)
+  - Sora のデータチャネルを利用して API を呼び出す仕組みです
 - 送受信
   - 自分の音声や映像を配信し、視聴も行う仕組みです
 - 送信のみ
@@ -115,7 +118,7 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 ### マルチストリーム
 
 音声と映像を双方向、または片方向でやり取りする仕組みです。
-Sora ではマルチストリームが標準機能となります。
+Sora ではマルチストリームが前提となります。
 
 ### サイマルキャスト
 
