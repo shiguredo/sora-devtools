@@ -25,7 +25,7 @@
 - [CHANGE] Immer 11 で state が凍結され sora-js-sdk の Connection オブジェクトが動作しない問題を修正する
   - `setAutoFreeze(false)` を設定して凍結を無効化
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2025.2.0-canary.5 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2025.2.0 に上げる
   - @voluntas
 - [ADD] debug ペインに RPC タブを追加
   - Sora 2025.2.0 で追加された RPC 機能を確認できるようにする

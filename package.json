@@ -33,22 +33,22 @@
     "react": "19.2.1",
     "react-bootstrap": "2.10.10",
     "react-dom": "19.2.1",
-    "sora-js-sdk": "2025.2.0-canary.8",
+    "sora-js-sdk": "2025.2.0-canary.11",
     "zustand": "5.0.9"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
-    "@fast-check/vitest": "0.2.3",
+    "@fast-check/vitest": "0.2.4",
     "@playwright/test": "1.57.0",
     "@types/node": "24.10.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
     "dotenv": "17.2.3",
-    "fast-check": "4.3.0",
+    "fast-check": "4.4.0",
     "jsdom": "27.2.0",
     "typescript": "5.9.3",
-    "vite": "7.2.6",
+    "vite": "7.2.7",
     "vitest": "4.0.15"
   },
   "engines": {
