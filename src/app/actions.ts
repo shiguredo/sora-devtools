@@ -893,6 +893,12 @@ function setSoraCallbacks(sora: ConnectionPublisher | ConnectionSubscriber): voi
   sora.on('datachannel', (event) => {
     store.setSoraDataChannels(event.datachannel)
   })
+  sora.on('switched', (message) => {
+    store.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-switched', message))
+  })
+  sora.on('connected', (message) => {
+    store.setTimelineMessage(createSoraDevtoolsTimelineMessage('event-on-connected', message))
+  })
 }
 
 // SoraDevtoolsState から ConnectionOptionsState を生成する

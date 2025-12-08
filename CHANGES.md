@@ -46,6 +46,8 @@
   - Copy URL で現在のタブ状態を含めた URL をコピーできる
   - URL から直接特定のタブを開いた状態で表示できる
   - @voluntas
+- [ADD] sora-js-sdk 2025.2.0 で追加された `switched` / `connected` コールバックを timeline に記録するようにする
+  - @voluntas
 - [FIX] debug ボタンのマウスオーバー時の色を修正する
   - @voluntas
 
