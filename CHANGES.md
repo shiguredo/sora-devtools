@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2025.2.0
+
+**リリース日**: 2025-12-09
+
 - [CHANGE] role が sendonly の場合は simulcastRequestRid / simulcastRid を表示しないようにする
   - @voluntas
 - [CHANGE] RequestSpotlightRid / ResetSpotlightRid を API から RPC に変更する
