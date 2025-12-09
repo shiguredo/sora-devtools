@@ -33,8 +33,8 @@ importers:
         specifier: 19.2.1
         version: 19.2.1(react@19.2.1)
       sora-js-sdk:
-        specifier: 2025.2.0-canary.14
-        version: 2025.2.0-canary.14
+        specifier: 2025.2.0
+        version: 2025.2.0
       zustand:
         specifier: 5.0.9
         version: 5.0.9(@types/react@19.2.7)(immer@11.0.1)(react@19.2.1)
@@ -1074,8 +1074,8 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
-  sora-js-sdk@2025.2.0-canary.14:
-    resolution: {integrity: sha512-o08GP1Dus2J34E6X1mJqtdEk2ardc7bZock02O6Ir2Gl/u7Pe+WPhIerMCd2rZgblvHTbKb7sH/wLK3V8J4UOw==}
+  sora-js-sdk@2025.2.0:
+    resolution: {integrity: sha512-6ir/TpgYtZLzTDCKLoO/0Emk2kXgAYFuCVNcpNpPhD15yvEnE7afWgxSWBiYRv23LOKBKC1GfFpeEuvLnirlog==}
     engines: {node: '>=20', pnpm: '>=8'}
 
   source-map-js@1.2.1:
@@ -2202,7 +2202,7 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  sora-js-sdk@2025.2.0-canary.14: {}
+  sora-js-sdk@2025.2.0: {}
 
   source-map-js@1.2.1: {}
 
