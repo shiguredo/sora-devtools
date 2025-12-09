@@ -1,36 +1,32 @@
 import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
-import { setForceStereoOutput } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const ForceStereoOutputForm: React.FC = () => {
-  const forceStereoOutput = useAppSelector((state) => state.forceStereoOutput)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setForceStereoOutput(event.target.checked))
+    useSoraDevtoolsStore.getState().setForceStereoOutput(event.target.checked)
   }
   return (
-    <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="forceStereoOutput">
-            <TooltipFormCheck
-              kind="forceStereoOutput"
-              checked={forceStereoOutput}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            >
-              forceStereoOutput
-            </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
-    </>
+    <Row className="form-row">
+      <Col className="col-auto">
+        <FormGroup className="form-inline" controlId="forceStereoOutput">
+          <TooltipFormCheck
+            kind="forceStereoOutput"
+            checked={forceStereoOutput}
+            onChange={onChangeSwitch}
+            disabled={disabled}
+          >
+            forceStereoOutput
+          </TooltipFormCheck>
+        </FormGroup>
+      </Col>
+    </Row>
   )
 }

@@ -1,15 +1,14 @@
 import React from 'react'
 
 import { clearDataChannelMessages } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { DataChannelMessage } from '@/types'
 
 import { Message } from './Message.tsx'
 
-const ButtonClear: React.FC = () => {
-  const dispatch = useAppDispatch()
+const ButtonClear = React.memo(() => {
   const onClick = (): void => {
-    dispatch(clearDataChannelMessages())
+    clearDataChannelMessages()
   }
   return (
     <input
@@ -20,9 +19,9 @@ const ButtonClear: React.FC = () => {
       onClick={onClick}
     />
   )
-}
+})
 
-const Collapse: React.FC<DataChannelMessage> = (props) => {
+const Collapse = React.memo<DataChannelMessage>((props) => {
   const { data, label, timestamp } = props
   const headText = new TextDecoder().decode(data.slice(0, 6))
   if (headText === 'ZAKURO') {
@@ -53,14 +52,14 @@ const Collapse: React.FC<DataChannelMessage> = (props) => {
       wordBreak={true}
     />
   )
-}
+})
 
-const Log = React.memo((props: DataChannelMessage) => {
+const Log = React.memo<DataChannelMessage>((props) => {
   return <Collapse {...props} />
 })
 
 export const DataChannelMessagingMessages: React.FC = () => {
-  const dataChannelMessages = useAppSelector((state) => state.dataChannelMessages)
+  const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages)
   return (
     <>
       <div className="py-1">

@@ -1,15 +1,13 @@
-import type React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
 
 import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
 import { JitterButter } from './JitterBuffer.tsx'
 import { RemoteVideoCapabilities } from './RemoteVideoCapabilities.tsx'
-import { RequestRtpStreamBySendConnectionIdButton } from './RequestRtpStreamBySendConnectionIdButton.tsx'
+import { RequestSimulcastRidButton } from './RequestSimulcastRidButton.tsx'
 import { RequestSpotlightRidBySendConnectionIdButton } from './RequestSpotlightRidBySendConnectionIdButton.tsx'
-import { ResetRtpStreamBySendConnectionIdButton } from './ResetRtpStreamBySendConnectionIdButton.tsx'
 import { ResetSpotlightRidBySendConnectionIdButton } from './ResetSpotlightRidBySendConnectionIdButton.tsx'
 import { Video } from './Video.tsx'
 import { VolumeVisualizer } from './VolumeVisualizer.tsx'
@@ -41,10 +39,10 @@ function mediaStreamStatsReportFilter(
   return result
 }
 
-const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
-  const showStats = useAppSelector((state) => state.showStats)
-  const statsReport = useAppSelector((state) => state.soraContents.statsReport)
-  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport)
+const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
+  const showStats = useSoraDevtoolsStore((state) => state.showStats)
+  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
+  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
   if (!showStats) {
     return null
   }
@@ -86,21 +84,21 @@ const MediaStreamStatsReport: React.FC<{ stream: MediaStream }> = (props) => {
       })}
     </>
   )
-}
+})
 
-const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
+const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
   const { mediaStream, connectionId, clientId } = client
   const [height, setHeight] = useState<number>(0)
-  const audioOutput = useAppSelector((state) => state.audioOutput)
-  const displayResolution = useAppSelector((state) => state.displayResolution)
-  const focusedSpotlightConnectionIds = useAppSelector(
+  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
+  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
+  const focusedSpotlightConnectionIds = useSoraDevtoolsStore(
     (state) => state.focusedSpotlightConnectionIds,
   )
-  const mute = useAppSelector((state) => state.mute)
-  const simulcast = useAppSelector((state) => state.simulcast)
-  const spotlight = useAppSelector((state) => state.spotlight)
+  const mute = useSoraDevtoolsStore((state) => state.mute)
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
+  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
   const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
-  const mediaStats = useAppSelector((state) => state.mediaStats)
+  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -112,10 +110,10 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
         <div className="d-flex align-items-center mb-1 video-status-inner">
           {spotlight !== 'true' && simulcast === 'true' ? (
             <>
-              <RequestRtpStreamBySendConnectionIdButton rid="r0" sendConnectionId={connectionId} />
-              <RequestRtpStreamBySendConnectionIdButton rid="r1" sendConnectionId={connectionId} />
-              <RequestRtpStreamBySendConnectionIdButton rid="r2" sendConnectionId={connectionId} />
-              <ResetRtpStreamBySendConnectionIdButton sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="r0" sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="r1" sendConnectionId={connectionId} />
+              <RequestSimulcastRidButton rid="r2" sendConnectionId={connectionId} />
             </>
           ) : null}
           {spotlight === 'true' && simulcast === 'true' ? (
@@ -149,10 +147,10 @@ const RemoteVideo: React.FC<{ client: RemoteClient }> = ({ client }) => {
       </div>
     </div>
   )
-}
+})
 
 export const RemoteVideos: React.FC = () => {
-  const remoteClients = useAppSelector((state) => state.soraContents.remoteClients)
+  const remoteClients = useSoraDevtoolsStore((state) => state.soraContents.remoteClients)
   return (
     <div className="row my-2">
       {remoteClients.map((client) => {

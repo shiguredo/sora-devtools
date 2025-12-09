@@ -2,15 +2,14 @@ import type React from 'react'
 import { FormGroup } from 'react-bootstrap'
 
 import { setMediaStats } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const MediaStatsForm: React.FC = () => {
-  const mediaStats = useAppSelector((state) => state.mediaStats)
-  const dispatch = useAppDispatch()
+  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setMediaStats(event.target.checked))
+    setMediaStats(event.target.checked)
   }
   return (
     <FormGroup className="form-inline" controlId="mediaStats">

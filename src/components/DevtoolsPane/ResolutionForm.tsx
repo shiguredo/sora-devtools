@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setResolution } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type ResolutionData = {
@@ -10,7 +10,7 @@ type ResolutionData = {
   value: string
 }
 
-const RESOLUTION_DATA_LIST = new Array(
+const RESOLUTION_DATA_LIST = [
   { label: '未指定', value: '' },
   { label: '144p', value: '256x144' },
   { label: '240p', value: '320x240' },
@@ -21,22 +21,20 @@ const RESOLUTION_DATA_LIST = new Array(
   { label: '1080p', value: '1920x1080' },
   { label: '1440p', value: '2560x1440' },
   { label: '2160p', value: '3840x2160' },
-)
+]
 
 const DropdownItem = ({ label, value }: ResolutionData) => {
-  const dispatch = useAppDispatch()
   return (
-    <Dropdown.Item as="button" onClick={() => dispatch(setResolution(value))}>
+    <Dropdown.Item as="button" onClick={() => setResolution(value)}>
       {label} {value !== '' && `(${value})`}
     </Dropdown.Item>
   )
 }
 
 export const ResolutionForm: React.FC = () => {
-  const resolution = useAppSelector((state) => state.resolution)
-  const dispatch = useAppDispatch()
+  const resolution = useSoraDevtoolsStore((state) => state.resolution)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setResolution(event.target.value))
+    setResolution(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="resolution">

@@ -1,16 +1,16 @@
 import type React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { CopyUrlButton } from './CopyUrlButton.tsx'
 import { DebugButton } from './DebugButton.tsx'
 import { DownloadReportButton } from './DownloadReportButton.tsx'
 
 export const Header: React.FC = () => {
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const turnUrl = useAppSelector((state) => state.soraContents.turnUrl)
-  const sora = useAppSelector((state) => state.soraContents.sora)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const turnUrl = useSoraDevtoolsStore((state) => state.soraContents.turnUrl)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const turnUrlLabel = (() => {
     if (sora && connectionStatus === 'connected') {
       return turnUrl !== null ? turnUrl : '不明'

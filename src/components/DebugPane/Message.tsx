@@ -1,17 +1,18 @@
-import type React from 'react'
-import { type JSX, useState } from 'react'
+import React, { type JSX, useState } from 'react'
 import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
 
 import { CopyLogButton } from './CopyLogButton.tsx'
+import { JsonTree } from './JsonTree.tsx'
 
 type DescriptionProps = {
   description: string | number | Record<string, unknown>
+  prevDescription?: unknown
   wordBreak?: boolean
 }
-const Description: React.FC<DescriptionProps> = (props) => {
-  const { description } = props
+const Description = React.memo<DescriptionProps>((props) => {
+  const { description, prevDescription } = props
   if (description === undefined) {
     return null
   }
@@ -24,6 +25,19 @@ const Description: React.FC<DescriptionProps> = (props) => {
       </div>
     )
   }
+  // prevDescription が渡されている場合は JsonTree を使用（差分更新あり）
+  if (prevDescription !== undefined) {
+    return (
+      <div className="debug-message">
+        <div className="col-sm-12">
+          <div className={props.wordBreak ? 'word-break' : ''}>
+            <JsonTree data={description} prevData={prevDescription} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+  // prevDescription がない場合は従来通り JSON.stringify
   return (
     <div className="debug-message">
       <div className="col-sm-12">
@@ -33,27 +47,28 @@ const Description: React.FC<DescriptionProps> = (props) => {
       </div>
     </div>
   )
-}
+})
 
 type Props = {
   timestamp: number | null
   title: string
   description: string | number | Record<string, unknown>
+  prevDescription?: unknown
   defaultShow?: boolean
   label?: JSX.Element | null
   wordBreak?: boolean
 }
-export const Message: React.FC<Props> = (props) => {
-  const { defaultShow, description, title, timestamp, label } = props
+export const Message = React.memo<Props>((props) => {
+  const { defaultShow, description, prevDescription, title, timestamp, label } = props
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow)
   const ariaControls = timestamp ? title + timestamp : title
   const disabled = description === undefined
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="d-flex justify-content-between align-items-center text-break">
-        <a
+        <button
+          type="button"
           className={`debug-title ${disabled ? 'disabled' : ''}`}
-          // biome-ignore lint/a11y/useValidAnchor: <explanation>
           onClick={() => setShow(!show)}
           aria-controls={ariaControls}
           aria-expanded={show}
@@ -64,7 +79,7 @@ export const Message: React.FC<Props> = (props) => {
           ) : null}
           {label}
           <span>{title}</span>
-        </a>
+        </button>
         <div className="border-left">
           <CopyLogButton
             text={
@@ -76,9 +91,13 @@ export const Message: React.FC<Props> = (props) => {
       </div>
       <Collapse in={show}>
         <div className="border-top">
-          <Description description={description} wordBreak={props.wordBreak} />
+          <Description
+            description={description}
+            prevDescription={prevDescription}
+            wordBreak={props.wordBreak}
+          />
         </div>
       </Collapse>
     </div>
   )
-}
+})

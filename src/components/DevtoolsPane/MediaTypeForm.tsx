@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
@@ -37,15 +37,14 @@ export const MediaTypeForm: React.FC = () => {
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
   const [mountClient, setMountClient] = useState(false)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const localMediaStream = useAppSelector((state) => state.soraContents.localMediaStream)
-  const mediaType = useAppSelector((state) => state.mediaType)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
   const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
   const enabledMp4Media = Mp4MediaStream.isSupported()
-  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {
-      dispatch(setMediaType(event.target.value))
+      setMediaType(event.target.value)
     }
   }
   useEffect(() => {

@@ -2,11 +2,11 @@ import type React from 'react'
 import { useRef } from 'react'
 import Sora from 'sora-js-sdk'
 
-import { store } from '@/app/store'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { DownloadReport, DownloadReportParameters } from '@/types'
 
 function createDownloadReport(): DownloadReport {
-  const state = store.getState()
+  const state = useSoraDevtoolsStore.getState()
   const parameters: DownloadReportParameters = {
     aspectRatio: state.aspectRatio,
     audio: state.audio,
@@ -27,6 +27,7 @@ function createDownloadReport(): DownloadReport {
     dataChannelSignaling: state.dataChannelSignaling,
     dataChannels: state.dataChannels,
     debug: state.debug,
+    debugApiUrl: state.debugApiUrl,
     displayResolution: state.displayResolution,
     echoCancellation: state.echoCancellation,
     echoCancellationType: state.echoCancellationType,
@@ -65,6 +66,7 @@ function createDownloadReport(): DownloadReport {
     signalingUrlCandidates: state.signalingUrlCandidates,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
+    simulcastRequestRid: state.simulcastRequestRid,
     spotlight: state.spotlight,
     spotlightFocusRid: state.spotlightFocusRid,
     spotlightNumber: state.spotlightNumber,
@@ -122,8 +124,8 @@ export const DownloadReportButton: React.FC = () => {
         defaultValue="Download report"
         onClick={onClick}
       />
-      {/* biome-ignore lint/a11y/useAnchorContent: <explanation> */}
-      {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+      {/* biome-ignore lint/a11y/useAnchorContent: This is a hidden anchor used for programmatic file download */}
+      {/* biome-ignore lint/a11y/useValidAnchor: This is a hidden anchor used for programmatic file download */}
       <a ref={anchorRef} style={{ display: 'none' }} />
     </>
   )

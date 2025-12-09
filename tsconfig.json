@@ -5,7 +5,7 @@
     "jsx": "preserve",
     "module": "esnext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "sourceMap": true,
     "strict": true,
@@ -24,8 +24,7 @@
     // プロパティの初期化を厳密にチェックする
     "strictPropertyInitialization": true,
     "types": ["vitest/globals"],
-    "paths": {"@/*": ["src/*"]},
-    "baseUrl": ".",
+    "paths": {"@/*": ["./src/*"]},
     "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true
   },

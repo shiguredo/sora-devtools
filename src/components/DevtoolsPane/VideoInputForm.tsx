@@ -2,17 +2,16 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoInput, updateMediaStream } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoInputForm: React.FC = () => {
-  const videoInput = useAppSelector((state) => state.videoInput)
-  const videoInputDevices = useAppSelector((state) => state.videoInputDevices)
-  const dispatch = useAppDispatch()
+  const videoInput = useSoraDevtoolsStore((state) => state.videoInput)
+  const videoInputDevices = useSoraDevtoolsStore((state) => state.videoInputDevices)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    dispatch(setVideoInput(event.target.value))
-    dispatch(updateMediaStream())
+    setVideoInput(event.target.value)
+    updateMediaStream()
   }
   return (
     <FormGroup className="form-inline" controlId="videoInput">

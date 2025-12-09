@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setFrameRate } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
@@ -11,7 +11,7 @@ type FrameRateData = {
   value: string
 }
 
-const FRAME_RATE_DATA = new Array(
+const FRAME_RATE_DATA = [
   { label: '未指定', value: '' },
   { label: '60', value: '60' },
   { label: '30', value: '30' },
@@ -20,22 +20,20 @@ const FRAME_RATE_DATA = new Array(
   { label: '15', value: '15' },
   { label: '10', value: '10' },
   { label: '5', value: '5' },
-)
+]
 
 const DropdownItem = ({ label, value }: FrameRateData) => {
-  const dispatch = useAppDispatch()
   return (
-    <Dropdown.Item as="button" onClick={() => dispatch(setFrameRate(value))}>
+    <Dropdown.Item as="button" onClick={() => setFrameRate(value)}>
       {label}
     </Dropdown.Item>
   )
 }
 
 export const FrameRateForm: React.FC = () => {
-  const frameRate = useAppSelector((state) => state.frameRate)
-  const dispatch = useAppDispatch()
+  const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setFrameRate(event.target.value))
+    setFrameRate(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="frameRate">

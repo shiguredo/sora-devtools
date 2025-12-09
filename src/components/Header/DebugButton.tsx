@@ -1,15 +1,14 @@
 import type React from 'react'
 
 import { setDebug } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 export const DebugButton: React.FC = () => {
-  const debug = useAppSelector((state) => state.debug)
-  const dispatch = useAppDispatch()
+  const debug = useSoraDevtoolsStore((state) => state.debug)
   const onClick = (): void => {
-    dispatch(setDebug(!debug))
+    setDebug(!debug)
   }
-  const classNames = ['btn', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
+  const classNames = ['btn', 'btn-light', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
   if (debug) {
     classNames.push('active')
   }

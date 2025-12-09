@@ -2,20 +2,19 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoAV1Params, setVideoAV1Params } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoAV1ParamsForm: React.FC = () => {
-  const enabledVideoAV1Params = useAppSelector((state) => state.enabledVideoAV1Params)
-  const videoAV1Params = useAppSelector((state) => state.videoAV1Params)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const enabledVideoAV1Params = useSoraDevtoolsStore((state) => state.enabledVideoAV1Params)
+  const videoAV1Params = useSoraDevtoolsStore((state) => state.videoAV1Params)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setEnabledVideoAV1Params(event.target.checked))
+    setEnabledVideoAV1Params(event.target.checked)
   }
   return (
     <>
@@ -40,7 +39,7 @@ export const VideoAV1ParamsForm: React.FC = () => {
               controlId="videoAV1Params"
               placeholder="videoAV1Paramsを指定"
               value={videoAV1Params}
-              setValue={(value) => dispatch(setVideoAV1Params(value))}
+              setValue={(value) => setVideoAV1Params(value)}
               disabled={disabled}
             />
           </Col>

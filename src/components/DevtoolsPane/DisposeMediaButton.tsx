@@ -1,17 +1,16 @@
 import type React from 'react'
 
 import { disposeMedia } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 export const DisposeMediaButton: React.FC = () => {
-  const dispatch = useAppDispatch()
   const onClick = (): void => {
-    dispatch(disposeMedia())
+    disposeMedia()
   }
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const role = useAppSelector((state) => state.role)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const role = useSoraDevtoolsStore((state) => state.role)
   const disabled = role === 'recvonly' || sora !== null || isFormDisabled(connectionStatus)
   return (
     <div className="col-auto mb-1">

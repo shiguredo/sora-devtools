@@ -2,7 +2,7 @@ import type React from 'react'
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setVideoBitRate } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { VIDEO_BIT_RATES } from '@/constants'
 import { isFormDisabled } from '@/utils'
 
@@ -20,12 +20,11 @@ const dropdownItemLabel = (value: string) => {
 }
 
 export const VideoBitRateForm: React.FC = () => {
-  const videoBitRate = useAppSelector((state) => state.videoBitRate)
-  const connectionStatus = useAppSelector((state) => state.soraContents.connectionStatus)
+  const videoBitRate = useSoraDevtoolsStore((state) => state.videoBitRate)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disabled = isFormDisabled(connectionStatus)
-  const dispatch = useAppDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setVideoBitRate(event.target.value))
+    setVideoBitRate(event.target.value)
   }
   return (
     <FormGroup className="form-inline" controlId="videoBitRate">
@@ -50,7 +49,7 @@ export const VideoBitRateForm: React.FC = () => {
               <Dropdown.Item
                 key={value}
                 as="button"
-                onClick={() => dispatch(setVideoBitRate(value))}
+                onClick={() => setVideoBitRate(value)}
                 disabled={value === 'support-message'}
               >
                 {dropdownItemLabel(value)}

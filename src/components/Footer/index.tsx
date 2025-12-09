@@ -2,12 +2,12 @@ import type React from 'react'
 import { Nav, Navbar } from 'react-bootstrap'
 import Sora from 'sora-js-sdk'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { DebugButton } from './DebugButton.tsx'
 
 export const Footer: React.FC = () => {
-  const version = useAppSelector((state) => state.version)
+  const version = useSoraDevtoolsStore((state) => state.version)
   return (
     <footer>
       <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">

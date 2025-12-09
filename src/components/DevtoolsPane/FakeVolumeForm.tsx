@@ -2,16 +2,15 @@ import type React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 
 import { setFakeVolume } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const FakeVolumeForm: React.FC = () => {
-  const mediaType = useAppSelector((state) => state.mediaType)
-  const fakeVolume = useAppSelector((state) => state.fakeVolume)
-  const dispatch = useAppDispatch()
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
+  const fakeVolume = useSoraDevtoolsStore((state) => state.fakeVolume)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setFakeVolume(event.target.value))
+    setFakeVolume(event.target.value)
   }
   if (mediaType !== 'fakeMedia') {
     return null

@@ -2,18 +2,17 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setResizeMode } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { RESIZE_MODE_TYPES } from '@/constants'
 import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const ResizeModeForm: React.FC = () => {
-  const resizeMode = useAppSelector((state) => state.resizeMode)
-  const dispatch = useAppDispatch()
+  const resizeMode = useSoraDevtoolsStore((state) => state.resizeMode)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, RESIZE_MODE_TYPES)) {
-      dispatch(setResizeMode(event.target.value))
+      setResizeMode(event.target.value)
     }
   }
   return (

@@ -3,23 +3,18 @@ import { useRef } from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 import type { SpotlightFocusRid } from 'sora-js-sdk'
 
-import { requestSpotlightRid } from '@/api'
-import { setAPIErrorAlertMessage, setAPIInfoAlertMessage } from '@/app/actions'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
+import { rpc } from '@/rpc'
 
 export const RequestSpotlightRidButton: React.FC = () => {
   const focusRidRef = useRef<HTMLSelectElement>(null)
   const unfocusRidRef = useRef<HTMLSelectElement>(null)
-  const sora = useAppSelector((state) => state.soraContents.sora)
-  const channelId = useAppSelector((state) => state.channelId)
-  const apiUrl = useAppSelector((state) => state.apiUrl)
-  const dispatch = useAppDispatch()
-  if (!sora?.connectionId) {
-    return null
-  }
+  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+
   const onClick = async (): Promise<void> => {
-    if (!sora?.connectionId) {
+    if (!conn || connectionStatus !== 'connected') {
       return
     }
     if (focusRidRef.current === null || unfocusRidRef.current === null) {
@@ -27,21 +22,22 @@ export const RequestSpotlightRidButton: React.FC = () => {
     }
     const focusRid = focusRidRef.current.value as SpotlightFocusRid
     const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid
-    try {
-      const response = await requestSpotlightRid(
-        apiUrl,
-        channelId,
-        sora.connectionId,
-        focusRid,
-        unfocusRid,
-      )
-      dispatch(setAPIInfoAlertMessage(`POST successed. response: ${JSON.stringify(response)}`))
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch(setAPIErrorAlertMessage(error.message))
-      }
-    }
+
+    await rpc(
+      conn,
+      '2025.2.0/RequestSpotlightRid',
+      {
+        spotlight_focus_rid: focusRid,
+        spotlight_unfocus_rid: unfocusRid,
+      },
+      { notification: false, showMethodAlert: true },
+    )
   }
+
+  if (!conn?.connectionId) {
+    return null
+  }
+
   return (
     <div className="mx-1">
       <FormGroup className="form-inline">

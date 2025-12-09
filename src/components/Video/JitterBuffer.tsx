@@ -1,6 +1,6 @@
 import type React from 'react'
 
-import { useAppSelector } from '@/app/hooks'
+import { useSoraDevtoolsStore } from '@/app/store'
 import type { RTCInboundRtpStreamStats } from '@/types'
 
 function mediaStreamStatsReportFilter(
@@ -45,8 +45,8 @@ type Props = {
   type: 'video' | 'audio'
 }
 export const JitterButter: React.FC<Props> = (props) => {
-  const statsReport = useAppSelector((state) => state.soraContents.statsReport)
-  const prevStatsReport = useAppSelector((state) => state.soraContents.prevStatsReport)
+  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
+  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
   const currentInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
     statsReport,
     props.stream,

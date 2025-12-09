@@ -11,14 +11,14 @@ type VideoProps = {
   audioOutput: string
   setHeight: Dispatch<SetStateAction<number>>
 }
-const VideoElement: React.FC<VideoProps> = (props) => {
+const VideoElement = React.memo<VideoProps>((props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      entries.filter((entry) => {
+      entries.forEach((entry) => {
         setHeight(entry.contentRect.height)
       })
     })
@@ -98,8 +98,8 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       height={videoSize.height > 0 ? videoSize.height : undefined}
     />
   )
-}
+})
 
-export const Video = React.memo((props: VideoProps) => {
+export const Video = React.memo<VideoProps>((props) => {
   return <VideoElement {...props} />
 })

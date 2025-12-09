@@ -12,7 +12,10 @@
     "description": "サイマルキャストを使用するかどうかを指定します。"
   },
   "simulcastRid": {
-    "description": "サイマルキャストで配信されている映像を受信する際のエンコードの初期値を指定します。"
+    "description": "Sora 2025.2.0 以降では simulcastRequestRid をご利用ください。simulcastRid は将来廃止予定です。"
+  },
+  "simulcastRequestRid": {
+    "description": "サイマルキャストで配信されている映像を受信する rid を指定します。"
   },
   "spotlight": {
     "description": "スポットライトを使用するかどうかを指定します。"

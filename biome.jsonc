@@ -1,17 +1,14 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
   "files": {
-    "include": ["src/**", "tests/**"]
+    "includes": ["**/src/**", "**/tests/**"]
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     // tests/ 以下は linter は無視する
-    "ignore": ["tests/**"],
+    "includes": ["**", "!**/tests/**"],
     "rules": {
-      "all": true,
       "suspicious": {
         "noExplicitAny": "off",
         // React 利用しているので off
@@ -22,18 +19,36 @@
         "useNamingConvention": "off",
         // default export を使いたいので off
         "noDefaultExport": "off",
-        "useFilenamingConvention": "off"
+        "useFilenamingConvention": "off",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       },
       "complexity": {
         "useSimplifiedLogicExpression": "off",
-        "noExcessiveCognitiveComplexity": "off"
+        "noExcessiveCognitiveComplexity": "off",
+        "noImportantStyles": "off"
+      },
+      "nursery": {},
+      "a11y": {
+        "noStaticElementInteractions": "off"
+      },
+      "correctness": {
+        "useUniqueElementIds": "off"
       }
     }
   },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
-    "ignore": [],
+    "includes": ["**"],
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100

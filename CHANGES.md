@@ -11,9 +11,79 @@
 
 ## develop
 
+## 2025.2.0
+
+**リリース日**: 2025-12-09
+
+- [CHANGE] role が sendonly の場合は simulcastRequestRid / simulcastRid を表示しないようにする
+  - @voluntas
+- [CHANGE] RequestSpotlightRid / ResetSpotlightRid を API から RPC に変更する
+  - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
+  - @voluntas
+- [CHANGE] RequestSimulcastRid を API から RPC に変更する
+  - RPC 呼び出し時に rpc_methods に含まれていないメソッドの場合はアラートを表示する
+  - @voluntas
+- [CHANGE] 録画開始/停止ボタンを削除
+  - API タブで録画の開始/停止ができるようになったため
+  - @voluntas
+- [CHANGE] Immer 11 で state が凍結され sora-js-sdk の Connection オブジェクトが動作しない問題を修正する
+  - `setAutoFreeze(false)` を設定して凍結を無効化
+  - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2025.2.0 に上げる
+  - @voluntas
+- [ADD] debug ペインに RPC タブを追加
+  - Sora 2025.2.0 で追加された RPC 機能を確認できるようにする
+  - RPC メソッド選択で rpc_methods に含まれているメソッドをハイライト表示する
+  - @voluntas
+- [ADD] debug ペインに API タブを追加
+  - Sora の API 機能をテストできるようにする
+  - URL、メソッド、params、timeout を指定して API を実行できる
+  - リクエスト/レスポンスのヘッダーとボディを表示
+  - 過去の実行結果から Reuse ボタンで再実行可能
+  - @voluntas
+- [ADD] Stats タブの JSON 表示を JsonTree コンポーネントで実装し、 1 秒ごとの更新時に範囲選択がしやすくなるようにする
+  - 差分更新により変更されていない部分の DOM を維持し、テキスト選択を保持
+  - 変更された部分は 1 秒間ハイライト表示
+  - @voluntas
+- [ADD] debug ペイン内のタブ状態を query string で管理できるようにする
+  - タブを切り替えると URL に `debugType` パラメータが追加される
+  - Copy URL で現在のタブ状態を含めた URL をコピーできる
+  - URL から直接特定のタブを開いた状態で表示できる
+  - @voluntas
+- [ADD] sora-js-sdk 2025.2.0 で追加された `switched` / `connected` コールバックを timeline に記録するようにする
+  - @voluntas
+- [FIX] debug ボタンのマウスオーバー時の色を修正する
+  - @voluntas
+
+### misc
+
+- [ADD] タグリリース時にビルド済みパッケージを生成するようにする
+  - @voluntas
+- [ADD] immer を依存に追加する
+  - zustand/immer を利用するため
+  - @voluntas
+- [ADD] Cloudflare R2 へのデプロイを追加する
+  - <https://sora-devtools.shiguredo.app/>
+    - master ブランチ
+  - <https://canary.sora-devtools.shiguredo.app/>
+    - develop ブランチ
+  - @voluntas
+- [CHANGE] `tsconfig.json` の `moduleResolution` を `bundler` に変更する
+  - @voluntas
+- [CHANGE] 型チェックコマンドを `typecheck` に変更する
+  - @voluntas
+- [CHANGE] GitHub Pages へのデプロイを削除する
+  - @voluntas
+- [CHANGE] redux から zustand を利用する
+  - @voluntas
+- [CHANGE] 対応 Node.js のバージョンを 24 以上にする
+  - @voluntas
+- [UPDATE] actions/checkout を v5 に上げる
+  - @miosakuma
+
 ## 2025.1.0
 
-**リリース予定**: 2025-06-12
+**リリース日**: 2025-06-12
 
 - [CHANGE] `react-draggable` の依存を削除
   - Region Capture 機能を実現するために利用していたため

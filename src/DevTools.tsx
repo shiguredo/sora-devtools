@@ -3,22 +3,20 @@ import { useEffect } from 'react'
 
 import { disconnectSora, setMediaDevices, unregisterServiceWorker } from '@/app/actions'
 import { setInitialParameter } from '@/app/actions'
-import { useAppDispatch } from '@/app/hooks'
 import { DebugPane } from '@/components/DebugPane'
 import { DevtoolsPane } from '@/components/DevtoolsPane'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 
 const Devtools: React.FC = () => {
-  const dispatch = useAppDispatch()
   useEffect(() => {
-    dispatch(setInitialParameter())
-    dispatch(setMediaDevices())
-    dispatch(unregisterServiceWorker())
+    setInitialParameter()
+    setMediaDevices()
+    unregisterServiceWorker()
     return () => {
-      dispatch(disconnectSora())
+      disconnectSora()
     }
-  }, [dispatch])
+  }, [])
   return (
     <>
       <Header />

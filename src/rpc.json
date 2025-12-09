@@ -1,0 +1,39 @@
+[
+  {
+    "method": "2025.2.0/RequestSimulcastRid",
+    "params": {
+      "rid": "r1"
+    }
+  },
+  {
+    "method": "2025.2.0/RequestSpotlightRid",
+    "params": {
+      "recv_connection_id": "",
+      "spotlight_focus_rid": "r0",
+      "spotlight_unfocus_rid": "none"
+    }
+  },
+  {
+    "method": "2025.2.0/ResetSpotlightRid",
+    "params": {
+      "recv_connection_id": ""
+    }
+  },
+  {
+    "method": "2025.2.0/PutSignalingNotifyMetadata",
+    "params": {
+      "metadata": {
+        "spam": "egg"
+      },
+      "push": true
+    }
+  },
+  {
+    "method": "2025.2.0/PutSignalingNotifyMetadataItem",
+    "params": {
+      "key": "spam",
+      "value": "ham",
+      "push": true
+    }
+  }
+]

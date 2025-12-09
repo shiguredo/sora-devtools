@@ -28,6 +28,7 @@ import type {
   RESIZE_MODE_TYPES,
   SIMULCAST,
   SIMULCAST_RID,
+  SIMULCAST_REQUEST_RID,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
@@ -61,6 +62,7 @@ export type SoraDevtoolsState = {
   debug: boolean
   debugFilterText: string
   debugType: DebugType
+  debugApiUrl: string
   dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number]
   dataChannels: string
   dataChannelMessages: DataChannelMessage[]
@@ -125,6 +127,7 @@ export type SoraDevtoolsState = {
   forwardingFilter: string
   simulcast: (typeof SIMULCAST)[number]
   simulcastRid: (typeof SIMULCAST_RID)[number]
+  simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number]
   spotlight: (typeof SPOTLIGHT)[number]
   focusedSpotlightConnectionIds: {
     [key: string]: boolean
@@ -155,6 +158,39 @@ export type SoraDevtoolsState = {
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null
   virtualBackgroundProcessor: VirtualBackgroundProcessor | null
   facingMode: (typeof FACING_MODES)[number]
+  rpcObjects: RpcObject[]
+  apiObjects: ApiObject[]
+}
+
+export type RpcObject = {
+  timestamp: number
+  method: string
+  params?: Record<string, unknown> | unknown[]
+  options?: {
+    timeout?: number
+    notification?: boolean
+  }
+  result?: unknown
+  error?: {
+    code: number
+    message: string
+    data?: unknown
+  }
+  duration?: number
+}
+
+export type ApiObject = {
+  timestamp: number
+  url: string
+  method: string
+  requestHeaders?: Record<string, string>
+  requestBody?: unknown
+  status?: number
+  responseHeaders?: Record<string, string>
+  responseBody?: unknown
+  error?: string
+  errorType?: 'cors' | 'timeout' | 'network' | 'unknown'
+  duration?: number
 }
 
 // 画面表示する message の Type
@@ -356,6 +392,7 @@ export type ConnectionOptionsState = Pick<
   | 'forwardingFilter'
   | 'simulcast'
   | 'simulcastRid'
+  | 'simulcastRequestRid'
   | 'spotlight'
   | 'spotlightFocusRid'
   | 'spotlightNumber'
@@ -375,6 +412,7 @@ export type ConnectionOptionsState = Pick<
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
   | 'alertMessages'
+  | 'apiObjects'
   | 'apiUrl'
   | 'blurRadius'
   | 'dataChannelMessages'
@@ -390,6 +428,7 @@ export type DownloadReportParameters = Omit<
   | 'noiseSuppressionProcessor'
   | 'notifyMessages'
   | 'pushMessages'
+  | 'rpcObjects'
   | 'showStats'
   | 'signalingMessages'
   | 'soraContents'

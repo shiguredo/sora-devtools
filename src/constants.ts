@@ -1,4 +1,17 @@
 import instructionsJSON from '../instructions.json'
+import apiJSON from './api.json'
+import rpcJSON from './rpc.json'
+
+export const API_TEMPLATES = apiJSON as ReadonlyArray<{
+  group?: string
+  method: string
+  params?: Record<string, unknown> | unknown[]
+}>
+
+export const RPC_TEMPLATES = rpcJSON as ReadonlyArray<{
+  method: string
+  params?: Record<string, unknown> | unknown[]
+}>
 
 export const SIMULCAST = ['', 'true', 'false'] as const
 
@@ -48,6 +61,8 @@ export const SPOTLIGHT_FOCUS_RIDS = ['', 'none', 'r0', 'r1', 'r2'] as const
 
 export const SIMULCAST_RID = ['', 'r0', 'r1', 'r2'] as const
 
+export const SIMULCAST_REQUEST_RID = ['', 'none', 'r0', 'r1', 'r2'] as const
+
 export const DATA_CHANNEL_SIGNALING = ['', 'true', 'false'] as const
 
 export const IGNORE_DISCONNECT_WEBSOCKET = ['', 'true', 'false'] as const
@@ -60,6 +75,8 @@ export const DEBUG_TYPES = [
   'timeline',
   'signaling',
   'messaging',
+  'api',
+  'rpc',
   'codec',
 ] as const
 

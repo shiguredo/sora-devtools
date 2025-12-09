@@ -18,6 +18,7 @@ import {
   ROLES,
   SIMULCAST,
   SIMULCAST_RID,
+  SIMULCAST_REQUEST_RID,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
@@ -131,6 +132,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     googCpuOveruseDetection: parseBooleanParameter(searchParams, 'googCpuOveruseDetection'),
     debug: parseBooleanParameter(searchParams, 'debug'),
     debugType: parseSpecifiedStringParameter(searchParams, 'debugType', DEBUG_TYPES),
+    debugApiUrl: parseStringParameter(searchParams, 'debugApiUrl'),
     displayResolution: parseStringParameter(searchParams, 'displayResolution'),
     echoCancellation: parseSpecifiedStringParameter(
       searchParams,
@@ -162,6 +164,11 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     forwardingFilter: parseStringParameter(searchParams, 'forwardingFilter'),
     simulcast: parseSpecifiedStringParameter(searchParams, 'simulcast', SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(searchParams, 'simulcastRid', SIMULCAST_RID),
+    simulcastRequestRid: parseSpecifiedStringParameter(
+      searchParams,
+      'simulcastRequestRid',
+      SIMULCAST_REQUEST_RID,
+    ),
     spotlight: parseSpecifiedStringParameter(searchParams, 'spotlight', SPOTLIGHT),
     spotlightNumber: parseSpecifiedStringParameter(
       searchParams,
@@ -232,7 +239,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
   }
 
   // undefined の項目を削除する
-  ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).map((key) => {
+  ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).forEach((key) => {
     if (result[key] === undefined) {
       delete result[key]
     }
@@ -778,7 +785,10 @@ export function createConnectOptions(
     connectionOptions.spotlight = parsedSpotlight
     if (parsedSpotlight === true) {
       if (connectionOptionsState.spotlightNumber) {
-        connectionOptions.spotlightNumber = Number.parseInt(connectionOptionsState.spotlightNumber)
+        connectionOptions.spotlightNumber = Number.parseInt(
+          connectionOptionsState.spotlightNumber,
+          10,
+        )
       }
       if (connectionOptionsState.spotlightFocusRid) {
         connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid
@@ -792,8 +802,13 @@ export function createConnectOptions(
   const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast)
   if (parsedSimulcast !== undefined) {
     connectionOptions.simulcast = parsedSimulcast
-    if (parsedSimulcast === true && connectionOptionsState.simulcastRid) {
-      connectionOptions.simulcastRid = connectionOptionsState.simulcastRid
+    if (parsedSimulcast === true) {
+      if (connectionOptionsState.simulcastRid) {
+        connectionOptions.simulcastRid = connectionOptionsState.simulcastRid
+      }
+      if (connectionOptionsState.simulcastRequestRid) {
+        connectionOptions.simulcastRequestRid = connectionOptionsState.simulcastRequestRid
+      }
     }
   }
   // signalingNotifyMetadata
