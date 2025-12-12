@@ -11,6 +11,13 @@
 
 ## develop
 
+## 2025.2.1
+
+**リリース日**: 2025-12-12
+
+- [FIX] RPC 機能を利用した `RequestSimulcastRid` の引数が `sender_connection_id` ではなく `send_connection_id` になっていた問題を修正する
+  - @voluntas
+
 ## 2025.2.0
 
 **リリース日**: 2025-12-09

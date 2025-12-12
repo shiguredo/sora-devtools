@@ -22,12 +22,12 @@ export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
 
     const params: {
       rid: SimulcastRequestRid
-      send_connection_id?: string
+      sender_connection_id?: string
     } = {
       rid: props.rid,
     }
     if (props.sendConnectionId) {
-      params.send_connection_id = props.sendConnectionId
+      params.sender_connection_id = props.sendConnectionId
     }
 
     await rpc(conn, '2025.2.0/RequestSimulcastRid', params, {
