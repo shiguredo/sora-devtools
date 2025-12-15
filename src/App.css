@@ -276,7 +276,7 @@ button.debug-title {
   position: absolute;
   top: 50px;
   right: 20px;
-  z-index: 1;
+  z-index: 1001;
 }
 
 .toast {
