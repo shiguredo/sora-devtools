@@ -1,7 +1,7 @@
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
-import { signal } from '@preact/signals'
+import { signal, computed } from '@preact/signals'
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -146,56 +146,111 @@ const initialState: SoraDevtoolsState = {
 // Signal ストア
 export const store = signal<SoraDevtoolsState>(structuredClone(initialState))
 
-// クローン不可能なオブジェクトを保持しつつ状態をディープクローンする関数
-function cloneState(state: SoraDevtoolsState): SoraDevtoolsState {
-  // クローン不可能なオブジェクトを一時的に退避
-  const nonCloneableRefs = {
-    worker: state.fakeContents.worker,
-    gainNode: state.fakeContents.gainNode,
-    sora: state.soraContents.sora,
-    localMediaStream: state.soraContents.localMediaStream,
-    mp4MediaStream: state.mp4MediaStream,
-    noiseSuppressionProcessor: state.noiseSuppressionProcessor,
-    virtualBackgroundProcessor: state.virtualBackgroundProcessor,
+// クローン不可能なオブジェクトかどうかを判定
+function isNonCloneable(value: unknown): boolean {
+  if (value === null || value === undefined) return false
+  if (typeof value !== 'object') return false
+  // Worker, MediaStream, AudioNode, Processor などはクローン不可
+  const ctorName = (value as object).constructor?.name
+  return (
+    ctorName === 'Worker' ||
+    ctorName === 'MediaStream' ||
+    ctorName === 'GainNode' ||
+    ctorName === 'AudioNode' ||
+    value instanceof NoiseSuppressionProcessor ||
+    value instanceof VirtualBackgroundProcessor ||
+    ctorName === 'Mp4MediaStream'
+  )
+}
+
+// Immer-like な produce 関数: 変更されたパスのみをシャロークローン
+type Draft<T> = T
+function produce<T extends object>(base: T, recipe: (draft: Draft<T>) => void): T {
+  // 変更されたオブジェクトを追跡
+  const modified = new WeakSet<object>()
+  const copies = new WeakMap<object, object>()
+
+  // オブジェクトのシャローコピーを取得（必要に応じて作成）
+  function getCopy<O extends object>(obj: O): O {
+    if (copies.has(obj)) {
+      return copies.get(obj) as O
+    }
+    const copy = Array.isArray(obj) ? [...obj] : { ...obj }
+    copies.set(obj, copy)
+    return copy as O
   }
 
-  // クローン不可能なオブジェクトを null に設定してクローン
-  state.fakeContents.worker = null
-  state.fakeContents.gainNode = null
-  state.soraContents.sora = null
-  state.soraContents.localMediaStream = null
-  state.mp4MediaStream = null
-  state.noiseSuppressionProcessor = null
-  state.virtualBackgroundProcessor = null
+  // Proxy ハンドラを作成
+  function createProxy<O extends object>(obj: O, parent?: object, key?: string | symbol): O {
+    return new Proxy(obj, {
+      get(target, prop, receiver) {
+        const value = Reflect.get(target, prop, receiver)
+        // クローン不可能なオブジェクトはそのまま返す
+        if (isNonCloneable(value)) {
+          return value
+        }
+        // オブジェクトや配列の場合は Proxy でラップ
+        if (value !== null && typeof value === 'object') {
+          return createProxy(value as object, target, prop)
+        }
+        return value
+      },
+      set(target, prop, value) {
+        // 親が変更されていることをマーク
+        modified.add(target)
+        // コピーを取得して更新
+        const copy = getCopy(target)
+        Reflect.set(copy, prop, value)
+        // 親も更新が必要
+        if (parent && key !== undefined) {
+          modified.add(parent)
+          const parentCopy = getCopy(parent)
+          Reflect.set(parentCopy, key, copy)
+        }
+        return true
+      },
+    })
+  }
 
-  const cloned = structuredClone(state)
+  // recipe を実行
+  const proxy = createProxy(base)
+  recipe(proxy as Draft<T>)
 
-  // 元の状態とクローンした状態に参照を復元
-  state.fakeContents.worker = nonCloneableRefs.worker
-  state.fakeContents.gainNode = nonCloneableRefs.gainNode
-  state.soraContents.sora = nonCloneableRefs.sora
-  state.soraContents.localMediaStream = nonCloneableRefs.localMediaStream
-  state.mp4MediaStream = nonCloneableRefs.mp4MediaStream
-  state.noiseSuppressionProcessor = nonCloneableRefs.noiseSuppressionProcessor
-  state.virtualBackgroundProcessor = nonCloneableRefs.virtualBackgroundProcessor
+  // 変更がなければ元のオブジェクトを返す
+  if (!modified.has(base)) {
+    return base
+  }
 
-  cloned.fakeContents.worker = nonCloneableRefs.worker
-  cloned.fakeContents.gainNode = nonCloneableRefs.gainNode
-  cloned.soraContents.sora = nonCloneableRefs.sora
-  cloned.soraContents.localMediaStream = nonCloneableRefs.localMediaStream
-  cloned.mp4MediaStream = nonCloneableRefs.mp4MediaStream
-  cloned.noiseSuppressionProcessor = nonCloneableRefs.noiseSuppressionProcessor
-  cloned.virtualBackgroundProcessor = nonCloneableRefs.virtualBackgroundProcessor
-
-  return cloned
+  // ルートのコピーを返す
+  return (copies.get(base) as T) ?? base
 }
 
-// ヘルパー関数: 状態を更新
+// ヘルパー関数: 状態を更新（Proxy ベースの部分更新）
 function updateStore(updater: (state: SoraDevtoolsState) => void): void {
-  const newState = cloneState(store.value)
-  updater(newState)
-  store.value = newState
+  const newState = produce(store.value, updater)
+  if (newState !== store.value) {
+    store.value = newState
+  }
 }
+
+// === Computed signals for fine-grained reactivity ===
+// よく使われる状態を computed として事前定義
+export const audioEnabled = computed(() => store.value.audio)
+export const videoEnabled = computed(() => store.value.video)
+export const connectionStatus = computed(() => store.value.soraContents.connectionStatus)
+export const localMediaStream = computed(() => store.value.soraContents.localMediaStream)
+export const channelId = computed(() => store.value.channelId)
+export const role = computed(() => store.value.role)
+export const debugEnabled = computed(() => store.value.debug)
+export const debugType = computed(() => store.value.debugType)
+export const alertMessages = computed(() => store.value.alertMessages)
+export const timelineMessages = computed(() => store.value.timelineMessages)
+export const logMessages = computed(() => store.value.logMessages)
+export const notifyMessages = computed(() => store.value.notifyMessages)
+export const pushMessages = computed(() => store.value.pushMessages)
+export const signalingMessages = computed(() => store.value.signalingMessages)
+export const statsReport = computed(() => store.value.soraContents.statsReport)
+export const remoteClients = computed(() => store.value.soraContents.remoteClients)
 
 // アラートメッセージとログメッセージを同時に追加するヘルパー
 function setAlertMessagesAndLogMessages(alertMessage: AlertMessage): void {
