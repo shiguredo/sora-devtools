@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { clearDataChannelMessages } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $dataChannelMessages } from '@/app/store'
 import type { DataChannelMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -59,14 +59,13 @@ const Log = React.memo<DataChannelMessage>((props) => {
 })
 
 export const DataChannelMessagingMessages: React.FC = () => {
-  const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages)
   return (
     <>
       <div className="py-1">
         <ButtonClear />
       </div>
       <div className="debug-messages">
-        {dataChannelMessages.map((message) => {
+        {$dataChannelMessages.value.map((message) => {
           const key = message.label + message.timestamp
           return <Log key={key} {...message} />
         })}

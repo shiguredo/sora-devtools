@@ -1,6 +1,6 @@
 import type React from 'react'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debugFilterText, $timelineMessages } from '@/app/store'
 import type { TimelineMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -85,10 +85,8 @@ const Log: React.FC<TimelineMessage> = (props) => {
 }
 
 export const TimelineMessages: React.FC = () => {
-  const timelineMessages = useSoraDevtoolsStore((state) => state.timelineMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = timelineMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
+  const filteredMessages = $timelineMessages.value.filter((message) => {
+    return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {
         return true
       }

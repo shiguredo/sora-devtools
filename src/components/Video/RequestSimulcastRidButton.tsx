@@ -1,7 +1,7 @@
 import type React from 'react'
 import type { SimulcastRid } from 'sora-js-sdk'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $sora, $connectionStatus } from '@/app/store'
 import { rpc } from '@/rpc'
 
 type SimulcastRequestRid = 'none' | SimulcastRid
@@ -12,11 +12,8 @@ type Props = {
 }
 
 export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== 'connected') {
+    if (!$sora.value || $connectionStatus.value !== 'connected') {
       return
     }
 
@@ -30,7 +27,7 @@ export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
       params.sender_connection_id = props.sendConnectionId
     }
 
-    await rpc(conn, '2025.2.0/RequestSimulcastRid', params, {
+    await rpc($sora.value, '2025.2.0/RequestSimulcastRid', params, {
       notification: false,
       showMethodAlert: true,
     })

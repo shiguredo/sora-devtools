@@ -1,6 +1,6 @@
 import type React from 'react'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debugFilterText, $notifyMessages } from '@/app/store'
 import type { NotifyMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -41,10 +41,8 @@ const Log: React.FC<CollapseNotifyProps> = (props) => {
 }
 
 export const NotifyMessages: React.FC = () => {
-  const notifyMessages = useSoraDevtoolsStore((state) => state.notifyMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = notifyMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
+  const filteredMessages = $notifyMessages.value.filter((message) => {
+    return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {
         return true
       }

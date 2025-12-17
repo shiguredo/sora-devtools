@@ -1,10 +1,9 @@
 import type React from 'react'
 
 import { disconnectSora } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus } from '@/app/store'
 
 export const DisconnectButton: React.FC = () => {
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const disconnect = (): void => {
     disconnectSora()
   }
@@ -17,9 +16,9 @@ export const DisconnectButton: React.FC = () => {
         defaultValue="disconnect"
         onClick={disconnect}
         disabled={
-          connectionStatus === 'disconnecting' ||
-          connectionStatus === 'connecting' ||
-          connectionStatus === 'initializing'
+          $connectionStatus.value === 'disconnecting' ||
+          $connectionStatus.value === 'connecting' ||
+          $connectionStatus.value === 'initializing'
         }
       />
     </div>

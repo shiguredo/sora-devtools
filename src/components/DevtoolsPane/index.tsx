@@ -2,7 +2,39 @@ import type React from 'react'
 import { useState } from 'react'
 import { Col, Collapse, Row } from 'react-bootstrap'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import {
+  $audioContentHint,
+  $autoGainControl,
+  $blurRadius,
+  $debug,
+  $echoCancellation,
+  $echoCancellationType,
+  $enabledAudioStreamingLanguageCode,
+  $enabledBundleId,
+  $enabledClientId,
+  $enabledDataChannel,
+  $enabledDataChannels,
+  $enabledForwardingFilter,
+  $enabledForwardingFilters,
+  $enabledMetadata,
+  $enabledSignalingNotifyMetadata,
+  $enabledSignalingUrlCandidates,
+  $enabledVideoAV1Params,
+  $enabledVideoH264Params,
+  $enabledVideoH265Params,
+  $enabledVideoVP9Params,
+  $forceStereoOutput,
+  $frameRate,
+  $mediaProcessorsNoiseSuppression,
+  $mediaType,
+  $noiseSuppression,
+  $reconnect,
+  $resolution,
+  $role,
+  $simulcast,
+  $spotlight,
+  $videoContentHint,
+} from '@/app/store'
 import { AlertMessages } from '@/components/AlertMessages'
 import { LocalVideo } from '@/components/Video/LocalVideo'
 import { RemoteVideos } from '@/components/Video/RemoteVideos'
@@ -94,8 +126,7 @@ const RowChannelOptions: React.FC = () => {
 }
 
 const RowGetUserMediaConstraints: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const showCodecForms = role !== 'recvonly'
+  const showCodecForms = $role.value !== 'recvonly'
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -133,10 +164,8 @@ const RowGetUserMediaConstraints: React.FC = () => {
 }
 
 const RowSimulcastOptions: React.FC = () => {
-  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
-  const role = useSoraDevtoolsStore((state) => state.role)
   // sendonly の場合は simulcastRequestRid / simulcastRid を表示しない
-  if (simulcast !== 'true' || role === 'sendonly') {
+  if ($simulcast.value !== 'true' || $role.value === 'sendonly') {
     return null
   }
   return (
@@ -152,8 +181,7 @@ const RowSimulcastOptions: React.FC = () => {
 }
 
 const RowSpotlightOptions: React.FC = () => {
-  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
-  if (spotlight !== 'true') {
+  if ($spotlight.value !== 'true') {
     return null
   }
   return (
@@ -173,31 +201,17 @@ const RowSpotlightOptions: React.FC = () => {
 
 const RowSignalingOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId)
-  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId)
-  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
-  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels)
-  const enabledForwardingFilters = useSoraDevtoolsStore((state) => state.enabledForwardingFilters)
-  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter)
-  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata)
-  const enabledSignalingNotifyMetadata = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingNotifyMetadata,
-  )
-  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingUrlCandidates,
-  )
-  const reconnect = useSoraDevtoolsStore((state) => state.reconnect)
   const enabledOptions = [
-    enabledBundleId,
-    enabledClientId,
-    enabledDataChannel,
-    enabledDataChannels,
-    enabledForwardingFilters,
-    enabledForwardingFilter,
-    enabledMetadata,
-    enabledSignalingNotifyMetadata,
-    enabledSignalingUrlCandidates,
-    reconnect,
+    $enabledBundleId.value,
+    $enabledClientId.value,
+    $enabledDataChannel.value,
+    $enabledDataChannels.value,
+    $enabledForwardingFilters.value,
+    $enabledForwardingFilter.value,
+    $enabledMetadata.value,
+    $enabledSignalingNotifyMetadata.value,
+    $enabledSignalingUrlCandidates.value,
+    $reconnect.value,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
@@ -237,30 +251,21 @@ const RowSignalingOptions: React.FC = () => {
 }
 
 const RowAdvancedSignalingOptions: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const showSenderParams = role !== 'recvonly'
-  const showReceiverParams = role !== 'sendonly'
+  const showSenderParams = $role.value !== 'recvonly'
+  const showReceiverParams = $role.value !== 'sendonly'
   const [collapsed, setCollapsed] = useState(true)
-  const enableAudioStreamingLanguageCode = useSoraDevtoolsStore(
-    (state) => state.enabledAudioStreamingLanguageCode,
-  )
-  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params)
-  const enabledVideoH264Params = useSoraDevtoolsStore((state) => state.enabledVideoH264Params)
-  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params)
-  const enabledVideoAV1Params = useSoraDevtoolsStore((state) => state.enabledVideoAV1Params)
-  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput)
   const showOptions = [] as boolean[]
   if (showSenderParams) {
     showOptions.push(
-      enableAudioStreamingLanguageCode,
-      enabledVideoVP9Params,
-      enabledVideoH264Params,
-      enabledVideoH265Params,
-      enabledVideoAV1Params,
+      $enabledAudioStreamingLanguageCode.value,
+      $enabledVideoVP9Params.value,
+      $enabledVideoH264Params.value,
+      $enabledVideoH265Params.value,
+      $enabledVideoAV1Params.value,
     )
   }
   if (showReceiverParams) {
-    showOptions.push(forceStereoOutput)
+    showOptions.push($forceStereoOutput.value)
   }
   const enabledOptions = showOptions.some((e) => e)
   const linkClassNames = ['btn-collapse-options']
@@ -324,29 +329,17 @@ export const RowMediaType: React.FC = () => {
 
 const RowMediaOptions: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true)
-  const audioContentHint = useSoraDevtoolsStore((state) => state.audioContentHint)
-  const autoGainControl = useSoraDevtoolsStore((state) => state.autoGainControl)
-  const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression)
-  const echoCancellation = useSoraDevtoolsStore((state) => state.echoCancellation)
-  const echoCancellationType = useSoraDevtoolsStore((state) => state.echoCancellationType)
-  const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint)
-  const resolution = useSoraDevtoolsStore((state) => state.resolution)
-  const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
-  const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius)
-  const mediaProcessorsNoiseSuppression = useSoraDevtoolsStore(
-    (state) => state.mediaProcessorsNoiseSuppression,
-  )
   const enabledOptions = [
-    audioContentHint !== '',
-    autoGainControl !== '',
-    noiseSuppression !== '',
-    echoCancellation !== '',
-    echoCancellationType !== '',
-    videoContentHint !== '',
-    resolution !== '',
-    frameRate !== '',
-    blurRadius !== '',
-    mediaProcessorsNoiseSuppression,
+    $audioContentHint.value !== '',
+    $autoGainControl.value !== '',
+    $noiseSuppression.value !== '',
+    $echoCancellation.value !== '',
+    $echoCancellationType.value !== '',
+    $videoContentHint.value !== '',
+    $resolution.value !== '',
+    $frameRate.value !== '',
+    $blurRadius.value !== '',
+    $mediaProcessorsNoiseSuppression.value,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
   if (collapsed) {
@@ -420,15 +413,13 @@ const RowMediaOptions: React.FC = () => {
 }
 
 const RowDevices: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
   return (
     <>
       <Row className="form-row" xs="auto">
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
-        {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
+        {$role.value !== 'recvonly' && $mediaType.value === 'getUserMedia' ? (
           <>
             <Col>
               <AudioInputForm />
@@ -440,13 +431,13 @@ const RowDevices: React.FC = () => {
         ) : null}
       </Row>
       <Row className="form-row" xs="auto">
-        {role !== 'sendonly' ? (
+        {$role.value !== 'sendonly' ? (
           <Col>
             <AudioOutputForm />
           </Col>
         ) : null}
         <ReloadDevicesButton />
-        {role !== 'recvonly' ? (
+        {$role.value !== 'recvonly' ? (
           <>
             <RequestMediaButton />
             <DisposeMediaButton />
@@ -458,7 +449,6 @@ const RowDevices: React.FC = () => {
 }
 
 export const RowMediaDevices: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -469,7 +459,7 @@ export const RowMediaDevices: React.FC = () => {
           <MediaStatsForm />
         </Col>
       </Row>
-      {role !== 'recvonly' && (
+      {$role.value !== 'recvonly' && (
         <Row className="form-row" xs="auto">
           <Col>
             <MicDeviceForm />
@@ -490,10 +480,8 @@ export const RowMediaDevices: React.FC = () => {
 }
 
 export const DevtoolsPane: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug)
-  const role = useSoraDevtoolsStore((state) => state.role)
   return (
-    <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
+    <div className={$debug.value ? 'col-devtools col-6' : 'col-devtools col-12'}>
       <AlertMessages />
       <RowChannelOptions />
       <RowSimulcastOptions />
@@ -503,7 +491,7 @@ export const DevtoolsPane: React.FC = () => {
       <RowSignalingOptions />
       <RowAdvancedSignalingOptions />
       <hr className="hr-form" />
-      {role !== 'recvonly' ? (
+      {$role.value !== 'recvonly' ? (
         <>
           <RowMediaType />
           <RowMediaOptions />
@@ -519,7 +507,7 @@ export const DevtoolsPane: React.FC = () => {
       </div>
       <hr className="hr-form" />
       <LocalVideo />
-      {role === 'recvonly' || role === 'sendrecv' ? <RemoteVideos /> : null}
+      {$role.value === 'recvonly' || $role.value === 'sendrecv' ? <RemoteVideos /> : null}
     </div>
   )
 }

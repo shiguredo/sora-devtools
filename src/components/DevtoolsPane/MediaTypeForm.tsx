@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus, $localMediaStream, $mediaType } from '@/app/store'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
@@ -37,10 +37,7 @@ export const MediaTypeForm: React.FC = () => {
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
   const [mountClient, setMountClient] = useState(false)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
+  const disabled = $localMediaStream.value !== null || isFormDisabled($connectionStatus.value)
   const enabledMp4Media = Mp4MediaStream.isSupported()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (checkFormValue(event.target.value, MEDIA_TYPES)) {
@@ -55,21 +52,26 @@ export const MediaTypeForm: React.FC = () => {
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio
         label="getUserMedia"
-        mediaType={mediaType}
+        mediaType={$mediaType.value}
         disabled={disabled}
         onChange={onChange}
       />
       <FormRadio
         label="getDisplayMedia"
-        mediaType={mediaType}
+        mediaType={$mediaType.value}
         disabled={disabled}
         onChange={onChange}
       />
-      <FormRadio label="fakeMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
+      <FormRadio
+        label="fakeMedia"
+        mediaType={$mediaType.value}
+        disabled={disabled}
+        onChange={onChange}
+      />
       {mountClient && (
         <FormRadio
           label="mp4Media"
-          mediaType={mediaType}
+          mediaType={$mediaType.value}
           disabled={disabled || !enabledMp4Media}
           onChange={onChange}
         />

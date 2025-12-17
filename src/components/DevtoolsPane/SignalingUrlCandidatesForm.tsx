@@ -2,18 +2,17 @@ import type React from 'react'
 import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import {
+  $connectionStatus,
+  $enabledSignalingUrlCandidates,
+  $signalingUrlCandidates,
+} from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const SignalingUrlCandidatesForm: React.FC = () => {
-  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingUrlCandidates,
-  )
-  const signalingUrlCandidates = useSoraDevtoolsStore((state) => state.signalingUrlCandidates)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const disabled = isFormDisabled($connectionStatus.value)
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledSignalingUrlCandidates(event.target.checked)
   }
@@ -32,7 +31,7 @@ wss://sora1.example.com/signaling
           <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
             <TooltipFormCheck
               kind="signalingUrlCandidates"
-              checked={enabledSignalingUrlCandidates}
+              checked={$enabledSignalingUrlCandidates.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
@@ -41,7 +40,7 @@ wss://sora1.example.com/signaling
           </FormGroup>
         </Col>
       </Row>
-      {enabledSignalingUrlCandidates ? (
+      {$enabledSignalingUrlCandidates.value ? (
         <Row className="form-row" xs="auto">
           <Col className="col-auto">
             <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
@@ -49,7 +48,7 @@ wss://sora1.example.com/signaling
                 className="flex-fill"
                 as="textarea"
                 placeholder={textareaPlaceholder}
-                value={signalingUrlCandidates.join('\n')}
+                value={$signalingUrlCandidates.value.join('\n')}
                 onChange={onChangeText}
                 rows={5}
                 cols={100}

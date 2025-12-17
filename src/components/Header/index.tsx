@@ -1,19 +1,16 @@
 import type React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus, $sora, $turnUrl } from '@/app/store'
 
 import { CopyUrlButton } from './CopyUrlButton.tsx'
 import { DebugButton } from './DebugButton.tsx'
 import { DownloadReportButton } from './DownloadReportButton.tsx'
 
 export const Header: React.FC = () => {
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const turnUrl = useSoraDevtoolsStore((state) => state.soraContents.turnUrl)
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
   const turnUrlLabel = (() => {
-    if (sora && connectionStatus === 'connected') {
-      return turnUrl !== null ? turnUrl : '不明'
+    if ($sora.value && $connectionStatus.value === 'connected') {
+      return $turnUrl.value !== null ? $turnUrl.value : '不明'
     }
     return 'TURN URL'
   })()
@@ -28,8 +25,8 @@ export const Header: React.FC = () => {
             <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <p className="navbar-signaling-url border rounded">
-                  {sora && connectionStatus === 'connected'
-                    ? sora.connectedSignalingUrl
+                  {$sora.value && $connectionStatus.value === 'connected'
+                    ? $sora.value.connectedSignalingUrl
                     : 'Signaling URL'}
                 </p>
               </Navbar.Text>

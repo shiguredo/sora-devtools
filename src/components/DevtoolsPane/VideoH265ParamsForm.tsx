@@ -2,17 +2,14 @@ import type React from 'react'
 import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoH265Params, setVideoH265Params } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus, $enabledVideoH265Params, $videoH265Params } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
 export const VideoH265ParamsForm: React.FC = () => {
-  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params)
-  const videoH265Params = useSoraDevtoolsStore((state) => state.videoH265Params)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const disabled = isFormDisabled($connectionStatus.value)
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledVideoH265Params(event.target.checked)
   }
@@ -23,7 +20,7 @@ export const VideoH265ParamsForm: React.FC = () => {
           <FormGroup className="form-inline" controlId="enabledVideoH265Params">
             <TooltipFormCheck
               kind="videoH265Params"
-              checked={enabledVideoH265Params}
+              checked={$enabledVideoH265Params.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
@@ -32,13 +29,13 @@ export const VideoH265ParamsForm: React.FC = () => {
           </FormGroup>
         </Col>
       </Row>
-      {enabledVideoH265Params ? (
+      {$enabledVideoH265Params.value ? (
         <Row className="form-row">
           <Col className="col-auto">
             <JSONInputField
               controlId="videoH265Params"
               placeholder="videoH265Paramsを指定"
-              value={videoH265Params}
+              value={$videoH265Params.value}
               setValue={(value) => setVideoH265Params(value)}
               disabled={disabled}
             />

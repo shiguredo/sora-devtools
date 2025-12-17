@@ -1,10 +1,9 @@
 import type React from 'react'
 
 import { connectSora } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus } from '@/app/store'
 
 export const ConnectButton: React.FC = () => {
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   const connect = (): void => {
     connectSora()
   }
@@ -17,9 +16,9 @@ export const ConnectButton: React.FC = () => {
         defaultValue="connect"
         onClick={connect}
         disabled={
-          connectionStatus === 'disconnecting' ||
-          connectionStatus === 'connecting' ||
-          connectionStatus === 'initializing'
+          $connectionStatus.value === 'disconnecting' ||
+          $connectionStatus.value === 'connecting' ||
+          $connectionStatus.value === 'initializing'
         }
       />
     </div>

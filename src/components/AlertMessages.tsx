@@ -3,12 +3,11 @@ import { useEffect } from 'react'
 import { Toast } from 'react-bootstrap'
 
 import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $alertMessages, $reconnecting, $reconnectingTrials } from '@/app/store'
 import type { AlertMessage } from '@/types'
 import { formatUnixtime } from '@/utils'
 
 const Reconnect: React.FC = () => {
-  const reconnectingTrials = useSoraDevtoolsStore((state) => state.soraContents.reconnectingTrials)
   const onClose = (): void => {
     setSoraReconnecting(false)
   }
@@ -22,7 +21,7 @@ const Reconnect: React.FC = () => {
       </Toast.Header>
       <Toast.Body className="bg-light">
         <p className="text-break font-weight-bold mb-0">
-          Reconnecting... (trials {reconnectingTrials})
+          Reconnecting... (trials {$reconnectingTrials.value})
         </p>
       </Toast.Body>
     </Toast>
@@ -48,12 +47,10 @@ const Alert: React.FC<AlertMessage> = (props) => {
 }
 
 export const AlertMessages: React.FC = () => {
-  const alertMessages = useSoraDevtoolsStore((state) => state.alertMessages)
-  const reconnecting = useSoraDevtoolsStore((state) => state.soraContents.reconnecting)
   return (
     <div className="alert-messages">
-      {reconnecting ? <Reconnect /> : null}
-      {alertMessages.map((alertMessage) => {
+      {$reconnecting.value ? <Reconnect /> : null}
+      {$alertMessages.value.map((alertMessage) => {
         return <Alert key={alertMessage.timestamp} {...alertMessage} />
       })}
     </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, FormControl, Row } from 'react-bootstrap'
 
-import { clearApiObjects, setApiObject, setDebugApiUrl, useSoraDevtoolsStore } from '@/app/store'
+import { clearApiObjects, setApiObject, setDebugApiUrl } from '@/app/store'
+import { $apiObjects, $channelId, $connectionId, $debugApiUrl, $sessionId } from '@/app/store'
 import { API_TEMPLATES } from '@/constants'
 import type { ApiObject } from '@/types'
 import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
@@ -45,10 +46,6 @@ const ApiForm: React.FC<ApiFormProps> = ({
   const [replaceConnectionId, setReplaceConnectionId] = useState(true)
   const [replaceSessionId, setReplaceSessionId] = useState(true)
 
-  const channelId = useSoraDevtoolsStore((state) => state.channelId)
-  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId)
-  const sessionId = useSoraDevtoolsStore((state) => state.soraContents.sessionId)
-
   // params の JSON パースエラーをチェック
   useEffect(() => {
     if (params.trim() === '') {
@@ -73,13 +70,13 @@ const ApiForm: React.FC<ApiFormProps> = ({
       if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
         const replaced = { ...parsed }
         if (replaceChannelId && 'channel_id' in replaced) {
-          replaced.channel_id = channelId
+          replaced.channel_id = $channelId.value
         }
-        if (replaceConnectionId && 'connection_id' in replaced && connectionId) {
-          replaced.connection_id = connectionId
+        if (replaceConnectionId && 'connection_id' in replaced && $connectionId.value) {
+          replaced.connection_id = $connectionId.value
         }
-        if (replaceSessionId && 'session_id' in replaced && sessionId) {
-          replaced.session_id = sessionId
+        if (replaceSessionId && 'session_id' in replaced && $sessionId.value) {
+          replaced.session_id = $sessionId.value
         }
         return JSON.stringify(replaced, null, 2)
       }
@@ -109,13 +106,13 @@ const ApiForm: React.FC<ApiFormProps> = ({
         // トップレベルの channel_id, session_id, connection_id を置き換える
         if (parsedParams && typeof parsedParams === 'object' && !Array.isArray(parsedParams)) {
           if (replaceChannelId && 'channel_id' in parsedParams) {
-            parsedParams.channel_id = channelId
+            parsedParams.channel_id = $channelId.value
           }
-          if (replaceSessionId && 'session_id' in parsedParams && sessionId) {
-            parsedParams.session_id = sessionId
+          if (replaceSessionId && 'session_id' in parsedParams && $sessionId.value) {
+            parsedParams.session_id = $sessionId.value
           }
-          if (replaceConnectionId && 'connection_id' in parsedParams && connectionId) {
-            parsedParams.connection_id = connectionId
+          if (replaceConnectionId && 'connection_id' in parsedParams && $connectionId.value) {
+            parsedParams.connection_id = $connectionId.value
           }
         }
       } catch (error) {
@@ -545,8 +542,6 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
 }
 
 export const Api: React.FC = () => {
-  const apiObjects = useSoraDevtoolsStore((state) => state.apiObjects)
-  const url = useSoraDevtoolsStore((state) => state.debugApiUrl)
   const setUrl = (value: string): void => {
     setDebugApiUrl(value)
   }
@@ -695,7 +690,7 @@ export const Api: React.FC = () => {
         </div>
       )}
       <ApiForm
-        url={url}
+        url={$debugApiUrl.value}
         setUrl={setUrl}
         selectedMethod={selectedMethod}
         params={params}
@@ -703,17 +698,19 @@ export const Api: React.FC = () => {
         setShowModal={setShowModal}
         buttonRef={buttonRef}
       />
-      {apiObjects.length > 0 && (
+      {$apiObjects.value.length > 0 && (
         <>
           <div className="py-1">
             <h5>API Results</h5>
             <div className="d-flex justify-content-between align-items-center mb-2">
               <ClearButton />
-              <div style={{ color: '#aaa', fontSize: '0.85rem' }}>{apiObjects.length} 件を表示</div>
+              <div style={{ color: '#aaa', fontSize: '0.85rem' }}>
+                {$apiObjects.value.length} 件を表示
+              </div>
             </div>
           </div>
           <div style={{ overflowY: 'scroll', flex: 1 }}>
-            {apiObjects.map((apiObject, index) => {
+            {$apiObjects.value.map((apiObject, index) => {
               const key = `${apiObject.timestamp}-${index}`
               return <ApiObjectItem key={key} apiObject={apiObject} onReuse={handleReuse} />
             })}

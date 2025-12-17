@@ -2,16 +2,14 @@ import type React from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoCodecType } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus, $videoCodecType } from '@/app/store'
 import { VIDEO_CODEC_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 export const VideoCodecTypeForm: React.FC = () => {
-  const videoCodecType = useSoraDevtoolsStore((state) => state.videoCodecType)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const disabled = isFormDisabled($connectionStatus.value)
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, VIDEO_CODEC_TYPES)) {
       setVideoCodecType(event.target.value)
@@ -22,7 +20,7 @@ export const VideoCodecTypeForm: React.FC = () => {
       <TooltipFormLabel kind="videoCodecType">videoCodecType:</TooltipFormLabel>
       <FormSelect
         name="videoCodecType"
-        value={videoCodecType}
+        value={$videoCodecType.value}
         onChange={onChange}
         disabled={disabled}
       >

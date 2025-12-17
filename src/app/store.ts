@@ -234,23 +234,148 @@ function updateStore(updater: (state: SoraDevtoolsState) => void): void {
 }
 
 // === Computed signals for fine-grained reactivity ===
-// よく使われる状態を computed として事前定義
-export const audioEnabled = computed(() => store.value.audio)
-export const videoEnabled = computed(() => store.value.video)
-export const connectionStatus = computed(() => store.value.soraContents.connectionStatus)
-export const localMediaStream = computed(() => store.value.soraContents.localMediaStream)
-export const channelId = computed(() => store.value.channelId)
-export const role = computed(() => store.value.role)
-export const debugEnabled = computed(() => store.value.debug)
-export const debugType = computed(() => store.value.debugType)
-export const alertMessages = computed(() => store.value.alertMessages)
-export const timelineMessages = computed(() => store.value.timelineMessages)
-export const logMessages = computed(() => store.value.logMessages)
-export const notifyMessages = computed(() => store.value.notifyMessages)
-export const pushMessages = computed(() => store.value.pushMessages)
-export const signalingMessages = computed(() => store.value.signalingMessages)
-export const statsReport = computed(() => store.value.soraContents.statsReport)
-export const remoteClients = computed(() => store.value.soraContents.remoteClients)
+// すべての状態を computed として定義
+
+// 基本設定
+export const $audio = computed(() => store.value.audio)
+export const $video = computed(() => store.value.video)
+export const $channelId = computed(() => store.value.channelId)
+export const $role = computed(() => store.value.role)
+export const $simulcast = computed(() => store.value.simulcast)
+export const $spotlight = computed(() => store.value.spotlight)
+export const $reconnect = computed(() => store.value.reconnect)
+export const $mediaType = computed(() => store.value.mediaType)
+
+// Audio 設定
+export const $audioCodecType = computed(() => store.value.audioCodecType)
+export const $audioBitRate = computed(() => store.value.audioBitRate)
+export const $audioContentHint = computed(() => store.value.audioContentHint)
+export const $autoGainControl = computed(() => store.value.autoGainControl)
+export const $noiseSuppression = computed(() => store.value.noiseSuppression)
+export const $echoCancellation = computed(() => store.value.echoCancellation)
+export const $echoCancellationType = computed(() => store.value.echoCancellationType)
+
+// Video 設定
+export const $videoCodecType = computed(() => store.value.videoCodecType)
+export const $videoBitRate = computed(() => store.value.videoBitRate)
+export const $videoContentHint = computed(() => store.value.videoContentHint)
+export const $resolution = computed(() => store.value.resolution)
+export const $frameRate = computed(() => store.value.frameRate)
+export const $aspectRatio = computed(() => store.value.aspectRatio)
+export const $resizeMode = computed(() => store.value.resizeMode)
+export const $facingMode = computed(() => store.value.facingMode)
+export const $blurRadius = computed(() => store.value.blurRadius)
+export const $displayResolution = computed(() => store.value.displayResolution)
+
+// Video codec params
+export const $videoVP9Params = computed(() => store.value.videoVP9Params)
+export const $videoH264Params = computed(() => store.value.videoH264Params)
+export const $videoH265Params = computed(() => store.value.videoH265Params)
+export const $videoAV1Params = computed(() => store.value.videoAV1Params)
+export const $enabledVideoVP9Params = computed(() => store.value.enabledVideoVP9Params)
+export const $enabledVideoH264Params = computed(() => store.value.enabledVideoH264Params)
+export const $enabledVideoH265Params = computed(() => store.value.enabledVideoH265Params)
+export const $enabledVideoAV1Params = computed(() => store.value.enabledVideoAV1Params)
+
+// デバイス
+export const $audioInput = computed(() => store.value.audioInput)
+export const $audioOutput = computed(() => store.value.audioOutput)
+export const $videoInput = computed(() => store.value.videoInput)
+export const $audioInputDevices = computed(() => store.value.audioInputDevices)
+export const $audioOutputDevices = computed(() => store.value.audioOutputDevices)
+export const $videoInputDevices = computed(() => store.value.videoInputDevices)
+
+// トラック・デバイス有効化
+export const $audioTrack = computed(() => store.value.audioTrack)
+export const $videoTrack = computed(() => store.value.videoTrack)
+export const $micDevice = computed(() => store.value.micDevice)
+export const $cameraDevice = computed(() => store.value.cameraDevice)
+export const $mute = computed(() => store.value.mute)
+
+// シグナリングオプション
+export const $clientId = computed(() => store.value.clientId)
+export const $bundleId = computed(() => store.value.bundleId)
+export const $metadata = computed(() => store.value.metadata)
+export const $signalingNotifyMetadata = computed(() => store.value.signalingNotifyMetadata)
+export const $signalingUrlCandidates = computed(() => store.value.signalingUrlCandidates)
+export const $dataChannelSignaling = computed(() => store.value.dataChannelSignaling)
+export const $dataChannels = computed(() => store.value.dataChannels)
+export const $ignoreDisconnectWebSocket = computed(() => store.value.ignoreDisconnectWebSocket)
+export const $forwardingFilters = computed(() => store.value.forwardingFilters)
+export const $forwardingFilter = computed(() => store.value.forwardingFilter)
+
+// シグナリングオプション有効化フラグ
+export const $enabledClientId = computed(() => store.value.enabledClientId)
+export const $enabledBundleId = computed(() => store.value.enabledBundleId)
+export const $enabledMetadata = computed(() => store.value.enabledMetadata)
+export const $enabledSignalingNotifyMetadata = computed(
+  () => store.value.enabledSignalingNotifyMetadata,
+)
+export const $enabledSignalingUrlCandidates = computed(
+  () => store.value.enabledSignalingUrlCandidates,
+)
+export const $enabledDataChannel = computed(() => store.value.enabledDataChannel)
+export const $enabledDataChannels = computed(() => store.value.enabledDataChannels)
+export const $enabledForwardingFilters = computed(() => store.value.enabledForwardingFilters)
+export const $enabledForwardingFilter = computed(() => store.value.enabledForwardingFilter)
+
+// Simulcast/Spotlight 設定
+export const $simulcastRid = computed(() => store.value.simulcastRid)
+export const $simulcastRequestRid = computed(() => store.value.simulcastRequestRid)
+export const $spotlightNumber = computed(() => store.value.spotlightNumber)
+export const $spotlightFocusRid = computed(() => store.value.spotlightFocusRid)
+export const $spotlightUnfocusRid = computed(() => store.value.spotlightUnfocusRid)
+
+// Fake media
+export const $fakeVolume = computed(() => store.value.fakeVolume)
+
+// デバッグ
+export const $debug = computed(() => store.value.debug)
+export const $debugType = computed(() => store.value.debugType)
+export const $debugFilterText = computed(() => store.value.debugFilterText)
+export const $debugApiUrl = computed(() => store.value.debugApiUrl)
+
+// メッセージ
+export const $alertMessages = computed(() => store.value.alertMessages)
+export const $timelineMessages = computed(() => store.value.timelineMessages)
+export const $logMessages = computed(() => store.value.logMessages)
+export const $notifyMessages = computed(() => store.value.notifyMessages)
+export const $pushMessages = computed(() => store.value.pushMessages)
+export const $signalingMessages = computed(() => store.value.signalingMessages)
+export const $dataChannelMessages = computed(() => store.value.dataChannelMessages)
+export const $rpcObjects = computed(() => store.value.rpcObjects)
+export const $apiObjects = computed(() => store.value.apiObjects)
+
+// Sora 接続状態
+export const $connectionStatus = computed(() => store.value.soraContents.connectionStatus)
+export const $sora = computed(() => store.value.soraContents.sora)
+export const $connectionId = computed(() => store.value.soraContents.connectionId)
+export const $soraClientId = computed(() => store.value.soraContents.clientId)
+export const $sessionId = computed(() => store.value.soraContents.sessionId)
+export const $localMediaStream = computed(() => store.value.soraContents.localMediaStream)
+export const $remoteClients = computed(() => store.value.soraContents.remoteClients)
+export const $statsReport = computed(() => store.value.soraContents.statsReport)
+export const $prevStatsReport = computed(() => store.value.soraContents.prevStatsReport)
+export const $soraDataChannels = computed(() => store.value.soraContents.dataChannels)
+export const $turnUrl = computed(() => store.value.soraContents.turnUrl)
+export const $reconnecting = computed(() => store.value.soraContents.reconnecting)
+export const $reconnectingTrials = computed(() => store.value.soraContents.reconnectingTrials)
+
+// その他
+export const $showStats = computed(() => store.value.showStats)
+export const $mediaStats = computed(() => store.value.mediaStats)
+export const $version = computed(() => store.value.version)
+export const $forceStereoOutput = computed(() => store.value.forceStereoOutput)
+export const $mediaProcessorsNoiseSuppression = computed(
+  () => store.value.mediaProcessorsNoiseSuppression,
+)
+export const $audioStreamingLanguageCode = computed(() => store.value.audioStreamingLanguageCode)
+export const $enabledAudioStreamingLanguageCode = computed(
+  () => store.value.enabledAudioStreamingLanguageCode,
+)
+export const $focusedSpotlightConnectionIds = computed(
+  () => store.value.focusedSpotlightConnectionIds,
+)
 
 // アラートメッセージとログメッセージを同時に追加するヘルパー
 function setAlertMessagesAndLogMessages(alertMessage: AlertMessage): void {
@@ -1125,14 +1250,8 @@ export const setForceStereoOutput = (
   })
 }
 
-// Zustand 互換の getState 関数
+// getState 関数
 export const getState = (): SoraDevtoolsState => store.value
-
-// Zustand 互換の useSoraDevtoolsStore フック
-// @preact/signals では signal.value をコンポーネント内でアクセスすると自動的に再レンダリングされる
-export function useSoraDevtoolsStore<T>(selector: (state: SoraDevtoolsState) => T): T {
-  return selector(store.value)
-}
 
 // 型エクスポート
 export type RootState = SoraDevtoolsState

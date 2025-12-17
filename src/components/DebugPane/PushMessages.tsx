@@ -1,6 +1,6 @@
 import type React from 'react'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debugFilterText, $pushMessages } from '@/app/store'
 import type { PushMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -38,10 +38,8 @@ const Log: React.FC<CollapsePushProps> = (props) => {
 }
 
 export const PushMessages: React.FC = () => {
-  const pushMessages = useSoraDevtoolsStore((state) => state.pushMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = pushMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
+  const filteredMessages = $pushMessages.value.filter((message) => {
+    return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {
         return true
       }

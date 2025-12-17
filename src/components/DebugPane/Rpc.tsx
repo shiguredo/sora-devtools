@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react-bootstrap'
 
-import { clearRpcObjects, useSoraDevtoolsStore } from '@/app/store'
+import { clearRpcObjects } from '@/app/store'
+import { $connectionStatus, $rpcObjects, $sora } from '@/app/store'
 import { RPC_TEMPLATES } from '@/constants'
 import { rpc } from '@/rpc'
 import type { RpcObject } from '@/types'
@@ -32,10 +33,9 @@ const RpcForm: React.FC = () => {
   const [params, setParams] = useState('')
   const [paramsHasError, setParamsHasError] = useState(false)
 
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
   // rpcMethods は sora-js-sdk 2025.2.0 以降で利用可能
-  const rpcMethods: string[] = (conn as unknown as { rpcMethods?: string[] })?.rpcMethods ?? []
+  const rpcMethods: string[] =
+    ($sora.value as unknown as { rpcMethods?: string[] })?.rpcMethods ?? []
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
@@ -52,7 +52,12 @@ const RpcForm: React.FC = () => {
   }, [params])
 
   const handleCallRpc = async (): Promise<void> => {
-    if (!methodRef.current || !timeoutRef.current || !conn || connectionStatus !== 'connected') {
+    if (
+      !methodRef.current ||
+      !timeoutRef.current ||
+      !$sora.value ||
+      $connectionStatus.value !== 'connected'
+    ) {
       return
     }
 
@@ -81,7 +86,7 @@ const RpcForm: React.FC = () => {
       options.notification = true
     }
 
-    await rpc(conn, method, parsedParams, options)
+    await rpc($sora.value, method, parsedParams, options)
   }
 
   return (
@@ -174,7 +179,7 @@ const RpcForm: React.FC = () => {
         <Button
           variant="secondary"
           onClick={handleCallRpc}
-          disabled={connectionStatus !== 'connected' || paramsHasError}
+          disabled={$connectionStatus.value !== 'connected' || paramsHasError}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
           Call
@@ -279,22 +284,20 @@ const RpcObjectItem: React.FC<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
 }
 
 export const Rpc: React.FC = () => {
-  const rpcObjects = useSoraDevtoolsStore((state) => state.rpcObjects)
-
   return (
     <>
       <RpcForm />
-      {rpcObjects.length > 0 && (
+      {$rpcObjects.value.length > 0 && (
         <>
           <div className="py-1 mt-3">
             <h5>RPC Results</h5>
             <div className="mb-2" style={{ color: '#aaa', fontSize: '0.85rem' }}>
-              {rpcObjects.length} 件を表示
+              {$rpcObjects.value.length} 件を表示
             </div>
             <ClearButton />
           </div>
           <div>
-            {rpcObjects.map((rpcObject, index) => {
+            {$rpcObjects.value.map((rpcObject, index) => {
               const key = `${rpcObject.timestamp}-${index}`
               return <RpcObjectItem key={key} rpcObject={rpcObject} />
             })}

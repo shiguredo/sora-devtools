@@ -1,15 +1,14 @@
 import type React from 'react'
 
 import { setDebug } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debug } from '@/app/store'
 
 export const DebugButton: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug)
   const onClick = (): void => {
-    setDebug(!debug)
+    setDebug(!$debug.value)
   }
   const classNames = ['btn', 'btn-light', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
-  if (debug) {
+  if ($debug.value) {
     classNames.push('active')
   }
   return (

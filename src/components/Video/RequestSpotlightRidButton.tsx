@@ -3,18 +3,16 @@ import { useRef } from 'react'
 import { FormGroup, FormSelect } from 'react-bootstrap'
 import type { SpotlightFocusRid } from 'sora-js-sdk'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $sora, $connectionStatus } from '@/app/store'
 import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
 import { rpc } from '@/rpc'
 
 export const RequestSpotlightRidButton: React.FC = () => {
   const focusRidRef = useRef<HTMLSelectElement>(null)
   const unfocusRidRef = useRef<HTMLSelectElement>(null)
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== 'connected') {
+    if (!$sora.value || $connectionStatus.value !== 'connected') {
       return
     }
     if (focusRidRef.current === null || unfocusRidRef.current === null) {
@@ -24,7 +22,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
     const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid
 
     await rpc(
-      conn,
+      $sora.value,
       '2025.2.0/RequestSpotlightRid',
       {
         spotlight_focus_rid: focusRid,
@@ -34,7 +32,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
     )
   }
 
-  if (!conn?.connectionId) {
+  if (!$sora.value?.connectionId) {
     return null
   }
 

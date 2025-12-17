@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useMemo } from 'react'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debugFilterText, $prevStatsReport, $statsReport } from '@/app/store'
 
 import { Message } from './Message.tsx'
 
@@ -30,18 +30,14 @@ const Log: React.FC<CollapseProps> = (props) => {
 }
 
 export const Stats: React.FC = () => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
-  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-
   // prevStatsReport を Map 化して O(1) で参照できるようにする
   const prevStatsMap = useMemo(
-    () => new Map(prevStatsReport.map((stats) => [stats.id, stats])),
-    [prevStatsReport],
+    () => new Map($prevStatsReport.value.map((stats) => [stats.id, stats])),
+    [$prevStatsReport.value],
   )
 
-  const filteredMessages = statsReport.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
+  const filteredMessages = $statsReport.value.filter((message) => {
+    return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {
         return true
       }

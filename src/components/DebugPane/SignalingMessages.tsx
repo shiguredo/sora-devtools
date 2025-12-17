@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debugFilterText, $signalingMessages } from '@/app/store'
 import type { SignalingMessage } from '@/types'
 
 import { Message } from './Message.tsx'
@@ -31,10 +31,8 @@ const Log = React.memo<SignalingMessage>((props) => {
 })
 
 export const SignalingMessages: React.FC = () => {
-  const signalingMessages = useSoraDevtoolsStore((state) => state.signalingMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = signalingMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
+  const filteredMessages = $signalingMessages.value.filter((message) => {
+    return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {
         return true
       }
