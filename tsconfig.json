@@ -2,7 +2,8 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
@@ -24,7 +25,9 @@
     // プロパティの初期化を厳密にチェックする
     "strictPropertyInitialization": true,
     "types": ["vitest/globals"],
-    "paths": {"@/*": ["./src/*"]},
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true
   },

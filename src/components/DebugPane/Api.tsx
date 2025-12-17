@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, FormControl, Row } from 'react-bootstrap'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { clearApiObjects, setApiObject, setDebugApiUrl, useSoraDevtoolsStore } from '@/app/store'
 import { API_TEMPLATES } from '@/constants'
 import type { ApiObject } from '@/types'
 import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
@@ -10,7 +10,7 @@ import { JsonTree } from './JsonTree.tsx'
 
 const ClearButton = React.memo(() => {
   const onClick = (): void => {
-    useSoraDevtoolsStore.getState().clearApiObjects()
+    clearApiObjects()
   }
   return (
     <Button variant="danger" onClick={onClick}>
@@ -173,7 +173,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         responseBody = await response.text()
       }
 
-      useSoraDevtoolsStore.getState().setApiObject({
+      setApiObject({
         timestamp,
         url: urlValue,
         method: selectedMethod,
@@ -206,7 +206,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         errorMessage = error
       }
 
-      useSoraDevtoolsStore.getState().setApiObject({
+      setApiObject({
         timestamp,
         url: urlValue,
         method: selectedMethod,
@@ -548,7 +548,7 @@ export const Api: React.FC = () => {
   const apiObjects = useSoraDevtoolsStore((state) => state.apiObjects)
   const url = useSoraDevtoolsStore((state) => state.debugApiUrl)
   const setUrl = (value: string): void => {
-    useSoraDevtoolsStore.getState().setDebugApiUrl(value)
+    setDebugApiUrl(value)
   }
   const [selectedMethod, setSelectedMethod] = useState('')
   const [params, setParams] = useState('')

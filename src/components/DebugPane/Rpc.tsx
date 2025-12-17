@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react-bootstrap'
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { clearRpcObjects, useSoraDevtoolsStore } from '@/app/store'
 import { RPC_TEMPLATES } from '@/constants'
 import { rpc } from '@/rpc'
 import type { RpcObject } from '@/types'
@@ -11,7 +11,7 @@ import { JsonTree } from './JsonTree.tsx'
 
 const ClearButton = React.memo(() => {
   const onClick = (): void => {
-    useSoraDevtoolsStore.getState().clearRpcObjects()
+    clearRpcObjects()
   }
   return (
     <input
