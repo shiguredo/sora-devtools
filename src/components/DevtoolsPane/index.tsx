@@ -1,5 +1,5 @@
+import { useSignal } from '@preact/signals'
 import type React from 'react'
-import { useState } from 'react'
 import { Col, Collapse, Row } from 'react-bootstrap'
 
 import {
@@ -200,7 +200,7 @@ const RowSpotlightOptions: React.FC = () => {
 }
 
 const RowSignalingOptions: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(true)
+  const collapsed = useSignal(true)
   const enabledOptions = [
     $enabledBundleId.value,
     $enabledClientId.value,
@@ -214,7 +214,7 @@ const RowSignalingOptions: React.FC = () => {
     $reconnect.value,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
-  if (collapsed) {
+  if (collapsed.value) {
     linkClassNames.push('collapsed')
   }
   if (enabledOptions) {
@@ -222,7 +222,7 @@ const RowSignalingOptions: React.FC = () => {
   }
   const onClick = (event: React.MouseEvent): void => {
     event.preventDefault()
-    setCollapsed(!collapsed)
+    collapsed.value = !collapsed.value
   }
   return (
     <Row className="form-row">
@@ -232,7 +232,7 @@ const RowSignalingOptions: React.FC = () => {
           Signaling options
         </a>
       </Col>
-      <Collapse in={!collapsed}>
+      <Collapse in={!collapsed.value}>
         <div>
           <ReconnectForm />
           <ClientIdForm />
@@ -253,7 +253,7 @@ const RowSignalingOptions: React.FC = () => {
 const RowAdvancedSignalingOptions: React.FC = () => {
   const showSenderParams = $role.value !== 'recvonly'
   const showReceiverParams = $role.value !== 'sendonly'
-  const [collapsed, setCollapsed] = useState(true)
+  const collapsed = useSignal(true)
   const showOptions = [] as boolean[]
   if (showSenderParams) {
     showOptions.push(
@@ -269,7 +269,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   }
   const enabledOptions = showOptions.some((e) => e)
   const linkClassNames = ['btn-collapse-options']
-  if (collapsed) {
+  if (collapsed.value) {
     linkClassNames.push('collapsed')
   }
   if (enabledOptions) {
@@ -277,7 +277,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   }
   const onClick = (event: React.MouseEvent): void => {
     event.preventDefault()
-    setCollapsed(!collapsed)
+    collapsed.value = !collapsed.value
   }
   return (
     <Row className="form-row">
@@ -287,7 +287,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
           Advanced signaling options
         </a>
       </Col>
-      <Collapse in={!collapsed}>
+      <Collapse in={!collapsed.value}>
         <div>
           {showSenderParams && (
             <>
@@ -328,7 +328,7 @@ export const RowMediaType: React.FC = () => {
 }
 
 const RowMediaOptions: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(true)
+  const collapsed = useSignal(true)
   const enabledOptions = [
     $audioContentHint.value !== '',
     $autoGainControl.value !== '',
@@ -342,7 +342,7 @@ const RowMediaOptions: React.FC = () => {
     $mediaProcessorsNoiseSuppression.value,
   ].some((e) => e)
   const linkClassNames = ['btn-collapse-options']
-  if (collapsed) {
+  if (collapsed.value) {
     linkClassNames.push('collapsed')
   }
   if (enabledOptions) {
@@ -350,7 +350,7 @@ const RowMediaOptions: React.FC = () => {
   }
   const onClick = (event: React.MouseEvent): void => {
     event.preventDefault()
-    setCollapsed(!collapsed)
+    collapsed.value = !collapsed.value
   }
   return (
     <Row className="form-row">
@@ -360,7 +360,7 @@ const RowMediaOptions: React.FC = () => {
           Media options
         </a>
       </Col>
-      <Collapse in={!collapsed}>
+      <Collapse in={!collapsed.value}>
         <div>
           <Row className="form-row">
             <Col className="col-auto">

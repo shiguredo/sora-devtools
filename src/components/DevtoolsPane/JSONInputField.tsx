@@ -1,5 +1,6 @@
+import { useSignal } from '@preact/signals'
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button, FormControl, FormGroup } from 'react-bootstrap'
 
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
@@ -35,26 +36,26 @@ export const JSONInputField = ({
   rows,
   cols,
 }: JSONInputFieldProps) => {
-  const [invalidJsonString, setInvalidJsonString] = useState(false)
+  const invalidJsonString = useSignal(false)
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setValue(event.target.value)
   }
   useEffect(() => {
     if (value === '') {
-      setInvalidJsonString(false)
+      invalidJsonString.value = false
       return
     }
     try {
       JSON.parse(value)
-      setInvalidJsonString(false)
+      invalidJsonString.value = false
     } catch {
-      setInvalidJsonString(true)
+      invalidJsonString.value = true
     }
-  }, [value])
+  }, [value, invalidJsonString])
   return (
     <FormGroup className="form-inline position-relative" controlId={controlId}>
       <FormControl
-        className={invalidJsonString ? 'flex-fill invalid-json' : 'flex-fill'}
+        className={invalidJsonString.value ? 'flex-fill invalid-json' : 'flex-fill'}
         as="textarea"
         placeholder={placeholder}
         value={value}
@@ -70,7 +71,7 @@ export const JSONInputField = ({
           variant="light"
           size="sm"
           onClick={() => prettyFormat(value, setValue)}
-          disabled={invalidJsonString}
+          disabled={invalidJsonString.value}
         >
           pretty format
         </Button>

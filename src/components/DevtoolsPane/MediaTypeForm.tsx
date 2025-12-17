@@ -1,5 +1,6 @@
+import { useSignal } from '@preact/signals'
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
@@ -36,7 +37,7 @@ export const MediaTypeForm: React.FC = () => {
   // NOTE(yuito): window.CropTarget の有無のみで radio の表示/非表示を切り替えると
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
-  const [mountClient, setMountClient] = useState(false)
+  const mountClient = useSignal(false)
   const disabled = $localMediaStream.value !== null || isFormDisabled($connectionStatus.value)
   const enabledMp4Media = Mp4MediaStream.isSupported()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -45,8 +46,8 @@ export const MediaTypeForm: React.FC = () => {
     }
   }
   useEffect(() => {
-    setMountClient(true)
-  }, [])
+    mountClient.value = true
+  }, [mountClient])
   return (
     <FormGroup className="form-inline flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
@@ -68,7 +69,7 @@ export const MediaTypeForm: React.FC = () => {
         disabled={disabled}
         onChange={onChange}
       />
-      {mountClient && (
+      {mountClient.value && (
         <FormRadio
           label="mp4Media"
           mediaType={$mediaType.value}

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useSignal } from '@preact/signals'
+import React, { useEffect, useRef } from 'react'
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react-bootstrap'
 
 import { clearRpcObjects } from '@/app/store'
@@ -28,10 +29,10 @@ const ClearButton = React.memo(() => {
 const RpcForm: React.FC = () => {
   const methodRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<HTMLInputElement>(null)
-  const [notification, setNotification] = useState(false)
-  const [method, setMethod] = useState('')
-  const [params, setParams] = useState('')
-  const [paramsHasError, setParamsHasError] = useState(false)
+  const notification = useSignal(false)
+  const method = useSignal('')
+  const params = useSignal('')
+  const paramsHasError = useSignal(false)
 
   // rpcMethods は sora-js-sdk 2025.2.0 以降で利用可能
   const rpcMethods: string[] =
@@ -39,17 +40,17 @@ const RpcForm: React.FC = () => {
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
-    if (params.trim() === '') {
-      setParamsHasError(false)
+    if (params.value.trim() === '') {
+      paramsHasError.value = false
       return
     }
     try {
-      JSON.parse(params)
-      setParamsHasError(false)
+      JSON.parse(params.value)
+      paramsHasError.value = false
     } catch {
-      setParamsHasError(true)
+      paramsHasError.value = true
     }
-  }, [params])
+  }, [params.value, paramsHasError])
 
   const handleCallRpc = async (): Promise<void> => {
     if (
@@ -67,7 +68,7 @@ const RpcForm: React.FC = () => {
     }
 
     let parsedParams: Record<string, unknown> | undefined
-    const paramsText = params.trim()
+    const paramsText = params.value.trim()
     if (paramsText) {
       try {
         parsedParams = JSON.parse(paramsText)
@@ -82,7 +83,7 @@ const RpcForm: React.FC = () => {
     if (!Number.isNaN(timeoutValue) && timeoutValue > 0) {
       options.timeout = timeoutValue
     }
-    if (notification) {
+    if (notification.value) {
       options.notification = true
     }
 
@@ -101,8 +102,10 @@ const RpcForm: React.FC = () => {
               type="text"
               placeholder="method name"
               ref={methodRef}
-              value={method}
-              onChange={(e) => setMethod(e.target.value)}
+              value={method.value}
+              onChange={(e) => {
+                method.value = e.target.value
+              }}
             />
             <DropdownButton variant="outline-secondary" title="" align="end">
               {RPC_TEMPLATES.map((template) => {
@@ -112,12 +115,12 @@ const RpcForm: React.FC = () => {
                     key={template.method}
                     as="button"
                     onClick={() => {
-                      setMethod(template.method)
+                      method.value = template.method
                       if (methodRef.current) {
                         methodRef.current.value = template.method
                       }
                       if (template.params) {
-                        setParams(JSON.stringify(template.params, null, 2))
+                        params.value = JSON.stringify(template.params, null, 2)
                       }
                     }}
                     style={isAvailable ? { color: '#0071bc', fontWeight: 'bold' } : undefined}
@@ -139,8 +142,10 @@ const RpcForm: React.FC = () => {
               className="form-check-input"
               type="checkbox"
               id="rpcNotificationCheck"
-              checked={notification}
-              onChange={(e) => setNotification(e.target.checked)}
+              checked={notification.value}
+              onChange={(e) => {
+                notification.value = e.target.checked
+              }}
             />
             <label
               className="form-check-label"
@@ -167,8 +172,10 @@ const RpcForm: React.FC = () => {
         <JSONInputField
           controlId="rpcParams"
           placeholder='{"key": "value"} or ["value1", "value2"]'
-          value={params}
-          setValue={setParams}
+          value={params.value}
+          setValue={(v) => {
+            params.value = v
+          }}
           disabled={false}
           rows={6}
           cols={80}
@@ -179,7 +186,7 @@ const RpcForm: React.FC = () => {
         <Button
           variant="secondary"
           onClick={handleCallRpc}
-          disabled={$connectionStatus.value !== 'connected' || paramsHasError}
+          disabled={$connectionStatus.value !== 'connected' || paramsHasError.value}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
           Call

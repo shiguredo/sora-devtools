@@ -1,4 +1,5 @@
-import React, { type JSX, useState } from 'react'
+import { useSignal } from '@preact/signals'
+import React, { type JSX } from 'react'
 import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
@@ -60,7 +61,7 @@ type Props = {
 }
 export const Message = React.memo<Props>((props) => {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props
-  const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow)
+  const show = useSignal(defaultShow === undefined ? false : defaultShow)
   const ariaControls = timestamp ? title + timestamp : title
   const disabled = description === undefined
   return (
@@ -69,11 +70,15 @@ export const Message = React.memo<Props>((props) => {
         <button
           type="button"
           className={`debug-title ${disabled ? 'disabled' : ''}`}
-          onClick={() => setShow(!show)}
+          onClick={() => {
+            show.value = !show.value
+          }}
           aria-controls={ariaControls}
-          aria-expanded={show}
+          aria-expanded={show.value}
         >
-          <i className={`${show ? 'arrow-bottom' : 'arrow-right'} ${disabled ? 'disabled' : ''}`} />{' '}
+          <i
+            className={`${show.value ? 'arrow-bottom' : 'arrow-right'} ${disabled ? 'disabled' : ''}`}
+          />{' '}
           {timestamp ? (
             <span className="text-white-50 me-1">[{formatUnixtime(timestamp)}]</span>
           ) : null}
@@ -89,7 +94,7 @@ export const Message = React.memo<Props>((props) => {
           />
         </div>
       </div>
-      <Collapse in={show}>
+      <Collapse in={show.value}>
         <div className="border-top">
           <Description
             description={description}

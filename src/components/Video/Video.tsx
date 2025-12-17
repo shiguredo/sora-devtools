@@ -1,4 +1,5 @@
-import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react'
+import type { Signal } from '@preact/signals'
+import React, { useEffect, useRef } from 'react'
 
 import type { CustomHTMLVideoElement, SoraDevtoolsState } from '@/types'
 import { getVideoSizeByResolution } from '@/utils'
@@ -9,17 +10,17 @@ type VideoProps = {
   stream: MediaStream | null
   mute: boolean
   audioOutput: string
-  setHeight: Dispatch<SetStateAction<number>>
+  height: Signal<number>
 }
 const VideoElement = React.memo<VideoProps>((props) => {
-  const { displayResolution, stream, mute, audioOutput, setHeight } = props
+  const { displayResolution, stream, mute, audioOutput, height } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       entries.forEach((entry) => {
-        setHeight(entry.contentRect.height)
+        height.value = entry.contentRect.height
       })
     })
     if (videoRef.current) {
@@ -31,7 +32,7 @@ const VideoElement = React.memo<VideoProps>((props) => {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [setHeight, audioOutput, stream])
+  }, [height, audioOutput, stream])
 
   useEffect(() => {
     if (videoRef.current && mute) {

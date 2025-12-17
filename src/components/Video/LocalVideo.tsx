@@ -1,5 +1,5 @@
+import { useSignal } from '@preact/signals'
 import type React from 'react'
-import { useState } from 'react'
 
 import {
   $audio,
@@ -29,7 +29,7 @@ import { Video } from './Video.tsx'
 import { VolumeVisualizer } from './VolumeVisualizer.tsx'
 
 const VideoBox: React.FC = () => {
-  const [height, setHeight] = useState<number>(0)
+  const height = useSignal(0)
   const focused =
     $connectionId.value && $focusedSpotlightConnectionIds.value[$connectionId.value]
   if ($audio.value === false && $video.value === false) {
@@ -49,7 +49,7 @@ const VideoBox: React.FC = () => {
           )}
         <Video
           stream={$localMediaStream.value}
-          setHeight={setHeight}
+          height={height}
           audioOutput={$audioOutput.value}
           displayResolution={$displayResolution.value}
           localVideo={true}

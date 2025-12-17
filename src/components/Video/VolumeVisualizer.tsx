@@ -1,3 +1,4 @@
+import type { Signal } from '@preact/signals'
 import React, { useEffect, useRef } from 'react'
 
 const CANVAS_WIDTH = 25 as const
@@ -39,7 +40,7 @@ function createVolumeForeground(
 type VisualizerProps = {
   micDevice: boolean
   stream: MediaStream
-  height: number
+  height: Signal<number>
 }
 const Visualizer = React.memo<VisualizerProps>((props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -93,7 +94,7 @@ const Visualizer = React.memo<VisualizerProps>((props) => {
   return (
     <canvas
       width={CANVAS_WIDTH}
-      height={props.height}
+      height={props.height.value}
       className="volume-visualizer"
       ref={canvasRef}
     />
@@ -101,7 +102,7 @@ const Visualizer = React.memo<VisualizerProps>((props) => {
 })
 
 type MutedVisualizerProps = {
-  height: number
+  height: Signal<number>
 }
 const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -124,7 +125,7 @@ const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
   return (
     <canvas
       width={CANVAS_WIDTH}
-      height={props.height}
+      height={props.height.value}
       className="volume-visualizer"
       ref={canvasRef}
     />

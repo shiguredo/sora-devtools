@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useSignal } from '@preact/signals'
+import React, { useEffect, useRef } from 'react'
 import { Button, Col, FormControl, Row } from 'react-bootstrap'
 
 import { clearApiObjects, setApiObject, setDebugApiUrl } from '@/app/store'
@@ -41,41 +42,41 @@ const ApiForm: React.FC<ApiFormProps> = ({
 }) => {
   const urlRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<HTMLInputElement>(null)
-  const [paramsHasError, setParamsHasError] = useState(false)
-  const [replaceChannelId, setReplaceChannelId] = useState(true)
-  const [replaceConnectionId, setReplaceConnectionId] = useState(true)
-  const [replaceSessionId, setReplaceSessionId] = useState(true)
+  const paramsHasError = useSignal(false)
+  const replaceChannelId = useSignal(true)
+  const replaceConnectionId = useSignal(true)
+  const replaceSessionId = useSignal(true)
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
     if (params.trim() === '') {
-      setParamsHasError(false)
+      paramsHasError.value = false
       return
     }
     try {
       JSON.parse(params)
-      setParamsHasError(false)
+      paramsHasError.value = false
     } catch {
-      setParamsHasError(true)
+      paramsHasError.value = true
     }
-  }, [params])
+  }, [params, paramsHasError])
 
   // 置き換え後のプレビューを生成
   const getReplacedParams = (): string => {
-    if (params.trim() === '' || paramsHasError) {
+    if (params.trim() === '' || paramsHasError.value) {
       return ''
     }
     try {
       const parsed = JSON.parse(params)
       if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
         const replaced = { ...parsed }
-        if (replaceChannelId && 'channel_id' in replaced) {
+        if (replaceChannelId.value && 'channel_id' in replaced) {
           replaced.channel_id = $channelId.value
         }
-        if (replaceConnectionId && 'connection_id' in replaced && $connectionId.value) {
+        if (replaceConnectionId.value && 'connection_id' in replaced && $connectionId.value) {
           replaced.connection_id = $connectionId.value
         }
-        if (replaceSessionId && 'session_id' in replaced && $sessionId.value) {
+        if (replaceSessionId.value && 'session_id' in replaced && $sessionId.value) {
           replaced.session_id = $sessionId.value
         }
         return JSON.stringify(replaced, null, 2)
@@ -105,13 +106,13 @@ const ApiForm: React.FC<ApiFormProps> = ({
         parsedParams = JSON.parse(paramsText)
         // トップレベルの channel_id, session_id, connection_id を置き換える
         if (parsedParams && typeof parsedParams === 'object' && !Array.isArray(parsedParams)) {
-          if (replaceChannelId && 'channel_id' in parsedParams) {
+          if (replaceChannelId.value && 'channel_id' in parsedParams) {
             parsedParams.channel_id = $channelId.value
           }
-          if (replaceSessionId && 'session_id' in parsedParams && $sessionId.value) {
+          if (replaceSessionId.value && 'session_id' in parsedParams && $sessionId.value) {
             parsedParams.session_id = $sessionId.value
           }
-          if (replaceConnectionId && 'connection_id' in parsedParams && $connectionId.value) {
+          if (replaceConnectionId.value && 'connection_id' in parsedParams && $connectionId.value) {
             parsedParams.connection_id = $connectionId.value
           }
         }
@@ -286,8 +287,10 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   className="form-check-input"
                   type="checkbox"
                   id="replaceChannelId"
-                  checked={replaceChannelId}
-                  onChange={(e) => setReplaceChannelId(e.target.checked)}
+                  checked={replaceChannelId.value}
+                  onChange={(e) => {
+                    replaceChannelId.value = e.target.checked
+                  }}
                 />
                 <label
                   className="form-check-label"
@@ -302,8 +305,10 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   className="form-check-input"
                   type="checkbox"
                   id="replaceSessionId"
-                  checked={replaceSessionId}
-                  onChange={(e) => setReplaceSessionId(e.target.checked)}
+                  checked={replaceSessionId.value}
+                  onChange={(e) => {
+                    replaceSessionId.value = e.target.checked
+                  }}
                 />
                 <label
                   className="form-check-label"
@@ -318,8 +323,10 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   className="form-check-input"
                   type="checkbox"
                   id="replaceConnectionId"
-                  checked={replaceConnectionId}
-                  onChange={(e) => setReplaceConnectionId(e.target.checked)}
+                  checked={replaceConnectionId.value}
+                  onChange={(e) => {
+                    replaceConnectionId.value = e.target.checked
+                  }}
                 />
                 <label
                   className="form-check-label"
@@ -353,7 +360,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         <Button
           variant="secondary"
           onClick={handleCallApi}
-          disabled={!selectedMethod || paramsHasError}
+          disabled={!selectedMethod || paramsHasError.value}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
           Call
@@ -545,36 +552,36 @@ export const Api: React.FC = () => {
   const setUrl = (value: string): void => {
     setDebugApiUrl(value)
   }
-  const [selectedMethod, setSelectedMethod] = useState('')
-  const [params, setParams] = useState('')
-  const [showModal, setShowModal] = useState(false)
+  const selectedMethod = useSignal('')
+  const params = useSignal('')
+  const showModal = useSignal(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [modalTop, setModalTop] = useState(0)
-  const [modalLeft, setModalLeft] = useState(0)
-  const [modalWidth, setModalWidth] = useState(0)
+  const modalTop = useSignal(0)
+  const modalLeft = useSignal(0)
+  const modalWidth = useSignal(0)
 
   // ボタンの位置が変わったときにモーダルの位置を更新
   useEffect(() => {
-    if (showModal && buttonRef.current) {
+    if (showModal.value && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
       // API タブページの幅を取得するため、親要素を探す
       const container = buttonRef.current.closest('[style*="position: relative"]')
       if (container) {
         const containerRect = container.getBoundingClientRect()
-        setModalTop(rect.bottom + 4)
-        setModalLeft(containerRect.left)
-        setModalWidth(containerRect.width)
+        modalTop.value = rect.bottom + 4
+        modalLeft.value = containerRect.left
+        modalWidth.value = containerRect.width
       }
     }
-  }, [showModal])
+  }, [showModal.value, modalTop, modalLeft, modalWidth])
 
   const handleReuse = (apiObject: ApiObject): void => {
     setUrl(apiObject.url)
-    setSelectedMethod(apiObject.method)
+    selectedMethod.value = apiObject.method
     if (apiObject.requestBody !== undefined) {
-      setParams(JSON.stringify(apiObject.requestBody, null, 2))
+      params.value = JSON.stringify(apiObject.requestBody, null, 2)
     } else {
-      setParams('')
+      params.value = ''
     }
     // フォームの位置までスクロール
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -584,18 +591,18 @@ export const Api: React.FC = () => {
     method: string,
     methodParams?: Record<string, unknown> | unknown[],
   ): void => {
-    setSelectedMethod(method)
+    selectedMethod.value = method
     if (methodParams) {
-      setParams(JSON.stringify(methodParams, null, 2))
+      params.value = JSON.stringify(methodParams, null, 2)
     } else {
-      setParams('')
+      params.value = ''
     }
-    setShowModal(false)
+    showModal.value = false
   }
 
   return (
     <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {showModal && (
+      {showModal.value && (
         <div
           style={{
             position: 'fixed',
@@ -606,25 +613,27 @@ export const Api: React.FC = () => {
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             zIndex: 998,
           }}
-          onClick={() => setShowModal(false)}
+          onClick={() => {
+            showModal.value = false
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
-              setShowModal(false)
+              showModal.value = false
             }
           }}
         />
       )}
-      {showModal && (
+      {showModal.value && (
         <div
           style={{
             position: 'fixed',
-            top: `${modalTop}px`,
-            left: `${modalLeft}px`,
-            width: `${modalWidth}px`,
+            top: `${modalTop.value}px`,
+            left: `${modalLeft.value}px`,
+            width: `${modalWidth.value}px`,
             backgroundColor: '#1a1a1a',
             border: '1px solid #444',
             borderRadius: '8px',
-            maxHeight: `calc(100vh - ${modalTop}px - 20px)`,
+            maxHeight: `calc(100vh - ${modalTop.value}px - 20px)`,
             overflowY: 'auto',
             zIndex: 1000,
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
@@ -634,7 +643,9 @@ export const Api: React.FC = () => {
           <Button
             variant="outline-light"
             size="sm"
-            onClick={() => setShowModal(false)}
+            onClick={() => {
+              showModal.value = false
+            }}
             style={{
               position: 'absolute',
               top: '10px',
@@ -669,7 +680,7 @@ export const Api: React.FC = () => {
                   {templates.map((template) => (
                     <Col key={template.method} xs={6} className="mb-2">
                       <Button
-                        variant={selectedMethod === template.method ? 'primary' : 'secondary'}
+                        variant={selectedMethod.value === template.method ? 'primary' : 'secondary'}
                         size="sm"
                         style={{
                           width: '100%',
@@ -692,10 +703,14 @@ export const Api: React.FC = () => {
       <ApiForm
         url={$debugApiUrl.value}
         setUrl={setUrl}
-        selectedMethod={selectedMethod}
-        params={params}
-        setParams={setParams}
-        setShowModal={setShowModal}
+        selectedMethod={selectedMethod.value}
+        params={params.value}
+        setParams={(v) => {
+          params.value = v
+        }}
+        setShowModal={(v) => {
+          showModal.value = v
+        }}
         buttonRef={buttonRef}
       />
       {$apiObjects.value.length > 0 && (

@@ -1,5 +1,6 @@
+import { useSignal } from '@preact/signals'
 import type React from 'react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 type JsonTreeProps = {
   data: unknown
@@ -74,7 +75,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
   isLast = true,
   level = 0,
 }) => {
-  const [isHighlighted, setIsHighlighted] = useState(false)
+  const isHighlighted = useSignal(false)
 
   // 前回の data を保存（初期値は prevData を使用し、再マウント時も前回値を参照可能にする）
   const prevDataRef = useRef<unknown>(prevData)
@@ -86,16 +87,18 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
 
     // 前回の値が存在し、値が変更された場合はハイライト表示
     if (prevValue !== undefined && !deepEqual(prevValue, data)) {
-      setIsHighlighted(true)
-      const timer = setTimeout(() => setIsHighlighted(false), 1000)
+      isHighlighted.value = true
+      const timer = setTimeout(() => {
+        isHighlighted.value = false
+      }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [data])
+  }, [data, isHighlighted])
 
   // スタイルオブジェクトをメモ化して再レンダリング最適化
   const highlightStyle = useMemo(
     () =>
-      isHighlighted
+      isHighlighted.value
         ? {
             padding: '2px 4px',
             borderRadius: '2px',
@@ -106,7 +109,7 @@ export const JsonTree: React.FC<JsonTreeProps> = ({
             padding: '2px 4px',
             borderRadius: '2px',
           },
-    [isHighlighted],
+    [isHighlighted.value],
   )
 
   const renderPrimitive = (value: unknown) => {

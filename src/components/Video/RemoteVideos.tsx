@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useSignal } from '@preact/signals'
+import React from 'react'
 
 import {
   $showStats,
@@ -97,7 +98,7 @@ const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
 
 const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
   const { mediaStream, connectionId, clientId } = client
-  const [height, setHeight] = useState<number>(0)
+  const height = useSignal(0)
   const focused = connectionId && $focusedSpotlightConnectionIds.value[connectionId]
   return (
     <div className="col-auto">
@@ -136,7 +137,7 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
           )}
           <Video
             stream={mediaStream}
-            setHeight={setHeight}
+            height={height}
             mute={$mute.value}
             audioOutput={$audioOutput.value}
             displayResolution={$displayResolution.value}
