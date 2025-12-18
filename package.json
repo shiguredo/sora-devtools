@@ -32,7 +32,6 @@
     "bootstrap": "5.3.8",
     "preact": "10.26.5",
     "preact-render-to-string": "6.5.13",
-    "react-bootstrap": "2.10.10",
     "sora-js-sdk": "2025.2.0"
   },
   "devDependencies": {

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioCodecType } from '@/app/actions'
 import { $audioCodecType, $connectionStatus } from '@/app/store'
@@ -16,9 +15,10 @@ export const AudioCodecTypeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="audioCodecType">
+    <div className="form-inline">
       <TooltipFormLabel kind="audioCodecType">audioCodecType:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="audioCodecType"
         value={$audioCodecType.value}
         onChange={onChange}
@@ -31,7 +31,7 @@ export const AudioCodecTypeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

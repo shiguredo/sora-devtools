@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Tab, Tabs } from 'react-bootstrap'
 
 import { setDebugType } from '@/app/actions'
 import { $debug, $debugType } from '@/app/store'
@@ -17,11 +16,106 @@ import { SignalingMessages } from './SignalingMessages.tsx'
 import { Stats } from './Stats.tsx'
 import { TimelineMessages } from './TimelineMessages.tsx'
 
+type TabItem = {
+  key: string
+  title: string
+  content: React.ReactNode
+}
+
 export const DebugPane: React.FC = () => {
   if (!$debug.value) {
     return null
   }
-  const onSelect = (key: string | null): void => {
+
+  const tabs: TabItem[] = [
+    {
+      key: 'timeline',
+      title: 'Timeline',
+      content: (
+        <>
+          <DebugFilter />
+          <TimelineMessages />
+        </>
+      ),
+    },
+    {
+      key: 'signaling',
+      title: 'Signaling',
+      content: (
+        <>
+          <DebugFilter />
+          <SignalingMessages />
+        </>
+      ),
+    },
+    {
+      key: 'notify',
+      title: 'Notfiy',
+      content: (
+        <>
+          <DebugFilter />
+          <NotifyMessages />
+        </>
+      ),
+    },
+    {
+      key: 'push',
+      title: 'Push',
+      content: (
+        <>
+          <DebugFilter />
+          <PushMessages />
+        </>
+      ),
+    },
+    {
+      key: 'stats',
+      title: 'Stats',
+      content: (
+        <>
+          <DebugFilter />
+          <Stats />
+        </>
+      ),
+    },
+    {
+      key: 'log',
+      title: 'Log',
+      content: (
+        <>
+          <DebugFilter />
+          <LogMessages />
+        </>
+      ),
+    },
+    {
+      key: 'messaging',
+      title: 'Messaging',
+      content: (
+        <>
+          <SendDataChannelMessagingMessage />
+          <DataChannelMessagingMessages />
+        </>
+      ),
+    },
+    // {
+    //   key: 'api',
+    //   title: 'API',
+    //   content: <Api />,
+    // },
+    {
+      key: 'rpc',
+      title: 'RPC',
+      content: <Rpc />,
+    },
+    {
+      key: 'codec',
+      title: 'Codec',
+      content: <CapabilitiesCodec />,
+    },
+  ]
+
+  const handleTabSelect = (key: string): void => {
     if (
       key === 'log' ||
       key === 'notify' ||
@@ -42,54 +136,40 @@ export const DebugPane: React.FC = () => {
       window.history.replaceState(null, '', newUrl)
     }
   }
+
+  const activeKey = $debugType.value || 'timeline'
+
   return (
     <div className="col-debug col-6">
-      <Tabs
-        id="debug-tab"
-        activeKey={$debugType.value}
-        defaultActiveKey={'timeline'}
-        onSelect={onSelect}
-      >
-        <Tab eventKey="timeline" title="Timeline">
-          <DebugFilter />
-          <TimelineMessages />
-        </Tab>
-        <Tab eventKey="signaling" title="Signaling">
-          <DebugFilter />
-          <SignalingMessages />
-        </Tab>
-        <Tab eventKey="notify" title="Notfiy">
-          <DebugFilter />
-          <NotifyMessages />
-        </Tab>
-        <Tab eventKey="push" title="Push">
-          <DebugFilter />
-          <PushMessages />
-        </Tab>
-        <Tab eventKey="stats" title="Stats">
-          <DebugFilter />
-          <Stats />
-        </Tab>
-        <Tab eventKey="log" title="Log">
-          <DebugFilter />
-          <LogMessages />
-        </Tab>
-        <Tab eventKey="messaging" title="Messaging">
-          <SendDataChannelMessagingMessage />
-          <DataChannelMessagingMessages />
-        </Tab>
-        {/*
-        <Tab eventKey="api" title="API">
-          <Api />
-        </Tab>
-*/}
-        <Tab eventKey="rpc" title="RPC">
-          <Rpc />
-        </Tab>
-        <Tab eventKey="codec" title="Codec">
-          <CapabilitiesCodec />
-        </Tab>
-      </Tabs>
+      <div className="nav nav-tabs" id="debug-tab" role="tablist">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            role="tab"
+            className={`nav-link${activeKey === tab.key ? ' active' : ''}`}
+            id={`${tab.key}-tab`}
+            aria-controls={`${tab.key}-pane`}
+            aria-selected={activeKey === tab.key}
+            onClick={() => handleTabSelect(tab.key)}
+          >
+            {tab.title}
+          </button>
+        ))}
+      </div>
+      <div className="tab-content" id="debug-tab-content">
+        {tabs.map((tab) => (
+          <div
+            key={tab.key}
+            className={`tab-pane fade${activeKey === tab.key ? ' show active' : ''}`}
+            id={`${tab.key}-pane`}
+            role="tabpanel"
+            aria-labelledby={`${tab.key}-tab`}
+          >
+            {tab.content}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

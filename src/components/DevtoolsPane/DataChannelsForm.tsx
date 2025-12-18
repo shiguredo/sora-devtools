@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Button, Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
 import { $connectionStatus, $dataChannels, $enabledDataChannels } from '@/app/store'
@@ -29,9 +28,9 @@ export const DataChannelsForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannels">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="dataChannels"
               checked={$enabledDataChannels.value}
@@ -40,12 +39,12 @@ export const DataChannelsForm: React.FC = () => {
             >
               dataChannels
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledDataChannels.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="row form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
@@ -54,18 +53,17 @@ export const DataChannelsForm: React.FC = () => {
               disabled={disabled}
               rows={12}
               extraControls={
-                <Button
+                <button
                   type="button"
-                  variant="light"
-                  size="sm"
+                  className="btn btn-light btn-sm"
                   onClick={() => setDataChannels(exampleJsonString)}
                 >
                   load template
-                </Button>
+                </button>
               }
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

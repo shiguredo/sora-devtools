@@ -1,6 +1,5 @@
 import { useSignal } from '@preact/signals'
 import React, { useEffect, useRef } from 'react'
-import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from 'react-bootstrap'
 
 import { clearRpcObjects } from '@/app/store'
 import { $connectionStatus, $rpcObjects, $sora } from '@/app/store'
@@ -33,6 +32,8 @@ const RpcForm: React.FC = () => {
   const method = useSignal('')
   const params = useSignal('')
   const paramsHasError = useSignal(false)
+  const dropdownOpen = useSignal(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // rpcMethods は sora-js-sdk 2025.2.0 以降で利用可能
   const rpcMethods: string[] =
@@ -51,6 +52,19 @@ const RpcForm: React.FC = () => {
       paramsHasError.value = true
     }
   }, [params.value, paramsHasError])
+
+  // Click outside handler for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        dropdownOpen.value = false
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [dropdownOpen])
 
   const handleCallRpc = async (): Promise<void> => {
     if (
@@ -97,9 +111,10 @@ const RpcForm: React.FC = () => {
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>method:</strong>
           </div>
-          <InputGroup>
-            <FormControl
+          <div className="input-group" ref={containerRef}>
+            <input
               type="text"
+              className="form-control"
               placeholder="method name"
               ref={methodRef}
               value={method.value}
@@ -107,30 +122,46 @@ const RpcForm: React.FC = () => {
                 method.value = e.target.value
               }}
             />
-            <DropdownButton variant="outline-secondary" title="" align="end">
-              {RPC_TEMPLATES.map((template) => {
-                const isAvailable = rpcMethods.includes(template.method)
-                return (
-                  <Dropdown.Item
-                    key={template.method}
-                    as="button"
-                    onClick={() => {
-                      method.value = template.method
-                      if (methodRef.current) {
-                        methodRef.current.value = template.method
-                      }
-                      if (template.params) {
-                        params.value = JSON.stringify(template.params, null, 2)
-                      }
-                    }}
-                    style={isAvailable ? { color: '#0071bc', fontWeight: 'bold' } : undefined}
-                  >
-                    {template.method}
-                  </Dropdown.Item>
-                )
-              })}
-            </DropdownButton>
-          </InputGroup>
+            <button
+              type="button"
+              className="btn btn-outline-secondary dropdown-toggle"
+              onClick={() => {
+                dropdownOpen.value = !dropdownOpen.value
+              }}
+              aria-expanded={dropdownOpen.value}
+            />
+            {dropdownOpen.value && (
+              <ul
+                className="dropdown-menu dropdown-menu-end show"
+                style={{ position: 'absolute', right: 0 }}
+              >
+                {RPC_TEMPLATES.map((template) => {
+                  const isAvailable = rpcMethods.includes(template.method)
+                  return (
+                    <li key={template.method}>
+                      <button
+                        type="button"
+                        className="dropdown-item"
+                        onClick={() => {
+                          method.value = template.method
+                          if (methodRef.current) {
+                            methodRef.current.value = template.method
+                          }
+                          if (template.params) {
+                            params.value = JSON.stringify(template.params, null, 2)
+                          }
+                          dropdownOpen.value = false
+                        }}
+                        style={isAvailable ? { color: '#0071bc', fontWeight: 'bold' } : undefined}
+                      >
+                        {template.method}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </div>
         </div>
 
         <div style={{ width: '250px' }}>
@@ -161,7 +192,13 @@ const RpcForm: React.FC = () => {
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>timeout (ms):</strong>
           </div>
-          <FormControl type="number" placeholder="5000" defaultValue="5000" ref={timeoutRef} />
+          <input
+            type="number"
+            className="form-control"
+            placeholder="5000"
+            defaultValue="5000"
+            ref={timeoutRef}
+          />
         </div>
       </div>
 
@@ -183,14 +220,15 @@ const RpcForm: React.FC = () => {
       </div>
 
       <div className="d-flex justify-content-end mb-2">
-        <Button
-          variant="secondary"
+        <button
+          type="button"
+          className="btn btn-secondary"
           onClick={handleCallRpc}
           disabled={$connectionStatus.value !== 'connected' || paramsHasError.value}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
           Call
-        </Button>
+        </button>
       </div>
     </div>
   )

@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useRef } from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 import type { SpotlightFocusRid } from 'sora-js-sdk'
 
 import { $sora, $connectionStatus } from '@/app/store'
@@ -38,8 +37,8 @@ export const RequestSpotlightRidButton: React.FC = () => {
 
   return (
     <div className="mx-1">
-      <FormGroup className="form-inline">
-        <FormSelect ref={focusRidRef}>
+      <div className="form-inline">
+        <select className="form-select" ref={focusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
             if (value === '') {
               return null
@@ -50,8 +49,8 @@ export const RequestSpotlightRidButton: React.FC = () => {
               </option>
             )
           })}
-        </FormSelect>
-        <FormSelect ref={unfocusRidRef}>
+        </select>
+        <select className="form-select" ref={unfocusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
             if (value === '') {
               return null
@@ -62,7 +61,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
               </option>
             )
           })}
-        </FormSelect>
+        </select>
         <input
           className="btn btn-secondary"
           type="button"
@@ -70,7 +69,7 @@ export const RequestSpotlightRidButton: React.FC = () => {
           defaultValue="requestSpotlightRid"
           onClick={onClick}
         />
-      </FormGroup>
+      </div>
     </div>
   )
 }

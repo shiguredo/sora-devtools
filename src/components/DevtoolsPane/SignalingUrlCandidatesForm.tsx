@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
 import {
@@ -16,7 +15,7 @@ export const SignalingUrlCandidatesForm: React.FC = () => {
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEnabledSignalingUrlCandidates(event.target.checked)
   }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeText = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setSignalingUrlCandidates(event.target.value.split('\n'))
   }
   const textareaPlaceholder = `signalingUrlCandidatesを指定
@@ -26,9 +25,9 @@ wss://sora1.example.com/signaling
 `
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="signalingUrlCandidates"
               checked={$enabledSignalingUrlCandidates.value}
@@ -37,16 +36,15 @@ wss://sora1.example.com/signaling
             >
               signalingUrlCandidates
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledSignalingUrlCandidates.value ? (
-        <Row className="form-row" xs="auto">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
+        <div className="row form-row">
+          <div className="col-auto">
+            <div className="form-inline">
+              <textarea
+                className="form-control flex-fill"
                 placeholder={textareaPlaceholder}
                 value={$signalingUrlCandidates.value.join('\n')}
                 onChange={onChangeText}
@@ -54,9 +52,9 @@ wss://sora1.example.com/signaling
                 cols={100}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

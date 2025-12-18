@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setFacingMode } from '@/app/actions'
 import { $facingMode, $mediaType } from '@/app/store'
@@ -16,9 +15,10 @@ export const FacingModeForm: React.FC = () => {
   }
   const disabled = $mediaType.value !== 'getUserMedia'
   return (
-    <FormGroup className="form-inline" controlId="facingMode">
+    <div className="form-inline">
       <TooltipFormLabel kind="facingMode">facingMode:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="facingMode"
         value={$facingMode.value}
         onChange={onChange}
@@ -31,7 +31,7 @@ export const FacingModeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

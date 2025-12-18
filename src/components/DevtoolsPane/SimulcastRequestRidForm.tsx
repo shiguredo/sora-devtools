@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSimulcastRequestRid } from '@/app/actions'
 import { $connectionStatus, $simulcastRequestRid } from '@/app/store'
@@ -16,9 +15,10 @@ export const SimulcastRequestRidForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="simulcastRequestRid">
+    <div className="form-inline">
       <TooltipFormLabel kind="simulcastRequestRid">simulcastRequestRid:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="simulcastRequestRid"
         value={$simulcastRequestRid.value}
         onChange={onChange}
@@ -31,7 +31,7 @@ export const SimulcastRequestRidForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

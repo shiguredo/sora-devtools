@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSimulcast } from '@/app/actions'
 import { $connectionStatus, $simulcast } from '@/app/store'
@@ -16,9 +15,15 @@ export const SimulcastForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="simulcast">
+    <div className="form-inline">
       <TooltipFormLabel kind="simulcast">simulcast:</TooltipFormLabel>
-      <FormSelect name="simulcast" value={$simulcast.value} onChange={onChange} disabled={disabled}>
+      <select
+        className="form-select"
+        name="simulcast"
+        value={$simulcast.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {SIMULCAST.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +31,7 @@ export const SimulcastForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

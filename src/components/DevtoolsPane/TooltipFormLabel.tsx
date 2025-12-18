@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormLabel, OverlayTrigger, Popover } from 'react-bootstrap'
 
 import { INSTRUCTIONS } from '@/constants'
 
@@ -10,18 +9,11 @@ type Props = {
 export const TooltipFormLabel: React.FC<Props> = (props) => {
   const instruction = INSTRUCTIONS[props.kind]
   if (!instruction) {
-    return <FormLabel>{props.children}</FormLabel>
+    return <span className="form-label">{props.children}</span>
   }
   return (
-    <OverlayTrigger
-      placement="top"
-      overlay={
-        <Popover id="popover-basic">
-          <Popover.Body style={{ whiteSpace: 'pre-wrap' }}>{instruction.description}</Popover.Body>
-        </Popover>
-      }
-    >
-      <FormLabel>{props.children}</FormLabel>
-    </OverlayTrigger>
+    <span className="form-label tooltip-label" data-tooltip={instruction.description}>
+      {props.children}
+    </span>
   )
 }

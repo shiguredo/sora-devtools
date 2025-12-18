@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAspectRatio } from '@/app/actions'
 import { $aspectRatio } from '@/app/store'
@@ -15,9 +14,14 @@ export const AspectRatioForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="aspectRatio">
+    <div className="form-inline">
       <TooltipFormLabel kind="aspectRatio">aspectRatio:</TooltipFormLabel>
-      <FormSelect name="aspectRatio" value={$aspectRatio.value} onChange={onChange}>
+      <select
+        className="form-select"
+        name="aspectRatio"
+        value={$aspectRatio.value}
+        onChange={onChange}
+      >
         {ASPECT_RATIO_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -25,7 +29,7 @@ export const AspectRatioForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

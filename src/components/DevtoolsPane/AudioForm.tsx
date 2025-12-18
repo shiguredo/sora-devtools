@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setAudio } from '@/app/actions'
 import { $audio, $connectionStatus } from '@/app/store'
@@ -13,10 +12,10 @@ export const AudioForm: React.FC = () => {
     setAudio(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="audio">
+    <div className="form-inline">
       <TooltipFormCheck kind="audio" checked={$audio.value} onChange={onChange} disabled={disabled}>
         audio
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

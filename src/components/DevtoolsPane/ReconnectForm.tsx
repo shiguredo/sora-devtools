@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setReconnect } from '@/app/actions'
 import { $connectionStatus, $reconnect } from '@/app/store'
@@ -13,9 +12,9 @@ export const ReconnectForm: React.FC = () => {
     setReconnect(event.target.checked)
   }
   return (
-    <Row className="form-row">
-      <Col className="col-auto">
-        <FormGroup className="form-inline" controlId="reconnect">
+    <div className="row form-row">
+      <div className="col-auto">
+        <div className="form-inline">
           <TooltipFormCheck
             kind="reconnect"
             checked={$reconnect.value}
@@ -24,8 +23,8 @@ export const ReconnectForm: React.FC = () => {
           >
             reconnect
           </TooltipFormCheck>
-        </FormGroup>
-      </Col>
-    </Row>
+        </div>
+      </div>
+    </div>
   )
 }

@@ -1,7 +1,6 @@
 import { useSignal } from '@preact/signals'
 import type React from 'react'
 import { useEffect } from 'react'
-import { FormCheck, FormGroup } from 'react-bootstrap'
 
 import { setMediaType } from '@/app/actions'
 import { $connectionStatus, $localMediaStream, $mediaType } from '@/app/store'
@@ -20,16 +19,20 @@ type FormRadioProps = {
 const FormRadio: React.FC<FormRadioProps> = (props) => {
   const { label, disabled, onChange, mediaType } = props
   return (
-    <FormCheck
-      type="radio"
-      inline={true}
-      id={label}
-      label={label}
-      value={label}
-      checked={mediaType === label}
-      onChange={onChange}
-      disabled={disabled}
-    />
+    <div className="form-check form-check-inline">
+      <input
+        className="form-check-input"
+        type="radio"
+        id={label}
+        value={label}
+        checked={mediaType === label}
+        onChange={onChange}
+        disabled={disabled}
+      />
+      <label className="form-check-label" htmlFor={label}>
+        {label}
+      </label>
+    </div>
   )
 }
 
@@ -49,7 +52,7 @@ export const MediaTypeForm: React.FC = () => {
     mountClient.value = true
   }, [mountClient])
   return (
-    <FormGroup className="form-inline flex-wrap">
+    <div className="form-inline flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio
         label="getUserMedia"
@@ -77,6 +80,6 @@ export const MediaTypeForm: React.FC = () => {
           onChange={onChange}
         />
       )}
-    </FormGroup>
+    </div>
   )
 }

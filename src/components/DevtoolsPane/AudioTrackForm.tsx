@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setAudioTrack } from '@/app/actions'
 import { $audioTrack } from '@/app/store'
@@ -11,7 +10,7 @@ export const AudioTrackForm: React.FC = () => {
     setAudioTrack(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="audioTrack">
+    <div className="form-inline">
       <TooltipFormCheck
         kind="audioTrack"
         checked={$audioTrack.value}
@@ -20,6 +19,6 @@ export const AudioTrackForm: React.FC = () => {
       >
         Enable audio track
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

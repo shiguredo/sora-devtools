@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlight } from '@/app/actions'
 import { $connectionStatus, $spotlight } from '@/app/store'
@@ -16,9 +15,15 @@ export const SpotlightForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="spotlight">
+    <div className="form-inline">
       <TooltipFormLabel kind="spotlight">spotlight:</TooltipFormLabel>
-      <FormSelect name="spotlight" value={$spotlight.value} onChange={onChange} disabled={disabled}>
+      <select
+        className="form-select"
+        name="spotlight"
+        value={$spotlight.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {SPOTLIGHT.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +31,7 @@ export const SpotlightForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

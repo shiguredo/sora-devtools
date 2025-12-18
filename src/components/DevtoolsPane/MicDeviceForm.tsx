@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setMicDevice } from '@/app/actions'
 import { $audio, $connectionStatus, $micDevice, $sora } from '@/app/store'
@@ -14,7 +13,7 @@ export const MicDeviceForm: React.FC = () => {
     setMicDevice(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="micDevice">
+    <div className="form-inline">
       <TooltipFormCheck
         kind="micDevice"
         checked={$micDevice.value}
@@ -23,6 +22,6 @@ export const MicDeviceForm: React.FC = () => {
       >
         Enable mic device
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

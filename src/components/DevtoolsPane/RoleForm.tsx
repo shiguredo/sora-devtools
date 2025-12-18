@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setRole } from '@/app/actions'
 import { $role, $connectionStatus, $localMediaStream } from '@/app/store'
@@ -16,9 +15,15 @@ export const RoleForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="role">
+    <div className="form-inline">
       <TooltipFormLabel kind="role">role:</TooltipFormLabel>
-      <FormSelect name="role" value={$role.value} onChange={onChange} disabled={disabled}>
+      <select
+        className="form-select"
+        name="role"
+        value={$role.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {ROLES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +31,7 @@ export const RoleForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

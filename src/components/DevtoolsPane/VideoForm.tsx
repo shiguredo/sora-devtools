@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setVideo } from '@/app/actions'
 import { $video, $connectionStatus } from '@/app/store'
@@ -13,10 +12,10 @@ export const VideoForm: React.FC = () => {
     setVideo(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="video">
+    <div className="form-inline">
       <TooltipFormCheck kind="video" checked={$video.value} onChange={onChange} disabled={disabled}>
         video
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

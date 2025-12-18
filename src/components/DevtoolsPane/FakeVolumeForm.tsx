@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Form, FormGroup } from 'react-bootstrap'
 
 import { setFakeVolume } from '@/app/actions'
 import { $fakeVolume, $mediaType } from '@/app/store'
@@ -14,9 +13,17 @@ export const FakeVolumeForm: React.FC = () => {
     return null
   }
   return (
-    <FormGroup className="form-inline" controlId="fakeVolume">
+    <div className="form-inline">
       <TooltipFormLabel kind="fakeVolume">fakeVolume:</TooltipFormLabel>
-      <Form.Range min="0" max="1" step="0.25" value={$fakeVolume.value} onChange={onChange} />
-    </FormGroup>
+      <input
+        className="form-range"
+        type="range"
+        min="0"
+        max="1"
+        step="0.25"
+        value={$fakeVolume.value}
+        onChange={onChange}
+      />
+    </div>
   )
 }

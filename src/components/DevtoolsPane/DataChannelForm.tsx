@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap'
 
 import {
   setDataChannelSignaling,
@@ -24,11 +23,12 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
+    <div className="form-inline">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
         ignoreDisconnectWebSocket:
       </TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="ignoreDisconnectWebSocket"
         value={$ignoreDisconnectWebSocket.value}
         onChange={onChange}
@@ -41,8 +41,8 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }
 
@@ -53,9 +53,10 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="dataChannelSignaling">
+    <div className="form-inline">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="dataChannelSignaling"
         value={$dataChannelSignaling.value}
         onChange={onChange}
@@ -68,8 +69,8 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }
 
@@ -80,33 +81,40 @@ export const DataChannelForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannel">
-            <FormCheck
-              type="switch"
-              name="enabledDataChannel"
-              label="dataChannel"
-              checked={$enabledDataChannel.value}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
+            <div className="form-check form-switch">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="enabledDataChannel"
+                checked={$enabledDataChannel.value}
+                onChange={onChangeSwitch}
+                disabled={disabled}
+                aria-checked={$enabledDataChannel.value}
+              />
+              <label className="form-check-label" htmlFor="enabledDataChannel">
+                dataChannel
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
       {$enabledDataChannel.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <Row xs="auto">
-              <Col>
+        <div className="row form-row">
+          <div className="col-auto">
+            <div className="row">
+              <div className="col-auto">
                 <DataChannelSignalingForm disabled={disabled} />
-              </Col>
-              <Col>
+              </div>
+              <div className="col-auto">
                 <IgnoreDisconnectWebSocketForm disabled={disabled} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

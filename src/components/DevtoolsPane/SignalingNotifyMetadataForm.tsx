@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from '@/app/actions'
 import {
@@ -19,9 +18,9 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledSignalingNotifyMetadata">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="signalingNotifyMetadata"
               checked={$enabledSignalingNotifyMetadata.value}
@@ -30,12 +29,12 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
             >
               signalingNotifyMetadata
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledSignalingNotifyMetadata.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="row form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="signalingNotifyMetadata"
               placeholder="signalingNotifyMetadataを指定"
@@ -43,8 +42,8 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
               setValue={(value) => setSignalingNotifyMetadata(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

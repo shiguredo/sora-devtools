@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setSpotlightFocusRid } from '@/app/actions'
 import { $connectionStatus, $spotlightFocusRid } from '@/app/store'
@@ -16,9 +15,14 @@ export const SpotlightFocusRidForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="spotlightFocusRid">
+    <div className="form-inline">
       <TooltipFormLabel kind="spotlightFocusRid">spotlightFocusRid:</TooltipFormLabel>
-      <FormSelect value={$spotlightFocusRid.value} onChange={onChange} disabled={disabled}>
+      <select
+        className="form-select"
+        value={$spotlightFocusRid.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {SPOTLIGHT_FOCUS_RIDS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -26,7 +30,7 @@ export const SpotlightFocusRidForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

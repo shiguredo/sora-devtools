@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useRef } from 'react'
-import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap'
 
 import { $connectionStatus, $sora, $soraDataChannels } from '@/app/store'
 
@@ -19,8 +18,13 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
   return (
     <>
       <div className="d-flex mt-2">
-        <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
-          <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
+        <div className="me-1">
+          <select
+            className="form-select"
+            name="sendDataChannelMessageLabel"
+            id="sendDataChannelMessageLabel"
+            ref={selectRef}
+          >
             {$soraDataChannels.value.map((datachannel) => {
               return (
                 <option key={datachannel.label} value={datachannel.label}>
@@ -28,23 +32,25 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
                 </option>
               )
             })}
-          </FormSelect>
-        </FormGroup>
-        <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
-          <FormControl
-            className="flex-fill"
-            placeholder="sendDataChannelMessageを指定"
+          </select>
+        </div>
+        <div className="flex-grow-1 me-1">
+          <input
             type="text"
+            id="sendDataChannelMessage"
+            className="form-control flex-fill"
+            placeholder="sendDataChannelMessageを指定"
             ref={textareaRef}
           />
-        </FormGroup>
-        <Button
-          variant="secondary"
+        </div>
+        <button
+          type="button"
+          className="btn btn-secondary"
           onClick={handleSendMessage}
           disabled={$soraDataChannels.value.length === 0}
         >
           send
-        </Button>
+        </button>
       </div>
       {$soraDataChannels.value.length > 0 ? (
         <pre

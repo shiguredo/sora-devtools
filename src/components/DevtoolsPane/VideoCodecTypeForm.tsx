@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoCodecType } from '@/app/actions'
 import { $connectionStatus, $videoCodecType } from '@/app/store'
@@ -16,9 +15,10 @@ export const VideoCodecTypeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="videoCodecType">
+    <div className="form-inline">
       <TooltipFormLabel kind="videoCodecType">videoCodecType:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="videoCodecType"
         value={$videoCodecType.value}
         onChange={onChange}
@@ -31,7 +31,7 @@ export const VideoCodecTypeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

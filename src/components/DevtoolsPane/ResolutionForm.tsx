@@ -1,14 +1,10 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setResolution } from '@/app/actions'
 import { $resolution } from '@/app/store'
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-type ResolutionData = {
-  label: string
-  value: string
-}
+import { DropdownInput } from './DropdownInput.tsx'
+import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 const RESOLUTION_DATA_LIST = [
   { label: '未指定', value: '' },
@@ -23,35 +19,25 @@ const RESOLUTION_DATA_LIST = [
   { label: '2160p', value: '3840x2160' },
 ]
 
-const DropdownItem = ({ label, value }: ResolutionData) => {
-  return (
-    <Dropdown.Item as="button" onClick={() => setResolution(value)}>
-      {label} {value !== '' && `(${value})`}
-    </Dropdown.Item>
-  )
-}
-
 export const ResolutionForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setResolution(event.target.value)
   }
+  const items = RESOLUTION_DATA_LIST.map(({ label, value }) => ({
+    label: value !== '' ? `${label} (${value})` : label,
+    value,
+  }))
   return (
-    <FormGroup className="form-inline" controlId="resolution">
+    <div className="form-inline">
       <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-resolution"
-          type="text"
-          value={$resolution.value}
-          onChange={onChange}
-          placeholder="未指定"
-        />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
-          {RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />
-          })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+      <DropdownInput
+        inputClassName="form-resolution"
+        inputValue={$resolution.value}
+        inputPlaceholder="未指定"
+        onInputChange={onChange}
+        items={items}
+        onItemClick={setResolution}
+      />
+    </div>
   )
 }

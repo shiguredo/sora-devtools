@@ -1,5 +1,5 @@
+import { useSignal } from '@preact/signals'
 import type React from 'react'
-import { Container, Nav, Navbar } from 'react-bootstrap'
 
 import { $connectionStatus, $sora, $turnUrl } from '@/app/store'
 
@@ -8,44 +8,65 @@ import { DebugButton } from './DebugButton.tsx'
 import { DownloadReportButton } from './DownloadReportButton.tsx'
 
 export const Header: React.FC = () => {
+  const isNavCollapsed = useSignal(true)
+
   const turnUrlLabel = (() => {
     if ($sora.value && $connectionStatus.value === 'connected') {
       return $turnUrl.value !== null ? $turnUrl.value : '不明'
     }
     return 'TURN URL'
   })()
+
+  const toggleNavbar = () => {
+    isNavCollapsed.value = !isNavCollapsed.value
+  }
+
   return (
     <header>
-      <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
-        <Container>
-          <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-collapse" />
-          <Navbar.Collapse id="navbar-collapse">
-            <Nav className="me-auto" />
-            <Nav>
-              <Navbar.Text className="py-0 my-1 mx-1">
+      <nav className="navbar navbar-dark bg-sora navbar-expand-lg fixed-top">
+        <div className="container">
+          <a className="navbar-brand" href="/">
+            Sora DevTools
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            aria-controls="navbar-collapse"
+            aria-expanded={!isNavCollapsed.value}
+            aria-label="Toggle navigation"
+            onClick={toggleNavbar}
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
+          <div
+            className={`collapse navbar-collapse${isNavCollapsed.value ? '' : ' show'}`}
+            id="navbar-collapse"
+          >
+            <div className="navbar-nav me-auto" />
+            <div className="navbar-nav">
+              <span className="navbar-text py-0 my-1 mx-1">
                 <p className="navbar-signaling-url border rounded">
                   {$sora.value && $connectionStatus.value === 'connected'
                     ? $sora.value.connectedSignalingUrl
                     : 'Signaling URL'}
                 </p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </span>
+              <span className="navbar-text py-0 my-1 mx-1">
                 <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </span>
+              <span className="navbar-text py-0 my-1 mx-1">
                 <DebugButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </span>
+              <span className="navbar-text py-0 my-1 mx-1">
                 <DownloadReportButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 ms-1">
+              </span>
+              <span className="navbar-text py-0 my-1 ms-1">
                 <CopyUrlButton />
-              </Navbar.Text>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+              </span>
+            </div>
+          </div>
+        </div>
+      </nav>
     </header>
   )
 }

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioContentHint } from '@/app/actions'
 import { $audioContentHint } from '@/app/store'
@@ -15,9 +14,14 @@ export const AudioContentHintForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="audioContentHint">
+    <div className="form-inline">
       <TooltipFormLabel kind="audioContentHint">audioContentHint:</TooltipFormLabel>
-      <FormSelect name="audioContentHint" value={$audioContentHint.value} onChange={onChange}>
+      <select
+        className="form-select"
+        name="audioContentHint"
+        value={$audioContentHint.value}
+        onChange={onChange}
+      >
         {AUDIO_CONTENT_HINTS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -25,7 +29,7 @@ export const AudioContentHintForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

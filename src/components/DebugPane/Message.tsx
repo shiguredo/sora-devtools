@@ -1,6 +1,5 @@
 import { useSignal } from '@preact/signals'
 import React, { type JSX } from 'react'
-import { Collapse } from 'react-bootstrap'
 
 import { formatUnixtime } from '@/utils'
 
@@ -94,7 +93,7 @@ export const Message = React.memo<Props>((props) => {
           />
         </div>
       </div>
-      <Collapse in={show.value}>
+      <div className={`collapse${show.value ? ' show' : ''}`}>
         <div className="border-top">
           <Description
             description={description}
@@ -102,7 +101,7 @@ export const Message = React.memo<Props>((props) => {
             wordBreak={props.wordBreak}
           />
         </div>
-      </Collapse>
+      </div>
     </div>
   )
 })

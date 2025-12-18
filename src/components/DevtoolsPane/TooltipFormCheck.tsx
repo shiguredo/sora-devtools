@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormCheck, FormLabel, OverlayTrigger, Popover } from 'react-bootstrap'
 
 import { INSTRUCTIONS } from '@/constants'
 
@@ -13,24 +12,34 @@ type Props = {
 export const TooltipFormCheck: React.FC<Props> = (props) => {
   const { children, kind, checked, onChange, disabled } = props
   const instruction = INSTRUCTIONS[kind]
+  const inputId = `switch-${kind}`
   if (!instruction) {
-    return <FormLabel>{children}</FormLabel>
+    return (
+      <span className="form-label" id={inputId}>
+        {children}
+      </span>
+    )
   }
   return (
     <>
-      <FormCheck type="switch" checked={checked} onChange={onChange} disabled={disabled} />
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Popover id="popover-basic">
-            <Popover.Body style={{ whiteSpace: 'pre-wrap' }}>
-              {instruction.description}
-            </Popover.Body>
-          </Popover>
-        }
+      <div className="form-check form-switch">
+        <input
+          id={inputId}
+          className="form-check-input"
+          type="checkbox"
+          role="switch"
+          checked={checked}
+          onChange={onChange}
+          disabled={disabled}
+          aria-checked={checked}
+        />
+      </div>
+      <span
+        className="form-label tooltip-label"
+        data-tooltip={instruction.description}
       >
-        <FormLabel>{children}</FormLabel>
-      </OverlayTrigger>
+        {children}
+      </span>
     </>
   )
 }

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setCameraDevice } from '@/app/actions'
 import { $cameraDevice, $connectionStatus, $sora, $video } from '@/app/store'
@@ -14,7 +13,7 @@ export const CameraDeviceForm: React.FC = () => {
     setCameraDevice(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="cameraDevice">
+    <div className="form-inline">
       <TooltipFormCheck
         kind="cameraDevice"
         checked={$cameraDevice.value}
@@ -23,6 +22,6 @@ export const CameraDeviceForm: React.FC = () => {
       >
         Enable camera device
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

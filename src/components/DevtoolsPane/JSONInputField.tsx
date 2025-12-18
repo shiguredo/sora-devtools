@@ -1,7 +1,6 @@
 import { useSignal } from '@preact/signals'
 import type React from 'react'
 import { useEffect } from 'react'
-import { Button, FormControl, FormGroup } from 'react-bootstrap'
 
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
   if (jsonString === '') {
@@ -37,7 +36,7 @@ export const JSONInputField = ({
   cols,
 }: JSONInputFieldProps) => {
   const invalidJsonString = useSignal(false)
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeText = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setValue(event.target.value)
   }
   useEffect(() => {
@@ -53,10 +52,10 @@ export const JSONInputField = ({
     }
   }, [value, invalidJsonString])
   return (
-    <FormGroup className="form-inline position-relative" controlId={controlId}>
-      <FormControl
-        className={invalidJsonString.value ? 'flex-fill invalid-json' : 'flex-fill'}
-        as="textarea"
+    <div className="form-inline position-relative">
+      <textarea
+        id={controlId}
+        className={`form-control flex-fill${invalidJsonString.value ? ' invalid-json' : ''}`}
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
@@ -66,16 +65,15 @@ export const JSONInputField = ({
       />
       <div className="json-input-textarea-overlay">
         {extraControls}
-        <Button
+        <button
           type="button"
-          variant="light"
-          size="sm"
+          className="btn btn-light btn-sm"
           onClick={() => prettyFormat(value, setValue)}
           disabled={invalidJsonString.value}
         >
           pretty format
-        </Button>
+        </button>
       </div>
-    </FormGroup>
+    </div>
   )
 }

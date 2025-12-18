@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import { setDebugFilterText } from '@/app/actions'
 import { $debugFilterText } from '@/app/store'
@@ -9,15 +8,19 @@ export const DebugFilter: React.FC = () => {
     setDebugFilterText(event.target.value)
   }
   return (
-    <FormGroup className="form-inline debug-filter" controlId="channelId">
-      <FormLabel className="text-white">Filter:</FormLabel>
-      <FormControl
+    <div className="form-inline debug-filter">
+      <label className="form-label text-white" htmlFor="channelIdFilter">
+        Filter:
+      </label>
+      <input
         type="text"
+        id="channelIdFilter"
+        className="form-control"
         placeholder="Filter"
         value={$debugFilterText.value}
         onChange={onChange}
         autoComplete="off"
       />
-    </FormGroup>
+    </div>
   )
 }

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioOutput } from '@/app/actions'
 import { $audioOutput, $audioOutputDevices } from '@/app/store'
@@ -11,9 +10,10 @@ export const AudioOutputForm: React.FC = () => {
     setAudioOutput(event.target.value)
   }
   return (
-    <FormGroup className="form-inline" controlId="audioOutput">
+    <div className="form-inline">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="audioOutput"
         value={$audioOutput.value}
         onChange={onChange}
@@ -27,7 +27,7 @@ export const AudioOutputForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

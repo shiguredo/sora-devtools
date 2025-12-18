@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setBundleId, setEnabledBundleId } from '@/app/actions'
 import { $bundleId, $connectionStatus, $enabledBundleId } from '@/app/store'
@@ -17,9 +16,9 @@ export const BundleIdForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledBundleId">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="bundleId"
               checked={$enabledBundleId.value}
@@ -28,24 +27,24 @@ export const BundleIdForm: React.FC = () => {
             >
               bundleId
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledBundleId.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="bundleId">
-              <FormControl
-                className="flex-fill w-500"
+        <div className="row form-row">
+          <div className="col-auto">
+            <div className="form-inline">
+              <input
+                className="form-control flex-fill w-500"
                 type="text"
                 placeholder="bundleIdを指定"
                 value={$bundleId.value}
                 onChange={onChangeText}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

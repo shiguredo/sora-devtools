@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
 
 import { setVideoTrack } from '@/app/actions'
 import { $videoTrack } from '@/app/store'
@@ -11,7 +10,7 @@ export const VideoTrackForm: React.FC = () => {
     setVideoTrack(event.target.checked)
   }
   return (
-    <FormGroup className="form-inline" controlId="videoTrack">
+    <div className="form-inline">
       <TooltipFormCheck
         kind="videoTrack"
         checked={$videoTrack.value}
@@ -20,6 +19,6 @@ export const VideoTrackForm: React.FC = () => {
       >
         Enable video track
       </TooltipFormCheck>
-    </FormGroup>
+    </div>
   )
 }

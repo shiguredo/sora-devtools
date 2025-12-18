@@ -508,6 +508,37 @@ button.debug-title {
   font-weight: bold;
 }
 
+/* Custom tooltip styles */
+.tooltip-label {
+  position: relative;
+  cursor: help;
+}
+
+.tooltip-label::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #0071bc;
+  border-radius: 0.25rem;
+  white-space: pre-wrap;
+  max-width: 350px;
+  font-size: 1rem;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+}
+
+.tooltip-label:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;

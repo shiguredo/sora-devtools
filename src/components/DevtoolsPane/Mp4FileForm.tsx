@@ -1,7 +1,6 @@
 import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 
 import type React from 'react'
-import { Form, FormGroup } from 'react-bootstrap'
 
 import { setMp4MediaStream } from '@/app/actions'
 import { $connectionStatus, $localMediaStream, $mediaType } from '@/app/store'
@@ -35,9 +34,15 @@ export const Mp4FileForm: React.FC = () => {
     return null
   }
   return (
-    <FormGroup className="form-inline" controlId="mp4File">
+    <div className="form-inline">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
-      <Form.Control type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
-    </FormGroup>
+      <input
+        className="form-control"
+        type="file"
+        accept="video/mp4"
+        disabled={disabled}
+        onChange={onChange}
+      />
+    </div>
   )
 }

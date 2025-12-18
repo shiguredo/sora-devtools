@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setClientId, setEnabledClientId } from '@/app/actions'
 import { $clientId, $connectionStatus, $enabledClientId } from '@/app/store'
@@ -17,9 +16,9 @@ export const ClientIdForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledClientId">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="clientId"
               checked={$enabledClientId.value}
@@ -28,24 +27,24 @@ export const ClientIdForm: React.FC = () => {
             >
               clientId
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledClientId.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="clientId">
-              <FormControl
-                className="flex-fill w-500"
+        <div className="row form-row">
+          <div className="col-auto">
+            <div className="form-inline">
+              <input
+                className="form-control flex-fill w-500"
                 type="text"
                 placeholder="ClientIdを指定"
                 value={$clientId.value}
                 onChange={onChangeText}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

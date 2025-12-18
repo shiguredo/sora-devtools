@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoInput, updateMediaStream } from '@/app/actions'
 import { $videoInput, $videoInputDevices } from '@/app/store'
@@ -12,9 +11,10 @@ export const VideoInputForm: React.FC = () => {
     updateMediaStream()
   }
   return (
-    <FormGroup className="form-inline" controlId="videoInput">
+    <div className="form-inline">
       <TooltipFormLabel kind="videoInput">videoInput:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="videoInput"
         value={$videoInput.value}
         onChange={onChange}
@@ -28,7 +28,7 @@ export const VideoInputForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

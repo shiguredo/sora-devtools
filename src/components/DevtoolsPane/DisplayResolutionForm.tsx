@@ -1,15 +1,10 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setDisplayResolution } from '@/app/actions'
 import { $displayResolution } from '@/app/store'
 
+import { DropdownInput } from './DropdownInput.tsx'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
-
-type DisplayResolutionData = {
-  label: string
-  value: string
-}
 
 const DISPLAY_RESOLUTION_DATA_LIST = [
   { label: '未指定', value: '' },
@@ -24,35 +19,25 @@ const DISPLAY_RESOLUTION_DATA_LIST = [
   { label: '2160p', value: '3840x2160' },
 ]
 
-const DropdownItem = ({ label, value }: DisplayResolutionData) => {
-  return (
-    <Dropdown.Item as="button" onClick={() => setDisplayResolution(value)}>
-      {label} {value !== '' && `(${value})`}
-    </Dropdown.Item>
-  )
-}
-
 export const DisplayResolutionForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setDisplayResolution(event.target.value)
   }
+  const items = DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => ({
+    label: value !== '' ? `${label} (${value})` : label,
+    value,
+  }))
   return (
-    <FormGroup className="form-inline" controlId="displayResolution">
+    <div className="form-inline">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-display-resolution"
-          type="text"
-          value={$displayResolution.value}
-          onChange={onChange}
-          placeholder="未指定"
-        />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
-          {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />
-          })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+      <DropdownInput
+        inputClassName="form-display-resolution"
+        inputValue={$displayResolution.value}
+        inputPlaceholder="未指定"
+        onInputChange={onChange}
+        items={items}
+        onItemClick={setDisplayResolution}
+      />
+    </div>
   )
 }

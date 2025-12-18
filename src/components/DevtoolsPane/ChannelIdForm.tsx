@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormControl, FormGroup } from 'react-bootstrap'
 
 import { setChannelId } from '@/app/actions'
 import { $channelId, $connectionStatus } from '@/app/store'
@@ -13,15 +12,16 @@ export const ChannelIdForm: React.FC = () => {
     setChannelId(event.target.value)
   }
   return (
-    <FormGroup className="form-inline" controlId="channelId">
+    <div className="form-inline">
       <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
-      <FormControl
+      <input
+        className="form-control"
         type="text"
         placeholder="ChannelIdを指定"
         value={$channelId.value}
         onChange={onChange}
         disabled={disabled}
       />
-    </FormGroup>
+    </div>
   )
 }

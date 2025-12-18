@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
 
 import { setEnabledVideoH265Params, setVideoH265Params } from '@/app/actions'
 import { $connectionStatus, $enabledVideoH265Params, $videoH265Params } from '@/app/store'
@@ -15,9 +14,9 @@ export const VideoH265ParamsForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledVideoH265Params">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="videoH265Params"
               checked={$enabledVideoH265Params.value}
@@ -26,12 +25,12 @@ export const VideoH265ParamsForm: React.FC = () => {
             >
               videoH265Params
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledVideoH265Params.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="row form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="videoH265Params"
               placeholder="videoH265Paramsを指定"
@@ -39,8 +38,8 @@ export const VideoH265ParamsForm: React.FC = () => {
               setValue={(value) => setVideoH265Params(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   )

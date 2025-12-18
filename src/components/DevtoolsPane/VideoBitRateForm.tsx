@@ -1,11 +1,11 @@
 import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
 
 import { setVideoBitRate } from '@/app/actions'
 import { $connectionStatus, $videoBitRate } from '@/app/store'
 import { VIDEO_BIT_RATES } from '@/constants'
 import { isFormDisabled } from '@/utils'
 
+import { DropdownInput } from './DropdownInput.tsx'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
@@ -24,38 +24,24 @@ export const VideoBitRateForm: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setVideoBitRate(event.target.value)
   }
+  const items = DISPLAY_VIDEO_BIT_RATE.map((value) => ({
+    label: dropdownItemLabel(value),
+    value,
+    disabled: value === 'support-message',
+  }))
   return (
-    <FormGroup className="form-inline" controlId="videoBitRate">
+    <div className="form-inline">
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-video-bit-rate"
-          type="text"
-          value={$videoBitRate.value}
-          onChange={onChange}
-          placeholder="未指定"
-          disabled={disabled}
-        />
-        <DropdownButton
-          variant="outline-secondary form-template-dropdown"
-          title=""
-          align="end"
-          disabled={disabled}
-        >
-          {DISPLAY_VIDEO_BIT_RATE.map((value) => {
-            return (
-              <Dropdown.Item
-                key={value}
-                as="button"
-                onClick={() => setVideoBitRate(value)}
-                disabled={value === 'support-message'}
-              >
-                {dropdownItemLabel(value)}
-              </Dropdown.Item>
-            )
-          })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
+      <DropdownInput
+        inputClassName="form-video-bit-rate"
+        inputValue={$videoBitRate.value}
+        inputPlaceholder="未指定"
+        inputDisabled={disabled}
+        onInputChange={onChange}
+        dropdownDisabled={disabled}
+        items={items}
+        onItemClick={setVideoBitRate}
+      />
+    </div>
   )
 }

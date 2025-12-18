@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setBlurRadius } from '@/app/actions'
 import { $blurRadius, $mediaType } from '@/app/store'
@@ -16,9 +15,14 @@ export const BlurRadiusForm: React.FC = () => {
   }
   const disabled = $mediaType.value !== 'getUserMedia'
   return (
-    <FormGroup className="form-inline" controlId="blurRadius">
+    <div className="form-inline">
       <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
-      <FormSelect value={$blurRadius.value} onChange={onChange} disabled={disabled}>
+      <select
+        className="form-select"
+        value={$blurRadius.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {BLUR_RADIUS.map((value) => {
           return (
             <option suppressHydrationWarning={true} key={value} value={value}>
@@ -26,7 +30,7 @@ export const BlurRadiusForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

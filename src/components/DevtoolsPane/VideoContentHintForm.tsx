@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setVideoContentHint } from '@/app/actions'
 import { $videoContentHint } from '@/app/store'
@@ -15,9 +14,14 @@ export const VideoContentHintForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="videoContentHint">
+    <div className="form-inline">
       <TooltipFormLabel kind="videoContentHint">videoContentHint:</TooltipFormLabel>
-      <FormSelect name="videoContentHint" value={$videoContentHint.value} onChange={onChange}>
+      <select
+        className="form-select"
+        name="videoContentHint"
+        value={$videoContentHint.value}
+        onChange={onChange}
+      >
         {VIDEO_CONTENT_HINTS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -25,7 +29,7 @@ export const VideoContentHintForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

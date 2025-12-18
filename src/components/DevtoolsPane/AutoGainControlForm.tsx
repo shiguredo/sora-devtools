@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAutoGainControl } from '@/app/actions'
 import { $autoGainControl } from '@/app/store'
@@ -15,9 +14,14 @@ export const AutoGainControlForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="autoGainControl">
+    <div className="form-inline">
       <TooltipFormLabel kind="autoGainControl">autoGainControl:</TooltipFormLabel>
-      <FormSelect name="autoGainControl" value={$autoGainControl.value} onChange={onChange}>
+      <select
+        className="form-select"
+        name="autoGainControl"
+        value={$autoGainControl.value}
+        onChange={onChange}
+      >
         {AUTO_GAIN_CONTROLS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -25,7 +29,7 @@ export const AutoGainControlForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

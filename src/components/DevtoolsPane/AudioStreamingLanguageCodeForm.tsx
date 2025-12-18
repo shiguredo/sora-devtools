@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
 
 import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from '@/app/actions'
 import {
@@ -21,9 +20,9 @@ export const AudioStreamingLanguageCodeForm: React.FC = () => {
   }
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledAudioStreamingLanguageCode">
+      <div className="row form-row">
+        <div className="col-auto">
+          <div className="form-inline">
             <TooltipFormCheck
               kind="audioStreamingLanguageCode"
               checked={$enabledAudioStreamingLanguageCode.value}
@@ -32,24 +31,24 @@ export const AudioStreamingLanguageCodeForm: React.FC = () => {
             >
               audioStreamingLanguageCode
             </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
+          </div>
+        </div>
+      </div>
       {$enabledAudioStreamingLanguageCode.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="audioStreamingLanguageCode">
-              <FormControl
-                className="flex-fill w-500"
+        <div className="row form-row">
+          <div className="col-auto">
+            <div className="form-inline">
+              <input
+                className="form-control flex-fill w-500"
                 type="text"
                 placeholder="audioStreamingLanguageCodeを指定"
                 value={$audioStreamingLanguageCode.value}
                 onChange={onChangeText}
                 disabled={disabled}
               />
-            </FormGroup>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   )

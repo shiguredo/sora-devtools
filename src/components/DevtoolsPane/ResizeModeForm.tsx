@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setResizeMode } from '@/app/actions'
 import { $resizeMode } from '@/app/store'
@@ -15,9 +14,14 @@ export const ResizeModeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="resizeMode">
+    <div className="form-inline">
       <TooltipFormLabel kind="resizeMode">resizeMode:</TooltipFormLabel>
-      <FormSelect name="resizeMode" value={$resizeMode.value} onChange={onChange}>
+      <select
+        className="form-select"
+        name="resizeMode"
+        value={$resizeMode.value}
+        onChange={onChange}
+      >
         {RESIZE_MODE_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -25,7 +29,7 @@ export const ResizeModeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

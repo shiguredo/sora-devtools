@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setEchoCancellationType } from '@/app/actions'
 import { $echoCancellationType } from '@/app/store'
@@ -15,9 +14,10 @@ export const EchoCancellationTypeForm: React.FC = () => {
     }
   }
   return (
-    <FormGroup className="form-inline" controlId="echoCancellationType">
+    <div className="form-inline">
       <TooltipFormLabel kind="echoCancellationType">echoCancellationType:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="echoCancellationType"
         value={$echoCancellationType.value}
         onChange={onChange}
@@ -29,7 +29,7 @@ export const EchoCancellationTypeForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }

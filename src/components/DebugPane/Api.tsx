@@ -1,6 +1,5 @@
 import { useSignal } from '@preact/signals'
 import React, { useEffect, useRef } from 'react'
-import { Button, Col, FormControl, Row } from 'react-bootstrap'
 
 import { clearApiObjects, setApiObject, setDebugApiUrl } from '@/app/store'
 import { $apiObjects, $channelId, $connectionId, $debugApiUrl, $sessionId } from '@/app/store'
@@ -15,9 +14,9 @@ const ClearButton = React.memo(() => {
     clearApiObjects()
   }
   return (
-    <Button variant="danger" onClick={onClick}>
+    <button type="button" className="btn btn-danger" onClick={onClick}>
       Clear All
-    </Button>
+    </button>
   )
 })
 
@@ -224,8 +223,9 @@ const ApiForm: React.FC<ApiFormProps> = ({
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>URL:</strong>
           </div>
-          <FormControl
+          <input
             type="text"
+            className="form-control"
             placeholder="http://sora-test.shiguredo.co.jp:3000"
             ref={urlRef}
             value={url}
@@ -238,22 +238,24 @@ const ApiForm: React.FC<ApiFormProps> = ({
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>method:</strong>
           </div>
-          <Button
+          <button
+            type="button"
             ref={buttonRef}
-            variant="secondary"
+            className="btn btn-secondary"
             onClick={() => setShowModal(true)}
             style={{ width: '100%', fontSize: '1rem', fontWeight: 'bold' }}
           >
             {selectedMethod || 'Select method'}
-          </Button>
+          </button>
         </div>
 
         <div style={{ width: '150px' }}>
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>timeout (ms):</strong>
           </div>
-          <FormControl
+          <input
             type="number"
+            className="form-control"
             placeholder="5000"
             defaultValue="5000"
             ref={timeoutRef}
@@ -357,14 +359,15 @@ const ApiForm: React.FC<ApiFormProps> = ({
       </div>
 
       <div className="d-flex justify-content-end mb-2">
-        <Button
-          variant="secondary"
+        <button
+          type="button"
+          className="btn btn-secondary"
           onClick={handleCallApi}
           disabled={!selectedMethod || paramsHasError.value}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
         >
           Call
-        </Button>
+        </button>
       </div>
     </div>
   )
@@ -406,9 +409,13 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
       >
         <small>{fullTimeString}</small>
         <div className="d-flex align-items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => onReuse(apiObject)}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => onReuse(apiObject)}
+          >
             Reuse
-          </Button>
+          </button>
           {apiObject.duration !== undefined && <small>{apiObject.duration.toFixed(2)} ms</small>}
         </div>
       </div>
@@ -640,9 +647,9 @@ export const Api: React.FC = () => {
             padding: '20px',
           }}
         >
-          <Button
-            variant="outline-light"
-            size="sm"
+          <button
+            type="button"
+            className="btn btn-outline-light btn-sm"
             onClick={() => {
               showModal.value = false
             }}
@@ -654,7 +661,7 @@ export const Api: React.FC = () => {
             }}
           >
             ×
-          </Button>
+          </button>
           {(() => {
             type TemplateType = (typeof API_TEMPLATES)[number]
             const groups = API_TEMPLATES.reduce((acc: Record<string, TemplateType[]>, template) => {
@@ -676,12 +683,12 @@ export const Api: React.FC = () => {
                 >
                   {groupName}
                 </div>
-                <Row>
+                <div className="row">
                   {templates.map((template) => (
-                    <Col key={template.method} xs={6} className="mb-2">
-                      <Button
-                        variant={selectedMethod.value === template.method ? 'primary' : 'secondary'}
-                        size="sm"
+                    <div key={template.method} className="col-6 mb-2">
+                      <button
+                        type="button"
+                        className={`btn ${selectedMethod.value === template.method ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                         style={{
                           width: '100%',
                           fontSize: '1.1rem',
@@ -691,10 +698,10 @@ export const Api: React.FC = () => {
                         onClick={() => handleMethodSelect(template.method, template.params)}
                       >
                         {template.method.replace('Sora_', '')}
-                      </Button>
-                    </Col>
+                      </button>
+                    </div>
                   ))}
-                </Row>
+                </div>
               </div>
             ))
           })()}

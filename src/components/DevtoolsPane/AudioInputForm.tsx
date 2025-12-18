@@ -1,5 +1,4 @@
 import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
 
 import { setAudioInput, updateMediaStream } from '@/app/actions'
 import { $audioInput, $audioInputDevices } from '@/app/store'
@@ -12,9 +11,10 @@ export const AudioInputForm: React.FC = () => {
     updateMediaStream()
   }
   return (
-    <FormGroup className="form-inline" controlId="audioInput">
+    <div className="form-inline">
       <TooltipFormLabel kind="audioInput">audioInput:</TooltipFormLabel>
-      <FormSelect
+      <select
+        className="form-select"
         name="audioInput"
         value={$audioInput.value}
         onChange={onChange}
@@ -28,7 +28,7 @@ export const AudioInputForm: React.FC = () => {
             </option>
           )
         })}
-      </FormSelect>
-    </FormGroup>
+      </select>
+    </div>
   )
 }
