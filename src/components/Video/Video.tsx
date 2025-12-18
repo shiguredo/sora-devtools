@@ -1,5 +1,6 @@
 import type { Signal } from '@preact/signals'
-import React, { useEffect, useRef } from 'react'
+import { memo } from 'preact/compat'
+import { useEffect, useRef } from 'preact/hooks'
 
 import type { CustomHTMLVideoElement, SoraDevtoolsState } from '@/types'
 import { getVideoSizeByResolution } from '@/utils'
@@ -12,7 +13,7 @@ type VideoProps = {
   audioOutput: string
   height: Signal<number>
 }
-const VideoElement = React.memo<VideoProps>((props) => {
+const VideoElement = memo<VideoProps>((props) => {
   const { displayResolution, stream, mute, audioOutput, height } = props
   const videoRef = useRef<CustomHTMLVideoElement>(null)
   const videoSize = getVideoSizeByResolution(displayResolution)
@@ -101,6 +102,6 @@ const VideoElement = React.memo<VideoProps>((props) => {
   )
 })
 
-export const Video = React.memo<VideoProps>((props) => {
+export const Video = memo<VideoProps>((props) => {
   return <VideoElement {...props} />
 })

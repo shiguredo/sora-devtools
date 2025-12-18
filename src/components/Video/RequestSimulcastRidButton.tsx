@@ -1,7 +1,7 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 import type { SimulcastRid } from 'sora-js-sdk'
 
-import { $sora, $connectionStatus } from '@/app/store'
+import { $connectionStatus, $sora } from '@/app/store'
 import { rpc } from '@/rpc'
 
 type SimulcastRequestRid = 'none' | SimulcastRid
@@ -11,7 +11,7 @@ type Props = {
   sendConnectionId?: string
 }
 
-export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
+export const RequestSimulcastRidButton: FunctionComponent<Props> = (props) => {
   const onClick = async (): Promise<void> => {
     if (!$sora.value || $connectionStatus.value !== 'connected') {
       return
@@ -35,7 +35,7 @@ export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
 
   return (
     <input
-      className="btn btn-secondary btn-sm mx-1"
+      className="px-2 py-1 text-sm bg-gray-500 text-white hover:bg-gray-600 mx-1 rounded"
       type="button"
       name={`requestSimulcastRidTo${props.rid.charAt(0).toUpperCase() + props.rid.slice(1)}`}
       defaultValue={props.rid}

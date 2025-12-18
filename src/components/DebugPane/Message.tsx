@@ -1,5 +1,6 @@
 import { useSignal } from '@preact/signals'
-import React, { type JSX } from 'react'
+import type { JSX } from 'preact'
+import { memo } from 'preact/compat'
 
 import { formatUnixtime } from '@/utils'
 
@@ -11,7 +12,7 @@ type DescriptionProps = {
   prevDescription?: unknown
   wordBreak?: boolean
 }
-const Description = React.memo<DescriptionProps>((props) => {
+const Description = memo<DescriptionProps>((props) => {
   const { description, prevDescription } = props
   if (description === undefined) {
     return null
@@ -58,14 +59,14 @@ type Props = {
   label?: JSX.Element | null
   wordBreak?: boolean
 }
-export const Message = React.memo<Props>((props) => {
+export const Message = memo<Props>((props) => {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props
   const show = useSignal(defaultShow === undefined ? false : defaultShow)
   const ariaControls = timestamp ? title + timestamp : title
   const disabled = description === undefined
   return (
-    <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
-      <div className="d-flex justify-content-between align-items-center text-break">
+    <div className="border border-gray-300 rounded mb-1 bg-gray-900" data-title={title}>
+      <div className="flex justify-between items-center break-words">
         <button
           type="button"
           className={`debug-title ${disabled ? 'disabled' : ''}`}
@@ -79,7 +80,7 @@ export const Message = React.memo<Props>((props) => {
             className={`${show.value ? 'arrow-bottom' : 'arrow-right'} ${disabled ? 'disabled' : ''}`}
           />{' '}
           {timestamp ? (
-            <span className="text-white-50 me-1">[{formatUnixtime(timestamp)}]</span>
+            <span className="text-gray-400 mr-1">[{formatUnixtime(timestamp)}]</span>
           ) : null}
           {label}
           <span>{title}</span>

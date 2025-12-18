@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
 import { $connectionStatus, $dataChannels, $enabledDataChannels } from '@/app/store'
@@ -7,7 +8,7 @@ import { isFormDisabled } from '@/utils'
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const DataChannelsForm: React.FC = () => {
+export const DataChannelsForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
   const exampleJsonString = JSON.stringify(
     [
@@ -23,13 +24,13 @@ export const DataChannelsForm: React.FC = () => {
     2,
   )
   const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledDataChannels(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledDataChannels(event.currentTarget.checked)
   }
   return (
     <>
       <div className="row form-row">
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="dataChannels"
@@ -44,7 +45,7 @@ export const DataChannelsForm: React.FC = () => {
       </div>
       {$enabledDataChannels.value ? (
         <div className="row form-row">
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <JSONInputField
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
@@ -55,7 +56,7 @@ export const DataChannelsForm: React.FC = () => {
               extraControls={
                 <button
                   type="button"
-                  className="btn btn-light btn-sm"
+                  className="px-2 py-1 text-sm bg-gray-100 text-gray-900 hover:bg-gray-200 rounded"
                   onClick={() => setDataChannels(exampleJsonString)}
                 >
                   load template

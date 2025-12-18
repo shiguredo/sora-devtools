@@ -1,5 +1,6 @@
 import type { Signal } from '@preact/signals'
-import React, { useEffect, useRef } from 'react'
+import { memo } from 'preact/compat'
+import { useEffect, useRef } from 'preact/hooks'
 
 const CANVAS_WIDTH = 25 as const
 const MARGIN = 2.5 as const
@@ -42,7 +43,7 @@ type VisualizerProps = {
   stream: MediaStream
   height: Signal<number>
 }
-const Visualizer = React.memo<VisualizerProps>((props) => {
+const Visualizer = memo<VisualizerProps>((props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -104,7 +105,7 @@ const Visualizer = React.memo<VisualizerProps>((props) => {
 type MutedVisualizerProps = {
   height: Signal<number>
 }
-const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
+const MutedVisualizer = memo<MutedVisualizerProps>((props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -132,7 +133,7 @@ const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
   )
 })
 
-export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {
+export const VolumeVisualizer = memo<VisualizerProps>((props) => {
   if (props.micDevice && props.stream.getAudioTracks().length > 0) {
     return <Visualizer {...props} />
   }

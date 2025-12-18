@@ -1,7 +1,7 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 import DevTools from './DevTools.tsx'
 
-const App: React.FC = () => {
+const App: FunctionComponent = () => {
   return <DevTools />
 }
 

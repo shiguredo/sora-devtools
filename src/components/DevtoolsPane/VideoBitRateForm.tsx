@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setVideoBitRate } from '@/app/actions'
 import { $connectionStatus, $videoBitRate } from '@/app/store'
@@ -19,10 +20,10 @@ const dropdownItemLabel = (value: string) => {
   return value === '' ? '未指定' : value
 }
 
-export const VideoBitRateForm: React.FC = () => {
+export const VideoBitRateForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setVideoBitRate(event.target.value)
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setVideoBitRate(event.currentTarget.value)
   }
   const items = DISPLAY_VIDEO_BIT_RATE.map((value) => ({
     label: dropdownItemLabel(value),

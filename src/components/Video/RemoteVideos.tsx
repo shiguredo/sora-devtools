@@ -1,20 +1,21 @@
 import { useSignal } from '@preact/signals'
-import React from 'react'
+import type { FunctionComponent } from 'preact'
+import { memo } from 'preact/compat'
 
 import {
-  $showStats,
-  $statsReport,
-  $prevStatsReport,
   $audioOutput,
   $displayResolution,
+  $focusedSpotlightConnectionIds,
+  $mediaStats,
   $mute,
+  $prevStatsReport,
+  $remoteClients,
+  $showStats,
   $simulcast,
   $spotlight,
-  $mediaStats,
-  $remoteClients,
-  $focusedSpotlightConnectionIds,
+  $statsReport,
 } from '@/app/store'
-import type { RTCMediaStreamTrackStats, RemoteClient } from '@/types'
+import type { RemoteClient, RTCMediaStreamTrackStats } from '@/types'
 
 import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
 import { JitterButter } from './JitterBuffer.tsx'
@@ -52,7 +53,7 @@ function mediaStreamStatsReportFilter(
   return result
 }
 
-const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
+const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
   if (!$showStats.value) {
     return null
   }
@@ -96,19 +97,19 @@ const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
   )
 })
 
-const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
+const RemoteVideo = memo<{ client: RemoteClient }>(({ client }) => {
   const { mediaStream, connectionId, clientId } = client
   const height = useSignal(0)
   const focused = connectionId && $focusedSpotlightConnectionIds.value[connectionId]
   return (
-    <div className="col-auto">
+    <div className="flex-none">
       <div className="video-status">
-        <div className="d-flex align-items-center mb-1 video-status-inner">
+        <div className="flex items-center mb-1 video-status-inner">
           <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           <JitterButter type="audio" stream={mediaStream} />
           <JitterButter type="video" stream={mediaStream} />
         </div>
-        <div className="d-flex align-items-center mb-1 video-status-inner">
+        <div className="flex items-center mb-1 video-status-inner">
           {$spotlight.value !== 'true' && $simulcast.value === 'true' ? (
             <>
               <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
@@ -125,10 +126,10 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start overflow-y-hidden">
+      <div className="flex flex-wrap items-start overflow-y-hidden">
         {/* オーバーレイするため position-relative を付けておくこと */}
         <div
-          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
+          className={`relative flex flex-nowrap items-start video-wrapper${
             focused ? ' spotlight-focused' : ''
           }`}
         >
@@ -150,9 +151,9 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
   )
 })
 
-export const RemoteVideos: React.FC = () => {
+export const RemoteVideos: FunctionComponent = () => {
   return (
-    <div className="row my-2">
+    <div className="flex flex-wrap my-2">
       {$remoteClients.value.map((client) => {
         return <RemoteVideo key={client.connectionId} client={client} />
       })}

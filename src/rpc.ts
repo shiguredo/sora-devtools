@@ -1,6 +1,6 @@
 import type { ConnectionPublisher, ConnectionSubscriber } from 'sora-js-sdk'
 
-import { setRpcObject, setRPCErrorAlertMessage } from '@/app/actions'
+import { setRPCErrorAlertMessage, setRpcObject } from '@/app/actions'
 
 type RpcOptions = {
   timeout?: number

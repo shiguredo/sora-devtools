@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setEnabledVideoH265Params, setVideoH265Params } from '@/app/actions'
 import { $connectionStatus, $enabledVideoH265Params, $videoH265Params } from '@/app/store'
@@ -7,10 +7,11 @@ import { isFormDisabled } from '@/utils'
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const VideoH265ParamsForm: React.FC = () => {
+export const VideoH265ParamsForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledVideoH265Params(event.target.checked)
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement
+    setEnabledVideoH265Params(target.checked)
   }
   return (
     <>

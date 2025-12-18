@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setAutoGainControl } from '@/app/actions'
 import { $autoGainControl } from '@/app/store'
@@ -7,17 +7,18 @@ import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const AutoGainControlForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, AUTO_GAIN_CONTROLS)) {
-      setAutoGainControl(event.target.value)
+export const AutoGainControlForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    const value = (event.target as HTMLSelectElement).value
+    if (checkFormValue(value, AUTO_GAIN_CONTROLS)) {
+      setAutoGainControl(value as (typeof AUTO_GAIN_CONTROLS)[number])
     }
   }
   return (
     <div className="form-inline">
       <TooltipFormLabel kind="autoGainControl">autoGainControl:</TooltipFormLabel>
       <select
-        className="form-select"
+        className="w-full px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         name="autoGainControl"
         value={$autoGainControl.value}
         onChange={onChange}

@@ -1,11 +1,12 @@
-import React from 'react'
+import type { FunctionComponent } from 'preact'
+import { memo } from 'preact/compat'
 
 import { $debugFilterText, $logMessages } from '@/app/store'
 import type { LogMessage } from '@/types'
 
 import { Message } from './Message.tsx'
 
-const Collapse = React.memo<LogMessage>((props) => {
+const Collapse = memo<LogMessage>((props) => {
   const { message, timestamp } = props
   return (
     <Message
@@ -16,11 +17,11 @@ const Collapse = React.memo<LogMessage>((props) => {
   )
 })
 
-const Log = React.memo<LogMessage>((props) => {
+const Log = memo<LogMessage>((props) => {
   return <Collapse {...props} />
 })
 
-export const LogMessages: React.FC = () => {
+export const LogMessages: FunctionComponent = () => {
   const filteredMessages = $logMessages.value.filter((message) => {
     return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {

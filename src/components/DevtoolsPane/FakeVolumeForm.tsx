@@ -1,13 +1,13 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setFakeVolume } from '@/app/actions'
 import { $fakeVolume, $mediaType } from '@/app/store'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const FakeVolumeForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setFakeVolume(event.target.value)
+export const FakeVolumeForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    setFakeVolume((event.target as HTMLInputElement).value)
   }
   if ($mediaType.value !== 'fakeMedia') {
     return null

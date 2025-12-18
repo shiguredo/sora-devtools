@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import {
   setDataChannelSignaling,
@@ -16,10 +17,10 @@ import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
-      setIgnoreDisconnectWebSocket(event.target.value)
+const IgnoreDisconnectWebSocketForm: FunctionComponent<{ disabled: boolean }> = (props) => {
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    if (checkFormValue(event.currentTarget.value, IGNORE_DISCONNECT_WEBSOCKET)) {
+      setIgnoreDisconnectWebSocket(event.currentTarget.value)
     }
   }
   return (
@@ -28,7 +29,7 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
         ignoreDisconnectWebSocket:
       </TooltipFormLabel>
       <select
-        className="form-select"
+        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         name="ignoreDisconnectWebSocket"
         value={$ignoreDisconnectWebSocket.value}
         onChange={onChange}
@@ -46,17 +47,17 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
   )
 }
 
-const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, DATA_CHANNEL_SIGNALING)) {
-      setDataChannelSignaling(event.target.value)
+const DataChannelSignalingForm: FunctionComponent<{ disabled: boolean }> = (props) => {
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    if (checkFormValue(event.currentTarget.value, DATA_CHANNEL_SIGNALING)) {
+      setDataChannelSignaling(event.currentTarget.value)
     }
   }
   return (
     <div className="form-inline">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
       <select
-        className="form-select"
+        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         name="dataChannelSignaling"
         value={$dataChannelSignaling.value}
         onChange={onChange}
@@ -74,19 +75,19 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
   )
 }
 
-export const DataChannelForm: React.FC = () => {
+export const DataChannelForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledDataChannel(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledDataChannel(event.currentTarget.checked)
   }
   return (
     <>
       <div className="row form-row">
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <div className="form-inline">
-            <div className="form-check form-switch">
+            <div className="relative inline-flex items-center">
               <input
-                className="form-check-input"
+                className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 type="checkbox"
                 role="switch"
                 id="enabledDataChannel"
@@ -95,7 +96,7 @@ export const DataChannelForm: React.FC = () => {
                 disabled={disabled}
                 aria-checked={$enabledDataChannel.value}
               />
-              <label className="form-check-label" htmlFor="enabledDataChannel">
+              <label className="ml-2 text-sm text-gray-900" htmlFor="enabledDataChannel">
                 dataChannel
               </label>
             </div>
@@ -104,12 +105,12 @@ export const DataChannelForm: React.FC = () => {
       </div>
       {$enabledDataChannel.value ? (
         <div className="row form-row">
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <div className="row">
-              <div className="col-auto">
+              <div className="flex-none pr-4 pb-2">
                 <DataChannelSignalingForm disabled={disabled} />
               </div>
-              <div className="col-auto">
+              <div className="flex-none pr-4 pb-2">
                 <IgnoreDisconnectWebSocketForm disabled={disabled} />
               </div>
             </div>

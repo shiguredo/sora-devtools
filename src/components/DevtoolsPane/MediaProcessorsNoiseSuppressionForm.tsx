@@ -1,13 +1,13 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setMediaProcessorsNoiseSuppression } from '@/app/actions'
 import { $mediaProcessorsNoiseSuppression, $mediaType } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setMediaProcessorsNoiseSuppression(event.target.checked)
+export const MediaProcessorsNoiseSuppressionForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    setMediaProcessorsNoiseSuppression((event.target as HTMLInputElement).checked)
   }
   const disabled = $mediaType.value !== 'getUserMedia'
   return (

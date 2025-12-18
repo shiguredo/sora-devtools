@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { INSTRUCTIONS } from '@/constants'
 
@@ -7,9 +8,9 @@ type Props = {
   children: React.ReactNode
   checked: boolean
   disabled: boolean
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (event: TargetedEvent<HTMLInputElement>) => void
 }
-export const TooltipFormCheck: React.FC<Props> = (props) => {
+export const TooltipFormCheck: FunctionComponent<Props> = (props) => {
   const { children, kind, checked, onChange, disabled } = props
   const instruction = INSTRUCTIONS[kind]
   const inputId = `switch-${kind}`

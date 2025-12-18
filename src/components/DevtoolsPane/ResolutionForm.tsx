@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setResolution } from '@/app/actions'
 import { $resolution } from '@/app/store'
@@ -19,9 +19,9 @@ const RESOLUTION_DATA_LIST = [
   { label: '2160p', value: '3840x2160' },
 ]
 
-export const ResolutionForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setResolution(event.target.value)
+export const ResolutionForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    setResolution((event.target as HTMLInputElement).value)
   }
   const items = RESOLUTION_DATA_LIST.map(({ label, value }) => ({
     label: value !== '' ? `${label} (${value})` : label,

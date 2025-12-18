@@ -1,14 +1,15 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { $connectionStatus, $forceStereoOutput, setForceStereoOutput } from '@/app/store'
 import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const ForceStereoOutputForm: React.FC = () => {
+export const ForceStereoOutputForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setForceStereoOutput(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setForceStereoOutput(event.currentTarget.checked)
   }
   return (
     <div className="row form-row">

@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setAspectRatio } from '@/app/actions'
 import { $aspectRatio } from '@/app/store'
@@ -7,17 +7,18 @@ import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const AspectRatioForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, ASPECT_RATIO_TYPES)) {
-      setAspectRatio(event.target.value)
+export const AspectRatioForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    const value = (event.target as HTMLSelectElement).value
+    if (checkFormValue(value, ASPECT_RATIO_TYPES)) {
+      setAspectRatio(value as (typeof ASPECT_RATIO_TYPES)[number])
     }
   }
   return (
     <div className="form-inline">
       <TooltipFormLabel kind="aspectRatio">aspectRatio:</TooltipFormLabel>
       <select
-        className="form-select"
+        className="w-full px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         name="aspectRatio"
         value={$aspectRatio.value}
         onChange={onChange}

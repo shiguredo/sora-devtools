@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setEnabledMetadata, setMetadata } from '@/app/actions'
 import { $connectionStatus, $enabledMetadata, $metadata } from '@/app/store'
@@ -7,15 +8,15 @@ import { isFormDisabled } from '@/utils'
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const MetadataForm: React.FC = () => {
+export const MetadataForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledMetadata(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledMetadata(event.currentTarget.checked)
   }
   return (
     <>
       <div className="row form-row">
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="metadata"
@@ -30,7 +31,7 @@ export const MetadataForm: React.FC = () => {
       </div>
       {$enabledMetadata.value ? (
         <div className="row form-row">
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <JSONInputField
               controlId="metadata"
               placeholder="Metadataを指定"

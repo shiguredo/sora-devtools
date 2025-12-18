@@ -1,6 +1,6 @@
 import { useSignal } from '@preact/signals'
-import type React from 'react'
-import { useEffect, useMemo, useRef } from 'react'
+import type { FunctionComponent } from 'preact'
+import { useEffect, useMemo, useRef } from 'preact/hooks'
 
 type JsonTreeProps = {
   data: unknown
@@ -68,7 +68,7 @@ const deepEqual = (a: unknown, b: unknown): boolean => {
   return true
 }
 
-export const JsonTree: React.FC<JsonTreeProps> = ({
+export const JsonTree: FunctionComponent<JsonTreeProps> = ({
   data,
   prevData,
   name,

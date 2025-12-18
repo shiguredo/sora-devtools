@@ -1,5 +1,5 @@
 import { useSignal } from '@preact/signals'
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import {
   $audioContentHint,
@@ -101,22 +101,22 @@ import { VideoInputForm } from './VideoInputForm.tsx'
 import { VideoTrackForm } from './VideoTrackForm.tsx'
 import { VideoVP9ParamsForm } from './VideoVP9ParamsForm.tsx'
 
-const RowChannelOptions: React.FC = () => {
+const RowChannelOptions: FunctionComponent = () => {
   return (
     <>
-      <div className="row form-row g-0">
-        <div className="col-12 form-channel-id">
+      <div className="flex flex-wrap gap-0">
+        <div className="w-full form-channel-id">
           <ChannelIdForm />
         </div>
       </div>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <RoleForm />
         </div>
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <SimulcastForm />
         </div>
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <SpotlightForm />
         </div>
       </div>
@@ -124,35 +124,35 @@ const RowChannelOptions: React.FC = () => {
   )
 }
 
-const RowGetUserMediaConstraints: React.FC = () => {
+const RowGetUserMediaConstraints: FunctionComponent = () => {
   const showCodecForms = $role.value !== 'recvonly'
   return (
     <>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <AudioForm />
         </div>
         {showCodecForms && (
           <>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <AudioCodecTypeForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <AudioBitRateForm />
             </div>
           </>
         )}
       </div>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <VideoForm />
         </div>
         {showCodecForms && (
           <>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <VideoCodecTypeForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <VideoBitRateForm />
             </div>
           </>
@@ -162,43 +162,43 @@ const RowGetUserMediaConstraints: React.FC = () => {
   )
 }
 
-const RowSimulcastOptions: React.FC = () => {
+const RowSimulcastOptions: FunctionComponent = () => {
   // sendonly の場合は simulcastRequestRid / simulcastRid を表示しない
   if ($simulcast.value !== 'true' || $role.value === 'sendonly') {
     return null
   }
   return (
-    <div className="row form-row g-0">
-      <div className="col-auto">
+    <div className="flex flex-wrap gap-0">
+      <div className="flex-none pr-4 pb-2">
         <SimulcastRequestRidForm />
       </div>
-      <div className="col-auto">
+      <div className="flex-none pr-4 pb-2">
         <SimulcastRidForm />
       </div>
     </div>
   )
 }
 
-const RowSpotlightOptions: React.FC = () => {
+const RowSpotlightOptions: FunctionComponent = () => {
   if ($spotlight.value !== 'true') {
     return null
   }
   return (
-    <div className="row form-row g-0">
-      <div className="col-auto">
+    <div className="flex flex-wrap gap-0">
+      <div className="flex-none pr-4 pb-2">
         <SpotlightNumberForm />
       </div>
-      <div className="col-auto">
+      <div className="flex-none pr-4 pb-2">
         <SpotlightFocusRidForm />
       </div>
-      <div className="col-auto">
+      <div className="flex-none pr-4 pb-2">
         <SpotlightUnfocusRidForm />
       </div>
     </div>
   )
 }
 
-const RowSignalingOptions: React.FC = () => {
+const RowSignalingOptions: FunctionComponent = () => {
   const collapsed = useSignal(true)
   const enabledOptions = [
     $enabledBundleId.value,
@@ -217,21 +217,21 @@ const RowSignalingOptions: React.FC = () => {
     linkClassNames.push('collapsed')
   }
   if (enabledOptions) {
-    linkClassNames.push('fw-bold')
+    linkClassNames.push('font-bold')
   }
-  const onClick = (event: React.MouseEvent): void => {
+  const onClick = (event: MouseEvent): void => {
     event.preventDefault()
     collapsed.value = !collapsed.value
   }
   return (
-    <div className="row form-row">
-      <div className="col">
+    <div className="flex flex-wrap pb-2">
+      <div className="flex-1">
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Signaling options
         </a>
       </div>
-      <div className={`collapse${collapsed.value ? '' : ' show'}`}>
+      <div className={collapsed.value ? 'hidden' : 'block'}>
         <div>
           <ReconnectForm />
           <ClientIdForm />
@@ -249,7 +249,7 @@ const RowSignalingOptions: React.FC = () => {
   )
 }
 
-const RowAdvancedSignalingOptions: React.FC = () => {
+const RowAdvancedSignalingOptions: FunctionComponent = () => {
   const showSenderParams = $role.value !== 'recvonly'
   const showReceiverParams = $role.value !== 'sendonly'
   const collapsed = useSignal(true)
@@ -272,21 +272,21 @@ const RowAdvancedSignalingOptions: React.FC = () => {
     linkClassNames.push('collapsed')
   }
   if (enabledOptions) {
-    linkClassNames.push('fw-bold')
+    linkClassNames.push('font-bold')
   }
-  const onClick = (event: React.MouseEvent): void => {
+  const onClick = (event: MouseEvent): void => {
     event.preventDefault()
     collapsed.value = !collapsed.value
   }
   return (
-    <div className="row form-row">
-      <div className="col">
+    <div className="flex flex-wrap pb-2">
+      <div className="flex-1">
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Advanced signaling options
         </a>
       </div>
-      <div className={`collapse${collapsed.value ? '' : ' show'}`}>
+      <div className={collapsed.value ? 'hidden' : 'block'}>
         <div>
           {showSenderParams && (
             <>
@@ -304,21 +304,21 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   )
 }
 
-export const RowMediaType: React.FC = () => {
+export const RowMediaType: FunctionComponent = () => {
   return (
     <>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <MediaTypeForm />
         </div>
       </div>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <FakeVolumeForm />
         </div>
       </div>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <Mp4FileForm />
         </div>
       </div>
@@ -326,7 +326,7 @@ export const RowMediaType: React.FC = () => {
   )
 }
 
-const RowMediaOptions: React.FC = () => {
+const RowMediaOptions: FunctionComponent = () => {
   const collapsed = useSignal(true)
   const enabledOptions = [
     $audioContentHint.value !== '',
@@ -345,62 +345,62 @@ const RowMediaOptions: React.FC = () => {
     linkClassNames.push('collapsed')
   }
   if (enabledOptions) {
-    linkClassNames.push('fw-bold')
+    linkClassNames.push('font-bold')
   }
-  const onClick = (event: React.MouseEvent): void => {
+  const onClick = (event: MouseEvent): void => {
     event.preventDefault()
     collapsed.value = !collapsed.value
   }
   return (
-    <div className="row form-row">
-      <div className="col">
+    <div className="flex flex-wrap pb-2">
+      <div className="flex-1">
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
           Media options
         </a>
       </div>
-      <div className={`collapse${collapsed.value ? '' : ' show'}`}>
+      <div className={collapsed.value ? 'hidden' : 'block'}>
         <div>
-          <div className="row form-row">
-            <div className="col-auto">
+          <div className="flex flex-wrap pb-2">
+            <div className="flex-none pr-4 pb-2">
               <AudioContentHintForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <AutoGainControlForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <NoiseSuppressionForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <EchoCancellationForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <EchoCancellationTypeForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <MediaProcessorsNoiseSuppressionForm />
             </div>
           </div>
-          <div className="row form-row">
-            <div className="col-auto">
+          <div className="flex flex-wrap pb-2">
+            <div className="flex-none pr-4 pb-2">
               <VideoContentHintForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <ResolutionForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <FrameRateForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <AspectRatioForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <ResizeModeForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <BlurRadiusForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <FacingModeForm />
             </div>
           </div>
@@ -411,27 +411,27 @@ const RowMediaOptions: React.FC = () => {
   )
 }
 
-const RowDevices: React.FC = () => {
+const RowDevices: FunctionComponent = () => {
   return (
     <>
-      <div className="row form-row g-0">
+      <div className="flex flex-wrap gap-0">
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
         {$role.value !== 'recvonly' && $mediaType.value === 'getUserMedia' ? (
           <>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <AudioInputForm />
             </div>
-            <div className="col-auto">
+            <div className="flex-none pr-4 pb-2">
               <VideoInputForm />
             </div>
           </>
         ) : null}
       </div>
-      <div className="row form-row g-0">
+      <div className="flex flex-wrap gap-0">
         {$role.value !== 'sendonly' ? (
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <AudioOutputForm />
           </div>
         ) : null}
@@ -447,29 +447,29 @@ const RowDevices: React.FC = () => {
   )
 }
 
-export const RowMediaDevices: React.FC = () => {
+export const RowMediaDevices: FunctionComponent = () => {
   return (
     <>
-      <div className="row form-row g-0">
-        <div className="col-auto">
+      <div className="flex flex-wrap gap-0">
+        <div className="flex-none pr-4 pb-2">
           <DisplayResolutionForm />
         </div>
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <MediaStatsForm />
         </div>
       </div>
       {$role.value !== 'recvonly' && (
-        <div className="row form-row g-0">
-          <div className="col-auto">
+        <div className="flex flex-wrap gap-0">
+          <div className="flex-none pr-4 pb-2">
             <MicDeviceForm />
           </div>
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <CameraDeviceForm />
           </div>
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <AudioTrackForm />
           </div>
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <VideoTrackForm />
           </div>
         </div>
@@ -478,9 +478,9 @@ export const RowMediaDevices: React.FC = () => {
   )
 }
 
-export const DevtoolsPane: React.FC = () => {
+export const DevtoolsPane: FunctionComponent = () => {
   return (
-    <div className={$debug.value ? 'col-devtools col-6' : 'col-devtools col-12'}>
+    <div className={$debug.value ? 'col-devtools w-1/2' : 'col-devtools w-full'}>
       <AlertMessages />
       <RowChannelOptions />
       <RowSimulcastOptions />
@@ -500,7 +500,7 @@ export const DevtoolsPane: React.FC = () => {
       <RowDevices />
       <RowMediaDevices />
       <hr className="hr-form" />
-      <div className="row">
+      <div className="flex flex-wrap">
         <ConnectButton />
         <DisconnectButton />
       </div>

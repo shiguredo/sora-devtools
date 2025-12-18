@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setEnabledSignalingNotifyMetadata, setSignalingNotifyMetadata } from '@/app/actions'
 import {
@@ -11,10 +12,10 @@ import { isFormDisabled } from '@/utils'
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const SignalingNotifyMetadataForm: React.FC = () => {
+export const SignalingNotifyMetadataForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledSignalingNotifyMetadata(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledSignalingNotifyMetadata(event.currentTarget.checked)
   }
   return (
     <>

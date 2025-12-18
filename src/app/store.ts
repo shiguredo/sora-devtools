@@ -1,7 +1,7 @@
+import { computed, signal } from '@preact/signals'
 import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
 import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
-import { signal, computed } from '@preact/signals'
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,

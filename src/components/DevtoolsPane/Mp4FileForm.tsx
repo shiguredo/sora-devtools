@@ -1,6 +1,6 @@
 import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
-
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setMp4MediaStream } from '@/app/actions'
 import { $connectionStatus, $localMediaStream, $mediaType } from '@/app/store'
@@ -8,10 +8,10 @@ import { isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const Mp4FileForm: React.FC = () => {
+export const Mp4FileForm: FunctionComponent = () => {
   const disabled = $localMediaStream.value !== null || isFormDisabled($connectionStatus.value)
-  const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-    const files = event.target.files
+  const onChange = async (event: TargetedEvent<HTMLInputElement>): Promise<void> => {
+    const files = event.currentTarget.files
     if (files === null || files.length === 0) {
       return
     }
@@ -22,7 +22,7 @@ export const Mp4FileForm: React.FC = () => {
       setMp4MediaStream(mp4MediaStream)
     } catch (e) {
       // ロードに失敗したらファイル選択をクリアする
-      event.target.value = ''
+      event.currentTarget.value = ''
 
       // 以前の内容が残っていた場合に備えて null を入れておく
       setMp4MediaStream(null)
@@ -37,7 +37,7 @@ export const Mp4FileForm: React.FC = () => {
     <div className="form-inline">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
       <input
-        className="form-control"
+        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         type="file"
         accept="video/mp4"
         disabled={disabled}

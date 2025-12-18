@@ -1,16 +1,16 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setCameraDevice } from '@/app/actions'
 import { $cameraDevice, $connectionStatus, $sora, $video } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const CameraDeviceForm: React.FC = () => {
+export const CameraDeviceForm: FunctionComponent = () => {
   const disabled = !($sora.value && $connectionStatus.value === 'connected'
     ? $sora.value.video
     : $video.value)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setCameraDevice(event.target.checked)
+  const onChange = (event: Event): void => {
+    setCameraDevice((event.target as HTMLInputElement).checked)
   }
   return (
     <div className="form-inline form-switch">

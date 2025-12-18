@@ -1,3 +1,16 @@
+@import "tailwindcss";
+
+/* Bootstrap CSS 変数の代替定義 */
+:root {
+  --bs-primary: #0d6efd;
+  --bs-dark: #212529;
+  --bs-yellow: #ffc107;
+  --bs-orange: #fd7e14;
+  --bs-red: #dc3545;
+  --bs-light: #f8f9fa;
+  --bs-form-invalid-border-color: #dc3545;
+}
+
 body {
   padding-top: 56px;
   padding-bottom: 56px;
@@ -548,7 +561,9 @@ button.debug-title {
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s, visibility 0.2s;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
   pointer-events: none;
 }
 

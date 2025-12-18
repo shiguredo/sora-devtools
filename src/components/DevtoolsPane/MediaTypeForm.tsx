@@ -1,22 +1,22 @@
 import { useSignal } from '@preact/signals'
-import type React from 'react'
-import { useEffect } from 'react'
+import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
+import { useEffect } from 'preact/hooks'
 import { setMediaType } from '@/app/actions'
 import { $connectionStatus, $localMediaStream, $mediaType } from '@/app/store'
 import { MEDIA_TYPES } from '@/constants'
 import { checkFormValue, isFormDisabled } from '@/utils'
-
-import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
 type FormRadioProps = {
   label: string
   mediaType: string
   disabled: boolean
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (event: TargetedEvent<HTMLInputElement>) => void
 }
-const FormRadio: React.FC<FormRadioProps> = (props) => {
+const FormRadio: FunctionComponent<FormRadioProps> = (props) => {
   const { label, disabled, onChange, mediaType } = props
   return (
     <div className="form-check form-check-inline">
@@ -36,16 +36,16 @@ const FormRadio: React.FC<FormRadioProps> = (props) => {
   )
 }
 
-export const MediaTypeForm: React.FC = () => {
+export const MediaTypeForm: FunctionComponent = () => {
   // NOTE(yuito): window.CropTarget の有無のみで radio の表示/非表示を切り替えると
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
   const mountClient = useSignal(false)
   const disabled = $localMediaStream.value !== null || isFormDisabled($connectionStatus.value)
   const enabledMp4Media = Mp4MediaStream.isSupported()
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    if (checkFormValue(event.target.value, MEDIA_TYPES)) {
-      setMediaType(event.target.value)
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    if (checkFormValue(event.currentTarget.value, MEDIA_TYPES)) {
+      setMediaType(event.currentTarget.value)
     }
   }
   useEffect(() => {

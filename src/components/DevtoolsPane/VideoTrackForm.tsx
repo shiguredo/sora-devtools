@@ -1,13 +1,14 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setVideoTrack } from '@/app/actions'
 import { $videoTrack } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const VideoTrackForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setVideoTrack(event.target.checked)
+export const VideoTrackForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement
+    setVideoTrack(target.checked)
   }
   return (
     <div className="form-inline form-switch">

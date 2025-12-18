@@ -1,6 +1,6 @@
-import React from 'react'
+import { memo } from 'preact/compat'
 
-export const ClipboardIcon = React.memo(() => {
+export const ClipboardIcon = memo(() => {
   return (
     <svg
       width="1em"

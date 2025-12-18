@@ -1,22 +1,23 @@
 import { useSignal } from '@preact/signals'
-import React, { useEffect, useRef } from 'react'
-
-import { clearRpcObjects } from '@/app/store'
-import { $connectionStatus, $rpcObjects, $sora } from '@/app/store'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
+import { memo } from 'preact/compat'
+import { useEffect, useRef } from 'preact/hooks'
+import { $connectionStatus, $rpcObjects, $sora, clearRpcObjects } from '@/app/store'
+import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 import { RPC_TEMPLATES } from '@/constants'
 import { rpc } from '@/rpc'
 import type { RpcObject } from '@/types'
-import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 
 import { JsonTree } from './JsonTree.tsx'
 
-const ClearButton = React.memo(() => {
+const ClearButton = memo(() => {
   const onClick = (): void => {
     clearRpcObjects()
   }
   return (
     <input
-      className="btn btn-secondary"
+      className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded"
       type="button"
       name="clear"
       defaultValue="clear"
@@ -25,7 +26,7 @@ const ClearButton = React.memo(() => {
   )
 })
 
-const RpcForm: React.FC = () => {
+const RpcForm: FunctionComponent = () => {
   const methodRef = useRef<HTMLInputElement>(null)
   const timeoutRef = useRef<HTMLInputElement>(null)
   const notification = useSignal(false)
@@ -106,25 +107,25 @@ const RpcForm: React.FC = () => {
 
   return (
     <div className="mt-2">
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ width: '600px' }}>
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>method:</strong>
           </div>
-          <div className="input-group" ref={containerRef}>
+          <div className="flex" ref={containerRef}>
             <input
               type="text"
-              className="form-control"
+              className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="method name"
               ref={methodRef}
               value={method.value}
-              onChange={(e) => {
-                method.value = e.target.value
+              onChange={(e: TargetedEvent<HTMLInputElement>) => {
+                method.value = e.currentTarget.value
               }}
             />
             <button
               type="button"
-              className="btn btn-outline-secondary dropdown-toggle"
+              className="px-3 py-2 border border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white rounded"
               onClick={() => {
                 dropdownOpen.value = !dropdownOpen.value
               }}
@@ -174,8 +175,8 @@ const RpcForm: React.FC = () => {
               type="checkbox"
               id="rpcNotificationCheck"
               checked={notification.value}
-              onChange={(e) => {
-                notification.value = e.target.checked
+              onChange={(e: TargetedEvent<HTMLInputElement>) => {
+                notification.value = e.currentTarget.checked
               }}
             />
             <label
@@ -194,7 +195,7 @@ const RpcForm: React.FC = () => {
           </div>
           <input
             type="number"
-            className="form-control"
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="5000"
             defaultValue="5000"
             ref={timeoutRef}
@@ -219,10 +220,10 @@ const RpcForm: React.FC = () => {
         />
       </div>
 
-      <div className="d-flex justify-content-end mb-2">
+      <div className="flex justify-end mb-2">
         <button
           type="button"
-          className="btn btn-secondary"
+          className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleCallRpc}
           disabled={$connectionStatus.value !== 'connected' || paramsHasError.value}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
@@ -234,7 +235,7 @@ const RpcForm: React.FC = () => {
   )
 }
 
-const RpcObjectItem: React.FC<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
+const RpcObjectItem: FunctionComponent<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
   const date = new Date(rpcObject.timestamp)
   const year = date.getFullYear()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -247,7 +248,7 @@ const RpcObjectItem: React.FC<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
 
   return (
     <div className="mb-3 p-3 border rounded" style={{ backgroundColor: '#1a1a1a', color: '#fff' }}>
-      <div className="mb-3 d-flex justify-content-between" style={{ color: '#ccc' }}>
+      <div className="mb-3 flex justify-between" style={{ color: '#ccc' }}>
         <small>{fullTimeString}</small>
         {rpcObject.duration !== undefined && <small>{rpcObject.duration.toFixed(2)} ms</small>}
       </div>
@@ -328,7 +329,7 @@ const RpcObjectItem: React.FC<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
   )
 }
 
-export const Rpc: React.FC = () => {
+export const Rpc: FunctionComponent = () => {
   return (
     <>
       <RpcForm />

@@ -1,12 +1,12 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
-import { $sora, $connectionStatus } from '@/app/store'
+import { $connectionStatus, $sora } from '@/app/store'
 import { rpc } from '@/rpc'
 
 type Props = {
   sendConnectionId: string
 }
-export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
+export const ResetSpotlightRidBySendConnectionIdButton: FunctionComponent<Props> = (props) => {
   const onClick = async (): Promise<void> => {
     if (!$sora.value || $connectionStatus.value !== 'connected') {
       return
@@ -24,7 +24,7 @@ export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props
 
   return (
     <input
-      className="btn btn-secondary mx-1"
+      className="px-2 py-1 text-sm bg-gray-100 text-gray-900 hover:bg-gray-200 rounded cursor-pointer mx-1"
       type="button"
       name="resetSpotlightRid"
       defaultValue="resetSpotlightRid"

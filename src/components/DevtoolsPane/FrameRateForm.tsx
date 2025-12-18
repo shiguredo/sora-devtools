@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setFrameRate } from '@/app/actions'
 import { $frameRate } from '@/app/store'
@@ -17,9 +17,9 @@ const FRAME_RATE_DATA = [
   { label: '5', value: '5' },
 ]
 
-export const FrameRateForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setFrameRate(event.target.value)
+export const FrameRateForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    setFrameRate((event.target as HTMLInputElement).value)
   }
   const items = FRAME_RATE_DATA.map(({ label, value }) => ({
     label,

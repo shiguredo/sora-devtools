@@ -1,6 +1,6 @@
 import { useSignal } from '@preact/signals'
-import type React from 'react'
-import { useEffect } from 'react'
+import type { TargetedEvent } from 'preact/compat'
+import { useEffect } from 'preact/hooks'
 
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
   if (jsonString === '') {
@@ -36,8 +36,8 @@ export const JSONInputField = ({
   cols,
 }: JSONInputFieldProps) => {
   const invalidJsonString = useSignal(false)
-  const onChangeText = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    setValue(event.target.value)
+  const onChangeText = (event: TargetedEvent<HTMLTextAreaElement>): void => {
+    setValue(event.currentTarget.value)
   }
   useEffect(() => {
     if (value === '') {
@@ -55,7 +55,7 @@ export const JSONInputField = ({
     <div className="form-inline position-relative">
       <textarea
         id={controlId}
-        className={`form-control flex-fill${invalidJsonString.value ? ' invalid-json' : ''}`}
+        className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 flex-fill${invalidJsonString.value ? ' invalid-json' : ''}`}
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
@@ -67,7 +67,7 @@ export const JSONInputField = ({
         {extraControls}
         <button
           type="button"
-          className="btn btn-light btn-sm"
+          className="px-2 py-1 text-sm bg-gray-100 text-gray-900 hover:bg-gray-200 rounded"
           onClick={() => prettyFormat(value, setValue)}
           disabled={invalidJsonString.value}
         >

@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setFacingMode } from '@/app/actions'
 import { $facingMode, $mediaType } from '@/app/store'
@@ -7,10 +7,11 @@ import { checkFormValue } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const FacingModeForm: React.FC = () => {
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, FACING_MODES)) {
-      setFacingMode(event.target.value)
+export const FacingModeForm: FunctionComponent = () => {
+  const onChange = (event: Event): void => {
+    const value = (event.target as HTMLSelectElement).value
+    if (checkFormValue(value, FACING_MODES)) {
+      setFacingMode(value as (typeof FACING_MODES)[number])
     }
   }
   const disabled = $mediaType.value !== 'getUserMedia'
@@ -18,7 +19,7 @@ export const FacingModeForm: React.FC = () => {
     <div className="form-inline">
       <TooltipFormLabel kind="facingMode">facingMode:</TooltipFormLabel>
       <select
-        className="form-select"
+        className="w-full px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
         name="facingMode"
         value={$facingMode.value}
         onChange={onChange}

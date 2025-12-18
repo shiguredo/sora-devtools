@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from '@/app/actions'
 import {
@@ -10,13 +11,13 @@ import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const AudioStreamingLanguageCodeForm: React.FC = () => {
+export const AudioStreamingLanguageCodeForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledAudioStreamingLanguageCode(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledAudioStreamingLanguageCode(event.currentTarget.checked)
   }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setAudioStreamingLanguageCode(event.target.value)
+  const onChangeText = (event: TargetedEvent<HTMLInputElement>): void => {
+    setAudioStreamingLanguageCode(event.currentTarget.value)
   }
   return (
     <>
@@ -39,7 +40,7 @@ export const AudioStreamingLanguageCodeForm: React.FC = () => {
           <div className="col-auto">
             <div className="form-inline form-switch">
               <input
-                className="form-control flex-fill w-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 flex-fill w-500"
                 type="text"
                 placeholder="audioStreamingLanguageCodeを指定"
                 value={$audioStreamingLanguageCode.value}

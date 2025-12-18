@@ -1,4 +1,5 @@
-import React from 'react'
+import type { FunctionComponent } from 'preact'
+import { memo } from 'preact/compat'
 
 import { $debugFilterText, $signalingMessages } from '@/app/store'
 import type { SignalingMessage } from '@/types'
@@ -10,7 +11,7 @@ const SIGNALING_COLORS: { [key: string]: string } = {
   datachannel: '#ff00ff',
 }
 
-const Label = React.memo<{ text: string }>((props) => {
+const Label = memo<{ text: string }>((props) => {
   const { text } = props
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined
   return (
@@ -20,17 +21,17 @@ const Label = React.memo<{ text: string }>((props) => {
   )
 })
 
-const Collapse = React.memo<SignalingMessage>((props) => {
+const Collapse = memo<SignalingMessage>((props) => {
   const { data, type, timestamp, transportType } = props
   const label = transportType ? <Label text={transportType} /> : null
   return <Message title={type} timestamp={timestamp} description={data} label={label} />
 })
 
-const Log = React.memo<SignalingMessage>((props) => {
+const Log = memo<SignalingMessage>((props) => {
   return <Collapse {...props} />
 })
 
-export const SignalingMessages: React.FC = () => {
+export const SignalingMessages: FunctionComponent = () => {
   const filteredMessages = $signalingMessages.value.filter((message) => {
     return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {

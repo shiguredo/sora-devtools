@@ -1,16 +1,16 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setMicDevice } from '@/app/actions'
 import { $audio, $connectionStatus, $micDevice, $sora } from '@/app/store'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const MicDeviceForm: React.FC = () => {
+export const MicDeviceForm: FunctionComponent = () => {
   const disabled = !($sora.value && $connectionStatus.value === 'connected'
     ? $sora.value.audio
     : $audio.value)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setMicDevice(event.target.checked)
+  const onChange = (event: Event): void => {
+    setMicDevice((event.target as HTMLInputElement).checked)
   }
   return (
     <div className="form-inline form-switch">

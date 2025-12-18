@@ -1,6 +1,6 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
-import { $statsReport, $prevStatsReport } from '@/app/store'
+import { $prevStatsReport, $statsReport } from '@/app/store'
 import type { RTCInboundRtpStreamStats } from '@/types'
 
 function mediaStreamStatsReportFilter(
@@ -44,7 +44,7 @@ type Props = {
   stream: MediaStream
   type: 'video' | 'audio'
 }
-export const JitterButter: React.FC<Props> = (props) => {
+export const JitterButter: FunctionComponent<Props> = (props) => {
   const currentInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
     $statsReport.value,
     props.stream,
@@ -88,7 +88,7 @@ export const JitterButter: React.FC<Props> = (props) => {
     borderClassName = 'warning-jitter-buffer'
   }
   return (
-    <div className={`btn btn-sm mx-1 ${borderClassName}`}>
+    <div className={`px-2 py-1 text-sm mx-1 rounded ${borderClassName}`}>
       <span>
         {props.type}: {currentJitterBufferDelay}
       </span>

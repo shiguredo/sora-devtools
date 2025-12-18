@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setEnabledVideoVP9Params, setVideoVP9Params } from '@/app/actions'
 import { $connectionStatus, $enabledVideoVP9Params, $videoVP9Params } from '@/app/store'
@@ -7,10 +7,11 @@ import { isFormDisabled } from '@/utils'
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const VideoVP9ParamsForm: React.FC = () => {
+export const VideoVP9ParamsForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledVideoVP9Params(event.target.checked)
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement
+    setEnabledVideoVP9Params(target.checked)
   }
   return (
     <>

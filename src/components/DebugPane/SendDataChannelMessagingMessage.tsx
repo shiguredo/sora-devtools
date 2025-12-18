@@ -1,9 +1,9 @@
-import type React from 'react'
-import { useRef } from 'react'
+import type { FunctionComponent } from 'preact'
+import { useRef } from 'preact/hooks'
 
 import { $connectionStatus, $sora, $soraDataChannels } from '@/app/store'
 
-export const SendDataChannelMessagingMessage: React.FC = () => {
+export const SendDataChannelMessagingMessage: FunctionComponent = () => {
   const selectRef = useRef<HTMLSelectElement>(null)
   const textareaRef = useRef<HTMLInputElement>(null)
   const handleSendMessage = (): void => {
@@ -17,10 +17,10 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
   }
   return (
     <>
-      <div className="d-flex mt-2">
-        <div className="me-1">
+      <div className="flex mt-2">
+        <div className="mr-1">
           <select
-            className="form-select"
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             name="sendDataChannelMessageLabel"
             id="sendDataChannelMessageLabel"
             ref={selectRef}
@@ -34,18 +34,18 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
             })}
           </select>
         </div>
-        <div className="flex-grow-1 me-1">
+        <div className="flex-grow mr-1">
           <input
             type="text"
             id="sendDataChannelMessage"
-            className="form-control flex-fill"
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="sendDataChannelMessageを指定"
             ref={textareaRef}
           />
         </div>
         <button
           type="button"
-          className="btn btn-secondary"
+          className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSendMessage}
           disabled={$soraDataChannels.value.length === 0}
         >
@@ -54,7 +54,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
       </div>
       {$soraDataChannels.value.length > 0 ? (
         <pre
-          className="form-control mt-2"
+          className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
           style={{
             color: '#fff',
             backgroundColor: '#222222',

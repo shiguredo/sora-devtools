@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setBundleId, setEnabledBundleId } from '@/app/actions'
 import { $bundleId, $connectionStatus, $enabledBundleId } from '@/app/store'
@@ -6,18 +7,18 @@ import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const BundleIdForm: React.FC = () => {
+export const BundleIdForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledBundleId(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledBundleId(event.currentTarget.checked)
   }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setBundleId(event.target.value)
+  const onChangeText = (event: TargetedEvent<HTMLInputElement>): void => {
+    setBundleId(event.currentTarget.value)
   }
   return (
     <>
       <div className="row form-row">
-        <div className="col-auto">
+        <div className="flex-none pr-4 pb-2">
           <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="bundleId"
@@ -32,10 +33,10 @@ export const BundleIdForm: React.FC = () => {
       </div>
       {$enabledBundleId.value ? (
         <div className="row form-row">
-          <div className="col-auto">
+          <div className="flex-none pr-4 pb-2">
             <div className="form-inline form-switch">
               <input
-                className="form-control flex-fill w-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed flex-fill w-500"
                 type="text"
                 placeholder="bundleIdを指定"
                 value={$bundleId.value}

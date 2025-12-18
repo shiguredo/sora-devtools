@@ -1,20 +1,34 @@
 import { useSignal } from '@preact/signals'
-import React, { useEffect, useRef } from 'react'
-
-import { clearApiObjects, setApiObject, setDebugApiUrl } from '@/app/store'
-import { $apiObjects, $channelId, $connectionId, $debugApiUrl, $sessionId } from '@/app/store'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
+import { memo } from 'preact/compat'
+import { useEffect, useRef } from 'preact/hooks'
+import {
+  $apiObjects,
+  $channelId,
+  $connectionId,
+  $debugApiUrl,
+  $sessionId,
+  clearApiObjects,
+  setApiObject,
+  setDebugApiUrl,
+} from '@/app/store'
+import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 import { API_TEMPLATES } from '@/constants'
 import type { ApiObject } from '@/types'
-import { JSONInputField } from '@/components/DevtoolsPane/JSONInputField.tsx'
 
 import { JsonTree } from './JsonTree.tsx'
 
-const ClearButton = React.memo(() => {
+const ClearButton = memo(() => {
   const onClick = (): void => {
     clearApiObjects()
   }
   return (
-    <button type="button" className="btn btn-danger" onClick={onClick}>
+    <button
+      type="button"
+      className="px-3 py-2 bg-red-500 text-white hover:bg-red-600 rounded"
+      onClick={onClick}
+    >
       Clear All
     </button>
   )
@@ -27,10 +41,10 @@ type ApiFormProps = {
   params: string
   setParams: (params: string) => void
   setShowModal: (show: boolean) => void
-  buttonRef: React.RefObject<HTMLButtonElement | null>
+  buttonRef: { current: HTMLButtonElement | null }
 }
 
-const ApiForm: React.FC<ApiFormProps> = ({
+const ApiForm: FunctionComponent<ApiFormProps> = ({
   url,
   setUrl,
   selectedMethod,
@@ -218,19 +232,18 @@ const ApiForm: React.FC<ApiFormProps> = ({
 
   return (
     <div className="mt-2">
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ width: '600px' }}>
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>URL:</strong>
           </div>
           <input
             type="text"
-            className="form-control"
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="http://sora-test.shiguredo.co.jp:3000"
             ref={urlRef}
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            style={{ backgroundColor: '#333', color: '#fff' }}
+            onChange={(e: TargetedEvent<HTMLInputElement>) => setUrl(e.currentTarget.value)}
           />
         </div>
 
@@ -241,7 +254,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
           <button
             type="button"
             ref={buttonRef}
-            className="btn btn-secondary"
+            className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded"
             onClick={() => setShowModal(true)}
             style={{ width: '100%', fontSize: '1rem', fontWeight: 'bold' }}
           >
@@ -255,16 +268,15 @@ const ApiForm: React.FC<ApiFormProps> = ({
           </div>
           <input
             type="number"
-            className="form-control"
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="5000"
             defaultValue="5000"
             ref={timeoutRef}
-            style={{ backgroundColor: '#333', color: '#fff' }}
           />
         </div>
       </div>
 
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ flex: 1 }}>
           <div className="mb-1" style={{ color: '#fff' }}>
             <strong>params:</strong>
@@ -281,7 +293,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         </div>
 
         <div style={{ flex: 1 }}>
-          <div className="mb-1 d-flex justify-content-between align-items-center">
+          <div className="mb-1 flex justify-between items-center">
             <strong style={{ color: '#fff' }}>Preview (after replace):</strong>
             <div>
               <div className="form-check form-check-inline">
@@ -290,8 +302,8 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   type="checkbox"
                   id="replaceChannelId"
                   checked={replaceChannelId.value}
-                  onChange={(e) => {
-                    replaceChannelId.value = e.target.checked
+                  onChange={(e: TargetedEvent<HTMLInputElement>) => {
+                    replaceChannelId.value = e.currentTarget.checked
                   }}
                 />
                 <label
@@ -308,8 +320,8 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   type="checkbox"
                   id="replaceSessionId"
                   checked={replaceSessionId.value}
-                  onChange={(e) => {
-                    replaceSessionId.value = e.target.checked
+                  onChange={(e: TargetedEvent<HTMLInputElement>) => {
+                    replaceSessionId.value = e.currentTarget.checked
                   }}
                 />
                 <label
@@ -326,8 +338,8 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   type="checkbox"
                   id="replaceConnectionId"
                   checked={replaceConnectionId.value}
-                  onChange={(e) => {
-                    replaceConnectionId.value = e.target.checked
+                  onChange={(e: TargetedEvent<HTMLInputElement>) => {
+                    replaceConnectionId.value = e.currentTarget.checked
                   }}
                 />
                 <label
@@ -358,10 +370,10 @@ const ApiForm: React.FC<ApiFormProps> = ({
         </div>
       </div>
 
-      <div className="d-flex justify-content-end mb-2">
+      <div className="flex justify-end mb-2">
         <button
           type="button"
-          className="btn btn-secondary"
+          className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleCallApi}
           disabled={!selectedMethod || paramsHasError.value}
           style={{ fontSize: '1.2rem', padding: '0.75rem 2rem', fontWeight: 'bold' }}
@@ -378,7 +390,7 @@ type ApiObjectItemProps = {
   onReuse: (apiObject: ApiObject) => void
 }
 
-const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => {
+const ApiObjectItem: FunctionComponent<ApiObjectItemProps> = ({ apiObject, onReuse }) => {
   const date = new Date(apiObject.timestamp)
   const year = date.getFullYear()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -400,18 +412,15 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
 
   return (
     <div
-      className="mb-3 me-2 p-3 border rounded"
+      className="mb-3 mr-2 p-3 border rounded"
       style={{ backgroundColor: '#1a1a1a', color: '#fff' }}
     >
-      <div
-        className="mb-3 d-flex justify-content-between align-items-center"
-        style={{ color: '#ccc' }}
-      >
+      <div className="mb-3 flex justify-between items-center" style={{ color: '#ccc' }}>
         <small>{fullTimeString}</small>
-        <div className="d-flex align-items-center gap-2">
+        <div className="flex items-center gap-2">
           <button
             type="button"
-            className="btn btn-secondary btn-sm"
+            className="px-2 py-1 text-sm bg-gray-500 text-white hover:bg-gray-600 rounded"
             onClick={() => onReuse(apiObject)}
           >
             Reuse
@@ -555,7 +564,7 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
   )
 }
 
-export const Api: React.FC = () => {
+export const Api: FunctionComponent = () => {
   const setUrl = (value: string): void => {
     setDebugApiUrl(value)
   }
@@ -649,7 +658,7 @@ export const Api: React.FC = () => {
         >
           <button
             type="button"
-            className="btn btn-outline-light btn-sm"
+            className="px-2 py-1 text-sm border border-gray-300 text-gray-300 hover:bg-gray-300 hover:text-gray-900 rounded"
             onClick={() => {
               showModal.value = false
             }}
@@ -688,7 +697,7 @@ export const Api: React.FC = () => {
                     <div key={template.method} className="col-6 mb-2">
                       <button
                         type="button"
-                        className={`btn ${selectedMethod.value === template.method ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                        className={`px-2 py-1 text-sm ${selectedMethod.value === template.method ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'} text-white rounded`}
                         style={{
                           width: '100%',
                           fontSize: '1.1rem',
@@ -724,7 +733,7 @@ export const Api: React.FC = () => {
         <>
           <div className="py-1">
             <h5>API Results</h5>
-            <div className="d-flex justify-content-between align-items-center mb-2">
+            <div className="flex justify-between items-center mb-2">
               <ClearButton />
               <div style={{ color: '#aaa', fontSize: '0.85rem' }}>
                 {$apiObjects.value.length} 件を表示

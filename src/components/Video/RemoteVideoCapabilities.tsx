@@ -1,7 +1,7 @@
 import { useSignal } from '@preact/signals'
-import { useEffect } from 'react'
+import { useEffect } from 'preact/hooks'
 
-import { $statsReport, $sora } from '@/app/store'
+import { $sora, $statsReport } from '@/app/store'
 import type { RTCStatsCodec } from '@/types'
 
 type VideoTrackStatsType = {

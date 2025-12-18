@@ -1,5 +1,5 @@
-import type React from 'react'
-import { useRef } from 'react'
+import type { FunctionComponent } from 'preact'
+import { useRef } from 'preact/hooks'
 import Sora from 'sora-js-sdk'
 
 import { getState } from '@/app/store'
@@ -101,7 +101,7 @@ function createDownloadReport(): DownloadReport {
   return report
 }
 
-export const DownloadReportButton: React.FC = () => {
+export const DownloadReportButton: FunctionComponent = () => {
   const anchorRef = useRef<HTMLAnchorElement>(null)
   const onClick = (): void => {
     const report = createDownloadReport()
@@ -118,7 +118,7 @@ export const DownloadReportButton: React.FC = () => {
   return (
     <>
       <input
-        className="btn btn-light btn-sm ms-1"
+        className="px-2 py-1 text-sm bg-gray-100 text-gray-900 hover:bg-gray-200 rounded ml-1 cursor-pointer"
         type="button"
         name="downloadReport"
         defaultValue="Download report"

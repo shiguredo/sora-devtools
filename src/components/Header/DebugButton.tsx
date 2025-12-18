@@ -1,19 +1,19 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setDebug } from '@/app/actions'
 import { $debug } from '@/app/store'
 
-export const DebugButton: React.FC = () => {
+export const DebugButton: FunctionComponent = () => {
   const onClick = (): void => {
     setDebug(!$debug.value)
   }
-  const classNames = ['btn', 'btn-light', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
-  if ($debug.value) {
-    classNames.push('active')
-  }
+  const baseClasses = 'px-2 py-1 text-sm rounded ml-1 cursor-pointer'
+  const activeClasses = $debug.value
+    ? 'bg-pink-500 text-white hover:bg-pink-600'
+    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
   return (
     <input
-      className={classNames.join(' ')}
+      className={`${baseClasses} ${activeClasses}`}
       type="button"
       name="debug"
       defaultValue="debug"

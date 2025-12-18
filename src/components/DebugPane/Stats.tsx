@@ -1,5 +1,5 @@
-import type React from 'react'
-import { useMemo } from 'react'
+import type { FunctionComponent } from 'preact'
+import { useMemo } from 'preact/hooks'
 
 import { $debugFilterText, $prevStatsReport, $statsReport } from '@/app/store'
 
@@ -13,7 +13,7 @@ type CollapseProps = {
   prevStats?: RTCStatsWithIndexSignature
 } & RTCStatsWithIndexSignature
 
-const Collapse: React.FC<CollapseProps> = (props) => {
+const Collapse: FunctionComponent<CollapseProps> = (props) => {
   const { prevStats, ...stats } = props
   return (
     <Message
@@ -25,11 +25,11 @@ const Collapse: React.FC<CollapseProps> = (props) => {
   )
 }
 
-const Log: React.FC<CollapseProps> = (props) => {
+const Log: FunctionComponent<CollapseProps> = (props) => {
   return <Collapse {...props} />
 }
 
-export const Stats: React.FC = () => {
+export const Stats: FunctionComponent = () => {
   // prevStatsReport を Map 化して O(1) で参照できるようにする
   const prevStatsMap = useMemo(
     () => new Map($prevStatsReport.value.map((stats) => [stats.id, stats])),

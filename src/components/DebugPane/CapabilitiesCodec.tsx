@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { Message } from './Message.tsx'
 
@@ -11,11 +11,11 @@ type LogProps = {
   codecs: RTCRtpCapabilitiesCodecWithIndexSignature[]
 }
 
-const Collapse: React.FC<LogProps> = ({ title, codecs }) => {
+const Collapse: FunctionComponent<LogProps> = ({ title, codecs }) => {
   return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />
 }
 
-const Log: React.FC<LogProps> = (props) => {
+const Log: FunctionComponent<LogProps> = (props) => {
   return <Collapse {...props} />
 }
 
@@ -34,7 +34,7 @@ const getCapabilitiesCodec = (
   return capabilities.codecs
 }
 
-export const CapabilitiesCodec: React.FC = () => {
+export const CapabilitiesCodec: FunctionComponent = () => {
   const senderAudioCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'audio')
   const senderVideoCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'video')
   const receiverAudioCapabilitiesCodec = getCapabilitiesCodec(

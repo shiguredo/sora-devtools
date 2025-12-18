@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { $debugFilterText, $notifyMessages } from '@/app/store'
 import type { NotifyMessage } from '@/types'
@@ -10,7 +10,7 @@ const SIGNALING_COLORS: { [key: string]: string } = {
   datachannel: '#ff00ff',
 }
 
-const Label: React.FC<{ text: string }> = (props) => {
+const Label: FunctionComponent<{ text: string }> = (props) => {
   const { text } = props
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined
   return (
@@ -23,7 +23,7 @@ const Label: React.FC<{ text: string }> = (props) => {
 type CollapseNotifyProps = {
   notify: NotifyMessage
 }
-const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
+const CollapseNotify: FunctionComponent<CollapseNotifyProps> = (props) => {
   const { notify } = props
   const label = notify.transportType ? <Label text={notify.transportType} /> : null
   return (
@@ -36,11 +36,11 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
   )
 }
 
-const Log: React.FC<CollapseNotifyProps> = (props) => {
+const Log: FunctionComponent<CollapseNotifyProps> = (props) => {
   return <CollapseNotify {...props} />
 }
 
-export const NotifyMessages: React.FC = () => {
+export const NotifyMessages: FunctionComponent = () => {
   const filteredMessages = $notifyMessages.value.filter((message) => {
     return $debugFilterText.value.split(' ').every((filterText) => {
       if (filterText === '') {

@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setAudio } from '@/app/actions'
 import { $audio, $connectionStatus } from '@/app/store'
@@ -6,10 +7,10 @@ import { isFormDisabled } from '@/utils'
 
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const AudioForm: React.FC = () => {
+export const AudioForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setAudio(event.target.checked)
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setAudio(event.currentTarget.checked)
   }
   return (
     <div className="form-inline form-switch">

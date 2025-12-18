@@ -3,7 +3,7 @@
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "react",
+    "jsxImportSource": "preact",
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",

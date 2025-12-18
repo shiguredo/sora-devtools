@@ -1,4 +1,5 @@
-import React from 'react'
+import type { FunctionComponent } from 'preact'
+import { memo } from 'preact/compat'
 
 import { clearDataChannelMessages } from '@/app/actions'
 import { $dataChannelMessages } from '@/app/store'
@@ -6,13 +7,13 @@ import type { DataChannelMessage } from '@/types'
 
 import { Message } from './Message.tsx'
 
-const ButtonClear = React.memo(() => {
+const ButtonClear = memo(() => {
   const onClick = (): void => {
     clearDataChannelMessages()
   }
   return (
     <input
-      className="btn btn-secondary"
+      className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded"
       type="button"
       name="clear"
       defaultValue="clear"
@@ -21,7 +22,7 @@ const ButtonClear = React.memo(() => {
   )
 })
 
-const Collapse = React.memo<DataChannelMessage>((props) => {
+const Collapse = memo<DataChannelMessage>((props) => {
   const { data, label, timestamp } = props
   const headText = new TextDecoder().decode(data.slice(0, 6))
   if (headText === 'ZAKURO') {
@@ -54,11 +55,11 @@ const Collapse = React.memo<DataChannelMessage>((props) => {
   )
 })
 
-const Log = React.memo<DataChannelMessage>((props) => {
+const Log = memo<DataChannelMessage>((props) => {
   return <Collapse {...props} />
 })
 
-export const DataChannelMessagingMessages: React.FC = () => {
+export const DataChannelMessagingMessages: FunctionComponent = () => {
   return (
     <>
       <div className="py-1">

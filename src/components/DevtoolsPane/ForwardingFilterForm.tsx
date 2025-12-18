@@ -1,4 +1,5 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
 
 import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
 import { $connectionStatus, $enabledForwardingFilter, $forwardingFilter } from '@/app/store'
@@ -7,10 +8,10 @@ import { isFormDisabled } from '@/utils'
 import { JSONInputField } from './JSONInputField.tsx'
 import { TooltipFormCheck } from './TooltipFormCheck.tsx'
 
-export const ForwardingFilterForm: React.FC = () => {
+export const ForwardingFilterForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledForwardingFilter(event.target.checked)
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledForwardingFilter(event.currentTarget.checked)
   }
   return (
     <>

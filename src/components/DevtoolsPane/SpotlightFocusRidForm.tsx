@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'preact'
 
 import { setSpotlightFocusRid } from '@/app/actions'
 import { $connectionStatus, $spotlightFocusRid } from '@/app/store'
@@ -7,18 +7,19 @@ import { checkFormValue, isFormDisabled } from '@/utils'
 
 import { TooltipFormLabel } from './TooltipFormLabel.tsx'
 
-export const SpotlightFocusRidForm: React.FC = () => {
+export const SpotlightFocusRidForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
-      setSpotlightFocusRid(event.target.value)
+  const onChange = (event: Event): void => {
+    const value = (event.target as HTMLSelectElement).value
+    if (checkFormValue(value, SPOTLIGHT_FOCUS_RIDS)) {
+      setSpotlightFocusRid(value as (typeof SPOTLIGHT_FOCUS_RIDS)[number])
     }
   }
   return (
     <div className="form-inline">
       <TooltipFormLabel kind="spotlightFocusRid">spotlightFocusRid:</TooltipFormLabel>
       <select
-        className="form-select"
+        className="w-full px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
         value={$spotlightFocusRid.value}
         onChange={onChange}
         disabled={disabled}

@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { ComponentChildren, FunctionComponent } from 'preact'
 
 import { setDebugType } from '@/app/actions'
 import { $debug, $debugType } from '@/app/store'
@@ -19,10 +19,10 @@ import { TimelineMessages } from './TimelineMessages.tsx'
 type TabItem = {
   key: string
   title: string
-  content: React.ReactNode
+  content: ComponentChildren
 }
 
-export const DebugPane: React.FC = () => {
+export const DebugPane: FunctionComponent = () => {
   if (!$debug.value) {
     return null
   }
@@ -140,14 +140,14 @@ export const DebugPane: React.FC = () => {
   const activeKey = $debugType.value || 'timeline'
 
   return (
-    <div className="col-debug col-6">
-      <div className="nav nav-tabs" id="debug-tab" role="tablist">
+    <div className="col-debug w-1/2">
+      <div className="flex border-b border-gray-700" id="debug-tab" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             type="button"
             role="tab"
-            className={`nav-link${activeKey === tab.key ? ' active' : ''}`}
+            className={`px-4 py-2 text-white cursor-pointer ${activeKey === tab.key ? 'bg-gray-700' : 'hover:bg-gray-600'}`}
             id={`${tab.key}-tab`}
             aria-controls={`${tab.key}-pane`}
             aria-selected={activeKey === tab.key}
@@ -161,7 +161,7 @@ export const DebugPane: React.FC = () => {
         {tabs.map((tab) => (
           <div
             key={tab.key}
-            className={`tab-pane fade${activeKey === tab.key ? ' show active' : ''}`}
+            className={activeKey === tab.key ? 'block' : 'hidden'}
             id={`${tab.key}-pane`}
             role="tabpanel"
             aria-labelledby={`${tab.key}-tab`}

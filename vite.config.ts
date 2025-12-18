@@ -1,9 +1,10 @@
 import path from 'path'
 import preact from '@preact/preset-vite'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [preact()],
+  plugins: [preact(), tailwindcss()],
   build: {
     minify: true,
     target: 'esnext',
@@ -25,11 +26,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      // React 互換性のための preact/compat エイリアス
-      react: 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils',
-      'react-dom': 'preact/compat',
-      'react/jsx-runtime': 'preact/jsx-runtime',
     },
   },
 })

@@ -1,6 +1,7 @@
 import { useSignal } from '@preact/signals'
-import type React from 'react'
-import { useEffect, useRef } from 'react'
+import type { FunctionComponent } from 'preact'
+import type { TargetedEvent } from 'preact/compat'
+import { useEffect, useRef } from 'preact/hooks'
 
 type DropdownItem = {
   label: string
@@ -13,13 +14,13 @@ type Props = {
   inputValue: string
   inputPlaceholder?: string
   inputDisabled?: boolean
-  onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onInputChange: (event: TargetedEvent<HTMLInputElement>) => void
   dropdownDisabled?: boolean
   items: DropdownItem[]
   onItemClick: (value: string) => void
 }
 
-export const DropdownInput: React.FC<Props> = (props) => {
+export const DropdownInput: FunctionComponent<Props> = (props) => {
   const {
     inputClassName = '',
     inputValue,
@@ -59,10 +60,10 @@ export const DropdownInput: React.FC<Props> = (props) => {
   }
 
   return (
-    <div className="input-group" ref={containerRef}>
+    <div className="flex relative" ref={containerRef}>
       <input
         type="text"
-        className={`form-control ${inputClassName}`}
+        className={`w-full px-3 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500 ${inputClassName}`}
         value={inputValue}
         onChange={onInputChange}
         placeholder={inputPlaceholder}
@@ -70,18 +71,18 @@ export const DropdownInput: React.FC<Props> = (props) => {
       />
       <button
         type="button"
-        className="btn btn-outline-secondary form-template-dropdown dropdown-toggle"
+        className="px-3 py-2 border border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white form-template-dropdown rounded-r"
         onClick={handleToggle}
         disabled={dropdownDisabled}
         aria-expanded={isOpen.value}
       />
       {isOpen.value && (
-        <ul className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', right: 0 }}>
+        <ul className="absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-10">
           {items.map((item) => (
             <li key={item.value}>
               <button
                 type="button"
-                className={`dropdown-item${item.disabled ? ' disabled' : ''}`}
+                className={`block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100${item.disabled ? ' disabled' : ''}`}
                 onClick={() => handleItemClick(item.value, item.disabled)}
                 disabled={item.disabled}
               >
