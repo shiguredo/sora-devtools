@@ -10,7 +10,7 @@ export const MediaStatsForm: React.FC = () => {
     setMediaStats(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck
         kind="mediaStats"
         checked={$mediaStats.value}

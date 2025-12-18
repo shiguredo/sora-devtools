@@ -10,7 +10,7 @@ export const VideoTrackForm: React.FC = () => {
     setVideoTrack(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck
         kind="videoTrack"
         checked={$videoTrack.value}

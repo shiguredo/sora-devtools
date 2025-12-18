@@ -18,7 +18,7 @@ export const ClientIdForm: React.FC = () => {
     <>
       <div className="row form-row">
         <div className="col-auto">
-          <div className="form-inline">
+          <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="clientId"
               checked={$enabledClientId.value}
@@ -33,7 +33,7 @@ export const ClientIdForm: React.FC = () => {
       {$enabledClientId.value ? (
         <div className="row form-row">
           <div className="col-auto">
-            <div className="form-inline">
+            <div className="form-inline form-switch">
               <input
                 className="form-control flex-fill w-500"
                 type="text"

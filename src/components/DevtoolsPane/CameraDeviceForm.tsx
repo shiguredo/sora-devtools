@@ -13,7 +13,7 @@ export const CameraDeviceForm: React.FC = () => {
     setCameraDevice(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck
         kind="cameraDevice"
         checked={$cameraDevice.value}

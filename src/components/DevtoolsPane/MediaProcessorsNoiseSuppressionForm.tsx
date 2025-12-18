@@ -11,7 +11,7 @@ export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
   }
   const disabled = $mediaType.value !== 'getUserMedia'
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck
         kind="mediaProcessorsNoiseSuppression"
         checked={$mediaProcessorsNoiseSuppression.value}

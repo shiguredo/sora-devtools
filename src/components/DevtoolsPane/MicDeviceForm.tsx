@@ -13,7 +13,7 @@ export const MicDeviceForm: React.FC = () => {
     setMicDevice(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck
         kind="micDevice"
         checked={$micDevice.value}

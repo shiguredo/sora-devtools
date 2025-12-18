@@ -18,7 +18,7 @@ export const BundleIdForm: React.FC = () => {
     <>
       <div className="row form-row">
         <div className="col-auto">
-          <div className="form-inline">
+          <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="bundleId"
               checked={$enabledBundleId.value}
@@ -33,7 +33,7 @@ export const BundleIdForm: React.FC = () => {
       {$enabledBundleId.value ? (
         <div className="row form-row">
           <div className="col-auto">
-            <div className="form-inline">
+            <div className="form-inline form-switch">
               <input
                 className="form-control flex-fill w-500"
                 type="text"

@@ -12,7 +12,7 @@ export const VideoForm: React.FC = () => {
     setVideo(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck kind="video" checked={$video.value} onChange={onChange} disabled={disabled}>
         video
       </TooltipFormCheck>

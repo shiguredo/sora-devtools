@@ -16,7 +16,7 @@ export const VideoAV1ParamsForm: React.FC = () => {
     <>
       <div className="row form-row">
         <div className="col-auto">
-          <div className="form-inline">
+          <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="videoAV1Params"
               checked={$enabledVideoAV1Params.value}

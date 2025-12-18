@@ -448,8 +448,26 @@ button.debug-title {
   align-items: center;
 }
 
+.form-inline.form-switch {
+  padding-left: 2.5em;
+}
+
+.form-inline.form-switch .form-check-input {
+  margin-top: 0;
+  margin-left: -2.5em;
+}
+
+.form-inline .form-check-label {
+  margin-right: 0.5rem;
+}
+
 .form-row .col {
   display: flex;
+  padding-bottom: 0.5rem;
+}
+
+.form-row .col-auto {
+  padding-right: 1rem;
   padding-bottom: 0.5rem;
 }
 

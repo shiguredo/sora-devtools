@@ -12,7 +12,7 @@ export const AudioForm: React.FC = () => {
     setAudio(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck kind="audio" checked={$audio.value} onChange={onChange} disabled={disabled}>
         audio
       </TooltipFormCheck>

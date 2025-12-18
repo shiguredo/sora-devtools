@@ -20,7 +20,7 @@ export const SignalingNotifyMetadataForm: React.FC = () => {
     <>
       <div className="row form-row">
         <div className="col-auto">
-          <div className="form-inline">
+          <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="signalingNotifyMetadata"
               checked={$enabledSignalingNotifyMetadata.value}

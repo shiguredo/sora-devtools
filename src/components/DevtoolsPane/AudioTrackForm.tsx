@@ -10,7 +10,7 @@ export const AudioTrackForm: React.FC = () => {
     setAudioTrack(event.target.checked)
   }
   return (
-    <div className="form-inline">
+    <div className="form-inline form-switch">
       <TooltipFormCheck
         kind="audioTrack"
         checked={$audioTrack.value}

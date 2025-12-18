@@ -22,24 +22,23 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
   }
   return (
     <>
-      <div className="form-check form-switch">
-        <input
-          id={inputId}
-          className="form-check-input"
-          type="checkbox"
-          role="switch"
-          checked={checked}
-          onChange={onChange}
-          disabled={disabled}
-          aria-checked={checked}
-        />
-      </div>
-      <span
-        className="form-label tooltip-label"
+      <input
+        id={inputId}
+        className="form-check-input"
+        type="checkbox"
+        role="switch"
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+        aria-checked={checked}
+      />
+      <label
+        htmlFor={inputId}
+        className="form-check-label tooltip-label"
         data-tooltip={instruction.description}
       >
         {children}
-      </span>
+      </label>
     </>
   )
 }

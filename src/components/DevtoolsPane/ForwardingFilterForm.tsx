@@ -16,7 +16,7 @@ export const ForwardingFilterForm: React.FC = () => {
     <>
       <div className="row form-row">
         <div className="col-auto">
-          <div className="form-inline">
+          <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="forwardingFilter"
               checked={$enabledForwardingFilter.value}

@@ -16,7 +16,7 @@ export const VideoH264ParamsForm: React.FC = () => {
     <>
       <div className="row form-row">
         <div className="col-auto">
-          <div className="form-inline">
+          <div className="form-inline form-switch">
             <TooltipFormCheck
               kind="videoH264Params"
               checked={$enabledVideoH264Params.value}
