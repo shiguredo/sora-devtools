@@ -1,17 +1,18 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setVideoTrack } from '@/app/actions'
-import { $videoTrack } from '@/app/store'
+import { setVideoTrack } from "@/app/actions";
+import { $videoTrack } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const VideoTrackForm: FunctionComponent = () => {
-  const onChange = (event: Event): void => {
-    const target = event.target as HTMLInputElement
-    setVideoTrack(target.checked)
-  }
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setVideoTrack(event.currentTarget.checked);
+  };
   return (
-    <div className="form-inline form-switch">
+    <FormRow>
       <TooltipFormCheck
         kind="videoTrack"
         checked={$videoTrack.value}
@@ -20,6 +21,6 @@ export const VideoTrackForm: FunctionComponent = () => {
       >
         Enable video track
       </TooltipFormCheck>
-    </div>
-  )
-}
+    </FormRow>
+  );
+};

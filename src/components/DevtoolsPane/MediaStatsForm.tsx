@@ -1,17 +1,18 @@
-import type { FunctionComponent } from 'preact'
-import type { TargetedEvent } from 'preact/compat'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setMediaStats } from '@/app/actions'
-import { $mediaStats } from '@/app/store'
+import { setMediaStats } from "@/app/actions";
+import { $mediaStats } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const MediaStatsForm: FunctionComponent = () => {
   const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
-    setMediaStats(event.currentTarget.checked)
-  }
+    setMediaStats(event.currentTarget.checked);
+  };
   return (
-    <div className="form-inline form-switch">
+    <FormRow>
       <TooltipFormCheck
         kind="mediaStats"
         checked={$mediaStats.value}
@@ -20,6 +21,6 @@ export const MediaStatsForm: FunctionComponent = () => {
       >
         Show media stats
       </TooltipFormCheck>
-    </div>
-  )
-}
+    </FormRow>
+  );
+};

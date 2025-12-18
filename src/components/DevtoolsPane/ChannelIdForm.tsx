@@ -1,28 +1,29 @@
-import type { FunctionComponent } from 'preact'
-import type { TargetedEvent } from 'preact/compat'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setChannelId } from '@/app/actions'
-import { $channelId, $connectionStatus } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setChannelId } from "@/app/actions";
+import { $channelId, $connectionStatus } from "@/app/store";
+import { FormRow, FormInput } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export const ChannelIdForm: FunctionComponent = () => {
-  const disabled = isFormDisabled($connectionStatus.value)
+  const disabled = isFormDisabled($connectionStatus.value);
   const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
-    setChannelId(event.currentTarget.value)
-  }
+    setChannelId(event.currentTarget.value);
+  };
   return (
-    <div className="form-inline">
+    <FormRow>
       <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
-      <input
-        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      <FormInput
         type="text"
         placeholder="ChannelIdを指定"
         value={$channelId.value}
         onChange={onChange}
         disabled={disabled}
+        className="flex-1 min-w-80"
       />
-    </div>
-  )
-}
+    </FormRow>
+  );
+};

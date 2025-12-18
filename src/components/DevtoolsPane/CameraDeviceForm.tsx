@@ -1,19 +1,21 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setCameraDevice } from '@/app/actions'
-import { $cameraDevice, $connectionStatus, $sora, $video } from '@/app/store'
+import { setCameraDevice } from "@/app/actions";
+import { $cameraDevice, $connectionStatus, $sora, $video } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const CameraDeviceForm: FunctionComponent = () => {
-  const disabled = !($sora.value && $connectionStatus.value === 'connected'
+  const disabled = !($sora.value && $connectionStatus.value === "connected"
     ? $sora.value.video
-    : $video.value)
-  const onChange = (event: Event): void => {
-    setCameraDevice((event.target as HTMLInputElement).checked)
-  }
+    : $video.value);
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setCameraDevice(event.currentTarget.checked);
+  };
   return (
-    <div className="form-inline form-switch">
+    <FormRow>
       <TooltipFormCheck
         kind="cameraDevice"
         checked={$cameraDevice.value}
@@ -22,6 +24,6 @@ export const CameraDeviceForm: FunctionComponent = () => {
       >
         Enable camera device
       </TooltipFormCheck>
-    </div>
-  )
-}
+    </FormRow>
+  );
+};

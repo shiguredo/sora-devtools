@@ -1,17 +1,18 @@
-import type { FunctionComponent } from 'preact'
-import type { TargetedEvent } from 'preact/compat'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setAudioTrack } from '@/app/actions'
-import { $audioTrack } from '@/app/store'
+import { setAudioTrack } from "@/app/actions";
+import { $audioTrack } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const AudioTrackForm: FunctionComponent = () => {
   const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
-    setAudioTrack(event.currentTarget.checked)
-  }
+    setAudioTrack(event.currentTarget.checked);
+  };
   return (
-    <div className="form-inline form-switch">
+    <FormRow>
       <TooltipFormCheck
         kind="audioTrack"
         checked={$audioTrack.value}
@@ -20,6 +21,6 @@ export const AudioTrackForm: FunctionComponent = () => {
       >
         Enable audio track
       </TooltipFormCheck>
-    </div>
-  )
-}
+    </FormRow>
+  );
+};

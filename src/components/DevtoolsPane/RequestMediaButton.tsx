@@ -1,25 +1,18 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
 
-import { requestMedia } from '@/app/actions'
-import { $connectionStatus, $role, $sora } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { requestMedia } from "@/app/actions";
+import { $connectionStatus, $role, $sora } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
 export const RequestMediaButton: FunctionComponent = () => {
   const onClick = (): void => {
-    requestMedia()
-  }
+    requestMedia();
+  };
   const disabled =
-    $role.value === 'recvonly' || $sora.value !== null || isFormDisabled($connectionStatus.value)
+    $role.value === "recvonly" || $sora.value !== null || isFormDisabled($connectionStatus.value);
   return (
-    <div className="flex-none mb-1">
-      <input
-        className="px-4 py-2 border border-gray-500 text-gray-500 hover:bg-gray-500 hover:text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
-        type="button"
-        name="media_access"
-        defaultValue="request media"
-        onClick={onClick}
-        disabled={disabled}
-      />
-    </div>
-  )
-}
+    <button type="button" className="btn btn-outline" onClick={onClick} disabled={disabled}>
+      request media
+    </button>
+  );
+};

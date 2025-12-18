@@ -32,10 +32,5 @@
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": [
-    "global.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "vitest.config.ts"
-  ]
+  "include": ["global.d.ts", "**/*.ts", "**/*.tsx", "vitest.config.ts"]
 }

@@ -1,5 +1,5 @@
-import { useSignal } from '@preact/signals'
-import type { FunctionComponent } from 'preact'
+import { useSignal } from "@preact/signals";
+import type { FunctionComponent } from "preact";
 
 import {
   $audio,
@@ -16,29 +16,29 @@ import {
   $soraClientId,
   $spotlight,
   $video,
-} from '@/app/store'
+} from "@/app/store";
 
-import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel.tsx'
-import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
-import { LocalVideoCapabilities } from './LocalVideoCapabilities.tsx'
-import { RequestSimulcastRidButton } from './RequestSimulcastRidButton.tsx'
-import { RequestSpotlightRidButton } from './RequestSpotlightRidButton.tsx'
-import { ResetSpotlightRidButton } from './ResetSpotlightRidButton.tsx'
-import { SessionStatusBar } from './SessionStatusBar.tsx'
-import { Video } from './Video.tsx'
-import { VolumeVisualizer } from './VolumeVisualizer.tsx'
+import { TooltipFormLabel } from "../DevtoolsPane/TooltipFormLabel.tsx";
+import { ConnectionStatusBar } from "./ConnectionStatusBar.tsx";
+import { LocalVideoCapabilities } from "./LocalVideoCapabilities.tsx";
+import { RequestSimulcastRidButton } from "./RequestSimulcastRidButton.tsx";
+import { RequestSpotlightRidButton } from "./RequestSpotlightRidButton.tsx";
+import { ResetSpotlightRidButton } from "./ResetSpotlightRidButton.tsx";
+import { SessionStatusBar } from "./SessionStatusBar.tsx";
+import { Video } from "./Video.tsx";
+import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 
 const VideoBox: FunctionComponent = () => {
-  const height = useSignal(0)
-  const focused = $connectionId.value && $focusedSpotlightConnectionIds.value[$connectionId.value]
+  const height = useSignal(0);
+  const focused = $connectionId.value && $focusedSpotlightConnectionIds.value[$connectionId.value];
   if ($audio.value === false && $video.value === false) {
-    return null
+    return null;
   }
   return (
     <div className="flex">
       <div
         className={`relative flex flex-nowrap items-start video-wrapper overflow-y-hidden${
-          focused ? ' spotlight-focused' : ''
+          focused ? " spotlight-focused" : ""
         }`}
       >
         {$mediaStats.value &&
@@ -63,8 +63,8 @@ const VideoBox: FunctionComponent = () => {
         ) : null}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const LocalVideo: FunctionComponent = () => {
   return (
@@ -86,26 +86,26 @@ export const LocalVideo: FunctionComponent = () => {
             </div>
           ) : null}
           {$connectionId.value !== null &&
-          $spotlight.value !== 'true' &&
-          $simulcast.value === 'true' &&
-          $role.value !== 'sendonly' ? (
+          $spotlight.value !== "true" &&
+          $simulcast.value === "true" &&
+          $role.value !== "sendonly" ? (
             <div className="flex items-center mb-1 video-status-inner">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
-              <RequestSimulcastRidButton rid={'none'} />
-              <RequestSimulcastRidButton rid={'r0'} />
-              <RequestSimulcastRidButton rid={'r1'} />
-              <RequestSimulcastRidButton rid={'r2'} />
+              <RequestSimulcastRidButton rid={"none"} />
+              <RequestSimulcastRidButton rid={"r0"} />
+              <RequestSimulcastRidButton rid={"r1"} />
+              <RequestSimulcastRidButton rid={"r2"} />
             </div>
           ) : null}
-          {$connectionId.value !== null && $spotlight.value === 'true' ? (
+          {$connectionId.value !== null && $spotlight.value === "true" ? (
             <div className="flex items-center mb-1 video-status-inner">
               <RequestSpotlightRidButton />
               <ResetSpotlightRidButton />
             </div>
           ) : null}
         </div>
-        {$localMediaStream.value !== null && $role.value !== 'recvonly' ? <VideoBox /> : null}
+        {$localMediaStream.value !== null && $role.value !== "recvonly" ? <VideoBox /> : null}
       </div>
     </div>
-  )
-}
+  );
+};

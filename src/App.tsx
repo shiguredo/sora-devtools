@@ -1,8 +1,8 @@
-import type { FunctionComponent } from 'preact'
-import DevTools from './DevTools.tsx'
+import type { FunctionComponent } from "preact";
+import DevTools from "./DevTools.tsx";
 
 const App: FunctionComponent = () => {
-  return <DevTools />
-}
+  return <DevTools />;
+};
 
-export default App
+export default App;

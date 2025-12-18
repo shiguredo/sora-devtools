@@ -1,17 +1,17 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
 
-import { ClipboardIcon } from '@/components/ClipboardIcon'
-import { copy2clipboard } from '@/utils'
+import { ClipboardIcon } from "@/components/ClipboardIcon";
+import { copy2clipboard } from "@/utils";
 
 type TextBoxProps = {
-  id?: string
-  text: string
-}
+  id?: string;
+  text: string;
+};
 const TextBox: FunctionComponent<TextBoxProps> = (props) => {
   const onClick = (event: MouseEvent): void => {
-    copy2clipboard(props.text)
-    ;(event.currentTarget as HTMLButtonElement).blur()
-  }
+    copy2clipboard(props.text);
+    (event.currentTarget as HTMLButtonElement).blur();
+  };
   return (
     <div className="flex items-center">
       <p>sessionID:</p>
@@ -30,13 +30,13 @@ const TextBox: FunctionComponent<TextBoxProps> = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 type Props = {
-  sessionId: string
-}
+  sessionId: string;
+};
 export const SessionStatusBar: FunctionComponent<Props> = (props) => {
-  const { sessionId } = props
-  return <TextBox id="session-id" text={sessionId} />
-}
+  const { sessionId } = props;
+  return <TextBox id="session-id" text={sessionId} />;
+};

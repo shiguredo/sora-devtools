@@ -1,62 +1,62 @@
-import { useSignal } from '@preact/signals'
-import { useEffect } from 'preact/hooks'
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 
-import { $sora, $statsReport } from '@/app/store'
-import type { RTCStatsCodec } from '@/types'
+import { $sora, $statsReport } from "@/app/store";
+import type { RTCStatsCodec } from "@/types";
 
 type VideoTrackStatsType = {
-  codec: RTCStatsCodec
+  codec: RTCStatsCodec;
   videoTrackStats: {
-    width?: number
-    height?: number
-    frameRate?: number
-  }
-} | null
+    width?: number;
+    height?: number;
+    frameRate?: number;
+  };
+} | null;
 
 const useVideoTrackStats = (stream: MediaStream) => {
-  const trackStats = useSignal<VideoTrackStatsType>(null)
+  const trackStats = useSignal<VideoTrackStatsType>(null);
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (!$sora.value?.pc) {
-        return
+        return;
       }
       // 現在の VideoTrack を取得
       const track = stream.getVideoTracks().find((track) => {
-        return track
-      })
+        return track;
+      });
       if (track === undefined) {
-        return
+        return;
       }
 
       // track の RTCRtpReceiver を取得
       const receiver = $sora.value.pc
         .getReceivers()
-        .find((receiver) => receiver.track.id === track.id)
+        .find((receiver) => receiver.track.id === track.id);
       if (receiver === undefined) {
-        return
+        return;
       }
 
       // RTCRtpReceiver の getStats から codecId を取得
-      let codecId: string | undefined
-      const receiverStatsReport = await receiver.getStats()
+      let codecId: string | undefined;
+      const receiverStatsReport = await receiver.getStats();
       for (const stats of receiverStatsReport) {
-        const [_key, value] = stats
+        const [_key, value] = stats;
         if (value.codecId) {
-          codecId = value.codecId
-          break
+          codecId = value.codecId;
+          break;
         }
       }
       if (codecId === undefined) {
-        return
+        return;
       }
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
-      let codec: RTCStatsCodec | undefined
+      let codec: RTCStatsCodec | undefined;
       for (const stats of $statsReport.value) {
-        if (stats.type === 'codec') {
-          const castedStats = stats as RTCStatsCodec
+        if (stats.type === "codec") {
+          const castedStats = stats as RTCStatsCodec;
           if (codecId === castedStats.id) {
-            codec = castedStats
+            codec = castedStats;
           }
         }
       }
@@ -71,17 +71,17 @@ const useVideoTrackStats = (stream: MediaStream) => {
                 ? Math.floor(track.getSettings().frameRate || 0)
                 : undefined,
           },
-        }
+        };
       }
-    })()
-  }, [$statsReport.value, stream, trackStats])
+    })();
+  }, [$statsReport.value, stream, trackStats]);
   return {
     trackStats,
-  }
-}
+  };
+};
 
 export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
-  const { trackStats } = useVideoTrackStats(stream)
+  const { trackStats } = useVideoTrackStats(stream);
   return (
     <div className="video-overlay">
       {trackStats.value === null ? (
@@ -105,7 +105,7 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <td>
               {trackStats.value.videoTrackStats.width === undefined ||
               trackStats.value.videoTrackStats.height === undefined
-                ? 'undefined'
+                ? "undefined"
                 : `${trackStats.value.videoTrackStats.width}x${trackStats.value.videoTrackStats.height}`}
             </td>
           </tr>
@@ -113,12 +113,12 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <th>fps</th>
             <td>
               {trackStats.value.videoTrackStats.frameRate === undefined
-                ? 'undefined'
+                ? "undefined"
                 : trackStats.value.videoTrackStats.frameRate}
             </td>
           </tr>
         </table>
       )}
     </div>
-  )
-}
+  );
+};

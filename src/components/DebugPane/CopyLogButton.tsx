@@ -1,20 +1,20 @@
-import { memo } from 'preact/compat'
-import type { JSX } from 'preact/jsx-runtime'
+import { memo } from "preact/compat";
+import type { JSX } from "preact/jsx-runtime";
 
-import { ClipboardIcon } from '@/components/ClipboardIcon'
-import { copy2clipboard } from '@/utils'
+import { ClipboardIcon } from "@/components/ClipboardIcon";
+import { copy2clipboard } from "@/utils";
 
 type Props = {
-  text: string
-  disabled?: boolean
-}
+  text: string;
+  disabled?: boolean;
+};
 export const CopyLogButton = memo<Props>((props) => {
   const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>): void => {
-    copy2clipboard(props.text)
-    event.currentTarget.blur()
-  }
+    copy2clipboard(props.text);
+    event.currentTarget.blur();
+  };
   if (props.disabled) {
-    return <div style={{ height: '31px' }} />
+    return <div style={{ height: "31px" }} />;
   }
   return (
     <button
@@ -24,5 +24,5 @@ export const CopyLogButton = memo<Props>((props) => {
     >
       <ClipboardIcon />
     </button>
-  )
-})
+  );
+});

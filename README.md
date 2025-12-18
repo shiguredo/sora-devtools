@@ -74,7 +74,6 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 
 [![Image from Gyazo](https://i.gyazo.com/c15b137e3d99d235845af5da0405ef4a.png)](https://gyazo.com/c15b137e3d99d235845af5da0405ef4a)
 
-
 ### コピー URL 機能
 
 現在の設定を URL パラメーターに反映した状態の URL をクリップボードに保存します。既存の URL も変更されます

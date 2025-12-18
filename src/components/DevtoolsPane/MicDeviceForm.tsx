@@ -1,19 +1,21 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setMicDevice } from '@/app/actions'
-import { $audio, $connectionStatus, $micDevice, $sora } from '@/app/store'
+import { setMicDevice } from "@/app/actions";
+import { $audio, $connectionStatus, $micDevice, $sora } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const MicDeviceForm: FunctionComponent = () => {
-  const disabled = !($sora.value && $connectionStatus.value === 'connected'
+  const disabled = !($sora.value && $connectionStatus.value === "connected"
     ? $sora.value.audio
-    : $audio.value)
-  const onChange = (event: Event): void => {
-    setMicDevice((event.target as HTMLInputElement).checked)
-  }
+    : $audio.value);
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setMicDevice(event.currentTarget.checked);
+  };
   return (
-    <div className="form-inline form-switch">
+    <FormRow>
       <TooltipFormCheck
         kind="micDevice"
         checked={$micDevice.value}
@@ -22,6 +24,6 @@ export const MicDeviceForm: FunctionComponent = () => {
       >
         Enable mic device
       </TooltipFormCheck>
-    </div>
-  )
-}
+    </FormRow>
+  );
+};

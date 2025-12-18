@@ -1,11 +1,11 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
 
-import { updateMediaStream } from '@/app/actions'
+import { updateMediaStream } from "@/app/actions";
 
 export const UpdateMediaStreamButton: FunctionComponent = () => {
   const onClick = (): void => {
-    updateMediaStream()
-  }
+    updateMediaStream();
+  };
   return (
     <div className="flex-none mb-1">
       <input
@@ -16,5 +16,5 @@ export const UpdateMediaStreamButton: FunctionComponent = () => {
         onClick={onClick}
       />
     </div>
-  )
-}
+  );
+};

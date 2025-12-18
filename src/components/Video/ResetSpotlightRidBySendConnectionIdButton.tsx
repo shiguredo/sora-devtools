@@ -1,26 +1,26 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
 
-import { $connectionStatus, $sora } from '@/app/store'
-import { rpc } from '@/rpc'
+import { $connectionStatus, $sora } from "@/app/store";
+import { rpc } from "@/rpc";
 
 type Props = {
-  sendConnectionId: string
-}
+  sendConnectionId: string;
+};
 export const ResetSpotlightRidBySendConnectionIdButton: FunctionComponent<Props> = (props) => {
   const onClick = async (): Promise<void> => {
-    if (!$sora.value || $connectionStatus.value !== 'connected') {
-      return
+    if (!$sora.value || $connectionStatus.value !== "connected") {
+      return;
     }
 
     await rpc(
       $sora.value,
-      '2025.2.0/ResetSpotlightRid',
+      "2025.2.0/ResetSpotlightRid",
       {
         send_connection_id: props.sendConnectionId,
       },
       { notification: false, showMethodAlert: true },
-    )
-  }
+    );
+  };
 
   return (
     <input
@@ -30,5 +30,5 @@ export const ResetSpotlightRidBySendConnectionIdButton: FunctionComponent<Props>
       defaultValue="resetSpotlightRid"
       onClick={onClick}
     />
-  )
-}
+  );
+};

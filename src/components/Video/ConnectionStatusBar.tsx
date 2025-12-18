@@ -1,19 +1,19 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
 
-import { ClipboardIcon } from '@/components/ClipboardIcon'
-import { copy2clipboard } from '@/utils'
+import { ClipboardIcon } from "@/components/ClipboardIcon";
+import { copy2clipboard } from "@/utils";
 
 type TextBoxProps = {
-  id?: string
-  label?: string
-  text: string
-}
+  id?: string;
+  label?: string;
+  text: string;
+};
 const TextBox: FunctionComponent<TextBoxProps> = (props) => {
   const onClick = (event: MouseEvent): void => {
-    const target = event.currentTarget as HTMLButtonElement
-    copy2clipboard(props.text)
-    target.blur()
-  }
+    const target = event.currentTarget as HTMLButtonElement;
+    copy2clipboard(props.text);
+    target.blur();
+  };
   return (
     <div className="flex items-center">
       {props.label ? <p>{props.label}</p> : null}
@@ -32,32 +32,32 @@ const TextBox: FunctionComponent<TextBoxProps> = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 type Props = {
-  localVideo?: boolean
-  connectionId: string | null
-  clientId?: string | null
-}
+  localVideo?: boolean;
+  connectionId: string | null;
+  clientId?: string | null;
+};
 export const ConnectionStatusBar: FunctionComponent<Props> = (props) => {
-  const { localVideo, connectionId, clientId } = props
+  const { localVideo, connectionId, clientId } = props;
   return (
     <>
       {connectionId ? (
         <TextBox
-          id={localVideo ? 'local-video-connection-id' : undefined}
+          id={localVideo ? "local-video-connection-id" : undefined}
           label="connectionID:"
           text={connectionId}
         />
       ) : null}
       {clientId !== null && clientId !== undefined && connectionId !== clientId ? (
         <TextBox
-          id={localVideo ? 'local-video-client-id' : undefined}
+          id={localVideo ? "local-video-client-id" : undefined}
           label="clientID:"
           text={clientId}
         />
       ) : null}
     </>
-  )
-}
+  );
+};

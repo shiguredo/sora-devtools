@@ -1,36 +1,35 @@
-import type { ComponentChildren, FunctionComponent } from 'preact'
+import type { ComponentChildren, FunctionComponent } from "preact";
 
-import { setDebugType } from '@/app/actions'
-import { $debug, $debugType } from '@/app/store'
+import { setDebugType } from "@/app/actions";
+import { $debug, $debugType } from "@/app/store";
 
-// import { Api } from './Api.tsx'
-import { CapabilitiesCodec } from './CapabilitiesCodec.tsx'
-import { DataChannelMessagingMessages } from './DataChannelMessagingMessages.tsx'
-import { DebugFilter } from './Filter.tsx'
-import { LogMessages } from './LogMessages.tsx'
-import { NotifyMessages } from './NotifyMessages.tsx'
-import { PushMessages } from './PushMessages.tsx'
-import { Rpc } from './Rpc.tsx'
-import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage.tsx'
-import { SignalingMessages } from './SignalingMessages.tsx'
-import { Stats } from './Stats.tsx'
-import { TimelineMessages } from './TimelineMessages.tsx'
+import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
+import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages.tsx";
+import { DebugFilter } from "./Filter.tsx";
+import { LogMessages } from "./LogMessages.tsx";
+import { NotifyMessages } from "./NotifyMessages.tsx";
+import { PushMessages } from "./PushMessages.tsx";
+import { Rpc } from "./Rpc.tsx";
+import { SendDataChannelMessagingMessage } from "./SendDataChannelMessagingMessage.tsx";
+import { SignalingMessages } from "./SignalingMessages.tsx";
+import { Stats } from "./Stats.tsx";
+import { TimelineMessages } from "./TimelineMessages.tsx";
 
 type TabItem = {
-  key: string
-  title: string
-  content: ComponentChildren
-}
+  key: string;
+  title: string;
+  content: ComponentChildren;
+};
 
 export const DebugPane: FunctionComponent = () => {
   if (!$debug.value) {
-    return null
+    return null;
   }
 
   const tabs: TabItem[] = [
     {
-      key: 'timeline',
-      title: 'Timeline',
+      key: "timeline",
+      title: "Timeline",
       content: (
         <>
           <DebugFilter />
@@ -39,8 +38,8 @@ export const DebugPane: FunctionComponent = () => {
       ),
     },
     {
-      key: 'signaling',
-      title: 'Signaling',
+      key: "signaling",
+      title: "Signaling",
       content: (
         <>
           <DebugFilter />
@@ -49,8 +48,8 @@ export const DebugPane: FunctionComponent = () => {
       ),
     },
     {
-      key: 'notify',
-      title: 'Notfiy',
+      key: "notify",
+      title: "Notify",
       content: (
         <>
           <DebugFilter />
@@ -59,8 +58,8 @@ export const DebugPane: FunctionComponent = () => {
       ),
     },
     {
-      key: 'push',
-      title: 'Push',
+      key: "push",
+      title: "Push",
       content: (
         <>
           <DebugFilter />
@@ -69,8 +68,8 @@ export const DebugPane: FunctionComponent = () => {
       ),
     },
     {
-      key: 'stats',
-      title: 'Stats',
+      key: "stats",
+      title: "Stats",
       content: (
         <>
           <DebugFilter />
@@ -79,8 +78,8 @@ export const DebugPane: FunctionComponent = () => {
       ),
     },
     {
-      key: 'log',
-      title: 'Log',
+      key: "log",
+      title: "Log",
       content: (
         <>
           <DebugFilter />
@@ -89,8 +88,8 @@ export const DebugPane: FunctionComponent = () => {
       ),
     },
     {
-      key: 'messaging',
-      title: 'Messaging',
+      key: "messaging",
+      title: "Messaging",
       content: (
         <>
           <SendDataChannelMessagingMessage />
@@ -98,56 +97,49 @@ export const DebugPane: FunctionComponent = () => {
         </>
       ),
     },
-    // {
-    //   key: 'api',
-    //   title: 'API',
-    //   content: <Api />,
-    // },
     {
-      key: 'rpc',
-      title: 'RPC',
+      key: "rpc",
+      title: "RPC",
       content: <Rpc />,
     },
     {
-      key: 'codec',
-      title: 'Codec',
+      key: "codec",
+      title: "Codec",
       content: <CapabilitiesCodec />,
     },
-  ]
+  ];
 
   const handleTabSelect = (key: string): void => {
     if (
-      key === 'log' ||
-      key === 'notify' ||
-      key === 'push' ||
-      key === 'stats' ||
-      key === 'timeline' ||
-      key === 'signaling' ||
-      key === 'messaging' ||
-      // key === 'api' ||
-      key === 'rpc' ||
-      key === 'codec'
+      key === "log" ||
+      key === "notify" ||
+      key === "push" ||
+      key === "stats" ||
+      key === "timeline" ||
+      key === "signaling" ||
+      key === "messaging" ||
+      key === "rpc" ||
+      key === "codec"
     ) {
-      setDebugType(key)
-      // URL の query string を更新
-      const searchParams = new URLSearchParams(location.search)
-      searchParams.set('debugType', key)
-      const newUrl = `${location.pathname}?${searchParams.toString()}`
-      window.history.replaceState(null, '', newUrl)
+      setDebugType(key);
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("debugType", key);
+      const newUrl = `${location.pathname}?${searchParams.toString()}`;
+      window.history.replaceState(null, "", newUrl);
     }
-  }
+  };
 
-  const activeKey = $debugType.value || 'timeline'
+  const activeKey = $debugType.value || "timeline";
 
   return (
-    <div className="col-debug w-1/2">
-      <div className="flex border-b border-gray-700" id="debug-tab" role="tablist">
+    <div className="col-debug">
+      <div className="debug-tabs" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             type="button"
             role="tab"
-            className={`px-4 py-2 text-white cursor-pointer ${activeKey === tab.key ? 'bg-gray-700' : 'hover:bg-gray-600'}`}
+            className={`debug-tab ${activeKey === tab.key ? "active" : ""}`}
             id={`${tab.key}-tab`}
             aria-controls={`${tab.key}-pane`}
             aria-selected={activeKey === tab.key}
@@ -157,11 +149,11 @@ export const DebugPane: FunctionComponent = () => {
           </button>
         ))}
       </div>
-      <div className="tab-content" id="debug-tab-content">
+      <div className="tab-content">
         {tabs.map((tab) => (
           <div
             key={tab.key}
-            className={activeKey === tab.key ? 'block' : 'hidden'}
+            className={activeKey === tab.key ? "block" : "hidden"}
             id={`${tab.key}-pane`}
             role="tabpanel"
             aria-labelledby={`${tab.key}-tab`}
@@ -171,5 +163,5 @@ export const DebugPane: FunctionComponent = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};

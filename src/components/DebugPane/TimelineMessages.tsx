@@ -1,108 +1,108 @@
-import type { FunctionComponent } from 'preact'
+import type { FunctionComponent } from "preact";
 
-import { $debugFilterText, $timelineMessages } from '@/app/store'
-import type { TimelineMessage } from '@/types'
+import { $debugFilterText, $timelineMessages } from "@/app/store";
+import type { TimelineMessage } from "@/types";
 
-import { Message } from './Message.tsx'
+import { Message } from "./Message.tsx";
 
 const DATA_CHANNEL_COLORS: { [key: string]: string } = {
-  signaling: '#ff00ff',
-  notify: '#ffff00',
-  push: '#98fb98',
-  stats: '#ffc0cb',
-}
+  signaling: "#ff00ff",
+  notify: "#ffff00",
+  push: "#98fb98",
+  stats: "#ffc0cb",
+};
 
 const WebSocketLabel: FunctionComponent = () => {
   return (
-    <span className="me-1" style={{ color: '#00ff00' }}>
+    <span className="me-1" style={{ color: "#00ff00" }}>
       [websocket]
     </span>
-  )
-}
+  );
+};
 
 const PeerConnectionLabel: FunctionComponent = () => {
   return (
-    <span className="me-1" style={{ color: '#ff8c00' }}>
+    <span className="me-1" style={{ color: "#ff8c00" }}>
       [peerconnection]
     </span>
-  )
-}
+  );
+};
 
 const SoraLabel: FunctionComponent = () => {
   return (
-    <span className="me-1" style={{ color: '#bce2e8' }}>
+    <span className="me-1" style={{ color: "#bce2e8" }}>
       [sora]
     </span>
-  )
-}
+  );
+};
 
 const SoraDevtoolsLabel: FunctionComponent = () => {
   return (
-    <span className="me-1" style={{ color: '#73b8e2' }}>
+    <span className="me-1" style={{ color: "#73b8e2" }}>
       [sora-devtools]
     </span>
-  )
-}
+  );
+};
 
 type DataChannelLabelProps = {
-  id?: number | null
-  label?: string | null
-}
+  id?: number | null;
+  label?: string | null;
+};
 const DataChannelLabel: FunctionComponent<DataChannelLabelProps> = (props) => {
-  const { label, id } = props
+  const { label, id } = props;
   const color =
     label && Object.keys(DATA_CHANNEL_COLORS).includes(label)
       ? DATA_CHANNEL_COLORS[label]
-      : undefined
+      : undefined;
   return (
     <span className="me-1" style={color ? { color: color } : {}}>
-      [datachannel]{label ? `[${label}]` : ''}
-      {typeof id === 'number' ? `[${id}]` : ''}
+      [datachannel]{label ? `[${label}]` : ""}
+      {typeof id === "number" ? `[${id}]` : ""}
     </span>
-  )
-}
+  );
+};
 
 const Collapse: FunctionComponent<TimelineMessage> = (props) => {
-  const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props
-  const title = `${type}`
-  let labelComponent: any
-  if (logType === 'websocket') {
-    labelComponent = <WebSocketLabel />
-  } else if (logType === 'datachannel') {
-    labelComponent = <DataChannelLabel id={dataChannelId} label={dataChannelLabel} />
-  } else if (logType === 'peerconnection') {
-    labelComponent = <PeerConnectionLabel />
-  } else if (logType === 'sora') {
-    labelComponent = <SoraLabel />
-  } else if (logType === 'sora-devtools') {
-    labelComponent = <SoraDevtoolsLabel />
+  const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
+  const title = `${type}`;
+  let labelComponent: any;
+  if (logType === "websocket") {
+    labelComponent = <WebSocketLabel />;
+  } else if (logType === "datachannel") {
+    labelComponent = <DataChannelLabel id={dataChannelId} label={dataChannelLabel} />;
+  } else if (logType === "peerconnection") {
+    labelComponent = <PeerConnectionLabel />;
+  } else if (logType === "sora") {
+    labelComponent = <SoraLabel />;
+  } else if (logType === "sora-devtools") {
+    labelComponent = <SoraDevtoolsLabel />;
   }
-  return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />
-}
+  return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
+};
 
 const Log: FunctionComponent<TimelineMessage> = (props) => {
-  return <Collapse {...props} />
-}
+  return <Collapse {...props} />;
+};
 
 export const TimelineMessages: FunctionComponent = () => {
   const filteredMessages = $timelineMessages.value.filter((message) => {
-    return $debugFilterText.value.split(' ').every((filterText) => {
-      if (filterText === '') {
-        return true
+    return $debugFilterText.value.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
-    })
-  })
+      return JSON.stringify(message).indexOf(filterText) >= 0;
+    });
+  });
   return (
     <div className="debug-messages">
       {filteredMessages.map((message) => {
-        let key = `${message.timestamp}-${message.type}`
+        let key = `${message.timestamp}-${message.type}`;
         // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する
         if (message.dataChannelLabel) {
-          key += `-${message.dataChannelLabel}`
+          key += `-${message.dataChannelLabel}`;
         }
-        return <Log key={key} {...message} />
+        return <Log key={key} {...message} />;
       })}
     </div>
-  )
-}
+  );
+};

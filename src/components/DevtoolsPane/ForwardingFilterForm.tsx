@@ -1,47 +1,40 @@
-import type { FunctionComponent } from 'preact'
-import type { TargetedEvent } from 'preact/compat'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
-import { $connectionStatus, $enabledForwardingFilter, $forwardingFilter } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setEnabledForwardingFilter, setForwardingFilter } from "@/app/actions";
+import { $connectionStatus, $enabledForwardingFilter, $forwardingFilter } from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { JSONInputField } from './JSONInputField.tsx'
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { JSONInputField } from "./JSONInputField.tsx";
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const ForwardingFilterForm: FunctionComponent = () => {
-  const disabled = isFormDisabled($connectionStatus.value)
+  const disabled = isFormDisabled($connectionStatus.value);
   const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
-    setEnabledForwardingFilter(event.currentTarget.checked)
-  }
+    setEnabledForwardingFilter(event.currentTarget.checked);
+  };
   return (
     <>
-      <div className="row form-row">
-        <div className="col-auto">
-          <div className="form-inline form-switch">
-            <TooltipFormCheck
-              kind="forwardingFilter"
-              checked={$enabledForwardingFilter.value}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            >
-              forwardingFilter
-            </TooltipFormCheck>
-          </div>
-        </div>
-      </div>
+      <FormRow>
+        <TooltipFormCheck
+          kind="forwardingFilter"
+          checked={$enabledForwardingFilter.value}
+          onChange={onChangeSwitch}
+          disabled={disabled}
+        >
+          forwardingFilter
+        </TooltipFormCheck>
+      </FormRow>
       {$enabledForwardingFilter.value ? (
-        <div className="row form-row">
-          <div className="col-auto">
-            <JSONInputField
-              controlId="forwardingFilter"
-              placeholder="forwardingFilterを指定"
-              value={$forwardingFilter.value}
-              setValue={(value) => setForwardingFilter(value)}
-              disabled={disabled}
-            />
-          </div>
-        </div>
+        <JSONInputField
+          controlId="forwardingFilter"
+          placeholder="forwardingFilterを指定"
+          value={$forwardingFilter.value}
+          setValue={(value) => setForwardingFilter(value)}
+          disabled={disabled}
+        />
       ) : null}
     </>
-  )
-}
+  );
+};

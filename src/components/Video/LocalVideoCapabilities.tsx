@@ -1,103 +1,103 @@
-import { useSignal } from '@preact/signals'
-import { useEffect } from 'preact/hooks'
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 
-import { $statsReport } from '@/app/store'
-import type { RTCStatsCodec } from '@/types'
+import { $statsReport } from "@/app/store";
+import type { RTCStatsCodec } from "@/types";
 
 type RTCStatsCodecPair = {
-  codec?: RTCStatsCodec
-  outboundRtpStats: RTCOutboundRtpStreamStats
-}
+  codec?: RTCStatsCodec;
+  outboundRtpStats: RTCOutboundRtpStreamStats;
+};
 
 const useLocalVideoTrackStats = (stream: MediaStream) => {
-  const trackStats = useSignal<RTCStatsCodecPair[]>([])
-  const selected = useSignal<RTCStatsCodecPair | null>(null)
+  const trackStats = useSignal<RTCStatsCodecPair[]>([]);
+  const selected = useSignal<RTCStatsCodecPair | null>(null);
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       // 現在の VideoTrack を取得
       const track = stream.getVideoTracks().find((track) => {
-        return track
-      })
+        return track;
+      });
       if (track === undefined) {
-        return
+        return;
       }
 
       // track の RTCRtpStats を取得
       // 送信は 1 つだけなので outbound-rtp の kind=video を取得
       const stats = $statsReport.value.filter((stats) => {
-        if (stats.type === 'outbound-rtp') {
-          const castedStats = stats as RTCOutboundRtpStreamStats
-          if (castedStats.kind === 'video') {
-            return true
+        if (stats.type === "outbound-rtp") {
+          const castedStats = stats as RTCOutboundRtpStreamStats;
+          if (castedStats.kind === "video") {
+            return true;
           }
         }
-        return false
-      })
+        return false;
+      });
       if (stats.length === 0) {
-        return
+        return;
       }
 
       const videoStats = stats.map((s) => {
-        const outboundRtpStats = s as RTCOutboundRtpStreamStats
+        const outboundRtpStats = s as RTCOutboundRtpStreamStats;
 
         // RTCStatsReport から codecId が一致する codec の情報を取得
         const codec = $statsReport.value.find((stats) => {
-          if (stats.type === 'codec') {
-            const castedStats = stats as RTCStatsCodec
-            return castedStats.id === outboundRtpStats.codecId
+          if (stats.type === "codec") {
+            const castedStats = stats as RTCStatsCodec;
+            return castedStats.id === outboundRtpStats.codecId;
           }
-          return false
-        })
+          return false;
+        });
         if (codec === undefined) {
           return {
             outboundRtpStats: outboundRtpStats,
-          }
+          };
         }
         return {
           codec: codec as RTCStatsCodec,
           outboundRtpStats: outboundRtpStats,
-        }
-      })
+        };
+      });
       trackStats.value = videoStats.sort((a, b) => {
         if (a.outboundRtpStats.rid === undefined) {
-          return 1
+          return 1;
         }
         if (b.outboundRtpStats.rid === undefined) {
-          return -1
+          return -1;
         }
-        return a.outboundRtpStats.rid.localeCompare(b.outboundRtpStats.rid)
-      })
+        return a.outboundRtpStats.rid.localeCompare(b.outboundRtpStats.rid);
+      });
       if (selected.value === null) {
         // selected が未指定の場合は frameWidth が最大のものを選択
         const selectedVideoStats = videoStats
           .filter((s) => s.outboundRtpStats.frameWidth !== undefined)
           .sort((a, b) => {
             if (a.outboundRtpStats.frameWidth === undefined) {
-              return 1
+              return 1;
             }
             if (b.outboundRtpStats.frameWidth === undefined) {
-              return -1
+              return -1;
             }
-            return b.outboundRtpStats.frameWidth - a.outboundRtpStats.frameWidth
-          })
+            return b.outboundRtpStats.frameWidth - a.outboundRtpStats.frameWidth;
+          });
         if (selectedVideoStats.length > 0) {
-          selected.value = selectedVideoStats[0]
+          selected.value = selectedVideoStats[0];
         }
       } else {
         const selectedStats = videoStats.find(
           (s) => s.outboundRtpStats.rid === selected.value?.outboundRtpStats.rid,
-        )
+        );
         if (selectedStats !== undefined) {
-          selected.value = selectedStats
+          selected.value = selectedStats;
         }
       }
-    })()
-  }, [$statsReport.value, stream, trackStats, selected])
-  return { trackStats, selected }
-}
+    })();
+  }, [$statsReport.value, stream, trackStats, selected]);
+  return { trackStats, selected };
+};
 
 export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
-  const { trackStats, selected } = useLocalVideoTrackStats(stream)
+  const { trackStats, selected } = useLocalVideoTrackStats(stream);
   return (
     <div className="video-overlay">
       {trackStats.value.length === 0 ? (
@@ -111,14 +111,14 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
                   key={trackStat.outboundRtpStats.rid}
                   className={
                     trackStat.outboundRtpStats.rid === selected.value?.outboundRtpStats.rid
-                      ? 'rid-selected'
-                      : 'rid'
+                      ? "rid-selected"
+                      : "rid"
                   }
                   onClick={() => {
-                    selected.value = trackStat
+                    selected.value = trackStat;
                   }}
                   onKeyDown={() => {
-                    selected.value = trackStat
+                    selected.value = trackStat;
                   }}
                 >
                   [{trackStat.outboundRtpStats.rid}]
@@ -160,5 +160,5 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
         </>
       )}
     </div>
-  )
-}
+  );
+};

@@ -1,7 +1,7 @@
 // このテストは Cline https://cline.bot/ による自動生成です。
 
-import { fc, test } from '@fast-check/vitest'
-import { assert } from 'vitest'
+import { fc, test } from "@fast-check/vitest";
+import { assert } from "vitest";
 import {
   ASPECT_RATIO_TYPES,
   AUDIO_CODEC_TYPES,
@@ -25,65 +25,65 @@ import {
   SPOTLIGHT_NUMBERS,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from './constants.ts'
-import { parseQueryString } from './utils.ts'
+} from "./constants.ts";
+import { parseQueryString } from "./utils.ts";
 
 // オブジェクトから URLSearchParams を作成するヘルパー関数
 function createSearchParams(parameters: Record<string, unknown>): URLSearchParams {
-  const searchParams = new URLSearchParams()
+  const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(parameters)) {
     if (value !== undefined && value !== null) {
-      if (typeof value === 'object') {
+      if (typeof value === "object") {
         // オブジェクトや配列を JSON 文字列に変換
-        searchParams.set(key, JSON.stringify(value))
+        searchParams.set(key, JSON.stringify(value));
       } else {
         // その他の値を文字列に変換
-        searchParams.set(key, String(value))
+        searchParams.set(key, String(value));
       }
     }
   }
-  return searchParams
+  return searchParams;
 }
 
 // 異なるパラメータタイプの Arbitraries
 
 // 文字列パラメータの Arbitrary
-const stringParamArb = fc.string()
+const stringParamArb = fc.string();
 
 // 真偽値パラメータの Arbitrary
-const booleanParamArb = fc.boolean()
+const booleanParamArb = fc.boolean();
 
 // 定義済みリストからの文字列パラメータの Arbitrary
-const audioCodecTypeArb = fc.constantFrom(...AUDIO_CODEC_TYPES)
-const roleArb = fc.constantFrom(...ROLES)
-const videoCodecTypeArb = fc.constantFrom(...VIDEO_CODEC_TYPES)
-const spotlightArb = fc.constantFrom(...SPOTLIGHT)
-const simulcastArb = fc.constantFrom(...SIMULCAST)
-const simulcastRidArb = fc.constantFrom(...SIMULCAST_RID)
-const autoGainControlArb = fc.constantFrom(...AUTO_GAIN_CONTROLS)
-const echoCancellationArb = fc.constantFrom(...ECHO_CANCELLATIONS)
-const echoCancellationTypeArb = fc.constantFrom(...ECHO_CANCELLATION_TYPES)
-const noiseSuppressionArb = fc.constantFrom(...NOISE_SUPPRESSIONS)
-const debugTypeArb = fc.constantFrom(...DEBUG_TYPES)
-const mediaTypeArb = fc.constantFrom(...MEDIA_TYPES)
-const dataChannelSignalingArb = fc.constantFrom(...DATA_CHANNEL_SIGNALING)
-const ignoreDisconnectWebSocketArb = fc.constantFrom(...IGNORE_DISCONNECT_WEBSOCKET)
-const aspectRatioArb = fc.constantFrom(...ASPECT_RATIO_TYPES)
-const resizeModeArb = fc.constantFrom(...RESIZE_MODE_TYPES)
-const audioContentHintArb = fc.constantFrom(...AUDIO_CONTENT_HINTS)
-const videoContentHintArb = fc.constantFrom(...VIDEO_CONTENT_HINTS)
-const spotlightNumberArb = fc.constantFrom(...SPOTLIGHT_NUMBERS)
-const spotlightFocusRidArb = fc.constantFrom(...SPOTLIGHT_FOCUS_RIDS)
-const facingModeArb = fc.constantFrom(...FACING_MODES)
-const blurRadiusArb = fc.constantFrom(...BLUR_RADIUS)
+const audioCodecTypeArb = fc.constantFrom(...AUDIO_CODEC_TYPES);
+const roleArb = fc.constantFrom(...ROLES);
+const videoCodecTypeArb = fc.constantFrom(...VIDEO_CODEC_TYPES);
+const spotlightArb = fc.constantFrom(...SPOTLIGHT);
+const simulcastArb = fc.constantFrom(...SIMULCAST);
+const simulcastRidArb = fc.constantFrom(...SIMULCAST_RID);
+const autoGainControlArb = fc.constantFrom(...AUTO_GAIN_CONTROLS);
+const echoCancellationArb = fc.constantFrom(...ECHO_CANCELLATIONS);
+const echoCancellationTypeArb = fc.constantFrom(...ECHO_CANCELLATION_TYPES);
+const noiseSuppressionArb = fc.constantFrom(...NOISE_SUPPRESSIONS);
+const debugTypeArb = fc.constantFrom(...DEBUG_TYPES);
+const mediaTypeArb = fc.constantFrom(...MEDIA_TYPES);
+const dataChannelSignalingArb = fc.constantFrom(...DATA_CHANNEL_SIGNALING);
+const ignoreDisconnectWebSocketArb = fc.constantFrom(...IGNORE_DISCONNECT_WEBSOCKET);
+const aspectRatioArb = fc.constantFrom(...ASPECT_RATIO_TYPES);
+const resizeModeArb = fc.constantFrom(...RESIZE_MODE_TYPES);
+const audioContentHintArb = fc.constantFrom(...AUDIO_CONTENT_HINTS);
+const videoContentHintArb = fc.constantFrom(...VIDEO_CONTENT_HINTS);
+const spotlightNumberArb = fc.constantFrom(...SPOTLIGHT_NUMBERS);
+const spotlightFocusRidArb = fc.constantFrom(...SPOTLIGHT_FOCUS_RIDS);
+const facingModeArb = fc.constantFrom(...FACING_MODES);
+const blurRadiusArb = fc.constantFrom(...BLUR_RADIUS);
 
 // signalingUrlCandidates 用の文字列配列の Arbitrary
-const signalingUrlCandidatesArb = fc.array(fc.webUrl())
+const signalingUrlCandidatesArb = fc.array(fc.webUrl());
 
 // 解像度の Arbitrary（形式: "幅 x 高さ"）
 const resolutionArb = fc
   .tuple(fc.integer({ min: 1, max: 3840 }), fc.integer({ min: 1, max: 2160 }))
-  .map(([width, height]) => `${width}x${height}`)
+  .map(([width, height]) => `${width}x${height}`);
 
 // 完全なパラメータセットの Arbitrary
 const parametersArb = fc.record({
@@ -154,163 +154,163 @@ const parametersArb = fc.record({
   signalingUrlCandidates: fc.option(signalingUrlCandidatesArb, { nil: undefined }),
   resolution: fc.option(resolutionArb, { nil: undefined }),
   displayResolution: fc.option(resolutionArb, { nil: undefined }),
-})
+});
 
 test.prop([parametersArb])(
-  'parseQueryString は有効な入力に対して例外をスローしないこと',
+  "parseQueryString は有効な入力に対して例外をスローしないこと",
   (params) => {
-    const searchParams = createSearchParams(params)
+    const searchParams = createSearchParams(params);
     // 有効な入力に対して例外をスローしないこと
-    const result = parseQueryString(searchParams)
+    const result = parseQueryString(searchParams);
     // 結果はオブジェクトであること
-    assert.equal(typeof result, 'object')
+    assert.equal(typeof result, "object");
   },
-)
+);
 
 test.prop([fc.constant(new URLSearchParams())])(
-  'parseQueryString は空の入力に対して空のオブジェクトを返すこと',
+  "parseQueryString は空の入力に対して空のオブジェクトを返すこと",
   (searchParams) => {
-    const result = parseQueryString(searchParams)
-    assert.deepEqual(result, {})
+    const result = parseQueryString(searchParams);
+    assert.deepEqual(result, {});
   },
-)
+);
 
 test.prop([fc.string(), fc.string()])(
-  'parseQueryString は文字列パラメータを正しく解析すること',
+  "parseQueryString は文字列パラメータを正しく解析すること",
   (channelId, clientId) => {
-    const params = { channelId, clientId }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const params = { channelId, clientId };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.channelId, channelId)
-    assert.equal(result.clientId, clientId)
+    assert.equal(result.channelId, channelId);
+    assert.equal(result.clientId, clientId);
   },
-)
+);
 
 test.prop([fc.boolean(), fc.boolean()])(
-  'parseQueryString は真偽値パラメータを正しく解析すること',
+  "parseQueryString は真偽値パラメータを正しく解析すること",
   (audio, video) => {
-    const params = { audio, video }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const params = { audio, video };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.audio, audio)
-    assert.equal(result.video, video)
+    assert.equal(result.audio, audio);
+    assert.equal(result.video, video);
   },
-)
+);
 
 test.prop([fc.boolean(), fc.boolean()])(
-  'parseQueryString は真偽値を表す文字列を正しく解析すること',
+  "parseQueryString は真偽値を表す文字列を正しく解析すること",
   (audio, video) => {
     // 真偽値を文字列に変換
     const params = {
-      audio: audio ? 'true' : 'false',
-      video: video ? 'true' : 'false',
-    }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+      audio: audio ? "true" : "false",
+      video: video ? "true" : "false",
+    };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.audio, audio)
-    assert.equal(result.video, video)
+    assert.equal(result.audio, audio);
+    assert.equal(result.video, video);
   },
-)
+);
 
 test.prop([audioCodecTypeArb, roleArb, videoCodecTypeArb])(
-  'parseQueryString は指定された文字列パラメータを正しく解析すること',
+  "parseQueryString は指定された文字列パラメータを正しく解析すること",
   (audioCodecType, role, videoCodecType) => {
     // 定数から正確な型でパラメータを作成
-    const params: Record<string, unknown> = {}
-    params.audioCodecType = audioCodecType
-    params.role = role
-    params.videoCodecType = videoCodecType
+    const params: Record<string, unknown> = {};
+    params.audioCodecType = audioCodecType;
+    params.role = role;
+    params.videoCodecType = videoCodecType;
 
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.audioCodecType, audioCodecType)
-    assert.equal(result.role, role)
-    assert.equal(result.videoCodecType, videoCodecType)
+    assert.equal(result.audioCodecType, audioCodecType);
+    assert.equal(result.role, role);
+    assert.equal(result.videoCodecType, videoCodecType);
   },
-)
+);
 
 test.prop([
-  fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS')),
-  fc.string().filter((s) => !ROLES.includes(s as 'sendrecv' | 'sendonly' | 'recvonly')),
+  fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as "" | "OPUS")),
+  fc.string().filter((s) => !ROLES.includes(s as "sendrecv" | "sendonly" | "recvonly")),
 ])(
-  'parseQueryString は無効な指定文字列パラメータを無視すること',
+  "parseQueryString は無効な指定文字列パラメータを無視すること",
   (invalidAudioCodec, invalidRole) => {
-    const params = { audioCodecType: invalidAudioCodec, role: invalidRole }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const params = { audioCodecType: invalidAudioCodec, role: invalidRole };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.isUndefined(result.audioCodecType)
-    assert.isUndefined(result.role)
+    assert.isUndefined(result.audioCodecType);
+    assert.isUndefined(result.role);
   },
-)
+);
 
 test.prop([fc.array(fc.webUrl(), { minLength: 1, maxLength: 5 })])(
-  'parseQueryString は signalingUrlCandidates を正しく解析すること',
+  "parseQueryString は signalingUrlCandidates を正しく解析すること",
   (candidates) => {
-    const params = { signalingUrlCandidates: candidates }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const params = { signalingUrlCandidates: candidates };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.deepEqual(result.signalingUrlCandidates, candidates)
+    assert.deepEqual(result.signalingUrlCandidates, candidates);
   },
-)
+);
 
 test.prop([
   fc.string().filter((s) => {
     try {
-      JSON.parse(s)
-      return false // 有効なJSONの場合は除外
+      JSON.parse(s);
+      return false; // 有効なJSONの場合は除外
     } catch {
-      return true // 無効なJSONの場合は保持
+      return true; // 無効なJSONの場合は保持
     }
   }),
-])('parseQueryString は無効な JSON の signalingUrlCandidates を処理すること', (invalidJson) => {
-  const searchParams = new URLSearchParams()
-  searchParams.set('signalingUrlCandidates', invalidJson)
-  const result = parseQueryString(searchParams)
+])("parseQueryString は無効な JSON の signalingUrlCandidates を処理すること", (invalidJson) => {
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", invalidJson);
+  const result = parseQueryString(searchParams);
 
-  assert.isUndefined(result.signalingUrlCandidates)
-})
+  assert.isUndefined(result.signalingUrlCandidates);
+});
 
-test.prop([fc.string(), fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as '' | 'OPUS'))])(
-  'parseQueryString は undefined のプロパティを削除すること',
+test.prop([fc.string(), fc.string().filter((s) => !AUDIO_CODEC_TYPES.includes(s as "" | "OPUS"))])(
+  "parseQueryString は undefined のプロパティを削除すること",
   (channelId, invalidAudioCodec) => {
-    const params = { channelId, audioCodecType: invalidAudioCodec }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const params = { channelId, audioCodecType: invalidAudioCodec };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.channelId, channelId)
-    assert.notProperty(result, 'audioCodecType')
+    assert.equal(result.channelId, channelId);
+    assert.notProperty(result, "audioCodecType");
   },
-)
+);
 
 test.prop([fc.tuple(fc.integer({ min: 1, max: 3840 }), fc.integer({ min: 1, max: 2160 }))])(
-  'parseQueryString は解像度の形式を正しく処理すること',
+  "parseQueryString は解像度の形式を正しく処理すること",
   ([width, height]) => {
-    const resolution = `${width}x${height}`
-    const params = { resolution }
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const resolution = `${width}x${height}`;
+    const params = { resolution };
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.resolution, resolution)
+    assert.equal(result.resolution, resolution);
   },
-)
+);
 
-test.prop([parametersArb])('parseQueryString は有効な入力に対して冪等であること', (params) => {
-  const searchParams = createSearchParams(params)
-  const result1 = parseQueryString(searchParams)
+test.prop([parametersArb])("parseQueryString は有効な入力に対して冪等であること", (params) => {
+  const searchParams = createSearchParams(params);
+  const result1 = parseQueryString(searchParams);
 
   // 結果から新しい searchParams を作成して再度解析
-  const searchParams2 = createSearchParams(result1 as Record<string, unknown>)
-  const result2 = parseQueryString(searchParams2)
+  const searchParams2 = createSearchParams(result1 as Record<string, unknown>);
+  const result2 = parseQueryString(searchParams2);
 
   // 結果は同じであるべき
-  assert.deepEqual(result2, result1)
-})
+  assert.deepEqual(result2, result1);
+});
 
 test.prop({
   channelId: fc.string(),
@@ -319,23 +319,23 @@ test.prop({
   signalingUrlCandidates: fc.array(fc.webUrl(), { minLength: 1, maxLength: 3 }),
   resolution: resolutionArb,
 })(
-  'parseQueryString はすべてのパラメータタイプの混合を処理すること',
+  "parseQueryString はすべてのパラメータタイプの混合を処理すること",
   ({ channelId, audio, audioCodecType, signalingUrlCandidates, resolution }) => {
     // 定数から正確な型でパラメータを作成
-    const params: Record<string, unknown> = {}
-    params.channelId = channelId
-    params.audio = audio
-    params.audioCodecType = audioCodecType
-    params.signalingUrlCandidates = signalingUrlCandidates
-    params.resolution = resolution
+    const params: Record<string, unknown> = {};
+    params.channelId = channelId;
+    params.audio = audio;
+    params.audioCodecType = audioCodecType;
+    params.signalingUrlCandidates = signalingUrlCandidates;
+    params.resolution = resolution;
 
-    const searchParams = createSearchParams(params)
-    const result = parseQueryString(searchParams)
+    const searchParams = createSearchParams(params);
+    const result = parseQueryString(searchParams);
 
-    assert.equal(result.channelId, channelId)
-    assert.equal(result.audio, audio)
-    assert.equal(result.audioCodecType, audioCodecType)
-    assert.deepEqual(result.signalingUrlCandidates, signalingUrlCandidates)
-    assert.equal(result.resolution, resolution)
+    assert.equal(result.channelId, channelId);
+    assert.equal(result.audio, audio);
+    assert.equal(result.audioCodecType, audioCodecType);
+    assert.deepEqual(result.signalingUrlCandidates, signalingUrlCandidates);
+    assert.equal(result.resolution, resolution);
   },
-)
+);
