@@ -460,7 +460,7 @@ button.debug-title.disabled {
 
 .form-label {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-text);
   white-space: nowrap;
   min-width: fit-content;

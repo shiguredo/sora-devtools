@@ -16,7 +16,6 @@ import {
   $enabledForwardingFilters,
   $enabledMetadata,
   $enabledSignalingNotifyMetadata,
-  $enabledSignalingUrlCandidates,
   $enabledVideoAV1Params,
   $enabledVideoH264Params,
   $enabledVideoH265Params,
@@ -169,9 +168,12 @@ const RowSpotlightOptions: FunctionComponent = () => {
   );
 };
 
-const RowSignalingOptions: FunctionComponent = () => {
-  const collapsed = useSignal(true);
-  const enabledOptions = [
+const SignalingOptionsTabs: FunctionComponent = () => {
+  const activeTab = useSignal<"basic" | "advanced">("basic");
+  const showSenderParams = $role.value !== "recvonly";
+  const showReceiverParams = $role.value !== "sendonly";
+
+  const basicEnabled = [
     $enabledBundleId.value,
     $enabledClientId.value,
     $enabledDataChannel.value,
@@ -180,51 +182,12 @@ const RowSignalingOptions: FunctionComponent = () => {
     $enabledForwardingFilter.value,
     $enabledMetadata.value,
     $enabledSignalingNotifyMetadata.value,
-    $enabledSignalingUrlCandidates.value,
     $reconnect.value,
   ].some((e) => e);
-  const linkClassNames = ["btn-collapse-options"];
-  if (collapsed.value) {
-    linkClassNames.push("collapsed");
-  }
-  if (enabledOptions) {
-    linkClassNames.push("font-bold");
-  }
-  const onClick = (event: MouseEvent): void => {
-    event.preventDefault();
-    collapsed.value = !collapsed.value;
-  };
-  return (
-    <div className="collapsible-section">
-      {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-      <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
-        Signaling options
-      </a>
-      {!collapsed.value && (
-        <div className="collapsible-content">
-          <ReconnectForm />
-          <ClientIdForm />
-          <MetadataForm />
-          <BundleIdForm />
-          <SignalingNotifyMetadataForm />
-          <SignalingUrlCandidatesForm />
-          <ForwardingFiltersForm />
-          <ForwardingFilterForm />
-          <DataChannelsForm />
-          <DataChannelForm />
-        </div>
-      )}
-    </div>
-  );
-};
 
-const RowAdvancedSignalingOptions: FunctionComponent = () => {
-  const showSenderParams = $role.value !== "recvonly";
-  const showReceiverParams = $role.value !== "sendonly";
-  const collapsed = useSignal(true);
-  const showOptions = [] as boolean[];
+  const advancedOptions = [] as boolean[];
   if (showSenderParams) {
-    showOptions.push(
+    advancedOptions.push(
       $enabledAudioStreamingLanguageCode.value,
       $enabledVideoVP9Params.value,
       $enabledVideoH264Params.value,
@@ -233,40 +196,65 @@ const RowAdvancedSignalingOptions: FunctionComponent = () => {
     );
   }
   if (showReceiverParams) {
-    showOptions.push($forceStereoOutput.value);
+    advancedOptions.push($forceStereoOutput.value);
   }
-  const enabledOptions = showOptions.some((e) => e);
-  const linkClassNames = ["btn-collapse-options"];
-  if (collapsed.value) {
-    linkClassNames.push("collapsed");
-  }
-  if (enabledOptions) {
-    linkClassNames.push("font-bold");
-  }
-  const onClick = (event: MouseEvent): void => {
-    event.preventDefault();
-    collapsed.value = !collapsed.value;
-  };
+  const advancedEnabled = advancedOptions.some((e) => e);
+
   return (
-    <div className="collapsible-section">
-      {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-      <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
-        Advanced signaling options
-      </a>
-      {!collapsed.value && (
-        <div className="collapsible-content">
-          {showSenderParams && (
-            <>
-              <AudioStreamingLanguageCodeForm />
-              <VideoVP9ParamsForm />
-              <VideoAV1ParamsForm />
-              <VideoH264ParamsForm />
-              <VideoH265ParamsForm />
-            </>
-          )}
-          {showReceiverParams && <ForceStereoOutputForm />}
-        </div>
-      )}
+    <div className="signaling-options-tabs">
+      <div className="flex border-b border-slate-200">
+        <button
+          type="button"
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab.value === "basic"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+          } ${basicEnabled ? "font-semibold" : ""}`}
+          onClick={() => (activeTab.value = "basic")}
+        >
+          Signaling options
+        </button>
+        <button
+          type="button"
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab.value === "advanced"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+          } ${advancedEnabled ? "font-semibold" : ""}`}
+          onClick={() => (activeTab.value = "advanced")}
+        >
+          Advanced
+        </button>
+      </div>
+      <div className="py-3">
+        {activeTab.value === "basic" && (
+          <div className="flex flex-col gap-2">
+            <ReconnectForm />
+            <ClientIdForm />
+            <MetadataForm />
+            <BundleIdForm />
+            <SignalingNotifyMetadataForm />
+            <ForwardingFiltersForm />
+            <ForwardingFilterForm />
+            <DataChannelsForm />
+            <DataChannelForm />
+          </div>
+        )}
+        {activeTab.value === "advanced" && (
+          <div className="flex flex-col gap-2">
+            {showSenderParams && (
+              <>
+                <AudioStreamingLanguageCodeForm />
+                <VideoVP9ParamsForm />
+                <VideoAV1ParamsForm />
+                <VideoH264ParamsForm />
+                <VideoH265ParamsForm />
+              </>
+            )}
+            {showReceiverParams && <ForceStereoOutputForm />}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -402,8 +390,8 @@ export const DevtoolsPane: FunctionComponent = () => {
       <RowSpotlightOptions />
       <hr className="hr-form" />
       <RowGetUserMediaConstraints />
-      <RowSignalingOptions />
-      <RowAdvancedSignalingOptions />
+      <SignalingUrlCandidatesForm />
+      <SignalingOptionsTabs />
       <hr className="hr-form" />
       {$role.value !== "recvonly" ? (
         <>
