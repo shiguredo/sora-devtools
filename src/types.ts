@@ -1,6 +1,6 @@
-import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
-import type { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
-import type { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
+import type { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
+import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import type { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
@@ -8,7 +8,7 @@ import type {
   Role,
   TimelineEventLogType,
   TransportType,
-} from 'sora-js-sdk'
+} from "sora-js-sdk";
 
 import type {
   ASPECT_RATIO_TYPES,
@@ -19,207 +19,206 @@ import type {
   CONNECTION_STATUS,
   DATA_CHANNEL_SIGNALING,
   DEBUG_TYPES,
-  ECHO_CANCELLATIONS,
   ECHO_CANCELLATION_TYPES,
+  ECHO_CANCELLATIONS,
   FACING_MODES,
   IGNORE_DISCONNECT_WEBSOCKET,
   MEDIA_TYPES,
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   SIMULCAST,
-  SIMULCAST_RID,
   SIMULCAST_REQUEST_RID,
+  SIMULCAST_RID,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from '@/constants'
+} from "@/constants";
 
 export type RemoteClient = {
-  mediaStream: MediaStream
-  clientId: string | null
-  connectionId: string
-}
+  mediaStream: MediaStream;
+  clientId: string | null;
+  connectionId: string;
+};
 
 export type SoraDevtoolsState = {
-  alertMessages: AlertMessage[]
-  audio: boolean
-  audioBitRate: string
-  audioCodecType: (typeof AUDIO_CODEC_TYPES)[number]
-  audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number]
-  audioInput: string
-  audioInputDevices: MediaDeviceInfo[]
-  audioOutput: string
-  audioOutputDevices: MediaDeviceInfo[]
-  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
-  blurRadius: (typeof BLUR_RADIUS)[number]
-  bundleId: string
-  channelId: string
-  clientId: string
-  googCpuOveruseDetection: boolean | null
-  timelineMessages: TimelineMessage[]
-  debug: boolean
-  debugFilterText: string
-  debugType: DebugType
-  debugApiUrl: string
-  dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number]
-  dataChannels: string
-  dataChannelMessages: DataChannelMessage[]
-  displayResolution: string
-  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
-  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
-  enabledBundleId: boolean
-  enabledClientId: boolean
-  enabledDataChannels: boolean
-  enabledDataChannel: boolean
-  enabledMetadata: boolean
-  enabledSignalingNotifyMetadata: boolean
-  enabledSignalingUrlCandidates: boolean
-  enabledForwardingFilters: boolean
-  enabledForwardingFilter: boolean
-  enabledVideoVP9Params: boolean
-  enabledVideoH264Params: boolean
-  enabledVideoH265Params: boolean
-  enabledVideoAV1Params: boolean
-  audioStreamingLanguageCode: string
-  enabledAudioStreamingLanguageCode: boolean
+  alertMessages: AlertMessage[];
+  audio: boolean;
+  audioBitRate: string;
+  audioCodecType: (typeof AUDIO_CODEC_TYPES)[number];
+  audioContentHint: (typeof AUDIO_CONTENT_HINTS)[number];
+  audioInput: string;
+  audioInputDevices: MediaDeviceInfo[];
+  audioOutput: string;
+  audioOutputDevices: MediaDeviceInfo[];
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number];
+  blurRadius: (typeof BLUR_RADIUS)[number];
+  bundleId: string;
+  channelId: string;
+  clientId: string;
+  googCpuOveruseDetection: boolean | null;
+  timelineMessages: TimelineMessage[];
+  debug: boolean;
+  debugFilterText: string;
+  debugType: DebugType;
+  debugApiUrl: string;
+  dataChannelSignaling: (typeof DATA_CHANNEL_SIGNALING)[number];
+  dataChannels: string;
+  dataChannelMessages: DataChannelMessage[];
+  displayResolution: string;
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number];
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number];
+  enabledBundleId: boolean;
+  enabledClientId: boolean;
+  enabledDataChannels: boolean;
+  enabledDataChannel: boolean;
+  enabledMetadata: boolean;
+  enabledSignalingNotifyMetadata: boolean;
+  enabledSignalingUrlCandidates: boolean;
+  enabledForwardingFilters: boolean;
+  enabledForwardingFilter: boolean;
+  enabledVideoVP9Params: boolean;
+  enabledVideoH264Params: boolean;
+  enabledVideoH265Params: boolean;
+  enabledVideoAV1Params: boolean;
+  audioStreamingLanguageCode: string;
+  enabledAudioStreamingLanguageCode: boolean;
   fakeContents: {
-    worker: Worker | null
-    colorCode: number
-    gainNode: GainNode | null
-  }
-  fakeVolume: string
-  forceStereoOutput: boolean
-  frameRate: string
+    worker: Worker | null;
+    colorCode: number;
+    gainNode: GainNode | null;
+  };
+  fakeVolume: string;
+  forceStereoOutput: boolean;
+  frameRate: string;
   soraContents: {
-    connectionStatus: (typeof CONNECTION_STATUS)[number]
-    reconnecting: boolean
-    reconnectingTrials: number
-    sora: ConnectionPublisher | ConnectionSubscriber | null
-    connectionId: string | null
-    clientId: string | null
-    sessionId: string | null
-    localMediaStream: MediaStream | null
-    remoteClients: RemoteClient[]
-    prevStatsReport: RTCStats[]
-    statsReport: RTCStats[]
-    dataChannels: DataChannelConfiguration[]
-    turnUrl: string | null
-  }
-  ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number]
-  logMessages: LogMessage[]
-  mediaProcessorsNoiseSuppression: boolean
-  mediaStats: boolean
-  mediaType: (typeof MEDIA_TYPES)[number]
-  mp4MediaStream: Mp4MediaStream | null
-  metadata: string
-  mute: boolean
-  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
-  notifyMessages: NotifyMessage[]
-  pushMessages: PushMessage[]
-  resolution: string
-  showStats: boolean
-  signalingMessages: SignalingMessage[]
-  signalingNotifyMetadata: string
-  signalingUrlCandidates: string[]
-  forwardingFilters: string
-  forwardingFilter: string
-  simulcast: (typeof SIMULCAST)[number]
-  simulcastRid: (typeof SIMULCAST_RID)[number]
-  simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number]
-  spotlight: (typeof SPOTLIGHT)[number]
+    connectionStatus: (typeof CONNECTION_STATUS)[number];
+    reconnecting: boolean;
+    reconnectingTrials: number;
+    sora: ConnectionPublisher | ConnectionSubscriber | null;
+    connectionId: string | null;
+    clientId: string | null;
+    sessionId: string | null;
+    localMediaStream: MediaStream | null;
+    remoteClients: RemoteClient[];
+    prevStatsReport: RTCStats[];
+    statsReport: RTCStats[];
+    dataChannels: DataChannelConfiguration[];
+    turnUrl: string | null;
+  };
+  ignoreDisconnectWebSocket: (typeof IGNORE_DISCONNECT_WEBSOCKET)[number];
+  logMessages: LogMessage[];
+  mediaProcessorsNoiseSuppression: boolean;
+  mediaStats: boolean;
+  mediaType: (typeof MEDIA_TYPES)[number];
+  mp4MediaStream: Mp4MediaStream | null;
+  metadata: string;
+  mute: boolean;
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number];
+  notifyMessages: NotifyMessage[];
+  pushMessages: PushMessage[];
+  resolution: string;
+  showStats: boolean;
+  signalingMessages: SignalingMessage[];
+  signalingNotifyMetadata: string;
+  signalingUrlCandidates: string[];
+  forwardingFilters: string;
+  simulcast: (typeof SIMULCAST)[number];
+  simulcastRid: (typeof SIMULCAST_RID)[number];
+  simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number];
+  spotlight: (typeof SPOTLIGHT)[number];
   focusedSpotlightConnectionIds: {
-    [key: string]: boolean
-  }
-  spotlightNumber: (typeof SPOTLIGHT_NUMBERS)[number]
-  spotlightFocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number]
-  spotlightUnfocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number]
-  video: boolean
-  videoBitRate: string
-  videoCodecType: (typeof VIDEO_CODEC_TYPES)[number]
-  videoContentHint: (typeof VIDEO_CONTENT_HINTS)[number]
-  videoInput: string
-  videoInputDevices: MediaDeviceInfo[]
-  videoVP9Params: string
-  videoH264Params: string
-  videoH265Params: string
-  videoAV1Params: string
-  version: string
-  cameraDevice: boolean
-  videoTrack: boolean
-  micDevice: boolean
-  audioTrack: boolean
-  role: Role
-  reconnect: boolean
-  apiUrl: null | string
-  aspectRatio: (typeof ASPECT_RATIO_TYPES)[number]
-  resizeMode: (typeof RESIZE_MODE_TYPES)[number]
-  noiseSuppressionProcessor: NoiseSuppressionProcessor | null
-  virtualBackgroundProcessor: VirtualBackgroundProcessor | null
-  facingMode: (typeof FACING_MODES)[number]
-  rpcObjects: RpcObject[]
-  apiObjects: ApiObject[]
-}
+    [key: string]: boolean;
+  };
+  spotlightNumber: (typeof SPOTLIGHT_NUMBERS)[number];
+  spotlightFocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number];
+  spotlightUnfocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number];
+  video: boolean;
+  videoBitRate: string;
+  videoCodecType: (typeof VIDEO_CODEC_TYPES)[number];
+  videoContentHint: (typeof VIDEO_CONTENT_HINTS)[number];
+  videoInput: string;
+  videoInputDevices: MediaDeviceInfo[];
+  videoVP9Params: string;
+  videoH264Params: string;
+  videoH265Params: string;
+  videoAV1Params: string;
+  version: string;
+  cameraDevice: boolean;
+  videoTrack: boolean;
+  micDevice: boolean;
+  audioTrack: boolean;
+  role: Role;
+  reconnect: boolean;
+  apiUrl: null | string;
+  aspectRatio: (typeof ASPECT_RATIO_TYPES)[number];
+  resizeMode: (typeof RESIZE_MODE_TYPES)[number];
+  noiseSuppressionProcessor: NoiseSuppressionProcessor | null;
+  virtualBackgroundProcessor: VirtualBackgroundProcessor | null;
+  facingMode: (typeof FACING_MODES)[number];
+  rpcObjects: RpcObject[];
+  apiObjects: ApiObject[];
+};
 
 export type RpcObject = {
-  timestamp: number
-  method: string
-  params?: Record<string, unknown> | unknown[]
+  timestamp: number;
+  method: string;
+  params?: Record<string, unknown> | unknown[];
   options?: {
-    timeout?: number
-    notification?: boolean
-  }
-  result?: unknown
+    timeout?: number;
+    notification?: boolean;
+  };
+  result?: unknown;
   error?: {
-    code: number
-    message: string
-    data?: unknown
-  }
-  duration?: number
-}
+    code: number;
+    message: string;
+    data?: unknown;
+  };
+  duration?: number;
+};
 
 export type ApiObject = {
-  timestamp: number
-  url: string
-  method: string
-  requestHeaders?: Record<string, string>
-  requestBody?: unknown
-  status?: number
-  responseHeaders?: Record<string, string>
-  responseBody?: unknown
-  error?: string
-  errorType?: 'cors' | 'timeout' | 'network' | 'unknown'
-  duration?: number
-}
+  timestamp: number;
+  url: string;
+  method: string;
+  requestHeaders?: Record<string, string>;
+  requestBody?: unknown;
+  status?: number;
+  responseHeaders?: Record<string, string>;
+  responseBody?: unknown;
+  error?: string;
+  errorType?: "cors" | "timeout" | "network" | "unknown";
+  duration?: number;
+};
 
 // 画面表示する message の Type
 export type AlertMessage = {
-  timestamp: number
-  type: 'error' | 'info'
-  title: string
-  message: string
-}
+  timestamp: number;
+  type: "error" | "info";
+  title: string;
+  message: string;
+};
 
 // Debug timeline message の Type
 export type TimelineMessage = {
-  timestamp: number
-  type: string
-  logType: TimelineEventLogType | 'sora-devtools'
-  data?: any
-  dataChannelId?: number | null
-  dataChannelLabel?: string | null
-}
+  timestamp: number;
+  type: string;
+  logType: TimelineEventLogType | "sora-devtools";
+  data?: any;
+  dataChannelId?: number | null;
+  dataChannelLabel?: string | null;
+};
 
 // HTMLCanvasElement interface に captureStream を追加
 export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
-  captureStream(fps?: number): MediaStream
+  captureStream(fps?: number): MediaStream;
 }
 
 // MediaTrackConstraints interface に property を追加
 export interface SoraDevtoolsMediaTrackConstraints extends MediaTrackConstraintSet {
-  echoCancellationType?: 'system' | 'browser'
-  resizeMode?: 'none' | 'crop-and-scale'
+  echoCancellationType?: "system" | "browser";
+  resizeMode?: "none" | "crop-and-scale";
 }
 
 export type Json =
@@ -229,227 +228,226 @@ export type Json =
   | string
   | Json[]
   | {
-      [prop: string]: Json | undefined
-    }
+      [prop: string]: Json | undefined;
+    };
 
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
-  setSinkId(audioId: string): Promise<void>
+  setSinkId(audioId: string): Promise<void>;
 }
 
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加
 export interface RTCMediaStreamTrackStats extends RTCStats {
-  ssrc: number
-  kind: string
-  trackId: string
-  trackIdentifier: string
-  transportId: string
-  codecId: string
-  mediaType: string
-  jitter: number
-  packetsLost: number
-  remoteId: string
-  packetsReceived: number
-  fecPacketsReceived: number
-  fecPacketsDiscarded: number
-  bytesReceived: number
-  headerBytesReceived: number
-  lastPacketReceivedTimestamp: number
-  jitterBufferDelay: number
-  jitterBufferEmittedCount: number
-  totalSamplesReceived: number
-  concealedSamples: number
-  silentConcealedSamples: number
-  concealmentEvents: number
-  insertedSamplesForDeceleration: number
-  removedSamplesForAcceleration: number
-  audioLevel: number
-  totalAudioEnergy: number
-  totalSamplesDuration: number
-  estimatedPlayoutTimestamp: number
-  prevJitterBufferDelay: number
-  prevJitterBufferEmittedCount: number
+  ssrc: number;
+  kind: string;
+  trackId: string;
+  trackIdentifier: string;
+  transportId: string;
+  codecId: string;
+  mediaType: string;
+  jitter: number;
+  packetsLost: number;
+  remoteId: string;
+  packetsReceived: number;
+  fecPacketsReceived: number;
+  fecPacketsDiscarded: number;
+  bytesReceived: number;
+  headerBytesReceived: number;
+  lastPacketReceivedTimestamp: number;
+  jitterBufferDelay: number;
+  jitterBufferEmittedCount: number;
+  totalSamplesReceived: number;
+  concealedSamples: number;
+  silentConcealedSamples: number;
+  concealmentEvents: number;
+  insertedSamplesForDeceleration: number;
+  removedSamplesForAcceleration: number;
+  audioLevel: number;
+  totalAudioEnergy: number;
+  totalSamplesDuration: number;
+  estimatedPlayoutTimestamp: number;
+  prevJitterBufferDelay: number;
+  prevJitterBufferEmittedCount: number;
 }
 
 // RTCInboundRtpStreamStats に jitterBuffer 関連を追加
 // ref: https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats
 export interface RTCInboundRtpStreamStats extends RTCReceivedRtpStreamStats {
   // 元々定義されてたやつ
-  firCount?: number
-  framesDecoded?: number
-  nackCount?: number
-  pliCount?: number
-  qpSum?: number
-  remoteId?: string
+  firCount?: number;
+  framesDecoded?: number;
+  nackCount?: number;
+  pliCount?: number;
+  qpSum?: number;
+  remoteId?: string;
 
   // 新しく追加したやつ
-  trackIdentifier: string
-  kind: string
-  jitterBufferDelay?: number
-  jitterBufferTargetDelay?: number
-  jitterBufferEmittedCount?: number
-  jitterBufferMinimumDelay?: number
+  trackIdentifier: string;
+  kind: string;
+  jitterBufferDelay?: number;
+  jitterBufferTargetDelay?: number;
+  jitterBufferEmittedCount?: number;
+  jitterBufferMinimumDelay?: number;
 }
 
 // Debug log message の Type
 export type LogMessage = {
-  timestamp: number
+  timestamp: number;
   message: {
-    title: string
-    description: string
-  }
-}
+    title: string;
+    description: string;
+  };
+};
 
 // Sora on notify callback の引数 Type
 export type SoraNotifyMessage = {
-  type: 'notify'
-  event_type: string
-  [x: string]: unknown
-}
+  type: "notify";
+  event_type: string;
+  [x: string]: unknown;
+};
 
 // Debug notify message の Type
 export type NotifyMessage = {
-  timestamp: number
-  message: SoraNotifyMessage
-  transportType: TransportType
-}
+  timestamp: number;
+  message: SoraNotifyMessage;
+  transportType: TransportType;
+};
 
 // Sora on push callback の引数 Type
 export type SoraPushMessage = {
-  type: 'push'
+  type: "push";
   data: {
-    [x: string]: unknown
-  }
-}
+    [x: string]: unknown;
+  };
+};
 
 // Debug push message の Type
 export type PushMessage = {
-  timestamp: number
-  message: SoraPushMessage
-  transportType: TransportType
-}
+  timestamp: number;
+  message: SoraPushMessage;
+  transportType: TransportType;
+};
 
 // Debug signaling message の Type
 export type SignalingMessage = {
-  timestamp: number
-  type: string
-  transportType: TransportType
-  data?: any
-}
+  timestamp: number;
+  type: string;
+  transportType: TransportType;
+  data?: any;
+};
 
 // Debug data channel message の Type
 export type DataChannelMessage = {
-  timestamp: number
-  label: string
-  data?: any
-}
+  timestamp: number;
+  label: string;
+  data?: any;
+};
 
 // Debug 表示タブ選択状態用の Type
-export type DebugType = (typeof DEBUG_TYPES)[number]
+export type DebugType = (typeof DEBUG_TYPES)[number];
 
 // クエリ文字列から取得する parameter の Type
 export type QueryStringParameters = Omit<
   SoraDevtoolsState,
-  | 'alertMessages'
-  | 'dataChannelMessages'
-  | 'debugFilterText'
-  | 'fakeContents'
-  | 'focusedSpotlightConnectionIds'
-  | 'logMessages'
-  | 'notifyMessages'
-  | 'pushMessages'
-  | 'signalingMessages'
-  | 'soraContents'
-  | 'timelineMessages'
-  | 'version'
->
+  | "alertMessages"
+  | "dataChannelMessages"
+  | "debugFilterText"
+  | "fakeContents"
+  | "focusedSpotlightConnectionIds"
+  | "logMessages"
+  | "notifyMessages"
+  | "pushMessages"
+  | "signalingMessages"
+  | "soraContents"
+  | "timelineMessages"
+  | "version"
+>;
 
 // sora-js-sdk の接続オプションで使用する state
 export type ConnectionOptionsState = Pick<
   SoraDevtoolsState,
-  | 'audio'
-  | 'audioBitRate'
-  | 'audioCodecType'
-  | 'audioStreamingLanguageCode'
-  | 'bundleId'
-  | 'clientId'
-  | 'dataChannelSignaling'
-  | 'dataChannels'
-  | 'enabledAudioStreamingLanguageCode'
-  | 'enabledBundleId'
-  | 'enabledClientId'
-  | 'enabledDataChannel'
-  | 'enabledSignalingNotifyMetadata'
-  | 'enabledForwardingFilters'
-  | 'enabledForwardingFilter'
-  | 'enabledVideoVP9Params'
-  | 'enabledVideoH264Params'
-  | 'enabledVideoH265Params'
-  | 'enabledVideoAV1Params'
-  | 'ignoreDisconnectWebSocket'
-  | 'signalingNotifyMetadata'
-  | 'forwardingFilters'
-  | 'forwardingFilter'
-  | 'simulcast'
-  | 'simulcastRid'
-  | 'simulcastRequestRid'
-  | 'spotlight'
-  | 'spotlightFocusRid'
-  | 'spotlightNumber'
-  | 'spotlightUnfocusRid'
-  | 'video'
-  | 'videoBitRate'
-  | 'videoCodecType'
-  | 'videoVP9Params'
-  | 'videoH264Params'
-  | 'videoH265Params'
-  | 'videoAV1Params'
-  | 'forceStereoOutput'
-  | 'role'
->
+  | "audio"
+  | "audioBitRate"
+  | "audioCodecType"
+  | "audioStreamingLanguageCode"
+  | "bundleId"
+  | "clientId"
+  | "dataChannelSignaling"
+  | "dataChannels"
+  | "enabledAudioStreamingLanguageCode"
+  | "enabledBundleId"
+  | "enabledClientId"
+  | "enabledDataChannel"
+  | "enabledSignalingNotifyMetadata"
+  | "enabledForwardingFilters"
+  | "enabledForwardingFilter"
+  | "enabledVideoVP9Params"
+  | "enabledVideoH264Params"
+  | "enabledVideoH265Params"
+  | "enabledVideoAV1Params"
+  | "ignoreDisconnectWebSocket"
+  | "signalingNotifyMetadata"
+  | "forwardingFilters"
+  | "simulcast"
+  | "simulcastRid"
+  | "simulcastRequestRid"
+  | "spotlight"
+  | "spotlightFocusRid"
+  | "spotlightNumber"
+  | "spotlightUnfocusRid"
+  | "video"
+  | "videoBitRate"
+  | "videoCodecType"
+  | "videoVP9Params"
+  | "videoH264Params"
+  | "videoH265Params"
+  | "videoAV1Params"
+  | "forceStereoOutput"
+  | "role"
+>;
 
 // ダウンロードレポートに使用するパラメーター
 export type DownloadReportParameters = Omit<
   SoraDevtoolsState,
-  | 'alertMessages'
-  | 'apiObjects'
-  | 'apiUrl'
-  | 'blurRadius'
-  | 'dataChannelMessages'
-  | 'debugFilterText'
-  | 'debugType'
-  | 'fakeContents'
-  | 'focusedSpotlightConnectionIds'
-  | 'localTestMediaStream'
-  | 'logMessages'
-  | 'mediaProcessorsNoiseSuppression'
-  | 'mp4MediaStream'
-  | 'mute'
-  | 'noiseSuppressionProcessor'
-  | 'notifyMessages'
-  | 'pushMessages'
-  | 'rpcObjects'
-  | 'showStats'
-  | 'signalingMessages'
-  | 'soraContents'
-  | 'timelineMessages'
-  | 'version'
-  | 'virtualBackgroundProcessor'
->
+  | "alertMessages"
+  | "apiObjects"
+  | "apiUrl"
+  | "blurRadius"
+  | "dataChannelMessages"
+  | "debugFilterText"
+  | "debugType"
+  | "fakeContents"
+  | "focusedSpotlightConnectionIds"
+  | "localTestMediaStream"
+  | "logMessages"
+  | "mediaProcessorsNoiseSuppression"
+  | "mp4MediaStream"
+  | "mute"
+  | "noiseSuppressionProcessor"
+  | "notifyMessages"
+  | "pushMessages"
+  | "rpcObjects"
+  | "showStats"
+  | "signalingMessages"
+  | "soraContents"
+  | "timelineMessages"
+  | "version"
+  | "virtualBackgroundProcessor"
+>;
 
 export type DownloadReport = {
-  userAgent: string
-  'sora-devtools': string
-  'sora-js-sdk': string
-  parameters: DownloadReportParameters
-  timeline: unknown[]
-  notify: unknown[]
-  stats: unknown[]
-}
+  userAgent: string;
+  "sora-devtools": string;
+  "sora-js-sdk": string;
+  parameters: DownloadReportParameters;
+  timeline: unknown[];
+  notify: unknown[];
+  stats: unknown[];
+};
 
-export type RTCStatsCodec = RTCStats & RTCRtpCodecParameters
+export type RTCStatsCodec = RTCStats & RTCRtpCodecParameters;
 
 // RTCStats.type === 'local-candidate' の型
 export type RTCIceLocalCandidateStats = RTCStats & {
-  url?: string
-}
+  url?: string;
+};

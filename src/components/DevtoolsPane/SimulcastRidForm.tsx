@@ -1,34 +1,31 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setSimulcastRid } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { SIMULCAST_RID } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+import { setSimulcastRid } from "@/app/actions";
+import { $connectionStatus, $simulcastRid } from "@/app/store";
+import { FormRow, FormSelect } from "@/components/Form";
+import { SIMULCAST_RID } from "@/constants";
+import { checkFormValue, isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const SimulcastRidForm: React.FC = () => {
-  const simulcastRid = useSoraDevtoolsStore((state) => state.simulcastRid)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, SIMULCAST_RID)) {
-      setSimulcastRid(event.target.value)
+export const SimulcastRidForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    if (checkFormValue(event.currentTarget.value, SIMULCAST_RID)) {
+      setSimulcastRid(event.currentTarget.value);
     }
-  }
+  };
   return (
-    <FormGroup className="form-inline" controlId="simulcastRid">
+    <FormRow>
       <TooltipFormLabel kind="simulcastRid">simulcastRid:</TooltipFormLabel>
-      <FormSelect name="simulcastRid" value={simulcastRid} onChange={onChange} disabled={disabled}>
-        {SIMULCAST_RID.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
-            </option>
-          )
-        })}
+      <FormSelect value={$simulcastRid.value} onChange={onChange} disabled={disabled}>
+        {SIMULCAST_RID.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

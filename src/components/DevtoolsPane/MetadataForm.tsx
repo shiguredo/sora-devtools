@@ -1,50 +1,40 @@
-import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setEnabledMetadata, setMetadata } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setEnabledMetadata, setMetadata } from "@/app/actions";
+import { $connectionStatus, $enabledMetadata, $metadata } from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { JSONInputField } from './JSONInputField.tsx'
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { JSONInputField } from "./JSONInputField.tsx";
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const MetadataForm: React.FC = () => {
-  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata)
-  const metadata = useSoraDevtoolsStore((state) => state.metadata)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledMetadata(event.target.checked)
-  }
+export const MetadataForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledMetadata(event.currentTarget.checked);
+  };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledMetadata">
-            <TooltipFormCheck
-              kind="metadata"
-              checked={enabledMetadata}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            >
-              metadata
-            </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
-      {enabledMetadata ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <JSONInputField
-              controlId="metadata"
-              placeholder="Metadataを指定"
-              value={metadata}
-              setValue={(value) => setMetadata(value)}
-              disabled={disabled}
-            />
-          </Col>
-        </Row>
+      <FormRow>
+        <TooltipFormCheck
+          kind="metadata"
+          checked={$enabledMetadata.value}
+          onChange={onChangeSwitch}
+          disabled={disabled}
+        >
+          metadata
+        </TooltipFormCheck>
+      </FormRow>
+      {$enabledMetadata.value ? (
+        <JSONInputField
+          controlId="metadata"
+          placeholder="Metadataを指定"
+          value={$metadata.value}
+          setValue={(value) => setMetadata(value)}
+          disabled={disabled}
+        />
       ) : null}
     </>
-  )
-}
+  );
+};

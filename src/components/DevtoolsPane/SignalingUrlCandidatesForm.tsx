@@ -1,64 +1,53 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/actions";
+import {
+  $connectionStatus,
+  $enabledSignalingUrlCandidates,
+  $signalingUrlCandidates,
+} from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const SignalingUrlCandidatesForm: React.FC = () => {
-  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingUrlCandidates,
-  )
-  const signalingUrlCandidates = useSoraDevtoolsStore((state) => state.signalingUrlCandidates)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledSignalingUrlCandidates(event.target.checked)
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setSignalingUrlCandidates(event.target.value.split('\n'))
-  }
+export const SignalingUrlCandidatesForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledSignalingUrlCandidates(event.currentTarget.checked);
+  };
+  const onChangeText = (event: TargetedEvent<HTMLTextAreaElement>): void => {
+    setSignalingUrlCandidates(event.currentTarget.value.split("\n"));
+  };
   const textareaPlaceholder = `signalingUrlCandidatesを指定
 (例)
 wss://sora0.example.com/signaling
 wss://sora1.example.com/signaling
-`
+`;
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
-            <TooltipFormCheck
-              kind="signalingUrlCandidates"
-              checked={enabledSignalingUrlCandidates}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            >
-              signalingUrlCandidates
-            </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
-      {enabledSignalingUrlCandidates ? (
-        <Row className="form-row" xs="auto">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-              <FormControl
-                className="flex-fill"
-                as="textarea"
-                placeholder={textareaPlaceholder}
-                value={signalingUrlCandidates.join('\n')}
-                onChange={onChangeText}
-                rows={5}
-                cols={100}
-                disabled={disabled}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
+      <FormRow>
+        <TooltipFormCheck
+          kind="signalingUrlCandidates"
+          checked={$enabledSignalingUrlCandidates.value}
+          onChange={onChangeSwitch}
+          disabled={disabled}
+        >
+          signalingUrlCandidates
+        </TooltipFormCheck>
+      </FormRow>
+      {$enabledSignalingUrlCandidates.value ? (
+        <textarea
+          placeholder={textareaPlaceholder}
+          value={$signalingUrlCandidates.value.join("\n")}
+          onChange={onChangeText}
+          rows={5}
+          cols={100}
+          disabled={disabled}
+          className="w-full px-3 py-1.5 text-base border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-slate-100 disabled:text-slate-500"
+        />
       ) : null}
     </>
-  )
-}
+  );
+};

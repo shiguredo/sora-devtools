@@ -1,34 +1,31 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setBlurRadius } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { BLUR_RADIUS } from '@/constants'
-import { checkFormValue } from '@/utils'
+import { setBlurRadius } from "@/app/actions";
+import { $blurRadius, $mediaType } from "@/app/store";
+import { FormRow, FormSelect } from "@/components/Form";
+import { BLUR_RADIUS } from "@/constants";
+import { checkFormValue } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const BlurRadiusForm: React.FC = () => {
-  const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius)
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, BLUR_RADIUS)) {
-      setBlurRadius(event.target.value)
+export const BlurRadiusForm: FunctionComponent = () => {
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    if (checkFormValue(event.currentTarget.value, BLUR_RADIUS)) {
+      setBlurRadius(event.currentTarget.value as (typeof BLUR_RADIUS)[number]);
     }
-  }
-  const disabled = mediaType !== 'getUserMedia'
+  };
+  const disabled = $mediaType.value !== "getUserMedia";
   return (
-    <FormGroup className="form-inline" controlId="blurRadius">
+    <FormRow>
       <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
-      <FormSelect value={blurRadius} onChange={onChange} disabled={disabled}>
-        {BLUR_RADIUS.map((value) => {
-          return (
-            <option suppressHydrationWarning={true} key={value} value={value}>
-              {value === '' || disabled ? '未指定' : value}
-            </option>
-          )
-        })}
+      <FormSelect value={$blurRadius.value} onChange={onChange} disabled={disabled}>
+        {BLUR_RADIUS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" || disabled ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

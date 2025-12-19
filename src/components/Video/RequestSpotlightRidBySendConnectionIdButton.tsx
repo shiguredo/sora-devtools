@@ -1,82 +1,86 @@
-import type React from 'react'
-import { useRef } from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
-import type { SpotlightFocusRid } from 'sora-js-sdk'
+import type { FunctionComponent } from "preact";
+import { useRef } from "preact/hooks";
+import type { SpotlightFocusRid } from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
-import { rpc } from '@/rpc'
+import { $connectionStatus, $sora } from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
+import { rpc } from "@/rpc";
 
 type Props = {
-  sendConnectionId: string
-}
-export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
-  const focusRidRef = useRef<HTMLSelectElement>(null)
-  const unfocusRidRef = useRef<HTMLSelectElement>(null)
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  sendConnectionId: string;
+};
+export const RequestSpotlightRidBySendConnectionIdButton: FunctionComponent<Props> = (props) => {
+  const focusRidRef = useRef<HTMLSelectElement>(null);
+  const unfocusRidRef = useRef<HTMLSelectElement>(null);
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== 'connected') {
-      return
+    if (!$sora.value || $connectionStatus.value !== "connected") {
+      return;
     }
     if (focusRidRef.current === null || unfocusRidRef.current === null) {
-      return
+      return;
     }
-    const focusRid = focusRidRef.current.value as SpotlightFocusRid
-    const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid
+    const focusRid = focusRidRef.current.value as SpotlightFocusRid;
+    const unfocusRid = unfocusRidRef.current.value as SpotlightFocusRid;
 
     await rpc(
-      conn,
-      '2025.2.0/RequestSpotlightRid',
+      $sora.value,
+      "2025.2.0/RequestSpotlightRid",
       {
         spotlight_focus_rid: focusRid,
         spotlight_unfocus_rid: unfocusRid,
         send_connection_id: props.sendConnectionId,
       },
       { notification: false, showMethodAlert: true },
-    )
-  }
+    );
+  };
 
-  if (!conn?.connectionId) {
-    return null
+  if (!$sora.value?.connectionId) {
+    return null;
   }
 
   return (
     <div className="mx-1">
-      <FormGroup className="form-inline">
-        <FormSelect ref={focusRidRef}>
+      <FormRow>
+        <select
+          className="px-2 py-1 text-sm border border-slate-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ref={focusRidRef}
+        >
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === '') {
-              return null
+            if (value === "") {
+              return null;
             }
             return (
               <option key={value} value={value}>
                 SpotlightFocusRid: {value}
               </option>
-            )
+            );
           })}
-        </FormSelect>
-        <FormSelect ref={unfocusRidRef}>
+        </select>
+        <select
+          className="px-2 py-1 text-sm border border-slate-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ref={unfocusRidRef}
+        >
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-            if (value === '') {
-              return null
+            if (value === "") {
+              return null;
             }
             return (
               <option key={value} value={value}>
                 SpotlightUnfocusRid: {value}&nbsp;&nbsp;&nbsp;
               </option>
-            )
+            );
           })}
-        </FormSelect>
+        </select>
         <input
-          className="btn btn-secondary"
+          className="px-2 py-1 text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded cursor-pointer"
           type="button"
           name="requestSpotlightRidBySendConnectionId"
           defaultValue="requestSpotlightRid"
           onClick={onClick}
         />
-      </FormGroup>
+      </FormRow>
     </div>
-  )
-}
+  );
+};

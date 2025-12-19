@@ -1,20 +1,20 @@
-import type React from 'react'
-import { useMemo } from 'react'
+import type { FunctionComponent } from "preact";
+import { useMemo } from "preact/hooks";
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $debugFilterText, $prevStatsReport, $statsReport } from "@/app/store";
 
-import { Message } from './Message.tsx'
+import { Message } from "./Message.tsx";
 
 interface RTCStatsWithIndexSignature extends RTCStats {
-  [x: string]: unknown
+  [x: string]: unknown;
 }
 
 type CollapseProps = {
-  prevStats?: RTCStatsWithIndexSignature
-} & RTCStatsWithIndexSignature
+  prevStats?: RTCStatsWithIndexSignature;
+} & RTCStatsWithIndexSignature;
 
-const Collapse: React.FC<CollapseProps> = (props) => {
-  const { prevStats, ...stats } = props
+const Collapse: FunctionComponent<CollapseProps> = (props) => {
+  const { prevStats, ...stats } = props;
   return (
     <Message
       title={`${stats.id}(${stats.type})`}
@@ -22,45 +22,41 @@ const Collapse: React.FC<CollapseProps> = (props) => {
       description={stats}
       prevDescription={prevStats}
     />
-  )
-}
+  );
+};
 
-const Log: React.FC<CollapseProps> = (props) => {
-  return <Collapse {...props} />
-}
+const Log: FunctionComponent<CollapseProps> = (props) => {
+  return <Collapse {...props} />;
+};
 
-export const Stats: React.FC = () => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
-  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-
+export const Stats: FunctionComponent = () => {
   // prevStatsReport を Map 化して O(1) で参照できるようにする
   const prevStatsMap = useMemo(
-    () => new Map(prevStatsReport.map((stats) => [stats.id, stats])),
-    [prevStatsReport],
-  )
+    () => new Map($prevStatsReport.value.map((stats) => [stats.id, stats])),
+    [$prevStatsReport.value],
+  );
 
-  const filteredMessages = statsReport.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
-      if (filterText === '') {
-        return true
+  const filteredMessages = $statsReport.value.filter((message) => {
+    return $debugFilterText.value.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
-    })
-  })
+      return JSON.stringify(message).indexOf(filterText) >= 0;
+    });
+  });
   return (
     <div className="debug-messages">
       {filteredMessages.map((stats) => {
         // O(1) で前回の同じ id の stats を取得
-        const prevStats = prevStatsMap.get(stats.id)
+        const prevStats = prevStatsMap.get(stats.id);
         return (
           <Log
             key={stats.id}
             {...(stats as RTCStatsWithIndexSignature)}
             prevStats={prevStats as RTCStatsWithIndexSignature | undefined}
           />
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};

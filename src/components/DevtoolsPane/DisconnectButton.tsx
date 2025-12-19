@@ -1,27 +1,24 @@
-import type React from 'react'
+import type { FunctionComponent } from "preact";
 
-import { disconnectSora } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { disconnectSora } from "@/app/actions";
+import { $connectionStatus } from "@/app/store";
 
-export const DisconnectButton: React.FC = () => {
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+export const DisconnectButton: FunctionComponent = () => {
   const disconnect = (): void => {
-    disconnectSora()
-  }
+    disconnectSora();
+  };
   return (
-    <div className="col-auto mb-1">
-      <input
-        className="btn btn-secondary"
-        type="button"
-        name="disconnect"
-        defaultValue="disconnect"
-        onClick={disconnect}
-        disabled={
-          connectionStatus === 'disconnecting' ||
-          connectionStatus === 'connecting' ||
-          connectionStatus === 'initializing'
-        }
-      />
-    </div>
-  )
-}
+    <button
+      type="button"
+      className="btn btn-secondary"
+      onClick={disconnect}
+      disabled={
+        $connectionStatus.value === "disconnecting" ||
+        $connectionStatus.value === "connecting" ||
+        $connectionStatus.value === "initializing"
+      }
+    >
+      disconnect
+    </button>
+  );
+};

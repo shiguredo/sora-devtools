@@ -1,34 +1,31 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setSpotlightUnfocusRid } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { SPOTLIGHT_FOCUS_RIDS } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+import { setSpotlightUnfocusRid } from "@/app/actions";
+import { $connectionStatus, $spotlightUnfocusRid } from "@/app/store";
+import { FormRow, FormSelect } from "@/components/Form";
+import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
+import { checkFormValue, isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const SpotlightUnfocusRidForm: React.FC = () => {
-  const spotlightUnfocusRid = useSoraDevtoolsStore((state) => state.spotlightUnfocusRid)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
-      setSpotlightUnfocusRid(event.target.value)
+export const SpotlightUnfocusRidForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    if (checkFormValue(event.currentTarget.value, SPOTLIGHT_FOCUS_RIDS)) {
+      setSpotlightUnfocusRid(event.currentTarget.value);
     }
-  }
+  };
   return (
-    <FormGroup className="form-inline" controlId="spotlightUnfocusRid">
+    <FormRow>
       <TooltipFormLabel kind="spotlightUnfocusRid">spotlightUnfocusRid:</TooltipFormLabel>
-      <FormSelect value={spotlightUnfocusRid} onChange={onChange} disabled={disabled}>
-        {SPOTLIGHT_FOCUS_RIDS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
-            </option>
-          )
-        })}
+      <FormSelect value={$spotlightUnfocusRid.value} onChange={onChange} disabled={disabled}>
+        {SPOTLIGHT_FOCUS_RIDS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

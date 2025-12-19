@@ -1,20 +1,14 @@
-import type React from 'react'
+import type { FunctionComponent } from "preact";
 
-import { setMediaDevices } from '@/app/actions'
+import { setMediaDevices } from "@/app/actions";
 
-export const ReloadDevicesButton: React.FC = () => {
+export const ReloadDevicesButton: FunctionComponent = () => {
   const onClick = (): void => {
-    setMediaDevices()
-  }
+    setMediaDevices();
+  };
   return (
-    <div className="col-auto mb-1">
-      <input
-        className="btn btn-outline-secondary"
-        type="button"
-        name="update-devices"
-        defaultValue="update-devices"
-        onClick={onClick}
-      />
-    </div>
-  )
-}
+    <button type="button" className="btn btn-outline" onClick={onClick}>
+      update-devices
+    </button>
+  );
+};

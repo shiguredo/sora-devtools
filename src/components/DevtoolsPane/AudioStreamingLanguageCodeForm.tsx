@@ -1,59 +1,47 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setAudioStreamingLanguageCode, setEnabledAudioStreamingLanguageCode } from "@/app/actions";
+import {
+  $audioStreamingLanguageCode,
+  $connectionStatus,
+  $enabledAudioStreamingLanguageCode,
+} from "@/app/store";
+import { FormRow, FormInput } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const AudioStreamingLanguageCodeForm: React.FC = () => {
-  const enabledAudioStreamingLanguageCode = useSoraDevtoolsStore(
-    (state) => state.enabledAudioStreamingLanguageCode,
-  )
-  const audioStreamingLanguageCode = useSoraDevtoolsStore(
-    (state) => state.audioStreamingLanguageCode,
-  )
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledAudioStreamingLanguageCode(event.target.checked)
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setAudioStreamingLanguageCode(event.target.value)
-  }
+export const AudioStreamingLanguageCodeForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledAudioStreamingLanguageCode(event.currentTarget.checked);
+  };
+  const onChangeText = (event: TargetedEvent<HTMLInputElement>): void => {
+    setAudioStreamingLanguageCode(event.currentTarget.value);
+  };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledAudioStreamingLanguageCode">
-            <TooltipFormCheck
-              kind="audioStreamingLanguageCode"
-              checked={enabledAudioStreamingLanguageCode}
-              onChange={onChangeSwitch}
-              disabled={disabled}
-            >
-              audioStreamingLanguageCode
-            </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
-      {enabledAudioStreamingLanguageCode ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="audioStreamingLanguageCode">
-              <FormControl
-                className="flex-fill w-500"
-                type="text"
-                placeholder="audioStreamingLanguageCodeを指定"
-                value={audioStreamingLanguageCode}
-                onChange={onChangeText}
-                disabled={disabled}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
+      <FormRow>
+        <TooltipFormCheck
+          kind="audioStreamingLanguageCode"
+          checked={$enabledAudioStreamingLanguageCode.value}
+          onChange={onChangeSwitch}
+          disabled={disabled}
+        >
+          audioStreamingLanguageCode
+        </TooltipFormCheck>
+      </FormRow>
+      {$enabledAudioStreamingLanguageCode.value ? (
+        <FormInput
+          type="text"
+          placeholder="audioStreamingLanguageCodeを指定"
+          value={$audioStreamingLanguageCode.value}
+          onChange={onChangeText}
+          disabled={disabled}
+          className="w-[500px]"
+        />
       ) : null}
     </>
-  )
-}
+  );
+};

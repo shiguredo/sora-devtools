@@ -1,24 +1,20 @@
-import type React from 'react'
+import type { FunctionComponent } from "preact";
 
-import { setDebug } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setDebug } from "@/app/actions";
+import { $debug } from "@/app/store";
 
-export const DebugButton: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug)
+export const DebugButton: FunctionComponent = () => {
   const onClick = (): void => {
-    setDebug(!debug)
-  }
-  const classNames = ['btn', 'btn-light', 'btn-header-debug-mode', 'btn-sm', 'ms-1']
-  if (debug) {
-    classNames.push('active')
-  }
+    setDebug(!$debug.value);
+  };
+
   return (
-    <input
-      className={classNames.join(' ')}
+    <button
       type="button"
-      name="debug"
-      defaultValue="debug"
+      className={`btn btn-sm ${$debug.value ? "btn-primary" : "btn-outline"}`}
       onClick={onClick}
-    />
-  )
-}
+    >
+      Debug
+    </button>
+  );
+};

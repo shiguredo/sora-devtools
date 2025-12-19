@@ -1,18 +1,15 @@
-import type React from 'react'
+import type { FunctionComponent } from "preact";
 
-import { copyURL } from '@/app/actions'
+import { copyURL } from "@/app/actions";
 
-export const CopyUrlButton: React.FC = () => {
+export const CopyUrlButton: FunctionComponent = () => {
   const onClick = (): void => {
-    copyURL()
-  }
+    copyURL();
+  };
+
   return (
-    <input
-      className="btn btn-light btn-sm ms-1"
-      type="button"
-      name="copyUrl"
-      defaultValue="copy URL"
-      onClick={onClick}
-    />
-  )
-}
+    <button type="button" className="btn btn-sm btn-outline" onClick={onClick}>
+      Copy URL
+    </button>
+  );
+};

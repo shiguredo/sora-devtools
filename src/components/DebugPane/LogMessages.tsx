@@ -1,41 +1,40 @@
-import React from 'react'
+import type { FunctionComponent } from "preact";
+import { memo } from "preact/compat";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { LogMessage } from '@/types'
+import { $debugFilterText, $logMessages } from "@/app/store";
+import type { LogMessage } from "@/types";
 
-import { Message } from './Message.tsx'
+import { Message } from "./Message.tsx";
 
-const Collapse = React.memo<LogMessage>((props) => {
-  const { message, timestamp } = props
+const Collapse = memo<LogMessage>((props) => {
+  const { message, timestamp } = props;
   return (
     <Message
       title={message.title}
       timestamp={timestamp}
       description={JSON.parse(message.description)}
     />
-  )
-})
+  );
+});
 
-const Log = React.memo<LogMessage>((props) => {
-  return <Collapse {...props} />
-})
+const Log = memo<LogMessage>((props) => {
+  return <Collapse {...props} />;
+});
 
-export const LogMessages: React.FC = () => {
-  const logMessages = useSoraDevtoolsStore((state) => state.logMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = logMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
-      if (filterText === '') {
-        return true
+export const LogMessages: FunctionComponent = () => {
+  const filteredMessages = $logMessages.value.filter((message) => {
+    return $debugFilterText.value.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
-    })
-  })
+      return JSON.stringify(message).indexOf(filterText) >= 0;
+    });
+  });
   return (
     <div className="debug-messages">
       {filteredMessages.map((log, index) => {
-        return <Log key={log.message.title + String(index) + log.timestamp} {...log} />
+        return <Log key={log.message.title + String(index) + log.timestamp} {...log} />;
       })}
     </div>
-  )
-}
+  );
+};

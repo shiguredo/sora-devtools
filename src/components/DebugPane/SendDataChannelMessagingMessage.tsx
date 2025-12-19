@@ -1,67 +1,70 @@
-import type React from 'react'
-import { useRef } from 'react'
-import { Button, FormControl, FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import { useRef } from "preact/hooks";
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $connectionStatus, $sora, $soraDataChannels } from "@/app/store";
 
-export const SendDataChannelMessagingMessage: React.FC = () => {
-  const selectRef = useRef<HTMLSelectElement>(null)
-  const textareaRef = useRef<HTMLInputElement>(null)
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const dataChannels = useSoraDevtoolsStore((state) => state.soraContents.dataChannels)
+export const SendDataChannelMessagingMessage: FunctionComponent = () => {
+  const selectRef = useRef<HTMLSelectElement>(null);
+  const textareaRef = useRef<HTMLInputElement>(null);
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
-      return
+      return;
     }
-    const label = selectRef.current.value
-    if (sora && connectionStatus === 'connected') {
-      sora.sendMessage(label, new TextEncoder().encode(textareaRef.current.value))
+    const label = selectRef.current.value;
+    if ($sora.value && $connectionStatus.value === "connected") {
+      $sora.value.sendMessage(label, new TextEncoder().encode(textareaRef.current.value));
     }
-  }
+  };
   return (
     <>
-      <div className="d-flex mt-2">
-        <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
-          <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
-            {dataChannels.map((datachannel) => {
+      <div className="flex mt-2">
+        <div className="mr-1">
+          <select
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            name="sendDataChannelMessageLabel"
+            id="sendDataChannelMessageLabel"
+            ref={selectRef}
+          >
+            {$soraDataChannels.value.map((datachannel) => {
               return (
                 <option key={datachannel.label} value={datachannel.label}>
                   {datachannel.label}
                 </option>
-              )
+              );
             })}
-          </FormSelect>
-        </FormGroup>
-        <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
-          <FormControl
-            className="flex-fill"
-            placeholder="sendDataChannelMessageを指定"
+          </select>
+        </div>
+        <div className="flex-grow mr-1">
+          <input
             type="text"
+            id="sendDataChannelMessage"
+            className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="sendDataChannelMessageを指定"
             ref={textareaRef}
           />
-        </FormGroup>
-        <Button
-          variant="secondary"
+        </div>
+        <button
+          type="button"
+          className="px-3 py-2 bg-gray-500 text-white hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSendMessage}
-          disabled={dataChannels.length === 0}
+          disabled={$soraDataChannels.value.length === 0}
         >
           send
-        </Button>
+        </button>
       </div>
-      {dataChannels.length > 0 ? (
+      {$soraDataChannels.value.length > 0 ? (
         <pre
-          className="form-control mt-2"
+          className="w-full px-3 py-2 border border-gray-600 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
           style={{
-            color: '#fff',
-            backgroundColor: '#222222',
-            maxHeight: '250px',
-            minHeight: '250px',
+            color: "#fff",
+            backgroundColor: "#222222",
+            maxHeight: "250px",
+            minHeight: "250px",
           }}
         >
-          {JSON.stringify(dataChannels, null, 2)}
+          {JSON.stringify($soraDataChannels.value, null, 2)}
         </pre>
       ) : null}
     </>
-  )
-}
+  );
+};

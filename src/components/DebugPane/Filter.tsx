@@ -1,24 +1,26 @@
-import type React from 'react'
-import { FormControl, FormGroup, FormLabel } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setDebugFilterText } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setDebugFilterText } from "@/app/actions";
+import { $debugFilterText } from "@/app/store";
 
-export const DebugFilter: React.FC = () => {
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setDebugFilterText(event.target.value)
-  }
+export const DebugFilter: FunctionComponent = () => {
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setDebugFilterText(event.currentTarget.value);
+  };
   return (
-    <FormGroup className="form-inline debug-filter" controlId="channelId">
-      <FormLabel className="text-white">Filter:</FormLabel>
-      <FormControl
+    <div className="debug-filter">
+      <label className="form-label" htmlFor="debugFilter">
+        Filter:
+      </label>
+      <input
         type="text"
-        placeholder="Filter"
-        value={debugFilterText}
+        id="debugFilter"
+        placeholder="Filter messages..."
+        value={$debugFilterText.value}
         onChange={onChange}
         autoComplete="off"
       />
-    </FormGroup>
-  )
-}
+    </div>
+  );
+};

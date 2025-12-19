@@ -1,59 +1,45 @@
-import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setDisplayResolution } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setDisplayResolution } from "@/app/actions";
+import { $displayResolution } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
-
-type DisplayResolutionData = {
-  label: string
-  value: string
-}
+import { DropdownInput } from "./DropdownInput.tsx";
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 const DISPLAY_RESOLUTION_DATA_LIST = [
-  { label: '未指定', value: '' },
-  { label: '144p', value: '256x144' },
-  { label: '240p', value: '320x240' },
-  { label: '360p', value: '640x360' },
-  { label: '480p', value: '720x480' },
-  { label: '540p', value: '960x540' },
-  { label: '720p', value: '1280x720' },
-  { label: '1080p', value: '1920x1080' },
-  { label: '1440p', value: '2560x1440' },
-  { label: '2160p', value: '3840x2160' },
-]
+  { label: "未指定", value: "" },
+  { label: "144p", value: "256x144" },
+  { label: "240p", value: "320x240" },
+  { label: "360p", value: "640x360" },
+  { label: "480p", value: "720x480" },
+  { label: "540p", value: "960x540" },
+  { label: "720p", value: "1280x720" },
+  { label: "1080p", value: "1920x1080" },
+  { label: "1440p", value: "2560x1440" },
+  { label: "2160p", value: "3840x2160" },
+];
 
-const DropdownItem = ({ label, value }: DisplayResolutionData) => {
+export const DisplayResolutionForm: FunctionComponent = () => {
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setDisplayResolution(event.currentTarget.value);
+  };
+  const items = DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => ({
+    label: value !== "" ? `${label} (${value})` : label,
+    value,
+  }));
   return (
-    <Dropdown.Item as="button" onClick={() => setDisplayResolution(value)}>
-      {label} {value !== '' && `(${value})`}
-    </Dropdown.Item>
-  )
-}
-
-export const DisplayResolutionForm: React.FC = () => {
-  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setDisplayResolution(event.target.value)
-  }
-  return (
-    <FormGroup className="form-inline" controlId="displayResolution">
+    <FormRow>
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-display-resolution"
-          type="text"
-          value={displayResolution}
-          onChange={onChange}
-          placeholder="未指定"
-        />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
-          {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />
-          })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
-  )
-}
+      <DropdownInput
+        inputClassName="w-28"
+        inputValue={$displayResolution.value}
+        inputPlaceholder="未指定"
+        onInputChange={onChange}
+        items={items}
+        onItemClick={setDisplayResolution}
+      />
+    </FormRow>
+  );
+};

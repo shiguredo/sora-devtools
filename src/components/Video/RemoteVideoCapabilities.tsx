@@ -1,65 +1,67 @@
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { RTCStatsCodec } from '@/types'
-import { useEffect, useState } from 'react'
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
+
+import { $sora, $statsReport } from "@/app/store";
+import type { RTCStatsCodec } from "@/types";
+
+type VideoTrackStatsType = {
+  codec: RTCStatsCodec;
+  videoTrackStats: {
+    width?: number;
+    height?: number;
+    frameRate?: number;
+  };
+} | null;
 
 const useVideoTrackStats = (stream: MediaStream) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
-  const soraContents = useSoraDevtoolsStore((state) => state.soraContents)
-  const [trackStats, setTrackStats] = useState<{
-    codec: RTCStatsCodec
-    videoTrackStats: {
-      width?: number
-      height?: number
-      frameRate?: number
-    }
-  } | null>(null)
+  const trackStats = useSignal<VideoTrackStatsType>(null);
   useEffect(() => {
-    ;(async () => {
-      if (!soraContents.sora?.pc) {
-        return
+    (async () => {
+      if (!$sora.value?.pc) {
+        return;
       }
       // 現在の VideoTrack を取得
       const track = stream.getVideoTracks().find((track) => {
-        return track
-      })
+        return track;
+      });
       if (track === undefined) {
-        return
+        return;
       }
 
       // track の RTCRtpReceiver を取得
-      const receiver = await soraContents.sora.pc
+      const receiver = $sora.value.pc
         .getReceivers()
-        .find((receiver) => receiver.track.id === track.id)
+        .find((receiver) => receiver.track.id === track.id);
       if (receiver === undefined) {
-        return
+        return;
       }
 
       // RTCRtpReceiver の getStats から codecId を取得
-      let codecId: string | undefined
-      const receiverStatsReport = await receiver.getStats()
+      let codecId: string | undefined;
+      const receiverStatsReport = await receiver.getStats();
       for (const stats of receiverStatsReport) {
-        const [_key, value] = stats
+        const [_key, value] = stats;
         if (value.codecId) {
-          codecId = value.codecId
-          break
+          codecId = value.codecId;
+          break;
         }
       }
       if (codecId === undefined) {
-        return
+        return;
       }
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
-      let codec: RTCStatsCodec | undefined
-      for (const stats of statsReport) {
-        if (stats.type === 'codec') {
-          const castedStats = stats as RTCStatsCodec
+      let codec: RTCStatsCodec | undefined;
+      for (const stats of $statsReport.value) {
+        if (stats.type === "codec") {
+          const castedStats = stats as RTCStatsCodec;
           if (codecId === castedStats.id) {
-            codec = castedStats
+            codec = castedStats;
           }
         }
       }
       if (codec) {
-        setTrackStats({
+        trackStats.value = {
           codec,
           videoTrackStats: {
             width: track.getSettings().width,
@@ -69,54 +71,54 @@ const useVideoTrackStats = (stream: MediaStream) => {
                 ? Math.floor(track.getSettings().frameRate || 0)
                 : undefined,
           },
-        })
+        };
       }
-    })()
-  }, [statsReport, stream, soraContents])
+    })();
+  }, [$statsReport.value, stream, trackStats]);
   return {
     trackStats,
-  }
-}
+  };
+};
 
 export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
-  const { trackStats } = useVideoTrackStats(stream)
+  const { trackStats } = useVideoTrackStats(stream);
   return (
     <div className="video-overlay">
-      {trackStats === null ? (
+      {trackStats.value === null ? (
         <p>loading...</p>
       ) : (
         <table className="table-video-capabilities">
           <tr>
             <th>mimeType</th>
-            <td>{trackStats.codec.mimeType}</td>
+            <td>{trackStats.value.codec.mimeType}</td>
           </tr>
           <tr>
             <th>payloadType</th>
-            <td>{trackStats.codec.payloadType}</td>
+            <td>{trackStats.value.codec.payloadType}</td>
           </tr>
           <tr>
             <th>sdpFmtpLine</th>
-            <td>{trackStats.codec.sdpFmtpLine}</td>
+            <td>{trackStats.value.codec.sdpFmtpLine}</td>
           </tr>
           <tr>
             <th>resolution</th>
             <td>
-              {trackStats.videoTrackStats.width === undefined ||
-              trackStats.videoTrackStats.height === undefined
-                ? 'undefined'
-                : `${trackStats.videoTrackStats.width}x${trackStats.videoTrackStats.height}`}
+              {trackStats.value.videoTrackStats.width === undefined ||
+              trackStats.value.videoTrackStats.height === undefined
+                ? "undefined"
+                : `${trackStats.value.videoTrackStats.width}x${trackStats.value.videoTrackStats.height}`}
             </td>
           </tr>
           <tr>
             <th>fps</th>
             <td>
-              {trackStats.videoTrackStats.frameRate === undefined
-                ? 'undefined'
-                : trackStats.videoTrackStats.frameRate}
+              {trackStats.value.videoTrackStats.frameRate === undefined
+                ? "undefined"
+                : trackStats.value.videoTrackStats.frameRate}
             </td>
           </tr>
         </table>
       )}
     </div>
-  )
-}
+  );
+};

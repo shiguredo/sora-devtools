@@ -1,35 +1,25 @@
-import type React from 'react'
-import { Nav, Navbar } from 'react-bootstrap'
-import Sora from 'sora-js-sdk'
+import type { FunctionComponent } from "preact";
+import Sora from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { $version } from "@/app/store";
+import { DownloadReportButton } from "@/components/Header/DownloadReportButton.tsx";
 
-import { DebugButton } from './DebugButton.tsx'
-
-export const Footer: React.FC = () => {
-  const version = useSoraDevtoolsStore((state) => state.version)
+export const Footer: FunctionComponent = () => {
   return (
     <footer>
-      <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
-        <Nav className="me-auto" />
-        <Nav>
-          <Navbar.Collapse id="navbar-collapse">
-            <a
-              href="https://github.com/shiguredo/sora-devtools"
-              className="btn btn-outline-light m-1"
-            >
-              GitHub: shiguredo/sora-devtools: {version}
-            </a>
-            <a
-              href="https://github.com/shiguredo/sora-js-sdk"
-              className="btn btn-outline-light m-1"
-            >
-              GitHub: shiguredo/sora-js-sdk: {Sora.version()}
-            </a>
-          </Navbar.Collapse>
-        </Nav>
-      </Navbar>
-      <DebugButton />
+      <nav className="footer-nav">
+        <div className="footer-left">
+          <DownloadReportButton />
+        </div>
+        <div className="footer-right">
+          <a href="https://github.com/shiguredo/sora-devtools" className="footer-link">
+            sora-devtools: {$version.value}
+          </a>
+          <a href="https://github.com/shiguredo/sora-js-sdk" className="footer-link">
+            sora-js-sdk: {Sora.version()}
+          </a>
+        </div>
+      </nav>
     </footer>
-  )
-}
+  );
+};

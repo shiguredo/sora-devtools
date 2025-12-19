@@ -1,8 +1,8 @@
-import type React from 'react'
-import DevTools from './DevTools.tsx'
+import type { FunctionComponent } from "preact";
+import DevTools from "./DevTools.tsx";
 
-const App = (): React.JSX.Element => {
-  return <DevTools />
-}
+const App: FunctionComponent = () => {
+  return <DevTools />;
+};
 
-export default App
+export default App;

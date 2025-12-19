@@ -1,35 +1,31 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setAudioOutput } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setAudioOutput } from "@/app/actions";
+import { $audioOutput, $audioOutputDevices } from "@/app/store";
+import { FormRow, FormSelect } from "@/components/Form";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const AudioOutputForm: React.FC = () => {
-  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
-  const audioOutputDevices = useSoraDevtoolsStore((state) => state.audioOutputDevices)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setAudioOutput(event.target.value)
-  }
+export const AudioOutputForm: FunctionComponent = () => {
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    setAudioOutput(event.currentTarget.value);
+  };
   return (
-    <FormGroup className="form-inline" controlId="audioOutput">
+    <FormRow>
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
       <FormSelect
-        name="audioOutput"
-        value={audioOutput}
+        value={$audioOutput.value}
         onChange={onChange}
-        disabled={audioOutputDevices.length === 0}
+        disabled={$audioOutputDevices.value.length === 0}
       >
         <option value="">未指定</option>
-        {audioOutputDevices.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          )
-        })}
+        {$audioOutputDevices.value.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </FormSelect>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

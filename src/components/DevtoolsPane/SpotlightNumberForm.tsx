@@ -1,34 +1,32 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setSpotlightNumber } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { SPOTLIGHT_NUMBERS } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+import { setSpotlightNumber } from "@/app/actions";
+import { $connectionStatus, $spotlightNumber } from "@/app/store";
+import { FormRow, FormSelect } from "@/components/Form";
+import { SPOTLIGHT_NUMBERS } from "@/constants";
+import { checkFormValue, isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const SpotlightNumberForm: React.FC = () => {
-  const spotlightNumber = useSoraDevtoolsStore((state) => state.spotlightNumber)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, SPOTLIGHT_NUMBERS)) {
-      setSpotlightNumber(event.target.value)
+export const SpotlightNumberForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    const value = event.currentTarget.value;
+    if (checkFormValue(value, SPOTLIGHT_NUMBERS)) {
+      setSpotlightNumber(value);
     }
-  }
+  };
   return (
-    <FormGroup className="form-inline" controlId="spotlightNumber">
+    <FormRow>
       <TooltipFormLabel kind="spotlightNumber">spotlightNumber:</TooltipFormLabel>
-      <FormSelect value={spotlightNumber} onChange={onChange} disabled={disabled}>
-        {SPOTLIGHT_NUMBERS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
-            </option>
-          )
-        })}
+      <FormSelect value={$spotlightNumber.value} onChange={onChange} disabled={disabled}>
+        {SPOTLIGHT_NUMBERS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

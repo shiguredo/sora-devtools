@@ -22,3 +22,7 @@ dist/
 
 # claude
 .claude/
+
+# image
+.png
+.jpg

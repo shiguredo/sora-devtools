@@ -1,29 +1,29 @@
-import type React from 'react'
-import { FormControl, FormGroup } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setChannelId } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setChannelId } from "@/app/actions";
+import { $channelId, $connectionStatus } from "@/app/store";
+import { FormRow, FormInput } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const ChannelIdForm: React.FC = () => {
-  const channelId = useSoraDevtoolsStore((state) => state.channelId)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setChannelId(event.target.value)
-  }
+export const ChannelIdForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setChannelId(event.currentTarget.value);
+  };
   return (
-    <FormGroup className="form-inline" controlId="channelId">
+    <FormRow>
       <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
-      <FormControl
+      <FormInput
         type="text"
         placeholder="ChannelIdを指定"
-        value={channelId}
+        value={$channelId.value}
         onChange={onChange}
         disabled={disabled}
+        className="flex-1 min-w-80"
       />
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

@@ -1,12 +1,12 @@
-import type React from 'react'
-import { useRef } from 'react'
-import Sora from 'sora-js-sdk'
+import type { FunctionComponent } from "preact";
+import { useRef } from "preact/hooks";
+import Sora from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { DownloadReport, DownloadReportParameters } from '@/types'
+import { getState } from "@/app/store";
+import type { DownloadReport, DownloadReportParameters } from "@/types";
 
 function createDownloadReport(): DownloadReport {
-  const state = useSoraDevtoolsStore.getState()
+  const state = getState();
   const parameters: DownloadReportParameters = {
     aspectRatio: state.aspectRatio,
     audio: state.audio,
@@ -49,7 +49,6 @@ function createDownloadReport(): DownloadReport {
     fakeVolume: state.fakeVolume,
     forceStereoOutput: state.forceStereoOutput,
     forwardingFilters: state.forwardingFilters,
-    forwardingFilter: state.forwardingFilter,
     frameRate: state.frameRate,
     googCpuOveruseDetection: state.googCpuOveruseDetection,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
@@ -82,51 +81,48 @@ function createDownloadReport(): DownloadReport {
     videoH264Params: state.videoH264Params,
     videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
-  }
+  };
   const report = {
     userAgent: navigator.userAgent,
-    'sora-devtools': state.version,
-    'sora-js-sdk': Sora.version(),
+    "sora-devtools": state.version,
+    "sora-js-sdk": Sora.version(),
     parameters: parameters,
     timeline: state.timelineMessages.map((message) => {
-      // Redux non-serializable value 対応で log を string にして保存してあるため parse する
       return {
         timestamp: message.timestamp,
         message: message,
-      }
+      };
     }),
     notify: state.notifyMessages,
     stats: state.soraContents.statsReport,
-  }
-  return report
+  };
+  return report;
 }
 
-export const DownloadReportButton: React.FC = () => {
-  const anchorRef = useRef<HTMLAnchorElement>(null)
+export const DownloadReportButton: FunctionComponent = () => {
+  const anchorRef = useRef<HTMLAnchorElement>(null);
+
   const onClick = (): void => {
-    const report = createDownloadReport()
-    const data = JSON.stringify(report)
-    const blob = new Blob([data], { type: 'text/plain' })
-    window.URL = window.URL || window.webkitURL
+    const report = createDownloadReport();
+    const data = JSON.stringify(report);
+    const blob = new Blob([data], { type: "text/plain" });
+    window.URL = window.URL || window.webkitURL;
     if (anchorRef.current) {
-      const datetimeString = new Date().toISOString().replaceAll(':', '_').replaceAll('.', '_')
-      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`
-      anchorRef.current.href = window.URL.createObjectURL(blob)
-      anchorRef.current.click()
+      const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
+      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
+      anchorRef.current.href = window.URL.createObjectURL(blob);
+      anchorRef.current.click();
     }
-  }
+  };
+
   return (
     <>
-      <input
-        className="btn btn-light btn-sm ms-1"
-        type="button"
-        name="downloadReport"
-        defaultValue="Download report"
-        onClick={onClick}
-      />
-      {/* biome-ignore lint/a11y/useAnchorContent: This is a hidden anchor used for programmatic file download */}
-      {/* biome-ignore lint/a11y/useValidAnchor: This is a hidden anchor used for programmatic file download */}
-      <a ref={anchorRef} style={{ display: 'none' }} />
+      <button type="button" className="btn btn-sm btn-outline" onClick={onClick}>
+        Report
+      </button>
+      {/* biome-ignore lint/a11y/useAnchorContent: Hidden anchor for file download */}
+      {/* biome-ignore lint/a11y/useValidAnchor: Hidden anchor for file download */}
+      <a ref={anchorRef} style={{ display: "none" }} />
     </>
-  )
-}
+  );
+};

@@ -1,63 +1,49 @@
-import type React from 'react'
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setVideoBitRate } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { VIDEO_BIT_RATES } from '@/constants'
-import { isFormDisabled } from '@/utils'
+import { setVideoBitRate } from "@/app/actions";
+import { $connectionStatus, $videoBitRate } from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { VIDEO_BIT_RATES } from "@/constants";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { DropdownInput } from "./DropdownInput.tsx";
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
-const DISPLAY_VIDEO_BIT_RATE: string[] = VIDEO_BIT_RATES.slice()
-DISPLAY_VIDEO_BIT_RATE.splice(VIDEO_BIT_RATES.indexOf('15000') + 1, 0, 'support-message')
+const DISPLAY_VIDEO_BIT_RATE: string[] = VIDEO_BIT_RATES.slice();
+DISPLAY_VIDEO_BIT_RATE.splice(VIDEO_BIT_RATES.indexOf("15000") + 1, 0, "support-message");
 
 const dropdownItemLabel = (value: string) => {
-  if (value === 'support-message') {
-    return '以下はサポート外です'
+  if (value === "support-message") {
+    return "以下はサポート外です";
   }
-  return value === '' ? '未指定' : value
-}
+  return value === "" ? "未指定" : value;
+};
 
-export const VideoBitRateForm: React.FC = () => {
-  const videoBitRate = useSoraDevtoolsStore((state) => state.videoBitRate)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setVideoBitRate(event.target.value)
-  }
+export const VideoBitRateForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setVideoBitRate(event.currentTarget.value);
+  };
+  const items = DISPLAY_VIDEO_BIT_RATE.map((value) => ({
+    label: dropdownItemLabel(value),
+    value,
+    disabled: value === "support-message",
+  }));
   return (
-    <FormGroup className="form-inline" controlId="videoBitRate">
+    <FormRow>
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
-      <InputGroup>
-        <Form.Control
-          className="form-video-bit-rate"
-          type="text"
-          value={videoBitRate}
-          onChange={onChange}
-          placeholder="未指定"
-          disabled={disabled}
-        />
-        <DropdownButton
-          variant="outline-secondary form-template-dropdown"
-          title=""
-          align="end"
-          disabled={disabled}
-        >
-          {DISPLAY_VIDEO_BIT_RATE.map((value) => {
-            return (
-              <Dropdown.Item
-                key={value}
-                as="button"
-                onClick={() => setVideoBitRate(value)}
-                disabled={value === 'support-message'}
-              >
-                {dropdownItemLabel(value)}
-              </Dropdown.Item>
-            )
-          })}
-        </DropdownButton>
-      </InputGroup>
-    </FormGroup>
-  )
-}
+      <DropdownInput
+        inputClassName="w-24"
+        inputValue={$videoBitRate.value}
+        inputPlaceholder="未指定"
+        inputDisabled={disabled}
+        onInputChange={onChange}
+        dropdownDisabled={disabled}
+        items={items}
+        onItemClick={setVideoBitRate}
+      />
+    </FormRow>
+  );
+};

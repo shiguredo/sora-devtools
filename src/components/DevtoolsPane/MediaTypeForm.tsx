@@ -1,79 +1,86 @@
-import type React from 'react'
-import { useEffect, useState } from 'react'
-import { FormCheck, FormGroup } from 'react-bootstrap'
+import { useSignal } from "@preact/signals";
+import { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
 
-import { setMediaType } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { MEDIA_TYPES } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
-
-import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
+import { useEffect } from "preact/hooks";
+import { setMediaType } from "@/app/actions";
+import { $connectionStatus, $localMediaStream, $mediaType } from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { MEDIA_TYPES } from "@/constants";
+import { checkFormValue, isFormDisabled } from "@/utils";
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 type FormRadioProps = {
-  label: string
-  mediaType: string
-  disabled: boolean
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
-const FormRadio: React.FC<FormRadioProps> = (props) => {
-  const { label, disabled, onChange, mediaType } = props
+  label: string;
+  mediaType: string;
+  disabled: boolean;
+  onChange: (event: TargetedEvent<HTMLInputElement>) => void;
+};
+const FormRadio: FunctionComponent<FormRadioProps> = (props) => {
+  const { label, disabled, onChange, mediaType } = props;
   return (
-    <FormCheck
-      type="radio"
-      inline={true}
-      id={label}
-      label={label}
-      value={label}
-      checked={mediaType === label}
-      onChange={onChange}
-      disabled={disabled}
-    />
-  )
-}
+    <div className="inline-flex items-center gap-1">
+      <input
+        type="radio"
+        id={label}
+        value={label}
+        checked={mediaType === label}
+        onChange={onChange}
+        disabled={disabled}
+        className="w-4 h-4 text-blue-600 bg-white border-slate-300 focus:ring-blue-500 focus:ring-2 disabled:opacity-50"
+      />
+      <label className="cursor-pointer text-sm" htmlFor={label}>
+        {label}
+      </label>
+    </div>
+  );
+};
 
-export const MediaTypeForm: React.FC = () => {
+export const MediaTypeForm: FunctionComponent = () => {
   // NOTE(yuito): window.CropTarget の有無のみで radio の表示/非表示を切り替えると
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
-  const [mountClient, setMountClient] = useState(false)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
-  const enabledMp4Media = Mp4MediaStream.isSupported()
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    if (checkFormValue(event.target.value, MEDIA_TYPES)) {
-      setMediaType(event.target.value)
+  const mountClient = useSignal(false);
+  const disabled = $localMediaStream.value !== null || isFormDisabled($connectionStatus.value);
+  const enabledMp4Media = Mp4MediaStream.isSupported();
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    if (checkFormValue(event.currentTarget.value, MEDIA_TYPES)) {
+      setMediaType(event.currentTarget.value);
     }
-  }
+  };
   useEffect(() => {
-    setMountClient(true)
-  }, [])
+    mountClient.value = true;
+  }, [mountClient]);
   return (
-    <FormGroup className="form-inline flex-wrap">
+    <FormRow className="flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio
         label="getUserMedia"
-        mediaType={mediaType}
+        mediaType={$mediaType.value}
         disabled={disabled}
         onChange={onChange}
       />
       <FormRadio
         label="getDisplayMedia"
-        mediaType={mediaType}
+        mediaType={$mediaType.value}
         disabled={disabled}
         onChange={onChange}
       />
-      <FormRadio label="fakeMedia" mediaType={mediaType} disabled={disabled} onChange={onChange} />
-      {mountClient && (
+      <FormRadio
+        label="fakeMedia"
+        mediaType={$mediaType.value}
+        disabled={disabled}
+        onChange={onChange}
+      />
+      {mountClient.value && (
         <FormRadio
           label="mp4Media"
-          mediaType={mediaType}
+          mediaType={$mediaType.value}
           disabled={disabled || !enabledMp4Media}
           onChange={onChange}
         />
       )}
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

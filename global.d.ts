@@ -1,18 +1,18 @@
 interface Window {
-  webkitAudioContext: AudioContext
+  webkitAudioContext: AudioContext;
   readonly CropTarget: {
-    fromElement(element: Element): Promise<CropTarget>
-  }
+    fromElement(element: Element): Promise<CropTarget>;
+  };
 }
 
 interface MediaStreamTrack {
-  cropTo(cropTarget: CropTarget): Promise<void>
+  cropTo(cropTarget: CropTarget): Promise<void>;
 }
 
 type CropTarget = {
-  symbol: 'CropTarget'
-}
+  symbol: "CropTarget";
+};
 
 declare global {
-  let window: Window
+  let window: Window;
 }

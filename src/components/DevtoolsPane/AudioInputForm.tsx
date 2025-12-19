@@ -1,36 +1,32 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setAudioInput, updateMediaStream } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setAudioInput, updateMediaStream } from "@/app/actions";
+import { $audioInput, $audioInputDevices } from "@/app/store";
+import { FormRow, FormSelect } from "@/components/Form";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const AudioInputForm: React.FC = () => {
-  const audioInput = useSoraDevtoolsStore((state) => state.audioInput)
-  const audioInputDevices = useSoraDevtoolsStore((state) => state.audioInputDevices)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setAudioInput(event.target.value)
-    updateMediaStream()
-  }
+export const AudioInputForm: FunctionComponent = () => {
+  const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
+    setAudioInput(event.currentTarget.value);
+    updateMediaStream();
+  };
   return (
-    <FormGroup className="form-inline" controlId="audioInput">
+    <FormRow>
       <TooltipFormLabel kind="audioInput">audioInput:</TooltipFormLabel>
       <FormSelect
-        name="audioInput"
-        value={audioInput}
+        value={$audioInput.value}
         onChange={onChange}
-        disabled={audioInputDevices.length === 0}
+        disabled={$audioInputDevices.value.length === 0}
       >
         <option value="">未指定</option>
-        {audioInputDevices.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          )
-        })}
+        {$audioInputDevices.value.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </FormSelect>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

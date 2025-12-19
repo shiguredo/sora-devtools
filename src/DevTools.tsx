@@ -1,36 +1,36 @@
-import type React from 'react'
-import { useEffect } from 'react'
+import type { FunctionComponent } from "preact";
+import { useEffect } from "preact/hooks";
+import {
+  disconnectSora,
+  setInitialParameter,
+  setMediaDevices,
+  unregisterServiceWorker,
+} from "@/app/actions";
+import { DebugPane } from "@/components/DebugPane";
+import { DevtoolsPane } from "@/components/DevtoolsPane";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 
-import { disconnectSora, setMediaDevices, unregisterServiceWorker } from '@/app/actions'
-import { setInitialParameter } from '@/app/actions'
-import { DebugPane } from '@/components/DebugPane'
-import { DevtoolsPane } from '@/components/DevtoolsPane'
-import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
-
-const Devtools: React.FC = () => {
+const Devtools: FunctionComponent = () => {
   useEffect(() => {
-    setInitialParameter()
-    setMediaDevices()
-    unregisterServiceWorker()
+    setInitialParameter();
+    setMediaDevices();
+    unregisterServiceWorker();
     return () => {
-      disconnectSora()
-    }
-  }, [])
+      disconnectSora();
+    };
+  }, []);
+
   return (
     <>
       <Header />
-      <main>
-        <div className="container">
-          <div className="row">
-            <DevtoolsPane />
-            <DebugPane />
-          </div>
-        </div>
+      <main className="main-container">
+        <DevtoolsPane />
+        <DebugPane />
       </main>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default Devtools
+export default Devtools;

@@ -1,21 +1,26 @@
-import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setAudioTrack } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setAudioTrack } from "@/app/actions";
+import { $audioTrack } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const AudioTrackForm: React.FC = () => {
-  const audioTrack = useSoraDevtoolsStore((state) => state.audioTrack)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setAudioTrack(event.target.checked)
-  }
+export const AudioTrackForm: FunctionComponent = () => {
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setAudioTrack(event.currentTarget.checked);
+  };
   return (
-    <FormGroup className="form-inline" controlId="audioTrack">
-      <TooltipFormCheck kind="audioTrack" checked={audioTrack} onChange={onChange} disabled={false}>
+    <FormRow>
+      <TooltipFormCheck
+        kind="audioTrack"
+        checked={$audioTrack.value}
+        onChange={onChange}
+        disabled={false}
+      >
         Enable audio track
       </TooltipFormCheck>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};

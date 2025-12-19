@@ -1,75 +1,64 @@
-import type React from 'react'
-import { Button, Col, FormGroup, Row } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setDataChannels, setEnabledDataChannels } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
+import { $connectionStatus, $dataChannels, $enabledDataChannels } from "@/app/store";
+import { FormRow } from "@/components/Form";
+import { isFormDisabled } from "@/utils";
 
-import { JSONInputField } from './JSONInputField.tsx'
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { JSONInputField } from "./JSONInputField.tsx";
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const DataChannelsForm: React.FC = () => {
-  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels)
-  const dataChannels = useSoraDevtoolsStore((state) => state.dataChannels)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+export const DataChannelsForm: FunctionComponent = () => {
+  const disabled = isFormDisabled($connectionStatus.value);
   const exampleJsonString = JSON.stringify(
     [
       {
-        label: '#devtools',
+        label: "#devtools",
         maxPacketLifeTime: 10,
         ordered: true,
         compress: false,
-        direction: 'sendrecv',
+        direction: "sendrecv",
       },
     ],
     null,
     2,
-  )
-  const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledDataChannels(event.target.checked)
-  }
+  );
+  const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`;
+  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
+    setEnabledDataChannels(event.currentTarget.checked);
+  };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannels">
-            <TooltipFormCheck
-              kind="dataChannels"
-              checked={enabledDataChannels}
-              onChange={onChangeSwitch}
-              disabled={disabled}
+      <FormRow>
+        <TooltipFormCheck
+          kind="dataChannels"
+          checked={$enabledDataChannels.value}
+          onChange={onChangeSwitch}
+          disabled={disabled}
+        >
+          dataChannels
+        </TooltipFormCheck>
+      </FormRow>
+      {$enabledDataChannels.value ? (
+        <JSONInputField
+          controlId="dataChannels"
+          placeholder={textareaPlaceholder}
+          value={$dataChannels.value}
+          setValue={(value) => setDataChannels(value)}
+          disabled={disabled}
+          rows={12}
+          extraControls={
+            <button
+              type="button"
+              className="px-2 py-1 text-sm bg-slate-200 text-slate-700 hover:bg-slate-300 rounded"
+              onClick={() => setDataChannels(exampleJsonString)}
             >
-              dataChannels
-            </TooltipFormCheck>
-          </FormGroup>
-        </Col>
-      </Row>
-      {enabledDataChannels ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <JSONInputField
-              controlId="dataChannels"
-              placeholder={textareaPlaceholder}
-              value={dataChannels}
-              setValue={(value) => setDataChannels(value)}
-              disabled={disabled}
-              rows={12}
-              extraControls={
-                <Button
-                  type="button"
-                  variant="light"
-                  size="sm"
-                  onClick={() => setDataChannels(exampleJsonString)}
-                >
-                  load template
-                </Button>
-              }
-            />
-          </Col>
-        </Row>
+              load template
+            </button>
+          }
+        />
       ) : null}
     </>
-  )
-}
+  );
+};

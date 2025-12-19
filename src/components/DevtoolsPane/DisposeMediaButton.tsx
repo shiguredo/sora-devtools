@@ -1,27 +1,18 @@
-import type React from 'react'
+import type { FunctionComponent } from "preact";
 
-import { disposeMedia } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { disposeMedia } from "@/app/actions";
+import { $connectionStatus, $role, $sora } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-export const DisposeMediaButton: React.FC = () => {
+export const DisposeMediaButton: FunctionComponent = () => {
   const onClick = (): void => {
-    disposeMedia()
-  }
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const disabled = role === 'recvonly' || sora !== null || isFormDisabled(connectionStatus)
+    disposeMedia();
+  };
+  const disabled =
+    $role.value === "recvonly" || $sora.value !== null || isFormDisabled($connectionStatus.value);
   return (
-    <div className="col-auto mb-1">
-      <input
-        className="btn btn-outline-secondary"
-        type="button"
-        name="media_access"
-        defaultValue="dispose media"
-        onClick={onClick}
-        disabled={disabled}
-      />
-    </div>
-  )
-}
+    <button type="button" className="btn btn-outline" onClick={onClick} disabled={disabled}>
+      dispose media
+    </button>
+  );
+};

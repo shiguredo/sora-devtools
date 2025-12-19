@@ -1,31 +1,32 @@
-import type React from 'react'
-import { useEffect, useState } from 'react'
-import { Button, FormControl, FormGroup } from 'react-bootstrap'
+import { useSignal } from "@preact/signals";
+import type { ComponentChildren, FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
+import { useEffect } from "preact/hooks";
 
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
-  if (jsonString === '') {
-    return
+  if (jsonString === "") {
+    return;
   }
   try {
-    const formated = JSON.stringify(JSON.parse(jsonString), null, 2)
-    setValue(formated)
+    const formated = JSON.stringify(JSON.parse(jsonString), null, 2);
+    setValue(formated);
   } catch {
     // JSON.parse に失敗した場合は何もしない
   }
-}
+};
 
 type JSONInputFieldProps = {
-  controlId: string
-  placeholder: string
-  value: string
-  disabled: boolean
-  setValue: (value: string) => void
-  extraControls?: React.ReactNode
-  rows?: number
-  cols?: number
-}
+  controlId: string;
+  placeholder: string;
+  value: string;
+  disabled: boolean;
+  setValue: (value: string) => void;
+  extraControls?: ComponentChildren;
+  rows?: number;
+  cols?: number;
+};
 
-export const JSONInputField = ({
+export const JSONInputField: FunctionComponent<JSONInputFieldProps> = ({
   value,
   controlId,
   placeholder,
@@ -34,28 +35,30 @@ export const JSONInputField = ({
   extraControls,
   rows,
   cols,
-}: JSONInputFieldProps) => {
-  const [invalidJsonString, setInvalidJsonString] = useState(false)
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setValue(event.target.value)
-  }
+}) => {
+  const invalidJsonString = useSignal(false);
+  const onChangeText = (event: TargetedEvent<HTMLTextAreaElement>): void => {
+    setValue(event.currentTarget.value);
+  };
   useEffect(() => {
-    if (value === '') {
-      setInvalidJsonString(false)
-      return
+    if (value === "") {
+      invalidJsonString.value = false;
+      return;
     }
     try {
-      JSON.parse(value)
-      setInvalidJsonString(false)
+      JSON.parse(value);
+      invalidJsonString.value = false;
     } catch {
-      setInvalidJsonString(true)
+      invalidJsonString.value = true;
     }
-  }, [value])
+  }, [value, invalidJsonString]);
   return (
-    <FormGroup className="form-inline position-relative" controlId={controlId}>
-      <FormControl
-        className={invalidJsonString ? 'flex-fill invalid-json' : 'flex-fill'}
-        as="textarea"
+    <div className="relative flex items-center gap-2">
+      <textarea
+        id={controlId}
+        className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 disabled:bg-slate-100 disabled:text-slate-500 ${
+          invalidJsonString.value ? "border-red-500 focus:ring-red-500" : "border-slate-300"
+        }`}
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
@@ -63,18 +66,17 @@ export const JSONInputField = ({
         cols={cols || 100}
         disabled={disabled}
       />
-      <div className="json-input-textarea-overlay">
+      <div className="absolute top-2 right-2 flex gap-1">
         {extraControls}
-        <Button
+        <button
           type="button"
-          variant="light"
-          size="sm"
+          className="px-2 py-1 text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={() => prettyFormat(value, setValue)}
-          disabled={invalidJsonString}
+          disabled={invalidJsonString.value}
         >
           pretty format
-        </Button>
+        </button>
       </div>
-    </FormGroup>
-  )
-}
+    </div>
+  );
+};

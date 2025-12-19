@@ -2,54 +2,52 @@
   "name": "sora-devtools",
   "version": "2025.2.1",
   "description": "WebRTC SFU Sora DevTools",
+  "homepage": "https://github.com/shiguredo/sora-devtools#readme",
+  "bugs": {
+    "url": "https://discord.gg/shiguredo"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shiguredo/sora-devtools.git"
   },
   "author": "Shiguredo Inc.",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://discord.gg/shiguredo"
-  },
-  "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "scripts": {
     "dev": "vite --port 3333",
     "build": "vite build",
     "preview": "vite preview",
-    "fmt": "biome format --write",
-    "lint": "biome lint",
-    "fix": "biome check --apply",
+    "fmt": "oxfmt --write .",
+    "lint": "oxlint --type-aware",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "e2e-test": "playwright test --project=chromium",
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
+    "@preact/signals": "2.5.1",
     "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2025.1.0",
     "@shiguredo/virtual-background": "2023.2.0",
-    "bootstrap": "5.3.8",
-    "immer": "11.0.1",
-    "react": "19.2.1",
-    "react-bootstrap": "2.10.10",
-    "react-dom": "19.2.1",
-    "sora-js-sdk": "2025.2.0",
-    "zustand": "5.0.9"
+    "preact": "10.28.0",
+    "preact-render-to-string": "6.6.4",
+    "sora-js-sdk": "2025.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
     "@fast-check/vitest": "0.2.4",
     "@playwright/test": "1.57.0",
-    "@types/node": "24.10.2",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "5.1.2",
+    "@preact/preset-vite": "2.10.2",
+    "@tailwindcss/vite": "4.1.18",
+    "@types/node": "25.0.3",
     "dotenv": "17.2.3",
     "fast-check": "4.4.0",
     "jsdom": "27.3.0",
+    "oxfmt": "0.18.0",
+    "oxlint": "1.33.0",
+    "oxlint-tsgolint": "0.9.1",
+    "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
-    "vite": "7.2.7",
-    "vitest": "4.0.15"
+    "vite": "7.3.0",
+    "vitest": "4.0.16"
   },
   "engines": {
     "node": ">=24",
@@ -58,6 +56,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
+      "@tailwindcss/oxide",
       "esbuild"
     ]
   }

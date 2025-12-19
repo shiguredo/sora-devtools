@@ -1,30 +1,29 @@
-import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
+import type { FunctionComponent } from "preact";
+import type { TargetedEvent } from "preact/compat";
 
-import { setMicDevice } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setMicDevice } from "@/app/actions";
+import { $audio, $connectionStatus, $micDevice, $sora } from "@/app/store";
+import { FormRow } from "@/components/Form";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const MicDeviceForm: React.FC = () => {
-  const micDevice = useSoraDevtoolsStore((state) => state.micDevice)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const audio = useSoraDevtoolsStore((state) => state.audio)
-  const disabled = !(sora && connectionStatus === 'connected' ? sora.audio : audio)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setMicDevice(event.target.checked)
-  }
+export const MicDeviceForm: FunctionComponent = () => {
+  const disabled = !($sora.value && $connectionStatus.value === "connected"
+    ? $sora.value.audio
+    : $audio.value);
+  const onChange = (event: TargetedEvent<HTMLInputElement>): void => {
+    setMicDevice(event.currentTarget.checked);
+  };
   return (
-    <FormGroup className="form-inline" controlId="micDevice">
+    <FormRow>
       <TooltipFormCheck
         kind="micDevice"
-        checked={micDevice}
+        checked={$micDevice.value}
         onChange={onChange}
         disabled={disabled}
       >
         Enable mic device
       </TooltipFormCheck>
-    </FormGroup>
-  )
-}
+    </FormRow>
+  );
+};
