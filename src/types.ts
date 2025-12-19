@@ -124,7 +124,6 @@ export type SoraDevtoolsState = {
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
   forwardingFilters: string;
-  forwardingFilter: string;
   simulcast: (typeof SIMULCAST)[number];
   simulcastRid: (typeof SIMULCAST_RID)[number];
   simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number];
@@ -389,7 +388,6 @@ export type ConnectionOptionsState = Pick<
   | "ignoreDisconnectWebSocket"
   | "signalingNotifyMetadata"
   | "forwardingFilters"
-  | "forwardingFilter"
   | "simulcast"
   | "simulcastRid"
   | "simulcastRequestRid"

@@ -2,42 +2,28 @@ import type { FunctionComponent } from "preact";
 import type { TargetedEvent } from "preact/compat";
 
 import { setBundleId, setEnabledBundleId } from "@/app/actions";
-import { $bundleId, $connectionStatus, $enabledBundleId } from "@/app/store";
-import { FormRow, FormInput } from "@/components/Form";
+import { $bundleId, $connectionStatus } from "@/app/store";
+import { FormInput } from "@/components/Form";
 import { isFormDisabled } from "@/utils";
-
-import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const BundleIdForm: FunctionComponent = () => {
   const disabled = isFormDisabled($connectionStatus.value);
-  const onChangeSwitch = (event: TargetedEvent<HTMLInputElement>): void => {
-    setEnabledBundleId(event.currentTarget.checked);
-  };
   const onChangeText = (event: TargetedEvent<HTMLInputElement>): void => {
-    setBundleId(event.currentTarget.value);
+    const value = event.currentTarget.value;
+    setBundleId(value);
+    setEnabledBundleId(value !== "");
   };
   return (
-    <>
-      <FormRow>
-        <TooltipFormCheck
-          kind="bundleId"
-          checked={$enabledBundleId.value}
-          onChange={onChangeSwitch}
-          disabled={disabled}
-        >
-          bundleId
-        </TooltipFormCheck>
-      </FormRow>
-      {$enabledBundleId.value ? (
-        <FormInput
-          type="text"
-          placeholder="bundleIdを指定"
-          value={$bundleId.value}
-          onChange={onChangeText}
-          disabled={disabled}
-          className="w-[500px]"
-        />
-      ) : null}
-    </>
+    <div className="flex items-center gap-2">
+      <label className="text-sm font-medium text-slate-700 whitespace-nowrap">bundleId:</label>
+      <FormInput
+        type="text"
+        placeholder="空白=未指定"
+        value={$bundleId.value}
+        onChange={onChangeText}
+        disabled={disabled}
+        className="flex-1"
+      />
+    </div>
   );
 };

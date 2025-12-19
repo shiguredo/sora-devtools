@@ -49,7 +49,6 @@ function createDownloadReport(): DownloadReport {
     fakeVolume: state.fakeVolume,
     forceStereoOutput: state.forceStereoOutput,
     forwardingFilters: state.forwardingFilters,
-    forwardingFilter: state.forwardingFilter,
     frameRate: state.frameRate,
     googCpuOveruseDetection: state.googCpuOveruseDetection,
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,

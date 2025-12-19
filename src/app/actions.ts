@@ -69,7 +69,6 @@ import {
   setEnabledClientId,
   setEnabledDataChannel,
   setEnabledDataChannels,
-  setEnabledForwardingFilter,
   setEnabledForwardingFilters,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
@@ -83,7 +82,6 @@ import {
   setFakeVolume,
   setFocusedSpotlightConnectionId,
   setForceStereoOutput,
-  setForwardingFilter,
   setForwardingFilters,
   setFrameRate,
   setGoogCpuOveruseDetection,
@@ -313,9 +311,6 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.forwardingFilters !== undefined) {
     setForwardingFilters(qsParams.forwardingFilters);
   }
-  if (qsParams.forwardingFilter !== undefined) {
-    setForwardingFilter(qsParams.forwardingFilter);
-  }
   if (qsParams.dataChannels !== undefined) {
     setDataChannels(qsParams.dataChannels);
   }
@@ -366,7 +361,6 @@ export const setInitialParameter = async (): Promise<void> => {
     signalingNotifyMetadata,
     signalingUrlCandidates,
     forwardingFilters,
-    forwardingFilter,
     videoVP9Params,
     videoH264Params,
     videoH265Params,
@@ -395,10 +389,6 @@ export const setInitialParameter = async (): Promise<void> => {
   // forwardingFilters が存在した場合は enabledForwardingFilters をセットする
   if (forwardingFilters !== "") {
     setEnabledForwardingFilters(true);
-  }
-  // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
-  if (forwardingFilter !== "") {
-    setEnabledForwardingFilter(true);
   }
   // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
   if (dataChannelSignaling !== "" || ignoreDisconnectWebSocket !== "") {
@@ -513,10 +503,6 @@ export const copyURL = (): void => {
     forwardingFilters:
       state.forwardingFilters !== "" && state.enabledForwardingFilters
         ? state.forwardingFilters
-        : undefined,
-    forwardingFilter:
-      state.forwardingFilter !== "" && state.enabledForwardingFilter
-        ? state.forwardingFilter
         : undefined,
     dataChannelSignaling:
       state.dataChannelSignaling !== "" && state.enabledDataChannel
@@ -1031,7 +1017,6 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     forwardingFilters: state.forwardingFilters,
-    forwardingFilter: state.forwardingFilter,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
     simulcastRequestRid: state.simulcastRequestRid,
@@ -1823,7 +1808,6 @@ export {
   setEnabledClientId,
   setEnabledDataChannel,
   setEnabledDataChannels,
-  setEnabledForwardingFilter,
   setEnabledForwardingFilters,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
@@ -1835,7 +1819,6 @@ export {
   setFacingMode,
   setFakeVolume,
   setForceStereoOutput,
-  setForwardingFilter,
   setForwardingFilters,
   setFrameRate,
   setIgnoreDisconnectWebSocket,

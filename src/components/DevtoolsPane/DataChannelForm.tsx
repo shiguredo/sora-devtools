@@ -18,7 +18,7 @@ import { checkFormValue, isFormDisabled } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-const IgnoreDisconnectWebSocketForm: FunctionComponent<{ disabled: boolean }> = (props) => {
+export const IgnoreDisconnectWebSocketForm: FunctionComponent<{ disabled: boolean }> = (props) => {
   const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.currentTarget.value, IGNORE_DISCONNECT_WEBSOCKET)) {
       setIgnoreDisconnectWebSocket(event.currentTarget.value);
@@ -44,7 +44,7 @@ const IgnoreDisconnectWebSocketForm: FunctionComponent<{ disabled: boolean }> = 
   );
 };
 
-const DataChannelSignalingForm: FunctionComponent<{ disabled: boolean }> = (props) => {
+export const DataChannelSignalingForm: FunctionComponent<{ disabled: boolean }> = (props) => {
   const onChange = (event: TargetedEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.currentTarget.value, DATA_CHANNEL_SIGNALING)) {
       setDataChannelSignaling(event.currentTarget.value);

@@ -109,7 +109,6 @@ const initialState: SoraDevtoolsState = {
   signalingNotifyMetadata: "",
   signalingUrlCandidates: [],
   forwardingFilters: "",
-  forwardingFilter: "",
   simulcastRid: "",
   simulcastRequestRid: "",
   spotlightNumber: "",
@@ -165,10 +164,13 @@ function isNonCloneable(value: unknown): boolean {
 
 // Immer-like な produce 関数: 変更されたパスのみをシャロークローン
 type Draft<T> = T;
+type ParentInfo = { parent: object; key: string | symbol };
 function produce<T extends object>(base: T, recipe: (draft: Draft<T>) => void): T {
   // 変更されたオブジェクトを追跡
   const modified = new WeakSet<object>();
   const copies = new WeakMap<object, object>();
+  // 親への参照を追跡（ルートまでの伝播用）
+  const parentMap = new WeakMap<object, ParentInfo>();
 
   // オブジェクトのシャローコピーを取得（必要に応じて作成）
   function getCopy<O extends object>(obj: O): O {
@@ -180,8 +182,29 @@ function produce<T extends object>(base: T, recipe: (draft: Draft<T>) => void): 
     return copy as O;
   }
 
+  // 変更をルートまで伝播させる
+  function propagateChange(target: object): void {
+    modified.add(target);
+    const copy = getCopy(target);
+
+    // 親がある場合は再帰的に伝播
+    const parentInfo = parentMap.get(target);
+    if (parentInfo) {
+      const { parent, key } = parentInfo;
+      modified.add(parent);
+      const parentCopy = getCopy(parent);
+      Reflect.set(parentCopy, key, copy);
+      propagateChange(parent);
+    }
+  }
+
   // Proxy ハンドラを作成
   function createProxy<O extends object>(obj: O, parent?: object, key?: string | symbol): O {
+    // 親への参照を記録
+    if (parent && key !== undefined) {
+      parentMap.set(obj, { parent, key });
+    }
+
     return new Proxy(obj, {
       get(target, prop, receiver) {
         const value = Reflect.get(target, prop, receiver);
@@ -196,17 +219,11 @@ function produce<T extends object>(base: T, recipe: (draft: Draft<T>) => void): 
         return value;
       },
       set(target, prop, value) {
-        // 親が変更されていることをマーク
-        modified.add(target);
         // コピーを取得して更新
         const copy = getCopy(target);
         Reflect.set(copy, prop, value);
-        // 親も更新が必要
-        if (parent && key !== undefined) {
-          modified.add(parent);
-          const parentCopy = getCopy(parent);
-          Reflect.set(parentCopy, key, copy);
-        }
+        // 変更をルートまで伝播
+        propagateChange(target);
         return true;
       },
     });
@@ -302,7 +319,6 @@ export const $dataChannelSignaling = computed(() => store.value.dataChannelSigna
 export const $dataChannels = computed(() => store.value.dataChannels);
 export const $ignoreDisconnectWebSocket = computed(() => store.value.ignoreDisconnectWebSocket);
 export const $forwardingFilters = computed(() => store.value.forwardingFilters);
-export const $forwardingFilter = computed(() => store.value.forwardingFilter);
 
 // シグナリングオプション有効化フラグ
 export const $enabledClientId = computed(() => store.value.enabledClientId);
@@ -317,7 +333,6 @@ export const $enabledSignalingUrlCandidates = computed(
 export const $enabledDataChannel = computed(() => store.value.enabledDataChannel);
 export const $enabledDataChannels = computed(() => store.value.enabledDataChannels);
 export const $enabledForwardingFilters = computed(() => store.value.enabledForwardingFilters);
-export const $enabledForwardingFilter = computed(() => store.value.enabledForwardingFilter);
 
 // Simulcast/Spotlight 設定
 export const $simulcastRid = computed(() => store.value.simulcastRid);
@@ -707,12 +722,6 @@ export const setSignalingUrlCandidates = (signalingUrlCandidates: string[]): voi
 export const setForwardingFilters = (forwardingFilters: string): void => {
   updateStore((state) => {
     state.forwardingFilters = forwardingFilters;
-  });
-};
-
-export const setForwardingFilter = (forwardingFilter: string): void => {
-  updateStore((state) => {
-    state.forwardingFilter = forwardingFilter;
   });
 };
 
@@ -1257,3 +1266,17 @@ export const getState = (): SoraDevtoolsState => store.value;
 
 // 型エクスポート
 export type RootState = SoraDevtoolsState;
+
+// UI状態（パネル表示）
+export type VisiblePanel = "signaling" | "media" | "device";
+export const $visiblePanels = signal<Set<VisiblePanel>>(new Set());
+
+export const togglePanel = (panel: VisiblePanel): void => {
+  const newSet = new Set($visiblePanels.value);
+  if (newSet.has(panel)) {
+    newSet.delete(panel);
+  } else {
+    newSet.add(panel);
+  }
+  $visiblePanels.value = newSet;
+};

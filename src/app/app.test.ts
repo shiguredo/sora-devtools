@@ -388,13 +388,6 @@ test("should handle 'forwardingFilters'", async () => {
   assert.equal(getState().forwardingFilters, value);
 });
 
-test("should handle 'forwardingFilter'", async () => {
-  const value = "forwardingFilter";
-  setLocationSearch({ forwardingFilter: value });
-  await setInitialParameter();
-  assert.equal(getState().forwardingFilter, value);
-});
-
 test("should handle 'dataChannels'", async () => {
   const value = "dataChannels";
   setLocationSearch({ dataChannels: value });

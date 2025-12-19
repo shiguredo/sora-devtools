@@ -1,85 +1,24 @@
-import { useSignal } from "@preact/signals";
-import type { FunctionComponent } from "preact";
+import type { ComponentChildren, FunctionComponent } from "preact";
 
-import {
-  $audioContentHint,
-  $autoGainControl,
-  $blurRadius,
-  $echoCancellation,
-  $echoCancellationType,
-  $enabledAudioStreamingLanguageCode,
-  $enabledBundleId,
-  $enabledClientId,
-  $enabledDataChannel,
-  $enabledDataChannels,
-  $enabledForwardingFilter,
-  $enabledForwardingFilters,
-  $enabledMetadata,
-  $enabledSignalingNotifyMetadata,
-  $enabledVideoAV1Params,
-  $enabledVideoH264Params,
-  $enabledVideoH265Params,
-  $enabledVideoVP9Params,
-  $forceStereoOutput,
-  $frameRate,
-  $mediaProcessorsNoiseSuppression,
-  $mediaType,
-  $noiseSuppression,
-  $reconnect,
-  $resolution,
-  $role,
-  $simulcast,
-  $spotlight,
-  $videoContentHint,
-} from "@/app/store";
+import { $mediaType, $role, $simulcast, $spotlight, $visiblePanels } from "@/app/store";
 import { AlertMessages } from "@/components/AlertMessages";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
 
-import { AspectRatioForm } from "./AspectRatioForm.tsx";
 import { AudioBitRateForm } from "./AudioBitRateForm.tsx";
 import { AudioCodecTypeForm } from "./AudioCodecTypeForm.tsx";
-import { AudioContentHintForm } from "./AudioContentHintForm.tsx";
 import { AudioForm } from "./AudioForm.tsx";
 import { AudioInputForm } from "./AudioInputForm.tsx";
 import { AudioOutputForm } from "./AudioOutputForm.tsx";
-import { AudioStreamingLanguageCodeForm } from "./AudioStreamingLanguageCodeForm.tsx";
-import { AudioTrackForm } from "./AudioTrackForm.tsx";
-import { AutoGainControlForm } from "./AutoGainControlForm.tsx";
-import { BlurRadiusForm } from "./BlurRadiusForm.tsx";
-import { BundleIdForm } from "./BundleIdForm.tsx";
-import { CameraDeviceForm } from "./CameraDeviceForm.tsx";
 import { ChannelIdForm } from "./ChannelIdForm.tsx";
-import { ClientIdForm } from "./ClientIdForm.tsx";
 import { ConnectButton } from "./ConnectButton.tsx";
-import { DataChannelForm } from "./DataChannelForm.tsx";
-import { DataChannelsForm } from "./DataChannelsForm.tsx";
+import { DevicePanel } from "./DevicePanel.tsx";
 import { DisconnectButton } from "./DisconnectButton.tsx";
-import { DisplayResolutionForm } from "./DisplayResolutionForm.tsx";
-import { DisposeMediaButton } from "./DisposeMediaButton.tsx";
-import { EchoCancellationForm } from "./EchoCancellationForm.tsx";
-import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm.tsx";
-import { FacingModeForm } from "./FacingModeForm.tsx";
-import { FakeVolumeForm } from "./FakeVolumeForm.tsx";
-import { ForceStereoOutputForm } from "./ForceStereoOutputForm.tsx";
-import { ForwardingFilterForm } from "./ForwardingFilterForm.tsx";
-import { ForwardingFiltersForm } from "./ForwardingFiltersForm.tsx";
 import { FrameRateForm } from "./FrameRateForm.tsx";
-import { MediaProcessorsNoiseSuppressionForm } from "./MediaProcessorsNoiseSuppressionForm.tsx";
-import { MediaStatsForm } from "./MediaStatsForm.tsx";
-import { MediaTypeForm } from "./MediaTypeForm.tsx";
-import { MetadataForm } from "./MetadataForm.tsx";
-import { MicDeviceForm } from "./MicDeviceForm.tsx";
-import { Mp4FileForm } from "./Mp4FileForm.tsx";
-import { NoiseSuppressionForm } from "./NoiseSuppressionForm.tsx";
-import { ReconnectForm } from "./ReconnectForm.tsx";
-import { ReloadDevicesButton } from "./ReloadDevicesButton.tsx";
-import { RequestMediaButton } from "./RequestMediaButton.tsx";
-import { ResizeModeForm } from "./ResizeModeForm.tsx";
+import { MediaPanel } from "./MediaPanel.tsx";
 import { ResolutionForm } from "./ResolutionForm.tsx";
 import { RoleForm } from "./RoleForm.tsx";
-import { SignalingNotifyMetadataForm } from "./SignalingNotifyMetadataForm.tsx";
-import { SignalingUrlCandidatesForm } from "./SignalingUrlCandidatesForm.tsx";
+import { SignalingPanel } from "./SignalingPanel.tsx";
 import { SimulcastForm } from "./SimulcastForm.tsx";
 import { SimulcastRequestRidForm } from "./SimulcastRequestRidForm.tsx";
 import { SimulcastRidForm } from "./SimulcastRidForm.tsx";
@@ -87,21 +26,26 @@ import { SpotlightFocusRidForm } from "./SpotlightFocusRidForm.tsx";
 import { SpotlightForm } from "./SpotlightForm.tsx";
 import { SpotlightNumberForm } from "./SpotlightNumberForm.tsx";
 import { SpotlightUnfocusRidForm } from "./SpotlightUnfocusRidForm.tsx";
-import { UpdateMediaStreamButton } from "./UpdateMediaStreamButton.tsx";
-import { VideoAV1ParamsForm } from "./VideoAV1ParamsForm.tsx";
 import { VideoBitRateForm } from "./VideoBitRateForm.tsx";
 import { VideoCodecTypeForm } from "./VideoCodecTypeForm.tsx";
-import { VideoContentHintForm } from "./VideoContentHintForm.tsx";
 import { VideoForm } from "./VideoForm.tsx";
-import { VideoH264ParamsForm } from "./VideoH264ParamsForm.tsx";
-import { VideoH265ParamsForm } from "./VideoH265ParamsForm.tsx";
 import { VideoInputForm } from "./VideoInputForm.tsx";
-import { VideoTrackForm } from "./VideoTrackForm.tsx";
-import { VideoVP9ParamsForm } from "./VideoVP9ParamsForm.tsx";
 
-const RowChannelOptions: FunctionComponent = () => {
+// セクションコンポーネント
+type SectionProps = {
+  children: ComponentChildren;
+};
+
+const Section: FunctionComponent<SectionProps> = ({ children }) => {
+  return <div className="form-section-card">{children}</div>;
+};
+
+// 接続セクション
+const ConnectionSection: FunctionComponent = () => {
+  const showCodecForms = $role.value !== "recvonly";
+
   return (
-    <>
+    <Section>
       <div className="form-row">
         <div className="form-channel-id">
           <ChannelIdForm />
@@ -112,14 +56,19 @@ const RowChannelOptions: FunctionComponent = () => {
         <SimulcastForm />
         <SpotlightForm />
       </div>
-    </>
-  );
-};
-
-const RowGetUserMediaConstraints: FunctionComponent = () => {
-  const showCodecForms = $role.value !== "recvonly";
-  return (
-    <>
+      {$simulcast.value === "true" && $role.value !== "sendonly" && (
+        <div className="form-row">
+          <SimulcastRequestRidForm />
+          <SimulcastRidForm />
+        </div>
+      )}
+      {$spotlight.value === "true" && (
+        <div className="form-row">
+          <SpotlightNumberForm />
+          <SpotlightFocusRidForm />
+          <SpotlightUnfocusRidForm />
+        </div>
+      )}
       <div className="form-row">
         <AudioForm />
         {showCodecForms && (
@@ -138,246 +87,28 @@ const RowGetUserMediaConstraints: FunctionComponent = () => {
           </>
         )}
       </div>
-    </>
-  );
-};
-
-const RowSimulcastOptions: FunctionComponent = () => {
-  // sendonly の場合は simulcastRequestRid / simulcastRid を表示しない
-  if ($simulcast.value !== "true" || $role.value === "sendonly") {
-    return null;
-  }
-  return (
-    <div className="form-row">
-      <SimulcastRequestRidForm />
-      <SimulcastRidForm />
-    </div>
-  );
-};
-
-const RowSpotlightOptions: FunctionComponent = () => {
-  if ($spotlight.value !== "true") {
-    return null;
-  }
-  return (
-    <div className="form-row">
-      <SpotlightNumberForm />
-      <SpotlightFocusRidForm />
-      <SpotlightUnfocusRidForm />
-    </div>
-  );
-};
-
-const SignalingOptionsTabs: FunctionComponent = () => {
-  const activeTab = useSignal<"basic" | "advanced">("basic");
-  const showSenderParams = $role.value !== "recvonly";
-  const showReceiverParams = $role.value !== "sendonly";
-
-  const basicEnabled = [
-    $enabledBundleId.value,
-    $enabledClientId.value,
-    $enabledDataChannel.value,
-    $enabledDataChannels.value,
-    $enabledForwardingFilters.value,
-    $enabledForwardingFilter.value,
-    $enabledMetadata.value,
-    $enabledSignalingNotifyMetadata.value,
-    $reconnect.value,
-  ].some((e) => e);
-
-  const advancedOptions = [] as boolean[];
-  if (showSenderParams) {
-    advancedOptions.push(
-      $enabledAudioStreamingLanguageCode.value,
-      $enabledVideoVP9Params.value,
-      $enabledVideoH264Params.value,
-      $enabledVideoH265Params.value,
-      $enabledVideoAV1Params.value,
-    );
-  }
-  if (showReceiverParams) {
-    advancedOptions.push($forceStereoOutput.value);
-  }
-  const advancedEnabled = advancedOptions.some((e) => e);
-
-  return (
-    <div className="signaling-options-tabs">
-      <div className="flex border-b border-slate-200">
-        <button
-          type="button"
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            activeTab.value === "basic"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-          } ${basicEnabled ? "font-semibold" : ""}`}
-          onClick={() => (activeTab.value = "basic")}
-        >
-          Signaling options
-        </button>
-        <button
-          type="button"
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            activeTab.value === "advanced"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-          } ${advancedEnabled ? "font-semibold" : ""}`}
-          onClick={() => (activeTab.value = "advanced")}
-        >
-          Advanced
-        </button>
-      </div>
-      <div className="py-3">
-        {activeTab.value === "basic" && (
-          <div className="flex flex-col gap-2">
-            <ReconnectForm />
-            <ClientIdForm />
-            <MetadataForm />
-            <BundleIdForm />
-            <SignalingNotifyMetadataForm />
-            <ForwardingFiltersForm />
-            <ForwardingFilterForm />
-            <DataChannelsForm />
-            <DataChannelForm />
-          </div>
-        )}
-        {activeTab.value === "advanced" && (
-          <div className="flex flex-col gap-2">
-            {showSenderParams && (
-              <>
-                <AudioStreamingLanguageCodeForm />
-                <VideoVP9ParamsForm />
-                <VideoAV1ParamsForm />
-                <VideoH264ParamsForm />
-                <VideoH265ParamsForm />
-              </>
-            )}
-            {showReceiverParams && <ForceStereoOutputForm />}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export const RowMediaType: FunctionComponent = () => {
-  return (
-    <>
-      <div className="form-row">
-        <MediaTypeForm />
-      </div>
-      <div className="form-row">
-        <FakeVolumeForm />
-      </div>
-      <div className="form-row">
-        <Mp4FileForm />
-      </div>
-    </>
-  );
-};
-
-const RowMediaOptions: FunctionComponent = () => {
-  const collapsed = useSignal(true);
-  const enabledOptions = [
-    $audioContentHint.value !== "",
-    $autoGainControl.value !== "",
-    $noiseSuppression.value !== "",
-    $echoCancellation.value !== "",
-    $echoCancellationType.value !== "",
-    $videoContentHint.value !== "",
-    $resolution.value !== "",
-    $frameRate.value !== "",
-    $blurRadius.value !== "",
-    $mediaProcessorsNoiseSuppression.value,
-  ].some((e) => e);
-  const linkClassNames = ["btn-collapse-options"];
-  if (collapsed.value) {
-    linkClassNames.push("collapsed");
-  }
-  if (enabledOptions) {
-    linkClassNames.push("font-bold");
-  }
-  const onClick = (event: MouseEvent): void => {
-    event.preventDefault();
-    collapsed.value = !collapsed.value;
-  };
-  return (
-    <div className="collapsible-section">
-      {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-      <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
-        Media options
-      </a>
-      {!collapsed.value && (
-        <div className="collapsible-content">
-          <div className="form-row">
-            <AudioContentHintForm />
-            <AutoGainControlForm />
-            <NoiseSuppressionForm />
-            <EchoCancellationForm />
-            <EchoCancellationTypeForm />
-            <MediaProcessorsNoiseSuppressionForm />
-          </div>
-          <div className="form-row">
-            <VideoContentHintForm />
-            <ResolutionForm />
-            <FrameRateForm />
-            <AspectRatioForm />
-            <ResizeModeForm />
-            <BlurRadiusForm />
-            <FacingModeForm />
-          </div>
-          <UpdateMediaStreamButton />
+      {$role.value !== "recvonly" && (
+        <div className="form-row">
+          <ResolutionForm />
+          <FrameRateForm />
         </div>
       )}
-    </div>
-  );
-};
-
-const RowDevices: FunctionComponent = () => {
-  return (
-    <>
       <div className="form-row">
-        {/**
-         * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
-         */}
-        {$role.value !== "recvonly" && $mediaType.value === "getUserMedia" ? (
+        {$role.value !== "recvonly" && $mediaType.value === "getUserMedia" && (
           <>
             <AudioInputForm />
             <VideoInputForm />
           </>
-        ) : null}
+        )}
+        {$role.value !== "sendonly" && <AudioOutputForm />}
       </div>
-      <div className="form-row">
-        {$role.value !== "sendonly" ? <AudioOutputForm /> : null}
+      <div className="form-row mt-3">
         <div className="btn-group">
-          <ReloadDevicesButton />
-          {$role.value !== "recvonly" ? (
-            <>
-              <RequestMediaButton />
-              <DisposeMediaButton />
-            </>
-          ) : null}
+          <ConnectButton />
+          <DisconnectButton />
         </div>
       </div>
-    </>
-  );
-};
-
-export const RowMediaDevices: FunctionComponent = () => {
-  return (
-    <>
-      <div className="form-row">
-        <DisplayResolutionForm />
-        <MediaStatsForm />
-      </div>
-      {$role.value !== "recvonly" && (
-        <div className="form-row">
-          <MicDeviceForm />
-          <CameraDeviceForm />
-          <AudioTrackForm />
-          <VideoTrackForm />
-        </div>
-      )}
-    </>
+    </Section>
   );
 };
 
@@ -385,29 +116,10 @@ export const DevtoolsPane: FunctionComponent = () => {
   return (
     <div className="col-devtools">
       <AlertMessages />
-      <RowChannelOptions />
-      <RowSimulcastOptions />
-      <RowSpotlightOptions />
-      <hr className="hr-form" />
-      <RowGetUserMediaConstraints />
-      <SignalingUrlCandidatesForm />
-      <SignalingOptionsTabs />
-      <hr className="hr-form" />
-      {$role.value !== "recvonly" ? (
-        <>
-          <RowMediaType />
-          <RowMediaOptions />
-          <hr className="hr-form" />
-        </>
-      ) : null}
-      <RowDevices />
-      <RowMediaDevices />
-      <hr className="hr-form" />
-      <div className="btn-group">
-        <ConnectButton />
-        <DisconnectButton />
-      </div>
-      <hr className="hr-form" />
+      <ConnectionSection />
+      {$visiblePanels.value.has("signaling") && <SignalingPanel />}
+      {$visiblePanels.value.has("media") && <MediaPanel />}
+      {$visiblePanels.value.has("device") && <DevicePanel />}
       <LocalVideo />
       {$role.value === "recvonly" || $role.value === "sendrecv" ? <RemoteVideos /> : null}
     </div>
