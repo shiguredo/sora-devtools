@@ -50,7 +50,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 - [Playwright](https://playwright.dev/)
 - [Vitest](https://vitest.dev/)
 - [pnpm](https://pnpm.io/)
-- [Biome](https://biomejs.dev/)
+- [Oxc](https://oxc.rs/)
 
 ## 特徴
 
