@@ -1,23 +1,23 @@
-import type { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
-import { NoiseSuppressionProcessor } from '@shiguredo/noise-suppression'
-import { VirtualBackgroundProcessor } from '@shiguredo/virtual-background'
-import { setAutoFreeze } from 'immer'
+import type { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
+import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
+import { setAutoFreeze } from "immer";
 import type {
   ConnectionPublisher,
   ConnectionSubscriber,
   DataChannelConfiguration,
   Role,
-} from 'sora-js-sdk'
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import { immer } from 'zustand/middleware/immer'
+} from "sora-js-sdk";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 // Immer 11 では state が凍結されるため、sora-js-sdk の Connection オブジェクトが
 // 内部状態を変更できなくなる問題を回避するために凍結を無効化する
-setAutoFreeze(false)
+setAutoFreeze(false);
 
-import packageJSON from '../../package.json'
-import { WORKER_SCRIPT } from '../constants.ts'
+import packageJSON from "../../package.json";
+import { WORKER_SCRIPT } from "../constants.ts";
 import type {
   AlertMessage,
   DataChannelMessage,
@@ -29,169 +29,173 @@ import type {
   SignalingMessage,
   SoraDevtoolsState,
   TimelineMessage,
-} from '../types.ts'
+} from "../types.ts";
 
 interface SoraDevtoolsActions {
-  resetState: () => void
-  setAudio: (audio: boolean) => void
-  setAudioInput: (audioInput: string) => void
-  setAudioOutput: (audioOutput: string) => void
-  setAudioBitRate: (audioBitRate: SoraDevtoolsState['audioBitRate']) => void
-  setAudioCodecType: (audioCodecType: SoraDevtoolsState['audioCodecType']) => void
-  setAudioContentHint: (audioContentHint: SoraDevtoolsState['audioContentHint']) => void
-  setAutoGainControl: (autoGainControl: SoraDevtoolsState['autoGainControl']) => void
-  setClientId: (clientId: string) => void
-  setChannelId: (channelId: string) => void
-  setTimelineMessage: (message: TimelineMessage) => void
-  setDataChannelSignaling: (dataChannelSignaling: SoraDevtoolsState['dataChannelSignaling']) => void
-  setDataChannels: (dataChannels: string) => void
-  setDataChannelMessage: (message: DataChannelMessage) => void
-  setGoogCpuOveruseDetection: (googCpuOveruseDetection: boolean) => void
-  setDisplayResolution: (displayResolution: SoraDevtoolsState['displayResolution']) => void
-  setEchoCancellation: (echoCancellation: SoraDevtoolsState['echoCancellation']) => void
-  setEchoCancellationType: (echoCancellationType: SoraDevtoolsState['echoCancellationType']) => void
-  setEnabledClientId: (enabled: boolean) => void
-  setEnabledDataChannels: (enabled: boolean) => void
-  setEnabledDataChannel: (enabled: boolean) => void
-  setEnabledMetadata: (enabled: boolean) => void
+  resetState: () => void;
+  setAudio: (audio: boolean) => void;
+  setAudioInput: (audioInput: string) => void;
+  setAudioOutput: (audioOutput: string) => void;
+  setAudioBitRate: (audioBitRate: SoraDevtoolsState["audioBitRate"]) => void;
+  setAudioCodecType: (audioCodecType: SoraDevtoolsState["audioCodecType"]) => void;
+  setAudioContentHint: (audioContentHint: SoraDevtoolsState["audioContentHint"]) => void;
+  setAutoGainControl: (autoGainControl: SoraDevtoolsState["autoGainControl"]) => void;
+  setClientId: (clientId: string) => void;
+  setChannelId: (channelId: string) => void;
+  setTimelineMessage: (message: TimelineMessage) => void;
+  setDataChannelSignaling: (
+    dataChannelSignaling: SoraDevtoolsState["dataChannelSignaling"],
+  ) => void;
+  setDataChannels: (dataChannels: string) => void;
+  setDataChannelMessage: (message: DataChannelMessage) => void;
+  setGoogCpuOveruseDetection: (googCpuOveruseDetection: boolean) => void;
+  setDisplayResolution: (displayResolution: SoraDevtoolsState["displayResolution"]) => void;
+  setEchoCancellation: (echoCancellation: SoraDevtoolsState["echoCancellation"]) => void;
+  setEchoCancellationType: (
+    echoCancellationType: SoraDevtoolsState["echoCancellationType"],
+  ) => void;
+  setEnabledClientId: (enabled: boolean) => void;
+  setEnabledDataChannels: (enabled: boolean) => void;
+  setEnabledDataChannel: (enabled: boolean) => void;
+  setEnabledMetadata: (enabled: boolean) => void;
   setIgnoreDisconnectWebSocket: (
-    ignoreDisconnectWebSocket: SoraDevtoolsState['ignoreDisconnectWebSocket'],
-  ) => void
-  setSignalingMessage: (message: SignalingMessage) => void
-  setEnabledForwardingFilters: (enabled: boolean) => void
-  setEnabledForwardingFilter: (enabled: boolean) => void
-  setEnabledSignalingNotifyMetadata: (enabled: boolean) => void
-  setEnabledSignalingUrlCandidates: (enabled: boolean) => void
-  setEnabledVideoVP9Params: (enabled: boolean) => void
-  setEnabledVideoH264Params: (enabled: boolean) => void
-  setEnabledVideoH265Params: (enabled: boolean) => void
-  setEnabledVideoAV1Params: (enabled: boolean) => void
-  setFakeVolume: (fakeVolume: string) => void
-  setFakeContentsGainNode: (gainNode: GainNode | null) => void
-  setInitialFakeContents: () => void
-  setFrameRate: (frameRate: SoraDevtoolsState['frameRate']) => void
-  setMute: (mute: boolean) => void
-  setMediaStats: (mediaStats: boolean) => void
-  setMp4MediaStream: (mp4MediaStream: Mp4MediaStream | null) => void
-  setNoiseSuppression: (noiseSuppression: SoraDevtoolsState['noiseSuppression']) => void
-  setMediaType: (mediaType: SoraDevtoolsState['mediaType']) => void
-  setMetadata: (metadata: string) => void
-  setResolution: (resolution: SoraDevtoolsState['resolution']) => void
-  setSignalingNotifyMetadata: (signalingNotifyMetadata: string) => void
-  setSignalingUrlCandidates: (signalingUrlCandidates: string[]) => void
-  setForwardingFilters: (forwardingFilters: string) => void
-  setForwardingFilter: (forwardingFilter: string) => void
-  setSimulcastRid: (simulcastRid: SoraDevtoolsState['simulcastRid']) => void
-  setSimulcastRequestRid: (simulcastRequestRid: SoraDevtoolsState['simulcastRequestRid']) => void
-  setSpotlightNumber: (spotlightNumber: SoraDevtoolsState['spotlightNumber']) => void
-  setSpotlightFocusRid: (spotlightFocusRid: SoraDevtoolsState['spotlightFocusRid']) => void
-  setSpotlightUnfocusRid: (spotlightUnfocusRid: SoraDevtoolsState['spotlightUnfocusRid']) => void
-  setVideo: (video: boolean) => void
-  setVideoInput: (videoInput: string) => void
-  setVideoBitRate: (videoBitRate: SoraDevtoolsState['videoBitRate']) => void
-  setVideoCodecType: (videoCodecType: SoraDevtoolsState['videoCodecType']) => void
-  setVideoContentHint: (videoContentHint: SoraDevtoolsState['videoContentHint']) => void
-  setVideoVP9Params: (videoVP9Params: string) => void
-  setVideoH264Params: (videoH264Params: string) => void
-  setVideoH265Params: (videoH265Params: string) => void
-  setVideoAV1Params: (videoAV1Params: string) => void
-  setSora: (sora: ConnectionPublisher | ConnectionSubscriber | null) => void
-  setSoraSessionId: (sessionId: string | null) => void
-  setSoraConnectionId: (connectionId: string | null) => void
-  setSoraClientId: (clientId: string | null) => void
-  setSoraTurnUrl: (turnUrl: string | null) => void
-  setSoraConnectionStatus: (status: SoraDevtoolsState['soraContents']['connectionStatus']) => void
-  setSoraReconnecting: (reconnecting: SoraDevtoolsState['soraContents']['reconnecting']) => void
+    ignoreDisconnectWebSocket: SoraDevtoolsState["ignoreDisconnectWebSocket"],
+  ) => void;
+  setSignalingMessage: (message: SignalingMessage) => void;
+  setEnabledForwardingFilters: (enabled: boolean) => void;
+  setEnabledForwardingFilter: (enabled: boolean) => void;
+  setEnabledSignalingNotifyMetadata: (enabled: boolean) => void;
+  setEnabledSignalingUrlCandidates: (enabled: boolean) => void;
+  setEnabledVideoVP9Params: (enabled: boolean) => void;
+  setEnabledVideoH264Params: (enabled: boolean) => void;
+  setEnabledVideoH265Params: (enabled: boolean) => void;
+  setEnabledVideoAV1Params: (enabled: boolean) => void;
+  setFakeVolume: (fakeVolume: string) => void;
+  setFakeContentsGainNode: (gainNode: GainNode | null) => void;
+  setInitialFakeContents: () => void;
+  setFrameRate: (frameRate: SoraDevtoolsState["frameRate"]) => void;
+  setMute: (mute: boolean) => void;
+  setMediaStats: (mediaStats: boolean) => void;
+  setMp4MediaStream: (mp4MediaStream: Mp4MediaStream | null) => void;
+  setNoiseSuppression: (noiseSuppression: SoraDevtoolsState["noiseSuppression"]) => void;
+  setMediaType: (mediaType: SoraDevtoolsState["mediaType"]) => void;
+  setMetadata: (metadata: string) => void;
+  setResolution: (resolution: SoraDevtoolsState["resolution"]) => void;
+  setSignalingNotifyMetadata: (signalingNotifyMetadata: string) => void;
+  setSignalingUrlCandidates: (signalingUrlCandidates: string[]) => void;
+  setForwardingFilters: (forwardingFilters: string) => void;
+  setForwardingFilter: (forwardingFilter: string) => void;
+  setSimulcastRid: (simulcastRid: SoraDevtoolsState["simulcastRid"]) => void;
+  setSimulcastRequestRid: (simulcastRequestRid: SoraDevtoolsState["simulcastRequestRid"]) => void;
+  setSpotlightNumber: (spotlightNumber: SoraDevtoolsState["spotlightNumber"]) => void;
+  setSpotlightFocusRid: (spotlightFocusRid: SoraDevtoolsState["spotlightFocusRid"]) => void;
+  setSpotlightUnfocusRid: (spotlightUnfocusRid: SoraDevtoolsState["spotlightUnfocusRid"]) => void;
+  setVideo: (video: boolean) => void;
+  setVideoInput: (videoInput: string) => void;
+  setVideoBitRate: (videoBitRate: SoraDevtoolsState["videoBitRate"]) => void;
+  setVideoCodecType: (videoCodecType: SoraDevtoolsState["videoCodecType"]) => void;
+  setVideoContentHint: (videoContentHint: SoraDevtoolsState["videoContentHint"]) => void;
+  setVideoVP9Params: (videoVP9Params: string) => void;
+  setVideoH264Params: (videoH264Params: string) => void;
+  setVideoH265Params: (videoH265Params: string) => void;
+  setVideoAV1Params: (videoAV1Params: string) => void;
+  setSora: (sora: ConnectionPublisher | ConnectionSubscriber | null) => void;
+  setSoraSessionId: (sessionId: string | null) => void;
+  setSoraConnectionId: (connectionId: string | null) => void;
+  setSoraClientId: (clientId: string | null) => void;
+  setSoraTurnUrl: (turnUrl: string | null) => void;
+  setSoraConnectionStatus: (status: SoraDevtoolsState["soraContents"]["connectionStatus"]) => void;
+  setSoraReconnecting: (reconnecting: SoraDevtoolsState["soraContents"]["reconnecting"]) => void;
   setSoraReconnectingTrials: (
-    trials: SoraDevtoolsState['soraContents']['reconnectingTrials'],
-  ) => void
-  setSoraDataChannels: (dataChannel: DataChannelConfiguration) => void
-  setLocalMediaStream: (mediaStream: MediaStream | null) => void
-  setRemoteClient: (remoteClient: RemoteClient) => void
-  setSoraRemoteClientId: (payload: { connectionId: string; clientId: string }) => void
-  setStatsReport: (statsReport: RTCStats[]) => void
-  removeRemoteClient: (connectionId: string) => void
-  removeAllRemoteClients: () => void
-  setAudioInputDevices: (devices: MediaDeviceInfo[]) => void
-  setVideoInputDevices: (devices: MediaDeviceInfo[]) => void
-  setAudioOutputDevices: (devices: MediaDeviceInfo[]) => void
-  setSoraInfoAlertMessage: (message: string) => void
-  setSoraErrorAlertMessage: (message: string) => void
-  setAPIInfoAlertMessage: (message: string) => void
-  setAPIErrorAlertMessage: (message: string) => void
-  setRPCErrorAlertMessage: (message: string) => void
-  deleteAlertMessage: (timestamp: number) => void
-  setDebug: (debug: boolean) => void
-  setDebugFilterText: (text: string) => void
-  setDebugType: (type: DebugType) => void
-  setLogMessages: (message: LogMessage['message']) => void
-  setNotifyMessages: (message: NotifyMessage) => void
-  setPushMessages: (message: PushMessage) => void
-  setFocusedSpotlightConnectionId: (connectionId: string) => void
-  setUnFocusedSpotlightConnectionId: (connectionId: string) => void
-  deleteFocusedSpotlightConnectionId: (connectionId: string) => void
-  setShowStats: (showStats: boolean) => void
-  setCameraDevice: (cameraDevice: boolean) => void
-  setMicDevice: (micDevice: boolean) => void
-  setAudioTrack: (audioTrack: boolean) => void
-  setVideoTrack: (videoTrack: boolean) => void
-  setRole: (role: Role) => void
-  setSimulcast: (simulcast: SoraDevtoolsState['simulcast']) => void
-  setSpotlight: (spotlight: SoraDevtoolsState['spotlight']) => void
-  setReconnect: (reconnect: boolean) => void
-  setApiUrl: (apiUrl: string) => void
-  setDebugApiUrl: (debugApiUrl: string) => void
-  clearDataChannelMessages: () => void
-  setAspectRatio: (aspectRatio: SoraDevtoolsState['aspectRatio']) => void
-  setResizeMode: (resizeMode: SoraDevtoolsState['resizeMode']) => void
-  setBlurRadius: (blurRadius: SoraDevtoolsState['blurRadius']) => void
+    trials: SoraDevtoolsState["soraContents"]["reconnectingTrials"],
+  ) => void;
+  setSoraDataChannels: (dataChannel: DataChannelConfiguration) => void;
+  setLocalMediaStream: (mediaStream: MediaStream | null) => void;
+  setRemoteClient: (remoteClient: RemoteClient) => void;
+  setSoraRemoteClientId: (payload: { connectionId: string; clientId: string }) => void;
+  setStatsReport: (statsReport: RTCStats[]) => void;
+  removeRemoteClient: (connectionId: string) => void;
+  removeAllRemoteClients: () => void;
+  setAudioInputDevices: (devices: MediaDeviceInfo[]) => void;
+  setVideoInputDevices: (devices: MediaDeviceInfo[]) => void;
+  setAudioOutputDevices: (devices: MediaDeviceInfo[]) => void;
+  setSoraInfoAlertMessage: (message: string) => void;
+  setSoraErrorAlertMessage: (message: string) => void;
+  setAPIInfoAlertMessage: (message: string) => void;
+  setAPIErrorAlertMessage: (message: string) => void;
+  setRPCErrorAlertMessage: (message: string) => void;
+  deleteAlertMessage: (timestamp: number) => void;
+  setDebug: (debug: boolean) => void;
+  setDebugFilterText: (text: string) => void;
+  setDebugType: (type: DebugType) => void;
+  setLogMessages: (message: LogMessage["message"]) => void;
+  setNotifyMessages: (message: NotifyMessage) => void;
+  setPushMessages: (message: PushMessage) => void;
+  setFocusedSpotlightConnectionId: (connectionId: string) => void;
+  setUnFocusedSpotlightConnectionId: (connectionId: string) => void;
+  deleteFocusedSpotlightConnectionId: (connectionId: string) => void;
+  setShowStats: (showStats: boolean) => void;
+  setCameraDevice: (cameraDevice: boolean) => void;
+  setMicDevice: (micDevice: boolean) => void;
+  setAudioTrack: (audioTrack: boolean) => void;
+  setVideoTrack: (videoTrack: boolean) => void;
+  setRole: (role: Role) => void;
+  setSimulcast: (simulcast: SoraDevtoolsState["simulcast"]) => void;
+  setSpotlight: (spotlight: SoraDevtoolsState["spotlight"]) => void;
+  setReconnect: (reconnect: boolean) => void;
+  setApiUrl: (apiUrl: string) => void;
+  setDebugApiUrl: (debugApiUrl: string) => void;
+  clearDataChannelMessages: () => void;
+  setAspectRatio: (aspectRatio: SoraDevtoolsState["aspectRatio"]) => void;
+  setResizeMode: (resizeMode: SoraDevtoolsState["resizeMode"]) => void;
+  setBlurRadius: (blurRadius: SoraDevtoolsState["blurRadius"]) => void;
   setMediaProcessorsNoiseSuppression: (
-    mediaProcessorsNoiseSuppression: SoraDevtoolsState['mediaProcessorsNoiseSuppression'],
-  ) => void
-  setBundleId: (bundleId: SoraDevtoolsState['bundleId']) => void
-  setEnabledBundleId: (enabledBundleId: SoraDevtoolsState['enabledBundleId']) => void
-  setFacingMode: (facingMode: SoraDevtoolsState['facingMode']) => void
+    mediaProcessorsNoiseSuppression: SoraDevtoolsState["mediaProcessorsNoiseSuppression"],
+  ) => void;
+  setBundleId: (bundleId: SoraDevtoolsState["bundleId"]) => void;
+  setEnabledBundleId: (enabledBundleId: SoraDevtoolsState["enabledBundleId"]) => void;
+  setFacingMode: (facingMode: SoraDevtoolsState["facingMode"]) => void;
   setAudioStreamingLanguageCode: (
-    audioStreamingLanguageCode: SoraDevtoolsState['audioStreamingLanguageCode'],
-  ) => void
-  setRpcObject: (rpcObject: SoraDevtoolsState['rpcObjects'][number]) => void
-  clearRpcObjects: () => void
-  setApiObject: (apiObject: SoraDevtoolsState['apiObjects'][number]) => void
-  clearApiObjects: () => void
+    audioStreamingLanguageCode: SoraDevtoolsState["audioStreamingLanguageCode"],
+  ) => void;
+  setRpcObject: (rpcObject: SoraDevtoolsState["rpcObjects"][number]) => void;
+  clearRpcObjects: () => void;
+  setApiObject: (apiObject: SoraDevtoolsState["apiObjects"][number]) => void;
+  clearApiObjects: () => void;
   setEnabledAudioStreamingLanguageCode: (
-    enabledAudioStreamingLanguageCode: SoraDevtoolsState['enabledAudioStreamingLanguageCode'],
-  ) => void
-  setForceStereoOutput: (forceStereoOutput: SoraDevtoolsState['forceStereoOutput']) => void
+    enabledAudioStreamingLanguageCode: SoraDevtoolsState["enabledAudioStreamingLanguageCode"],
+  ) => void;
+  setForceStereoOutput: (forceStereoOutput: SoraDevtoolsState["forceStereoOutput"]) => void;
 }
 
 const initialState: SoraDevtoolsState = {
   alertMessages: [],
   audio: true,
-  audioBitRate: '',
-  audioCodecType: '',
-  audioContentHint: '',
-  audioInput: '',
+  audioBitRate: "",
+  audioCodecType: "",
+  audioContentHint: "",
+  audioInput: "",
   audioInputDevices: [],
-  audioOutput: '',
+  audioOutput: "",
   audioOutputDevices: [],
-  autoGainControl: '',
-  blurRadius: '',
-  bundleId: '',
+  autoGainControl: "",
+  blurRadius: "",
+  bundleId: "",
   enabledBundleId: false,
-  clientId: '',
-  channelId: 'sora',
+  clientId: "",
+  channelId: "sora",
   googCpuOveruseDetection: null,
   timelineMessages: [],
   debug: false,
-  debugFilterText: '',
-  debugType: 'timeline',
-  debugApiUrl: 'http://localhost:3000',
-  dataChannelSignaling: '',
-  dataChannels: '',
+  debugFilterText: "",
+  debugType: "timeline",
+  debugApiUrl: "http://localhost:3000",
+  dataChannelSignaling: "",
+  dataChannels: "",
   dataChannelMessages: [],
-  displayResolution: '',
-  echoCancellation: '',
-  echoCancellationType: '',
+  displayResolution: "",
+  echoCancellation: "",
+  echoCancellationType: "",
   enabledClientId: false,
   enabledDataChannel: false,
   enabledDataChannels: false,
@@ -204,18 +208,18 @@ const initialState: SoraDevtoolsState = {
   enabledVideoH264Params: false,
   enabledVideoH265Params: false,
   enabledVideoAV1Params: false,
-  audioStreamingLanguageCode: '',
+  audioStreamingLanguageCode: "",
   enabledAudioStreamingLanguageCode: false,
   forceStereoOutput: false,
-  fakeVolume: '0',
+  fakeVolume: "0",
   fakeContents: {
     worker: null,
     colorCode: 0,
     gainNode: null,
   },
-  frameRate: '',
+  frameRate: "",
   soraContents: {
-    connectionStatus: 'initializing',
+    connectionStatus: "initializing",
     reconnecting: false,
     reconnectingTrials: 0,
     sora: null,
@@ -229,70 +233,70 @@ const initialState: SoraDevtoolsState = {
     dataChannels: [],
     turnUrl: null,
   },
-  ignoreDisconnectWebSocket: '',
+  ignoreDisconnectWebSocket: "",
   logMessages: [],
   mediaProcessorsNoiseSuppression: false,
   mediaStats: false,
-  mediaType: 'getUserMedia',
-  metadata: '',
+  mediaType: "getUserMedia",
+  metadata: "",
   mp4MediaStream: null,
   mute: false,
-  noiseSuppression: '',
+  noiseSuppression: "",
   notifyMessages: [],
   pushMessages: [],
-  resolution: '',
+  resolution: "",
   showStats: false,
-  simulcast: '',
-  spotlight: '',
+  simulcast: "",
+  spotlight: "",
   signalingMessages: [],
-  signalingNotifyMetadata: '',
+  signalingNotifyMetadata: "",
   signalingUrlCandidates: [],
-  forwardingFilters: '',
-  forwardingFilter: '',
-  simulcastRid: '',
-  simulcastRequestRid: '',
-  spotlightNumber: '',
-  spotlightFocusRid: '',
-  spotlightUnfocusRid: '',
+  forwardingFilters: "",
+  forwardingFilter: "",
+  simulcastRid: "",
+  simulcastRequestRid: "",
+  spotlightNumber: "",
+  spotlightFocusRid: "",
+  spotlightUnfocusRid: "",
   focusedSpotlightConnectionIds: {},
   video: true,
-  videoBitRate: '',
-  videoCodecType: '',
-  videoContentHint: '',
-  videoInput: '',
+  videoBitRate: "",
+  videoCodecType: "",
+  videoContentHint: "",
+  videoInput: "",
   videoInputDevices: [],
-  videoVP9Params: '',
-  videoH264Params: '',
-  videoH265Params: '',
-  videoAV1Params: '',
+  videoVP9Params: "",
+  videoH264Params: "",
+  videoH265Params: "",
+  videoAV1Params: "",
   version: packageJSON.version,
   cameraDevice: true,
   videoTrack: true,
   micDevice: true,
   audioTrack: true,
-  role: 'sendrecv',
+  role: "sendrecv",
   reconnect: false,
   apiUrl: null,
-  aspectRatio: '',
-  resizeMode: '',
+  aspectRatio: "",
+  resizeMode: "",
   noiseSuppressionProcessor: null,
   virtualBackgroundProcessor: null,
-  facingMode: '',
+  facingMode: "",
   rpcObjects: [],
   apiObjects: [],
-}
+};
 
 function setAlertMessagesAndLogMessages(
-  alertMessages: SoraDevtoolsState['alertMessages'],
-  logMessages: SoraDevtoolsState['logMessages'],
+  alertMessages: SoraDevtoolsState["alertMessages"],
+  logMessages: SoraDevtoolsState["logMessages"],
   alertMessage: AlertMessage,
 ): void {
   if (alertMessages.length >= 10) {
     for (let i = 0; i <= alertMessages.length - 5; i++) {
-      alertMessages.pop()
+      alertMessages.pop();
     }
   }
-  alertMessages.unshift(alertMessage)
+  alertMessages.unshift(alertMessage);
   logMessages.push({
     timestamp: alertMessage.timestamp,
     message: {
@@ -303,7 +307,7 @@ function setAlertMessagesAndLogMessages(
         message: alertMessage.message,
       }),
     },
-  })
+  });
 }
 
 export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActions>()(
@@ -313,430 +317,430 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       resetState: () => set(() => ({ ...initialState })),
       setAudio: (audio) =>
         set((state) => {
-          state.audio = audio
+          state.audio = audio;
         }),
       setAudioInput: (audioInput) =>
         set((state) => {
-          state.audioInput = audioInput
+          state.audioInput = audioInput;
         }),
       setAudioOutput: (audioOutput) =>
         set((state) => {
-          state.audioOutput = audioOutput
+          state.audioOutput = audioOutput;
         }),
       setAudioBitRate: (audioBitRate) =>
         set((state) => {
-          state.audioBitRate = audioBitRate
+          state.audioBitRate = audioBitRate;
         }),
       setAudioCodecType: (audioCodecType) =>
         set((state) => {
-          state.audioCodecType = audioCodecType
+          state.audioCodecType = audioCodecType;
         }),
       setAudioContentHint: (audioContentHint) =>
         set((state) => {
-          state.audioContentHint = audioContentHint
+          state.audioContentHint = audioContentHint;
           if (state.soraContents.localMediaStream) {
             for (const track of state.soraContents.localMediaStream.getAudioTracks()) {
-              track.contentHint = state.audioContentHint
+              track.contentHint = state.audioContentHint;
             }
           }
         }),
       setAutoGainControl: (autoGainControl) =>
         set((state) => {
-          state.autoGainControl = autoGainControl
+          state.autoGainControl = autoGainControl;
         }),
       setClientId: (clientId) =>
         set((state) => {
-          state.clientId = clientId
+          state.clientId = clientId;
         }),
       setChannelId: (channelId) =>
         set((state) => {
-          state.channelId = channelId
+          state.channelId = channelId;
         }),
       setTimelineMessage: (message) =>
         set((state) => {
-          state.timelineMessages.push(message)
+          state.timelineMessages.push(message);
         }),
       setDataChannelSignaling: (dataChannelSignaling) =>
         set((state) => {
-          state.dataChannelSignaling = dataChannelSignaling
+          state.dataChannelSignaling = dataChannelSignaling;
         }),
       setDataChannels: (dataChannels) =>
         set((state) => {
-          state.dataChannels = dataChannels
+          state.dataChannels = dataChannels;
         }),
       setDataChannelMessage: (message) =>
         set((state) => {
-          state.dataChannelMessages.push(message)
+          state.dataChannelMessages.push(message);
         }),
       setGoogCpuOveruseDetection: (googCpuOveruseDetection) =>
         set((state) => {
-          state.googCpuOveruseDetection = googCpuOveruseDetection
+          state.googCpuOveruseDetection = googCpuOveruseDetection;
         }),
       setDisplayResolution: (displayResolution) =>
         set((state) => {
-          state.displayResolution = displayResolution
+          state.displayResolution = displayResolution;
         }),
       setEchoCancellation: (echoCancellation) =>
         set((state) => {
-          state.echoCancellation = echoCancellation
+          state.echoCancellation = echoCancellation;
         }),
       setEchoCancellationType: (echoCancellationType) =>
         set((state) => {
-          state.echoCancellationType = echoCancellationType
+          state.echoCancellationType = echoCancellationType;
         }),
       setEnabledClientId: (enabled) =>
         set((state) => {
-          state.enabledClientId = enabled
+          state.enabledClientId = enabled;
         }),
       setEnabledDataChannels: (enabled) =>
         set((state) => {
-          state.enabledDataChannels = enabled
+          state.enabledDataChannels = enabled;
         }),
       setEnabledDataChannel: (enabled) =>
         set((state) => {
-          state.enabledDataChannel = enabled
+          state.enabledDataChannel = enabled;
         }),
       setEnabledMetadata: (enabled) =>
         set((state) => {
-          state.enabledMetadata = enabled
+          state.enabledMetadata = enabled;
         }),
       setIgnoreDisconnectWebSocket: (ignoreDisconnectWebSocket) =>
         set((state) => {
-          state.ignoreDisconnectWebSocket = ignoreDisconnectWebSocket
+          state.ignoreDisconnectWebSocket = ignoreDisconnectWebSocket;
         }),
       setSignalingMessage: (message) =>
         set((state) => {
-          state.signalingMessages.push(message)
+          state.signalingMessages.push(message);
         }),
       setEnabledForwardingFilters: (enabled) =>
         set((state) => {
-          state.enabledForwardingFilters = enabled
+          state.enabledForwardingFilters = enabled;
         }),
       setEnabledForwardingFilter: (enabled) =>
         set((state) => {
-          state.enabledForwardingFilter = enabled
+          state.enabledForwardingFilter = enabled;
         }),
       setEnabledSignalingNotifyMetadata: (enabled) =>
         set((state) => {
-          state.enabledSignalingNotifyMetadata = enabled
+          state.enabledSignalingNotifyMetadata = enabled;
         }),
       setEnabledSignalingUrlCandidates: (enabled) =>
         set((state) => {
-          state.enabledSignalingUrlCandidates = enabled
+          state.enabledSignalingUrlCandidates = enabled;
         }),
       setEnabledVideoVP9Params: (enabled) =>
         set((state) => {
-          state.enabledVideoVP9Params = enabled
+          state.enabledVideoVP9Params = enabled;
         }),
       setEnabledVideoH264Params: (enabled) =>
         set((state) => {
-          state.enabledVideoH264Params = enabled
+          state.enabledVideoH264Params = enabled;
         }),
       setEnabledVideoH265Params: (enabled) =>
         set((state) => {
-          state.enabledVideoH265Params = enabled
+          state.enabledVideoH265Params = enabled;
         }),
       setEnabledVideoAV1Params: (enabled) =>
         set((state) => {
-          state.enabledVideoAV1Params = enabled
+          state.enabledVideoAV1Params = enabled;
         }),
       setFakeVolume: (fakeVolume) =>
         set((state) => {
-          const volume = Number.parseFloat(fakeVolume)
+          const volume = Number.parseFloat(fakeVolume);
           if (Number.isNaN(volume)) {
-            state.fakeVolume = '0'
+            state.fakeVolume = "0";
           } else if (volume > 1) {
-            state.fakeVolume = '1'
+            state.fakeVolume = "1";
           } else {
-            state.fakeVolume = String(volume)
+            state.fakeVolume = String(volume);
           }
           if (state.fakeContents.gainNode) {
-            state.fakeContents.gainNode.gain.setValueAtTime(Number.parseFloat(state.fakeVolume), 0)
+            state.fakeContents.gainNode.gain.setValueAtTime(Number.parseFloat(state.fakeVolume), 0);
           }
         }),
       setFakeContentsGainNode: (gainNode) =>
         set((state) => {
-          state.fakeContents.gainNode = gainNode
+          state.fakeContents.gainNode = gainNode;
         }),
       setInitialFakeContents: () =>
         set((state) => {
-          state.fakeContents.colorCode = Math.floor(Math.random() * 0xffffff)
+          state.fakeContents.colorCode = Math.floor(Math.random() * 0xffffff);
           if (URL.createObjectURL) {
             const url = URL.createObjectURL(
-              new Blob([WORKER_SCRIPT], { type: 'application/javascript' }),
-            )
-            state.fakeContents.worker = new Worker(url)
+              new Blob([WORKER_SCRIPT], { type: "application/javascript" }),
+            );
+            state.fakeContents.worker = new Worker(url);
           }
         }),
       setFrameRate: (frameRate) =>
         set((state) => {
-          state.frameRate = frameRate
+          state.frameRate = frameRate;
         }),
       setMute: (mute) =>
         set((state) => {
-          state.mute = mute
+          state.mute = mute;
         }),
       setMediaStats: (mediaStats) =>
         set((state) => {
-          state.mediaStats = mediaStats
+          state.mediaStats = mediaStats;
         }),
       setMp4MediaStream: (mp4MediaStream) =>
         set((state) => {
-          state.mp4MediaStream = mp4MediaStream
+          state.mp4MediaStream = mp4MediaStream;
         }),
       setNoiseSuppression: (noiseSuppression) =>
         set((state) => {
-          state.noiseSuppression = noiseSuppression
+          state.noiseSuppression = noiseSuppression;
         }),
       setMediaType: (mediaType) =>
         set((state) => {
-          state.mediaType = mediaType
+          state.mediaType = mediaType;
         }),
       setMetadata: (metadata) =>
         set((state) => {
-          state.metadata = metadata
+          state.metadata = metadata;
         }),
       setResolution: (resolution) =>
         set((state) => {
-          state.resolution = resolution
+          state.resolution = resolution;
         }),
       setSignalingNotifyMetadata: (signalingNotifyMetadata) =>
         set((state) => {
-          state.signalingNotifyMetadata = signalingNotifyMetadata
+          state.signalingNotifyMetadata = signalingNotifyMetadata;
         }),
       setSignalingUrlCandidates: (signalingUrlCandidates) =>
         set((state) => {
-          state.signalingUrlCandidates = signalingUrlCandidates
+          state.signalingUrlCandidates = signalingUrlCandidates;
         }),
       setForwardingFilters: (forwardingFilters) =>
         set((state) => {
-          state.forwardingFilters = forwardingFilters
+          state.forwardingFilters = forwardingFilters;
         }),
       setForwardingFilter: (forwardingFilter) =>
         set((state) => {
-          state.forwardingFilter = forwardingFilter
+          state.forwardingFilter = forwardingFilter;
         }),
       setSimulcastRid: (simulcastRid) =>
         set((state) => {
-          state.simulcastRid = simulcastRid
+          state.simulcastRid = simulcastRid;
         }),
       setSimulcastRequestRid: (simulcastRequestRid) =>
         set((state) => {
-          state.simulcastRequestRid = simulcastRequestRid
+          state.simulcastRequestRid = simulcastRequestRid;
         }),
       setSpotlightNumber: (spotlightNumber) =>
         set((state) => {
-          state.spotlightNumber = spotlightNumber
+          state.spotlightNumber = spotlightNumber;
         }),
       setSpotlightFocusRid: (spotlightFocusRid) =>
         set((state) => {
-          state.spotlightFocusRid = spotlightFocusRid
+          state.spotlightFocusRid = spotlightFocusRid;
         }),
       setSpotlightUnfocusRid: (spotlightUnfocusRid) =>
         set((state) => {
-          state.spotlightUnfocusRid = spotlightUnfocusRid
+          state.spotlightUnfocusRid = spotlightUnfocusRid;
         }),
       setVideo: (video) =>
         set((state) => {
-          state.video = video
+          state.video = video;
         }),
       setVideoInput: (videoInput) =>
         set((state) => {
-          state.videoInput = videoInput
+          state.videoInput = videoInput;
         }),
       setVideoBitRate: (videoBitRate) =>
         set((state) => {
-          state.videoBitRate = videoBitRate
+          state.videoBitRate = videoBitRate;
         }),
       setVideoCodecType: (videoCodecType) =>
         set((state) => {
-          state.videoCodecType = videoCodecType
+          state.videoCodecType = videoCodecType;
         }),
       setVideoContentHint: (videoContentHint) =>
         set((state) => {
-          state.videoContentHint = videoContentHint
+          state.videoContentHint = videoContentHint;
           if (state.soraContents.localMediaStream) {
             for (const track of state.soraContents.localMediaStream.getVideoTracks()) {
-              track.contentHint = state.videoContentHint
+              track.contentHint = state.videoContentHint;
             }
           }
         }),
       setVideoVP9Params: (videoVP9Params) =>
         set((state) => {
-          state.videoVP9Params = videoVP9Params
+          state.videoVP9Params = videoVP9Params;
         }),
       setVideoH264Params: (videoH264Params) =>
         set((state) => {
-          state.videoH264Params = videoH264Params
+          state.videoH264Params = videoH264Params;
         }),
       setVideoH265Params: (videoH265Params) =>
         set((state) => {
-          state.videoH265Params = videoH265Params
+          state.videoH265Params = videoH265Params;
         }),
       setVideoAV1Params: (videoAV1Params) =>
         set((state) => {
-          state.videoAV1Params = videoAV1Params
+          state.videoAV1Params = videoAV1Params;
         }),
       setSora: (sora) =>
         set((state) => {
-          state.soraContents.sora = sora as any
+          state.soraContents.sora = sora as any;
           if (!state.soraContents.sora) {
-            state.soraContents.dataChannels = []
+            state.soraContents.dataChannels = [];
           }
         }),
       setSoraSessionId: (sessionId) =>
         set((state) => {
-          state.soraContents.sessionId = sessionId
+          state.soraContents.sessionId = sessionId;
         }),
       setSoraConnectionId: (connectionId) =>
         set((state) => {
-          state.soraContents.connectionId = connectionId
+          state.soraContents.connectionId = connectionId;
         }),
       setSoraClientId: (clientId) =>
         set((state) => {
-          state.soraContents.clientId = clientId
+          state.soraContents.clientId = clientId;
         }),
       setSoraTurnUrl: (turnUrl) =>
         set((state) => {
-          state.soraContents.turnUrl = turnUrl
+          state.soraContents.turnUrl = turnUrl;
         }),
       setSoraConnectionStatus: (status) =>
         set((state) => {
-          state.soraContents.connectionStatus = status
+          state.soraContents.connectionStatus = status;
         }),
       setSoraReconnecting: (reconnecting) =>
         set((state) => {
-          state.soraContents.reconnecting = reconnecting
+          state.soraContents.reconnecting = reconnecting;
           if (state.soraContents.reconnecting === false) {
-            state.soraContents.reconnectingTrials = 0
+            state.soraContents.reconnectingTrials = 0;
           }
         }),
       setSoraReconnectingTrials: (trials) =>
         set((state) => {
-          state.soraContents.reconnectingTrials = trials
+          state.soraContents.reconnectingTrials = trials;
         }),
       setSoraDataChannels: (dataChannel) =>
         set((state) => {
-          state.soraContents.dataChannels.push(dataChannel)
+          state.soraContents.dataChannels.push(dataChannel);
         }),
       setLocalMediaStream: (mediaStream) =>
         set((state) => {
           if (state.soraContents.localMediaStream) {
             state.soraContents.localMediaStream.getTracks().forEach((track) => {
-              track.stop()
-            })
+              track.stop();
+            });
           }
-          state.soraContents.localMediaStream = mediaStream
+          state.soraContents.localMediaStream = mediaStream;
         }),
       setRemoteClient: (remoteClient) =>
         set((state) => {
-          state.soraContents.remoteClients.push(remoteClient)
+          state.soraContents.remoteClients.push(remoteClient);
         }),
       setSoraRemoteClientId: (payload) =>
         set((state) => {
           for (const client of state.soraContents.remoteClients) {
             if (client.connectionId === payload.connectionId) {
-              client.clientId = payload.clientId
+              client.clientId = payload.clientId;
             }
           }
         }),
       setStatsReport: (statsReport) =>
         set((state) => {
-          state.soraContents.prevStatsReport = state.soraContents.statsReport
-          state.soraContents.statsReport = statsReport
+          state.soraContents.prevStatsReport = state.soraContents.statsReport;
+          state.soraContents.statsReport = statsReport;
         }),
       removeRemoteClient: (connectionId) =>
         set((state) => {
           const remoteClients = state.soraContents.remoteClients.filter(
             (client) => client.connectionId !== connectionId,
-          )
-          state.soraContents.remoteClients = remoteClients
+          );
+          state.soraContents.remoteClients = remoteClients;
         }),
       removeAllRemoteClients: () =>
         set((state) => {
-          state.soraContents.remoteClients = []
+          state.soraContents.remoteClients = [];
         }),
       setAudioInputDevices: (devices) =>
         set((state) => {
-          state.audioInputDevices = devices
+          state.audioInputDevices = devices;
         }),
       setVideoInputDevices: (devices) =>
         set((state) => {
-          state.videoInputDevices = devices
+          state.videoInputDevices = devices;
         }),
       setAudioOutputDevices: (devices) =>
         set((state) => {
-          state.audioOutputDevices = devices
+          state.audioOutputDevices = devices;
         }),
       setSoraInfoAlertMessage: (message) =>
         set((state) => {
           const alertMessage: AlertMessage = {
-            title: 'Sora info',
-            type: 'info',
+            title: "Sora info",
+            type: "info",
             message: message,
             timestamp: Date.now(),
-          }
-          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
+          };
+          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
         }),
       setSoraErrorAlertMessage: (message) =>
         set((state) => {
           const alertMessage: AlertMessage = {
-            title: 'Sora error',
-            type: 'error',
+            title: "Sora error",
+            type: "error",
             message: message,
             timestamp: Date.now(),
-          }
-          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
+          };
+          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
         }),
       setAPIInfoAlertMessage: (message) =>
         set((state) => {
           const alertMessage: AlertMessage = {
-            title: 'API info',
-            type: 'info',
+            title: "API info",
+            type: "info",
             message: message,
             timestamp: Date.now(),
-          }
-          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
+          };
+          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
         }),
       setAPIErrorAlertMessage: (message) =>
         set((state) => {
           const alertMessage: AlertMessage = {
-            title: 'API error',
-            type: 'error',
+            title: "API error",
+            type: "error",
             message: message,
             timestamp: Date.now(),
-          }
-          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
+          };
+          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
         }),
       setRPCErrorAlertMessage: (message) =>
         set((state) => {
           const alertMessage: AlertMessage = {
-            title: 'RPC error',
-            type: 'error',
+            title: "RPC error",
+            type: "error",
             message: message,
             timestamp: Date.now(),
-          }
-          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage)
+          };
+          setAlertMessagesAndLogMessages(state.alertMessages, state.logMessages, alertMessage);
         }),
       deleteAlertMessage: (timestamp) =>
         set((state) => {
           const filterdAlertMessages = state.alertMessages.filter(
             (alertMessage) => alertMessage.timestamp !== timestamp,
-          )
-          state.alertMessages = filterdAlertMessages
+          );
+          state.alertMessages = filterdAlertMessages;
         }),
       setDebug: (debug) =>
         set((state) => {
-          state.debug = debug
+          state.debug = debug;
         }),
       setDebugFilterText: (text) =>
         set((state) => {
-          state.debugFilterText = text
+          state.debugFilterText = text;
         }),
       setDebugType: (type) =>
         set((state) => {
-          state.debugFilterText = ''
-          state.debugType = type
+          state.debugFilterText = "";
+          state.debugType = type;
         }),
       setLogMessages: (message) =>
         set((state) => {
@@ -746,162 +750,162 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
               title: message.title,
               description: message.description,
             },
-          })
+          });
         }),
       setNotifyMessages: (message) =>
         set((state) => {
-          state.notifyMessages.push(message)
+          state.notifyMessages.push(message);
         }),
       setPushMessages: (message) =>
         set((state) => {
-          state.pushMessages.push(message)
+          state.pushMessages.push(message);
         }),
       setFocusedSpotlightConnectionId: (connectionId) =>
         set((state) => {
-          state.focusedSpotlightConnectionIds[connectionId] = true
+          state.focusedSpotlightConnectionIds[connectionId] = true;
         }),
       setUnFocusedSpotlightConnectionId: (connectionId) =>
         set((state) => {
-          state.focusedSpotlightConnectionIds[connectionId] = false
+          state.focusedSpotlightConnectionIds[connectionId] = false;
         }),
       deleteFocusedSpotlightConnectionId: (connectionId) =>
         set((state) => {
-          delete state.focusedSpotlightConnectionIds[connectionId]
+          delete state.focusedSpotlightConnectionIds[connectionId];
         }),
       setShowStats: (showStats) =>
         set((state) => {
-          state.showStats = showStats
+          state.showStats = showStats;
         }),
       setCameraDevice: (cameraDevice) =>
         set((state) => {
-          state.cameraDevice = cameraDevice
+          state.cameraDevice = cameraDevice;
         }),
       setMicDevice: (micDevice) =>
         set((state) => {
-          state.micDevice = micDevice
+          state.micDevice = micDevice;
         }),
       setAudioTrack: (audioTrack) =>
         set((state) => {
-          state.audioTrack = audioTrack
+          state.audioTrack = audioTrack;
           if (state.soraContents.localMediaStream) {
             for (const track of state.soraContents.localMediaStream.getAudioTracks()) {
-              track.enabled = state.audioTrack
+              track.enabled = state.audioTrack;
             }
           }
         }),
       setVideoTrack: (videoTrack) =>
         set((state) => {
-          state.videoTrack = videoTrack
+          state.videoTrack = videoTrack;
           if (state.soraContents.localMediaStream) {
             for (const track of state.soraContents.localMediaStream.getVideoTracks()) {
-              track.enabled = state.videoTrack
+              track.enabled = state.videoTrack;
             }
           }
         }),
       setRole: (role) =>
         set((state) => {
-          state.role = role
+          state.role = role;
         }),
       setSimulcast: (simulcast) =>
         set((state) => {
-          state.simulcast = simulcast
+          state.simulcast = simulcast;
         }),
       setSpotlight: (spotlight) =>
         set((state) => {
-          state.spotlight = spotlight
+          state.spotlight = spotlight;
         }),
       setReconnect: (reconnect) =>
         set((state) => {
-          state.reconnect = reconnect
+          state.reconnect = reconnect;
         }),
       setApiUrl: (apiUrl) =>
         set((state) => {
-          state.apiUrl = apiUrl
+          state.apiUrl = apiUrl;
         }),
       setDebugApiUrl: (debugApiUrl) =>
         set((state) => {
-          state.debugApiUrl = debugApiUrl
+          state.debugApiUrl = debugApiUrl;
         }),
       clearDataChannelMessages: () =>
         set((state) => {
-          state.dataChannelMessages = []
+          state.dataChannelMessages = [];
         }),
       setRpcObject: (rpcObject) =>
         set((state) => {
-          state.rpcObjects.unshift(rpcObject)
+          state.rpcObjects.unshift(rpcObject);
           // 開発ツールとして RPC の結果を全て保持するため、意図的に件数制限は行わない
           // メモリーリークの可能性があるが、開発目的のため許容する
         }),
       clearRpcObjects: () =>
         set((state) => {
-          state.rpcObjects = []
+          state.rpcObjects = [];
         }),
       setApiObject: (apiObject) =>
         set((state) => {
-          state.apiObjects.unshift(apiObject)
+          state.apiObjects.unshift(apiObject);
           // 開発ツールとして API の結果を全て保持するため、意図的に件数制限は行わない
           // メモリーリークの可能性があるが、開発目的のため許容する
         }),
       clearApiObjects: () =>
         set((state) => {
-          state.apiObjects = []
+          state.apiObjects = [];
         }),
       setAspectRatio: (aspectRatio) =>
         set((state) => {
-          state.aspectRatio = aspectRatio
+          state.aspectRatio = aspectRatio;
         }),
       setResizeMode: (resizeMode) =>
         set((state) => {
-          state.resizeMode = resizeMode
+          state.resizeMode = resizeMode;
         }),
       setBlurRadius: (blurRadius) =>
         set((state) => {
-          if (blurRadius !== '' && state.virtualBackgroundProcessor === null) {
-            const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || ''
-            const processor = new VirtualBackgroundProcessor(assetsPath)
-            state.virtualBackgroundProcessor = processor
+          if (blurRadius !== "" && state.virtualBackgroundProcessor === null) {
+            const assetsPath = import.meta.env.VITE_VIRTUAL_BACKGROUND_ASSETS_PATH || "";
+            const processor = new VirtualBackgroundProcessor(assetsPath);
+            state.virtualBackgroundProcessor = processor;
           }
-          state.blurRadius = blurRadius
+          state.blurRadius = blurRadius;
         }),
       setMediaProcessorsNoiseSuppression: (mediaProcessorsNoiseSuppression) =>
         set((state) => {
           if (mediaProcessorsNoiseSuppression && state.noiseSuppressionProcessor === null) {
-            const processor = new NoiseSuppressionProcessor()
-            state.noiseSuppressionProcessor = processor
+            const processor = new NoiseSuppressionProcessor();
+            state.noiseSuppressionProcessor = processor;
           }
-          state.mediaProcessorsNoiseSuppression = mediaProcessorsNoiseSuppression
+          state.mediaProcessorsNoiseSuppression = mediaProcessorsNoiseSuppression;
         }),
       setBundleId: (bundleId) =>
         set((state) => {
-          state.bundleId = bundleId
+          state.bundleId = bundleId;
         }),
       setEnabledBundleId: (enabledBundleId) =>
         set((state) => {
-          state.enabledBundleId = enabledBundleId
+          state.enabledBundleId = enabledBundleId;
         }),
       setFacingMode: (facingMode) =>
         set((state) => {
-          state.facingMode = facingMode
+          state.facingMode = facingMode;
         }),
       setAudioStreamingLanguageCode: (audioStreamingLanguageCode) =>
         set((state) => {
-          state.audioStreamingLanguageCode = audioStreamingLanguageCode
+          state.audioStreamingLanguageCode = audioStreamingLanguageCode;
         }),
       setEnabledAudioStreamingLanguageCode: (enabledAudioStreamingLanguageCode) =>
         set((state) => {
-          state.enabledAudioStreamingLanguageCode = enabledAudioStreamingLanguageCode
+          state.enabledAudioStreamingLanguageCode = enabledAudioStreamingLanguageCode;
         }),
       setForceStereoOutput: (forceStereoOutput) =>
         set((state) => {
-          state.forceStereoOutput = forceStereoOutput
+          state.forceStereoOutput = forceStereoOutput;
         }),
     })),
     {
-      name: 'sora-devtools',
-      enabled: import.meta.env.VITE_ZUSTAND_DEVTOOLS === 'true',
+      name: "sora-devtools",
+      enabled: import.meta.env.VITE_ZUSTAND_DEVTOOLS === "true",
     },
   ),
-)
+);
 
-export type RootState = SoraDevtoolsState
-export type AppDispatch = SoraDevtoolsActions
+export type RootState = SoraDevtoolsState;
+export type AppDispatch = SoraDevtoolsActions;

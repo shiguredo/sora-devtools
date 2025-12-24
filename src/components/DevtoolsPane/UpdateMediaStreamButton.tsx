@@ -1,11 +1,11 @@
-import type React from 'react'
+import type React from "react";
 
-import { updateMediaStream } from '@/app/actions'
+import { updateMediaStream } from "@/app/actions";
 
 export const UpdateMediaStreamButton: React.FC = () => {
   const onClick = (): void => {
-    updateMediaStream()
-  }
+    void updateMediaStream();
+  };
   return (
     <div className="col-auto mb-1">
       <input
@@ -16,5 +16,5 @@ export const UpdateMediaStreamButton: React.FC = () => {
         onClick={onClick}
       />
     </div>
-  )
-}
+  );
+};

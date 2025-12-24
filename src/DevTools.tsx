@@ -1,22 +1,22 @@
-import type React from 'react'
-import { useEffect } from 'react'
+import type React from "react";
+import { useEffect } from "react";
 
-import { disconnectSora, setMediaDevices, unregisterServiceWorker } from '@/app/actions'
-import { setInitialParameter } from '@/app/actions'
-import { DebugPane } from '@/components/DebugPane'
-import { DevtoolsPane } from '@/components/DevtoolsPane'
-import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
+import { disconnectSora, setMediaDevices, unregisterServiceWorker } from "@/app/actions";
+import { setInitialParameter } from "@/app/actions";
+import { DebugPane } from "@/components/DebugPane";
+import { DevtoolsPane } from "@/components/DevtoolsPane";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 
 const Devtools: React.FC = () => {
   useEffect(() => {
-    setInitialParameter()
-    setMediaDevices()
-    unregisterServiceWorker()
+    void setInitialParameter();
+    void setMediaDevices();
+    void unregisterServiceWorker();
     return () => {
-      disconnectSora()
-    }
-  }, [])
+      void disconnectSora();
+    };
+  }, []);
   return (
     <>
       <Header />
@@ -30,7 +30,7 @@ const Devtools: React.FC = () => {
       </main>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default Devtools
+export default Devtools;

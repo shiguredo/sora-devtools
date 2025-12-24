@@ -24,15 +24,10 @@
     // プロパティの初期化を厳密にチェックする
     "strictPropertyInitialization": true,
     "types": ["vitest/globals"],
-    "paths": {"@/*": ["./src/*"]},
+    "paths": { "@/*": ["./src/*"] },
     "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": [
-    "global.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "vitest.config.ts"
-  ]
+  "include": ["global.d.ts", "**/*.ts", "**/*.tsx", "vitest.config.ts"]
 }

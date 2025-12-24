@@ -1,21 +1,21 @@
-import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
+import type React from "react";
+import { Col, FormGroup, Row } from "react-bootstrap";
 
-import { setEnabledVideoVP9Params, setVideoVP9Params } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setEnabledVideoVP9Params, setVideoVP9Params } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-import { JSONInputField } from './JSONInputField.tsx'
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { JSONInputField } from "./JSONInputField.tsx";
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const VideoVP9ParamsForm: React.FC = () => {
-  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params)
-  const videoVP9Params = useSoraDevtoolsStore((state) => state.videoVP9Params)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params);
+  const videoVP9Params = useSoraDevtoolsStore((state) => state.videoVP9Params);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledVideoVP9Params(event.target.checked)
-  }
+    setEnabledVideoVP9Params(event.target.checked);
+  };
   return (
     <>
       <Row className="form-row">
@@ -46,5 +46,5 @@ export const VideoVP9ParamsForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  )
-}
+  );
+};

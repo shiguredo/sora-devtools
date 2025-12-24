@@ -1,18 +1,18 @@
-import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
+import type React from "react";
+import { Col, FormGroup, Row } from "react-bootstrap";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const ForceStereoOutputForm: React.FC = () => {
-  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    useSoraDevtoolsStore.getState().setForceStereoOutput(event.target.checked)
-  }
+    useSoraDevtoolsStore.getState().setForceStereoOutput(event.target.checked);
+  };
   return (
     <Row className="form-row">
       <Col className="col-auto">
@@ -28,5 +28,5 @@ export const ForceStereoOutputForm: React.FC = () => {
         </FormGroup>
       </Col>
     </Row>
-  )
-}
+  );
+};

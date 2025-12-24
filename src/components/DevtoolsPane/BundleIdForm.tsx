@@ -1,23 +1,23 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import type React from "react";
+import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
-import { setBundleId, setEnabledBundleId } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setBundleId, setEnabledBundleId } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const BundleIdForm: React.FC = () => {
-  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId)
-  const bundleId = useSoraDevtoolsStore((state) => state.bundleId)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId);
+  const bundleId = useSoraDevtoolsStore((state) => state.bundleId);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledBundleId(event.target.checked)
-  }
+    setEnabledBundleId(event.target.checked);
+  };
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setBundleId(event.target.value)
-  }
+    setBundleId(event.target.value);
+  };
   return (
     <>
       <Row className="form-row">
@@ -51,5 +51,5 @@ export const BundleIdForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  )
-}
+  );
+};

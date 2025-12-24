@@ -1,40 +1,40 @@
-import type React from 'react'
-import type { SimulcastRid } from 'sora-js-sdk'
+import type React from "react";
+import type { SimulcastRid } from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import { rpc } from '@/rpc'
+import { useSoraDevtoolsStore } from "@/app/store";
+import { rpc } from "@/rpc";
 
-type SimulcastRequestRid = 'none' | SimulcastRid
+type SimulcastRequestRid = "none" | SimulcastRid;
 
 type Props = {
-  rid: SimulcastRequestRid
-  sendConnectionId?: string
-}
+  rid: SimulcastRequestRid;
+  sendConnectionId?: string;
+};
 
 export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== 'connected') {
-      return
+    if (!conn || connectionStatus !== "connected") {
+      return;
     }
 
     const params: {
-      rid: SimulcastRequestRid
-      sender_connection_id?: string
+      rid: SimulcastRequestRid;
+      sender_connection_id?: string;
     } = {
       rid: props.rid,
-    }
+    };
     if (props.sendConnectionId) {
-      params.sender_connection_id = props.sendConnectionId
+      params.sender_connection_id = props.sendConnectionId;
     }
 
-    await rpc(conn, '2025.2.0/RequestSimulcastRid', params, {
+    await rpc(conn, "2025.2.0/RequestSimulcastRid", params, {
       notification: false,
       showMethodAlert: true,
-    })
-  }
+    });
+  };
 
   return (
     <input
@@ -44,5 +44,5 @@ export const RequestSimulcastRidButton: React.FC<Props> = (props) => {
       defaultValue={props.rid}
       onClick={onClick}
     />
-  )
-}
+  );
+};

@@ -1,15 +1,15 @@
-import React from 'react'
+import React from "react";
 
-import { clearDataChannelMessages } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { DataChannelMessage } from '@/types'
+import { clearDataChannelMessages } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import type { DataChannelMessage } from "@/types";
 
-import { Message } from './Message.tsx'
+import { Message } from "./Message.tsx";
 
 const ButtonClear = React.memo(() => {
   const onClick = (): void => {
-    clearDataChannelMessages()
-  }
+    clearDataChannelMessages();
+  };
   return (
     <input
       className="btn btn-secondary"
@@ -18,19 +18,19 @@ const ButtonClear = React.memo(() => {
       defaultValue="clear"
       onClick={onClick}
     />
-  )
-})
+  );
+});
 
 const Collapse = React.memo<DataChannelMessage>((props) => {
-  const { data, label, timestamp } = props
-  const headText = new TextDecoder().decode(data.slice(0, 6))
-  if (headText === 'ZAKURO') {
-    const connectionId = new TextDecoder().decode(data.slice(22, 48))
-    const view = new DataView(data)
-    const unixTimeMicro = view.getBigInt64(6)
-    const counter = view.getBigInt64(14)
-    const byteLength = data.byteLength
-    const description = `connectionId: ${connectionId}\nUnixTimeMicro: ${unixTimeMicro}\nCounter: ${counter}\nByteLength: ${byteLength}`
+  const { data, label, timestamp } = props;
+  const headText = new TextDecoder().decode(data.slice(0, 6));
+  if (headText === "ZAKURO") {
+    const connectionId = new TextDecoder().decode(data.slice(22, 48));
+    const view = new DataView(data);
+    const unixTimeMicro = view.getBigInt64(6);
+    const counter = view.getBigInt64(14);
+    const byteLength = data.byteLength;
+    const description = `connectionId: ${connectionId}\nUnixTimeMicro: ${unixTimeMicro}\nCounter: ${counter}\nByteLength: ${byteLength}`;
     return (
       <Message
         title={`${label} ZAKURO`}
@@ -39,10 +39,10 @@ const Collapse = React.memo<DataChannelMessage>((props) => {
         defaultShow={true}
         wordBreak={true}
       />
-    )
+    );
   }
-  const uint8array = new Uint8Array(data)
-  const description = `${uint8array.toString()}\n(${new TextDecoder().decode(data)})`
+  const uint8array = new Uint8Array(data);
+  const description = `${uint8array.toString()}\n(${new TextDecoder().decode(data)})`;
   return (
     <Message
       title={label}
@@ -51,15 +51,15 @@ const Collapse = React.memo<DataChannelMessage>((props) => {
       defaultShow={true}
       wordBreak={true}
     />
-  )
-})
+  );
+});
 
 const Log = React.memo<DataChannelMessage>((props) => {
-  return <Collapse {...props} />
-})
+  return <Collapse {...props} />;
+});
 
 export const DataChannelMessagingMessages: React.FC = () => {
-  const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages)
+  const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages);
   return (
     <>
       <div className="py-1">
@@ -67,10 +67,10 @@ export const DataChannelMessagingMessages: React.FC = () => {
       </div>
       <div className="debug-messages">
         {dataChannelMessages.map((message) => {
-          const key = message.label + message.timestamp
-          return <Log key={key} {...message} />
+          const key = message.label + message.timestamp;
+          return <Log key={key} {...message} />;
         })}
       </div>
     </>
-  )
-}
+  );
+};

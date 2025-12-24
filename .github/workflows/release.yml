@@ -12,32 +12,32 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
-          
+
       - name: Install dependencies
         run: pnpm install
-        
+
       - name: Build
         run: pnpm run build
-        
+
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-        
+
       - name: Create release archive
         run: |
           mkdir -p sora-devtools-${{ steps.get_version.outputs.VERSION }}
           cp -r dist/* sora-devtools-${{ steps.get_version.outputs.VERSION }}/
           tar -czf sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz sora-devtools-${{ steps.get_version.outputs.VERSION }}
-          
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ github.token }}
