@@ -1,46 +1,46 @@
-import { Mp4MediaStream } from '@shiguredo/mp4-media-stream'
+import { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
 
-import type React from 'react'
-import { Form, FormGroup } from 'react-bootstrap'
+import type React from "react";
+import { Form, FormGroup } from "react-bootstrap";
 
-import { setMp4MediaStream } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setMp4MediaStream } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export const Mp4FileForm: React.FC = () => {
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus)
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType);
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = localMediaStream !== null || isFormDisabled(connectionStatus);
   const onChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-    const files = event.target.files
+    const files = event.target.files;
     if (files === null || files.length === 0) {
-      return
+      return;
     }
 
     // MP4 ファイルをロードする
     try {
-      const mp4MediaStream = await Mp4MediaStream.load(files[0])
-      setMp4MediaStream(mp4MediaStream)
+      const mp4MediaStream = await Mp4MediaStream.load(files[0]);
+      setMp4MediaStream(mp4MediaStream);
     } catch (e) {
       // ロードに失敗したらファイル選択をクリアする
-      event.target.value = ''
+      event.target.value = "";
 
       // 以前の内容が残っていた場合に備えて null を入れておく
-      setMp4MediaStream(null)
+      setMp4MediaStream(null);
 
-      throw e
+      throw e;
     }
-  }
-  if (mediaType !== 'mp4Media') {
-    return null
+  };
+  if (mediaType !== "mp4Media") {
+    return null;
   }
   return (
     <FormGroup className="form-inline" controlId="mp4File">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
       <Form.Control type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
     </FormGroup>
-  )
-}
+  );
+};

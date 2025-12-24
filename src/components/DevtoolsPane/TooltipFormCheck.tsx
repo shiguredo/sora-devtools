@@ -1,20 +1,20 @@
-import type React from 'react'
-import { FormCheck, FormLabel, OverlayTrigger, Popover } from 'react-bootstrap'
+import type React from "react";
+import { FormCheck, FormLabel, OverlayTrigger, Popover } from "react-bootstrap";
 
-import { INSTRUCTIONS } from '@/constants'
+import { INSTRUCTIONS } from "@/constants";
 
 type Props = {
-  kind: string
-  children: React.ReactNode
-  checked: boolean
-  disabled: boolean
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
+  kind: string;
+  children: React.ReactNode;
+  checked: boolean;
+  disabled: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
 export const TooltipFormCheck: React.FC<Props> = (props) => {
-  const { children, kind, checked, onChange, disabled } = props
-  const instruction = INSTRUCTIONS[kind]
+  const { children, kind, checked, onChange, disabled } = props;
+  const instruction = INSTRUCTIONS[kind];
   if (!instruction) {
-    return <FormLabel>{children}</FormLabel>
+    return <FormLabel>{children}</FormLabel>;
   }
   return (
     <>
@@ -23,7 +23,7 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
         placement="top"
         overlay={
           <Popover id="popover-basic">
-            <Popover.Body style={{ whiteSpace: 'pre-wrap' }}>
+            <Popover.Body style={{ whiteSpace: "pre-wrap" }}>
               {instruction.description}
             </Popover.Body>
           </Popover>
@@ -32,5 +32,5 @@ export const TooltipFormCheck: React.FC<Props> = (props) => {
         <FormLabel>{children}</FormLabel>
       </OverlayTrigger>
     </>
-  )
-}
+  );
+};

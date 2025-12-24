@@ -2,23 +2,22 @@
   "name": "sora-devtools",
   "version": "2025.2.1",
   "description": "WebRTC SFU Sora DevTools",
+  "homepage": "https://github.com/shiguredo/sora-devtools#readme",
+  "bugs": {
+    "url": "https://discord.gg/shiguredo"
+  },
+  "license": "Apache-2.0",
+  "author": "Shiguredo Inc.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shiguredo/sora-devtools.git"
   },
-  "author": "Shiguredo Inc.",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://discord.gg/shiguredo"
-  },
-  "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "scripts": {
     "dev": "vite --port 3333",
     "build": "vite build",
     "preview": "vite preview",
-    "fmt": "biome format --write",
-    "lint": "biome lint",
-    "fix": "biome check --apply",
+    "fmt": "oxfmt --write .",
+    "lint": "oxlint --type-aware",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "e2e-test": "playwright test --project=chromium",
@@ -37,7 +36,6 @@
     "zustand": "5.0.9"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
     "@fast-check/vitest": "0.2.4",
     "@playwright/test": "1.57.0",
     "@types/node": "24.10.2",
@@ -47,6 +45,9 @@
     "dotenv": "17.2.3",
     "fast-check": "4.4.0",
     "jsdom": "27.3.0",
+    "oxfmt": "0.20.0",
+    "oxlint": "1.35.0",
+    "oxlint-tsgolint": "0.10.0",
     "typescript": "5.9.3",
     "vite": "7.2.7",
     "vitest": "4.0.15"
@@ -57,7 +58,6 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@biomejs/biome",
       "esbuild"
     ]
   }

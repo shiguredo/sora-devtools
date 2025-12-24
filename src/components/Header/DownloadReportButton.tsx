@@ -1,12 +1,12 @@
-import type React from 'react'
-import { useRef } from 'react'
-import Sora from 'sora-js-sdk'
+import type React from "react";
+import { useRef } from "react";
+import Sora from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { DownloadReport, DownloadReportParameters } from '@/types'
+import { useSoraDevtoolsStore } from "@/app/store";
+import type { DownloadReport, DownloadReportParameters } from "@/types";
 
 function createDownloadReport(): DownloadReport {
-  const state = useSoraDevtoolsStore.getState()
+  const state = useSoraDevtoolsStore.getState();
   const parameters: DownloadReportParameters = {
     aspectRatio: state.aspectRatio,
     audio: state.audio,
@@ -82,39 +82,39 @@ function createDownloadReport(): DownloadReport {
     videoH264Params: state.videoH264Params,
     videoH265Params: state.videoH265Params,
     videoAV1Params: state.videoAV1Params,
-  }
+  };
   const report = {
     userAgent: navigator.userAgent,
-    'sora-devtools': state.version,
-    'sora-js-sdk': Sora.version(),
+    "sora-devtools": state.version,
+    "sora-js-sdk": Sora.version(),
     parameters: parameters,
     timeline: state.timelineMessages.map((message) => {
       // Redux non-serializable value 対応で log を string にして保存してあるため parse する
       return {
         timestamp: message.timestamp,
         message: message,
-      }
+      };
     }),
     notify: state.notifyMessages,
     stats: state.soraContents.statsReport,
-  }
-  return report
+  };
+  return report;
 }
 
 export const DownloadReportButton: React.FC = () => {
-  const anchorRef = useRef<HTMLAnchorElement>(null)
+  const anchorRef = useRef<HTMLAnchorElement>(null);
   const onClick = (): void => {
-    const report = createDownloadReport()
-    const data = JSON.stringify(report)
-    const blob = new Blob([data], { type: 'text/plain' })
-    window.URL = window.URL || window.webkitURL
+    const report = createDownloadReport();
+    const data = JSON.stringify(report);
+    const blob = new Blob([data], { type: "text/plain" });
+    window.URL = window.URL || window.webkitURL;
     if (anchorRef.current) {
-      const datetimeString = new Date().toISOString().replaceAll(':', '_').replaceAll('.', '_')
-      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`
-      anchorRef.current.href = window.URL.createObjectURL(blob)
-      anchorRef.current.click()
+      const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
+      anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
+      anchorRef.current.href = window.URL.createObjectURL(blob);
+      anchorRef.current.click();
     }
-  }
+  };
   return (
     <>
       <input
@@ -126,7 +126,7 @@ export const DownloadReportButton: React.FC = () => {
       />
       {/* biome-ignore lint/a11y/useAnchorContent: This is a hidden anchor used for programmatic file download */}
       {/* biome-ignore lint/a11y/useValidAnchor: This is a hidden anchor used for programmatic file download */}
-      <a ref={anchorRef} style={{ display: 'none' }} />
+      <a ref={anchorRef} style={{ display: "none" }} />
     </>
-  )
-}
+  );
+};

@@ -1,74 +1,74 @@
-import type React from 'react'
-import { useState } from 'react'
-import { Col, Collapse, Row } from 'react-bootstrap'
+import type React from "react";
+import { useState } from "react";
+import { Col, Collapse, Row } from "react-bootstrap";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import { AlertMessages } from '@/components/AlertMessages'
-import { LocalVideo } from '@/components/Video/LocalVideo'
-import { RemoteVideos } from '@/components/Video/RemoteVideos'
+import { useSoraDevtoolsStore } from "@/app/store";
+import { AlertMessages } from "@/components/AlertMessages";
+import { LocalVideo } from "@/components/Video/LocalVideo";
+import { RemoteVideos } from "@/components/Video/RemoteVideos";
 
-import { AspectRatioForm } from './AspectRatioForm.tsx'
-import { AudioBitRateForm } from './AudioBitRateForm.tsx'
-import { AudioCodecTypeForm } from './AudioCodecTypeForm.tsx'
-import { AudioContentHintForm } from './AudioContentHintForm.tsx'
-import { AudioForm } from './AudioForm.tsx'
-import { AudioInputForm } from './AudioInputForm.tsx'
-import { AudioOutputForm } from './AudioOutputForm.tsx'
-import { AudioStreamingLanguageCodeForm } from './AudioStreamingLanguageCodeForm.tsx'
-import { AudioTrackForm } from './AudioTrackForm.tsx'
-import { AutoGainControlForm } from './AutoGainControlForm.tsx'
-import { BlurRadiusForm } from './BlurRadiusForm.tsx'
-import { BundleIdForm } from './BundleIdForm.tsx'
-import { CameraDeviceForm } from './CameraDeviceForm.tsx'
-import { ChannelIdForm } from './ChannelIdForm.tsx'
-import { ClientIdForm } from './ClientIdForm.tsx'
-import { ConnectButton } from './ConnectButton.tsx'
-import { DataChannelForm } from './DataChannelForm.tsx'
-import { DataChannelsForm } from './DataChannelsForm.tsx'
-import { DisconnectButton } from './DisconnectButton.tsx'
-import { DisplayResolutionForm } from './DisplayResolutionForm.tsx'
-import { DisposeMediaButton } from './DisposeMediaButton.tsx'
-import { EchoCancellationForm } from './EchoCancellationForm.tsx'
-import { EchoCancellationTypeForm } from './EchoCancellationTypeForm.tsx'
-import { FacingModeForm } from './FacingModeForm.tsx'
-import { FakeVolumeForm } from './FakeVolumeForm.tsx'
-import { ForceStereoOutputForm } from './ForceStereoOutputForm.tsx'
-import { ForwardingFilterForm } from './ForwardingFilterForm.tsx'
-import { ForwardingFiltersForm } from './ForwardingFiltersForm.tsx'
-import { FrameRateForm } from './FrameRateForm.tsx'
-import { MediaProcessorsNoiseSuppressionForm } from './MediaProcessorsNoiseSuppressionForm.tsx'
-import { MediaStatsForm } from './MediaStatsForm.tsx'
-import { MediaTypeForm } from './MediaTypeForm.tsx'
-import { MetadataForm } from './MetadataForm.tsx'
-import { MicDeviceForm } from './MicDeviceForm.tsx'
-import { Mp4FileForm } from './Mp4FileForm.tsx'
-import { NoiseSuppressionForm } from './NoiseSuppressionForm.tsx'
-import { ReconnectForm } from './ReconnectForm.tsx'
-import { ReloadDevicesButton } from './ReloadDevicesButton.tsx'
-import { RequestMediaButton } from './RequestMediaButton.tsx'
-import { ResizeModeForm } from './ResizeModeForm.tsx'
-import { ResolutionForm } from './ResolutionForm.tsx'
-import { RoleForm } from './RoleForm.tsx'
-import { SignalingNotifyMetadataForm } from './SignalingNotifyMetadataForm.tsx'
-import { SignalingUrlCandidatesForm } from './SignalingUrlCandidatesForm.tsx'
-import { SimulcastForm } from './SimulcastForm.tsx'
-import { SimulcastRequestRidForm } from './SimulcastRequestRidForm.tsx'
-import { SimulcastRidForm } from './SimulcastRidForm.tsx'
-import { SpotlightFocusRidForm } from './SpotlightFocusRidForm.tsx'
-import { SpotlightForm } from './SpotlightForm.tsx'
-import { SpotlightNumberForm } from './SpotlightNumberForm.tsx'
-import { SpotlightUnfocusRidForm } from './SpotlightUnfocusRidForm.tsx'
-import { UpdateMediaStreamButton } from './UpdateMediaStreamButton.tsx'
-import { VideoAV1ParamsForm } from './VideoAV1ParamsForm.tsx'
-import { VideoBitRateForm } from './VideoBitRateForm.tsx'
-import { VideoCodecTypeForm } from './VideoCodecTypeForm.tsx'
-import { VideoContentHintForm } from './VideoContentHintForm.tsx'
-import { VideoForm } from './VideoForm.tsx'
-import { VideoH264ParamsForm } from './VideoH264ParamsForm.tsx'
-import { VideoH265ParamsForm } from './VideoH265ParamsForm.tsx'
-import { VideoInputForm } from './VideoInputForm.tsx'
-import { VideoTrackForm } from './VideoTrackForm.tsx'
-import { VideoVP9ParamsForm } from './VideoVP9ParamsForm.tsx'
+import { AspectRatioForm } from "./AspectRatioForm.tsx";
+import { AudioBitRateForm } from "./AudioBitRateForm.tsx";
+import { AudioCodecTypeForm } from "./AudioCodecTypeForm.tsx";
+import { AudioContentHintForm } from "./AudioContentHintForm.tsx";
+import { AudioForm } from "./AudioForm.tsx";
+import { AudioInputForm } from "./AudioInputForm.tsx";
+import { AudioOutputForm } from "./AudioOutputForm.tsx";
+import { AudioStreamingLanguageCodeForm } from "./AudioStreamingLanguageCodeForm.tsx";
+import { AudioTrackForm } from "./AudioTrackForm.tsx";
+import { AutoGainControlForm } from "./AutoGainControlForm.tsx";
+import { BlurRadiusForm } from "./BlurRadiusForm.tsx";
+import { BundleIdForm } from "./BundleIdForm.tsx";
+import { CameraDeviceForm } from "./CameraDeviceForm.tsx";
+import { ChannelIdForm } from "./ChannelIdForm.tsx";
+import { ClientIdForm } from "./ClientIdForm.tsx";
+import { ConnectButton } from "./ConnectButton.tsx";
+import { DataChannelForm } from "./DataChannelForm.tsx";
+import { DataChannelsForm } from "./DataChannelsForm.tsx";
+import { DisconnectButton } from "./DisconnectButton.tsx";
+import { DisplayResolutionForm } from "./DisplayResolutionForm.tsx";
+import { DisposeMediaButton } from "./DisposeMediaButton.tsx";
+import { EchoCancellationForm } from "./EchoCancellationForm.tsx";
+import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm.tsx";
+import { FacingModeForm } from "./FacingModeForm.tsx";
+import { FakeVolumeForm } from "./FakeVolumeForm.tsx";
+import { ForceStereoOutputForm } from "./ForceStereoOutputForm.tsx";
+import { ForwardingFilterForm } from "./ForwardingFilterForm.tsx";
+import { ForwardingFiltersForm } from "./ForwardingFiltersForm.tsx";
+import { FrameRateForm } from "./FrameRateForm.tsx";
+import { MediaProcessorsNoiseSuppressionForm } from "./MediaProcessorsNoiseSuppressionForm.tsx";
+import { MediaStatsForm } from "./MediaStatsForm.tsx";
+import { MediaTypeForm } from "./MediaTypeForm.tsx";
+import { MetadataForm } from "./MetadataForm.tsx";
+import { MicDeviceForm } from "./MicDeviceForm.tsx";
+import { Mp4FileForm } from "./Mp4FileForm.tsx";
+import { NoiseSuppressionForm } from "./NoiseSuppressionForm.tsx";
+import { ReconnectForm } from "./ReconnectForm.tsx";
+import { ReloadDevicesButton } from "./ReloadDevicesButton.tsx";
+import { RequestMediaButton } from "./RequestMediaButton.tsx";
+import { ResizeModeForm } from "./ResizeModeForm.tsx";
+import { ResolutionForm } from "./ResolutionForm.tsx";
+import { RoleForm } from "./RoleForm.tsx";
+import { SignalingNotifyMetadataForm } from "./SignalingNotifyMetadataForm.tsx";
+import { SignalingUrlCandidatesForm } from "./SignalingUrlCandidatesForm.tsx";
+import { SimulcastForm } from "./SimulcastForm.tsx";
+import { SimulcastRequestRidForm } from "./SimulcastRequestRidForm.tsx";
+import { SimulcastRidForm } from "./SimulcastRidForm.tsx";
+import { SpotlightFocusRidForm } from "./SpotlightFocusRidForm.tsx";
+import { SpotlightForm } from "./SpotlightForm.tsx";
+import { SpotlightNumberForm } from "./SpotlightNumberForm.tsx";
+import { SpotlightUnfocusRidForm } from "./SpotlightUnfocusRidForm.tsx";
+import { UpdateMediaStreamButton } from "./UpdateMediaStreamButton.tsx";
+import { VideoAV1ParamsForm } from "./VideoAV1ParamsForm.tsx";
+import { VideoBitRateForm } from "./VideoBitRateForm.tsx";
+import { VideoCodecTypeForm } from "./VideoCodecTypeForm.tsx";
+import { VideoContentHintForm } from "./VideoContentHintForm.tsx";
+import { VideoForm } from "./VideoForm.tsx";
+import { VideoH264ParamsForm } from "./VideoH264ParamsForm.tsx";
+import { VideoH265ParamsForm } from "./VideoH265ParamsForm.tsx";
+import { VideoInputForm } from "./VideoInputForm.tsx";
+import { VideoTrackForm } from "./VideoTrackForm.tsx";
+import { VideoVP9ParamsForm } from "./VideoVP9ParamsForm.tsx";
 
 const RowChannelOptions: React.FC = () => {
   return (
@@ -90,12 +90,12 @@ const RowChannelOptions: React.FC = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
 const RowGetUserMediaConstraints: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const showCodecForms = role !== 'recvonly'
+  const role = useSoraDevtoolsStore((state) => state.role);
+  const showCodecForms = role !== "recvonly";
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -129,15 +129,15 @@ const RowGetUserMediaConstraints: React.FC = () => {
         )}
       </Row>
     </>
-  )
-}
+  );
+};
 
 const RowSimulcastOptions: React.FC = () => {
-  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
-  const role = useSoraDevtoolsStore((state) => state.role)
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast);
+  const role = useSoraDevtoolsStore((state) => state.role);
   // sendonly の場合は simulcastRequestRid / simulcastRid を表示しない
-  if (simulcast !== 'true' || role === 'sendonly') {
-    return null
+  if (simulcast !== "true" || role === "sendonly") {
+    return null;
   }
   return (
     <Row className="form-row" xs="auto">
@@ -148,13 +148,13 @@ const RowSimulcastOptions: React.FC = () => {
         <SimulcastRidForm />
       </Col>
     </Row>
-  )
-}
+  );
+};
 
 const RowSpotlightOptions: React.FC = () => {
-  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
-  if (spotlight !== 'true') {
-    return null
+  const spotlight = useSoraDevtoolsStore((state) => state.spotlight);
+  if (spotlight !== "true") {
+    return null;
   }
   return (
     <Row className="form-row" xs="auto">
@@ -168,25 +168,25 @@ const RowSpotlightOptions: React.FC = () => {
         <SpotlightUnfocusRidForm />
       </Col>
     </Row>
-  )
-}
+  );
+};
 
 const RowSignalingOptions: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(true)
-  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId)
-  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId)
-  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
-  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels)
-  const enabledForwardingFilters = useSoraDevtoolsStore((state) => state.enabledForwardingFilters)
-  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter)
-  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata)
+  const [collapsed, setCollapsed] = useState(true);
+  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId);
+  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId);
+  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel);
+  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels);
+  const enabledForwardingFilters = useSoraDevtoolsStore((state) => state.enabledForwardingFilters);
+  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter);
+  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useSoraDevtoolsStore(
     (state) => state.enabledSignalingNotifyMetadata,
-  )
+  );
   const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
     (state) => state.enabledSignalingUrlCandidates,
-  )
-  const reconnect = useSoraDevtoolsStore((state) => state.reconnect)
+  );
+  const reconnect = useSoraDevtoolsStore((state) => state.reconnect);
   const enabledOptions = [
     enabledBundleId,
     enabledClientId,
@@ -198,23 +198,23 @@ const RowSignalingOptions: React.FC = () => {
     enabledSignalingNotifyMetadata,
     enabledSignalingUrlCandidates,
     reconnect,
-  ].some((e) => e)
-  const linkClassNames = ['btn-collapse-options']
+  ].some((e) => e);
+  const linkClassNames = ["btn-collapse-options"];
   if (collapsed) {
-    linkClassNames.push('collapsed')
+    linkClassNames.push("collapsed");
   }
   if (enabledOptions) {
-    linkClassNames.push('fw-bold')
+    linkClassNames.push("fw-bold");
   }
   const onClick = (event: React.MouseEvent): void => {
-    event.preventDefault()
-    setCollapsed(!collapsed)
-  }
+    event.preventDefault();
+    setCollapsed(!collapsed);
+  };
   return (
     <Row className="form-row">
       <Col>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-        <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
+        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
           Signaling options
         </a>
       </Col>
@@ -233,23 +233,23 @@ const RowSignalingOptions: React.FC = () => {
         </div>
       </Collapse>
     </Row>
-  )
-}
+  );
+};
 
 const RowAdvancedSignalingOptions: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const showSenderParams = role !== 'recvonly'
-  const showReceiverParams = role !== 'sendonly'
-  const [collapsed, setCollapsed] = useState(true)
+  const role = useSoraDevtoolsStore((state) => state.role);
+  const showSenderParams = role !== "recvonly";
+  const showReceiverParams = role !== "sendonly";
+  const [collapsed, setCollapsed] = useState(true);
   const enableAudioStreamingLanguageCode = useSoraDevtoolsStore(
     (state) => state.enabledAudioStreamingLanguageCode,
-  )
-  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params)
-  const enabledVideoH264Params = useSoraDevtoolsStore((state) => state.enabledVideoH264Params)
-  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params)
-  const enabledVideoAV1Params = useSoraDevtoolsStore((state) => state.enabledVideoAV1Params)
-  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput)
-  const showOptions = [] as boolean[]
+  );
+  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params);
+  const enabledVideoH264Params = useSoraDevtoolsStore((state) => state.enabledVideoH264Params);
+  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params);
+  const enabledVideoAV1Params = useSoraDevtoolsStore((state) => state.enabledVideoAV1Params);
+  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput);
+  const showOptions = [] as boolean[];
   if (showSenderParams) {
     showOptions.push(
       enableAudioStreamingLanguageCode,
@@ -257,28 +257,28 @@ const RowAdvancedSignalingOptions: React.FC = () => {
       enabledVideoH264Params,
       enabledVideoH265Params,
       enabledVideoAV1Params,
-    )
+    );
   }
   if (showReceiverParams) {
-    showOptions.push(forceStereoOutput)
+    showOptions.push(forceStereoOutput);
   }
-  const enabledOptions = showOptions.some((e) => e)
-  const linkClassNames = ['btn-collapse-options']
+  const enabledOptions = showOptions.some((e) => e);
+  const linkClassNames = ["btn-collapse-options"];
   if (collapsed) {
-    linkClassNames.push('collapsed')
+    linkClassNames.push("collapsed");
   }
   if (enabledOptions) {
-    linkClassNames.push('fw-bold')
+    linkClassNames.push("fw-bold");
   }
   const onClick = (event: React.MouseEvent): void => {
-    event.preventDefault()
-    setCollapsed(!collapsed)
-  }
+    event.preventDefault();
+    setCollapsed(!collapsed);
+  };
   return (
     <Row className="form-row">
       <Col>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-        <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
+        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
           Advanced signaling options
         </a>
       </Col>
@@ -297,8 +297,8 @@ const RowAdvancedSignalingOptions: React.FC = () => {
         </div>
       </Collapse>
     </Row>
-  )
-}
+  );
+};
 
 export const RowMediaType: React.FC = () => {
   return (
@@ -319,51 +319,51 @@ export const RowMediaType: React.FC = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
 const RowMediaOptions: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(true)
-  const audioContentHint = useSoraDevtoolsStore((state) => state.audioContentHint)
-  const autoGainControl = useSoraDevtoolsStore((state) => state.autoGainControl)
-  const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression)
-  const echoCancellation = useSoraDevtoolsStore((state) => state.echoCancellation)
-  const echoCancellationType = useSoraDevtoolsStore((state) => state.echoCancellationType)
-  const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint)
-  const resolution = useSoraDevtoolsStore((state) => state.resolution)
-  const frameRate = useSoraDevtoolsStore((state) => state.frameRate)
-  const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius)
+  const [collapsed, setCollapsed] = useState(true);
+  const audioContentHint = useSoraDevtoolsStore((state) => state.audioContentHint);
+  const autoGainControl = useSoraDevtoolsStore((state) => state.autoGainControl);
+  const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression);
+  const echoCancellation = useSoraDevtoolsStore((state) => state.echoCancellation);
+  const echoCancellationType = useSoraDevtoolsStore((state) => state.echoCancellationType);
+  const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint);
+  const resolution = useSoraDevtoolsStore((state) => state.resolution);
+  const frameRate = useSoraDevtoolsStore((state) => state.frameRate);
+  const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius);
   const mediaProcessorsNoiseSuppression = useSoraDevtoolsStore(
     (state) => state.mediaProcessorsNoiseSuppression,
-  )
+  );
   const enabledOptions = [
-    audioContentHint !== '',
-    autoGainControl !== '',
-    noiseSuppression !== '',
-    echoCancellation !== '',
-    echoCancellationType !== '',
-    videoContentHint !== '',
-    resolution !== '',
-    frameRate !== '',
-    blurRadius !== '',
+    audioContentHint !== "",
+    autoGainControl !== "",
+    noiseSuppression !== "",
+    echoCancellation !== "",
+    echoCancellationType !== "",
+    videoContentHint !== "",
+    resolution !== "",
+    frameRate !== "",
+    blurRadius !== "",
     mediaProcessorsNoiseSuppression,
-  ].some((e) => e)
-  const linkClassNames = ['btn-collapse-options']
+  ].some((e) => e);
+  const linkClassNames = ["btn-collapse-options"];
   if (collapsed) {
-    linkClassNames.push('collapsed')
+    linkClassNames.push("collapsed");
   }
   if (enabledOptions) {
-    linkClassNames.push('fw-bold')
+    linkClassNames.push("fw-bold");
   }
   const onClick = (event: React.MouseEvent): void => {
-    event.preventDefault()
-    setCollapsed(!collapsed)
-  }
+    event.preventDefault();
+    setCollapsed(!collapsed);
+  };
   return (
     <Row className="form-row">
       <Col>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-        <a href="#" className={linkClassNames.join(' ')} onClick={onClick}>
+        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
           Media options
         </a>
       </Col>
@@ -416,19 +416,19 @@ const RowMediaOptions: React.FC = () => {
         </div>
       </Collapse>
     </Row>
-  )
-}
+  );
+};
 
 const RowDevices: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
+  const role = useSoraDevtoolsStore((state) => state.role);
+  const mediaType = useSoraDevtoolsStore((state) => state.mediaType);
   return (
     <>
       <Row className="form-row" xs="auto">
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
-        {role !== 'recvonly' && mediaType === 'getUserMedia' ? (
+        {role !== "recvonly" && mediaType === "getUserMedia" ? (
           <>
             <Col>
               <AudioInputForm />
@@ -440,13 +440,13 @@ const RowDevices: React.FC = () => {
         ) : null}
       </Row>
       <Row className="form-row" xs="auto">
-        {role !== 'sendonly' ? (
+        {role !== "sendonly" ? (
           <Col>
             <AudioOutputForm />
           </Col>
         ) : null}
         <ReloadDevicesButton />
-        {role !== 'recvonly' ? (
+        {role !== "recvonly" ? (
           <>
             <RequestMediaButton />
             <DisposeMediaButton />
@@ -454,11 +454,11 @@ const RowDevices: React.FC = () => {
         ) : null}
       </Row>
     </>
-  )
-}
+  );
+};
 
 export const RowMediaDevices: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role)
+  const role = useSoraDevtoolsStore((state) => state.role);
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -469,7 +469,7 @@ export const RowMediaDevices: React.FC = () => {
           <MediaStatsForm />
         </Col>
       </Row>
-      {role !== 'recvonly' && (
+      {role !== "recvonly" && (
         <Row className="form-row" xs="auto">
           <Col>
             <MicDeviceForm />
@@ -486,14 +486,14 @@ export const RowMediaDevices: React.FC = () => {
         </Row>
       )}
     </>
-  )
-}
+  );
+};
 
 export const DevtoolsPane: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug)
-  const role = useSoraDevtoolsStore((state) => state.role)
+  const debug = useSoraDevtoolsStore((state) => state.debug);
+  const role = useSoraDevtoolsStore((state) => state.role);
   return (
-    <div className={debug ? 'col-devtools col-6' : 'col-devtools col-12'}>
+    <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
       <AlertMessages />
       <RowChannelOptions />
       <RowSimulcastOptions />
@@ -503,7 +503,7 @@ export const DevtoolsPane: React.FC = () => {
       <RowSignalingOptions />
       <RowAdvancedSignalingOptions />
       <hr className="hr-form" />
-      {role !== 'recvonly' ? (
+      {role !== "recvonly" ? (
         <>
           <RowMediaType />
           <RowMediaOptions />
@@ -519,7 +519,7 @@ export const DevtoolsPane: React.FC = () => {
       </div>
       <hr className="hr-form" />
       <LocalVideo />
-      {role === 'recvonly' || role === 'sendrecv' ? <RemoteVideos /> : null}
+      {role === "recvonly" || role === "sendrecv" ? <RemoteVideos /> : null}
     </div>
-  )
-}
+  );
+};

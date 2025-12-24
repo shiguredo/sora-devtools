@@ -1,21 +1,21 @@
-import type React from 'react'
-import { Col, FormGroup, Row } from 'react-bootstrap'
+import type React from "react";
+import { Col, FormGroup, Row } from "react-bootstrap";
 
-import { setEnabledForwardingFilter, setForwardingFilter } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setEnabledForwardingFilter, setForwardingFilter } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-import { JSONInputField } from './JSONInputField.tsx'
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { JSONInputField } from "./JSONInputField.tsx";
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const ForwardingFilterForm: React.FC = () => {
-  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter)
-  const forwardingFilter = useSoraDevtoolsStore((state) => state.forwardingFilter)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter);
+  const forwardingFilter = useSoraDevtoolsStore((state) => state.forwardingFilter);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledForwardingFilter(event.target.checked)
-  }
+    setEnabledForwardingFilter(event.target.checked);
+  };
   return (
     <>
       <Row className="form-row">
@@ -46,5 +46,5 @@ export const ForwardingFilterForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  )
-}
+  );
+};

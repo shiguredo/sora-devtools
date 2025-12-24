@@ -1,18 +1,18 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type React from "react";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
-import { setAudioInput, updateMediaStream } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setAudioInput, updateMediaStream } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export const AudioInputForm: React.FC = () => {
-  const audioInput = useSoraDevtoolsStore((state) => state.audioInput)
-  const audioInputDevices = useSoraDevtoolsStore((state) => state.audioInputDevices)
+  const audioInput = useSoraDevtoolsStore((state) => state.audioInput);
+  const audioInputDevices = useSoraDevtoolsStore((state) => state.audioInputDevices);
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setAudioInput(event.target.value)
-    updateMediaStream()
-  }
+    setAudioInput(event.target.value);
+    void updateMediaStream();
+  };
   return (
     <FormGroup className="form-inline" controlId="audioInput">
       <TooltipFormLabel kind="audioInput">audioInput:</TooltipFormLabel>
@@ -28,9 +28,9 @@ export const AudioInputForm: React.FC = () => {
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
               {deviceInfo.label}
             </option>
-          )
+          );
         })}
       </FormSelect>
     </FormGroup>
-  )
-}
+  );
+};

@@ -1,22 +1,22 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type React from "react";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
-import { setAudioCodecType } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { AUDIO_CODEC_TYPES } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+import { setAudioCodecType } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { AUDIO_CODEC_TYPES } from "@/constants";
+import { checkFormValue, isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export const AudioCodecTypeForm: React.FC = () => {
-  const audioCodecType = useSoraDevtoolsStore((state) => state.audioCodecType)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const audioCodecType = useSoraDevtoolsStore((state) => state.audioCodecType);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, AUDIO_CODEC_TYPES)) {
-      setAudioCodecType(event.target.value)
+      setAudioCodecType(event.target.value);
     }
-  }
+  };
   return (
     <FormGroup className="form-inline" controlId="audioCodecType">
       <TooltipFormLabel kind="audioCodecType">audioCodecType:</TooltipFormLabel>
@@ -29,11 +29,11 @@ export const AudioCodecTypeForm: React.FC = () => {
         {AUDIO_CODEC_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
+              {value === "" ? "未指定" : value}
             </option>
-          )
+          );
         })}
       </FormSelect>
     </FormGroup>
-  )
-}
+  );
+};

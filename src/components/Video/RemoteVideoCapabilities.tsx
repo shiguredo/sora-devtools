@@ -1,60 +1,60 @@
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { RTCStatsCodec } from '@/types'
-import { useEffect, useState } from 'react'
+import { useSoraDevtoolsStore } from "@/app/store";
+import type { RTCStatsCodec } from "@/types";
+import { useEffect, useState } from "react";
 
 const useVideoTrackStats = (stream: MediaStream) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
-  const soraContents = useSoraDevtoolsStore((state) => state.soraContents)
+  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport);
+  const soraContents = useSoraDevtoolsStore((state) => state.soraContents);
   const [trackStats, setTrackStats] = useState<{
-    codec: RTCStatsCodec
+    codec: RTCStatsCodec;
     videoTrackStats: {
-      width?: number
-      height?: number
-      frameRate?: number
-    }
-  } | null>(null)
+      width?: number;
+      height?: number;
+      frameRate?: number;
+    };
+  } | null>(null);
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       if (!soraContents.sora?.pc) {
-        return
+        return;
       }
       // 現在の VideoTrack を取得
       const track = stream.getVideoTracks().find((track) => {
-        return track
-      })
+        return track;
+      });
       if (track === undefined) {
-        return
+        return;
       }
 
       // track の RTCRtpReceiver を取得
-      const receiver = await soraContents.sora.pc
+      const receiver = soraContents.sora.pc
         .getReceivers()
-        .find((receiver) => receiver.track.id === track.id)
+        .find((receiver) => receiver.track.id === track.id);
       if (receiver === undefined) {
-        return
+        return;
       }
 
       // RTCRtpReceiver の getStats から codecId を取得
-      let codecId: string | undefined
-      const receiverStatsReport = await receiver.getStats()
+      let codecId: string | undefined;
+      const receiverStatsReport = await receiver.getStats();
       for (const stats of receiverStatsReport) {
-        const [_key, value] = stats
+        const [, value] = stats;
         if (value.codecId) {
-          codecId = value.codecId
-          break
+          codecId = value.codecId;
+          break;
         }
       }
       if (codecId === undefined) {
-        return
+        return;
       }
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
-      let codec: RTCStatsCodec | undefined
+      let codec: RTCStatsCodec | undefined;
       for (const stats of statsReport) {
-        if (stats.type === 'codec') {
-          const castedStats = stats as RTCStatsCodec
+        if (stats.type === "codec") {
+          const castedStats = stats as RTCStatsCodec;
           if (codecId === castedStats.id) {
-            codec = castedStats
+            codec = castedStats;
           }
         }
       }
@@ -69,17 +69,17 @@ const useVideoTrackStats = (stream: MediaStream) => {
                 ? Math.floor(track.getSettings().frameRate || 0)
                 : undefined,
           },
-        })
+        });
       }
-    })()
-  }, [statsReport, stream, soraContents])
+    })();
+  }, [statsReport, stream, soraContents]);
   return {
     trackStats,
-  }
-}
+  };
+};
 
 export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
-  const { trackStats } = useVideoTrackStats(stream)
+  const { trackStats } = useVideoTrackStats(stream);
   return (
     <div className="video-overlay">
       {trackStats === null ? (
@@ -103,7 +103,7 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <td>
               {trackStats.videoTrackStats.width === undefined ||
               trackStats.videoTrackStats.height === undefined
-                ? 'undefined'
+                ? "undefined"
                 : `${trackStats.videoTrackStats.width}x${trackStats.videoTrackStats.height}`}
             </td>
           </tr>
@@ -111,12 +111,12 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <th>fps</th>
             <td>
               {trackStats.videoTrackStats.frameRate === undefined
-                ? 'undefined'
+                ? "undefined"
                 : trackStats.videoTrackStats.frameRate}
             </td>
           </tr>
         </table>
       )}
     </div>
-  )
-}
+  );
+};

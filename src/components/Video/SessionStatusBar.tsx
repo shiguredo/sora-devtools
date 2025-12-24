@@ -1,17 +1,17 @@
-import type React from 'react'
+import type React from "react";
 
-import { ClipboardIcon } from '@/components/ClipboardIcon'
-import { copy2clipboard } from '@/utils'
+import { ClipboardIcon } from "@/components/ClipboardIcon";
+import { copy2clipboard } from "@/utils";
 
 type TextBoxProps = {
-  id?: string
-  text: string
-}
+  id?: string;
+  text: string;
+};
 const TextBox: React.FC<TextBoxProps> = (props) => {
   const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    copy2clipboard(props.text)
-    event.currentTarget.blur()
-  }
+    void copy2clipboard(props.text);
+    event.currentTarget.blur();
+  };
   return (
     <div className="d-flex align-items-center">
       <p>sessionID:</p>
@@ -26,13 +26,13 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 type Props = {
-  sessionId: string
-}
+  sessionId: string;
+};
 export const SessionStatusBar: React.FC<Props> = (props) => {
-  const { sessionId } = props
-  return <TextBox id="session-id" text={sessionId} />
-}
+  const { sessionId } = props;
+  return <TextBox id="session-id" text={sessionId} />;
+};

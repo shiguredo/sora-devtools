@@ -1,23 +1,23 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import type React from "react";
+import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
-import { setClientId, setEnabledClientId } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setClientId, setEnabledClientId } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled } from "@/utils";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export const ClientIdForm: React.FC = () => {
-  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId)
-  const clientId = useSoraDevtoolsStore((state) => state.clientId)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId);
+  const clientId = useSoraDevtoolsStore((state) => state.clientId);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledClientId(event.target.checked)
-  }
+    setEnabledClientId(event.target.checked);
+  };
   const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setClientId(event.target.value)
-  }
+    setClientId(event.target.value);
+  };
   return (
     <>
       <Row className="form-row">
@@ -51,5 +51,5 @@ export const ClientIdForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  )
-}
+  );
+};

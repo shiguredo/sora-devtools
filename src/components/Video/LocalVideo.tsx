@@ -1,40 +1,40 @@
-import type React from 'react'
-import { useState } from 'react'
+import type React from "react";
+import { useState } from "react";
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { useSoraDevtoolsStore } from "@/app/store";
 
-import { TooltipFormLabel } from '../DevtoolsPane/TooltipFormLabel.tsx'
-import { ConnectionStatusBar } from './ConnectionStatusBar.tsx'
-import { LocalVideoCapabilities } from './LocalVideoCapabilities.tsx'
-import { RequestSimulcastRidButton } from './RequestSimulcastRidButton.tsx'
-import { RequestSpotlightRidButton } from './RequestSpotlightRidButton.tsx'
-import { ResetSpotlightRidButton } from './ResetSpotlightRidButton.tsx'
-import { SessionStatusBar } from './SessionStatusBar.tsx'
-import { Video } from './Video.tsx'
-import { VolumeVisualizer } from './VolumeVisualizer.tsx'
+import { TooltipFormLabel } from "../DevtoolsPane/TooltipFormLabel.tsx";
+import { ConnectionStatusBar } from "./ConnectionStatusBar.tsx";
+import { LocalVideoCapabilities } from "./LocalVideoCapabilities.tsx";
+import { RequestSimulcastRidButton } from "./RequestSimulcastRidButton.tsx";
+import { RequestSpotlightRidButton } from "./RequestSpotlightRidButton.tsx";
+import { ResetSpotlightRidButton } from "./ResetSpotlightRidButton.tsx";
+import { SessionStatusBar } from "./SessionStatusBar.tsx";
+import { Video } from "./Video.tsx";
+import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 
 const VideoBox: React.FC = () => {
-  const [height, setHeight] = useState<number>(0)
-  const audio = useSoraDevtoolsStore((state) => state.audio)
-  const video = useSoraDevtoolsStore((state) => state.video)
-  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
-  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution)
+  const [height, setHeight] = useState<number>(0);
+  const audio = useSoraDevtoolsStore((state) => state.audio);
+  const video = useSoraDevtoolsStore((state) => state.video);
+  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput);
+  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution);
   const focusedSpotlightConnectionIds = useSoraDevtoolsStore(
     (state) => state.focusedSpotlightConnectionIds,
-  )
-  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId)
-  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
-  const micDevice = useSoraDevtoolsStore((state) => state.micDevice)
-  const focused = connectionId && focusedSpotlightConnectionIds[connectionId]
-  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats)
+  );
+  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId);
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream);
+  const micDevice = useSoraDevtoolsStore((state) => state.micDevice);
+  const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
+  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats);
   if (audio === false && video === false) {
-    return null
+    return null;
   }
   return (
     <div className="d-flex">
       <div
         className={`position-relative d-flex flex-nowrap align-items-start video-wrapper overflow-y-hidden${
-          focused ? ' spotlight-focused' : ''
+          focused ? " spotlight-focused" : ""
         }`}
       >
         {mediaStats && localMediaStream && localMediaStream.getVideoTracks().length > 0 && (
@@ -53,17 +53,17 @@ const VideoBox: React.FC = () => {
         ) : null}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const LocalVideo: React.FC = () => {
-  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId)
-  const clientId = useSoraDevtoolsStore((state) => state.soraContents.clientId)
-  const sessionId = useSoraDevtoolsStore((state) => state.soraContents.sessionId)
-  const simulcast = useSoraDevtoolsStore((state) => state.simulcast)
-  const spotlight = useSoraDevtoolsStore((state) => state.spotlight)
-  const role = useSoraDevtoolsStore((state) => state.role)
-  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream)
+  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId);
+  const clientId = useSoraDevtoolsStore((state) => state.soraContents.clientId);
+  const sessionId = useSoraDevtoolsStore((state) => state.soraContents.sessionId);
+  const simulcast = useSoraDevtoolsStore((state) => state.simulcast);
+  const spotlight = useSoraDevtoolsStore((state) => state.spotlight);
+  const role = useSoraDevtoolsStore((state) => state.role);
+  const localMediaStream = useSoraDevtoolsStore((state) => state.soraContents.localMediaStream);
   return (
     <div className="row my-1">
       <div className="col-auto">
@@ -83,26 +83,26 @@ export const LocalVideo: React.FC = () => {
             </div>
           ) : null}
           {connectionId !== null &&
-          spotlight !== 'true' &&
-          simulcast === 'true' &&
-          role !== 'sendonly' ? (
+          spotlight !== "true" &&
+          simulcast === "true" &&
+          role !== "sendonly" ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
-              <RequestSimulcastRidButton rid={'none'} />
-              <RequestSimulcastRidButton rid={'r0'} />
-              <RequestSimulcastRidButton rid={'r1'} />
-              <RequestSimulcastRidButton rid={'r2'} />
+              <RequestSimulcastRidButton rid={"none"} />
+              <RequestSimulcastRidButton rid={"r0"} />
+              <RequestSimulcastRidButton rid={"r1"} />
+              <RequestSimulcastRidButton rid={"r2"} />
             </div>
           ) : null}
-          {connectionId !== null && spotlight === 'true' ? (
+          {connectionId !== null && spotlight === "true" ? (
             <div className="d-flex align-items-center mb-1 video-status-inner">
               <RequestSpotlightRidButton />
               <ResetSpotlightRidButton />
             </div>
           ) : null}
         </div>
-        {localMediaStream !== null && role !== 'recvonly' ? <VideoBox /> : null}
+        {localMediaStream !== null && role !== "recvonly" ? <VideoBox /> : null}
       </div>
     </div>
-  )
-}
+  );
+};

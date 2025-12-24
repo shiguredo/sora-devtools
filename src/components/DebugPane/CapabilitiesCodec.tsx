@@ -1,50 +1,56 @@
-import type React from 'react'
+import type React from "react";
 
-import { Message } from './Message.tsx'
+import { Message } from "./Message.tsx";
 
 interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodec {
-  [x: string]: string | number | undefined
+  [x: string]: string | number | undefined;
 }
 
 type LogProps = {
-  title: string
-  codecs: RTCRtpCapabilitiesCodecWithIndexSignature[]
-}
+  title: string;
+  codecs: RTCRtpCapabilitiesCodecWithIndexSignature[];
+};
 
 const Collapse: React.FC<LogProps> = ({ title, codecs }) => {
-  return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />
-}
+  return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />;
+};
 
 const Log: React.FC<LogProps> = (props) => {
-  return <Collapse {...props} />
-}
+  return <Collapse {...props} />;
+};
 
 const getCapabilitiesCodec = (
   getCapabilities: (kind: string) => RTCRtpCapabilities | null,
   kind: string,
 ): RTCRtpCodec[] => {
   if (!getCapabilities) {
-    return []
+    return [];
   }
-  const capabilities = getCapabilities(kind)
+  const capabilities = getCapabilities(kind);
   if (!capabilities || !capabilities.codecs) {
-    return []
+    return [];
   }
 
-  return capabilities.codecs
-}
+  return capabilities.codecs;
+};
 
 export const CapabilitiesCodec: React.FC = () => {
-  const senderAudioCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'audio')
-  const senderVideoCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'video')
+  const senderAudioCapabilitiesCodec = getCapabilitiesCodec(
+    (kind) => RTCRtpSender.getCapabilities(kind),
+    "audio",
+  );
+  const senderVideoCapabilitiesCodec = getCapabilitiesCodec(
+    (kind) => RTCRtpSender.getCapabilities(kind),
+    "video",
+  );
   const receiverAudioCapabilitiesCodec = getCapabilitiesCodec(
-    RTCRtpReceiver.getCapabilities,
-    'audio',
-  )
+    (kind) => RTCRtpReceiver.getCapabilities(kind),
+    "audio",
+  );
   const receiverVideoCapabilitiesCodec = getCapabilitiesCodec(
-    RTCRtpReceiver.getCapabilities,
-    'video',
-  )
+    (kind) => RTCRtpReceiver.getCapabilities(kind),
+    "video",
+  );
   return (
     <div className="capabilities-codec">
       <Log
@@ -64,5 +70,5 @@ export const CapabilitiesCodec: React.FC = () => {
         codecs={receiverVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
       />
     </div>
-  )
-}
+  );
+};

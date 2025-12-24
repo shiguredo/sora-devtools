@@ -1,17 +1,17 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import type React from "react";
+import { FormGroup, FormSelect } from "react-bootstrap";
 
-import { setAudioOutput } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setAudioOutput } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export const AudioOutputForm: React.FC = () => {
-  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
-  const audioOutputDevices = useSoraDevtoolsStore((state) => state.audioOutputDevices)
+  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput);
+  const audioOutputDevices = useSoraDevtoolsStore((state) => state.audioOutputDevices);
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setAudioOutput(event.target.value)
-  }
+    setAudioOutput(event.target.value);
+  };
   return (
     <FormGroup className="form-inline" controlId="audioOutput">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
@@ -27,9 +27,9 @@ export const AudioOutputForm: React.FC = () => {
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
               {deviceInfo.label}
             </option>
-          )
+          );
         })}
       </FormSelect>
     </FormGroup>
-  )
-}
+  );
+};

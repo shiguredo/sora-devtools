@@ -1,52 +1,52 @@
-import type React from 'react'
-import { Tab, Tabs } from 'react-bootstrap'
+import type React from "react";
+import { Tab, Tabs } from "react-bootstrap";
 
-import { setDebugType } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setDebugType } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
 
 // import { Api } from './Api.tsx'
-import { CapabilitiesCodec } from './CapabilitiesCodec.tsx'
-import { DataChannelMessagingMessages } from './DataChannelMessagingMessages.tsx'
-import { DebugFilter } from './Filter.tsx'
-import { LogMessages } from './LogMessages.tsx'
-import { NotifyMessages } from './NotifyMessages.tsx'
-import { PushMessages } from './PushMessages.tsx'
-import { Rpc } from './Rpc.tsx'
-import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage.tsx'
-import { SignalingMessages } from './SignalingMessages.tsx'
-import { Stats } from './Stats.tsx'
-import { TimelineMessages } from './TimelineMessages.tsx'
+import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
+import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages.tsx";
+import { DebugFilter } from "./Filter.tsx";
+import { LogMessages } from "./LogMessages.tsx";
+import { NotifyMessages } from "./NotifyMessages.tsx";
+import { PushMessages } from "./PushMessages.tsx";
+import { Rpc } from "./Rpc.tsx";
+import { SendDataChannelMessagingMessage } from "./SendDataChannelMessagingMessage.tsx";
+import { SignalingMessages } from "./SignalingMessages.tsx";
+import { Stats } from "./Stats.tsx";
+import { TimelineMessages } from "./TimelineMessages.tsx";
 
 export const DebugPane: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug)
-  const debugType = useSoraDevtoolsStore((state) => state.debugType)
+  const debug = useSoraDevtoolsStore((state) => state.debug);
+  const debugType = useSoraDevtoolsStore((state) => state.debugType);
   if (!debug) {
-    return null
+    return null;
   }
   const onSelect = (key: string | null): void => {
     if (
-      key === 'log' ||
-      key === 'notify' ||
-      key === 'push' ||
-      key === 'stats' ||
-      key === 'timeline' ||
-      key === 'signaling' ||
-      key === 'messaging' ||
+      key === "log" ||
+      key === "notify" ||
+      key === "push" ||
+      key === "stats" ||
+      key === "timeline" ||
+      key === "signaling" ||
+      key === "messaging" ||
       // key === 'api' ||
-      key === 'rpc' ||
-      key === 'codec'
+      key === "rpc" ||
+      key === "codec"
     ) {
-      setDebugType(key)
+      setDebugType(key);
       // URL の query string を更新
-      const searchParams = new URLSearchParams(location.search)
-      searchParams.set('debugType', key)
-      const newUrl = `${location.pathname}?${searchParams.toString()}`
-      window.history.replaceState(null, '', newUrl)
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("debugType", key);
+      const newUrl = `${location.pathname}?${searchParams.toString()}`;
+      window.history.replaceState(null, "", newUrl);
     }
-  }
+  };
   return (
     <div className="col-debug col-6">
-      <Tabs id="debug-tab" activeKey={debugType} defaultActiveKey={'timeline'} onSelect={onSelect}>
+      <Tabs id="debug-tab" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <DebugFilter />
           <TimelineMessages />
@@ -88,5 +88,5 @@ export const DebugPane: React.FC = () => {
         </Tab>
       </Tabs>
     </div>
-  )
-}
+  );
+};

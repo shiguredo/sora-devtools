@@ -1,13 +1,13 @@
-import type React from 'react'
+import type React from "react";
 
-import { disconnectSora } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { disconnectSora } from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
 
 export const DisconnectButton: React.FC = () => {
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
   const disconnect = (): void => {
-    disconnectSora()
-  }
+    void disconnectSora();
+  };
   return (
     <div className="col-auto mb-1">
       <input
@@ -17,11 +17,11 @@ export const DisconnectButton: React.FC = () => {
         defaultValue="disconnect"
         onClick={disconnect}
         disabled={
-          connectionStatus === 'disconnecting' ||
-          connectionStatus === 'connecting' ||
-          connectionStatus === 'initializing'
+          connectionStatus === "disconnecting" ||
+          connectionStatus === "connecting" ||
+          connectionStatus === "initializing"
         }
       />
     </div>
-  )
-}
+  );
+};

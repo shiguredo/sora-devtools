@@ -1,24 +1,26 @@
-import type React from 'react'
-import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap'
+import type React from "react";
+import { Col, FormCheck, FormGroup, FormSelect, Row } from "react-bootstrap";
 
 import {
   setDataChannelSignaling,
   setEnabledDataChannel,
   setIgnoreDisconnectWebSocket,
-} from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+} from "@/app/actions";
+import { useSoraDevtoolsStore } from "@/app/store";
+import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
+import { checkFormValue, isFormDisabled } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
-  const ignoreDisconnectWebSocket = useSoraDevtoolsStore((state) => state.ignoreDisconnectWebSocket)
+  const ignoreDisconnectWebSocket = useSoraDevtoolsStore(
+    (state) => state.ignoreDisconnectWebSocket,
+  );
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
-      setIgnoreDisconnectWebSocket(event.target.value)
+      setIgnoreDisconnectWebSocket(event.target.value);
     }
-  }
+  };
   return (
     <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
@@ -33,22 +35,22 @@ const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) =
         {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
+              {value === "" ? "未指定" : value}
             </option>
-          )
+          );
         })}
       </FormSelect>
     </FormGroup>
-  )
-}
+  );
+};
 
 const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
-  const dataChannelSignaling = useSoraDevtoolsStore((state) => state.dataChannelSignaling)
+  const dataChannelSignaling = useSoraDevtoolsStore((state) => state.dataChannelSignaling);
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (checkFormValue(event.target.value, DATA_CHANNEL_SIGNALING)) {
-      setDataChannelSignaling(event.target.value)
+      setDataChannelSignaling(event.target.value);
     }
-  }
+  };
   return (
     <FormGroup className="form-inline" controlId="dataChannelSignaling">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
@@ -61,22 +63,22 @@ const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
         {DATA_CHANNEL_SIGNALING.map((value) => {
           return (
             <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
+              {value === "" ? "未指定" : value}
             </option>
-          )
+          );
         })}
       </FormSelect>
     </FormGroup>
-  )
-}
+  );
+};
 
 export const DataChannelForm: React.FC = () => {
-  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
+  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel);
+  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const disabled = isFormDisabled(connectionStatus);
   const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledDataChannel(event.target.checked)
-  }
+    setEnabledDataChannel(event.target.checked);
+  };
   return (
     <>
       <Row className="form-row">
@@ -108,5 +110,5 @@ export const DataChannelForm: React.FC = () => {
         </Row>
       ) : null}
     </>
-  )
-}
+  );
+};

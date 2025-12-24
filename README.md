@@ -1,6 +1,5 @@
 # Sora DevTools
 
-![Static Badge](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-devtools.svg)](https://github.com/shiguredo/sora-devtools)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -51,7 +50,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 - [Playwright](https://playwright.dev/)
 - [Vitest](https://vitest.dev/)
 - [pnpm](https://pnpm.io/)
-- [Biome](https://biomejs.dev/)
+- [Oxc](https://oxc.rs/)
 
 ## 特徴
 
@@ -73,7 +72,6 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 デバッグを有効にすると、ログ、通知、統計や各種イベントを確認することができます。またリアルタイムメッセージングや RPC を利用することもできます。
 
 [![Image from Gyazo](https://i.gyazo.com/c15b137e3d99d235845af5da0405ef4a.png)](https://gyazo.com/c15b137e3d99d235845af5da0405ef4a)
-
 
 ### コピー URL 機能
 
