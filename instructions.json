@@ -83,9 +83,6 @@
   "forwardingFilters": {
     "description": "転送フィルターを複数指定します。"
   },
-  "forwardingFilter": {
-    "description": "転送フィルターを指定します。"
-  },
   "audioStreamingLanguageCode": {
     "description": "音声解析用の言語コードを指定します。"
   },

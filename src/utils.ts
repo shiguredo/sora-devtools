@@ -161,7 +161,6 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
       ? signalingUrlCandidates
       : undefined,
     forwardingFilters: parseStringParameter(searchParams, "forwardingFilters"),
-    forwardingFilter: parseStringParameter(searchParams, "forwardingFilter"),
     simulcast: parseSpecifiedStringParameter(searchParams, "simulcast", SIMULCAST),
     simulcastRid: parseSpecifiedStringParameter(searchParams, "simulcastRid", SIMULCAST_RID),
     simulcastRequestRid: parseSpecifiedStringParameter(
@@ -830,13 +829,6 @@ export function createConnectOptions(
       true,
       connectionOptionsState.forwardingFilters,
     ) as ForwardingFilter[];
-  }
-  // forwardingFilter
-  if (connectionOptionsState.enabledForwardingFilter) {
-    connectionOptions.forwardingFilter = parseMetadata(
-      true,
-      connectionOptionsState.forwardingFilter,
-    ) as ForwardingFilter;
   }
   // bundleId
   if (connectionOptionsState.enabledBundleId) {

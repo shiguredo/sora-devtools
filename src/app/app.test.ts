@@ -388,13 +388,6 @@ test("should handle 'forwardingFilters'", async () => {
   assert.equal(useSoraDevtoolsStore.getState().forwardingFilters, value);
 });
 
-test("should handle 'forwardingFilter'", async () => {
-  const value = "forwardingFilter";
-  setLocationSearch({ forwardingFilter: value });
-  await setInitialParameter();
-  assert.equal(useSoraDevtoolsStore.getState().forwardingFilter, value);
-});
-
 test("should handle 'dataChannels'", async () => {
   const value = "dataChannels";
   setLocationSearch({ dataChannels: value });

@@ -13,6 +13,8 @@
 
 - [CHANGE] Biome から Oxc (oxlint/oxfmt) に移行する
   - @voluntas
+- [FIX] forwardingFilter（単数形）を削除し forwardingFilters（複数形）に統一する
+  - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
 

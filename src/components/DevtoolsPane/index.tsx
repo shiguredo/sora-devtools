@@ -33,7 +33,6 @@ import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm.tsx";
 import { FacingModeForm } from "./FacingModeForm.tsx";
 import { FakeVolumeForm } from "./FakeVolumeForm.tsx";
 import { ForceStereoOutputForm } from "./ForceStereoOutputForm.tsx";
-import { ForwardingFilterForm } from "./ForwardingFilterForm.tsx";
 import { ForwardingFiltersForm } from "./ForwardingFiltersForm.tsx";
 import { FrameRateForm } from "./FrameRateForm.tsx";
 import { MediaProcessorsNoiseSuppressionForm } from "./MediaProcessorsNoiseSuppressionForm.tsx";
@@ -178,7 +177,6 @@ const RowSignalingOptions: React.FC = () => {
   const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel);
   const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels);
   const enabledForwardingFilters = useSoraDevtoolsStore((state) => state.enabledForwardingFilters);
-  const enabledForwardingFilter = useSoraDevtoolsStore((state) => state.enabledForwardingFilter);
   const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata);
   const enabledSignalingNotifyMetadata = useSoraDevtoolsStore(
     (state) => state.enabledSignalingNotifyMetadata,
@@ -193,7 +191,6 @@ const RowSignalingOptions: React.FC = () => {
     enabledDataChannel,
     enabledDataChannels,
     enabledForwardingFilters,
-    enabledForwardingFilter,
     enabledMetadata,
     enabledSignalingNotifyMetadata,
     enabledSignalingUrlCandidates,
@@ -227,7 +224,6 @@ const RowSignalingOptions: React.FC = () => {
           <SignalingNotifyMetadataForm />
           <SignalingUrlCandidatesForm />
           <ForwardingFiltersForm />
-          <ForwardingFilterForm />
           <DataChannelsForm />
           <DataChannelForm />
         </div>

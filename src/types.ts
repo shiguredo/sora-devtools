@@ -77,7 +77,6 @@ export type SoraDevtoolsState = {
   enabledSignalingNotifyMetadata: boolean;
   enabledSignalingUrlCandidates: boolean;
   enabledForwardingFilters: boolean;
-  enabledForwardingFilter: boolean;
   enabledVideoVP9Params: boolean;
   enabledVideoH264Params: boolean;
   enabledVideoH265Params: boolean;
@@ -124,7 +123,6 @@ export type SoraDevtoolsState = {
   signalingNotifyMetadata: string;
   signalingUrlCandidates: string[];
   forwardingFilters: string;
-  forwardingFilter: string;
   simulcast: (typeof SIMULCAST)[number];
   simulcastRid: (typeof SIMULCAST_RID)[number];
   simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number];
@@ -381,7 +379,6 @@ export type ConnectionOptionsState = Pick<
   | "enabledDataChannel"
   | "enabledSignalingNotifyMetadata"
   | "enabledForwardingFilters"
-  | "enabledForwardingFilter"
   | "enabledVideoVP9Params"
   | "enabledVideoH264Params"
   | "enabledVideoH265Params"
@@ -389,7 +386,6 @@ export type ConnectionOptionsState = Pick<
   | "ignoreDisconnectWebSocket"
   | "signalingNotifyMetadata"
   | "forwardingFilters"
-  | "forwardingFilter"
   | "simulcast"
   | "simulcastRid"
   | "simulcastRequestRid"

@@ -202,9 +202,6 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.forwardingFilters !== undefined) {
     store.setForwardingFilters(qsParams.forwardingFilters);
   }
-  if (qsParams.forwardingFilter !== undefined) {
-    store.setForwardingFilter(qsParams.forwardingFilter);
-  }
   if (qsParams.dataChannels !== undefined) {
     store.setDataChannels(qsParams.dataChannels);
   }
@@ -255,7 +252,6 @@ export const setInitialParameter = async (): Promise<void> => {
     signalingNotifyMetadata,
     signalingUrlCandidates,
     forwardingFilters,
-    forwardingFilter,
     videoVP9Params,
     videoH264Params,
     videoH265Params,
@@ -284,10 +280,6 @@ export const setInitialParameter = async (): Promise<void> => {
   // forwardingFilters が存在した場合は enabledForwardingFilters をセットする
   if (forwardingFilters !== "") {
     store.setEnabledForwardingFilters(true);
-  }
-  // forwardingFilter が存在した場合は enabledForwardingFilter をセットする
-  if (forwardingFilter !== "") {
-    store.setEnabledForwardingFilter(true);
   }
   // dataChannelSignaling または ignoreDisconnectWebSocket が存在した場合は enabledDataChannel をセットする
   if (dataChannelSignaling !== "" || ignoreDisconnectWebSocket !== "") {
@@ -402,10 +394,6 @@ export const copyURL = (): void => {
     forwardingFilters:
       state.forwardingFilters !== "" && state.enabledForwardingFilters
         ? state.forwardingFilters
-        : undefined,
-    forwardingFilter:
-      state.forwardingFilter !== "" && state.enabledForwardingFilter
-        ? state.forwardingFilter
         : undefined,
     dataChannelSignaling:
       state.dataChannelSignaling !== "" && state.enabledDataChannel
@@ -921,7 +909,6 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     enabledDataChannel: state.enabledDataChannel,
     enabledSignalingNotifyMetadata: state.enabledSignalingNotifyMetadata,
     enabledForwardingFilters: state.enabledForwardingFilters,
-    enabledForwardingFilter: state.enabledForwardingFilter,
     enabledVideoVP9Params: state.enabledVideoVP9Params,
     enabledVideoH264Params: state.enabledVideoH264Params,
     enabledVideoH265Params: state.enabledVideoH265Params,
@@ -929,7 +916,6 @@ function pickConnectionOptionsState(state: SoraDevtoolsState): ConnectionOptions
     ignoreDisconnectWebSocket: state.ignoreDisconnectWebSocket,
     signalingNotifyMetadata: state.signalingNotifyMetadata,
     forwardingFilters: state.forwardingFilters,
-    forwardingFilter: state.forwardingFilter,
     simulcast: state.simulcast,
     simulcastRid: state.simulcastRid,
     simulcastRequestRid: state.simulcastRequestRid,
@@ -1729,7 +1715,6 @@ export const {
   setEnabledDataChannels,
   setEnabledDataChannel,
   setEnabledForwardingFilters,
-  setEnabledForwardingFilter,
   setEnabledMetadata,
   setEnabledSignalingNotifyMetadata,
   setEnabledSignalingUrlCandidates,
@@ -1762,7 +1747,6 @@ export const {
   setSignalingNotifyMetadata,
   setSignalingUrlCandidates,
   setForwardingFilters,
-  setForwardingFilter,
   setSimulcast,
   setSimulcastRid,
   setSimulcastRequestRid,
