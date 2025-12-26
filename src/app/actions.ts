@@ -30,6 +30,7 @@ import {
   parseMetadata,
   parseQueryString,
 } from "./../utils.ts";
+import { loadSignalingUrlCandidates } from "./../opfs.ts";
 import * as signals from "./signals.ts";
 
 // ページ初期化処理
@@ -197,6 +198,12 @@ export const setInitialParameter = async (): Promise<void> => {
   }
   if (qsParams.signalingUrlCandidates !== undefined) {
     signals.setSignalingUrlCandidates(qsParams.signalingUrlCandidates);
+  } else {
+    // query string に signalingUrlCandidates がない場合は OPFS から読み込む
+    const opfsSignalingUrlCandidates = await loadSignalingUrlCandidates();
+    if (opfsSignalingUrlCandidates.length > 0) {
+      signals.setSignalingUrlCandidates(opfsSignalingUrlCandidates);
+    }
   }
   if (qsParams.forwardingFilters !== undefined) {
     signals.setForwardingFilters(qsParams.forwardingFilters);
