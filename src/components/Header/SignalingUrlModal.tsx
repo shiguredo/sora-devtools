@@ -152,8 +152,19 @@ wss://sora1.example.com/signaling
           placeholder={textareaPlaceholder}
           value={localValue}
           onChange={(e) => {
-            setLocalValue((e.target as HTMLTextAreaElement).value);
-            setError("");
+            const value = (e.target as HTMLTextAreaElement).value;
+            setLocalValue(value);
+            // リアルタイムバリデーション
+            const urls = value
+              .split("\n")
+              .map((url) => url.trim())
+              .filter((url) => url !== "");
+            const invalidUrls = urls.filter((url) => !isValidUrl(url));
+            if (invalidUrls.length > 0) {
+              setError("URL は wss:// または ws:// で始まる必要があります");
+            } else {
+              setError("");
+            }
           }}
           rows={6}
           style={{ width: "100%" }}
