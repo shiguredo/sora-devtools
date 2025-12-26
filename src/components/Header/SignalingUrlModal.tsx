@@ -148,7 +148,6 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
     setSignalingUrlCandidates([]);
     setEnabledSignalingUrlCandidates(false);
     await purgeUrlEntriesFromOPFS();
-    onClose();
   };
 
   if (!show) {
