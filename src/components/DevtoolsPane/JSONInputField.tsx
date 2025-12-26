@@ -36,8 +36,9 @@ export const JSONInputField = ({
   cols,
 }: JSONInputFieldProps) => {
   const [invalidJsonString, setInvalidJsonString] = useState(false);
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setValue(event.target.value);
+  const onChangeText = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setValue(target.value);
   };
   useEffect(() => {
     if (value === "") {

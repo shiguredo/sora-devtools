@@ -1,6 +1,18 @@
-import React, { useState } from "react";
+import { memo, useState } from "react";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import {
+  audioOutput,
+  displayResolution,
+  focusedSpotlightConnectionIds,
+  mediaStats,
+  mute,
+  prevStatsReport,
+  remoteClients,
+  showStats,
+  simulcast,
+  spotlight,
+  statsReport,
+} from "@/app/signals";
 import type { RTCMediaStreamTrackStats, RemoteClient } from "@/types";
 
 import { ConnectionStatusBar } from "./ConnectionStatusBar.tsx";
@@ -15,7 +27,7 @@ import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 const rtcMediaStreamTrackRegex = /^RTCMediaStreamTrack/;
 
 function mediaStreamStatsReportFilter(
-  statsReport: RTCStats[],
+  report: RTCStats[],
   mediaStream: MediaStream | null,
 ): RTCMediaStreamTrackStats[] {
   if (mediaStream === null) {
@@ -25,7 +37,7 @@ function mediaStreamStatsReportFilter(
     return t.id;
   });
   const result: RTCMediaStreamTrackStats[] = [];
-  for (const stats of statsReport) {
+  for (const stats of report) {
     if (stats.id && !rtcMediaStreamTrackRegex.test(stats.id)) {
       continue;
     }
@@ -39,19 +51,16 @@ function mediaStreamStatsReportFilter(
   return result;
 }
 
-const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
-  const showStats = useSoraDevtoolsStore((state) => state.showStats);
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport);
-  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport);
-  if (!showStats) {
+const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
+  if (!showStats.value) {
     return null;
   }
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
-    statsReport,
+    statsReport.value,
     props.stream,
   ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
-    prevStatsReport,
+    prevStatsReport.value,
     props.stream,
   ) as RTCMediaStreamTrackStats[];
   return (
@@ -87,19 +96,10 @@ const MediaStreamStatsReport = React.memo<{ stream: MediaStream }>((props) => {
   );
 });
 
-const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
+const RemoteVideo = memo<{ client: RemoteClient }>(({ client }) => {
   const { mediaStream, connectionId, clientId } = client;
   const [height, setHeight] = useState<number>(0);
-  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput);
-  const displayResolution = useSoraDevtoolsStore((state) => state.displayResolution);
-  const focusedSpotlightConnectionIds = useSoraDevtoolsStore(
-    (state) => state.focusedSpotlightConnectionIds,
-  );
-  const mute = useSoraDevtoolsStore((state) => state.mute);
-  const simulcast = useSoraDevtoolsStore((state) => state.simulcast);
-  const spotlight = useSoraDevtoolsStore((state) => state.spotlight);
-  const focused = connectionId && focusedSpotlightConnectionIds[connectionId];
-  const mediaStats = useSoraDevtoolsStore((state) => state.mediaStats);
+  const focused = connectionId && focusedSpotlightConnectionIds.value[connectionId];
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -109,7 +109,7 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
           <JitterButter type="video" stream={mediaStream} />
         </div>
         <div className="d-flex align-items-center mb-1 video-status-inner">
-          {spotlight !== "true" && simulcast === "true" ? (
+          {spotlight.value !== "true" && simulcast.value === "true" ? (
             <>
               <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
               <RequestSimulcastRidButton rid="r0" sendConnectionId={connectionId} />
@@ -117,7 +117,7 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
               <RequestSimulcastRidButton rid="r2" sendConnectionId={connectionId} />
             </>
           ) : null}
-          {spotlight === "true" && simulcast === "true" ? (
+          {spotlight.value === "true" && simulcast.value === "true" ? (
             <>
               <RequestSpotlightRidBySendConnectionIdButton sendConnectionId={connectionId} />
               <ResetSpotlightRidBySendConnectionIdButton sendConnectionId={connectionId} />
@@ -132,15 +132,15 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
             focused ? " spotlight-focused" : ""
           }`}
         >
-          {mediaStats && mediaStream.getVideoTracks().length > 0 && (
+          {mediaStats.value && mediaStream.getVideoTracks().length > 0 && (
             <RemoteVideoCapabilities stream={mediaStream} />
           )}
           <Video
             stream={mediaStream}
             setHeight={setHeight}
-            mute={mute}
-            audioOutput={audioOutput}
-            displayResolution={displayResolution}
+            mute={mute.value}
+            audioOutput={audioOutput.value}
+            displayResolution={displayResolution.value}
           />
           <VolumeVisualizer micDevice={true} stream={mediaStream} height={height} />
         </div>
@@ -150,13 +150,12 @@ const RemoteVideo = React.memo<{ client: RemoteClient }>(({ client }) => {
   );
 });
 
-export const RemoteVideos: React.FC = () => {
-  const remoteClients = useSoraDevtoolsStore((state) => state.soraContents.remoteClients);
+export function RemoteVideos() {
   return (
     <div className="row my-2">
-      {remoteClients.map((client) => {
+      {remoteClients.value.map((client) => {
         return <RemoteVideo key={client.connectionId} client={client} />;
       })}
     </div>
   );
-};
+}

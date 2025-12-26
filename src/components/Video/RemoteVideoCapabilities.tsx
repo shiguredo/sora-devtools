@@ -1,10 +1,11 @@
-import { useSoraDevtoolsStore } from "@/app/store";
-import type { RTCStatsCodec } from "@/types";
 import { useEffect, useState } from "react";
 
+import { sora, statsReport } from "@/app/signals";
+import type { RTCStatsCodec } from "@/types";
+
 const useVideoTrackStats = (stream: MediaStream) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport);
-  const soraContents = useSoraDevtoolsStore((state) => state.soraContents);
+  const currentStatsReport = statsReport.value;
+  const currentSora = sora.value;
   const [trackStats, setTrackStats] = useState<{
     codec: RTCStatsCodec;
     videoTrackStats: {
@@ -15,7 +16,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
   } | null>(null);
   useEffect(() => {
     void (async () => {
-      if (!soraContents.sora?.pc) {
+      if (!currentSora?.pc) {
         return;
       }
       // 現在の VideoTrack を取得
@@ -27,7 +28,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
       }
 
       // track の RTCRtpReceiver を取得
-      const receiver = soraContents.sora.pc
+      const receiver = currentSora.pc
         .getReceivers()
         .find((receiver) => receiver.track.id === track.id);
       if (receiver === undefined) {
@@ -50,7 +51,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
       let codec: RTCStatsCodec | undefined;
-      for (const stats of statsReport) {
+      for (const stats of currentStatsReport) {
         if (stats.type === "codec") {
           const castedStats = stats as RTCStatsCodec;
           if (codecId === castedStats.id) {
@@ -72,7 +73,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
         });
       }
     })();
-  }, [statsReport, stream, soraContents]);
+  }, [currentStatsReport, stream, currentSora]);
   return {
     trackStats,
   };

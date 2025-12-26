@@ -24,24 +24,23 @@
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
+    "@preact/signals": "2.5.1",
     "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2025.1.0",
     "@shiguredo/virtual-background": "2023.2.0",
     "bootstrap": "5.3.8",
-    "immer": "11.0.1",
-    "react": "19.2.1",
+    "preact": "10.28.0",
+    "preact-render-to-string": "6.6.4",
     "react-bootstrap": "2.10.10",
-    "react-dom": "19.2.1",
-    "sora-js-sdk": "2025.2.0",
-    "zustand": "5.0.9"
+    "sora-js-sdk": "2025.2.0"
   },
   "devDependencies": {
     "@fast-check/vitest": "0.2.4",
     "@playwright/test": "1.57.0",
+    "@preact/preset-vite": "2.10.1",
     "@types/node": "24.10.2",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "5.1.2",
     "dotenv": "17.2.3",
     "fast-check": "4.4.0",
     "jsdom": "27.3.0",

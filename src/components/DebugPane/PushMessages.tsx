@@ -1,6 +1,4 @@
-import type React from "react";
-
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debugFilterText, pushMessages } from "@/app/signals";
 import type { PushMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
@@ -10,17 +8,17 @@ const SIGNALING_COLORS: { [key: string]: string } = {
   datachannel: "#ff00ff",
 };
 
-const Label: React.FC<{ text: string }> = (props) => {
+function Label(props: { text: string }) {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return <span style={color ? { color: color } : {}}>[{text}]</span>;
-};
+}
 
 type CollapsePushProps = {
   push: PushMessage;
   ariaControls: string;
 };
-const Collapse: React.FC<CollapsePushProps> = (props) => {
+function Collapse(props: CollapsePushProps) {
   const { push } = props;
   const label = push.transportType ? <Label text={push.transportType} /> : null;
   return (
@@ -31,17 +29,17 @@ const Collapse: React.FC<CollapsePushProps> = (props) => {
       label={label}
     />
   );
-};
+}
 
-const Log: React.FC<CollapsePushProps> = (props) => {
+function Log(props: CollapsePushProps) {
   return <Collapse {...props} />;
-};
+}
 
-export const PushMessages: React.FC = () => {
-  const pushMessages = useSoraDevtoolsStore((state) => state.pushMessages);
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText);
-  const filteredMessages = pushMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
+export function PushMessages() {
+  const pushMessagesValue = pushMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = pushMessagesValue.filter((message) => {
+    return debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
@@ -56,4 +54,4 @@ export const PushMessages: React.FC = () => {
       })}
     </div>
   );
-};
+}

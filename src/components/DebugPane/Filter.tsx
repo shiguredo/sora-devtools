@@ -1,13 +1,13 @@
-import type React from "react";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
 import { setDebugFilterText } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debugFilterText } from "@/app/signals";
 
-export const DebugFilter: React.FC = () => {
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setDebugFilterText(event.target.value);
+export function DebugFilter() {
+  const debugFilterTextValue = debugFilterText.value;
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setDebugFilterText(target.value);
   };
   return (
     <FormGroup className="form-inline debug-filter" controlId="channelId">
@@ -15,10 +15,10 @@ export const DebugFilter: React.FC = () => {
       <FormControl
         type="text"
         placeholder="Filter"
-        value={debugFilterText}
+        value={debugFilterTextValue}
         onChange={onChange}
         autoComplete="off"
       />
     </FormGroup>
   );
-};
+}

@@ -1,20 +1,16 @@
-import type React from "react";
 import { Col, FormGroup, Row } from "react-bootstrap";
 
 import { setEnabledVideoVP9Params, setVideoVP9Params } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
-import { isFormDisabled } from "@/utils";
+import { enabledVideoVP9Params, isFormDisabled, videoVP9Params } from "@/app/signals";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const VideoVP9ParamsForm: React.FC = () => {
-  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params);
-  const videoVP9Params = useSoraDevtoolsStore((state) => state.videoVP9Params);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledVideoVP9Params(event.target.checked);
+export function VideoVP9ParamsForm() {
+  const disabled = isFormDisabled.value;
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledVideoVP9Params(target.checked);
   };
   return (
     <>
@@ -23,7 +19,7 @@ export const VideoVP9ParamsForm: React.FC = () => {
           <FormGroup className="form-inline" controlId="enabledVideoVP9Params">
             <TooltipFormCheck
               kind="videoVP9Params"
-              checked={enabledVideoVP9Params}
+              checked={enabledVideoVP9Params.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
@@ -32,13 +28,13 @@ export const VideoVP9ParamsForm: React.FC = () => {
           </FormGroup>
         </Col>
       </Row>
-      {enabledVideoVP9Params ? (
+      {enabledVideoVP9Params.value ? (
         <Row className="form-row">
           <Col className="col-auto">
             <JSONInputField
               controlId="videoVP9Params"
               placeholder="videoVP9Paramsを指定"
-              value={videoVP9Params}
+              value={videoVP9Params.value}
               setValue={(value) => setVideoVP9Params(value)}
               disabled={disabled}
             />
@@ -47,4 +43,4 @@ export const VideoVP9ParamsForm: React.FC = () => {
       ) : null}
     </>
   );
-};
+}

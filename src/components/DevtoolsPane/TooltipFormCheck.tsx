@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode;
   checked: boolean;
   disabled: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: Event) => void;
 };
 export const TooltipFormCheck: React.FC<Props> = (props) => {
   const { children, kind, checked, onChange, disabled } = props;

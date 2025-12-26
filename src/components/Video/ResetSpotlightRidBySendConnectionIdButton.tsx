@@ -1,17 +1,14 @@
-import type React from "react";
-
-import { useSoraDevtoolsStore } from "@/app/store";
+import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
 type Props = {
   sendConnectionId: string;
 };
-export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+export function ResetSpotlightRidBySendConnectionIdButton(props: Props) {
+  const conn = sora.value;
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== "connected") {
+    if (!conn || connectionStatus.value !== "connected") {
       return;
     }
 
@@ -34,4 +31,4 @@ export const ResetSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props
       onClick={onClick}
     />
   );
-};
+}

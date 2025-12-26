@@ -1,24 +1,23 @@
-import type React from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setVideoContentHint } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { videoContentHint } from "@/app/signals";
 import { VIDEO_CONTENT_HINTS } from "@/constants";
 import { checkFormValue } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const VideoContentHintForm: React.FC = () => {
-  const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, VIDEO_CONTENT_HINTS)) {
-      setVideoContentHint(event.target.value);
+export function VideoContentHintForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, VIDEO_CONTENT_HINTS)) {
+      setVideoContentHint(target.value);
     }
   };
   return (
     <FormGroup className="form-inline" controlId="videoContentHint">
       <TooltipFormLabel kind="videoContentHint">videoContentHint:</TooltipFormLabel>
-      <FormSelect name="videoContentHint" value={videoContentHint} onChange={onChange}>
+      <FormSelect name="videoContentHint" value={videoContentHint.value} onChange={onChange}>
         {VIDEO_CONTENT_HINTS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -29,4 +28,4 @@ export const VideoContentHintForm: React.FC = () => {
       </FormSelect>
     </FormGroup>
   );
-};
+}

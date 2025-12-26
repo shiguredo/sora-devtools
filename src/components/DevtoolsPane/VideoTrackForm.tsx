@@ -1,21 +1,25 @@
-import type React from "react";
 import { FormGroup } from "react-bootstrap";
 
 import { setVideoTrack } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { videoTrack } from "@/app/signals";
 
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const VideoTrackForm: React.FC = () => {
-  const videoTrack = useSoraDevtoolsStore((state) => state.videoTrack);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setVideoTrack(event.target.checked);
+export function VideoTrackForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setVideoTrack(target.checked);
   };
   return (
     <FormGroup className="form-inline" controlId="videoTrack">
-      <TooltipFormCheck kind="videoTrack" checked={videoTrack} onChange={onChange} disabled={false}>
+      <TooltipFormCheck
+        kind="videoTrack"
+        checked={videoTrack.value}
+        onChange={onChange}
+        disabled={false}
+      >
         Enable video track
       </TooltipFormCheck>
     </FormGroup>
   );
-};
+}

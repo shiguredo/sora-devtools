@@ -1,23 +1,21 @@
-import type React from "react";
 import { useRef } from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 import type { SpotlightFocusRid } from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { connectionStatus, sora } from "@/app/signals";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 import { rpc } from "@/rpc";
 
 type Props = {
   sendConnectionId: string;
 };
-export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (props) => {
+export function RequestSpotlightRidBySendConnectionIdButton(props: Props) {
   const focusRidRef = useRef<HTMLSelectElement>(null);
   const unfocusRidRef = useRef<HTMLSelectElement>(null);
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const conn = sora.value;
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== "connected") {
+    if (!conn || connectionStatus.value !== "connected") {
       return;
     }
     if (focusRidRef.current === null || unfocusRidRef.current === null) {
@@ -79,4 +77,4 @@ export const RequestSpotlightRidBySendConnectionIdButton: React.FC<Props> = (pro
       </FormGroup>
     </div>
   );
-};
+}

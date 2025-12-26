@@ -1,6 +1,4 @@
-import type React from "react";
-
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debugFilterText, timelineMessages } from "@/app/signals";
 import type { TimelineMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
@@ -12,43 +10,43 @@ const DATA_CHANNEL_COLORS: { [key: string]: string } = {
   stats: "#ffc0cb",
 };
 
-const WebSocketLabel: React.FC = () => {
+function WebSocketLabel() {
   return (
     <span className="me-1" style={{ color: "#00ff00" }}>
       [websocket]
     </span>
   );
-};
+}
 
-const PeerConnectionLabel: React.FC = () => {
+function PeerConnectionLabel() {
   return (
     <span className="me-1" style={{ color: "#ff8c00" }}>
       [peerconnection]
     </span>
   );
-};
+}
 
-const SoraLabel: React.FC = () => {
+function SoraLabel() {
   return (
     <span className="me-1" style={{ color: "#bce2e8" }}>
       [sora]
     </span>
   );
-};
+}
 
-const SoraDevtoolsLabel: React.FC = () => {
+function SoraDevtoolsLabel() {
   return (
     <span className="me-1" style={{ color: "#73b8e2" }}>
       [sora-devtools]
     </span>
   );
-};
+}
 
 type DataChannelLabelProps = {
   id?: number | null;
   label?: string | null;
 };
-const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
+function DataChannelLabel(props: DataChannelLabelProps) {
   const { label, id } = props;
   const color =
     label && Object.keys(DATA_CHANNEL_COLORS).includes(label)
@@ -60,12 +58,12 @@ const DataChannelLabel: React.FC<DataChannelLabelProps> = (props) => {
       {typeof id === "number" ? `[${id}]` : ""}
     </span>
   );
-};
+}
 
-const Collapse: React.FC<TimelineMessage> = (props) => {
+function Collapse(props: TimelineMessage) {
   const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
   const title = `${type}`;
-  let labelComponent: any;
+  let labelComponent: React.ReactNode;
   if (logType === "websocket") {
     labelComponent = <WebSocketLabel />;
   } else if (logType === "datachannel") {
@@ -78,17 +76,17 @@ const Collapse: React.FC<TimelineMessage> = (props) => {
     labelComponent = <SoraDevtoolsLabel />;
   }
   return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
-};
+}
 
-const Log: React.FC<TimelineMessage> = (props) => {
+function Log(props: TimelineMessage) {
   return <Collapse {...props} />;
-};
+}
 
-export const TimelineMessages: React.FC = () => {
-  const timelineMessages = useSoraDevtoolsStore((state) => state.timelineMessages);
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText);
-  const filteredMessages = timelineMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
+export function TimelineMessages() {
+  const timelineMessagesValue = timelineMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = timelineMessagesValue.filter((message) => {
+    return debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
@@ -107,4 +105,4 @@ export const TimelineMessages: React.FC = () => {
       })}
     </div>
   );
-};
+}

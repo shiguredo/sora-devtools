@@ -1,14 +1,17 @@
-import type React from "react";
 import { useEffect } from "react";
 
-import { disconnectSora, setMediaDevices, unregisterServiceWorker } from "@/app/actions";
-import { setInitialParameter } from "@/app/actions";
+import {
+  disconnectSora,
+  setInitialParameter,
+  setMediaDevices,
+  unregisterServiceWorker,
+} from "@/app/actions";
 import { DebugPane } from "@/components/DebugPane";
 import { DevtoolsPane } from "@/components/DevtoolsPane";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 
-const Devtools: React.FC = () => {
+function Devtools() {
   useEffect(() => {
     void setInitialParameter();
     void setMediaDevices();
@@ -31,6 +34,6 @@ const Devtools: React.FC = () => {
       <Footer />
     </>
   );
-};
+}
 
 export default Devtools;

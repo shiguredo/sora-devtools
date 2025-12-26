@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from "react-bootstrap";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { clearRpcObjects } from "@/app/actions";
+import { connectionStatus, rpcObjects, sora } from "@/app/signals";
 import { RPC_TEMPLATES } from "@/constants";
 import { rpc } from "@/rpc";
 import type { RpcObject } from "@/types";
@@ -9,9 +10,9 @@ import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
 
 import { JsonTree } from "./JsonTree.tsx";
 
-const ClearButton = React.memo(() => {
+const ClearButton = memo(() => {
   const onClick = (): void => {
-    useSoraDevtoolsStore.getState().clearRpcObjects();
+    clearRpcObjects();
   };
   return (
     <input
@@ -24,7 +25,7 @@ const ClearButton = React.memo(() => {
   );
 });
 
-const RpcForm: React.FC = () => {
+function RpcForm() {
   const methodRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<HTMLInputElement>(null);
   const [notification, setNotification] = useState(false);
@@ -32,8 +33,8 @@ const RpcForm: React.FC = () => {
   const [params, setParams] = useState("");
   const [paramsHasError, setParamsHasError] = useState(false);
 
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+  const conn = sora.value;
+  const connectionStatusValue = connectionStatus.value;
   // rpcMethods は sora-js-sdk 2025.2.0 以降で利用可能
   const rpcMethods: string[] = (conn as unknown as { rpcMethods?: string[] })?.rpcMethods ?? [];
 
@@ -52,7 +53,12 @@ const RpcForm: React.FC = () => {
   }, [params]);
 
   const handleCallRpc = async (): Promise<void> => {
-    if (!methodRef.current || !timeoutRef.current || !conn || connectionStatus !== "connected") {
+    if (
+      !methodRef.current ||
+      !timeoutRef.current ||
+      !conn ||
+      connectionStatusValue !== "connected"
+    ) {
       return;
     }
 
@@ -97,7 +103,7 @@ const RpcForm: React.FC = () => {
               placeholder="method name"
               ref={methodRef}
               value={method}
-              onChange={(e) => setMethod(e.target.value)}
+              onChange={(e) => setMethod((e.target as HTMLInputElement).value)}
             />
             <DropdownButton variant="outline-secondary" title="" align="end">
               {RPC_TEMPLATES.map((template) => {
@@ -135,7 +141,7 @@ const RpcForm: React.FC = () => {
               type="checkbox"
               id="rpcNotificationCheck"
               checked={notification}
-              onChange={(e) => setNotification(e.target.checked)}
+              onChange={(e) => setNotification((e.target as HTMLInputElement).checked)}
             />
             <label
               className="form-check-label"
@@ -174,7 +180,7 @@ const RpcForm: React.FC = () => {
         <Button
           variant="secondary"
           onClick={handleCallRpc}
-          disabled={connectionStatus !== "connected" || paramsHasError}
+          disabled={connectionStatusValue !== "connected" || paramsHasError}
           style={{
             fontSize: "1.2rem",
             padding: "0.75rem 2rem",
@@ -186,9 +192,9 @@ const RpcForm: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-const RpcObjectItem: React.FC<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
+function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
   const date = new Date(rpcObject.timestamp);
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -280,25 +286,25 @@ const RpcObjectItem: React.FC<{ rpcObject: RpcObject }> = ({ rpcObject }) => {
       )}
     </div>
   );
-};
+}
 
-export const Rpc: React.FC = () => {
-  const rpcObjects = useSoraDevtoolsStore((state) => state.rpcObjects);
+export function Rpc() {
+  const rpcObjectsValue = rpcObjects.value;
 
   return (
     <>
       <RpcForm />
-      {rpcObjects.length > 0 && (
+      {rpcObjectsValue.length > 0 && (
         <>
           <div className="py-1 mt-3">
             <h5>RPC Results</h5>
             <div className="mb-2" style={{ color: "#aaa", fontSize: "0.85rem" }}>
-              {rpcObjects.length} 件を表示
+              {rpcObjectsValue.length} 件を表示
             </div>
             <ClearButton />
           </div>
           <div>
-            {rpcObjects.map((rpcObject, index) => {
+            {rpcObjectsValue.map((rpcObject, index) => {
               const key = `${rpcObject.timestamp}-${index}`;
               return <RpcObjectItem key={key} rpcObject={rpcObject} />;
             })}
@@ -307,4 +313,4 @@ export const Rpc: React.FC = () => {
       )}
     </>
   );
-};
+}

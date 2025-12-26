@@ -1,10 +1,8 @@
-import type React from "react";
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from "react-bootstrap";
 
 import { setVideoBitRate } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled, videoBitRate } from "@/app/signals";
 import { VIDEO_BIT_RATES } from "@/constants";
-import { isFormDisabled } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
@@ -19,12 +17,11 @@ const dropdownItemLabel = (value: string) => {
   return value === "" ? "未指定" : value;
 };
 
-export const VideoBitRateForm: React.FC = () => {
-  const videoBitRate = useSoraDevtoolsStore((state) => state.videoBitRate);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setVideoBitRate(event.target.value);
+export function VideoBitRateForm() {
+  const disabled = isFormDisabled.value;
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setVideoBitRate(target.value);
   };
   return (
     <FormGroup className="form-inline" controlId="videoBitRate">
@@ -33,7 +30,7 @@ export const VideoBitRateForm: React.FC = () => {
         <Form.Control
           className="form-video-bit-rate"
           type="text"
-          value={videoBitRate}
+          value={videoBitRate.value}
           onChange={onChange}
           placeholder="未指定"
           disabled={disabled}
@@ -60,4 +57,4 @@ export const VideoBitRateForm: React.FC = () => {
       </InputGroup>
     </FormGroup>
   );
-};
+}

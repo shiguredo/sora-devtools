@@ -1,13 +1,11 @@
-import type React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import Sora from "sora-js-sdk";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { version } from "@/app/signals";
 
 import { DebugButton } from "./DebugButton.tsx";
 
-export const Footer: React.FC = () => {
-  const version = useSoraDevtoolsStore((state) => state.version);
+export function Footer() {
   return (
     <footer>
       <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
@@ -18,7 +16,7 @@ export const Footer: React.FC = () => {
               href="https://github.com/shiguredo/sora-devtools"
               className="btn btn-outline-light m-1"
             >
-              GitHub: shiguredo/sora-devtools: {version}
+              GitHub: shiguredo/sora-devtools: {version.value}
             </a>
             <a
               href="https://github.com/shiguredo/sora-js-sdk"
@@ -32,4 +30,4 @@ export const Footer: React.FC = () => {
       <DebugButton />
     </footer>
   );
-};
+}

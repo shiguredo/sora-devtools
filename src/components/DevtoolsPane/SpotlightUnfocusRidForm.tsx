@@ -1,26 +1,24 @@
-import type React from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setSpotlightUnfocusRid } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled, spotlightUnfocusRid } from "@/app/signals";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { checkFormValue } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const SpotlightUnfocusRidForm: React.FC = () => {
-  const spotlightUnfocusRid = useSoraDevtoolsStore((state) => state.spotlightUnfocusRid);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, SPOTLIGHT_FOCUS_RIDS)) {
-      setSpotlightUnfocusRid(event.target.value);
+export function SpotlightUnfocusRidForm() {
+  const disabled = isFormDisabled.value;
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, SPOTLIGHT_FOCUS_RIDS)) {
+      setSpotlightUnfocusRid(target.value);
     }
   };
   return (
     <FormGroup className="form-inline" controlId="spotlightUnfocusRid">
       <TooltipFormLabel kind="spotlightUnfocusRid">spotlightUnfocusRid:</TooltipFormLabel>
-      <FormSelect value={spotlightUnfocusRid} onChange={onChange} disabled={disabled}>
+      <FormSelect value={spotlightUnfocusRid.value} onChange={onChange} disabled={disabled}>
         {SPOTLIGHT_FOCUS_RIDS.map((value) => {
           return (
             <option key={value} value={value}>
@@ -31,4 +29,4 @@ export const SpotlightUnfocusRidForm: React.FC = () => {
       </FormSelect>
     </FormGroup>
   );
-};
+}
