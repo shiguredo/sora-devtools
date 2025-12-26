@@ -95,7 +95,6 @@ const parametersArb = fc.record({
   metadata: fc.option(stringParamArb, { nil: undefined }),
   signalingNotifyMetadata: fc.option(stringParamArb, { nil: undefined }),
   forwardingFilters: fc.option(stringParamArb, { nil: undefined }),
-  forwardingFilter: fc.option(stringParamArb, { nil: undefined }),
   audioBitRate: fc.option(fc.integer({ min: 1, max: 1000 }).map(String), {
     nil: undefined,
   }),

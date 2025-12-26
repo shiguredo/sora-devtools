@@ -63,7 +63,6 @@ interface SoraDevtoolsActions {
   ) => void;
   setSignalingMessage: (message: SignalingMessage) => void;
   setEnabledForwardingFilters: (enabled: boolean) => void;
-  setEnabledForwardingFilter: (enabled: boolean) => void;
   setEnabledSignalingNotifyMetadata: (enabled: boolean) => void;
   setEnabledSignalingUrlCandidates: (enabled: boolean) => void;
   setEnabledVideoVP9Params: (enabled: boolean) => void;
@@ -84,7 +83,6 @@ interface SoraDevtoolsActions {
   setSignalingNotifyMetadata: (signalingNotifyMetadata: string) => void;
   setSignalingUrlCandidates: (signalingUrlCandidates: string[]) => void;
   setForwardingFilters: (forwardingFilters: string) => void;
-  setForwardingFilter: (forwardingFilter: string) => void;
   setSimulcastRid: (simulcastRid: SoraDevtoolsState["simulcastRid"]) => void;
   setSimulcastRequestRid: (simulcastRequestRid: SoraDevtoolsState["simulcastRequestRid"]) => void;
   setSpotlightNumber: (spotlightNumber: SoraDevtoolsState["spotlightNumber"]) => void;
@@ -200,7 +198,6 @@ const initialState: SoraDevtoolsState = {
   enabledDataChannel: false,
   enabledDataChannels: false,
   enabledForwardingFilters: false,
-  enabledForwardingFilter: false,
   enabledMetadata: false,
   enabledSignalingNotifyMetadata: false,
   enabledSignalingUrlCandidates: false,
@@ -252,7 +249,6 @@ const initialState: SoraDevtoolsState = {
   signalingNotifyMetadata: "",
   signalingUrlCandidates: [],
   forwardingFilters: "",
-  forwardingFilter: "",
   simulcastRid: "",
   simulcastRequestRid: "",
   spotlightNumber: "",
@@ -416,10 +412,6 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
         set((state) => {
           state.enabledForwardingFilters = enabled;
         }),
-      setEnabledForwardingFilter: (enabled) =>
-        set((state) => {
-          state.enabledForwardingFilter = enabled;
-        }),
       setEnabledSignalingNotifyMetadata: (enabled) =>
         set((state) => {
           state.enabledSignalingNotifyMetadata = enabled;
@@ -515,10 +507,6 @@ export const useSoraDevtoolsStore = create<SoraDevtoolsState & SoraDevtoolsActio
       setForwardingFilters: (forwardingFilters) =>
         set((state) => {
           state.forwardingFilters = forwardingFilters;
-        }),
-      setForwardingFilter: (forwardingFilter) =>
-        set((state) => {
-          state.forwardingFilter = forwardingFilter;
         }),
       setSimulcastRid: (simulcastRid) =>
         set((state) => {
