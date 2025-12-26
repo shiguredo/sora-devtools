@@ -1,8 +1,7 @@
-import type React from "react";
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from "react-bootstrap";
 
 import { setResolution } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { resolution } from "@/app/signals";
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 type ResolutionData = {
@@ -31,10 +30,10 @@ const DropdownItem = ({ label, value }: ResolutionData) => {
   );
 };
 
-export const ResolutionForm: React.FC = () => {
-  const resolution = useSoraDevtoolsStore((state) => state.resolution);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setResolution(event.target.value);
+export function ResolutionForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setResolution(target.value);
   };
   return (
     <FormGroup className="form-inline" controlId="resolution">
@@ -43,7 +42,7 @@ export const ResolutionForm: React.FC = () => {
         <Form.Control
           className="form-resolution"
           type="text"
-          value={resolution}
+          value={resolution.value}
           onChange={onChange}
           placeholder="未指定"
         />
@@ -55,4 +54,4 @@ export const ResolutionForm: React.FC = () => {
       </InputGroup>
     </FormGroup>
   );
-};
+}

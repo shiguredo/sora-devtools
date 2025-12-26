@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Button, Col, FormControl, Row } from "react-bootstrap";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { clearApiObjects, setApiObject, setDebugApiUrl } from "@/app/actions";
+import { apiObjects, channelId, connectionId, debugApiUrl, sessionId } from "@/app/signals";
 import { API_TEMPLATES } from "@/constants";
 import type { ApiObject } from "@/types";
 import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
 
 import { JsonTree } from "./JsonTree.tsx";
 
-const ClearButton = React.memo(() => {
+const ClearButton = memo(() => {
   const onClick = (): void => {
-    useSoraDevtoolsStore.getState().clearApiObjects();
+    clearApiObjects();
   };
   return (
     <Button variant="danger" onClick={onClick}>
@@ -26,10 +27,10 @@ type ApiFormProps = {
   params: string;
   setParams: (params: string) => void;
   setShowModal: (show: boolean) => void;
-  buttonRef: React.RefObject<HTMLButtonElement | null>;
+  buttonRef: React.RefObject<HTMLButtonElement>;
 };
 
-const ApiForm: React.FC<ApiFormProps> = ({
+function ApiForm({
   url,
   setUrl,
   selectedMethod,
@@ -37,7 +38,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
   setParams,
   setShowModal,
   buttonRef,
-}) => {
+}: ApiFormProps) {
   const urlRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<HTMLInputElement>(null);
   const [paramsHasError, setParamsHasError] = useState(false);
@@ -45,9 +46,9 @@ const ApiForm: React.FC<ApiFormProps> = ({
   const [replaceConnectionId, setReplaceConnectionId] = useState(true);
   const [replaceSessionId, setReplaceSessionId] = useState(true);
 
-  const channelId = useSoraDevtoolsStore((state) => state.channelId);
-  const connectionId = useSoraDevtoolsStore((state) => state.soraContents.connectionId);
-  const sessionId = useSoraDevtoolsStore((state) => state.soraContents.sessionId);
+  const channelIdValue = channelId.value;
+  const connectionIdValue = connectionId.value;
+  const sessionIdValue = sessionId.value;
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
@@ -73,13 +74,13 @@ const ApiForm: React.FC<ApiFormProps> = ({
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
         const replaced = { ...parsed };
         if (replaceChannelId && "channel_id" in replaced) {
-          replaced.channel_id = channelId;
+          replaced.channel_id = channelIdValue;
         }
-        if (replaceConnectionId && "connection_id" in replaced && connectionId) {
-          replaced.connection_id = connectionId;
+        if (replaceConnectionId && "connection_id" in replaced && connectionIdValue) {
+          replaced.connection_id = connectionIdValue;
         }
-        if (replaceSessionId && "session_id" in replaced && sessionId) {
-          replaced.session_id = sessionId;
+        if (replaceSessionId && "session_id" in replaced && sessionIdValue) {
+          replaced.session_id = sessionIdValue;
         }
         return JSON.stringify(replaced, null, 2);
       }
@@ -109,13 +110,13 @@ const ApiForm: React.FC<ApiFormProps> = ({
         // トップレベルの channel_id, session_id, connection_id を置き換える
         if (parsedParams && typeof parsedParams === "object" && !Array.isArray(parsedParams)) {
           if (replaceChannelId && "channel_id" in parsedParams) {
-            parsedParams.channel_id = channelId;
+            parsedParams.channel_id = channelIdValue;
           }
-          if (replaceSessionId && "session_id" in parsedParams && sessionId) {
-            parsedParams.session_id = sessionId;
+          if (replaceSessionId && "session_id" in parsedParams && sessionIdValue) {
+            parsedParams.session_id = sessionIdValue;
           }
-          if (replaceConnectionId && "connection_id" in parsedParams && connectionId) {
-            parsedParams.connection_id = connectionId;
+          if (replaceConnectionId && "connection_id" in parsedParams && connectionIdValue) {
+            parsedParams.connection_id = connectionIdValue;
           }
         }
       } catch (error) {
@@ -173,7 +174,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         responseBody = await response.text();
       }
 
-      useSoraDevtoolsStore.getState().setApiObject({
+      setApiObject({
         timestamp,
         url: urlValue,
         method: selectedMethod,
@@ -206,7 +207,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
         errorMessage = error;
       }
 
-      useSoraDevtoolsStore.getState().setApiObject({
+      setApiObject({
         timestamp,
         url: urlValue,
         method: selectedMethod,
@@ -231,7 +232,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
             placeholder="http://sora-test.shiguredo.co.jp:3000"
             ref={urlRef}
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            onChange={(e) => setUrl((e.target as HTMLInputElement).value)}
             style={{ backgroundColor: "#333", color: "#fff" }}
           />
         </div>
@@ -290,7 +291,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   type="checkbox"
                   id="replaceChannelId"
                   checked={replaceChannelId}
-                  onChange={(e) => setReplaceChannelId(e.target.checked)}
+                  onChange={(e) => setReplaceChannelId((e.target as HTMLInputElement).checked)}
                 />
                 <label
                   className="form-check-label"
@@ -306,7 +307,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   type="checkbox"
                   id="replaceSessionId"
                   checked={replaceSessionId}
-                  onChange={(e) => setReplaceSessionId(e.target.checked)}
+                  onChange={(e) => setReplaceSessionId((e.target as HTMLInputElement).checked)}
                 />
                 <label
                   className="form-check-label"
@@ -322,7 +323,7 @@ const ApiForm: React.FC<ApiFormProps> = ({
                   type="checkbox"
                   id="replaceConnectionId"
                   checked={replaceConnectionId}
-                  onChange={(e) => setReplaceConnectionId(e.target.checked)}
+                  onChange={(e) => setReplaceConnectionId((e.target as HTMLInputElement).checked)}
                 />
                 <label
                   className="form-check-label"
@@ -368,14 +369,14 @@ const ApiForm: React.FC<ApiFormProps> = ({
       </div>
     </div>
   );
-};
+}
 
 type ApiObjectItemProps = {
   apiObject: ApiObject;
   onReuse: (apiObject: ApiObject) => void;
 };
 
-const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => {
+function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
   const date = new Date(apiObject.timestamp);
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -549,13 +550,13 @@ const ApiObjectItem: React.FC<ApiObjectItemProps> = ({ apiObject, onReuse }) => 
       )}
     </div>
   );
-};
+}
 
-export const Api: React.FC = () => {
-  const apiObjects = useSoraDevtoolsStore((state) => state.apiObjects);
-  const url = useSoraDevtoolsStore((state) => state.debugApiUrl);
+export function Api() {
+  const apiObjectsValue = apiObjects.value;
+  const url = debugApiUrl.value;
   const setUrl = (value: string): void => {
-    useSoraDevtoolsStore.getState().setDebugApiUrl(value);
+    setDebugApiUrl(value);
   };
   const [selectedMethod, setSelectedMethod] = useState("");
   const [params, setParams] = useState("");
@@ -717,17 +718,19 @@ export const Api: React.FC = () => {
         setShowModal={setShowModal}
         buttonRef={buttonRef}
       />
-      {apiObjects.length > 0 && (
+      {apiObjectsValue.length > 0 && (
         <>
           <div className="py-1">
             <h5>API Results</h5>
             <div className="d-flex justify-content-between align-items-center mb-2">
               <ClearButton />
-              <div style={{ color: "#aaa", fontSize: "0.85rem" }}>{apiObjects.length} 件を表示</div>
+              <div style={{ color: "#aaa", fontSize: "0.85rem" }}>
+                {apiObjectsValue.length} 件を表示
+              </div>
             </div>
           </div>
           <div style={{ overflowY: "scroll", flex: 1 }}>
-            {apiObjects.map((apiObject, index) => {
+            {apiObjectsValue.map((apiObject, index) => {
               const key = `${apiObject.timestamp}-${index}`;
               return <ApiObjectItem key={key} apiObject={apiObject} onReuse={handleReuse} />;
             })}
@@ -736,4 +739,4 @@ export const Api: React.FC = () => {
       )}
     </div>
   );
-};
+}

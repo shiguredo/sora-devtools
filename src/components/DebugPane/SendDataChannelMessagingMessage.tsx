@@ -1,22 +1,21 @@
-import type React from "react";
 import { useRef } from "react";
 import { Button, FormControl, FormGroup, FormSelect } from "react-bootstrap";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { connectionStatus, sora, soraDataChannels } from "@/app/signals";
 
-export const SendDataChannelMessagingMessage: React.FC = () => {
+export function SendDataChannelMessagingMessage() {
   const selectRef = useRef<HTMLSelectElement>(null);
   const textareaRef = useRef<HTMLInputElement>(null);
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const dataChannels = useSoraDevtoolsStore((state) => state.soraContents.dataChannels);
+  const soraValue = sora.value;
+  const connectionStatusValue = connectionStatus.value;
+  const dataChannelsValue = soraDataChannels.value;
   const handleSendMessage = (): void => {
     if (selectRef.current === null || textareaRef.current === null) {
       return;
     }
     const label = selectRef.current.value;
-    if (sora && connectionStatus === "connected") {
-      void sora.sendMessage(label, new TextEncoder().encode(textareaRef.current.value));
+    if (soraValue && connectionStatusValue === "connected") {
+      void soraValue.sendMessage(label, new TextEncoder().encode(textareaRef.current.value));
     }
   };
   return (
@@ -24,7 +23,7 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
       <div className="d-flex mt-2">
         <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
           <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
-            {dataChannels.map((datachannel) => {
+            {dataChannelsValue.map((datachannel) => {
               return (
                 <option key={datachannel.label} value={datachannel.label}>
                   {datachannel.label}
@@ -44,12 +43,12 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
         <Button
           variant="secondary"
           onClick={handleSendMessage}
-          disabled={dataChannels.length === 0}
+          disabled={dataChannelsValue.length === 0}
         >
           send
         </Button>
       </div>
-      {dataChannels.length > 0 ? (
+      {dataChannelsValue.length > 0 ? (
         <pre
           className="form-control mt-2"
           style={{
@@ -59,9 +58,9 @@ export const SendDataChannelMessagingMessage: React.FC = () => {
             minHeight: "250px",
           }}
         >
-          {JSON.stringify(dataChannels, null, 2)}
+          {JSON.stringify(dataChannelsValue, null, 2)}
         </pre>
       ) : null}
     </>
   );
-};
+}

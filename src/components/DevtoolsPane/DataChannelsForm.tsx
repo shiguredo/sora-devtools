@@ -1,18 +1,13 @@
-import type React from "react";
 import { Button, Col, FormGroup, Row } from "react-bootstrap";
 
 import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
-import { isFormDisabled } from "@/utils";
+import { dataChannels, enabledDataChannels, isFormDisabled } from "@/app/signals";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const DataChannelsForm: React.FC = () => {
-  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels);
-  const dataChannels = useSoraDevtoolsStore((state) => state.dataChannels);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
+export function DataChannelsForm() {
+  const disabled = isFormDisabled.value;
   const exampleJsonString = JSON.stringify(
     [
       {
@@ -27,8 +22,9 @@ export const DataChannelsForm: React.FC = () => {
     2,
   );
   const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`;
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledDataChannels(event.target.checked);
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledDataChannels(target.checked);
   };
   return (
     <>
@@ -37,7 +33,7 @@ export const DataChannelsForm: React.FC = () => {
           <FormGroup className="form-inline" controlId="enabledDataChannels">
             <TooltipFormCheck
               kind="dataChannels"
-              checked={enabledDataChannels}
+              checked={enabledDataChannels.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
@@ -46,13 +42,13 @@ export const DataChannelsForm: React.FC = () => {
           </FormGroup>
         </Col>
       </Row>
-      {enabledDataChannels ? (
+      {enabledDataChannels.value ? (
         <Row className="form-row">
           <Col className="col-auto">
             <JSONInputField
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
-              value={dataChannels}
+              value={dataChannels.value}
               setValue={(value) => setDataChannels(value)}
               disabled={disabled}
               rows={12}
@@ -72,4 +68,4 @@ export const DataChannelsForm: React.FC = () => {
       ) : null}
     </>
   );
-};
+}

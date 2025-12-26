@@ -1,5 +1,3 @@
-import type React from "react";
-
 import { Message } from "./Message.tsx";
 
 interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodec {
@@ -11,13 +9,13 @@ type LogProps = {
   codecs: RTCRtpCapabilitiesCodecWithIndexSignature[];
 };
 
-const Collapse: React.FC<LogProps> = ({ title, codecs }) => {
+function Collapse({ title, codecs }: LogProps) {
   return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />;
-};
+}
 
-const Log: React.FC<LogProps> = (props) => {
+function Log(props: LogProps) {
   return <Collapse {...props} />;
-};
+}
 
 const getCapabilitiesCodec = (
   getCapabilities: (kind: string) => RTCRtpCapabilities | null,
@@ -34,7 +32,7 @@ const getCapabilitiesCodec = (
   return capabilities.codecs;
 };
 
-export const CapabilitiesCodec: React.FC = () => {
+export function CapabilitiesCodec() {
   const senderAudioCapabilitiesCodec = getCapabilitiesCodec(
     (kind) => RTCRtpSender.getCapabilities(kind),
     "audio",
@@ -71,4 +69,4 @@ export const CapabilitiesCodec: React.FC = () => {
       />
     </div>
   );
-};
+}

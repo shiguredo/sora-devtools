@@ -1,6 +1,6 @@
-import React from "react";
+import { memo } from "react";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debugFilterText, signalingMessages } from "@/app/signals";
 import type { SignalingMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
@@ -10,7 +10,7 @@ const SIGNALING_COLORS: { [key: string]: string } = {
   datachannel: "#ff00ff",
 };
 
-const Label = React.memo<{ text: string }>((props) => {
+const Label = memo<{ text: string }>((props) => {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
@@ -20,21 +20,21 @@ const Label = React.memo<{ text: string }>((props) => {
   );
 });
 
-const Collapse = React.memo<SignalingMessage>((props) => {
+const Collapse = memo<SignalingMessage>((props) => {
   const { data, type, timestamp, transportType } = props;
   const label = transportType ? <Label text={transportType} /> : null;
   return <Message title={type} timestamp={timestamp} description={data} label={label} />;
 });
 
-const Log = React.memo<SignalingMessage>((props) => {
+const Log = memo<SignalingMessage>((props) => {
   return <Collapse {...props} />;
 });
 
-export const SignalingMessages: React.FC = () => {
-  const signalingMessages = useSoraDevtoolsStore((state) => state.signalingMessages);
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText);
-  const filteredMessages = signalingMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
+export function SignalingMessages() {
+  const signalingMessagesValue = signalingMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = signalingMessagesValue.filter((message) => {
+    return debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
@@ -49,4 +49,4 @@ export const SignalingMessages: React.FC = () => {
       })}
     </div>
   );
-};
+}

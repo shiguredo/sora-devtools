@@ -1,18 +1,14 @@
-import type React from "react";
 import { FormControl, FormGroup } from "react-bootstrap";
 
 import { setChannelId } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
-import { isFormDisabled } from "@/utils";
+import { channelId, isFormDisabled } from "@/app/signals";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const ChannelIdForm: React.FC = () => {
-  const channelId = useSoraDevtoolsStore((state) => state.channelId);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setChannelId(event.target.value);
+export function ChannelIdForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setChannelId(target.value);
   };
   return (
     <FormGroup className="form-inline" controlId="channelId">
@@ -20,10 +16,10 @@ export const ChannelIdForm: React.FC = () => {
       <FormControl
         type="text"
         placeholder="ChannelIdを指定"
-        value={channelId}
+        value={channelId.value}
         onChange={onChange}
-        disabled={disabled}
+        disabled={isFormDisabled.value}
       />
     </FormGroup>
   );
-};
+}

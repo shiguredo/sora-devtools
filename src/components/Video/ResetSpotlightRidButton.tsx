@@ -1,14 +1,11 @@
-import type React from "react";
-
-import { useSoraDevtoolsStore } from "@/app/store";
+import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
-export const ResetSpotlightRidButton: React.FC = () => {
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
+export function ResetSpotlightRidButton() {
+  const conn = sora.value;
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== "connected") {
+    if (!conn || connectionStatus.value !== "connected") {
       return;
     }
 
@@ -31,4 +28,4 @@ export const ResetSpotlightRidButton: React.FC = () => {
       />
     </div>
   );
-};
+}

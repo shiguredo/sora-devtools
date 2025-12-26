@@ -1,26 +1,29 @@
-import type React from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setSimulcastRid } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { isFormDisabled, simulcastRid } from "@/app/signals";
 import { SIMULCAST_RID } from "@/constants";
-import { checkFormValue, isFormDisabled } from "@/utils";
+import { checkFormValue } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const SimulcastRidForm: React.FC = () => {
-  const simulcastRid = useSoraDevtoolsStore((state) => state.simulcastRid);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, SIMULCAST_RID)) {
-      setSimulcastRid(event.target.value);
+export function SimulcastRidForm() {
+  const disabled = isFormDisabled.value;
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, SIMULCAST_RID)) {
+      setSimulcastRid(target.value);
     }
   };
   return (
     <FormGroup className="form-inline" controlId="simulcastRid">
       <TooltipFormLabel kind="simulcastRid">simulcastRid:</TooltipFormLabel>
-      <FormSelect name="simulcastRid" value={simulcastRid} onChange={onChange} disabled={disabled}>
+      <FormSelect
+        name="simulcastRid"
+        value={simulcastRid.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {SIMULCAST_RID.map((value) => {
           return (
             <option key={value} value={value}>
@@ -31,4 +34,4 @@ export const SimulcastRidForm: React.FC = () => {
       </FormSelect>
     </FormGroup>
   );
-};
+}

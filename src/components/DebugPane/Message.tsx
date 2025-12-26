@@ -1,4 +1,5 @@
-import React, { type JSX, useState } from "react";
+import type { ComponentChild } from "preact";
+import { memo, useState } from "react";
 import { Collapse } from "react-bootstrap";
 
 import { formatUnixtime } from "@/utils";
@@ -11,7 +12,7 @@ type DescriptionProps = {
   prevDescription?: unknown;
   wordBreak?: boolean;
 };
-const Description = React.memo<DescriptionProps>((props) => {
+const Description = memo<DescriptionProps>((props) => {
   const { description, prevDescription } = props;
   if (description === undefined) {
     return null;
@@ -55,10 +56,10 @@ type Props = {
   description: string | number | Record<string, unknown>;
   prevDescription?: unknown;
   defaultShow?: boolean;
-  label?: JSX.Element | null;
+  label?: ComponentChild;
   wordBreak?: boolean;
 };
-export const Message = React.memo<Props>((props) => {
+export const Message = memo<Props>((props) => {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props;
   const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;

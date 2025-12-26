@@ -1,6 +1,7 @@
-import { useSoraDevtoolsStore } from "@/app/store";
-import type { RTCStatsCodec } from "@/types";
 import { useEffect, useState } from "react";
+
+import { statsReport } from "@/app/signals";
+import type { RTCStatsCodec } from "@/types";
 
 type RTCStatsCodecPair = {
   codec?: RTCStatsCodec;
@@ -8,7 +9,7 @@ type RTCStatsCodecPair = {
 };
 
 const useLocalVideoTrackStats = (stream: MediaStream) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport);
+  const currentStatsReport = statsReport.value;
   const [trackStats, setTrackStats] = useState<RTCStatsCodecPair[]>([]);
   const [selected, setSelected] = useState<RTCStatsCodecPair | null>(null);
   useEffect(() => {
@@ -23,7 +24,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
 
       // track の RTCRtpStats を取得
       // 送信は 1 つだけなので outbound-rtp の kind=video を取得
-      const stats = statsReport.filter((stats) => {
+      const stats = currentStatsReport.filter((stats) => {
         if (stats.type === "outbound-rtp") {
           const castedStats = stats as RTCOutboundRtpStreamStats;
           if (castedStats.kind === "video") {
@@ -40,7 +41,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
         const outboundRtpStats = s as RTCOutboundRtpStreamStats;
 
         // RTCStatsReport から codecId が一致する codec の情報を取得
-        const codec = statsReport.find((stats) => {
+        const codec = currentStatsReport.find((stats) => {
           if (stats.type === "codec") {
             const castedStats = stats as RTCStatsCodec;
             return castedStats.id === outboundRtpStats.codecId;
@@ -93,7 +94,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
         }
       }
     })();
-  }, [statsReport, stream, selected]);
+  }, [currentStatsReport, stream, selected]);
   return { trackStats, selected, setSelected };
 };
 

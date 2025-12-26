@@ -1,22 +1,19 @@
-import type React from "react";
 import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
 
 import { setClientId, setEnabledClientId } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
-import { isFormDisabled } from "@/utils";
+import { clientId, enabledClientId, isFormDisabled } from "@/app/signals";
 
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const ClientIdForm: React.FC = () => {
-  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId);
-  const clientId = useSoraDevtoolsStore((state) => state.clientId);
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus);
-  const disabled = isFormDisabled(connectionStatus);
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledClientId(event.target.checked);
+export function ClientIdForm() {
+  const disabled = isFormDisabled.value;
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledClientId(target.checked);
   };
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setClientId(event.target.value);
+  const onChangeText = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setClientId(target.value);
   };
   return (
     <>
@@ -25,7 +22,7 @@ export const ClientIdForm: React.FC = () => {
           <FormGroup className="form-inline" controlId="enabledClientId">
             <TooltipFormCheck
               kind="clientId"
-              checked={enabledClientId}
+              checked={enabledClientId.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
@@ -34,7 +31,7 @@ export const ClientIdForm: React.FC = () => {
           </FormGroup>
         </Col>
       </Row>
-      {enabledClientId ? (
+      {enabledClientId.value ? (
         <Row className="form-row">
           <Col className="col-auto">
             <FormGroup className="form-inline" controlId="clientId">
@@ -42,7 +39,7 @@ export const ClientIdForm: React.FC = () => {
                 className="flex-fill w-500"
                 type="text"
                 placeholder="ClientIdを指定"
-                value={clientId}
+                value={clientId.value}
                 onChange={onChangeText}
                 disabled={disabled}
               />
@@ -52,4 +49,4 @@ export const ClientIdForm: React.FC = () => {
       ) : null}
     </>
   );
-};
+}

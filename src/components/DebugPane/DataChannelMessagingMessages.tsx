@@ -1,12 +1,12 @@
-import React from "react";
+import { memo } from "react";
 
 import { clearDataChannelMessages } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { dataChannelMessages } from "@/app/signals";
 import type { DataChannelMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const ButtonClear = React.memo(() => {
+const ButtonClear = memo(() => {
   const onClick = (): void => {
     clearDataChannelMessages();
   };
@@ -21,7 +21,7 @@ const ButtonClear = React.memo(() => {
   );
 });
 
-const Collapse = React.memo<DataChannelMessage>((props) => {
+const Collapse = memo<DataChannelMessage>((props) => {
   const { data, label, timestamp } = props;
   const headText = new TextDecoder().decode(data.slice(0, 6));
   if (headText === "ZAKURO") {
@@ -54,23 +54,23 @@ const Collapse = React.memo<DataChannelMessage>((props) => {
   );
 });
 
-const Log = React.memo<DataChannelMessage>((props) => {
+const Log = memo<DataChannelMessage>((props) => {
   return <Collapse {...props} />;
 });
 
-export const DataChannelMessagingMessages: React.FC = () => {
-  const dataChannelMessages = useSoraDevtoolsStore((state) => state.dataChannelMessages);
+export function DataChannelMessagingMessages() {
+  const dataChannelMessagesValue = dataChannelMessages.value;
   return (
     <>
       <div className="py-1">
         <ButtonClear />
       </div>
       <div className="debug-messages">
-        {dataChannelMessages.map((message) => {
+        {dataChannelMessagesValue.map((message) => {
           const key = message.label + message.timestamp;
           return <Log key={key} {...message} />;
         })}
       </div>
     </>
   );
-};
+}

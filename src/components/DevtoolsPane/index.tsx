@@ -1,8 +1,38 @@
-import type React from "react";
 import { useState } from "react";
 import { Col, Collapse, Row } from "react-bootstrap";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import {
+  audioContentHint,
+  autoGainControl,
+  blurRadius,
+  debug,
+  echoCancellation,
+  echoCancellationType,
+  enabledAudioStreamingLanguageCode,
+  enabledBundleId,
+  enabledClientId,
+  enabledDataChannel,
+  enabledDataChannels,
+  enabledForwardingFilters,
+  enabledMetadata,
+  enabledSignalingNotifyMetadata,
+  enabledSignalingUrlCandidates,
+  enabledVideoAV1Params,
+  enabledVideoH264Params,
+  enabledVideoH265Params,
+  enabledVideoVP9Params,
+  forceStereoOutput,
+  frameRate,
+  mediaProcessorsNoiseSuppression,
+  mediaType,
+  noiseSuppression,
+  reconnect,
+  resolution,
+  role,
+  simulcast,
+  spotlight,
+  videoContentHint,
+} from "@/app/signals";
 import { AlertMessages } from "@/components/AlertMessages";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
@@ -69,7 +99,7 @@ import { VideoInputForm } from "./VideoInputForm.tsx";
 import { VideoTrackForm } from "./VideoTrackForm.tsx";
 import { VideoVP9ParamsForm } from "./VideoVP9ParamsForm.tsx";
 
-const RowChannelOptions: React.FC = () => {
+function RowChannelOptions() {
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -90,11 +120,10 @@ const RowChannelOptions: React.FC = () => {
       </Row>
     </>
   );
-};
+}
 
-const RowGetUserMediaConstraints: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role);
-  const showCodecForms = role !== "recvonly";
+function RowGetUserMediaConstraints() {
+  const showCodecForms = role.value !== "recvonly";
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -129,13 +158,11 @@ const RowGetUserMediaConstraints: React.FC = () => {
       </Row>
     </>
   );
-};
+}
 
-const RowSimulcastOptions: React.FC = () => {
-  const simulcast = useSoraDevtoolsStore((state) => state.simulcast);
-  const role = useSoraDevtoolsStore((state) => state.role);
+function RowSimulcastOptions() {
   // sendonly の場合は simulcastRequestRid / simulcastRid を表示しない
-  if (simulcast !== "true" || role === "sendonly") {
+  if (simulcast.value !== "true" || role.value === "sendonly") {
     return null;
   }
   return (
@@ -148,11 +175,10 @@ const RowSimulcastOptions: React.FC = () => {
       </Col>
     </Row>
   );
-};
+}
 
-const RowSpotlightOptions: React.FC = () => {
-  const spotlight = useSoraDevtoolsStore((state) => state.spotlight);
-  if (spotlight !== "true") {
+function RowSpotlightOptions() {
+  if (spotlight.value !== "true") {
     return null;
   }
   return (
@@ -168,33 +194,20 @@ const RowSpotlightOptions: React.FC = () => {
       </Col>
     </Row>
   );
-};
+}
 
-const RowSignalingOptions: React.FC = () => {
+function RowSignalingOptions() {
   const [collapsed, setCollapsed] = useState(true);
-  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId);
-  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId);
-  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel);
-  const enabledDataChannels = useSoraDevtoolsStore((state) => state.enabledDataChannels);
-  const enabledForwardingFilters = useSoraDevtoolsStore((state) => state.enabledForwardingFilters);
-  const enabledMetadata = useSoraDevtoolsStore((state) => state.enabledMetadata);
-  const enabledSignalingNotifyMetadata = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingNotifyMetadata,
-  );
-  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingUrlCandidates,
-  );
-  const reconnect = useSoraDevtoolsStore((state) => state.reconnect);
   const enabledOptions = [
-    enabledBundleId,
-    enabledClientId,
-    enabledDataChannel,
-    enabledDataChannels,
-    enabledForwardingFilters,
-    enabledMetadata,
-    enabledSignalingNotifyMetadata,
-    enabledSignalingUrlCandidates,
-    reconnect,
+    enabledBundleId.value,
+    enabledClientId.value,
+    enabledDataChannel.value,
+    enabledDataChannels.value,
+    enabledForwardingFilters.value,
+    enabledMetadata.value,
+    enabledSignalingNotifyMetadata.value,
+    enabledSignalingUrlCandidates.value,
+    reconnect.value,
   ].some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
   if (collapsed) {
@@ -203,7 +216,7 @@ const RowSignalingOptions: React.FC = () => {
   if (enabledOptions) {
     linkClassNames.push("fw-bold");
   }
-  const onClick = (event: React.MouseEvent): void => {
+  const onClick = (event: Event): void => {
     event.preventDefault();
     setCollapsed(!collapsed);
   };
@@ -230,33 +243,24 @@ const RowSignalingOptions: React.FC = () => {
       </Collapse>
     </Row>
   );
-};
+}
 
-const RowAdvancedSignalingOptions: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role);
-  const showSenderParams = role !== "recvonly";
-  const showReceiverParams = role !== "sendonly";
+function RowAdvancedSignalingOptions() {
+  const showSenderParams = role.value !== "recvonly";
+  const showReceiverParams = role.value !== "sendonly";
   const [collapsed, setCollapsed] = useState(true);
-  const enableAudioStreamingLanguageCode = useSoraDevtoolsStore(
-    (state) => state.enabledAudioStreamingLanguageCode,
-  );
-  const enabledVideoVP9Params = useSoraDevtoolsStore((state) => state.enabledVideoVP9Params);
-  const enabledVideoH264Params = useSoraDevtoolsStore((state) => state.enabledVideoH264Params);
-  const enabledVideoH265Params = useSoraDevtoolsStore((state) => state.enabledVideoH265Params);
-  const enabledVideoAV1Params = useSoraDevtoolsStore((state) => state.enabledVideoAV1Params);
-  const forceStereoOutput = useSoraDevtoolsStore((state) => state.forceStereoOutput);
   const showOptions = [] as boolean[];
   if (showSenderParams) {
     showOptions.push(
-      enableAudioStreamingLanguageCode,
-      enabledVideoVP9Params,
-      enabledVideoH264Params,
-      enabledVideoH265Params,
-      enabledVideoAV1Params,
+      enabledAudioStreamingLanguageCode.value,
+      enabledVideoVP9Params.value,
+      enabledVideoH264Params.value,
+      enabledVideoH265Params.value,
+      enabledVideoAV1Params.value,
     );
   }
   if (showReceiverParams) {
-    showOptions.push(forceStereoOutput);
+    showOptions.push(forceStereoOutput.value);
   }
   const enabledOptions = showOptions.some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
@@ -266,7 +270,7 @@ const RowAdvancedSignalingOptions: React.FC = () => {
   if (enabledOptions) {
     linkClassNames.push("fw-bold");
   }
-  const onClick = (event: React.MouseEvent): void => {
+  const onClick = (event: Event): void => {
     event.preventDefault();
     setCollapsed(!collapsed);
   };
@@ -294,9 +298,9 @@ const RowAdvancedSignalingOptions: React.FC = () => {
       </Collapse>
     </Row>
   );
-};
+}
 
-export const RowMediaType: React.FC = () => {
+export function RowMediaType() {
   return (
     <>
       <Row xs="auto" className="form-row">
@@ -316,33 +320,21 @@ export const RowMediaType: React.FC = () => {
       </Row>
     </>
   );
-};
+}
 
-const RowMediaOptions: React.FC = () => {
+function RowMediaOptions() {
   const [collapsed, setCollapsed] = useState(true);
-  const audioContentHint = useSoraDevtoolsStore((state) => state.audioContentHint);
-  const autoGainControl = useSoraDevtoolsStore((state) => state.autoGainControl);
-  const noiseSuppression = useSoraDevtoolsStore((state) => state.noiseSuppression);
-  const echoCancellation = useSoraDevtoolsStore((state) => state.echoCancellation);
-  const echoCancellationType = useSoraDevtoolsStore((state) => state.echoCancellationType);
-  const videoContentHint = useSoraDevtoolsStore((state) => state.videoContentHint);
-  const resolution = useSoraDevtoolsStore((state) => state.resolution);
-  const frameRate = useSoraDevtoolsStore((state) => state.frameRate);
-  const blurRadius = useSoraDevtoolsStore((state) => state.blurRadius);
-  const mediaProcessorsNoiseSuppression = useSoraDevtoolsStore(
-    (state) => state.mediaProcessorsNoiseSuppression,
-  );
   const enabledOptions = [
-    audioContentHint !== "",
-    autoGainControl !== "",
-    noiseSuppression !== "",
-    echoCancellation !== "",
-    echoCancellationType !== "",
-    videoContentHint !== "",
-    resolution !== "",
-    frameRate !== "",
-    blurRadius !== "",
-    mediaProcessorsNoiseSuppression,
+    audioContentHint.value !== "",
+    autoGainControl.value !== "",
+    noiseSuppression.value !== "",
+    echoCancellation.value !== "",
+    echoCancellationType.value !== "",
+    videoContentHint.value !== "",
+    resolution.value !== "",
+    frameRate.value !== "",
+    blurRadius.value !== "",
+    mediaProcessorsNoiseSuppression.value,
   ].some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
   if (collapsed) {
@@ -351,7 +343,7 @@ const RowMediaOptions: React.FC = () => {
   if (enabledOptions) {
     linkClassNames.push("fw-bold");
   }
-  const onClick = (event: React.MouseEvent): void => {
+  const onClick = (event: Event): void => {
     event.preventDefault();
     setCollapsed(!collapsed);
   };
@@ -413,18 +405,16 @@ const RowMediaOptions: React.FC = () => {
       </Collapse>
     </Row>
   );
-};
+}
 
-const RowDevices: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role);
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType);
+function RowDevices() {
   return (
     <>
       <Row className="form-row" xs="auto">
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
-        {role !== "recvonly" && mediaType === "getUserMedia" ? (
+        {role.value !== "recvonly" && mediaType.value === "getUserMedia" ? (
           <>
             <Col>
               <AudioInputForm />
@@ -436,13 +426,13 @@ const RowDevices: React.FC = () => {
         ) : null}
       </Row>
       <Row className="form-row" xs="auto">
-        {role !== "sendonly" ? (
+        {role.value !== "sendonly" ? (
           <Col>
             <AudioOutputForm />
           </Col>
         ) : null}
         <ReloadDevicesButton />
-        {role !== "recvonly" ? (
+        {role.value !== "recvonly" ? (
           <>
             <RequestMediaButton />
             <DisposeMediaButton />
@@ -451,10 +441,9 @@ const RowDevices: React.FC = () => {
       </Row>
     </>
   );
-};
+}
 
-export const RowMediaDevices: React.FC = () => {
-  const role = useSoraDevtoolsStore((state) => state.role);
+export function RowMediaDevices() {
   return (
     <>
       <Row className="form-row" xs="auto">
@@ -465,7 +454,7 @@ export const RowMediaDevices: React.FC = () => {
           <MediaStatsForm />
         </Col>
       </Row>
-      {role !== "recvonly" && (
+      {role.value !== "recvonly" && (
         <Row className="form-row" xs="auto">
           <Col>
             <MicDeviceForm />
@@ -483,13 +472,11 @@ export const RowMediaDevices: React.FC = () => {
       )}
     </>
   );
-};
+}
 
-export const DevtoolsPane: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug);
-  const role = useSoraDevtoolsStore((state) => state.role);
+export function DevtoolsPane() {
   return (
-    <div className={debug ? "col-devtools col-6" : "col-devtools col-12"}>
+    <div className={debug.value ? "col-devtools col-6" : "col-devtools col-12"}>
       <AlertMessages />
       <RowChannelOptions />
       <RowSimulcastOptions />
@@ -499,7 +486,7 @@ export const DevtoolsPane: React.FC = () => {
       <RowSignalingOptions />
       <RowAdvancedSignalingOptions />
       <hr className="hr-form" />
-      {role !== "recvonly" ? (
+      {role.value !== "recvonly" ? (
         <>
           <RowMediaType />
           <RowMediaOptions />
@@ -515,7 +502,7 @@ export const DevtoolsPane: React.FC = () => {
       </div>
       <hr className="hr-form" />
       <LocalVideo />
-      {role === "recvonly" || role === "sendrecv" ? <RemoteVideos /> : null}
+      {role.value === "recvonly" || role.value === "sendrecv" ? <RemoteVideos /> : null}
     </div>
   );
-};
+}

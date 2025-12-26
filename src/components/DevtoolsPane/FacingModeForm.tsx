@@ -1,26 +1,29 @@
-import type React from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 
-import { setFacingMode } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { setFacingMode } from "@/app/signals";
+import { facingMode, mediaType } from "@/app/signals";
 import { FACING_MODES } from "@/constants";
 import { checkFormValue } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const FacingModeForm: React.FC = () => {
-  const facingMode = useSoraDevtoolsStore((state) => state.facingMode);
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, FACING_MODES)) {
-      setFacingMode(event.target.value);
+export function FacingModeForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, FACING_MODES)) {
+      setFacingMode(target.value);
     }
   };
-  const disabled = mediaType !== "getUserMedia";
+  const disabled = mediaType.value !== "getUserMedia";
   return (
     <FormGroup className="form-inline" controlId="facingMode">
       <TooltipFormLabel kind="facingMode">facingMode:</TooltipFormLabel>
-      <FormSelect name="facingMode" value={facingMode} onChange={onChange} disabled={disabled}>
+      <FormSelect
+        name="facingMode"
+        value={facingMode.value}
+        onChange={onChange}
+        disabled={disabled}
+      >
         {FACING_MODES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -31,4 +34,4 @@ export const FacingModeForm: React.FC = () => {
       </FormSelect>
     </FormGroup>
   );
-};
+}

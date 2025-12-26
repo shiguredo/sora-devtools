@@ -1,24 +1,22 @@
-import type React from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 
-import { setResizeMode } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { resizeMode, setResizeMode } from "@/app/signals";
 import { RESIZE_MODE_TYPES } from "@/constants";
 import { checkFormValue } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const ResizeModeForm: React.FC = () => {
-  const resizeMode = useSoraDevtoolsStore((state) => state.resizeMode);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, RESIZE_MODE_TYPES)) {
-      setResizeMode(event.target.value);
+export function ResizeModeForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, RESIZE_MODE_TYPES)) {
+      setResizeMode(target.value);
     }
   };
   return (
     <FormGroup className="form-inline" controlId="resizeMode">
       <TooltipFormLabel kind="resizeMode">resizeMode:</TooltipFormLabel>
-      <FormSelect name="resizeMode" value={resizeMode} onChange={onChange}>
+      <FormSelect name="resizeMode" value={resizeMode.value} onChange={onChange}>
         {RESIZE_MODE_TYPES.map((value) => {
           return (
             <option key={value} value={value}>
@@ -29,4 +27,4 @@ export const ResizeModeForm: React.FC = () => {
       </FormSelect>
     </FormGroup>
   );
-};
+}

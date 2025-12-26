@@ -21,7 +21,6 @@
 - [CHANGE] Biome から Oxc (oxlint/oxfmt) に移行する
   - @voluntas
 
-
 ## 2025.2.1
 
 **リリース日**: 2025-12-12

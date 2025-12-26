@@ -1,16 +1,14 @@
-import type React from "react";
 import { FormGroup, FormSelect } from "react-bootstrap";
 
 import { setVideoInput, updateMediaStream } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { videoInput, videoInputDevices } from "@/app/signals";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const VideoInputForm: React.FC = () => {
-  const videoInput = useSoraDevtoolsStore((state) => state.videoInput);
-  const videoInputDevices = useSoraDevtoolsStore((state) => state.videoInputDevices);
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setVideoInput(event.target.value);
+export function VideoInputForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    setVideoInput(target.value);
     void updateMediaStream();
   };
   return (
@@ -18,12 +16,12 @@ export const VideoInputForm: React.FC = () => {
       <TooltipFormLabel kind="videoInput">videoInput:</TooltipFormLabel>
       <FormSelect
         name="videoInput"
-        value={videoInput}
+        value={videoInput.value}
         onChange={onChange}
-        disabled={videoInputDevices.length === 0}
+        disabled={videoInputDevices.value.length === 0}
       >
         <option value="">未指定</option>
-        {videoInputDevices.map((deviceInfo) => {
+        {videoInputDevices.value.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
               {deviceInfo.label}
@@ -33,4 +31,4 @@ export const VideoInputForm: React.FC = () => {
       </FormSelect>
     </FormGroup>
   );
-};
+}

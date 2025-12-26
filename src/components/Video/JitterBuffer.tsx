@@ -1,6 +1,4 @@
-import type React from "react";
-
-import { useSoraDevtoolsStore } from "@/app/store";
+import { prevStatsReport, statsReport } from "@/app/signals";
 import type { RTCInboundRtpStreamStats } from "@/types";
 
 function mediaStreamStatsReportFilter(
@@ -44,16 +42,14 @@ type Props = {
   stream: MediaStream;
   type: "video" | "audio";
 };
-export const JitterButter: React.FC<Props> = (props) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport);
-  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport);
+export function JitterButter(props: Props) {
   const currentInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
-    statsReport,
+    statsReport.value,
     props.stream,
     props.type,
   );
   const prevInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
-    prevStatsReport,
+    prevStatsReport.value,
     props.stream,
     props.type,
   );
@@ -98,4 +94,4 @@ export const JitterButter: React.FC<Props> = (props) => {
       </span>
     </div>
   );
-};
+}

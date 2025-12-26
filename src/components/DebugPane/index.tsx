@@ -1,8 +1,7 @@
-import type React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 
 import { setDebugType } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debug, debugType } from "@/app/signals";
 
 // import { Api } from './Api.tsx'
 import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
@@ -17,10 +16,10 @@ import { SignalingMessages } from "./SignalingMessages.tsx";
 import { Stats } from "./Stats.tsx";
 import { TimelineMessages } from "./TimelineMessages.tsx";
 
-export const DebugPane: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug);
-  const debugType = useSoraDevtoolsStore((state) => state.debugType);
-  if (!debug) {
+export function DebugPane() {
+  const debugValue = debug.value;
+  const debugTypeValue = debugType.value;
+  if (!debugValue) {
     return null;
   }
   const onSelect = (key: string | null): void => {
@@ -46,7 +45,12 @@ export const DebugPane: React.FC = () => {
   };
   return (
     <div className="col-debug col-6">
-      <Tabs id="debug-tab" activeKey={debugType} defaultActiveKey={"timeline"} onSelect={onSelect}>
+      <Tabs
+        id="debug-tab"
+        activeKey={debugTypeValue}
+        defaultActiveKey={"timeline"}
+        onSelect={onSelect}
+      >
         <Tab eventKey="timeline" title="Timeline">
           <DebugFilter />
           <TimelineMessages />
@@ -89,4 +93,4 @@ export const DebugPane: React.FC = () => {
       </Tabs>
     </div>
   );
-};
+}

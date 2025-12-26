@@ -1,11 +1,11 @@
-import React from "react";
+import { memo } from "react";
 
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debugFilterText, logMessages } from "@/app/signals";
 import type { LogMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const Collapse = React.memo<LogMessage>((props) => {
+const Collapse = memo<LogMessage>((props) => {
   const { message, timestamp } = props;
   return (
     <Message
@@ -16,15 +16,15 @@ const Collapse = React.memo<LogMessage>((props) => {
   );
 });
 
-const Log = React.memo<LogMessage>((props) => {
+const Log = memo<LogMessage>((props) => {
   return <Collapse {...props} />;
 });
 
-export const LogMessages: React.FC = () => {
-  const logMessages = useSoraDevtoolsStore((state) => state.logMessages);
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText);
-  const filteredMessages = logMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
+export function LogMessages() {
+  const logMessagesValue = logMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = logMessagesValue.filter((message) => {
+    return debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
@@ -38,4 +38,4 @@ export const LogMessages: React.FC = () => {
       })}
     </div>
   );
-};
+}

@@ -1,6 +1,4 @@
-import type React from "react";
-
-import { useSoraDevtoolsStore } from "@/app/store";
+import { debugFilterText, notifyMessages } from "@/app/signals";
 import type { NotifyMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
@@ -10,7 +8,7 @@ const SIGNALING_COLORS: { [key: string]: string } = {
   datachannel: "#ff00ff",
 };
 
-const Label: React.FC<{ text: string }> = (props) => {
+function Label(props: { text: string }) {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
@@ -18,12 +16,12 @@ const Label: React.FC<{ text: string }> = (props) => {
       [{text}]
     </span>
   );
-};
+}
 
 type CollapseNotifyProps = {
   notify: NotifyMessage;
 };
-const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
+function CollapseNotify(props: CollapseNotifyProps) {
   const { notify } = props;
   const label = notify.transportType ? <Label text={notify.transportType} /> : null;
   return (
@@ -34,17 +32,17 @@ const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
       label={label}
     />
   );
-};
+}
 
-const Log: React.FC<CollapseNotifyProps> = (props) => {
+function Log(props: CollapseNotifyProps) {
   return <CollapseNotify {...props} />;
-};
+}
 
-export const NotifyMessages: React.FC = () => {
-  const notifyMessages = useSoraDevtoolsStore((state) => state.notifyMessages);
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText);
-  const filteredMessages = notifyMessages.filter((message) => {
-    return debugFilterText.split(" ").every((filterText) => {
+export function NotifyMessages() {
+  const notifyMessagesValue = notifyMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = notifyMessagesValue.filter((message) => {
+    return debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
@@ -58,4 +56,4 @@ export const NotifyMessages: React.FC = () => {
       })}
     </div>
   );
-};
+}

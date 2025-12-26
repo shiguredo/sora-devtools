@@ -1,8 +1,7 @@
-import type React from "react";
 import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from "react-bootstrap";
 
 import { setFrameRate } from "@/app/actions";
-import { useSoraDevtoolsStore } from "@/app/store";
+import { frameRate } from "@/app/signals";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
@@ -30,10 +29,10 @@ const DropdownItem = ({ label, value }: FrameRateData) => {
   );
 };
 
-export const FrameRateForm: React.FC = () => {
-  const frameRate = useSoraDevtoolsStore((state) => state.frameRate);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setFrameRate(event.target.value);
+export function FrameRateForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setFrameRate(target.value);
   };
   return (
     <FormGroup className="form-inline" controlId="frameRate">
@@ -42,7 +41,7 @@ export const FrameRateForm: React.FC = () => {
         <Form.Control
           className="form-frame-rate"
           type="text"
-          value={frameRate}
+          value={frameRate.value}
           onChange={onChange}
           placeholder="未指定"
         />
@@ -54,4 +53,4 @@ export const FrameRateForm: React.FC = () => {
       </InputGroup>
     </FormGroup>
   );
-};
+}
