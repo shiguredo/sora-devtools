@@ -5,12 +5,17 @@
 
 const SETTINGS_FILE_NAME = "signaling-url-candidates.json";
 
-export type SignalingUrlCandidatesSettings = {
-  signalingUrlCandidates: string[];
+export type UrlEntry = {
+  url: string;
+  enabled: boolean;
 };
 
-// OPFS から signalingUrlCandidates を読み込む
-export async function loadSignalingUrlCandidatesFromOPFS(): Promise<string[]> {
+export type SignalingUrlCandidatesSettings = {
+  urlEntries: UrlEntry[];
+};
+
+// OPFS から URL エントリを読み込む
+export async function loadUrlEntriesFromOPFS(): Promise<UrlEntry[]> {
   try {
     // OPFS がサポートされているか確認
     if (!navigator.storage || !navigator.storage.getDirectory) {
@@ -23,9 +28,11 @@ export async function loadSignalingUrlCandidatesFromOPFS(): Promise<string[]> {
     const file = await fileHandle.getFile();
     const text = await file.text();
     const settings = JSON.parse(text) as SignalingUrlCandidatesSettings;
-    if (Array.isArray(settings.signalingUrlCandidates)) {
-      return settings.signalingUrlCandidates;
+
+    if (Array.isArray(settings.urlEntries)) {
+      return settings.urlEntries;
     }
+
     return [];
   } catch {
     // ファイルが存在しない場合やパースエラーの場合は空配列を返す
@@ -33,10 +40,8 @@ export async function loadSignalingUrlCandidatesFromOPFS(): Promise<string[]> {
   }
 }
 
-// OPFS に signalingUrlCandidates を保存する
-export async function saveSignalingUrlCandidatesToOPFS(
-  signalingUrlCandidates: string[],
-): Promise<void> {
+// OPFS に URL エントリを保存する
+export async function saveUrlEntriesToOPFS(urlEntries: UrlEntry[]): Promise<void> {
   try {
     // OPFS がサポートされているか確認
     if (!navigator.storage || !navigator.storage.getDirectory) {
@@ -48,7 +53,7 @@ export async function saveSignalingUrlCandidatesToOPFS(
     const fileHandle = await root.getFileHandle(SETTINGS_FILE_NAME, { create: true });
 
     const settings: SignalingUrlCandidatesSettings = {
-      signalingUrlCandidates,
+      urlEntries,
     };
     const content = JSON.stringify(settings, null, 2);
 
@@ -90,11 +95,11 @@ export async function saveSignalingUrlCandidatesToOPFS(
       localStorage.setItem("sora-devtools-signaling-url-candidates", content);
     }
   } catch (error) {
-    console.error("Failed to save signalingUrlCandidates to OPFS:", error);
+    console.error("Failed to save urlEntries to OPFS:", error);
     // フォールバックとして localStorage に保存
     try {
       const settings: SignalingUrlCandidatesSettings = {
-        signalingUrlCandidates,
+        urlEntries,
       };
       localStorage.setItem("sora-devtools-signaling-url-candidates", JSON.stringify(settings));
     } catch {
@@ -103,14 +108,37 @@ export async function saveSignalingUrlCandidatesToOPFS(
   }
 }
 
+// OPFS から設定ファイルを削除する
+export async function purgeUrlEntriesFromOPFS(): Promise<void> {
+  try {
+    // OPFS がサポートされているか確認
+    if (!navigator.storage || !navigator.storage.getDirectory) {
+      console.warn("OPFS is not supported in this browser");
+      return;
+    }
+
+    const root = await navigator.storage.getDirectory();
+    await root.removeEntry(SETTINGS_FILE_NAME);
+  } catch {
+    // ファイルが存在しない場合は無視
+  }
+
+  // localStorage のフォールバックも削除
+  try {
+    localStorage.removeItem("sora-devtools-signaling-url-candidates");
+  } catch {
+    // 無視
+  }
+}
+
 // localStorage からのフォールバック読み込み
-export function loadSignalingUrlCandidatesFromLocalStorage(): string[] {
+export function loadUrlEntriesFromLocalStorage(): UrlEntry[] {
   try {
     const stored = localStorage.getItem("sora-devtools-signaling-url-candidates");
     if (stored) {
       const settings = JSON.parse(stored) as SignalingUrlCandidatesSettings;
-      if (Array.isArray(settings.signalingUrlCandidates)) {
-        return settings.signalingUrlCandidates;
+      if (Array.isArray(settings.urlEntries)) {
+        return settings.urlEntries;
       }
     }
   } catch {
@@ -120,10 +148,10 @@ export function loadSignalingUrlCandidatesFromLocalStorage(): string[] {
 }
 
 // OPFS から読み込み、失敗した場合は localStorage から読み込む
-export async function loadSignalingUrlCandidates(): Promise<string[]> {
-  const fromOPFS = await loadSignalingUrlCandidatesFromOPFS();
+export async function loadUrlEntries(): Promise<UrlEntry[]> {
+  const fromOPFS = await loadUrlEntriesFromOPFS();
   if (fromOPFS.length > 0) {
     return fromOPFS;
   }
-  return loadSignalingUrlCandidatesFromLocalStorage();
+  return loadUrlEntriesFromLocalStorage();
 }
