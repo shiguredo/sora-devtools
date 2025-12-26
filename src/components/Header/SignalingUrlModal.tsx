@@ -15,12 +15,19 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
   const [modalTop, setModalTop] = useState(0);
   const [modalLeft, setModalLeft] = useState(0);
   const [localValue, setLocalValue] = useState("");
+  const [error, setError] = useState("");
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // URL が wss:// または ws:// で始まるかチェック
+  const isValidUrl = (url: string): boolean => {
+    return url.startsWith("wss://") || url.startsWith("ws://");
+  };
 
   // モーダル表示時に現在の signalingUrlCandidates を読み込む
   useEffect(() => {
     if (show) {
       setLocalValue(signalingUrlCandidates.value.join("\n"));
+      setError("");
     }
   }, [show]);
 
@@ -53,6 +60,13 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
       .split("\n")
       .map((url) => url.trim())
       .filter((url) => url !== "");
+
+    // バリデーション
+    const invalidUrls = urls.filter((url) => !isValidUrl(url));
+    if (invalidUrls.length > 0) {
+      setError("URL は wss:// または ws:// で始まる必要があります");
+      return;
+    }
 
     // Signal を更新
     setSignalingUrlCandidates(urls);
@@ -137,10 +151,15 @@ wss://sora1.example.com/signaling
           as="textarea"
           placeholder={textareaPlaceholder}
           value={localValue}
-          onChange={(e) => setLocalValue((e.target as HTMLTextAreaElement).value)}
+          onChange={(e) => {
+            setLocalValue((e.target as HTMLTextAreaElement).value);
+            setError("");
+          }}
           rows={6}
           style={{ width: "100%" }}
+          isInvalid={error !== ""}
         />
+        {error && <small className="text-danger mt-1 d-block">{error}</small>}
         <small className="text-muted mt-2 d-block">設定は OPFS に保存されます</small>
         <div className="d-flex justify-content-end gap-2 mt-3">
           <Button variant="outline-danger" onClick={handleClear}>
