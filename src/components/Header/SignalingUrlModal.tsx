@@ -191,16 +191,8 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
           padding: "1.5rem",
         }}
       >
-        <div className="d-flex justify-content-between align-items-center mb-3">
+        <div className="mb-3">
           <strong>signalingUrlCandidates</strong>
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={onClose}
-            style={{ padding: "0.2rem 0.5rem", lineHeight: 1 }}
-          >
-            &times;
-          </Button>
         </div>
 
         {/* URL 追加フォーム */}
