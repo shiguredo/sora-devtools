@@ -42,7 +42,8 @@ export function Header() {
           <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-collapse" />
           <Navbar.Collapse id="navbar-collapse">
-            <Nav className="me-auto">
+            <Nav className="me-auto" />
+            <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <button
                   ref={signalingUrlRef}
@@ -58,8 +59,6 @@ export function Header() {
                 onClose={() => setShowModal(false)}
                 buttonRef={signalingUrlRef}
               />
-            </Nav>
-            <Nav>
               <Navbar.Text className="py-0 my-1 mx-1">
                 <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
               </Navbar.Text>

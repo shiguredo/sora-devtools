@@ -141,19 +141,17 @@ wss://sora1.example.com/signaling
           rows={6}
           style={{ width: "100%" }}
         />
-        <div className="d-flex justify-content-between align-items-center mt-3">
-          <small className="text-muted">設定は OPFS に保存されます</small>
-          <div className="d-flex gap-2">
-            <Button variant="outline-danger" onClick={handleClear}>
-              Clear
-            </Button>
-            <Button variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={handleSave}>
-              Save
-            </Button>
-          </div>
+        <small className="text-muted mt-2 d-block">設定は OPFS に保存されます</small>
+        <div className="d-flex justify-content-end gap-2 mt-3">
+          <Button variant="outline-danger" onClick={handleClear}>
+            Clear
+          </Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Save
+          </Button>
         </div>
       </div>
     </>
