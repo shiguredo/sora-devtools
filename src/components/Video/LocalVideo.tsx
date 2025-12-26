@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   audio,
   audioOutput,
-  clientId as soraClientId,
   connectionId,
   displayResolution,
   focusedSpotlightConnectionIds,
@@ -13,6 +12,7 @@ import {
   role,
   sessionId,
   simulcast,
+  soraClientId,
   spotlight,
   video,
 } from "@/app/signals";
