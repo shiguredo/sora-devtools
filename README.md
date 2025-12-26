@@ -15,7 +15,7 @@ Please read <https://github.com/shiguredo/oss/blob/master/README.en.md> before u
 
 ## 概要
 
-これは WebRTC SFU Sora に開発者ツールとして組み込まれている機能のオープンソース版です。
+これは WebRTC SFU Sora に開発者ツールです。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
