@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setSpotlightUnfocusRid } from "@/app/actions";
 import { isFormDisabled, spotlightUnfocusRid } from "@/app/signals";
@@ -16,7 +16,7 @@ export function SpotlightUnfocusRidForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="spotlightUnfocusRid">
+    <FormGroup className="flex items-center gap-2" controlId="spotlightUnfocusRid">
       <TooltipFormLabel kind="spotlightUnfocusRid">spotlightUnfocusRid:</TooltipFormLabel>
       <FormSelect value={spotlightUnfocusRid.value} onChange={onChange} disabled={disabled}>
         {SPOTLIGHT_FOCUS_RIDS.map((value) => {

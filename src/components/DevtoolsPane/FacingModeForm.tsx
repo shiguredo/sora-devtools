@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setFacingMode } from "@/app/signals";
 import { facingMode, mediaType } from "@/app/signals";
@@ -16,7 +16,7 @@ export function FacingModeForm() {
   };
   const disabled = mediaType.value !== "getUserMedia";
   return (
-    <FormGroup className="form-inline" controlId="facingMode">
+    <FormGroup className="flex items-center gap-2" controlId="facingMode">
       <TooltipFormLabel kind="facingMode">facingMode:</TooltipFormLabel>
       <FormSelect
         name="facingMode"

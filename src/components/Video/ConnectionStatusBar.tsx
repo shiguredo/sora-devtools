@@ -1,4 +1,4 @@
-import type React from "react";
+import type { JSX } from "preact";
 
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
@@ -8,8 +8,8 @@ type TextBoxProps = {
   label?: string;
   text: string;
 };
-const TextBox: React.FC<TextBoxProps> = (props) => {
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+function TextBox(props: TextBoxProps) {
+  const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>): void => {
     void copy2clipboard(props.text);
     event.currentTarget.blur();
   };
@@ -28,14 +28,14 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
       </div>
     </div>
   );
-};
+}
 
 type Props = {
   localVideo?: boolean;
   connectionId: string | null;
   clientId?: string | null;
 };
-export const ConnectionStatusBar: React.FC<Props> = (props) => {
+export function ConnectionStatusBar(props: Props) {
   const { localVideo, connectionId, clientId } = props;
   return (
     <>
@@ -55,4 +55,4 @@ export const ConnectionStatusBar: React.FC<Props> = (props) => {
       ) : null}
     </>
   );
-};
+}

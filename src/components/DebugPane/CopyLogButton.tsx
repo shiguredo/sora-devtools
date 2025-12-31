@@ -1,4 +1,4 @@
-import { memo } from "react";
+import type { JSX } from "preact";
 
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
@@ -7,8 +7,9 @@ type Props = {
   text: string;
   disabled?: boolean;
 };
-export const CopyLogButton = memo<Props>((props) => {
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+
+export function CopyLogButton(props: Props) {
+  const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>): void => {
     void copy2clipboard(props.text);
     event.currentTarget.blur();
   };
@@ -20,4 +21,4 @@ export const CopyLogButton = memo<Props>((props) => {
       <ClipboardIcon />
     </button>
   );
-});
+}

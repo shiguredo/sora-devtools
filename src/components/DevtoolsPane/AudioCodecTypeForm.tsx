@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setAudioCodecType } from "@/app/actions";
 import { audioCodecType, isFormDisabled } from "@/app/signals";
@@ -16,7 +16,7 @@ export function AudioCodecTypeForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="audioCodecType">
+    <FormGroup className="flex items-center gap-2" controlId="audioCodecType">
       <TooltipFormLabel kind="audioCodecType">audioCodecType:</TooltipFormLabel>
       <FormSelect
         name="audioCodecType"

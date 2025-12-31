@@ -1,4 +1,4 @@
-import { Tab, Tabs } from "react-bootstrap";
+import { Tabs, Tab } from "@/components/ui";
 
 import { setDebugType } from "@/app/actions";
 import { debug, debugType } from "@/app/signals";
@@ -45,12 +45,7 @@ export function DebugPane() {
   };
   return (
     <div className="col-debug col-6">
-      <Tabs
-        id="debug-tab"
-        activeKey={debugTypeValue}
-        defaultActiveKey={"timeline"}
-        onSelect={onSelect}
-      >
+      <Tabs activeKey={debugTypeValue} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <DebugFilter />
           <TimelineMessages />

@@ -1,4 +1,4 @@
-import { Form, FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { fakeVolume, mediaType, setFakeVolume } from "@/app/signals";
 
@@ -13,9 +13,17 @@ export function FakeVolumeForm() {
     return null;
   }
   return (
-    <FormGroup className="form-inline" controlId="fakeVolume">
+    <FormGroup className="flex items-center gap-2" controlId="fakeVolume">
       <TooltipFormLabel kind="fakeVolume">fakeVolume:</TooltipFormLabel>
-      <Form.Range min="0" max="1" step="0.25" value={fakeVolume.value} onChange={onChange} />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.25"
+        value={fakeVolume.value}
+        onChange={onChange}
+        className="w-32"
+      />
     </FormGroup>
   );
 }

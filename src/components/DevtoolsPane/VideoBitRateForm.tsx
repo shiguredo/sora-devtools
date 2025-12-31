@@ -1,4 +1,12 @@
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from "react-bootstrap";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  FormGroup,
+  FormInput,
+  InputGroup,
+} from "@/components/ui";
 
 import { setVideoBitRate } from "@/app/actions";
 import { isFormDisabled, videoBitRate } from "@/app/signals";
@@ -24,10 +32,10 @@ export function VideoBitRateForm() {
     setVideoBitRate(target.value);
   };
   return (
-    <FormGroup className="form-inline" controlId="videoBitRate">
+    <FormGroup className="flex items-center gap-2" controlId="videoBitRate">
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
       <InputGroup>
-        <Form.Control
+        <FormInput
           className="form-video-bit-rate"
           type="text"
           value={videoBitRate.value}
@@ -35,25 +43,22 @@ export function VideoBitRateForm() {
           placeholder="未指定"
           disabled={disabled}
         />
-        <DropdownButton
-          variant="outline-secondary form-template-dropdown"
-          title=""
-          align="end"
-          disabled={disabled}
-        >
-          {DISPLAY_VIDEO_BIT_RATE.map((value) => {
-            return (
-              <Dropdown.Item
-                key={value}
-                as="button"
-                onClick={() => setVideoBitRate(value)}
-                disabled={value === "support-message"}
-              >
-                {dropdownItemLabel(value)}
-              </Dropdown.Item>
-            );
-          })}
-        </DropdownButton>
+        <Dropdown>
+          <DropdownToggle variant="outline-secondary" disabled={disabled} />
+          <DropdownMenu>
+            {DISPLAY_VIDEO_BIT_RATE.map((value) => {
+              return (
+                <DropdownItem
+                  key={value}
+                  onClick={() => setVideoBitRate(value)}
+                  disabled={value === "support-message"}
+                >
+                  {dropdownItemLabel(value)}
+                </DropdownItem>
+              );
+            })}
+          </DropdownMenu>
+        </Dropdown>
       </InputGroup>
     </FormGroup>
   );

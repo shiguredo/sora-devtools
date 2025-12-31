@@ -23,41 +23,32 @@
     "e2e-test": "playwright test --project=chromium",
     "cleanup": "git clean -ffdx --exclude .env"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@fast-check/vitest": "0.2.4",
+    "@playwright/test": "1.57.0",
+    "@preact/preset-vite": "2.10.2",
     "@preact/signals": "2.5.1",
     "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2025.1.0",
     "@shiguredo/virtual-background": "2023.2.0",
-    "bootstrap": "5.3.8",
-    "preact": "10.28.0",
-    "preact-render-to-string": "6.6.4",
-    "react-bootstrap": "2.10.10",
-    "sora-js-sdk": "2025.2.0"
-  },
-  "devDependencies": {
-    "@fast-check/vitest": "0.2.4",
-    "@playwright/test": "1.57.0",
-    "@preact/preset-vite": "2.10.1",
-    "@types/node": "24.10.2",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3",
+    "@tailwindcss/vite": "4.1.18",
+    "@types/node": "25.0.3",
     "dotenv": "17.2.3",
-    "fast-check": "4.4.0",
-    "jsdom": "27.3.0",
-    "oxfmt": "0.20.0",
-    "oxlint": "1.35.0",
+    "fast-check": "4.5.3",
+    "jsdom": "27.4.0",
+    "oxfmt": "0.21.0",
+    "oxlint": "1.36.0",
     "oxlint-tsgolint": "0.10.0",
+    "preact": "10.28.1",
+    "preact-render-to-string": "6.6.5",
+    "sora-js-sdk": "2025.2.0",
+    "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
-    "vite": "7.2.7",
-    "vitest": "4.0.15"
+    "vite": "7.3.0",
+    "vitest": "4.0.16"
   },
   "engines": {
     "node": ">=24",
     "pnpm": ">=10"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
   }
 }

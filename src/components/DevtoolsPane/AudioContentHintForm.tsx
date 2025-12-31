@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setAudioContentHint } from "@/app/actions";
 import { audioContentHint } from "@/app/signals";
@@ -15,7 +15,7 @@ export function AudioContentHintForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="audioContentHint">
+    <FormGroup className="flex items-center gap-2" controlId="audioContentHint">
       <TooltipFormLabel kind="audioContentHint">audioContentHint:</TooltipFormLabel>
       <FormSelect name="audioContentHint" value={audioContentHint.value} onChange={onChange}>
         {AUDIO_CONTENT_HINTS.map((value) => {

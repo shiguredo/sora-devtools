@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import {
   mediaProcessorsNoiseSuppression,
@@ -15,7 +15,7 @@ export function MediaProcessorsNoiseSuppressionForm() {
   };
   const disabled = mediaType.value !== "getUserMedia";
   return (
-    <FormGroup className="form-inline" controlId="mediaProcessorsNoiseSuppression">
+    <FormGroup className="flex items-center gap-2" controlId="mediaProcessorsNoiseSuppression">
       <TooltipFormCheck
         kind="mediaProcessorsNoiseSuppression"
         checked={mediaProcessorsNoiseSuppression.value}

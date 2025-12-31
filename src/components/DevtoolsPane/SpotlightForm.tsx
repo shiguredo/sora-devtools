@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setSpotlight } from "@/app/actions";
 import { isFormDisabled, spotlight } from "@/app/signals";
@@ -16,7 +16,7 @@ export function SpotlightForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="spotlight">
+    <FormGroup className="flex items-center gap-2" controlId="spotlight">
       <TooltipFormLabel kind="spotlight">spotlight:</TooltipFormLabel>
       <FormSelect name="spotlight" value={spotlight.value} onChange={onChange} disabled={disabled}>
         {SPOTLIGHT.map((value) => {

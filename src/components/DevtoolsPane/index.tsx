@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Col, Collapse, Row } from "react-bootstrap";
+import { useSignal } from "@preact/signals";
+
+import { Collapse } from "@/components/ui";
 
 import {
   audioContentHint,
@@ -102,22 +103,22 @@ import { VideoVP9ParamsForm } from "./VideoVP9ParamsForm.tsx";
 function RowChannelOptions() {
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col xs="12" sm="12" className="form-channel-id">
+      <div className="form-row flex flex-wrap">
+        <div className="form-channel-id w-full">
           <ChannelIdForm />
-        </Col>
-      </Row>
-      <Row className="form-row" xs="auto">
-        <Col>
+        </div>
+      </div>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <RoleForm />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <SimulcastForm />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <SpotlightForm />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </>
   );
 }
@@ -126,36 +127,36 @@ function RowGetUserMediaConstraints() {
   const showCodecForms = role.value !== "recvonly";
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <AudioForm />
-        </Col>
+        </div>
         {showCodecForms && (
           <>
-            <Col>
+            <div>
               <AudioCodecTypeForm />
-            </Col>
-            <Col>
+            </div>
+            <div>
               <AudioBitRateForm />
-            </Col>
+            </div>
           </>
         )}
-      </Row>
-      <Row className="form-row" xs="auto">
-        <Col>
+      </div>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <VideoForm />
-        </Col>
+        </div>
         {showCodecForms && (
           <>
-            <Col>
+            <div>
               <VideoCodecTypeForm />
-            </Col>
-            <Col>
+            </div>
+            <div>
               <VideoBitRateForm />
-            </Col>
+            </div>
           </>
         )}
-      </Row>
+      </div>
     </>
   );
 }
@@ -166,14 +167,14 @@ function RowSimulcastOptions() {
     return null;
   }
   return (
-    <Row className="form-row" xs="auto">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2">
+      <div>
         <SimulcastRequestRidForm />
-      </Col>
-      <Col>
+      </div>
+      <div>
         <SimulcastRidForm />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 }
 
@@ -182,22 +183,22 @@ function RowSpotlightOptions() {
     return null;
   }
   return (
-    <Row className="form-row" xs="auto">
-      <Col>
+    <div className="form-row flex flex-wrap gap-2">
+      <div>
         <SpotlightNumberForm />
-      </Col>
-      <Col>
+      </div>
+      <div>
         <SpotlightFocusRidForm />
-      </Col>
-      <Col>
+      </div>
+      <div>
         <SpotlightUnfocusRidForm />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 }
 
 function RowSignalingOptions() {
-  const [collapsed, setCollapsed] = useState(true);
+  const collapsed = useSignal(true);
   const enabledOptions = [
     enabledBundleId.value,
     enabledClientId.value,
@@ -210,25 +211,25 @@ function RowSignalingOptions() {
     reconnect.value,
   ].some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
-  if (collapsed) {
+  if (collapsed.value) {
     linkClassNames.push("collapsed");
   }
   if (enabledOptions) {
-    linkClassNames.push("fw-bold");
+    linkClassNames.push("font-bold");
   }
   const onClick = (event: Event): void => {
     event.preventDefault();
-    setCollapsed(!collapsed);
+    collapsed.value = !collapsed.value;
   };
   return (
-    <Row className="form-row">
-      <Col>
+    <div className="form-row">
+      <div>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
           Signaling options
         </a>
-      </Col>
-      <Collapse in={!collapsed}>
+      </div>
+      <Collapse in={!collapsed.value}>
         <div>
           <ReconnectForm />
           <ClientIdForm />
@@ -241,14 +242,14 @@ function RowSignalingOptions() {
           <DataChannelForm />
         </div>
       </Collapse>
-    </Row>
+    </div>
   );
 }
 
 function RowAdvancedSignalingOptions() {
   const showSenderParams = role.value !== "recvonly";
   const showReceiverParams = role.value !== "sendonly";
-  const [collapsed, setCollapsed] = useState(true);
+  const collapsed = useSignal(true);
   const showOptions = [] as boolean[];
   if (showSenderParams) {
     showOptions.push(
@@ -264,25 +265,25 @@ function RowAdvancedSignalingOptions() {
   }
   const enabledOptions = showOptions.some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
-  if (collapsed) {
+  if (collapsed.value) {
     linkClassNames.push("collapsed");
   }
   if (enabledOptions) {
-    linkClassNames.push("fw-bold");
+    linkClassNames.push("font-bold");
   }
   const onClick = (event: Event): void => {
     event.preventDefault();
-    setCollapsed(!collapsed);
+    collapsed.value = !collapsed.value;
   };
   return (
-    <Row className="form-row">
-      <Col>
+    <div className="form-row">
+      <div>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
           Advanced signaling options
         </a>
-      </Col>
-      <Collapse in={!collapsed}>
+      </div>
+      <Collapse in={!collapsed.value}>
         <div>
           {showSenderParams && (
             <>
@@ -296,34 +297,34 @@ function RowAdvancedSignalingOptions() {
           {showReceiverParams && <ForceStereoOutputForm />}
         </div>
       </Collapse>
-    </Row>
+    </div>
   );
 }
 
 export function RowMediaType() {
   return (
     <>
-      <Row xs="auto" className="form-row">
-        <Col>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <MediaTypeForm />
-        </Col>
-      </Row>
-      <Row xs="auto" className="form-row">
-        <Col>
+        </div>
+      </div>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <FakeVolumeForm />
-        </Col>
-      </Row>
-      <Row xs="auto" className="form-row">
-        <Col>
+        </div>
+      </div>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <Mp4FileForm />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </>
   );
 }
 
 function RowMediaOptions() {
-  const [collapsed, setCollapsed] = useState(true);
+  const collapsed = useSignal(true);
   const enabledOptions = [
     audioContentHint.value !== "",
     autoGainControl.value !== "",
@@ -337,99 +338,99 @@ function RowMediaOptions() {
     mediaProcessorsNoiseSuppression.value,
   ].some((e) => e);
   const linkClassNames = ["btn-collapse-options"];
-  if (collapsed) {
+  if (collapsed.value) {
     linkClassNames.push("collapsed");
   }
   if (enabledOptions) {
-    linkClassNames.push("fw-bold");
+    linkClassNames.push("font-bold");
   }
   const onClick = (event: Event): void => {
     event.preventDefault();
-    setCollapsed(!collapsed);
+    collapsed.value = !collapsed.value;
   };
   return (
-    <Row className="form-row">
-      <Col>
+    <div className="form-row">
+      <div>
         {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
         <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
           Media options
         </a>
-      </Col>
-      <Collapse in={!collapsed}>
+      </div>
+      <Collapse in={!collapsed.value}>
         <div>
-          <Row className="form-row">
-            <Col className="col-auto">
+          <div className="form-row flex flex-wrap gap-2">
+            <div className="col-auto">
               <AudioContentHintForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <AutoGainControlForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <NoiseSuppressionForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <EchoCancellationForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <EchoCancellationTypeForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <MediaProcessorsNoiseSuppressionForm />
-            </Col>
-          </Row>
-          <Row className="form-row">
-            <Col className="col-auto">
+            </div>
+          </div>
+          <div className="form-row flex flex-wrap gap-2">
+            <div className="col-auto">
               <VideoContentHintForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <ResolutionForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <FrameRateForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <AspectRatioForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <ResizeModeForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <BlurRadiusForm />
-            </Col>
-            <Col className="col-auto">
+            </div>
+            <div className="col-auto">
               <FacingModeForm />
-            </Col>
-          </Row>
+            </div>
+          </div>
           <UpdateMediaStreamButton />
         </div>
       </Collapse>
-    </Row>
+    </div>
   );
 }
 
 function RowDevices() {
   return (
     <>
-      <Row className="form-row" xs="auto">
+      <div className="form-row flex flex-wrap gap-2">
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
         {role.value !== "recvonly" && mediaType.value === "getUserMedia" ? (
           <>
-            <Col>
+            <div>
               <AudioInputForm />
-            </Col>
-            <Col>
+            </div>
+            <div>
               <VideoInputForm />
-            </Col>
+            </div>
           </>
         ) : null}
-      </Row>
-      <Row className="form-row" xs="auto">
+      </div>
+      <div className="form-row flex flex-wrap gap-2">
         {role.value !== "sendonly" ? (
-          <Col>
+          <div>
             <AudioOutputForm />
-          </Col>
+          </div>
         ) : null}
         <ReloadDevicesButton />
         {role.value !== "recvonly" ? (
@@ -438,7 +439,7 @@ function RowDevices() {
             <DisposeMediaButton />
           </>
         ) : null}
-      </Row>
+      </div>
     </>
   );
 }
@@ -446,29 +447,29 @@ function RowDevices() {
 export function RowMediaDevices() {
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col>
+      <div className="form-row flex flex-wrap gap-2">
+        <div>
           <DisplayResolutionForm />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <MediaStatsForm />
-        </Col>
-      </Row>
+        </div>
+      </div>
       {role.value !== "recvonly" && (
-        <Row className="form-row" xs="auto">
-          <Col>
+        <div className="form-row flex flex-wrap gap-2">
+          <div>
             <MicDeviceForm />
-          </Col>
-          <Col>
+          </div>
+          <div>
             <CameraDeviceForm />
-          </Col>
-          <Col>
+          </div>
+          <div>
             <AudioTrackForm />
-          </Col>
-          <Col>
+          </div>
+          <div>
             <VideoTrackForm />
-          </Col>
-        </Row>
+          </div>
+        </div>
       )}
     </>
   );

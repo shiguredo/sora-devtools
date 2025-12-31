@@ -1,7 +1,7 @@
-import { Nav, Navbar } from "react-bootstrap";
 import Sora from "sora-js-sdk";
 
 import { version } from "@/app/signals";
+import { Navbar, NavbarCollapse } from "@/components/ui";
 
 import { DebugButton } from "./DebugButton.tsx";
 
@@ -9,9 +9,9 @@ export function Footer() {
   return (
     <footer>
       <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
-        <Nav className="me-auto" />
-        <Nav>
-          <Navbar.Collapse id="navbar-collapse">
+        <div className="me-auto" />
+        <div className="flex items-center">
+          <NavbarCollapse>
             <a
               href="https://github.com/shiguredo/sora-devtools"
               className="btn btn-outline-light m-1"
@@ -24,8 +24,8 @@ export function Footer() {
             >
               GitHub: shiguredo/sora-js-sdk: {Sora.version()}
             </a>
-          </Navbar.Collapse>
-        </Nav>
+          </NavbarCollapse>
+        </div>
       </Navbar>
       <DebugButton />
     </footer>

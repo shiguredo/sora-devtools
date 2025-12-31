@@ -1,12 +1,10 @@
-import { memo } from "react";
-
 import { clearDataChannelMessages } from "@/app/actions";
 import { dataChannelMessages } from "@/app/signals";
 import type { DataChannelMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const ButtonClear = memo(() => {
+function ButtonClear() {
   const onClick = (): void => {
     clearDataChannelMessages();
   };
@@ -19,9 +17,9 @@ const ButtonClear = memo(() => {
       onClick={onClick}
     />
   );
-});
+}
 
-const Collapse = memo<DataChannelMessage>((props) => {
+function Collapse(props: DataChannelMessage) {
   const { data, label, timestamp } = props;
   const headText = new TextDecoder().decode(data.slice(0, 6));
   if (headText === "ZAKURO") {
@@ -52,11 +50,11 @@ const Collapse = memo<DataChannelMessage>((props) => {
       wordBreak={true}
     />
   );
-});
+}
 
-const Log = memo<DataChannelMessage>((props) => {
+function Log(props: DataChannelMessage) {
   return <Collapse {...props} />;
-});
+}
 
 export function DataChannelMessagingMessages() {
   const dataChannelMessagesValue = dataChannelMessages.value;

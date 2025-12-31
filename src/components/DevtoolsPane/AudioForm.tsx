@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { setAudio } from "@/app/actions";
 import { audio, isFormDisabled } from "@/app/signals";
@@ -11,7 +11,7 @@ export function AudioForm() {
     setAudio(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="audio">
+    <FormGroup className="flex items-center gap-2" controlId="audio">
       <TooltipFormCheck
         kind="audio"
         checked={audio.value}

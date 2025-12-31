@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setSimulcast } from "@/app/actions";
 import { isFormDisabled, simulcast } from "@/app/signals";
@@ -16,7 +16,7 @@ export function SimulcastForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="simulcast">
+    <FormGroup className="flex items-center gap-2" controlId="simulcast">
       <TooltipFormLabel kind="simulcast">simulcast:</TooltipFormLabel>
       <FormSelect name="simulcast" value={simulcast.value} onChange={onChange} disabled={disabled}>
         {SIMULCAST.map((value) => {

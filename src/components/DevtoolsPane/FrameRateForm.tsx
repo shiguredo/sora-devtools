@@ -1,4 +1,12 @@
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from "react-bootstrap";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  FormGroup,
+  FormInput,
+  InputGroup,
+} from "@/components/ui";
 
 import { setFrameRate } from "@/app/actions";
 import { frameRate } from "@/app/signals";
@@ -21,12 +29,8 @@ const FRAME_RATE_DATA = [
   { label: "5", value: "5" },
 ];
 
-const DropdownItem = ({ label, value }: FrameRateData) => {
-  return (
-    <Dropdown.Item as="button" onClick={() => setFrameRate(value)}>
-      {label}
-    </Dropdown.Item>
-  );
+const FrameRateDropdownItem = ({ label, value }: FrameRateData) => {
+  return <DropdownItem onClick={() => setFrameRate(value)}>{label}</DropdownItem>;
 };
 
 export function FrameRateForm() {
@@ -35,21 +39,24 @@ export function FrameRateForm() {
     setFrameRate(target.value);
   };
   return (
-    <FormGroup className="form-inline" controlId="frameRate">
+    <FormGroup className="flex items-center gap-2" controlId="frameRate">
       <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
       <InputGroup>
-        <Form.Control
+        <FormInput
           className="form-frame-rate"
           type="text"
           value={frameRate.value}
           onChange={onChange}
           placeholder="未指定"
         />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
-          {FRAME_RATE_DATA.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />;
-          })}
-        </DropdownButton>
+        <Dropdown>
+          <DropdownToggle variant="outline-secondary" />
+          <DropdownMenu>
+            {FRAME_RATE_DATA.map(({ label, value }) => {
+              return <FrameRateDropdownItem key={value} label={label} value={value} />;
+            })}
+          </DropdownMenu>
+        </Dropdown>
       </InputGroup>
     </FormGroup>
   );

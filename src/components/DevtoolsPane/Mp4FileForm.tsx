@@ -1,8 +1,7 @@
 import { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
 
-import { Form, FormGroup } from "react-bootstrap";
-
 import { isFormDisabled, localMediaStream, mediaType, setMp4MediaStream } from "@/app/signals";
+import { FormGroup, FormInput } from "@/components/ui";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
@@ -33,9 +32,9 @@ export function Mp4FileForm() {
     return null;
   }
   return (
-    <FormGroup className="form-inline" controlId="mp4File">
+    <FormGroup className="flex items-center gap-2" controlId="mp4File">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
-      <Form.Control type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
+      <FormInput type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
     </FormGroup>
   );
 }

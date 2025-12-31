@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setEchoCancellation } from "@/app/actions";
 import { echoCancellation } from "@/app/signals";
@@ -15,7 +15,7 @@ export function EchoCancellationForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="echoCancellation">
+    <FormGroup className="flex items-center gap-2" controlId="echoCancellation">
       <TooltipFormLabel kind="echoCancellation">echoCancellation:</TooltipFormLabel>
       <FormSelect name="echoCancellation" value={echoCancellation.value} onChange={onChange}>
         {ECHO_CANCELLATIONS.map((value) => {

@@ -1,6 +1,8 @@
-import type React from "react";
-import { useEffect, useState } from "react";
-import { Button, FormControl, FormGroup } from "react-bootstrap";
+import { useSignal } from "@preact/signals";
+import type { ComponentChildren } from "preact";
+import { useEffect } from "preact/hooks";
+
+import { FormGroup, FormTextarea } from "@/components/ui";
 
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
   if (jsonString === "") {
@@ -20,7 +22,7 @@ type JSONInputFieldProps = {
   value: string;
   disabled: boolean;
   setValue: (value: string) => void;
-  extraControls?: React.ReactNode;
+  extraControls?: ComponentChildren;
   rows?: number;
   cols?: number;
 };
@@ -35,28 +37,27 @@ export const JSONInputField = ({
   rows,
   cols,
 }: JSONInputFieldProps) => {
-  const [invalidJsonString, setInvalidJsonString] = useState(false);
+  const invalidJsonString = useSignal(false);
   const onChangeText = (event: Event): void => {
     const target = event.target as HTMLInputElement;
     setValue(target.value);
   };
   useEffect(() => {
     if (value === "") {
-      setInvalidJsonString(false);
+      invalidJsonString.value = false;
       return;
     }
     try {
       JSON.parse(value);
-      setInvalidJsonString(false);
+      invalidJsonString.value = false;
     } catch {
-      setInvalidJsonString(true);
+      invalidJsonString.value = true;
     }
-  }, [value]);
+  }, [value, invalidJsonString]);
   return (
-    <FormGroup className="form-inline position-relative" controlId={controlId}>
-      <FormControl
-        className={invalidJsonString ? "flex-fill invalid-json" : "flex-fill"}
-        as="textarea"
+    <FormGroup className="flex items-center gap-2 relative" controlId={controlId}>
+      <FormTextarea
+        className={invalidJsonString.value ? "flex-fill invalid-json" : "flex-fill"}
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
@@ -66,15 +67,14 @@ export const JSONInputField = ({
       />
       <div className="json-input-textarea-overlay">
         {extraControls}
-        <Button
+        <button
           type="button"
-          variant="light"
-          size="sm"
+          className="btn btn-light btn-sm"
           onClick={() => prettyFormat(value, setValue)}
-          disabled={invalidJsonString}
+          disabled={invalidJsonString.value}
         >
           pretty format
-        </Button>
+        </button>
       </div>
     </FormGroup>
   );

@@ -1,3 +1,5 @@
+import type { ComponentChild } from "preact";
+
 import { debugFilterText, timelineMessages } from "@/app/signals";
 import type { TimelineMessage } from "@/types";
 
@@ -63,7 +65,7 @@ function DataChannelLabel(props: DataChannelLabelProps) {
 function Collapse(props: TimelineMessage) {
   const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
   const title = `${type}`;
-  let labelComponent: React.ReactNode;
+  let labelComponent: ComponentChild;
   if (logType === "websocket") {
     labelComponent = <WebSocketLabel />;
   } else if (logType === "datachannel") {

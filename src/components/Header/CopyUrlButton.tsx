@@ -1,8 +1,6 @@
-import type React from "react";
-
 import { copyURL } from "@/app/actions";
 
-export const CopyUrlButton: React.FC = () => {
+export function CopyUrlButton() {
   const onClick = (): void => {
     copyURL();
   };
@@ -15,4 +13,4 @@ export const CopyUrlButton: React.FC = () => {
       onClick={onClick}
     />
   );
-};
+}

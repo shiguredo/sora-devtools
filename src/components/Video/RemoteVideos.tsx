@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useSignal } from "@preact/signals";
 
 import {
   audioOutput,
@@ -51,17 +51,17 @@ function mediaStreamStatsReportFilter(
   return result;
 }
 
-const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
+function MediaStreamStatsReport({ stream }: { stream: MediaStream }) {
   if (!showStats.value) {
     return null;
   }
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport.value,
-    props.stream,
+    stream,
   ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport.value,
-    props.stream,
+    stream,
   ) as RTCMediaStreamTrackStats[];
   return (
     <>
@@ -94,11 +94,11 @@ const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
       })}
     </>
   );
-});
+}
 
-const RemoteVideo = memo<{ client: RemoteClient }>(({ client }) => {
+function RemoteVideo({ client }: { client: RemoteClient }) {
   const { mediaStream, connectionId, clientId } = client;
-  const [height, setHeight] = useState<number>(0);
+  const height = useSignal<number>(0);
   const focused = connectionId && focusedSpotlightConnectionIds.value[connectionId];
   return (
     <div className="col-auto">
@@ -137,18 +137,20 @@ const RemoteVideo = memo<{ client: RemoteClient }>(({ client }) => {
           )}
           <Video
             stream={mediaStream}
-            setHeight={setHeight}
+            setHeight={(value: number) => {
+              height.value = value;
+            }}
             mute={mute.value}
             audioOutput={audioOutput.value}
             displayResolution={displayResolution.value}
           />
-          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height} />
+          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height.value} />
         </div>
         <MediaStreamStatsReport stream={mediaStream} />
       </div>
     </div>
   );
-});
+}
 
 export function RemoteVideos() {
   return (

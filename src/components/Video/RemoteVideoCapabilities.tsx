@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 
 import { sora, statsReport } from "@/app/signals";
 import type { RTCStatsCodec } from "@/types";
@@ -6,7 +7,7 @@ import type { RTCStatsCodec } from "@/types";
 const useVideoTrackStats = (stream: MediaStream) => {
   const currentStatsReport = statsReport.value;
   const currentSora = sora.value;
-  const [trackStats, setTrackStats] = useState<{
+  const trackStats = useSignal<{
     codec: RTCStatsCodec;
     videoTrackStats: {
       width?: number;
@@ -60,7 +61,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
         }
       }
       if (codec) {
-        setTrackStats({
+        trackStats.value = {
           codec,
           videoTrackStats: {
             width: track.getSettings().width,
@@ -70,10 +71,10 @@ const useVideoTrackStats = (stream: MediaStream) => {
                 ? Math.floor(track.getSettings().frameRate || 0)
                 : undefined,
           },
-        });
+        };
       }
     })();
-  }, [currentStatsReport, stream, currentSora]);
+  }, [currentStatsReport, stream, currentSora, trackStats]);
   return {
     trackStats,
   };
@@ -83,37 +84,37 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
   const { trackStats } = useVideoTrackStats(stream);
   return (
     <div className="video-overlay">
-      {trackStats === null ? (
+      {trackStats.value === null ? (
         <p>loading...</p>
       ) : (
         <table className="table-video-capabilities">
           <tr>
             <th>mimeType</th>
-            <td>{trackStats.codec.mimeType}</td>
+            <td>{trackStats.value.codec.mimeType}</td>
           </tr>
           <tr>
             <th>payloadType</th>
-            <td>{trackStats.codec.payloadType}</td>
+            <td>{trackStats.value.codec.payloadType}</td>
           </tr>
           <tr>
             <th>sdpFmtpLine</th>
-            <td>{trackStats.codec.sdpFmtpLine}</td>
+            <td>{trackStats.value.codec.sdpFmtpLine}</td>
           </tr>
           <tr>
             <th>resolution</th>
             <td>
-              {trackStats.videoTrackStats.width === undefined ||
-              trackStats.videoTrackStats.height === undefined
+              {trackStats.value.videoTrackStats.width === undefined ||
+              trackStats.value.videoTrackStats.height === undefined
                 ? "undefined"
-                : `${trackStats.videoTrackStats.width}x${trackStats.videoTrackStats.height}`}
+                : `${trackStats.value.videoTrackStats.width}x${trackStats.value.videoTrackStats.height}`}
             </td>
           </tr>
           <tr>
             <th>fps</th>
             <td>
-              {trackStats.videoTrackStats.frameRate === undefined
+              {trackStats.value.videoTrackStats.frameRate === undefined
                 ? "undefined"
-                : trackStats.videoTrackStats.frameRate}
+                : trackStats.value.videoTrackStats.frameRate}
             </td>
           </tr>
         </table>

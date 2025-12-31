@@ -1,6 +1,5 @@
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
-
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/actions";
+import { FormGroup, FormTextarea } from "@/components/ui";
 import {
   enabledSignalingUrlCandidates,
   isFormDisabled,
@@ -26,9 +25,9 @@ wss://sora1.example.com/signaling
 `;
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledSignalingUrlCandidates">
             <TooltipFormCheck
               kind="signalingUrlCandidates"
               checked={enabledSignalingUrlCandidates.value}
@@ -38,15 +37,14 @@ wss://sora1.example.com/signaling
               signalingUrlCandidates
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledSignalingUrlCandidates.value ? (
-        <Row className="form-row" xs="auto">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-              <FormControl
+        <div className="form-row">
+          <div className="col-auto">
+            <FormGroup className="flex items-center gap-2" controlId="signalingNotifyMetadata">
+              <FormTextarea
                 className="flex-fill"
-                as="textarea"
                 placeholder={textareaPlaceholder}
                 value={signalingUrlCandidates.value.join("\n")}
                 onChange={onChangeText}
@@ -55,8 +53,8 @@ wss://sora1.example.com/signaling
                 disabled={disabled}
               />
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

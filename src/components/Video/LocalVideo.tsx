@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useSignal } from "@preact/signals";
 
 import {
   audio,
@@ -28,7 +28,7 @@ import { Video } from "./Video.tsx";
 import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 
 function VideoBox() {
-  const [height, setHeight] = useState<number>(0);
+  const height = useSignal<number>(0);
   const focused = connectionId.value && focusedSpotlightConnectionIds.value[connectionId.value];
   if (audio.value === false && video.value === false) {
     return null;
@@ -47,7 +47,9 @@ function VideoBox() {
           )}
         <Video
           stream={localMediaStream.value}
-          setHeight={setHeight}
+          setHeight={(value: number) => {
+            height.value = value;
+          }}
           audioOutput={audioOutput.value}
           displayResolution={displayResolution.value}
           localVideo={true}
@@ -57,7 +59,7 @@ function VideoBox() {
           <VolumeVisualizer
             micDevice={micDevice.value}
             stream={localMediaStream.value}
-            height={height}
+            height={height.value}
           />
         ) : null}
       </div>

@@ -1,6 +1,5 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
-
 import { connectionStatus, sora, turnUrl } from "@/app/signals";
+import { Navbar, NavbarBrand, NavbarCollapse, NavbarText, NavbarToggle } from "@/components/ui";
 
 import { CopyUrlButton } from "./CopyUrlButton.tsx";
 import { DebugButton } from "./DebugButton.tsx";
@@ -16,34 +15,34 @@ export function Header() {
   return (
     <header>
       <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
-        <Container>
-          <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-collapse" />
-          <Navbar.Collapse id="navbar-collapse">
-            <Nav className="me-auto" />
-            <Nav>
-              <Navbar.Text className="py-0 my-1 mx-1">
+        <div className="container flex items-center flex-nowrap justify-between px-3">
+          <NavbarBrand href="/">Sora DevTools</NavbarBrand>
+          <NavbarToggle />
+          <NavbarCollapse>
+            <div className="me-auto" />
+            <div className="flex items-center flex-wrap">
+              <NavbarText className="py-0 my-1 mx-1">
                 <p className="navbar-signaling-url border rounded">
                   {sora.value && connectionStatus.value === "connected"
                     ? sora.value.connectedSignalingUrl
                     : "Signaling URL"}
                 </p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 mx-1">
                 <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 mx-1">
                 <DebugButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 mx-1">
                 <DownloadReportButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 ms-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 ms-1">
                 <CopyUrlButton />
-              </Navbar.Text>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
+              </NavbarText>
+            </div>
+          </NavbarCollapse>
+        </div>
       </Navbar>
     </header>
   );

@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { resizeMode, setResizeMode } from "@/app/signals";
 import { RESIZE_MODE_TYPES } from "@/constants";
@@ -14,7 +14,7 @@ export function ResizeModeForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="resizeMode">
+    <FormGroup className="flex items-center gap-2" controlId="resizeMode">
       <TooltipFormLabel kind="resizeMode">resizeMode:</TooltipFormLabel>
       <FormSelect name="resizeMode" value={resizeMode.value} onChange={onChange}>
         {RESIZE_MODE_TYPES.map((value) => {

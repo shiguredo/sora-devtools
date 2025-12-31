@@ -1,5 +1,7 @@
-import { memo, useEffect, useRef, useState } from "react";
-import { Button, Dropdown, DropdownButton, FormControl, InputGroup } from "react-bootstrap";
+import { useSignal } from "@preact/signals";
+import { useEffect, useRef } from "preact/hooks";
+
+import { InputGroup, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "@/components/ui";
 
 import { clearRpcObjects } from "@/app/actions";
 import { connectionStatus, rpcObjects, sora } from "@/app/signals";
@@ -10,7 +12,7 @@ import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
 
 import { JsonTree } from "./JsonTree.tsx";
 
-const ClearButton = memo(() => {
+function ClearButton() {
   const onClick = (): void => {
     clearRpcObjects();
   };
@@ -23,15 +25,15 @@ const ClearButton = memo(() => {
       onClick={onClick}
     />
   );
-});
+}
 
 function RpcForm() {
   const methodRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<HTMLInputElement>(null);
-  const [notification, setNotification] = useState(false);
-  const [method, setMethod] = useState("");
-  const [params, setParams] = useState("");
-  const [paramsHasError, setParamsHasError] = useState(false);
+  const notification = useSignal(false);
+  const method = useSignal("");
+  const params = useSignal("");
+  const paramsHasError = useSignal(false);
 
   const conn = sora.value;
   const connectionStatusValue = connectionStatus.value;
@@ -40,17 +42,17 @@ function RpcForm() {
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
-    if (params.trim() === "") {
-      setParamsHasError(false);
+    if (params.value.trim() === "") {
+      paramsHasError.value = false;
       return;
     }
     try {
-      JSON.parse(params);
-      setParamsHasError(false);
+      JSON.parse(params.value);
+      paramsHasError.value = false;
     } catch {
-      setParamsHasError(true);
+      paramsHasError.value = true;
     }
-  }, [params]);
+  }, [params.value, paramsHasError]);
 
   const handleCallRpc = async (): Promise<void> => {
     if (
@@ -62,13 +64,13 @@ function RpcForm() {
       return;
     }
 
-    const method = methodRef.current.value;
-    if (!method) {
+    const methodValue = methodRef.current.value;
+    if (!methodValue) {
       return;
     }
 
     let parsedParams: Record<string, unknown> | undefined;
-    const paramsText = params.trim();
+    const paramsText = params.value.trim();
     if (paramsText) {
       try {
         parsedParams = JSON.parse(paramsText);
@@ -83,11 +85,11 @@ function RpcForm() {
     if (!Number.isNaN(timeoutValue) && timeoutValue > 0) {
       options.timeout = timeoutValue;
     }
-    if (notification) {
+    if (notification.value) {
       options.notification = true;
     }
 
-    await rpc(conn, method, parsedParams, options);
+    await rpc(conn, methodValue, parsedParams, options);
   };
 
   return (
@@ -98,36 +100,41 @@ function RpcForm() {
             <strong>method:</strong>
           </div>
           <InputGroup>
-            <FormControl
+            <input
               type="text"
               placeholder="method name"
               ref={methodRef}
-              value={method}
-              onChange={(e) => setMethod((e.target as HTMLInputElement).value)}
+              value={method.value}
+              onChange={(e) => {
+                method.value = (e.target as HTMLInputElement).value;
+              }}
+              className="block w-full px-3 py-1.5 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
             />
-            <DropdownButton variant="outline-secondary" title="" align="end">
-              {RPC_TEMPLATES.map((template) => {
-                const isAvailable = rpcMethods.includes(template.method);
-                return (
-                  <Dropdown.Item
-                    key={template.method}
-                    as="button"
-                    onClick={() => {
-                      setMethod(template.method);
-                      if (methodRef.current) {
-                        methodRef.current.value = template.method;
-                      }
-                      if (template.params) {
-                        setParams(JSON.stringify(template.params, null, 2));
-                      }
-                    }}
-                    style={isAvailable ? { color: "#0071bc", fontWeight: "bold" } : undefined}
-                  >
-                    {template.method}
-                  </Dropdown.Item>
-                );
-              })}
-            </DropdownButton>
+            <Dropdown>
+              <DropdownToggle variant="outline-secondary" />
+              <DropdownMenu className="right-0 max-h-80 overflow-y-auto">
+                {RPC_TEMPLATES.map((template) => {
+                  const isAvailable = rpcMethods.includes(template.method);
+                  return (
+                    <DropdownItem
+                      key={template.method}
+                      onClick={() => {
+                        method.value = template.method;
+                        if (methodRef.current) {
+                          methodRef.current.value = template.method;
+                        }
+                        if (template.params) {
+                          params.value = JSON.stringify(template.params, null, 2);
+                        }
+                      }}
+                      className={isAvailable ? "!text-blue-600 !font-bold" : ""}
+                    >
+                      {template.method}
+                    </DropdownItem>
+                  );
+                })}
+              </DropdownMenu>
+            </Dropdown>
           </InputGroup>
         </div>
 
@@ -140,8 +147,10 @@ function RpcForm() {
               className="form-check-input"
               type="checkbox"
               id="rpcNotificationCheck"
-              checked={notification}
-              onChange={(e) => setNotification((e.target as HTMLInputElement).checked)}
+              checked={notification.value}
+              onChange={(e) => {
+                notification.value = (e.target as HTMLInputElement).checked;
+              }}
             />
             <label
               className="form-check-label"
@@ -157,7 +166,13 @@ function RpcForm() {
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>timeout (ms):</strong>
           </div>
-          <FormControl type="number" placeholder="5000" defaultValue="5000" ref={timeoutRef} />
+          <input
+            type="number"
+            placeholder="5000"
+            defaultValue="5000"
+            ref={timeoutRef}
+            className="block w-full px-3 py-1.5 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
+          />
         </div>
       </div>
 
@@ -168,27 +183,25 @@ function RpcForm() {
         <JSONInputField
           controlId="rpcParams"
           placeholder='{"key": "value"} or ["value1", "value2"]'
-          value={params}
-          setValue={setParams}
+          value={params.value}
+          setValue={(value: string) => {
+            params.value = value;
+          }}
           disabled={false}
           rows={6}
           cols={80}
         />
       </div>
 
-      <div className="d-flex justify-content-end mb-2">
-        <Button
-          variant="secondary"
+      <div className="flex justify-end mb-2">
+        <button
+          type="button"
           onClick={handleCallRpc}
-          disabled={connectionStatusValue !== "connected" || paramsHasError}
-          style={{
-            fontSize: "1.2rem",
-            padding: "0.75rem 2rem",
-            fontWeight: "bold",
-          }}
+          disabled={connectionStatusValue !== "connected" || paramsHasError.value}
+          className="px-8 py-3 text-xl font-bold bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Call
-        </Button>
+        </button>
       </div>
     </div>
   );

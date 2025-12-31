@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setVideoContentHint } from "@/app/actions";
 import { videoContentHint } from "@/app/signals";
@@ -15,7 +15,7 @@ export function VideoContentHintForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="videoContentHint">
+    <FormGroup className="flex items-center gap-2" controlId="videoContentHint">
       <TooltipFormLabel kind="videoContentHint">videoContentHint:</TooltipFormLabel>
       <FormSelect name="videoContentHint" value={videoContentHint.value} onChange={onChange}>
         {VIDEO_CONTENT_HINTS.map((value) => {

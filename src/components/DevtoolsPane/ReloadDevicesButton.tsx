@@ -1,8 +1,6 @@
-import type React from "react";
-
 import { setMediaDevices } from "@/app/actions";
 
-export const ReloadDevicesButton: React.FC = () => {
+export function ReloadDevicesButton() {
   const onClick = (): void => {
     void setMediaDevices();
   };
@@ -17,4 +15,4 @@ export const ReloadDevicesButton: React.FC = () => {
       />
     </div>
   );
-};
+}

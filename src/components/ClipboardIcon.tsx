@@ -1,6 +1,4 @@
-import React from "react";
-
-export const ClipboardIcon = React.memo(() => {
+export function ClipboardIcon() {
   return (
     <svg
       width="1em"
@@ -21,4 +19,4 @@ export const ClipboardIcon = React.memo(() => {
       />
     </svg>
   );
-});
+}

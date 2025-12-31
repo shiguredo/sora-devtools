@@ -1,3 +1,329 @@
+@import "tailwindcss";
+
+@theme {
+  /* Sora ブランドカラー */
+  --color-sora: #0071bc;
+
+  /* Bootstrap 互換カラー */
+  --color-bs-primary: #0d6efd;
+  --color-bs-secondary: #6c757d;
+  --color-bs-dark: #212529;
+  --color-bs-light: #f8f9fa;
+  --color-bs-yellow: #ffc107;
+  --color-bs-orange: #fd7e14;
+  --color-bs-red: #dc3545;
+}
+
+/* Bootstrap 互換ボタンスタイル */
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: var(--color-bs-primary);
+  border-color: var(--color-bs-primary);
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: var(--color-bs-secondary);
+  border-color: var(--color-bs-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: #5c636a;
+  border-color: #565e64;
+}
+
+.btn-light {
+  color: #000;
+  background-color: var(--color-bs-light);
+  border-color: var(--color-bs-light);
+}
+
+.btn-light:hover {
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+
+.btn-dark {
+  color: #fff;
+  background-color: var(--color-bs-dark);
+  border-color: var(--color-bs-dark);
+}
+
+.btn-dark:hover {
+  background-color: #1c1f23;
+  border-color: #1a1e21;
+}
+
+.btn-outline-secondary {
+  color: var(--color-bs-secondary);
+  border-color: var(--color-bs-secondary);
+  background-color: transparent;
+}
+
+.btn-outline-secondary:hover {
+  color: #fff;
+  background-color: var(--color-bs-secondary);
+  border-color: var(--color-bs-secondary);
+}
+
+.btn-outline-light {
+  color: var(--color-bs-light);
+  border-color: var(--color-bs-light);
+  background-color: transparent;
+}
+
+.btn-outline-light:hover {
+  color: #000;
+  background-color: var(--color-bs-light);
+  border-color: var(--color-bs-light);
+}
+
+/* Bootstrap 互換レイアウトクラス */
+.d-flex {
+  display: flex;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.align-items-start {
+  align-items: flex-start;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.me-auto {
+  margin-right: auto;
+}
+
+.me-1 {
+  margin-right: 0.25rem;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+.ms-1 {
+  margin-left: 0.25rem;
+}
+
+.ms-2 {
+  margin-left: 0.5rem;
+}
+
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.py-0 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-3 {
+  padding: 1rem;
+}
+
+.ps-3 {
+  padding-left: 1rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.border {
+  border: 1px solid #dee2e6;
+}
+
+.border-top {
+  border-top: 1px solid #dee2e6;
+}
+
+.border-left {
+  border-left: 1px solid #dee2e6;
+}
+
+.border-light {
+  border-color: #f8f9fa !important;
+}
+
+.border-secondary {
+  border-color: var(--color-bs-secondary) !important;
+}
+
+.rounded {
+  border-radius: 0.375rem;
+}
+
+.bg-dark {
+  background-color: var(--color-bs-dark);
+}
+
+.text-white {
+  color: #fff;
+}
+
+.text-white-50 {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.text-break {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.text-danger {
+  color: var(--color-bs-red);
+}
+
+.col-auto {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.col-6 {
+  flex: 0 0 auto;
+  width: 50%;
+}
+
+.col-12 {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.col-sm-12 {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.overflow-y-hidden {
+  overflow-y: hidden;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.375rem;
+}
+
+.italic {
+  font-style: italic;
+}
+
 body {
   padding-top: 56px;
   padding-bottom: 56px;
@@ -124,7 +450,7 @@ video {
 }
 
 .col-devtools {
-  padding-top: 1rem;
+  padding: 1rem 0.75rem 0;
   overflow-x: auto;
   height: calc(100vh - 56px - 56px);
   overflow-y: scroll;
@@ -298,7 +624,7 @@ button.debug-title {
 }
 
 .spotlight-focused {
-  border: 5px solid var(--bs-primary);
+  border: 5px solid var(--color-bs-primary);
   border-radius: 5px;
 }
 
@@ -310,32 +636,32 @@ button.debug-title {
 .normal-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--bs-dark);
+  border-color: var(--color-bs-dark);
   cursor: initial !important;
 }
 
 .warning-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--bs-yellow);
+  border-color: var(--color-bs-yellow);
   cursor: initial !important;
 }
 
 .danger-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--bs-orange);
-  background-color: var(--bs-orange);
-  color: var(--bs-light);
+  border-color: var(--color-bs-orange);
+  background-color: var(--color-bs-orange);
+  color: var(--color-bs-light);
   cursor: initial !important;
 }
 
 .critical-jitter-buffer {
   min-width: 90px;
   border-width: 2px;
-  border-color: var(--bs-red);
-  background-color: var(--bs-red);
-  color: var(--bs-light);
+  border-color: var(--color-bs-red);
+  background-color: var(--color-bs-red);
+  color: var(--color-bs-light);
   cursor: initial !important;
 }
 
@@ -401,12 +727,12 @@ button.debug-title {
 }
 
 .invalid-json {
-  border-color: var(--bs-form-invalid-border-color);
+  border-color: var(--color-bs-red);
   border-width: 2px;
 }
 
 .invalid-json:focus {
-  border-color: var(--bs-form-invalid-border-color);
+  border-color: var(--color-bs-red);
 }
 
 .json-input-textarea-overlay {
@@ -437,6 +763,70 @@ button.debug-title {
   content: "";
   background-repeat: no-repeat;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+/* Bootstrap 互換フォームスタイル */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 0.375rem;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control:disabled {
+  background-color: #e9ecef;
+  opacity: 0.65;
+}
+
+.form-select {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  appearance: none;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.form-select:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-select:disabled {
+  background-color: #e9ecef;
+  opacity: 0.65;
 }
 
 .form-label {

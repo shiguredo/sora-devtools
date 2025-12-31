@@ -1,8 +1,6 @@
-import type React from "react";
-
 import { updateMediaStream } from "@/app/actions";
 
-export const UpdateMediaStreamButton: React.FC = () => {
+export function UpdateMediaStreamButton() {
   const onClick = (): void => {
     void updateMediaStream();
   };
@@ -17,4 +15,4 @@ export const UpdateMediaStreamButton: React.FC = () => {
       />
     </div>
   );
-};
+}

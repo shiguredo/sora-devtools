@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 import { debugFilterText, signalingMessages } from "@/app/signals";
 import type { SignalingMessage } from "@/types";
 
@@ -10,25 +8,24 @@ const SIGNALING_COLORS: { [key: string]: string } = {
   datachannel: "#ff00ff",
 };
 
-const Label = memo<{ text: string }>((props) => {
-  const { text } = props;
+function Label({ text }: { text: string }) {
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
     <span className="me-1" style={color ? { color: color } : {}}>
       [{text}]
     </span>
   );
-});
+}
 
-const Collapse = memo<SignalingMessage>((props) => {
+function Collapse(props: SignalingMessage) {
   const { data, type, timestamp, transportType } = props;
   const label = transportType ? <Label text={transportType} /> : null;
   return <Message title={type} timestamp={timestamp} description={data} label={label} />;
-});
+}
 
-const Log = memo<SignalingMessage>((props) => {
+function Log(props: SignalingMessage) {
   return <Collapse {...props} />;
-});
+}
 
 export function SignalingMessages() {
   const signalingMessagesValue = signalingMessages.value;

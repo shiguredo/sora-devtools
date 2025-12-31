@@ -1,6 +1,7 @@
+import { useSignal } from "@preact/signals";
 import type { ComponentChild } from "preact";
-import { memo, useState } from "react";
-import { Collapse } from "react-bootstrap";
+
+import { Collapse } from "@/components/ui";
 
 import { formatUnixtime } from "@/utils";
 
@@ -12,7 +13,8 @@ type DescriptionProps = {
   prevDescription?: unknown;
   wordBreak?: boolean;
 };
-const Description = memo<DescriptionProps>((props) => {
+
+function Description(props: DescriptionProps) {
   const { description, prevDescription } = props;
   if (description === undefined) {
     return null;
@@ -48,7 +50,7 @@ const Description = memo<DescriptionProps>((props) => {
       </div>
     </div>
   );
-});
+}
 
 type Props = {
   timestamp: number | null;
@@ -59,9 +61,10 @@ type Props = {
   label?: ComponentChild;
   wordBreak?: boolean;
 };
-export const Message = memo<Props>((props) => {
+
+export function Message(props: Props) {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props;
-  const [show, setShow] = useState(defaultShow === undefined ? false : defaultShow);
+  const show = useSignal(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
   const disabled = description === undefined;
   return (
@@ -70,11 +73,15 @@ export const Message = memo<Props>((props) => {
         <button
           type="button"
           className={`debug-title ${disabled ? "disabled" : ""}`}
-          onClick={() => setShow(!show)}
+          onClick={() => {
+            show.value = !show.value;
+          }}
           aria-controls={ariaControls}
-          aria-expanded={show}
+          aria-expanded={show.value}
         >
-          <i className={`${show ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`} />{" "}
+          <i
+            className={`${show.value ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`}
+          />{" "}
           {timestamp ? (
             <span className="text-white-50 me-1">[{formatUnixtime(timestamp)}]</span>
           ) : null}
@@ -90,7 +97,7 @@ export const Message = memo<Props>((props) => {
           />
         </div>
       </div>
-      <Collapse in={show}>
+      <Collapse in={show.value}>
         <div className="border-top">
           <Description
             description={description}
@@ -101,4 +108,4 @@ export const Message = memo<Props>((props) => {
       </Collapse>
     </div>
   );
-});
+}

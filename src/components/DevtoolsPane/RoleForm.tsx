@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setRole } from "@/app/actions";
 import { isFormDisabled, localMediaStream, role } from "@/app/signals";
@@ -16,7 +16,7 @@ export function RoleForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="role">
+    <FormGroup className="flex items-center gap-2" controlId="role">
       <TooltipFormLabel kind="role">role:</TooltipFormLabel>
       <FormSelect name="role" value={role.value} onChange={onChange} disabled={disabled}>
         {ROLES.map((value) => {

@@ -1,4 +1,4 @@
-import { Col, FormGroup, Row } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { setReconnect } from "@/app/actions";
 import { isFormDisabled, reconnect } from "@/app/signals";
@@ -12,9 +12,9 @@ export function ReconnectForm() {
     setReconnect(target.checked);
   };
   return (
-    <Row className="form-row">
-      <Col className="col-auto">
-        <FormGroup className="form-inline" controlId="reconnect">
+    <div className="flex flex-wrap gap-2">
+      <div className="w-auto">
+        <FormGroup className="flex items-center gap-2" controlId="reconnect">
           <TooltipFormCheck
             kind="reconnect"
             checked={reconnect.value}
@@ -24,7 +24,7 @@ export function ReconnectForm() {
             reconnect
           </TooltipFormCheck>
         </FormGroup>
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 }

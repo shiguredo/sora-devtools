@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setSimulcastRid } from "@/app/actions";
 import { isFormDisabled, simulcastRid } from "@/app/signals";
@@ -16,7 +16,7 @@ export function SimulcastRidForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="simulcastRid">
+    <FormGroup className="flex items-center gap-2" controlId="simulcastRid">
       <TooltipFormLabel kind="simulcastRid">simulcastRid:</TooltipFormLabel>
       <FormSelect
         name="simulcastRid"

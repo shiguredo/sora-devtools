@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { Toast } from "react-bootstrap";
+import { useEffect } from "preact/hooks";
 
 import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from "@/app/actions";
 import { alertMessages, reconnecting, reconnectingTrials } from "@/app/signals";
+import { Toast, ToastBody, ToastHeader } from "@/components/ui";
 import type { AlertMessage } from "@/types";
 import { formatUnixtime } from "@/utils";
 
@@ -15,14 +15,14 @@ function Reconnect() {
   }, []);
   return (
     <Toast delay={20000} onClose={onClose}>
-      <Toast.Header className={"bg-warning text-white"}>
+      <ToastHeader className={"bg-warning text-white"} onClose={onClose}>
         <strong className="me-auto">Reconnect</strong>
-      </Toast.Header>
-      <Toast.Body className="bg-light">
+      </ToastHeader>
+      <ToastBody className="bg-light">
         <p className="text-break font-weight-bold mb-0">
           Reconnecting... (trials {reconnectingTrials.value})
         </p>
-      </Toast.Body>
+      </ToastBody>
     </Toast>
   );
 }
@@ -34,13 +34,13 @@ function Alert(props: AlertMessage) {
   const bgClassName = props.type === "error" ? "bg-danger" : "bg-info";
   return (
     <Toast autohide={true} delay={20000} onClose={onClose}>
-      <Toast.Header className={`${bgClassName} text-white`}>
+      <ToastHeader className={`${bgClassName} text-white`} onClose={onClose}>
         <strong className="me-auto">{props.title}</strong>
         <span>{formatUnixtime(props.timestamp)}</span>
-      </Toast.Header>
-      <Toast.Body className="bg-light">
+      </ToastHeader>
+      <ToastBody className="bg-light">
         <p className="text-break font-weight-bold mb-0">{props.message}</p>
-      </Toast.Body>
+      </ToastBody>
     </Toast>
   );
 }

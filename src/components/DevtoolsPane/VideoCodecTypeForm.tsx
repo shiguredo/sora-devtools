@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setVideoCodecType } from "@/app/actions";
 import { isFormDisabled, videoCodecType } from "@/app/signals";
@@ -16,7 +16,7 @@ export function VideoCodecTypeForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="videoCodecType">
+    <FormGroup className="flex items-center gap-2" controlId="videoCodecType">
       <TooltipFormLabel kind="videoCodecType">videoCodecType:</TooltipFormLabel>
       <FormSelect
         name="videoCodecType"

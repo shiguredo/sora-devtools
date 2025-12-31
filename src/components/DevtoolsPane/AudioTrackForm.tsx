@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { setAudioTrack } from "@/app/actions";
 import { audioTrack } from "@/app/signals";
@@ -11,7 +11,7 @@ export function AudioTrackForm() {
     setAudioTrack(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="audioTrack">
+    <FormGroup className="flex items-center gap-2" controlId="audioTrack">
       <TooltipFormCheck
         kind="audioTrack"
         checked={audioTrack.value}

@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { setVideoTrack } from "@/app/actions";
 import { videoTrack } from "@/app/signals";
@@ -11,7 +11,7 @@ export function VideoTrackForm() {
     setVideoTrack(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="videoTrack">
+    <FormGroup className="flex items-center gap-2" controlId="videoTrack">
       <TooltipFormCheck
         kind="videoTrack"
         checked={videoTrack.value}

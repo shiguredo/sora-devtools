@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo } from "preact/hooks";
 
 import { debugFilterText, prevStatsReport, statsReport } from "@/app/signals";
 

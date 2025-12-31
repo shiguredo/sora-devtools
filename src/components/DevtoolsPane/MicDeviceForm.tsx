@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { audio, connectionStatus, micDevice, setMicDevice, sora } from "@/app/signals";
 
@@ -13,7 +13,7 @@ export function MicDeviceForm() {
     setMicDevice(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="micDevice">
+    <FormGroup className="flex items-center gap-2" controlId="micDevice">
       <TooltipFormCheck
         kind="micDevice"
         checked={micDevice.value}

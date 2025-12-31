@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { FormGroup, FormLabel, FormInput } from "@/components/ui";
 
 import { setDebugFilterText } from "@/app/actions";
 import { debugFilterText } from "@/app/signals";
@@ -10,14 +10,13 @@ export function DebugFilter() {
     setDebugFilterText(target.value);
   };
   return (
-    <FormGroup className="form-inline debug-filter" controlId="channelId">
+    <FormGroup className="flex items-center gap-2 debug-filter" controlId="channelId">
       <FormLabel className="text-white">Filter:</FormLabel>
-      <FormControl
+      <FormInput
         type="text"
         placeholder="Filter"
         value={debugFilterTextValue}
         onChange={onChange}
-        autoComplete="off"
       />
     </FormGroup>
   );

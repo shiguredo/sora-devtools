@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setNoiseSuppression } from "@/app/actions";
 import { noiseSuppression } from "@/app/signals";
@@ -15,7 +15,7 @@ export function NoiseSuppressionForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="noiseSuppression">
+    <FormGroup className="flex items-center gap-2" controlId="noiseSuppression">
       <TooltipFormLabel kind="noiseSuppression">noiseSuppression:</TooltipFormLabel>
       <FormSelect name="noiseSuppression" value={noiseSuppression.value} onChange={onChange}>
         {NOISE_SUPPRESSIONS.map((value) => {

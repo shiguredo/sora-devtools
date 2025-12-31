@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { aspectRatio, setAspectRatio } from "@/app/signals";
 import { ASPECT_RATIO_TYPES } from "@/constants";
@@ -14,7 +14,7 @@ export function AspectRatioForm() {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="aspectRatio">
+    <FormGroup className="flex items-center gap-2" controlId="aspectRatio">
       <TooltipFormLabel kind="aspectRatio">aspectRatio:</TooltipFormLabel>
       <FormSelect name="aspectRatio" value={aspectRatio.value} onChange={onChange}>
         {ASPECT_RATIO_TYPES.map((value) => {
