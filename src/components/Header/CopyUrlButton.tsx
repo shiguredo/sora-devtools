@@ -6,7 +6,7 @@ export function CopyUrlButton() {
   };
   return (
     <input
-      className="btn btn-light btn-sm ms-1"
+      className="btn btn-light btn-sm ml-1"
       type="button"
       name="copyUrl"
       defaultValue="copy URL"

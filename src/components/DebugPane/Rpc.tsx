@@ -94,7 +94,7 @@ function RpcForm() {
 
   return (
     <div className="mt-2">
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ width: "600px" }}>
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>method:</strong>
@@ -220,7 +220,7 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
 
   return (
     <div className="mb-3 p-3 border rounded" style={{ backgroundColor: "#1a1a1a", color: "#fff" }}>
-      <div className="mb-3 d-flex justify-content-between" style={{ color: "#ccc" }}>
+      <div className="mb-3 flex justify-between" style={{ color: "#ccc" }}>
         <small>{fullTimeString}</small>
         {rpcObject.duration !== undefined && <small>{rpcObject.duration.toFixed(2)} ms</small>}
       </div>
@@ -230,7 +230,7 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
         <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
           <strong>Request:</strong>
         </div>
-        <div className="ps-3">
+        <div className="pl-3">
           <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
             method
           </div>
@@ -251,7 +251,7 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
           )}
         </div>
         {rpcObject.options !== undefined && (
-          <div className="ps-3" style={{ color: "#aaa", fontSize: "0.85rem" }}>
+          <div className="pl-3" style={{ color: "#aaa", fontSize: "0.85rem" }}>
             {rpcObject.options.timeout && `timeout: ${rpcObject.options.timeout} ms`}
             {rpcObject.options.timeout && rpcObject.options.notification && ", "}
             {rpcObject.options.notification && "notification: true"}
@@ -265,11 +265,11 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
             <strong>Response:</strong>
           </div>
-          <div className="ps-3">
+          <div className="pl-3">
             <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
               result
             </div>
-            <div className="ps-3">
+            <div className="pl-3">
               <div className="p-2 rounded" style={{ backgroundColor: "#333", fontSize: "0.95rem" }}>
                 <JsonTree data={rpcObject.result} />
               </div>
@@ -282,11 +282,11 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
             <strong>Error:</strong>
           </div>
-          <div className="ps-3">
+          <div className="pl-3">
             <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
               error
             </div>
-            <div className="ps-3">
+            <div className="pl-3">
               <div
                 className="p-2 rounded text-danger"
                 style={{ backgroundColor: "#333", fontSize: "0.95rem" }}

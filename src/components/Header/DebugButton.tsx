@@ -5,7 +5,7 @@ export function DebugButton() {
   const onClick = (): void => {
     setDebug(!debug.value);
   };
-  const classNames = ["btn", "btn-light", "btn-header-debug-mode", "btn-sm", "ms-1"];
+  const classNames = ["btn", "btn-light", "btn-header-debug-mode", "btn-sm", "ml-1"];
   if (debug.value) {
     classNames.push("active");
   }

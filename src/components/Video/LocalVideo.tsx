@@ -34,9 +34,9 @@ function VideoBox() {
     return null;
   }
   return (
-    <div className="d-flex">
+    <div className="flex">
       <div
-        className={`position-relative d-flex flex-nowrap align-items-start video-wrapper overflow-y-hidden${
+        className={`relative flex flex-nowrap items-start video-wrapper overflow-y-hidden${
           focused ? " spotlight-focused" : ""
         }`}
       >
@@ -73,12 +73,12 @@ export function LocalVideo() {
       <div className="col-auto">
         <div className="video-status mb-1">
           {sessionId.value !== null ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 video-status-inner">
               <SessionStatusBar sessionId={sessionId.value} />
             </div>
           ) : null}
           {connectionId.value !== null || soraClientId.value !== null ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 video-status-inner">
               <ConnectionStatusBar
                 connectionId={connectionId.value}
                 clientId={soraClientId.value}
@@ -90,7 +90,7 @@ export function LocalVideo() {
           spotlight.value !== "true" &&
           simulcast.value === "true" &&
           role.value !== "sendonly" ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 video-status-inner">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
               <RequestSimulcastRidButton rid={"none"} />
               <RequestSimulcastRidButton rid={"r0"} />
@@ -99,7 +99,7 @@ export function LocalVideo() {
             </div>
           ) : null}
           {connectionId.value !== null && spotlight.value === "true" ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 video-status-inner">
               <RequestSpotlightRidButton />
               <ResetSpotlightRidButton />
             </div>

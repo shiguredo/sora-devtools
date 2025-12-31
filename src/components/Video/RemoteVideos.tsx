@@ -103,12 +103,12 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
   return (
     <div className="col-auto">
       <div className="video-status">
-        <div className="d-flex align-items-center mb-1 video-status-inner">
+        <div className="flex items-center mb-1 video-status-inner">
           <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           <JitterButter type="audio" stream={mediaStream} />
           <JitterButter type="video" stream={mediaStream} />
         </div>
-        <div className="d-flex align-items-center mb-1 video-status-inner">
+        <div className="flex items-center mb-1 video-status-inner">
           {spotlight.value !== "true" && simulcast.value === "true" ? (
             <>
               <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
@@ -125,10 +125,10 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start overflow-y-hidden">
+      <div className="flex flex-wrap items-start overflow-y-hidden">
         {/* オーバーレイするため position-relative を付けておくこと */}
         <div
-          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
+          className={`relative flex flex-nowrap items-start video-wrapper${
             focused ? " spotlight-focused" : ""
           }`}
         >

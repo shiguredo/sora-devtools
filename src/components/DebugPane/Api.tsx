@@ -227,7 +227,7 @@ function ApiForm({
 
   return (
     <div className="mt-2">
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ width: "600px" }}>
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>URL:</strong>
@@ -270,7 +270,7 @@ function ApiForm({
         </div>
       </div>
 
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ flex: 1 }}>
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>params:</strong>
@@ -287,7 +287,7 @@ function ApiForm({
         </div>
 
         <div style={{ flex: 1 }}>
-          <div className="mb-1 d-flex justify-content-between align-items-center">
+          <div className="mb-1 flex justify-between items-center">
             <strong style={{ color: "#fff" }}>Preview (after replace):</strong>
             <div>
               <div className="form-check form-check-inline">
@@ -409,7 +409,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
       style={{ backgroundColor: "#1a1a1a", color: "#fff" }}
     >
       <div
-        className="mb-3 d-flex justify-content-between align-items-center"
+        className="mb-3 flex justify-between items-center"
         style={{ color: "#ccc" }}
       >
         <small>{fullTimeString}</small>
@@ -430,11 +430,11 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
         <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
           <strong>Request:</strong>
         </div>
-        <div className="ps-3">
+        <div className="pl-3">
           <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
             URL
           </div>
-          <div className="mb-2 ps-3">
+          <div className="mb-2 pl-3">
             <div className="p-2 rounded" style={{ backgroundColor: "#333", fontSize: "0.9rem" }}>
               {apiObject.url}
             </div>
@@ -445,7 +445,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
               <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                 headers
               </div>
-              <div className="mb-2 ps-3">
+              <div className="mb-2 pl-3">
                 <div
                   className="p-2 rounded"
                   style={{ backgroundColor: "#333", fontSize: "0.85rem" }}
@@ -465,7 +465,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
               <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                 body
               </div>
-              <div className="mb-2 ps-3">
+              <div className="mb-2 pl-3">
                 <div className="p-2 rounded" style={{ backgroundColor: "#333" }}>
                   <JsonTree data={apiObject.requestBody} />
                 </div>
@@ -481,11 +481,11 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
             <strong>Response:</strong>
           </div>
-          <div className="ps-3">
+          <div className="pl-3">
             <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
               status
             </div>
-            <div className="mb-2 ps-3">
+            <div className="mb-2 pl-3">
               <span
                 className="badge"
                 style={{
@@ -502,7 +502,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
                 <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                   headers
                 </div>
-                <div className="mb-2 ps-3">
+                <div className="mb-2 pl-3">
                   <div
                     className="p-2 rounded"
                     style={{ backgroundColor: "#333", fontSize: "0.85rem" }}
@@ -522,7 +522,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
                 <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                   body
                 </div>
-                <div className="ps-3">
+                <div className="pl-3">
                   <div
                     className="p-2 rounded"
                     style={{ backgroundColor: "#333", fontSize: "0.95rem" }}
@@ -542,7 +542,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
             <strong>Error:</strong>
           </div>
-          <div className="ps-3">
+          <div className="pl-3">
             {apiObject.errorType === "timeout" && (
               <div className="mb-2">
                 <span className="badge" style={{ backgroundColor: "#ffc107", fontSize: "0.85rem" }}>
@@ -732,7 +732,7 @@ export function Api() {
         <>
           <div className="py-1">
             <h5>API Results</h5>
-            <div className="d-flex justify-content-between align-items-center mb-2">
+            <div className="flex justify-between items-center mb-2">
               <ClearButton />
               <div style={{ color: "#aaa", fontSize: "0.85rem" }}>
                 {apiObjectsValue.length} 件を表示

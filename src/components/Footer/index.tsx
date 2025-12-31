@@ -9,7 +9,7 @@ export function Footer() {
   return (
     <footer>
       <Navbar variant="dark" bg="sora" expand="md" fixed="bottom">
-        <div className="me-auto" />
+        <div className="mr-auto" />
         <div className="flex items-center">
           <NavbarCollapse>
             <a

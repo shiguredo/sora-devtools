@@ -106,7 +106,7 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
       ) : (
         <>
           {trackStats.value.length > 1 && (
-            <div className="d-flex gap-2">
+            <div className="flex gap-2">
               {trackStats.value.map((trackStat) => (
                 <div
                   key={trackStat.outboundRtpStats.rid}

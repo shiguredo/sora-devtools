@@ -69,7 +69,7 @@ export function Message(props: Props) {
   const disabled = description === undefined;
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
-      <div className="d-flex justify-content-between align-items-center text-break">
+      <div className="flex justify-between items-center break-words">
         <button
           type="button"
           className={`debug-title ${disabled ? "disabled" : ""}`}

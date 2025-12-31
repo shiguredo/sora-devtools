@@ -19,7 +19,7 @@ export function Header() {
           <NavbarBrand href="/">Sora DevTools</NavbarBrand>
           <NavbarToggle />
           <NavbarCollapse>
-            <div className="me-auto" />
+            <div className="mr-auto" />
             <div className="flex items-center flex-wrap">
               <NavbarText className="py-0 my-1 mx-1">
                 <p className="navbar-signaling-url border rounded">
@@ -37,7 +37,7 @@ export function Header() {
               <NavbarText className="py-0 my-1 mx-1">
                 <DownloadReportButton />
               </NavbarText>
-              <NavbarText className="py-0 my-1 ms-1">
+              <NavbarText className="py-0 my-1 ml-1">
                 <CopyUrlButton />
               </NavbarText>
             </div>

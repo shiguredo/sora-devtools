@@ -191,7 +191,7 @@ export function DownloadReportButton() {
   return (
     <>
       <input
-        className="btn btn-light btn-sm ms-1"
+        className="btn btn-light btn-sm ml-1"
         type="button"
         name="downloadReport"
         defaultValue="Download report"

@@ -13,9 +13,9 @@ function TextBox(props: TextBoxProps) {
     event.currentTarget.blur();
   };
   return (
-    <div className="d-flex align-items-center">
+    <div className="flex items-center">
       <p>sessionID:</p>
-      <div className="d-flex align-items-center border border-secondary rounded mx-1">
+      <div className="flex items-center border border-secondary rounded mx-1">
         <p id={props.id} className="mx-2 p-1">
           {props.text}
         </p>
