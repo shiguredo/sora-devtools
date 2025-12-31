@@ -63,7 +63,7 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
   };
 
   return (
-    <div className={className}>
+    <div className={`flex flex-col flex-1 h-full ${className}`}>
       {/* タブヘッダー */}
       <div className="flex border-b border-gray-600" role="tablist">
         {tabs.map((tab) => {
@@ -94,15 +94,17 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
       </div>
 
       {/* タブコンテンツ */}
-      <div className="pt-2">
+      <div className="tab-content pt-2">
         {tabs.map((tab) => {
           const { eventKey, children: tabChildren } = tab;
           const isActive = eventKey === activeKey;
 
-          if (!isActive) return null;
-
           return (
-            <div key={eventKey} role="tabpanel">
+            <div
+              key={eventKey}
+              role="tabpanel"
+              className={`tab-pane ${isActive ? "active" : "hidden"}`}
+            >
               {tabChildren}
             </div>
           );

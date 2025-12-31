@@ -6,7 +6,7 @@ export function ConnectButton() {
     void connectSora();
   };
   return (
-    <div className="col-auto mb-1">
+    <div className="col-auto mb-1 mr-2">
       <input
         className="btn btn-secondary"
         type="button"
