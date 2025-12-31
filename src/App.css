@@ -666,6 +666,7 @@ button.debug-title {
 .form-inline {
   display: flex;
   align-items: center;
+  min-height: 40px;
 }
 
 .form-row .col {
