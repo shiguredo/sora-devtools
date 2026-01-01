@@ -11,6 +11,16 @@
 
 ## develop
 
+- [ADD] signalingUrlCandidates の設定モーダルを追加する
+  - OPFS を使用してブラウザに URL 設定を永続化
+  - 複数 URL の有効/無効を切り替え可能
+  - @voluntas
+- [ADD] デバッグパネルのタイムラインに全開/全閉トグルボタンを追加する
+  - @voluntas
+- [ADD] デバッグパネルの notify メッセージの最大保持件数を設定可能にする
+  - デフォルト 1000 件、100/500/1000/5000 から選択可能
+  - URL パラメータ maxNotifyMessages に対応
+  - @voluntas
 - [FIX] forwardingFilter（単数形）を削除し forwardingFilters（複数形）に統一する
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
@@ -18,6 +28,10 @@
 
 ### misc
 
+- [CHANGE] Bootstrap/react-bootstrap から Tailwind CSS に移行する
+  - @voluntas
+- [CHANGE] React から Preact に移行する
+  - @voluntas
 - [CHANGE] Biome から Oxc (oxlint/oxfmt) に移行する
   - @voluntas
 

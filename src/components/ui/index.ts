@@ -17,5 +17,4 @@ export { Tabs, Tab } from "./Tabs.tsx";
 // Interactive components
 export { Collapse } from "./Collapse.tsx";
 export { Toast, ToastHeader, ToastBody } from "./Toast.tsx";
-export { Popover } from "./Popover.tsx";
 export { HrForm } from "./HrForm.tsx";
