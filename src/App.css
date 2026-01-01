@@ -114,11 +114,6 @@ input[type="range"]:active::-moz-range-progress {
   background: #015dc8;
 }
 
-footer .btn {
-  font-size: 0.875rem;
-  padding: 5px;
-}
-
 .form-template-dropdown {
   border: 1px rgb(222, 226, 230) solid;
 }
@@ -146,21 +141,6 @@ video {
 
 .container {
   max-width: none;
-}
-
-.list-url {
-  font-size: 1.125rem;
-  padding-left: 1rem;
-}
-
-.list-url li {
-  margin-left: 1.5rem;
-}
-
-.list-url .separator {
-  list-style: none;
-  margin-left: 0;
-  margin-top: 1rem;
 }
 
 .col-devtools {
@@ -212,16 +192,9 @@ video {
   color: #ffffff;
 }
 
-.col-debug input:disabled {
-  background-color: #666666;
-  color: #ffffff;
-}
-
-
 .volume-visualizer {
   background-color: #eeeeee;
 }
-
 
 .alert-messages {
   position: absolute;
@@ -236,13 +209,6 @@ video {
   max-width: 450px;
   margin-top: 10px;
 }
-
-.spinner-status {
-  width: 1rem;
-  height: 1rem;
-  margin-left: 0.25rem;
-}
-
 
 .hr-form {
   margin: 0.5rem 0 1rem 0;
@@ -317,14 +283,6 @@ video {
 .bs-popover-bottom > .popover-arrow::before {
   border-bottom-color: #0071bc;
 }
-
-.cropArea {
-  position: absolute;
-  outline: 4px solid deeppink;
-  cursor: move;
-  z-index: 2000;
-}
-
 
 @media (max-width: 768px) {
   body {

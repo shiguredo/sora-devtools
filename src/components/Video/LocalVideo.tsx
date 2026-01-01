@@ -38,9 +38,7 @@ function VideoBox() {
     : "border-[5px] border-black/10 rounded-[5px]";
   return (
     <div className="flex">
-      <div
-        className={`relative flex flex-nowrap items-start overflow-y-hidden ${wrapperClasses}`}
-      >
+      <div className={`relative flex flex-nowrap items-start overflow-y-hidden ${wrapperClasses}`}>
         {mediaStats.value &&
           localMediaStream.value &&
           localMediaStream.value.getVideoTracks().length > 0 && (
