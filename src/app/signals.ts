@@ -144,6 +144,7 @@ export const debugFilterText = signal<string>("");
 export const debugApiUrl = signal<string>("http://localhost:3000");
 // expand: true = 全て開く, false = 全て閉じる, null = 初期状態
 export const timelineExpandAll = signal<boolean | null>(null);
+export const maxNotifyMessages = signal<number>(1000);
 
 // --- メッセージ ---
 export const alertMessages = signal<AlertMessage[]>([]);
@@ -562,10 +563,16 @@ export const setLogMessages = (message: LogMessage["message"]): void => {
     },
   ];
 };
-const MAX_NOTIFY_MESSAGES = 1000;
 export const setNotifyMessages = (message: NotifyMessage): void => {
   const messages = [...notifyMessages.value, message];
-  notifyMessages.value = messages.slice(-MAX_NOTIFY_MESSAGES);
+  notifyMessages.value = messages.slice(-maxNotifyMessages.value);
+};
+export const setMaxNotifyMessages = (max: number): void => {
+  maxNotifyMessages.value = max;
+  // 現在のメッセージ数が上限を超えていたら切り詰める
+  if (notifyMessages.value.length > max) {
+    notifyMessages.value = notifyMessages.value.slice(-max);
+  }
 };
 export const setPushMessages = (message: PushMessage): void => {
   pushMessages.value = [...pushMessages.value, message];

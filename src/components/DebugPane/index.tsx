@@ -9,6 +9,7 @@ import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
 import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages.tsx";
 import { DebugFilter } from "./Filter.tsx";
 import { LogMessages } from "./LogMessages.tsx";
+import { NotifyMaxMessages } from "./NotifyMaxMessages.tsx";
 import { NotifyMessages } from "./NotifyMessages.tsx";
 import { PushMessages } from "./PushMessages.tsx";
 import { Rpc } from "./Rpc.tsx";
@@ -56,7 +57,10 @@ export function DebugPane() {
           <SignalingMessages />
         </Tab>
         <Tab eventKey="notify" title="Notfiy">
-          <DebugFilter />
+          <div className="flex items-center gap-4">
+            <DebugFilter />
+            <NotifyMaxMessages />
+          </div>
           <NotifyMessages />
         </Tab>
         <Tab eventKey="push" title="Push">

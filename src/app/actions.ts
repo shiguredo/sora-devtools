@@ -245,6 +245,14 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.forceStereoOutput !== undefined) {
     signals.setForceStereoOutput(qsParams.forceStereoOutput);
   }
+  // maxNotifyMessages は QueryStringParameters に含まれないため直接取得
+  const maxNotifyMessagesParam = new URLSearchParams(location.search).get("maxNotifyMessages");
+  if (maxNotifyMessagesParam !== null) {
+    const maxValue = Number(maxNotifyMessagesParam);
+    if (!Number.isNaN(maxValue) && maxValue > 0) {
+      signals.setMaxNotifyMessages(maxValue);
+    }
+  }
   signals.setInitialFakeContents();
 
   const bundleIdValue = signals.bundleId.value;
@@ -1807,6 +1815,7 @@ export {
   setMp4MediaStream,
   setNoiseSuppression,
   setNotifyMessages,
+  setMaxNotifyMessages,
   setReconnect,
   setResizeMode,
   setRole,
