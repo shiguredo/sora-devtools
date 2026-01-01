@@ -96,7 +96,7 @@ export function TimelineMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((message) => {
         let key = `${message.timestamp}-${message.type}`;
         // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する

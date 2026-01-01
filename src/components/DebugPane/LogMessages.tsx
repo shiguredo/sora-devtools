@@ -30,7 +30,7 @@ export function LogMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((log, index) => {
         return <Log key={log.message.title + String(index) + log.timestamp} {...log} />;
       })}

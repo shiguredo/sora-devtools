@@ -10,7 +10,7 @@ export function DebugFilter() {
     setDebugFilterText(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2 debug-filter" controlId="channelId">
+    <FormGroup className="flex items-center gap-2 my-2" controlId="channelId">
       <FormLabel className="text-white">Filter:</FormLabel>
       <FormInput
         type="text"

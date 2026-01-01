@@ -47,7 +47,7 @@ export function PushMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((pushMessage, index) => {
         const key = `${pushMessage.timestamp}-${index}`;
         return <Log key={key} ariaControls={key} push={pushMessage} />;

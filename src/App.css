@@ -217,100 +217,11 @@ video {
   color: #ffffff;
 }
 
-.col-debug .debug-filter {
-  margin: 0.5rem 0;
-}
-
-.col-debug .debug-messages {
-  overflow-y: scroll;
-  height: 100%;
-}
-
-.arrow-bottom {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin: 2px 6px;
-  border-bottom: 2px solid #ffffff;
-  border-right: 2px solid #ffffff;
-  transform: rotate(45deg);
-}
-
-.arrow-right {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin: 0px 6px;
-  border-top: 2px solid #ffffff;
-  border-right: 2px solid #ffffff;
-  transform: rotate(45deg);
-}
-
-.arrow-right.disabled {
-  opacity: 0.1;
-}
-
-button.debug-title {
-  cursor: pointer;
-  color: #ffffff !important;
-  width: 100%;
-  text-decoration: none;
-  background: transparent;
-  border: none;
-  padding: 0;
-  text-align: left;
-  font: inherit;
-  display: block;
-}
-
-.debug-title.disabled {
-  pointer-events: none;
-}
-
-.debug-message {
-  display: flex;
-  flex-wrap: nowrap;
-  color: #ffffff !important;
-}
-
-.debug-message > div {
-  padding: 0.25rem 1rem;
-}
-
-.debug-message pre {
-  font-size: 100%;
-  color: #ffffff;
-  margin: 0;
-}
-
-.debug-message pre.word-break {
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-#debug:checked ~ .custom-control-label::before {
-  background-color: #ff0066;
-}
 
 .volume-visualizer {
   background-color: #eeeeee;
 }
 
-.video-status {
-  display: flex;
-  flex-direction: column;
-  top: 0;
-  left: 0;
-  white-space: nowrap;
-}
-
-.video-status p {
-  margin: 0;
-}
-
-.video-status > .video-status-inner > *:first-child {
-  margin-left: 0 !important;
-}
 
 .alert-messages {
   position: absolute;
@@ -332,20 +243,6 @@ button.debug-title {
   margin-left: 0.25rem;
 }
 
-.video-wrapper {
-  border: 5px solid rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
-
-.spotlight-focused {
-  border: 5px solid var(--color-bs-primary);
-  border-radius: 5px;
-}
-
-.mediastream-stats-report {
-  list-style-type: none;
-  padding: 1rem;
-}
 
 .hr-form {
   margin: 0.5rem 0 1rem 0;
@@ -428,35 +325,6 @@ button.debug-title {
   z-index: 2000;
 }
 
-.video-overlay {
-  max-width: max-content;
-  position: absolute;
-  padding: 0.5rem;
-  top: 0.5rem;
-  left: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
-  color: white;
-  z-index: 999;
-}
-
-.video-overlay .table-video-capabilities {
-  border-collapse: separate;
-  border-spacing: 0.2rem;
-}
-
-.video-overlay .table-video-capabilities th {
-  font-weight: normal;
-}
-
-.video-overlay .rid {
-  cursor: pointer;
-}
-
-.video-overlay .rid-selected {
-  cursor: pointer;
-  font-weight: bold;
-}
 
 @media (max-width: 768px) {
   body {

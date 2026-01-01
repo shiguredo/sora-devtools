@@ -50,7 +50,7 @@ export function NotifyMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((notify) => {
         return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
       })}

@@ -19,11 +19,12 @@ function Description(props: DescriptionProps) {
   if (description === undefined) {
     return null;
   }
+  const wordBreakClass = props.wordBreak ? "whitespace-pre-wrap break-all" : "";
   if (typeof description !== "object") {
     return (
-      <div className="debug-message">
-        <div className="col-sm-12">
-          <pre className={props.wordBreak ? "word-break" : ""}>{description}</pre>
+      <div className="flex flex-nowrap text-white">
+        <div className="py-1 px-4 w-full">
+          <pre className={`text-base text-white m-0 ${wordBreakClass}`}>{description}</pre>
         </div>
       </div>
     );
@@ -31,9 +32,9 @@ function Description(props: DescriptionProps) {
   // prevDescription が渡されている場合は JsonTree を使用（差分更新あり）
   if (prevDescription !== undefined) {
     return (
-      <div className="debug-message">
-        <div className="col-sm-12">
-          <div className={props.wordBreak ? "word-break" : ""}>
+      <div className="flex flex-nowrap text-white">
+        <div className="py-1 px-4 w-full">
+          <div className={wordBreakClass}>
             <JsonTree data={description} prevData={prevDescription} />
           </div>
         </div>
@@ -42,9 +43,9 @@ function Description(props: DescriptionProps) {
   }
   // prevDescription がない場合は従来通り JSON.stringify
   return (
-    <div className="debug-message">
-      <div className="col-sm-12">
-        <pre className={props.wordBreak ? "word-break" : ""}>
+    <div className="flex flex-nowrap text-white">
+      <div className="py-1 px-4 w-full">
+        <pre className={`text-base text-white m-0 ${wordBreakClass}`}>
           {JSON.stringify(description, null, 2)}
         </pre>
       </div>
@@ -62,28 +63,48 @@ type Props = {
   wordBreak?: boolean;
 };
 
+// 矢印アイコン（折りたたみ状態用）
+function ArrowIcon({ expanded, disabled }: { expanded: boolean; disabled: boolean }) {
+  const rotation = expanded ? "rotate-90" : "";
+  const opacity = disabled ? "opacity-10" : "";
+  return (
+    <svg
+      className={`inline-block w-2.5 h-2.5 mx-1.5 transition-transform ${rotation} ${opacity}`}
+      fill="none"
+      stroke="white"
+      strokeWidth="2"
+      viewBox="0 0 8 12"
+    >
+      <path d="M1 1l5 5-5 5" />
+    </svg>
+  );
+}
+
 export function Message(props: Props) {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props;
   const show = useSignal(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
   const disabled = description === undefined;
+  const disabledClass = disabled ? "pointer-events-none" : "";
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="flex justify-between items-center break-words">
         <button
           type="button"
-          className={`debug-title ${disabled ? "disabled" : ""}`}
+          className={`
+            cursor-pointer text-white w-full no-underline
+            bg-transparent border-0 p-0 text-left font-inherit block
+            ${disabledClass}
+          `}
           onClick={() => {
             show.value = !show.value;
           }}
           aria-controls={ariaControls}
           aria-expanded={show.value}
         >
-          <i
-            className={`${show.value ? "arrow-bottom" : "arrow-right"} ${disabled ? "disabled" : ""}`}
-          />{" "}
+          <ArrowIcon expanded={show.value} disabled={disabled} />
           {timestamp ? (
-            <span className="text-white-50 me-1">[{formatUnixtime(timestamp)}]</span>
+            <span className="text-white/50 mr-1">[{formatUnixtime(timestamp)}]</span>
           ) : null}
           {label}
           <span>{title}</span>

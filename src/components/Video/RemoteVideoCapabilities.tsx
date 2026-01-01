@@ -83,11 +83,11 @@ const useVideoTrackStats = (stream: MediaStream) => {
 export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
   const { trackStats } = useVideoTrackStats(stream);
   return (
-    <div className="video-overlay">
+    <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
       {trackStats.value === null ? (
         <p>loading...</p>
       ) : (
-        <table className="table-video-capabilities">
+        <table className="border-collapse border-spacing-[0.2rem]">
           <tr>
             <th>mimeType</th>
             <td>{trackStats.value.codec.mimeType}</td>

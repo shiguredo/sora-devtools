@@ -48,7 +48,7 @@ export function Stats() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((stats) => {
         // O(1) で前回の同じ id の stats を取得
         const prevStats = prevStatsMap.get(stats.id);

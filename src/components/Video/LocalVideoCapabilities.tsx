@@ -100,7 +100,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
 export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
   const { trackStats, selected } = useLocalVideoTrackStats(stream);
   return (
-    <div className="video-overlay">
+    <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
       {trackStats.value.length === 0 ? (
         <p>loading...</p>
       ) : (
@@ -110,11 +110,11 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
               {trackStats.value.map((trackStat) => (
                 <div
                   key={trackStat.outboundRtpStats.rid}
-                  className={
+                  className={`cursor-pointer ${
                     trackStat.outboundRtpStats.rid === selected.value?.outboundRtpStats.rid
-                      ? "rid-selected"
-                      : "rid"
-                  }
+                      ? "font-bold"
+                      : ""
+                  }`}
                   onClick={() => {
                     selected.value = trackStat;
                   }}
@@ -128,7 +128,7 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
             </div>
           )}
           {selected.value && (
-            <table className="table-video-capabilities">
+            <table className="border-collapse border-spacing-[0.2rem]">
               <tr>
                 <th>mimeType</th>
                 <td>{selected.value.codec?.mimeType}</td>

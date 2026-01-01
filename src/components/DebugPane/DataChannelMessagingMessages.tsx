@@ -60,7 +60,7 @@ export function DataChannelMessagingMessages() {
       <div className="py-1">
         <ButtonClear />
       </div>
-      <div className="debug-messages">
+      <div className="overflow-y-auto h-full">
         {dataChannelMessagesValue.map((message) => {
           const key = message.label + message.timestamp;
           return <Log key={key} {...message} />;

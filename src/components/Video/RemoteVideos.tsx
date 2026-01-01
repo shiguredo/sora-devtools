@@ -76,7 +76,7 @@ function MediaStreamStatsReport({ stream }: { stream: MediaStream }) {
         }
         return (
           <div key={s.id}>
-            <ul className="mediastream-stats-report">
+            <ul className="list-none p-4">
               {Object.entries(s).map(([key, value]) => {
                 return (
                   <li key={key}>
@@ -100,15 +100,18 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
   const { mediaStream, connectionId, clientId } = client;
   const height = useSignal<number>(0);
   const focused = connectionId && focusedSpotlightConnectionIds.value[connectionId];
+  const wrapperClasses = focused
+    ? "border-[5px] border-bs-primary rounded-[5px]"
+    : "border-[5px] border-black/10 rounded-[5px]";
   return (
     <div className="col-auto">
-      <div className="video-status">
-        <div className="flex items-center mb-1 video-status-inner">
+      <div className="flex flex-col top-0 left-0 whitespace-nowrap">
+        <div className="flex items-center mb-1 first:*:ml-0">
           <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           <JitterButter type="audio" stream={mediaStream} />
           <JitterButter type="video" stream={mediaStream} />
         </div>
-        <div className="flex items-center mb-1 video-status-inner">
+        <div className="flex items-center mb-1 first:*:ml-0">
           {spotlight.value !== "true" && simulcast.value === "true" ? (
             <>
               <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
@@ -127,11 +130,7 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
       </div>
       <div className="flex flex-wrap items-start overflow-y-hidden">
         {/* オーバーレイするため position-relative を付けておくこと */}
-        <div
-          className={`relative flex flex-nowrap items-start video-wrapper${
-            focused ? " spotlight-focused" : ""
-          }`}
-        >
+        <div className={`relative flex flex-nowrap items-start ${wrapperClasses}`}>
           {mediaStats.value && mediaStream.getVideoTracks().length > 0 && (
             <RemoteVideoCapabilities stream={mediaStream} />
           )}

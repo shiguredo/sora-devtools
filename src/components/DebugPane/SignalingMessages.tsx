@@ -39,7 +39,7 @@ export function SignalingMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((message) => {
         const key = message.type + message.timestamp;
         return <Log key={key} {...message} />;
