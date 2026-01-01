@@ -39,6 +39,7 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 - [Node\.js](https://nodejs.org/en)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Preact](https://preactjs.com/)
+  - [Signals](https://preactjs.com/guide/v10/signals/)
 - [Vite](https://vite.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [pnpm](https://pnpm.io/)
