@@ -11,6 +11,10 @@
 
 ## develop
 
+- [CHANGE] Fake Video を Worker ベースに書き換える
+  - OffscreenCanvas を使用して Worker 内で描画
+  - Chrome/Edge/Safari 対応（Firefox 非対応）
+  - @voluntas
 - [ADD] signalingUrlCandidates の設定モーダルを追加する
   - OPFS を使用してブラウザに URL 設定を永続化
   - 複数 URL の有効/無効を切り替え可能
