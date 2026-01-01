@@ -1,6 +1,7 @@
 {
   "name": "sora-devtools",
   "version": "2025.2.1",
+  "private": true,
   "description": "WebRTC SFU Sora DevTools",
   "homepage": "https://github.com/shiguredo/sora-devtools#readme",
   "bugs": {
