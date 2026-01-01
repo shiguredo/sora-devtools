@@ -252,13 +252,13 @@ video {
 .form-row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -12px;
-  margin-left: -12px;
+  margin-right: -5px;
+  margin-left: -5px;
 }
 
 .form-row > * {
-  padding-right: 12px;
-  padding-left: 12px;
+  padding-right: 5px;
+  padding-left: 5px;
   padding-bottom: 0.5rem;
 }
 
