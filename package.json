@@ -43,7 +43,7 @@
     "jsdom": "27.4.0",
     "oxfmt": "0.21.0",
     "oxlint": "1.36.0",
-    "oxlint-tsgolint": "0.10.0",
+    "oxlint-tsgolint": "0.10.1",
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
     "vite": "7.3.0",
