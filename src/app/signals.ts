@@ -562,8 +562,10 @@ export const setLogMessages = (message: LogMessage["message"]): void => {
     },
   ];
 };
+const MAX_NOTIFY_MESSAGES = 1000;
 export const setNotifyMessages = (message: NotifyMessage): void => {
-  notifyMessages.value = [...notifyMessages.value, message];
+  const messages = [...notifyMessages.value, message];
+  notifyMessages.value = messages.slice(-MAX_NOTIFY_MESSAGES);
 };
 export const setPushMessages = (message: PushMessage): void => {
   pushMessages.value = [...pushMessages.value, message];
