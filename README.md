@@ -37,20 +37,18 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - [Node\.js](https://nodejs.org/en)
-- [Vite](https://vite.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [React](https://reactjs.org/)
-- [Zustand](https://zustand-demo.pmnd.rs/)
-- [Bootstrap](https://getbootstrap.com/)
-  - [React Bootstrap](https://react-bootstrap.github.io/)
+- [Preact](https://preactjs.com/)
+- [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [pnpm](https://pnpm.io/)
+- [Oxc](https://oxc.rs/)
+- [Playwright](https://playwright.dev/)
+- [Vitest](https://vitest.dev/)
 - [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
   - [@shiguredo/mp4\-media\-stream \- npm](https://www.npmjs.com/package/@shiguredo/mp4-media-stream)
-- [Playwright](https://playwright.dev/)
-- [Vitest](https://vitest.dev/)
-- [pnpm](https://pnpm.io/)
-- [Oxc](https://oxc.rs/)
 
 ## 特徴
 
@@ -144,7 +142,7 @@ Sora ではマルチストリームが前提となります。
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```text
-Copyright 2017-2025, Shiguredo Inc.
+Copyright 2017-2026, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
 
 Licensed under the Apache License, Version 2.0 (the "License");

@@ -19,7 +19,7 @@ test("recvonly", async ({ page }) => {
 
   await page.goto(`http://localhost:3333/devtools/?${params.toString()}`);
 
-  await page.click('input[name="connect"]');
+  await page.click('button[name="connect"]');
 
   // '#local-video-connection-id' が表示されるまで待つ
   await page.waitForSelector("#local-video-connection-id", { timeout: 5000 });
@@ -33,5 +33,5 @@ test("recvonly", async ({ page }) => {
   // 3 秒待つ
   await page.waitForTimeout(3000);
 
-  await page.click('input[name="disconnect"]');
+  await page.click('button[name="disconnect"]');
 });

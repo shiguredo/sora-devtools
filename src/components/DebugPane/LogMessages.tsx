@@ -1,11 +1,9 @@
-import { memo } from "react";
-
 import { debugFilterText, logMessages } from "@/app/signals";
 import type { LogMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const Collapse = memo<LogMessage>((props) => {
+function Collapse(props: LogMessage) {
   const { message, timestamp } = props;
   return (
     <Message
@@ -14,11 +12,11 @@ const Collapse = memo<LogMessage>((props) => {
       description={JSON.parse(message.description)}
     />
   );
-});
+}
 
-const Log = memo<LogMessage>((props) => {
+function Log(props: LogMessage) {
   return <Collapse {...props} />;
-});
+}
 
 export function LogMessages() {
   const logMessagesValue = logMessages.value;
@@ -32,7 +30,7 @@ export function LogMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((log, index) => {
         return <Log key={log.message.title + String(index) + log.timestamp} {...log} />;
       })}

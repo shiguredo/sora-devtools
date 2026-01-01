@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { setVideo } from "@/app/actions";
 import { isFormDisabled, video } from "@/app/signals";
@@ -11,7 +11,7 @@ export function VideoForm() {
     setVideo(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="video">
+    <FormGroup className="flex items-center gap-2" controlId="video">
       <TooltipFormCheck
         kind="video"
         checked={video.value}

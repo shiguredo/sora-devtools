@@ -1,7 +1,6 @@
-import { Col, FormGroup, Row } from "react-bootstrap";
-
 import { setEnabledVideoVP9Params, setVideoVP9Params } from "@/app/actions";
 import { enabledVideoVP9Params, isFormDisabled, videoVP9Params } from "@/app/signals";
+import { FormGroup } from "@/components/ui";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
@@ -14,9 +13,9 @@ export function VideoVP9ParamsForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledVideoVP9Params">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledVideoVP9Params">
             <TooltipFormCheck
               kind="videoVP9Params"
               checked={enabledVideoVP9Params.value}
@@ -26,11 +25,11 @@ export function VideoVP9ParamsForm() {
               videoVP9Params
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledVideoVP9Params.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="videoVP9Params"
               placeholder="videoVP9Paramsを指定"
@@ -38,8 +37,8 @@ export function VideoVP9ParamsForm() {
               setValue={(value) => setVideoVP9Params(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

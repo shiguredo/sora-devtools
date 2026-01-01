@@ -1,7 +1,6 @@
-import { Button, Col, FormGroup, Row } from "react-bootstrap";
-
 import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
 import { dataChannels, enabledDataChannels, isFormDisabled } from "@/app/signals";
+import { Button, FormGroup } from "@/components/ui";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
@@ -28,9 +27,9 @@ export function DataChannelsForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannels">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledDataChannels">
             <TooltipFormCheck
               kind="dataChannels"
               checked={enabledDataChannels.value}
@@ -40,11 +39,11 @@ export function DataChannelsForm() {
               dataChannels
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledDataChannels.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
@@ -54,7 +53,6 @@ export function DataChannelsForm() {
               rows={12}
               extraControls={
                 <Button
-                  type="button"
                   variant="light"
                   size="sm"
                   onClick={() => setDataChannels(exampleJsonString)}
@@ -63,8 +61,8 @@ export function DataChannelsForm() {
                 </Button>
               }
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

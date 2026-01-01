@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { mediaStats, setMediaStats } from "@/app/signals";
 
@@ -10,7 +10,7 @@ export function MediaStatsForm() {
     setMediaStats(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="mediaStats">
+    <FormGroup className="flex items-center gap-2" controlId="mediaStats">
       <TooltipFormCheck
         kind="mediaStats"
         checked={mediaStats.value}

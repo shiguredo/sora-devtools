@@ -1,4 +1,4 @@
-import { Col, FormGroup, Row } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { forceStereoOutput, isFormDisabled, setForceStereoOutput } from "@/app/signals";
 
@@ -11,9 +11,9 @@ export function ForceStereoOutputForm() {
     setForceStereoOutput(target.checked);
   };
   return (
-    <Row className="form-row">
-      <Col className="col-auto">
-        <FormGroup className="form-inline" controlId="forceStereoOutput">
+    <div className="flex flex-wrap gap-2">
+      <div className="w-auto">
+        <FormGroup className="flex items-center gap-2" controlId="forceStereoOutput">
           <TooltipFormCheck
             kind="forceStereoOutput"
             checked={forceStereoOutput.value}
@@ -23,7 +23,7 @@ export function ForceStereoOutputForm() {
             forceStereoOutput
           </TooltipFormCheck>
         </FormGroup>
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 }

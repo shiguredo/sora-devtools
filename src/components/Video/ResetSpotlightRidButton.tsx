@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui";
 import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
@@ -19,13 +20,9 @@ export function ResetSpotlightRidButton() {
 
   return (
     <div className="mx-1">
-      <input
-        className="btn btn-secondary"
-        type="button"
-        name="resetAllSpotlightRid"
-        defaultValue="resetSpotlightRid"
-        onClick={onClick}
-      />
+      <Button variant="secondary" onClick={onClick}>
+        resetSpotlightRid
+      </Button>
     </div>
   );
 }

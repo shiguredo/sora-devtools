@@ -1,7 +1,6 @@
-import { Col, FormGroup, Row } from "react-bootstrap";
-
 import { setEnabledForwardingFilters, setForwardingFilters } from "@/app/actions";
 import { enabledForwardingFilters, forwardingFilters, isFormDisabled } from "@/app/signals";
+import { FormGroup } from "@/components/ui";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
@@ -14,9 +13,9 @@ export function ForwardingFiltersForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledForwardingFilters">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledForwardingFilters">
             <TooltipFormCheck
               kind="forwardingFilters"
               checked={enabledForwardingFilters.value}
@@ -26,11 +25,11 @@ export function ForwardingFiltersForm() {
               forwardingFilters
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledForwardingFilters.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="forwardingFilters"
               placeholder="forwardingFiltersを指定"
@@ -38,8 +37,8 @@ export function ForwardingFiltersForm() {
               setValue={(value) => setForwardingFilters(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

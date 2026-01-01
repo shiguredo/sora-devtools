@@ -10,7 +10,7 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
-import { WORKER_SCRIPT } from "../constants";
+import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {
   AlertMessage,
   ApiObject,
@@ -116,11 +116,9 @@ export const forceStereoOutput = signal<boolean>(false);
 export const fakeVolume = signal<string>("0");
 export const fakeContents = signal<{
   worker: Worker | null;
-  colorCode: number;
   gainNode: GainNode | null;
 }>({
   worker: null,
-  colorCode: 0,
   gainNode: null,
 });
 
@@ -142,6 +140,9 @@ export const debug = signal<boolean>(false);
 export const debugType = signal<DebugType>("timeline");
 export const debugFilterText = signal<string>("");
 export const debugApiUrl = signal<string>("http://localhost:3000");
+// expand: true = 全て開く, false = 全て閉じる, null = 初期状態
+export const timelineExpandAll = signal<boolean | null>(null);
+export const maxNotifyMessages = signal<number>(1000);
 
 // --- メッセージ ---
 export const alertMessages = signal<AlertMessage[]>([]);
@@ -324,13 +325,8 @@ export const setFakeContentsGainNode = (gainNode: GainNode | null): void => {
   fakeContents.value = { ...fakeContents.value, gainNode };
 };
 export const setInitialFakeContents = (): void => {
-  const colorCode = Math.floor(Math.random() * 0xffffff);
-  let worker: Worker | null = null;
-  if (URL.createObjectURL) {
-    const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
-    worker = new Worker(url);
-  }
-  fakeContents.value = { ...fakeContents.value, colorCode, worker };
+  const worker = new FakeVideoWorker();
+  fakeContents.value = { ...fakeContents.value, worker };
 };
 export const setFrameRate = (value: SoraDevtoolsState["frameRate"]): void => {
   frameRate.value = value;
@@ -561,7 +557,15 @@ export const setLogMessages = (message: LogMessage["message"]): void => {
   ];
 };
 export const setNotifyMessages = (message: NotifyMessage): void => {
-  notifyMessages.value = [...notifyMessages.value, message];
+  const messages = [...notifyMessages.value, message];
+  notifyMessages.value = messages.slice(-maxNotifyMessages.value);
+};
+export const setMaxNotifyMessages = (max: number): void => {
+  maxNotifyMessages.value = max;
+  // 現在のメッセージ数が上限を超えていたら切り詰める
+  if (notifyMessages.value.length > max) {
+    notifyMessages.value = notifyMessages.value.slice(-max);
+  }
 };
 export const setPushMessages = (message: PushMessage): void => {
   pushMessages.value = [...pushMessages.value, message];
@@ -765,7 +769,7 @@ export const resetState = (): void => {
 
     // Fake メディア
     fakeVolume.value = "0";
-    fakeContents.value = { worker: null, colorCode: 0, gainNode: null };
+    fakeContents.value = { worker: null, gainNode: null };
 
     // デバイス
     cameraDevice.value = true;

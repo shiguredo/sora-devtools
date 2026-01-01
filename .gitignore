@@ -20,5 +20,9 @@ next-env.d.ts
 # dist
 dist/
 
-# claude
+# Agents
 .claude/
+.codex/
+
+# mcp
+*.png

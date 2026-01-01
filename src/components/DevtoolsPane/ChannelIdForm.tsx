@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from "react-bootstrap";
+import { FormGroup, FormInput } from "@/components/ui";
 
 import { setChannelId } from "@/app/actions";
 import { channelId, isFormDisabled } from "@/app/signals";
@@ -11,9 +11,9 @@ export function ChannelIdForm() {
     setChannelId(target.value);
   };
   return (
-    <FormGroup className="form-inline" controlId="channelId">
+    <FormGroup className="flex items-center gap-2" controlId="channelId">
       <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
-      <FormControl
+      <FormInput
         type="text"
         placeholder="ChannelIdを指定"
         value={channelId.value}

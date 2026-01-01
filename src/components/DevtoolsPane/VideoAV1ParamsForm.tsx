@@ -1,7 +1,6 @@
-import { Col, FormGroup, Row } from "react-bootstrap";
-
 import { setEnabledVideoAV1Params, setVideoAV1Params } from "@/app/actions";
 import { enabledVideoAV1Params, isFormDisabled, videoAV1Params } from "@/app/signals";
+import { FormGroup } from "@/components/ui";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
@@ -14,9 +13,9 @@ export function VideoAV1ParamsForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledVideoAV1Params">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledVideoAV1Params">
             <TooltipFormCheck
               kind="videoAV1Params"
               checked={enabledVideoAV1Params.value}
@@ -26,11 +25,11 @@ export function VideoAV1ParamsForm() {
               videoAV1Params
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledVideoAV1Params.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="videoAV1Params"
               placeholder="videoAV1Paramsを指定"
@@ -38,8 +37,8 @@ export function VideoAV1ParamsForm() {
               setValue={(value) => setVideoAV1Params(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

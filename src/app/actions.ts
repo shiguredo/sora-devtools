@@ -23,13 +23,13 @@ import {
   createGetDisplayMediaVideoConstraints,
   createSignalingURL,
   createVideoConstraints,
-  drawFakeCanvas,
   getBlurRadiusNumber,
   getDevices,
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
 } from "./../utils.ts";
+import { loadUrlEntries } from "./../opfs.ts";
 import * as signals from "./signals.ts";
 
 // ページ初期化処理
@@ -197,6 +197,13 @@ export const setInitialParameter = async (): Promise<void> => {
   }
   if (qsParams.signalingUrlCandidates !== undefined) {
     signals.setSignalingUrlCandidates(qsParams.signalingUrlCandidates);
+  } else {
+    // query string に signalingUrlCandidates がない場合は OPFS から読み込む
+    const urlEntries = await loadUrlEntries();
+    const enabledUrls = urlEntries.filter((entry) => entry.enabled).map((entry) => entry.url);
+    if (enabledUrls.length > 0) {
+      signals.setSignalingUrlCandidates(enabledUrls);
+    }
   }
   if (qsParams.forwardingFilters !== undefined) {
     signals.setForwardingFilters(qsParams.forwardingFilters);
@@ -236,6 +243,14 @@ export const setInitialParameter = async (): Promise<void> => {
   }
   if (qsParams.forceStereoOutput !== undefined) {
     signals.setForceStereoOutput(qsParams.forceStereoOutput);
+  }
+  // maxNotifyMessages は QueryStringParameters に含まれないため直接取得
+  const maxNotifyMessagesParam = new URLSearchParams(location.search).get("maxNotifyMessages");
+  if (maxNotifyMessagesParam !== null) {
+    const maxValue = Number(maxNotifyMessagesParam);
+    if (!Number.isNaN(maxValue) && maxValue > 0) {
+      signals.setMaxNotifyMessages(maxValue);
+    }
   }
   signals.setInitialFakeContents();
 
@@ -618,25 +633,18 @@ async function createMediaStream(
       description: JSON.stringify(constraints),
     });
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints));
-    const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints);
-    if (canvas !== null) {
-      state.fakeContents.worker.onmessage = (event) => {
-        const data = event.data;
-        if (data.type !== "update") {
-          return;
-        }
-        drawFakeCanvas(
-          canvas,
-          state.fakeContents.colorCode,
-          constraints.fontSize,
-          data.counter.toString(),
-        );
-      };
+    const { offscreenCanvas, mediaStream, gainNode, frameRate } = createFakeMediaStream(constraints);
+    if (offscreenCanvas !== null) {
+      // 現在の Worker を停止
       state.fakeContents.worker.postMessage({ type: "stop" });
-      state.fakeContents.worker.postMessage({
-        type: "start",
-        interval: 1000 / constraints.frameRate,
-      });
+      // Worker に OffscreenCanvas を転送して描画を開始
+      state.fakeContents.worker.postMessage(
+        {
+          type: "init",
+          data: { canvas: offscreenCanvas, frameRate },
+        },
+        [offscreenCanvas],
+      );
     }
     for (const track of mediaStream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
@@ -1799,6 +1807,7 @@ export {
   setMp4MediaStream,
   setNoiseSuppression,
   setNotifyMessages,
+  setMaxNotifyMessages,
   setReconnect,
   setResizeMode,
   setRole,

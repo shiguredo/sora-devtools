@@ -1,4 +1,4 @@
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import { FormGroup, FormInput } from "@/components/ui";
 
 import { setBundleId, setEnabledBundleId } from "@/app/actions";
 import { bundleId, enabledBundleId, isFormDisabled } from "@/app/signals";
@@ -17,9 +17,9 @@ export function BundleIdForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledBundleId">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledBundleId">
             <TooltipFormCheck
               kind="bundleId"
               checked={enabledBundleId.value}
@@ -29,13 +29,13 @@ export function BundleIdForm() {
               bundleId
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledBundleId.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="bundleId">
-              <FormControl
+        <div className="form-row">
+          <div className="col-auto">
+            <FormGroup className="flex items-center gap-2" controlId="bundleId">
+              <FormInput
                 className="flex-fill w-500"
                 type="text"
                 placeholder="bundleIdを指定"
@@ -44,8 +44,8 @@ export function BundleIdForm() {
                 disabled={disabled}
               />
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

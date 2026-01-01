@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "preact/hooks";
 
 const CANVAS_WIDTH = 25 as const;
 const MARGIN = 2.5 as const;
@@ -41,7 +41,8 @@ type VisualizerProps = {
   stream: MediaStream;
   height: number;
 };
-const Visualizer = React.memo<VisualizerProps>((props) => {
+
+function Visualizer(props: VisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -91,19 +92,15 @@ const Visualizer = React.memo<VisualizerProps>((props) => {
     };
   }, [props.stream]);
   return (
-    <canvas
-      width={CANVAS_WIDTH}
-      height={props.height}
-      className="volume-visualizer"
-      ref={canvasRef}
-    />
+    <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
   );
-});
+}
 
 type MutedVisualizerProps = {
   height: number;
 };
-const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
+
+function MutedVisualizer(props: MutedVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -122,18 +119,13 @@ const MutedVisualizer = React.memo<MutedVisualizerProps>((props) => {
     ctx.restore();
   }, []);
   return (
-    <canvas
-      width={CANVAS_WIDTH}
-      height={props.height}
-      className="volume-visualizer"
-      ref={canvasRef}
-    />
+    <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
   );
-});
+}
 
-export const VolumeVisualizer = React.memo<VisualizerProps>((props) => {
+export function VolumeVisualizer(props: VisualizerProps) {
   if (props.micDevice && props.stream.getAudioTracks().length > 0) {
     return <Visualizer {...props} />;
   }
   return <MutedVisualizer {...props} />;
-});
+}

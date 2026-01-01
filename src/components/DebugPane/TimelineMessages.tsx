@@ -1,3 +1,5 @@
+import type { ComponentChild } from "preact";
+
 import { debugFilterText, timelineMessages } from "@/app/signals";
 import type { TimelineMessage } from "@/types";
 
@@ -63,7 +65,7 @@ function DataChannelLabel(props: DataChannelLabelProps) {
 function Collapse(props: TimelineMessage) {
   const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
   const title = `${type}`;
-  let labelComponent: React.ReactNode;
+  let labelComponent: ComponentChild;
   if (logType === "websocket") {
     labelComponent = <WebSocketLabel />;
   } else if (logType === "datachannel") {
@@ -94,7 +96,7 @@ export function TimelineMessages() {
     });
   });
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((message) => {
         let key = `${message.timestamp}-${message.type}`;
         // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する

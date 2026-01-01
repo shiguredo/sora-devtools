@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { Button, FormControl, FormGroup, FormSelect } from "react-bootstrap";
+import { useRef } from "preact/hooks";
 
 import { connectionStatus, sora, soraDataChannels } from "@/app/signals";
 
@@ -20,9 +19,13 @@ export function SendDataChannelMessagingMessage() {
   };
   return (
     <>
-      <div className="d-flex mt-2">
-        <FormGroup className="me-1" controlId="sendDataChannelMessageLabel">
-          <FormSelect name="sendDataChannelMessageLabel" ref={selectRef}>
+      <div className="flex mt-2">
+        <div className="mr-1">
+          <select
+            name="sendDataChannelMessageLabel"
+            ref={selectRef}
+            className="block w-full px-3 py-1.5 pr-8 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md appearance-none cursor-pointer focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
+          >
             {dataChannelsValue.map((datachannel) => {
               return (
                 <option key={datachannel.label} value={datachannel.label}>
@@ -30,27 +33,28 @@ export function SendDataChannelMessagingMessage() {
                 </option>
               );
             })}
-          </FormSelect>
-        </FormGroup>
-        <FormGroup className="flex-grow-1 me-1" controlId="sendDataChannelMessage">
-          <FormControl
-            className="flex-fill"
+          </select>
+        </div>
+        <div className="flex-grow mr-1">
+          <input
+            className="block w-full px-3 py-1.5 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
             placeholder="sendDataChannelMessageを指定"
             type="text"
             ref={textareaRef}
           />
-        </FormGroup>
-        <Button
-          variant="secondary"
+        </div>
+        <button
+          type="button"
+          className="px-3 py-1.5 text-base bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSendMessage}
           disabled={dataChannelsValue.length === 0}
         >
           send
-        </Button>
+        </button>
       </div>
       {dataChannelsValue.length > 0 ? (
         <pre
-          className="form-control mt-2"
+          className="mt-2 p-3 rounded-md"
           style={{
             color: "#fff",
             backgroundColor: "#222222",

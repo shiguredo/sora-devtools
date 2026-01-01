@@ -1,27 +1,22 @@
-import { memo } from "react";
-
 import { clearDataChannelMessages } from "@/app/actions";
 import { dataChannelMessages } from "@/app/signals";
+import { Button } from "@/components/ui";
 import type { DataChannelMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const ButtonClear = memo(() => {
+function ButtonClear() {
   const onClick = (): void => {
     clearDataChannelMessages();
   };
   return (
-    <input
-      className="btn btn-secondary"
-      type="button"
-      name="clear"
-      defaultValue="clear"
-      onClick={onClick}
-    />
+    <Button variant="secondary" onClick={onClick}>
+      clear
+    </Button>
   );
-});
+}
 
-const Collapse = memo<DataChannelMessage>((props) => {
+function Collapse(props: DataChannelMessage) {
   const { data, label, timestamp } = props;
   const headText = new TextDecoder().decode(data.slice(0, 6));
   if (headText === "ZAKURO") {
@@ -52,11 +47,11 @@ const Collapse = memo<DataChannelMessage>((props) => {
       wordBreak={true}
     />
   );
-});
+}
 
-const Log = memo<DataChannelMessage>((props) => {
+function Log(props: DataChannelMessage) {
   return <Collapse {...props} />;
-});
+}
 
 export function DataChannelMessagingMessages() {
   const dataChannelMessagesValue = dataChannelMessages.value;
@@ -65,7 +60,7 @@ export function DataChannelMessagingMessages() {
       <div className="py-1">
         <ButtonClear />
       </div>
-      <div className="debug-messages">
+      <div className="overflow-y-auto h-full">
         {dataChannelMessagesValue.map((message) => {
           const key = message.label + message.timestamp;
           return <Log key={key} {...message} />;
