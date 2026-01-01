@@ -408,10 +408,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
       className="mb-3 me-2 p-3 border rounded"
       style={{ backgroundColor: "#1a1a1a", color: "#fff" }}
     >
-      <div
-        className="mb-3 flex justify-between items-center"
-        style={{ color: "#ccc" }}
-      >
+      <div className="mb-3 flex justify-between items-center" style={{ color: "#ccc" }}>
         <small>{fullTimeString}</small>
         <div className="flex items-center gap-2">
           <button

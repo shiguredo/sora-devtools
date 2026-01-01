@@ -15,6 +15,7 @@ type InputGroupProps = {
  */
 export function InputGroup({ className = "", children }: InputGroupProps) {
   const baseStyles = [
+    "relative",
     "flex",
     "items-stretch",
     // 子要素の border-radius を調整

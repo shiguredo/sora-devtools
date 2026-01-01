@@ -59,8 +59,7 @@ export function Dropdown({ className = "", children }: DropdownProps) {
   }, [isOpen]);
 
   return (
-    <div ref={containerRef} className={`relative inline-block ${className}`}>
-      {/* Context を使わず、children に props を渡す代わりに data 属性で制御 */}
+    <div ref={containerRef} className={`inline-flex self-stretch ${className}`}>
       <DropdownContext.Provider value={{ isOpen: isOpen.value, toggle, close }}>
         {children}
       </DropdownContext.Provider>
@@ -107,7 +106,8 @@ export function DropdownToggle({
 
   const baseStyles = [
     "inline-flex items-center justify-center",
-    isCompact ? "px-2 py-1.5" : "px-3 py-1.5 gap-1",
+    // InputGroup 内ではコンパクト表示、stretch で高さを合わせる、左角丸なし
+    isCompact ? "px-2 self-stretch rounded-l-none" : "px-3 py-1.5 gap-1",
     "text-base leading-normal",
     "border rounded-md",
     "cursor-pointer",
@@ -132,14 +132,19 @@ export function DropdownToggle({
       className={`${baseStyles} ${className}`}
     >
       {children}
-      {/* ドロップダウン矢印 */}
+      {/* ドロップダウン矢印（FormSelect と同じデザイン） */}
       <svg
-        className={isCompact ? "w-3 h-3" : "w-4 h-4"}
+        className={isCompact ? "w-4 h-3" : "w-4 h-3"}
         fill="none"
         stroke="currentColor"
-        viewBox="0 0 24 24"
+        viewBox="0 0 16 16"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="m2 5 6 6 6-6"
+        />
       </svg>
     </button>
   );
@@ -156,7 +161,9 @@ export function DropdownMenu({ show, className = "", children }: DropdownMenuPro
 
   const baseStyles = [
     "absolute z-50",
+    "top-full right-0",
     "min-w-[10rem]",
+    "max-h-[300px] overflow-y-auto",
     "mt-1",
     "py-1",
     "bg-white",

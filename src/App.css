@@ -4,7 +4,7 @@
   /* Sora ブランドカラー */
   --color-sora: #0071bc;
 
-  /* Bootstrap 互換カラー */
+  /* カラー定義 */
   --color-bs-primary: #0d6efd;
   --color-bs-secondary: #6c757d;
   --color-bs-dark: #212529;
@@ -14,7 +14,7 @@
   --color-bs-red: #dc3545;
 }
 
-/* Bootstrap 互換ボタンスタイル */
+/* ボタンスタイル */
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -139,6 +139,11 @@
 .col-6 {
   flex: 0 0 auto;
   width: 50%;
+}
+
+.col-12 {
+  flex: 0 0 auto;
+  width: 100%;
 }
 
 .row {
@@ -588,6 +593,9 @@ button.debug-title {
 
 .hr-form {
   margin: 0.5rem 0 1rem 0;
+  border: 0;
+  border-top: 1px solid #212529;
+  opacity: 0.25;
 }
 
 .btn-collapse-options::after {
@@ -600,7 +608,7 @@ button.debug-title {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 
-/* Bootstrap 互換フォームスタイル */
+/* フォームスタイル */
 .form-control {
   display: block;
   width: 100%;
@@ -672,6 +680,39 @@ button.debug-title {
   display: flex;
   align-items: center;
   min-height: 40px;
+}
+
+/* スイッチスタイル */
+.form-switch {
+  width: 2rem;
+  height: 1rem;
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, background-position 0.15s ease-in-out;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280,0,0,0.25%29'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: left center;
+}
+
+.form-switch:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+  background-position: right center;
+}
+
+.form-switch:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .form-row .col {

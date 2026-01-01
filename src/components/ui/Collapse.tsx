@@ -16,7 +16,8 @@ type CollapseProps = {
  */
 export function Collapse({ in: isOpen, className = "", children }: CollapseProps) {
   const baseStyles = [
-    "overflow-hidden",
+    // 展開完了後は overflow-visible にしてドロップダウンメニューを表示可能にする
+    isOpen ? "overflow-visible" : "overflow-hidden",
     "transition-all duration-300 ease-in-out",
     isOpen ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0",
   ].join(" ");
