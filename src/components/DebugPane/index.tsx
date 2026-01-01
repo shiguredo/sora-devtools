@@ -2,6 +2,7 @@ import { Tabs, Tab } from "@/components/ui";
 
 import { setDebugType } from "@/app/actions";
 import { debug, debugType } from "@/app/signals";
+import styles from "./DebugPane.module.css";
 
 // import { Api } from './Api.tsx'
 import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
@@ -44,7 +45,7 @@ export function DebugPane() {
     }
   };
   return (
-    <div className="col-debug col-6">
+    <div className={`${styles.container} col-6`}>
       <Tabs activeKey={debugTypeValue} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <DebugFilter />

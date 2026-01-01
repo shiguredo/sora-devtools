@@ -55,7 +55,10 @@ export function ResolutionForm() {
           placeholder="未指定"
         />
         <Dropdown>
-          <DropdownToggle variant="outline-secondary" className="form-template-dropdown" />
+          <DropdownToggle
+            variant="outline-secondary"
+            className="border border-[rgb(222,226,230)]"
+          />
           <DropdownMenu className="right-0">
             {RESOLUTION_DATA_LIST.map(({ label, value }) => {
               return <ResolutionDropdownItem key={value} label={label} value={value} />;

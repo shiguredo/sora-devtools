@@ -22,14 +22,16 @@ export function Header() {
             <div className="mr-auto" />
             <div className="flex items-center flex-wrap">
               <NavbarText className="py-0 my-1 mx-1">
-                <p className="navbar-signaling-url border rounded">
+                <p className="min-w-[250px] text-sm px-2 py-1 m-0 whitespace-nowrap border rounded">
                   {sora.value && connectionStatus.value === "connected"
                     ? sora.value.connectedSignalingUrl
                     : "Signaling URL"}
                 </p>
               </NavbarText>
               <NavbarText className="py-0 my-1 mx-1">
-                <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
+                <p className="min-w-[250px] text-sm px-2 py-1 m-0 whitespace-nowrap border rounded">
+                  {turnUrlLabel}
+                </p>
               </NavbarText>
               <NavbarText className="py-0 my-1 mx-1">
                 <DebugButton />

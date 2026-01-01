@@ -1,7 +1,8 @@
 import { useSignal } from "@preact/signals";
 
-import { Collapse } from "@/components/ui";
+import { Collapse, HrForm } from "@/components/ui";
 
+import styles from "./DevtoolsPane.module.css";
 import {
   audioContentHint,
   autoGainControl,
@@ -460,31 +461,31 @@ export function RowMediaDevices() {
 
 export function DevtoolsPane() {
   return (
-    <div className={debug.value ? "col-devtools col-6" : "col-devtools col-12"}>
+    <div className={debug.value ? `${styles.container} col-6` : `${styles.container} col-12`}>
       <AlertMessages />
       <RowChannelOptions />
       <RowSimulcastOptions />
       <RowSpotlightOptions />
-      <hr className="hr-form" />
+      <HrForm />
       <RowGetUserMediaConstraints />
       <RowSignalingOptions />
       <RowAdvancedSignalingOptions />
-      <hr className="hr-form" />
+      <HrForm />
       {role.value !== "recvonly" ? (
         <>
           <RowMediaType />
           <RowMediaOptions />
-          <hr className="hr-form" />
+          <HrForm />
         </>
       ) : null}
       <RowDevices />
       <RowMediaDevices />
-      <hr className="hr-form" />
+      <HrForm />
       <div className="row">
         <ConnectButton />
         <DisconnectButton />
       </div>
-      <hr className="hr-form" />
+      <HrForm />
       <LocalVideo />
       {role.value === "recvonly" || role.value === "sendrecv" ? <RemoteVideos /> : null}
     </div>

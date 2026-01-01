@@ -92,12 +92,7 @@ function Visualizer(props: VisualizerProps) {
     };
   }, [props.stream]);
   return (
-    <canvas
-      width={CANVAS_WIDTH}
-      height={props.height}
-      className="volume-visualizer"
-      ref={canvasRef}
-    />
+    <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
   );
 }
 
@@ -124,12 +119,7 @@ function MutedVisualizer(props: MutedVisualizerProps) {
     ctx.restore();
   }, []);
   return (
-    <canvas
-      width={CANVAS_WIDTH}
-      height={props.height}
-      className="volume-visualizer"
-      ref={canvasRef}
-    />
+    <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
   );
 }
 

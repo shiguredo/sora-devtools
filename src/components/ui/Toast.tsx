@@ -61,14 +61,8 @@ export function Toast({
 
   return (
     <div
-      className={`toast cursor-pointer ${className}`}
+      className={`w-[90vw] md:w-[450px] mt-2.5 cursor-pointer bg-white/85 border border-black/10 rounded-md shadow-lg ${className}`}
       onClick={handleClick}
-      style={{
-        backgroundColor: "rgba(255, 255, 255, 0.85)",
-        border: "1px solid rgba(0, 0, 0, 0.1)",
-        borderRadius: "0.375rem",
-        boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.15)",
-      }}
     >
       {children}
     </div>

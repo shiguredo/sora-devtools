@@ -45,7 +45,7 @@ function Alert(props: AlertMessage) {
 
 export function AlertMessages() {
   return (
-    <div className="alert-messages">
+    <div className="absolute top-[50px] right-5 z-[1001]">
       {reconnecting.value ? <Reconnect /> : null}
       {alertMessages.value.map((alertMessage) => {
         return <Alert key={alertMessage.timestamp} {...alertMessage} />;

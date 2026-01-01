@@ -114,107 +114,13 @@ input[type="range"]:active::-moz-range-progress {
   background: #015dc8;
 }
 
-.form-template-dropdown {
-  border: 1px rgb(222, 226, 230) solid;
-}
-
 video {
   min-width: 80px;
   min-height: 60px;
 }
 
-.navbar-signaling-url {
-  min-width: 250px;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  margin: 0;
-  white-space: nowrap;
-}
-
-.navbar-turn-url {
-  min-width: 250px;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  margin: 0;
-  white-space: nowrap;
-}
-
 .container {
   max-width: none;
-}
-
-.col-devtools {
-  padding: 1rem 0.75rem 0;
-  overflow-x: auto;
-  height: calc(100vh - 56px - 56px);
-  overflow-y: scroll;
-}
-
-.col-debug {
-  padding: 10px;
-  background-color: #222222;
-  height: calc(100vh - 56px - 56px);
-  min-height: calc(100vh - 56px - 56px);
-  display: flex;
-  flex-direction: column;
-}
-
-.col-debug .tab-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  height: 100%;
-}
-
-.col-debug .tab-content .tab-pane {
-  padding: 0.25rem;
-}
-
-.col-debug .tab-content .tab-pane.active {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.col-debug input {
-  background-color: #222222;
-  color: #ffffff;
-}
-
-.col-debug input:focus {
-  background-color: #222222;
-  color: #ffffff;
-}
-
-.col-debug input:disabled {
-  background-color: #666666;
-  color: #ffffff;
-}
-
-.volume-visualizer {
-  background-color: #eeeeee;
-}
-
-.alert-messages {
-  position: absolute;
-  top: 50px;
-  right: 20px;
-  z-index: 1001;
-}
-
-.toast {
-  flex-basis: 450px;
-  width: 450px;
-  max-width: 450px;
-  margin-top: 10px;
-}
-
-.hr-form {
-  margin: 0.5rem 0 1rem 0;
-  border: 0;
-  border-top: 1px solid #212529;
-  opacity: 0.25;
 }
 
 /* フォームスタイル */
@@ -287,24 +193,5 @@ video {
 @media (max-width: 768px) {
   body {
     padding-bottom: 0;
-  }
-
-  .col-devtools {
-    flex: none;
-    max-width: none;
-  }
-
-  .col-devtools.col-6 {
-    display: none;
-  }
-
-  .col-debug {
-    width: 100%;
-    height: calc(100vh - 56px - 10px);
-  }
-
-  .toast {
-    width: 90vw;
-    max-width: none;
   }
 }
