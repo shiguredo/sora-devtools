@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useSignal } from "@preact/signals";
 
 import {
   audioOutput,
@@ -51,17 +51,17 @@ function mediaStreamStatsReportFilter(
   return result;
 }
 
-const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
+function MediaStreamStatsReport({ stream }: { stream: MediaStream }) {
   if (!showStats.value) {
     return null;
   }
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport.value,
-    props.stream,
+    stream,
   ) as RTCMediaStreamTrackStats[];
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport.value,
-    props.stream,
+    stream,
   ) as RTCMediaStreamTrackStats[];
   return (
     <>
@@ -76,7 +76,7 @@ const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
         }
         return (
           <div key={s.id}>
-            <ul className="mediastream-stats-report">
+            <ul className="list-none p-4">
               {Object.entries(s).map(([key, value]) => {
                 return (
                   <li key={key}>
@@ -94,21 +94,24 @@ const MediaStreamStatsReport = memo<{ stream: MediaStream }>((props) => {
       })}
     </>
   );
-});
+}
 
-const RemoteVideo = memo<{ client: RemoteClient }>(({ client }) => {
+function RemoteVideo({ client }: { client: RemoteClient }) {
   const { mediaStream, connectionId, clientId } = client;
-  const [height, setHeight] = useState<number>(0);
+  const height = useSignal<number>(0);
   const focused = connectionId && focusedSpotlightConnectionIds.value[connectionId];
+  const wrapperClasses = focused
+    ? "border-[5px] border-bs-primary rounded-[5px]"
+    : "border-[5px] border-black/10 rounded-[5px]";
   return (
     <div className="col-auto">
-      <div className="video-status">
-        <div className="d-flex align-items-center mb-1 video-status-inner">
+      <div className="flex flex-col top-0 left-0 whitespace-nowrap">
+        <div className="flex items-center mb-1 first:*:ml-0">
           <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           <JitterButter type="audio" stream={mediaStream} />
           <JitterButter type="video" stream={mediaStream} />
         </div>
-        <div className="d-flex align-items-center mb-1 video-status-inner">
+        <div className="flex items-center mb-1 first:*:ml-0">
           {spotlight.value !== "true" && simulcast.value === "true" ? (
             <>
               <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
@@ -125,30 +128,28 @@ const RemoteVideo = memo<{ client: RemoteClient }>(({ client }) => {
           ) : null}
         </div>
       </div>
-      <div className="d-flex flex-wrap align-items-start overflow-y-hidden">
+      <div className="flex flex-wrap items-start overflow-y-hidden">
         {/* オーバーレイするため position-relative を付けておくこと */}
-        <div
-          className={`position-relative d-flex flex-nowrap align-items-start video-wrapper${
-            focused ? " spotlight-focused" : ""
-          }`}
-        >
+        <div className={`relative flex flex-nowrap items-start ${wrapperClasses}`}>
           {mediaStats.value && mediaStream.getVideoTracks().length > 0 && (
             <RemoteVideoCapabilities stream={mediaStream} />
           )}
           <Video
             stream={mediaStream}
-            setHeight={setHeight}
+            setHeight={(value: number) => {
+              height.value = value;
+            }}
             mute={mute.value}
             audioOutput={audioOutput.value}
             displayResolution={displayResolution.value}
           />
-          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height} />
+          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height.value} />
         </div>
         <MediaStreamStatsReport stream={mediaStream} />
       </div>
     </div>
   );
-});
+}
 
 export function RemoteVideos() {
   return (

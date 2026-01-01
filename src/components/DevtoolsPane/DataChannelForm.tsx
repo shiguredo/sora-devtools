@@ -1,4 +1,4 @@
-import { Col, FormCheck, FormGroup, FormSelect, Row } from "react-bootstrap";
+import { FormGroup, FormSelect, FormSwitch } from "@/components/ui";
 
 import {
   setDataChannelSignaling,
@@ -24,7 +24,7 @@ function IgnoreDisconnectWebSocketForm(props: { disabled: boolean }) {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
+    <FormGroup className="flex items-center gap-2" controlId="ignoreDisconnectWebSocket">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
         ignoreDisconnectWebSocket:
       </TooltipFormLabel>
@@ -54,7 +54,7 @@ function DataChannelSignalingForm(props: { disabled: boolean }) {
     }
   };
   return (
-    <FormGroup className="form-inline" controlId="dataChannelSignaling">
+    <FormGroup className="flex items-center gap-2" controlId="dataChannelSignaling">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
       <FormSelect
         name="dataChannelSignaling"
@@ -82,33 +82,32 @@ export function DataChannelForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannel">
-            <FormCheck
-              type="switch"
+      <div className="flex flex-wrap gap-2">
+        <div className="w-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledDataChannel">
+            <FormSwitch
               name="enabledDataChannel"
-              label="dataChannel"
               checked={enabledDataChannel.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             />
+            <label htmlFor="enabledDataChannel">dataChannel</label>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledDataChannel.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <Row xs="auto">
-              <Col>
+        <div className="flex flex-wrap gap-2">
+          <div className="w-auto">
+            <div className="flex flex-wrap gap-4">
+              <div>
                 <DataChannelSignalingForm disabled={disabled} />
-              </Col>
-              <Col>
+              </div>
+              <div>
                 <IgnoreDisconnectWebSocketForm disabled={disabled} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
   );

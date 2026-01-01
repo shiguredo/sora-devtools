@@ -1,13 +1,15 @@
-import { Tab, Tabs } from "react-bootstrap";
+import { Tabs, Tab } from "@/components/ui";
 
 import { setDebugType } from "@/app/actions";
 import { debug, debugType } from "@/app/signals";
+import styles from "./DebugPane.module.css";
 
 // import { Api } from './Api.tsx'
 import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
 import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages.tsx";
 import { DebugFilter } from "./Filter.tsx";
 import { LogMessages } from "./LogMessages.tsx";
+import { NotifyMaxMessages } from "./NotifyMaxMessages.tsx";
 import { NotifyMessages } from "./NotifyMessages.tsx";
 import { PushMessages } from "./PushMessages.tsx";
 import { Rpc } from "./Rpc.tsx";
@@ -44,13 +46,8 @@ export function DebugPane() {
     }
   };
   return (
-    <div className="col-debug col-6">
-      <Tabs
-        id="debug-tab"
-        activeKey={debugTypeValue}
-        defaultActiveKey={"timeline"}
-        onSelect={onSelect}
-      >
+    <div className={`${styles.container} col-6`}>
+      <Tabs activeKey={debugTypeValue} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <DebugFilter />
           <TimelineMessages />
@@ -60,7 +57,10 @@ export function DebugPane() {
           <SignalingMessages />
         </Tab>
         <Tab eventKey="notify" title="Notfiy">
-          <DebugFilter />
+          <div className="flex items-center gap-4">
+            <DebugFilter />
+            <NotifyMaxMessages />
+          </div>
           <NotifyMessages />
         </Tab>
         <Tab eventKey="push" title="Push">

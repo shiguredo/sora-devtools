@@ -1,7 +1,6 @@
-import { Col, FormGroup, Row } from "react-bootstrap";
-
 import { setEnabledVideoH264Params, setVideoH264Params } from "@/app/actions";
 import { enabledVideoH264Params, isFormDisabled, videoH264Params } from "@/app/signals";
+import { FormGroup } from "@/components/ui";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
@@ -14,9 +13,9 @@ export function VideoH264ParamsForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledVideoH264Params">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledVideoH264Params">
             <TooltipFormCheck
               kind="videoH264Params"
               checked={enabledVideoH264Params.value}
@@ -26,11 +25,11 @@ export function VideoH264ParamsForm() {
               videoH264Params
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledVideoH264Params.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
+        <div className="form-row">
+          <div className="col-auto">
             <JSONInputField
               controlId="videoH264Params"
               placeholder="videoH264Paramsを指定"
@@ -38,8 +37,8 @@ export function VideoH264ParamsForm() {
               setValue={(value) => setVideoH264Params(value)}
               disabled={disabled}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

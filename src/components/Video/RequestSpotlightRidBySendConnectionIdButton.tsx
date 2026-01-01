@@ -1,6 +1,7 @@
-import { useRef } from "react";
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { useRef } from "preact/hooks";
 import type { SpotlightFocusRid } from "sora-js-sdk";
+
+import { Button, FormGroup, FormSelect } from "@/components/ui";
 
 import { connectionStatus, sora } from "@/app/signals";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
@@ -42,7 +43,7 @@ export function RequestSpotlightRidBySendConnectionIdButton(props: Props) {
 
   return (
     <div className="mx-1">
-      <FormGroup className="form-inline">
+      <FormGroup className="flex items-center gap-2">
         <FormSelect ref={focusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
             if (value === "") {
@@ -67,13 +68,9 @@ export function RequestSpotlightRidBySendConnectionIdButton(props: Props) {
             );
           })}
         </FormSelect>
-        <input
-          className="btn btn-secondary"
-          type="button"
-          name="requestSpotlightRidBySendConnectionId"
-          defaultValue="requestSpotlightRid"
-          onClick={onClick}
-        />
+        <Button variant="secondary" onClick={onClick}>
+          requestSpotlightRid
+        </Button>
       </FormGroup>
     </div>
   );

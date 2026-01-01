@@ -1,9 +1,10 @@
 import path from "path";
 import preact from "@preact/preset-vite";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [preact()],
+  plugins: [preact(), tailwindcss()],
   build: {
     minify: true,
     target: "esnext",
@@ -13,7 +14,7 @@ export default defineConfig({
       },
       output: {
         manualChunks: {
-          preact: ["preact", "preact/compat", "react-bootstrap"],
+          preact: ["preact"],
           "mp4-media-stream": ["@shiguredo/mp4-media-stream"],
           "noise-suppression": ["@shiguredo/noise-suppression"],
           "virtual-background": ["@shiguredo/virtual-background"],
@@ -25,10 +26,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      react: "preact/compat",
-      "react-dom": "preact/compat",
-      "react-dom/test-utils": "preact/test-utils",
-      "react/jsx-runtime": "preact/jsx-runtime",
     },
   },
 });

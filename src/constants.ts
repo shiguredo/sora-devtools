@@ -114,26 +114,4 @@ export const ROLES = ["sendrecv", "sendonly", "recvonly"] as const;
 
 export const FACING_MODES = ["", "front", "back"] as const;
 
-export const WORKER_SCRIPT = `
-self.onmessage = (event) => {
-  const data = event.data;
-  if (data.type === "start") {
-    const interval = data.interval;
-    self.counter = 0;
-    const intervalId = setInterval(() => {
-      const message = { type: "update", counter: self.counter };
-      self.postMessage(message);
-      self.counter++;
-    }, interval);
-    self.intervalId = intervalId;
-  } else if (data.type === "stop") {
-    if (self.intervalId) {
-      clearInterval(self.intervalId);
-    }
-    const message = { type: "stop" };
-    self.postMessage(message);
-  }
-};
-` as const;
-
 export const INSTRUCTIONS = instructionsJSON as Record<string, { description: string } | null>;

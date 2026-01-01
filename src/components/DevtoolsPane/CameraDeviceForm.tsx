@@ -1,4 +1,4 @@
-import { FormGroup } from "react-bootstrap";
+import { FormGroup } from "@/components/ui";
 
 import { cameraDevice, connectionStatus, setCameraDevice, sora, video } from "@/app/signals";
 
@@ -13,7 +13,7 @@ export function CameraDeviceForm() {
     setCameraDevice(target.checked);
   };
   return (
-    <FormGroup className="form-inline" controlId="cameraDevice">
+    <FormGroup className="flex items-center gap-2" controlId="cameraDevice">
       <TooltipFormCheck
         kind="cameraDevice"
         checked={cameraDevice.value}

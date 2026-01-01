@@ -1,4 +1,12 @@
-import { Dropdown, DropdownButton, Form, FormGroup, InputGroup } from "react-bootstrap";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  FormGroup,
+  FormInput,
+  InputGroup,
+} from "@/components/ui";
 
 import { setResolution } from "@/app/actions";
 import { resolution } from "@/app/signals";
@@ -22,11 +30,11 @@ const RESOLUTION_DATA_LIST = [
   { label: "2160p", value: "3840x2160" },
 ];
 
-const DropdownItem = ({ label, value }: ResolutionData) => {
+const ResolutionDropdownItem = ({ label, value }: ResolutionData) => {
   return (
-    <Dropdown.Item as="button" onClick={() => setResolution(value)}>
+    <DropdownItem onClick={() => setResolution(value)}>
       {label} {value !== "" && `(${value})`}
-    </Dropdown.Item>
+    </DropdownItem>
   );
 };
 
@@ -36,21 +44,27 @@ export function ResolutionForm() {
     setResolution(target.value);
   };
   return (
-    <FormGroup className="form-inline" controlId="resolution">
+    <FormGroup className="flex items-center gap-2" controlId="resolution">
       <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
       <InputGroup>
-        <Form.Control
-          className="form-resolution"
+        <FormInput
+          className="max-w-[130px]"
           type="text"
           value={resolution.value}
           onChange={onChange}
           placeholder="未指定"
         />
-        <DropdownButton variant="outline-secondary form-template-dropdown" title="" align="end">
-          {RESOLUTION_DATA_LIST.map(({ label, value }) => {
-            return <DropdownItem key={value} label={label} value={value} />;
-          })}
-        </DropdownButton>
+        <Dropdown>
+          <DropdownToggle
+            variant="outline-secondary"
+            className="border border-[rgb(222,226,230)]"
+          />
+          <DropdownMenu className="right-0">
+            {RESOLUTION_DATA_LIST.map(({ label, value }) => {
+              return <ResolutionDropdownItem key={value} label={label} value={value} />;
+            })}
+          </DropdownMenu>
+        </Dropdown>
       </InputGroup>
     </FormGroup>
   );

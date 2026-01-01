@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setAudioOutput } from "@/app/actions";
 import { audioOutput, audioOutputDevices } from "@/app/signals";
@@ -11,7 +11,7 @@ export function AudioOutputForm() {
     setAudioOutput(target.value);
   };
   return (
-    <FormGroup className="form-inline" controlId="audioOutput">
+    <FormGroup className="flex items-center gap-2" controlId="audioOutput">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
       <FormSelect
         name="audioOutput"

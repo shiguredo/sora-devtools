@@ -1,5 +1,6 @@
 import { disposeMedia } from "@/app/actions";
 import { isFormDisabled, role, sora } from "@/app/signals";
+import { Button } from "@/components/ui";
 
 export function DisposeMediaButton() {
   const onClick = (): void => {
@@ -8,14 +9,9 @@ export function DisposeMediaButton() {
   const disabled = role.value === "recvonly" || sora.value !== null || isFormDisabled.value;
   return (
     <div className="col-auto mb-1">
-      <input
-        className="btn btn-outline-secondary"
-        type="button"
-        name="media_access"
-        defaultValue="dispose media"
-        onClick={onClick}
-        disabled={disabled}
-      />
+      <Button variant="outline-secondary" onClick={onClick} disabled={disabled}>
+        dispose media
+      </Button>
     </div>
   );
 }

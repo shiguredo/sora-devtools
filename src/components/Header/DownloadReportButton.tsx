@@ -1,5 +1,7 @@
-import { useRef } from "react";
+import { useRef } from "preact/hooks";
 import Sora from "sora-js-sdk";
+
+import { Button } from "@/components/ui";
 
 import {
   aspectRatio,
@@ -190,13 +192,9 @@ export function DownloadReportButton() {
   };
   return (
     <>
-      <input
-        className="btn btn-light btn-sm ms-1"
-        type="button"
-        name="downloadReport"
-        defaultValue="Download report"
-        onClick={onClick}
-      />
+      <Button variant="light" size="sm" className="ml-1" onClick={onClick}>
+        Download report
+      </Button>
       {/* biome-ignore lint/a11y/useAnchorContent: This is a hidden anchor used for programmatic file download */}
       {/* biome-ignore lint/a11y/useValidAnchor: This is a hidden anchor used for programmatic file download */}
       <a ref={anchorRef} style={{ display: "none" }} />

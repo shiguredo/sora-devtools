@@ -1,5 +1,6 @@
-import { memo, useEffect, useRef, useState } from "react";
-import { Button, Col, FormControl, Row } from "react-bootstrap";
+import { useSignal } from "@preact/signals";
+import type { RefObject } from "preact";
+import { useEffect, useRef } from "preact/hooks";
 
 import { clearApiObjects, setApiObject, setDebugApiUrl } from "@/app/actions";
 import { apiObjects, channelId, connectionId, debugApiUrl, sessionId } from "@/app/signals";
@@ -9,16 +10,20 @@ import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
 
 import { JsonTree } from "./JsonTree.tsx";
 
-const ClearButton = memo(() => {
+function ClearButton() {
   const onClick = (): void => {
     clearApiObjects();
   };
   return (
-    <Button variant="danger" onClick={onClick}>
+    <button
+      type="button"
+      onClick={onClick}
+      className="px-3 py-1.5 text-base bg-red-600 text-white border border-red-600 rounded-md hover:bg-red-700"
+    >
       Clear All
-    </Button>
+    </button>
   );
-});
+}
 
 type ApiFormProps = {
   url: string;
@@ -27,7 +32,7 @@ type ApiFormProps = {
   params: string;
   setParams: (params: string) => void;
   setShowModal: (show: boolean) => void;
-  buttonRef: React.RefObject<HTMLButtonElement>;
+  buttonRef: RefObject<HTMLButtonElement>;
 };
 
 function ApiForm({
@@ -41,10 +46,10 @@ function ApiForm({
 }: ApiFormProps) {
   const urlRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<HTMLInputElement>(null);
-  const [paramsHasError, setParamsHasError] = useState(false);
-  const [replaceChannelId, setReplaceChannelId] = useState(true);
-  const [replaceConnectionId, setReplaceConnectionId] = useState(true);
-  const [replaceSessionId, setReplaceSessionId] = useState(true);
+  const paramsHasError = useSignal(false);
+  const replaceChannelId = useSignal(true);
+  const replaceConnectionId = useSignal(true);
+  const replaceSessionId = useSignal(true);
 
   const channelIdValue = channelId.value;
   const connectionIdValue = connectionId.value;
@@ -53,33 +58,33 @@ function ApiForm({
   // params の JSON パースエラーをチェック
   useEffect(() => {
     if (params.trim() === "") {
-      setParamsHasError(false);
+      paramsHasError.value = false;
       return;
     }
     try {
       JSON.parse(params);
-      setParamsHasError(false);
+      paramsHasError.value = false;
     } catch {
-      setParamsHasError(true);
+      paramsHasError.value = true;
     }
-  }, [params]);
+  }, [params, paramsHasError]);
 
   // 置き換え後のプレビューを生成
   const getReplacedParams = (): string => {
-    if (params.trim() === "" || paramsHasError) {
+    if (params.trim() === "" || paramsHasError.value) {
       return "";
     }
     try {
       const parsed = JSON.parse(params);
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
         const replaced = { ...parsed };
-        if (replaceChannelId && "channel_id" in replaced) {
+        if (replaceChannelId.value && "channel_id" in replaced) {
           replaced.channel_id = channelIdValue;
         }
-        if (replaceConnectionId && "connection_id" in replaced && connectionIdValue) {
+        if (replaceConnectionId.value && "connection_id" in replaced && connectionIdValue) {
           replaced.connection_id = connectionIdValue;
         }
-        if (replaceSessionId && "session_id" in replaced && sessionIdValue) {
+        if (replaceSessionId.value && "session_id" in replaced && sessionIdValue) {
           replaced.session_id = sessionIdValue;
         }
         return JSON.stringify(replaced, null, 2);
@@ -109,13 +114,13 @@ function ApiForm({
         parsedParams = JSON.parse(paramsText);
         // トップレベルの channel_id, session_id, connection_id を置き換える
         if (parsedParams && typeof parsedParams === "object" && !Array.isArray(parsedParams)) {
-          if (replaceChannelId && "channel_id" in parsedParams) {
+          if (replaceChannelId.value && "channel_id" in parsedParams) {
             parsedParams.channel_id = channelIdValue;
           }
-          if (replaceSessionId && "session_id" in parsedParams && sessionIdValue) {
+          if (replaceSessionId.value && "session_id" in parsedParams && sessionIdValue) {
             parsedParams.session_id = sessionIdValue;
           }
-          if (replaceConnectionId && "connection_id" in parsedParams && connectionIdValue) {
+          if (replaceConnectionId.value && "connection_id" in parsedParams && connectionIdValue) {
             parsedParams.connection_id = connectionIdValue;
           }
         }
@@ -222,18 +227,18 @@ function ApiForm({
 
   return (
     <div className="mt-2">
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ width: "600px" }}>
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>URL:</strong>
           </div>
-          <FormControl
+          <input
             type="text"
             placeholder="http://sora-test.shiguredo.co.jp:3000"
             ref={urlRef}
             value={url}
             onChange={(e) => setUrl((e.target as HTMLInputElement).value)}
-            style={{ backgroundColor: "#333", color: "#fff" }}
+            className="block w-full px-3 py-1.5 text-base leading-normal bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
           />
         </div>
 
@@ -241,31 +246,31 @@ function ApiForm({
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>method:</strong>
           </div>
-          <Button
+          <button
+            type="button"
             ref={buttonRef}
-            variant="secondary"
             onClick={() => setShowModal(true)}
-            style={{ width: "100%", fontSize: "1rem", fontWeight: "bold" }}
+            className="w-full px-3 py-1.5 text-base font-bold bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700"
           >
             {selectedMethod || "Select method"}
-          </Button>
+          </button>
         </div>
 
         <div style={{ width: "150px" }}>
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>timeout (ms):</strong>
           </div>
-          <FormControl
+          <input
             type="number"
             placeholder="5000"
             defaultValue="5000"
             ref={timeoutRef}
-            style={{ backgroundColor: "#333", color: "#fff" }}
+            className="block w-full px-3 py-1.5 text-base leading-normal bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
           />
         </div>
       </div>
 
-      <div className="mb-2 d-flex gap-2">
+      <div className="mb-2 flex gap-2">
         <div style={{ flex: 1 }}>
           <div className="mb-1" style={{ color: "#fff" }}>
             <strong>params:</strong>
@@ -282,7 +287,7 @@ function ApiForm({
         </div>
 
         <div style={{ flex: 1 }}>
-          <div className="mb-1 d-flex justify-content-between align-items-center">
+          <div className="mb-1 flex justify-between items-center">
             <strong style={{ color: "#fff" }}>Preview (after replace):</strong>
             <div>
               <div className="form-check form-check-inline">
@@ -290,8 +295,10 @@ function ApiForm({
                   className="form-check-input"
                   type="checkbox"
                   id="replaceChannelId"
-                  checked={replaceChannelId}
-                  onChange={(e) => setReplaceChannelId((e.target as HTMLInputElement).checked)}
+                  checked={replaceChannelId.value}
+                  onChange={(e) => {
+                    replaceChannelId.value = (e.target as HTMLInputElement).checked;
+                  }}
                 />
                 <label
                   className="form-check-label"
@@ -306,8 +313,10 @@ function ApiForm({
                   className="form-check-input"
                   type="checkbox"
                   id="replaceSessionId"
-                  checked={replaceSessionId}
-                  onChange={(e) => setReplaceSessionId((e.target as HTMLInputElement).checked)}
+                  checked={replaceSessionId.value}
+                  onChange={(e) => {
+                    replaceSessionId.value = (e.target as HTMLInputElement).checked;
+                  }}
                 />
                 <label
                   className="form-check-label"
@@ -322,8 +331,10 @@ function ApiForm({
                   className="form-check-input"
                   type="checkbox"
                   id="replaceConnectionId"
-                  checked={replaceConnectionId}
-                  onChange={(e) => setReplaceConnectionId((e.target as HTMLInputElement).checked)}
+                  checked={replaceConnectionId.value}
+                  onChange={(e) => {
+                    replaceConnectionId.value = (e.target as HTMLInputElement).checked;
+                  }}
                 />
                 <label
                   className="form-check-label"
@@ -353,19 +364,15 @@ function ApiForm({
         </div>
       </div>
 
-      <div className="d-flex justify-content-end mb-2">
-        <Button
-          variant="secondary"
+      <div className="flex justify-end mb-2">
+        <button
+          type="button"
           onClick={handleCallApi}
-          disabled={!selectedMethod || paramsHasError}
-          style={{
-            fontSize: "1.2rem",
-            padding: "0.75rem 2rem",
-            fontWeight: "bold",
-          }}
+          disabled={!selectedMethod || paramsHasError.value}
+          className="px-8 py-3 text-xl font-bold bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Call
-        </Button>
+        </button>
       </div>
     </div>
   );
@@ -401,15 +408,16 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
       className="mb-3 me-2 p-3 border rounded"
       style={{ backgroundColor: "#1a1a1a", color: "#fff" }}
     >
-      <div
-        className="mb-3 d-flex justify-content-between align-items-center"
-        style={{ color: "#ccc" }}
-      >
+      <div className="mb-3 flex justify-between items-center" style={{ color: "#ccc" }}>
         <small>{fullTimeString}</small>
-        <div className="d-flex align-items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => onReuse(apiObject)}>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onReuse(apiObject)}
+            className="px-2 py-1 text-sm bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700"
+          >
             Reuse
-          </Button>
+          </button>
           {apiObject.duration !== undefined && <small>{apiObject.duration.toFixed(2)} ms</small>}
         </div>
       </div>
@@ -419,11 +427,11 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
         <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
           <strong>Request:</strong>
         </div>
-        <div className="ps-3">
+        <div className="pl-3">
           <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
             URL
           </div>
-          <div className="mb-2 ps-3">
+          <div className="mb-2 pl-3">
             <div className="p-2 rounded" style={{ backgroundColor: "#333", fontSize: "0.9rem" }}>
               {apiObject.url}
             </div>
@@ -434,7 +442,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
               <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                 headers
               </div>
-              <div className="mb-2 ps-3">
+              <div className="mb-2 pl-3">
                 <div
                   className="p-2 rounded"
                   style={{ backgroundColor: "#333", fontSize: "0.85rem" }}
@@ -454,7 +462,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
               <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                 body
               </div>
-              <div className="mb-2 ps-3">
+              <div className="mb-2 pl-3">
                 <div className="p-2 rounded" style={{ backgroundColor: "#333" }}>
                   <JsonTree data={apiObject.requestBody} />
                 </div>
@@ -470,11 +478,11 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
             <strong>Response:</strong>
           </div>
-          <div className="ps-3">
+          <div className="pl-3">
             <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
               status
             </div>
-            <div className="mb-2 ps-3">
+            <div className="mb-2 pl-3">
               <span
                 className="badge"
                 style={{
@@ -491,7 +499,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
                 <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                   headers
                 </div>
-                <div className="mb-2 ps-3">
+                <div className="mb-2 pl-3">
                   <div
                     className="p-2 rounded"
                     style={{ backgroundColor: "#333", fontSize: "0.85rem" }}
@@ -511,7 +519,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
                 <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
                   body
                 </div>
-                <div className="ps-3">
+                <div className="pl-3">
                   <div
                     className="p-2 rounded"
                     style={{ backgroundColor: "#333", fontSize: "0.95rem" }}
@@ -531,7 +539,7 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
             <strong>Error:</strong>
           </div>
-          <div className="ps-3">
+          <div className="pl-3">
             {apiObject.errorType === "timeout" && (
               <div className="mb-2">
                 <span className="badge" style={{ backgroundColor: "#ffc107", fontSize: "0.85rem" }}>
@@ -558,36 +566,36 @@ export function Api() {
   const setUrl = (value: string): void => {
     setDebugApiUrl(value);
   };
-  const [selectedMethod, setSelectedMethod] = useState("");
-  const [params, setParams] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const selectedMethod = useSignal("");
+  const params = useSignal("");
+  const showModal = useSignal(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [modalTop, setModalTop] = useState(0);
-  const [modalLeft, setModalLeft] = useState(0);
-  const [modalWidth, setModalWidth] = useState(0);
+  const modalTop = useSignal(0);
+  const modalLeft = useSignal(0);
+  const modalWidth = useSignal(0);
 
   // ボタンの位置が変わったときにモーダルの位置を更新
   useEffect(() => {
-    if (showModal && buttonRef.current) {
+    if (showModal.value && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       // API タブページの幅を取得するため、親要素を探す
       const container = buttonRef.current.closest('[style*="position: relative"]');
       if (container) {
         const containerRect = container.getBoundingClientRect();
-        setModalTop(rect.bottom + 4);
-        setModalLeft(containerRect.left);
-        setModalWidth(containerRect.width);
+        modalTop.value = rect.bottom + 4;
+        modalLeft.value = containerRect.left;
+        modalWidth.value = containerRect.width;
       }
     }
-  }, [showModal]);
+  }, [showModal.value, modalTop, modalLeft, modalWidth]);
 
   const handleReuse = (apiObject: ApiObject): void => {
     setUrl(apiObject.url);
-    setSelectedMethod(apiObject.method);
+    selectedMethod.value = apiObject.method;
     if (apiObject.requestBody !== undefined) {
-      setParams(JSON.stringify(apiObject.requestBody, null, 2));
+      params.value = JSON.stringify(apiObject.requestBody, null, 2);
     } else {
-      setParams("");
+      params.value = "";
     }
     // フォームの位置までスクロール
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -597,13 +605,13 @@ export function Api() {
     method: string,
     methodParams?: Record<string, unknown> | unknown[],
   ): void => {
-    setSelectedMethod(method);
+    selectedMethod.value = method;
     if (methodParams) {
-      setParams(JSON.stringify(methodParams, null, 2));
+      params.value = JSON.stringify(methodParams, null, 2);
     } else {
-      setParams("");
+      params.value = "";
     }
-    setShowModal(false);
+    showModal.value = false;
   };
 
   return (
@@ -615,7 +623,7 @@ export function Api() {
         flexDirection: "column",
       }}
     >
-      {showModal && (
+      {showModal.value && (
         <div
           style={{
             position: "fixed",
@@ -626,44 +634,42 @@ export function Api() {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 998,
           }}
-          onClick={() => setShowModal(false)}
+          onClick={() => {
+            showModal.value = false;
+          }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              setShowModal(false);
+              showModal.value = false;
             }
           }}
         />
       )}
-      {showModal && (
+      {showModal.value && (
         <div
           style={{
             position: "fixed",
-            top: `${modalTop}px`,
-            left: `${modalLeft}px`,
-            width: `${modalWidth}px`,
+            top: `${modalTop.value}px`,
+            left: `${modalLeft.value}px`,
+            width: `${modalWidth.value}px`,
             backgroundColor: "#1a1a1a",
             border: "1px solid #444",
             borderRadius: "8px",
-            maxHeight: `calc(100vh - ${modalTop}px - 20px)`,
+            maxHeight: `calc(100vh - ${modalTop.value}px - 20px)`,
             overflowY: "auto",
             zIndex: 1000,
             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
             padding: "20px",
           }}
         >
-          <Button
-            variant="outline-light"
-            size="sm"
-            onClick={() => setShowModal(false)}
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              zIndex: 1,
+          <button
+            type="button"
+            onClick={() => {
+              showModal.value = false;
             }}
+            className="absolute top-2.5 right-2.5 z-10 px-2 py-1 text-sm bg-transparent text-white border border-white rounded-md hover:bg-white hover:text-gray-900"
           >
             ×
-          </Button>
+          </button>
           {(() => {
             type TemplateType = (typeof API_TEMPLATES)[number];
             const groups = API_TEMPLATES.reduce((acc: Record<string, TemplateType[]>, template) => {
@@ -685,25 +691,22 @@ export function Api() {
                 >
                   {groupName}
                 </div>
-                <Row>
+                <div className="grid grid-cols-2 gap-2">
                   {templates.map((template) => (
-                    <Col key={template.method} xs={6} className="mb-2">
-                      <Button
-                        variant={selectedMethod === template.method ? "primary" : "secondary"}
-                        size="sm"
-                        style={{
-                          width: "100%",
-                          fontSize: "1.1rem",
-                          padding: "12px",
-                          fontWeight: "bold",
-                        }}
-                        onClick={() => handleMethodSelect(template.method, template.params)}
-                      >
-                        {template.method.replace("Sora_", "")}
-                      </Button>
-                    </Col>
+                    <button
+                      type="button"
+                      key={template.method}
+                      onClick={() => handleMethodSelect(template.method, template.params)}
+                      className={`w-full px-3 py-3 text-lg font-bold rounded-md ${
+                        selectedMethod.value === template.method
+                          ? "bg-blue-600 text-white border border-blue-600 hover:bg-blue-700"
+                          : "bg-gray-600 text-white border border-gray-600 hover:bg-gray-700"
+                      }`}
+                    >
+                      {template.method.replace("Sora_", "")}
+                    </button>
                   ))}
-                </Row>
+                </div>
               </div>
             ));
           })()}
@@ -712,17 +715,21 @@ export function Api() {
       <ApiForm
         url={url}
         setUrl={setUrl}
-        selectedMethod={selectedMethod}
-        params={params}
-        setParams={setParams}
-        setShowModal={setShowModal}
+        selectedMethod={selectedMethod.value}
+        params={params.value}
+        setParams={(value: string) => {
+          params.value = value;
+        }}
+        setShowModal={(value: boolean) => {
+          showModal.value = value;
+        }}
         buttonRef={buttonRef}
       />
       {apiObjectsValue.length > 0 && (
         <>
           <div className="py-1">
             <h5>API Results</h5>
-            <div className="d-flex justify-content-between align-items-center mb-2">
+            <div className="flex justify-between items-center mb-2">
               <ClearButton />
               <div style={{ color: "#aaa", fontSize: "0.85rem" }}>
                 {apiObjectsValue.length} 件を表示

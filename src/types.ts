@@ -85,7 +85,6 @@ export type SoraDevtoolsState = {
   enabledAudioStreamingLanguageCode: boolean;
   fakeContents: {
     worker: Worker | null;
-    colorCode: number;
     gainNode: GainNode | null;
   };
   fakeVolume: string;

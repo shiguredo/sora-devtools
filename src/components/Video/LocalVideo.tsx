@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useSignal } from "@preact/signals";
 
 import {
   audio,
@@ -28,18 +28,17 @@ import { Video } from "./Video.tsx";
 import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 
 function VideoBox() {
-  const [height, setHeight] = useState<number>(0);
+  const height = useSignal<number>(0);
   const focused = connectionId.value && focusedSpotlightConnectionIds.value[connectionId.value];
   if (audio.value === false && video.value === false) {
     return null;
   }
+  const wrapperClasses = focused
+    ? "border-[5px] border-bs-primary rounded-[5px]"
+    : "border-[5px] border-black/10 rounded-[5px]";
   return (
-    <div className="d-flex">
-      <div
-        className={`position-relative d-flex flex-nowrap align-items-start video-wrapper overflow-y-hidden${
-          focused ? " spotlight-focused" : ""
-        }`}
-      >
+    <div className="flex">
+      <div className={`relative flex flex-nowrap items-start overflow-y-hidden ${wrapperClasses}`}>
         {mediaStats.value &&
           localMediaStream.value &&
           localMediaStream.value.getVideoTracks().length > 0 && (
@@ -47,7 +46,9 @@ function VideoBox() {
           )}
         <Video
           stream={localMediaStream.value}
-          setHeight={setHeight}
+          setHeight={(value: number) => {
+            height.value = value;
+          }}
           audioOutput={audioOutput.value}
           displayResolution={displayResolution.value}
           localVideo={true}
@@ -57,7 +58,7 @@ function VideoBox() {
           <VolumeVisualizer
             micDevice={micDevice.value}
             stream={localMediaStream.value}
-            height={height}
+            height={height.value}
           />
         ) : null}
       </div>
@@ -69,14 +70,14 @@ export function LocalVideo() {
   return (
     <div className="row my-1">
       <div className="col-auto">
-        <div className="video-status mb-1">
+        <div className="flex flex-col top-0 left-0 whitespace-nowrap mb-1">
           {sessionId.value !== null ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 first:*:ml-0">
               <SessionStatusBar sessionId={sessionId.value} />
             </div>
           ) : null}
           {connectionId.value !== null || soraClientId.value !== null ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 first:*:ml-0">
               <ConnectionStatusBar
                 connectionId={connectionId.value}
                 clientId={soraClientId.value}
@@ -88,7 +89,7 @@ export function LocalVideo() {
           spotlight.value !== "true" &&
           simulcast.value === "true" &&
           role.value !== "sendonly" ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 first:*:ml-0">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
               <RequestSimulcastRidButton rid={"none"} />
               <RequestSimulcastRidButton rid={"r0"} />
@@ -97,7 +98,7 @@ export function LocalVideo() {
             </div>
           ) : null}
           {connectionId.value !== null && spotlight.value === "true" ? (
-            <div className="d-flex align-items-center mb-1 video-status-inner">
+            <div className="flex items-center mb-1 first:*:ml-0">
               <RequestSpotlightRidButton />
               <ResetSpotlightRidButton />
             </div>

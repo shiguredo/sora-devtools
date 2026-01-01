@@ -27,7 +27,6 @@ import {
 } from "./constants.ts";
 import type {
   ConnectionOptionsState,
-  CustomHTMLCanvasElement,
   Json,
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
@@ -552,25 +551,28 @@ export function createGetDisplayMediaVideoConstraints(
 }
 
 // Fake 用の MediaStream を生成
+// Chrome/Edge/Safari 向け。Firefox は非対応。
 export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
-  canvas: CustomHTMLCanvasElement | null;
+  offscreenCanvas: OffscreenCanvas | null;
   mediaStream: MediaStream;
   gainNode: GainNode | null;
+  frameRate: number;
 } {
   const mediaStream = new MediaStream();
-  let canvas: HTMLCanvasElement | null = null;
+  let offscreenCanvas: OffscreenCanvas | null = null;
   if (parameters.video) {
-    canvas = document.createElement("canvas") as CustomHTMLCanvasElement;
-    // Firefox では getContext を呼ばないと captureStream が失敗する
-    canvas.getContext("2d");
+    const canvas = document.createElement("canvas");
     canvas.width = parameters.width;
     canvas.height = parameters.height;
-    const cancasStream = canvas.captureStream(parameters.frameRate);
-    const videoTrack = cancasStream.getTracks()[0];
+    // captureStream を先に呼ぶ（transferControlToOffscreen の前に呼ぶ必要がある）
+    const canvasStream = canvas.captureStream(parameters.frameRate);
+    const videoTrack = canvasStream.getTracks()[0];
     if (parameters.videoTrackConstraints) {
       void videoTrack.applyConstraints(parameters.videoTrackConstraints);
     }
     mediaStream.addTrack(videoTrack);
+    // OffscreenCanvas に制御を移す（Worker で描画）
+    offscreenCanvas = canvas.transferControlToOffscreen();
   }
   let gainNode: GainNode | null = null;
   if (parameters.audio) {
@@ -588,33 +590,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     mediaStream.addTrack(audioTracks[0]);
     gainNode.gain.setValueAtTime(parameters.volume, 0);
   }
-  return { canvas, mediaStream, gainNode };
-}
-
-// Fake mediastream を生成するための canvas に書き込みをする
-export function drawFakeCanvas(
-  canvas: CustomHTMLCanvasElement | null,
-  colorCode: number,
-  fontSize: number,
-  text: string,
-): void {
-  if (canvas === null) {
-    return;
-  }
-  const context = canvas.getContext("2d");
-  if (!context) {
-    return;
-  }
-  context.globalCompositeOperation = "source-over";
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = `#${("0".repeat(6) + colorCode.toString(16)).slice(-6)}`;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = `#${("0".repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6)}`;
-  context.font = `${fontSize}px Arial`;
-  const x = canvas.width / 2 - fontSize / 2;
-  const margin = (fontSize / 4) * (text.length - 1);
-  const y = canvas.height / 2 + fontSize / 2.5;
-  context.fillText(text, x - margin, y);
+  return { offscreenCanvas, mediaStream, gainNode, frameRate: parameters.frameRate };
 }
 
 export function parseBooleanString(value: string): boolean | undefined {

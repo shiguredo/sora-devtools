@@ -1,4 +1,4 @@
-import { FormGroup, FormSelect } from "react-bootstrap";
+import { FormGroup, FormSelect } from "@/components/ui";
 
 import { setVideoInput, updateMediaStream } from "@/app/actions";
 import { videoInput, videoInputDevices } from "@/app/signals";
@@ -12,7 +12,7 @@ export function VideoInputForm() {
     void updateMediaStream();
   };
   return (
-    <FormGroup className="form-inline" controlId="videoInput">
+    <FormGroup className="flex items-center gap-2" controlId="videoInput">
       <TooltipFormLabel kind="videoInput">videoInput:</TooltipFormLabel>
       <FormSelect
         name="videoInput"

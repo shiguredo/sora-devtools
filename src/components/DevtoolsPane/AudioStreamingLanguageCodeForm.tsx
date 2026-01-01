@@ -1,4 +1,4 @@
-import { Col, FormControl, FormGroup, Row } from "react-bootstrap";
+import { FormGroup, FormInput } from "@/components/ui";
 
 import {
   audioStreamingLanguageCode,
@@ -22,9 +22,12 @@ export function AudioStreamingLanguageCodeForm() {
   };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledAudioStreamingLanguageCode">
+      <div className="flex flex-wrap gap-2">
+        <div className="w-auto">
+          <FormGroup
+            className="flex items-center gap-2"
+            controlId="enabledAudioStreamingLanguageCode"
+          >
             <TooltipFormCheck
               kind="audioStreamingLanguageCode"
               checked={enabledAudioStreamingLanguageCode.value}
@@ -34,14 +37,14 @@ export function AudioStreamingLanguageCodeForm() {
               audioStreamingLanguageCode
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {enabledAudioStreamingLanguageCode.value ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="audioStreamingLanguageCode">
-              <FormControl
-                className="flex-fill w-500"
+        <div className="flex flex-wrap gap-2">
+          <div className="w-auto">
+            <FormGroup className="flex items-center gap-2" controlId="audioStreamingLanguageCode">
+              <FormInput
+                className="flex-1 w-[500px]"
                 type="text"
                 placeholder="audioStreamingLanguageCodeを指定"
                 value={audioStreamingLanguageCode.value}
@@ -49,8 +52,8 @@ export function AudioStreamingLanguageCodeForm() {
                 disabled={disabled}
               />
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
   );

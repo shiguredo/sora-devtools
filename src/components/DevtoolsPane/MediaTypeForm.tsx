@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import { FormCheck, FormGroup } from "react-bootstrap";
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
+
+import { FormCheck, FormGroup } from "@/components/ui";
 
 import { setMediaType } from "@/app/actions";
 import { isFormDisabled, localMediaStream, mediaType } from "@/app/signals";
@@ -20,12 +22,17 @@ function FormRadio(props: FormRadioProps) {
   return (
     <FormCheck
       type="radio"
-      inline={true}
       id={label}
       label={label}
-      value={label}
       checked={mediaTypeValue === label}
-      onChange={onChange}
+      onChange={(e: Event) => {
+        const target = e.target as HTMLInputElement;
+        if (target.checked) {
+          const syntheticEvent = new Event("change");
+          Object.defineProperty(syntheticEvent, "target", { value: { value: label } });
+          onChange(syntheticEvent);
+        }
+      }}
       disabled={disabled}
     />
   );
@@ -35,7 +42,7 @@ export function MediaTypeForm() {
   // NOTE(yuito): window.CropTarget の有無のみで radio の表示/非表示を切り替えると
   // サーバサイドとクライアントサイドのレンダリング結果の不一致で warning が発生するため
   // mount してから表示するハックを入れる
-  const [mountClient, setMountClient] = useState(false);
+  const mountClient = useSignal(false);
   const disabled = localMediaStream.value !== null || isFormDisabled.value;
   const enabledMp4Media = Mp4MediaStream.isSupported();
   const onChange = (event: Event): void => {
@@ -45,10 +52,10 @@ export function MediaTypeForm() {
     }
   };
   useEffect(() => {
-    setMountClient(true);
-  }, []);
+    mountClient.value = true;
+  }, [mountClient]);
   return (
-    <FormGroup className="form-inline flex-wrap">
+    <FormGroup className="flex items-center gap-2 flex-wrap">
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio
         label="getUserMedia"
@@ -68,7 +75,7 @@ export function MediaTypeForm() {
         disabled={disabled}
         onChange={onChange}
       />
-      {mountClient && (
+      {mountClient.value && (
         <FormRadio
           label="mp4Media"
           mediaTypeValue={mediaType.value}
