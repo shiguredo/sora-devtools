@@ -1,5 +1,6 @@
 import type { JSX } from "preact";
 
+import { Button } from "@/components/ui";
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
@@ -17,8 +18,8 @@ export function CopyLogButton(props: Props) {
     return <div style={{ height: "31px" }} />;
   }
   return (
-    <button type="button" className="btn btn-sm btn-dark" onClick={onClick}>
+    <Button variant="dark" size="sm" onClick={onClick}>
       <ClipboardIcon />
-    </button>
+    </Button>
   );
 }

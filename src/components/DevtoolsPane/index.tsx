@@ -53,6 +53,7 @@ import { BundleIdForm } from "./BundleIdForm.tsx";
 import { CameraDeviceForm } from "./CameraDeviceForm.tsx";
 import { ChannelIdForm } from "./ChannelIdForm.tsx";
 import { ClientIdForm } from "./ClientIdForm.tsx";
+import { CollapseLink } from "./CollapseLink.tsx";
 import { ConnectButton } from "./ConnectButton.tsx";
 import { DataChannelForm } from "./DataChannelForm.tsx";
 import { DataChannelsForm } from "./DataChannelsForm.tsx";
@@ -104,7 +105,7 @@ function RowChannelOptions() {
   return (
     <>
       <div className="form-row flex flex-wrap">
-        <div className="form-channel-id w-full">
+        <div className="max-w-[802px] pb-2 w-full">
           <ChannelIdForm />
         </div>
       </div>
@@ -210,13 +211,6 @@ function RowSignalingOptions() {
     enabledSignalingUrlCandidates.value,
     reconnect.value,
   ].some((e) => e);
-  const linkClassNames = ["btn-collapse-options"];
-  if (collapsed.value) {
-    linkClassNames.push("collapsed");
-  }
-  if (enabledOptions) {
-    linkClassNames.push("font-bold");
-  }
   const onClick = (event: Event): void => {
     event.preventDefault();
     collapsed.value = !collapsed.value;
@@ -225,10 +219,9 @@ function RowSignalingOptions() {
     <>
       <div className="form-row">
         <div>
-          {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-          <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+          <CollapseLink collapsed={collapsed.value} enabled={enabledOptions} onClick={onClick}>
             Signaling options
-          </a>
+          </CollapseLink>
         </div>
       </div>
       <Collapse in={!collapsed.value}>
@@ -266,13 +259,6 @@ function RowAdvancedSignalingOptions() {
     showOptions.push(forceStereoOutput.value);
   }
   const enabledOptions = showOptions.some((e) => e);
-  const linkClassNames = ["btn-collapse-options"];
-  if (collapsed.value) {
-    linkClassNames.push("collapsed");
-  }
-  if (enabledOptions) {
-    linkClassNames.push("font-bold");
-  }
   const onClick = (event: Event): void => {
     event.preventDefault();
     collapsed.value = !collapsed.value;
@@ -281,10 +267,9 @@ function RowAdvancedSignalingOptions() {
     <>
       <div className="form-row">
         <div>
-          {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-          <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+          <CollapseLink collapsed={collapsed.value} enabled={enabledOptions} onClick={onClick}>
             Advanced signaling options
-          </a>
+          </CollapseLink>
         </div>
       </div>
       <Collapse in={!collapsed.value}>
@@ -341,13 +326,6 @@ function RowMediaOptions() {
     blurRadius.value !== "",
     mediaProcessorsNoiseSuppression.value,
   ].some((e) => e);
-  const linkClassNames = ["btn-collapse-options"];
-  if (collapsed.value) {
-    linkClassNames.push("collapsed");
-  }
-  if (enabledOptions) {
-    linkClassNames.push("font-bold");
-  }
   const onClick = (event: Event): void => {
     event.preventDefault();
     collapsed.value = !collapsed.value;
@@ -356,10 +334,9 @@ function RowMediaOptions() {
     <>
       <div className="form-row">
         <div>
-          {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-          <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+          <CollapseLink collapsed={collapsed.value} enabled={enabledOptions} onClick={onClick}>
             Media options
-          </a>
+          </CollapseLink>
         </div>
       </div>
       <Collapse in={!collapsed.value}>

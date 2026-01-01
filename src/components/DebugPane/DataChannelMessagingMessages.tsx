@@ -1,5 +1,6 @@
 import { clearDataChannelMessages } from "@/app/actions";
 import { dataChannelMessages } from "@/app/signals";
+import { Button } from "@/components/ui";
 import type { DataChannelMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
@@ -9,13 +10,9 @@ function ButtonClear() {
     clearDataChannelMessages();
   };
   return (
-    <input
-      className="btn btn-secondary"
-      type="button"
-      name="clear"
-      defaultValue="clear"
-      onClick={onClick}
-    />
+    <Button variant="secondary" onClick={onClick}>
+      clear
+    </Button>
   );
 }
 

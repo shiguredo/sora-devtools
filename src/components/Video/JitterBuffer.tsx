@@ -79,16 +79,22 @@ export function JitterButter(props: Props) {
   const currentJitterBufferDelay = Math.floor(
     (jitterBufferDelay / jitterBufferEmittedCount) * 1000,
   );
-  let borderClassName = "normal-jitter-buffer";
+  // Tailwind classes for jitter buffer status
+  const baseClasses = `
+    inline-block font-normal leading-normal text-center
+    px-2 py-1 text-sm rounded-md mx-1
+    min-w-[90px] border-2 cursor-default
+  `;
+  let statusClasses = "border-bs-dark";
   if (currentJitterBufferDelay > 500) {
-    borderClassName = "critical-jitter-buffer";
+    statusClasses = "border-bs-red bg-bs-red text-bs-light";
   } else if (currentJitterBufferDelay > 300) {
-    borderClassName = "danger-jitter-buffer";
+    statusClasses = "border-bs-orange bg-bs-orange text-bs-light";
   } else if (currentJitterBufferDelay > 100) {
-    borderClassName = "warning-jitter-buffer";
+    statusClasses = "border-bs-yellow";
   }
   return (
-    <div className={`btn btn-sm mx-1 ${borderClassName}`}>
+    <div className={`${baseClasses} ${statusClasses}`}>
       <span>
         {props.type}: {currentJitterBufferDelay}
       </span>

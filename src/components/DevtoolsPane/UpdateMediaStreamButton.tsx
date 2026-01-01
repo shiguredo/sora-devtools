@@ -1,4 +1,5 @@
 import { updateMediaStream } from "@/app/actions";
+import { Button } from "@/components/ui";
 
 export function UpdateMediaStreamButton() {
   const onClick = (): void => {
@@ -6,13 +7,9 @@ export function UpdateMediaStreamButton() {
   };
   return (
     <div className="col-auto mb-1">
-      <input
-        className="btn btn-outline-secondary"
-        type="button"
-        name="update-mediastream"
-        defaultValue="update-mediastream"
-        onClick={onClick}
-      />
+      <Button variant="outline-secondary" onClick={onClick}>
+        update-mediastream
+      </Button>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { JSX } from "preact";
 
+import { Button } from "@/components/ui";
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
@@ -20,9 +21,9 @@ function TextBox(props: TextBoxProps) {
           {props.text}
         </p>
         <div className="border-left border-secondary">
-          <button type="button" className="btn btn-sm btn-light" onClick={onClick}>
+          <Button variant="light" size="sm" onClick={onClick}>
             <ClipboardIcon />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

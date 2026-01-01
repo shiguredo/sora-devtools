@@ -49,7 +49,7 @@ export function DisplayResolutionForm() {
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="form-display-resolution"
+          className="max-w-[130px]"
           type="text"
           value={displayResolution.value}
           onChange={onChange}

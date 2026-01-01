@@ -43,7 +43,7 @@ export function FrameRateForm() {
       <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="form-frame-rate"
+          className="max-w-[100px]"
           type="text"
           value={frameRate.value}
           onChange={onChange}

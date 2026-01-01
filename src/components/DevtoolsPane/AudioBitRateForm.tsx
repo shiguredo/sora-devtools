@@ -25,7 +25,7 @@ export function AudioBitRateForm() {
       <TooltipFormLabel kind="audioBitRate">audioBitRate:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="form-audio-bit-rate"
+          className="max-w-[130px]"
           type="text"
           value={audioBitRate.value}
           onChange={onChange}

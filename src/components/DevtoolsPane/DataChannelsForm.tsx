@@ -1,6 +1,6 @@
 import { setDataChannels, setEnabledDataChannels } from "@/app/actions";
 import { dataChannels, enabledDataChannels, isFormDisabled } from "@/app/signals";
-import { FormGroup } from "@/components/ui";
+import { Button, FormGroup } from "@/components/ui";
 
 import { JSONInputField } from "./JSONInputField.tsx";
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
@@ -52,13 +52,13 @@ export function DataChannelsForm() {
               disabled={disabled}
               rows={12}
               extraControls={
-                <button
-                  type="button"
-                  className="btn btn-light btn-sm"
+                <Button
+                  variant="light"
+                  size="sm"
                   onClick={() => setDataChannels(exampleJsonString)}
                 >
                   load template
-                </button>
+                </Button>
               }
             />
           </div>

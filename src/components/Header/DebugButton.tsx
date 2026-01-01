@@ -1,21 +1,15 @@
 import { setDebug } from "@/app/actions";
 import { debug } from "@/app/signals";
+import { Button } from "@/components/ui";
 
 export function DebugButton() {
   const onClick = (): void => {
     setDebug(!debug.value);
   };
-  const classNames = ["btn", "btn-light", "btn-header-debug-mode", "btn-sm", "ml-1"];
-  if (debug.value) {
-    classNames.push("active");
-  }
+  const activeClasses = debug.value ? "bg-[#ff4c93] text-white hover:bg-[#ff1a6f]" : "";
   return (
-    <input
-      className={classNames.join(" ")}
-      type="button"
-      name="debug"
-      defaultValue="debug"
-      onClick={onClick}
-    />
+    <Button variant="light" size="sm" className={`ml-1 ${activeClasses}`} onClick={onClick}>
+      debug
+    </Button>
   );
 }

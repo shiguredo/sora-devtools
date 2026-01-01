@@ -1,4 +1,5 @@
 import { setMediaDevices } from "@/app/actions";
+import { Button } from "@/components/ui";
 
 export function ReloadDevicesButton() {
   const onClick = (): void => {
@@ -6,13 +7,9 @@ export function ReloadDevicesButton() {
   };
   return (
     <div className="col-auto mb-1">
-      <input
-        className="btn btn-outline-secondary"
-        type="button"
-        name="update-devices"
-        defaultValue="update-devices"
-        onClick={onClick}
-      />
+      <Button variant="outline-secondary" onClick={onClick}>
+        update-devices
+      </Button>
     </div>
   );
 }

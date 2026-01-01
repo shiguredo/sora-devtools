@@ -1,24 +1,21 @@
 import { connectSora } from "@/app/actions";
 import { connectionStatus } from "@/app/signals";
+import { Button } from "@/components/ui";
 
 export function ConnectButton() {
   const connect = (): void => {
     void connectSora();
   };
+  const disabled =
+    connectionStatus.value === "disconnecting" ||
+    connectionStatus.value === "connecting" ||
+    connectionStatus.value === "initializing";
+
   return (
     <div className="col-auto mb-1 mr-2">
-      <input
-        className="btn btn-secondary"
-        type="button"
-        name="connect"
-        defaultValue="connect"
-        onClick={connect}
-        disabled={
-          connectionStatus.value === "disconnecting" ||
-          connectionStatus.value === "connecting" ||
-          connectionStatus.value === "initializing"
-        }
-      />
+      <Button variant="secondary" onClick={connect} disabled={disabled}>
+        connect
+      </Button>
     </div>
   );
 }

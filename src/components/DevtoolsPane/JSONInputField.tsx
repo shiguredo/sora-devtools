@@ -2,7 +2,7 @@ import { useSignal } from "@preact/signals";
 import type { ComponentChildren } from "preact";
 import { useEffect } from "preact/hooks";
 
-import { FormGroup, FormTextarea } from "@/components/ui";
+import { Button, FormGroup, FormTextarea } from "@/components/ui";
 
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
   if (jsonString === "") {
@@ -54,10 +54,14 @@ export const JSONInputField = ({
       invalidJsonString.value = true;
     }
   }, [value, invalidJsonString]);
+  const invalidStyles = invalidJsonString.value
+    ? "flex-1 border-bs-red border-2 focus:border-bs-red"
+    : "flex-1";
+
   return (
     <FormGroup className="flex items-center gap-2 relative" controlId={controlId}>
       <FormTextarea
-        className={invalidJsonString.value ? "flex-fill invalid-json" : "flex-fill"}
+        className={invalidStyles}
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
@@ -65,16 +69,16 @@ export const JSONInputField = ({
         cols={cols || 100}
         disabled={disabled}
       />
-      <div className="json-input-textarea-overlay">
+      <div className="absolute top-2.5 right-0 flex gap-2">
         {extraControls}
-        <button
-          type="button"
-          className="btn btn-light btn-sm"
+        <Button
+          variant="light"
+          size="sm"
           onClick={() => prettyFormat(value, setValue)}
           disabled={invalidJsonString.value}
         >
           pretty format
-        </button>
+        </Button>
       </div>
     </FormGroup>
   );

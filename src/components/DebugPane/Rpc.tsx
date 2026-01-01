@@ -1,7 +1,14 @@
 import { useSignal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 
-import { InputGroup, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "@/components/ui";
+import {
+  Button,
+  InputGroup,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "@/components/ui";
 
 import { clearRpcObjects } from "@/app/actions";
 import { connectionStatus, rpcObjects, sora } from "@/app/signals";
@@ -17,13 +24,9 @@ function ClearButton() {
     clearRpcObjects();
   };
   return (
-    <input
-      className="btn btn-secondary"
-      type="button"
-      name="clear"
-      defaultValue="clear"
-      onClick={onClick}
-    />
+    <Button variant="secondary" onClick={onClick}>
+      clear
+    </Button>
   );
 }
 

@@ -1,5 +1,6 @@
 import type { SimulcastRid } from "sora-js-sdk";
 
+import { Button } from "@/components/ui";
 import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
@@ -35,12 +36,8 @@ export function RequestSimulcastRidButton(props: Props) {
   };
 
   return (
-    <input
-      className="btn btn-secondary btn-sm mx-1"
-      type="button"
-      name={`requestSimulcastRidTo${props.rid.charAt(0).toUpperCase() + props.rid.slice(1)}`}
-      defaultValue={props.rid}
-      onClick={onClick}
-    />
+    <Button variant="secondary" size="sm" className="mx-1" onClick={onClick}>
+      {props.rid}
+    </Button>
   );
 }

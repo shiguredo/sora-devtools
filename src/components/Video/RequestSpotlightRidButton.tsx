@@ -1,7 +1,7 @@
 import { useRef } from "preact/hooks";
 import type { SpotlightFocusRid } from "sora-js-sdk";
 
-import { FormGroup, FormSelect } from "@/components/ui";
+import { Button, FormGroup, FormSelect } from "@/components/ui";
 
 import { connectionStatus, sora } from "@/app/signals";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
@@ -64,13 +64,9 @@ export function RequestSpotlightRidButton() {
             );
           })}
         </FormSelect>
-        <input
-          className="btn btn-secondary"
-          type="button"
-          name="requestSpotlightRid"
-          defaultValue="requestSpotlightRid"
-          onClick={onClick}
-        />
+        <Button variant="secondary" onClick={onClick}>
+          requestSpotlightRid
+        </Button>
       </FormGroup>
     </div>
   );

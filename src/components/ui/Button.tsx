@@ -1,4 +1,4 @@
-import type { ComponentChildren } from "preact";
+import type { ComponentChildren, JSX } from "preact";
 
 type ButtonProps = {
   variant?: "primary" | "secondary" | "light" | "dark" | "outline-secondary" | "outline-light";
@@ -6,7 +6,7 @@ type ButtonProps = {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   className?: string;
-  onClick?: () => void;
+  onClick?: JSX.MouseEventHandler<HTMLButtonElement>;
   children: ComponentChildren;
 };
 
@@ -45,7 +45,7 @@ export function Button({
       onClick={onClick}
       className={`
         inline-block font-normal leading-normal text-center no-underline align-middle
-        cursor-pointer select-none border border-transparent
+        cursor-pointer select-none border
         transition-colors duration-150
         disabled:opacity-65 disabled:pointer-events-none
         ${sizeStyles} ${variantStyles[variant]} ${className}

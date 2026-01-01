@@ -20,3 +20,16 @@
 - pnpm fmt と lint を実行してエラーがあったら修正すること
 - pnpm typecheck を実行してエラーがあったら修正すること
 - pnpm build を実行してエラーがあったら修正すること
+
+## Preact
+
+### Components
+
+- Tailwind CSS v4 を利用すること
+- グローバルな CSS（App.css など）にコンポーネント固有のスタイルを書かないこと
+- スタイルの適用方法 (優先順):
+  1. Tailwind のユーティリティクラス
+  2. Arbitrary Values `[値]` や Arbitrary Properties `[プロパティ:値]`
+     - CSS 変数は `(--変数名)` の省略記法も可
+  3. 複雑な場合は CSS Modules (`ComponentName.module.css`)
+- カスタムユーティリティを追加する場合は `@utility` を使用する

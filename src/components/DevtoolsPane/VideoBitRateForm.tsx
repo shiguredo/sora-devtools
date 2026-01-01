@@ -36,7 +36,7 @@ export function VideoBitRateForm() {
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="form-video-bit-rate"
+          className="max-w-[130px]"
           type="text"
           value={videoBitRate.value}
           onChange={onChange}
