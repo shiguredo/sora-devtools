@@ -633,7 +633,8 @@ async function createMediaStream(
       description: JSON.stringify(constraints),
     });
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints));
-    const { offscreenCanvas, mediaStream, gainNode, frameRate } = createFakeMediaStream(constraints);
+    const { offscreenCanvas, mediaStream, gainNode, frameRate } =
+      createFakeMediaStream(constraints);
     if (offscreenCanvas !== null) {
       // 現在の Worker を停止
       state.fakeContents.worker.postMessage({ type: "stop" });
