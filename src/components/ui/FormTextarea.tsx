@@ -31,21 +31,6 @@ export function FormTextarea({
   cols,
   className = "",
 }: FormTextareaProps) {
-  const baseStyles = [
-    "block w-full",
-    "px-3 py-1.5",
-    "text-base leading-normal",
-    "text-gray-900 bg-white",
-    "border border-gray-300 rounded-md",
-    "appearance-none",
-    "transition-colors duration-150",
-    "resize-y",
-    // Focus state
-    "focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25",
-    // Disabled state
-    "disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed",
-  ].join(" ");
-
   return (
     <textarea
       name={name}
@@ -58,7 +43,15 @@ export function FormTextarea({
       readOnly={readOnly}
       rows={rows}
       cols={cols}
-      className={`${baseStyles} ${className}`}
+      className={`
+        block w-full px-3 py-1.5
+        text-base leading-normal text-gray-900 bg-white
+        border border-gray-300 rounded-md appearance-none resize-y
+        transition-colors duration-150
+        focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25
+        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+        ${className}
+      `}
     />
   );
 }

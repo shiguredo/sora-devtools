@@ -70,6 +70,10 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
           const { eventKey, title } = tab;
           const isActive = eventKey === activeKey;
 
+          const activeStyles = isActive
+            ? "text-white border-white bg-gray-700"
+            : "text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500";
+
           return (
             <button
               type="button"
@@ -77,15 +81,11 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
               role="tab"
               aria-selected={isActive}
               onClick={() => handleSelect(eventKey)}
-              className={[
-                "px-4 py-2",
-                "text-sm font-medium",
-                "border-b-2 -mb-px",
-                "transition-colors duration-150",
-                isActive
-                  ? "text-white border-white bg-gray-700"
-                  : "text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500",
-              ].join(" ")}
+              className={`
+                px-4 py-2 text-sm font-medium
+                border-b-2 -mb-px transition-colors duration-150
+                ${activeStyles}
+              `}
             >
               {title}
             </button>

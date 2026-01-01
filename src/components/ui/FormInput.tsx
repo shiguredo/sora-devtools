@@ -38,20 +38,6 @@ export function FormInput({
   accept,
   className = "",
 }: FormInputProps) {
-  const baseStyles = [
-    "block w-full",
-    "px-3 py-1.5",
-    "text-base leading-normal",
-    "text-gray-900 bg-white",
-    "border border-gray-300 rounded-md",
-    "appearance-none",
-    "transition-colors duration-150",
-    // Focus state
-    "focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25",
-    // Disabled state
-    "disabled:bg-[#e9ecef] disabled:opacity-65 disabled:cursor-not-allowed",
-  ].join(" ");
-
   return (
     <input
       type={type}
@@ -64,7 +50,15 @@ export function FormInput({
       disabled={disabled}
       readOnly={readOnly}
       accept={accept}
-      className={`${baseStyles} ${className}`}
+      className={`
+        block w-full px-3 py-1.5
+        text-base leading-normal text-gray-900 bg-white
+        border border-gray-300 rounded-md appearance-none
+        transition-colors duration-150
+        focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25
+        disabled:bg-[#e9ecef] disabled:opacity-65 disabled:cursor-not-allowed
+        ${className}
+      `}
     />
   );
 }

@@ -14,15 +14,17 @@ type InputGroupProps = {
  * - 子要素の border-radius を調整して連結表示
  */
 export function InputGroup({ className = "", children }: InputGroupProps) {
-  const baseStyles = [
-    "relative",
-    "flex",
-    "items-stretch",
-    // 子要素の border-radius を調整
-    "[&>*:not(:first-child)]:rounded-l-none",
-    "[&>*:not(:last-child)]:rounded-r-none",
-    "[&>*:not(:first-child)]:-ml-px",
-  ].join(" ");
-
-  return <div className={`${baseStyles} ${className}`}>{children}</div>;
+  return (
+    <div
+      className={`
+        relative flex items-stretch
+        [&>*:not(:first-child)]:rounded-l-none
+        [&>*:not(:last-child)]:rounded-r-none
+        [&>*:not(:first-child)]:-ml-px
+        ${className}
+      `}
+    >
+      {children}
+    </div>
+  );
 }

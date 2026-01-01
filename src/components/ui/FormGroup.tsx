@@ -12,7 +12,7 @@ type FormGroupProps = {
  */
 export function FormGroup({ controlId, className = "", children }: FormGroupProps) {
   return (
-    <div className={`form-inline ${className}`} data-control-id={controlId}>
+    <div className={`flex items-center min-h-10 ${className}`} data-control-id={controlId}>
       {children}
     </div>
   );

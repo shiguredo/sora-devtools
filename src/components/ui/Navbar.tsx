@@ -52,8 +52,8 @@ export function Navbar({
 
   const variantStyles = variant === "dark" ? "text-white" : "text-gray-900";
 
-  // bg が "sora" の場合は App.css の .bg-sora を使用
-  const bgStyles = bg === "sora" ? "bg-sora" : bg ? `bg-${bg}` : "";
+  // bg が "sora" の場合は Sora ブランドカラーを使用
+  const bgStyles = bg === "sora" ? "bg-[#0071bc]" : bg ? `bg-${bg}` : "";
 
   const fixedStyles =
     fixed === "top"
@@ -65,16 +65,14 @@ export function Navbar({
   // expand は現在未使用（常に flex-nowrap）
   void expand;
 
-  const baseStyles = [
-    "flex flex-nowrap items-center justify-start",
-    "py-2 px-0",
-    variantStyles,
-    bgStyles,
-    fixedStyles,
-  ].join(" ");
-
   return (
-    <nav className={`${baseStyles} ${className}`} data-expanded={isExpanded.value}>
+    <nav
+      className={`
+        flex flex-nowrap items-center justify-start py-2 px-0
+        ${variantStyles} ${bgStyles} ${fixedStyles} ${className}
+      `}
+      data-expanded={isExpanded.value}
+    >
       <NavbarContext.Provider
         value={{
           isExpanded: isExpanded.value,
@@ -133,13 +131,13 @@ export function NavbarText({ className = "", children }: NavbarTextProps) {
  */
 export function NavbarCollapse({ className = "", children }: NavbarCollapseProps) {
   const { isExpanded } = useContext(NavbarContext);
+  const visibilityStyles = isExpanded ? "block" : "hidden lg:block";
 
-  const baseStyles = [
-    "w-full lg:flex lg:w-auto lg:items-center",
-    isExpanded ? "block" : "hidden lg:block",
-  ].join(" ");
-
-  return <div className={`${baseStyles} ${className}`}>{children}</div>;
+  return (
+    <div className={`w-full lg:flex lg:w-auto lg:items-center ${visibilityStyles} ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 /**

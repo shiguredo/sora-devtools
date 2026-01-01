@@ -103,21 +103,7 @@ export function DropdownToggle({
 
   // children がない場合は InputGroup 内のドロップダウンボタンとしてコンパクトに
   const isCompact = !children;
-
-  const baseStyles = [
-    "inline-flex items-center justify-center",
-    // InputGroup 内ではコンパクト表示、stretch で高さを合わせる、左角丸なし
-    isCompact ? "px-2 self-stretch rounded-l-none" : "px-3 py-1.5 gap-1",
-    "text-base leading-normal",
-    "border rounded-md",
-    "cursor-pointer",
-    "transition-colors duration-150",
-    variantStyles[variant],
-    // Focus state
-    "focus:outline-none focus:ring-2 focus:ring-blue-400/25",
-    // Disabled state
-    "disabled:opacity-65 disabled:cursor-not-allowed disabled:bg-[#e9ecef]",
-  ].join(" ");
+  const sizeStyles = isCompact ? "px-2 self-stretch rounded-l-none" : "px-3 py-1.5 gap-1";
 
   const handleClick = () => {
     toggle();
@@ -129,7 +115,16 @@ export function DropdownToggle({
       type="button"
       disabled={disabled}
       onClick={handleClick}
-      className={`${baseStyles} ${className}`}
+      className={`
+        inline-flex items-center justify-center
+        ${sizeStyles}
+        text-base leading-normal border rounded-md cursor-pointer
+        transition-colors duration-150
+        ${variantStyles[variant]}
+        focus:outline-none focus:ring-2 focus:ring-blue-400/25
+        disabled:opacity-65 disabled:cursor-not-allowed disabled:bg-[#e9ecef]
+        ${className}
+      `}
     >
       {children}
       {/* ドロップダウン矢印（FormSelect と同じデザイン） */}
@@ -154,19 +149,19 @@ export function DropdownMenu({ show, className = "", children }: DropdownMenuPro
 
   if (!visible) return null;
 
-  const baseStyles = [
-    "absolute z-50",
-    "top-full right-0",
-    "min-w-[10rem]",
-    "max-h-[300px] overflow-y-auto",
-    "mt-1",
-    "py-1",
-    "bg-white",
-    "border border-gray-200 rounded-md",
-    "shadow-lg",
-  ].join(" ");
-
-  return <div className={`${baseStyles} ${className}`}>{children}</div>;
+  return (
+    <div
+      className={`
+        absolute z-50 top-full right-0
+        min-w-40 max-h-[300px] overflow-y-auto
+        mt-1 py-1 bg-white
+        border border-gray-200 rounded-md shadow-lg
+        ${className}
+      `}
+    >
+      {children}
+    </div>
+  );
 }
 
 /**
@@ -181,14 +176,8 @@ export function DropdownItem({
 }: DropdownItemProps) {
   const { close } = useContext(DropdownContext);
 
-  const baseStyles = [
-    "block w-full",
-    "px-4 py-2",
-    "text-left text-sm",
-    "transition-colors duration-150",
-    active ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100",
-    disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
-  ].join(" ");
+  const activeStyles = active ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100";
+  const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
 
   const handleClick = () => {
     if (!disabled) {
@@ -202,7 +191,12 @@ export function DropdownItem({
       type="button"
       disabled={disabled}
       onClick={handleClick}
-      className={`${baseStyles} ${className}`}
+      className={`
+        block w-full px-4 py-2
+        text-left text-sm transition-colors duration-150
+        ${activeStyles} ${disabledStyles}
+        ${className}
+      `}
     >
       {children}
     </button>

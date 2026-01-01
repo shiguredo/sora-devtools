@@ -9,14 +9,10 @@ type FormLabelProps = {
 /**
  * フォームラベルコンポーネント
  * react-bootstrap の FormLabel 互換
- *
- * Bootstrap スタイル:
- * - display: inline-block
- * - margin-bottom: 0.5rem
  */
 export function FormLabel({ htmlFor, className = "", children }: FormLabelProps) {
   return (
-    <label htmlFor={htmlFor} className={`form-label ${className}`}>
+    <label htmlFor={htmlFor} className={`me-2 ${className}`}>
       {children}
     </label>
   );

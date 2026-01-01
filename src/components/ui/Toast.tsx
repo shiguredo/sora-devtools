@@ -52,17 +52,18 @@ export function Toast({
 
   if (!show) return null;
 
-  const baseStyles = [
-    "max-w-sm",
-    "bg-white/95",
-    "border border-gray-200 rounded-md",
-    "shadow-lg",
-    "backdrop-blur-sm",
-    // アニメーション
-    "animate-fade-in",
-  ].join(" ");
-
-  return <div className={`${baseStyles} ${className}`}>{children}</div>;
+  return (
+    <div
+      className={`
+        max-w-sm bg-white/95
+        border border-gray-200 rounded-md
+        shadow-lg backdrop-blur-sm animate-fade-in
+        ${className}
+      `}
+    >
+      {children}
+    </div>
+  );
 }
 
 /**
@@ -74,15 +75,14 @@ export function ToastHeader({
   className = "",
   children,
 }: ToastHeaderProps) {
-  const baseStyles = [
-    "flex items-center justify-between",
-    "px-3 py-2",
-    "border-b border-gray-200",
-    "rounded-t-md",
-  ].join(" ");
-
   return (
-    <div className={`${baseStyles} ${className}`}>
+    <div
+      className={`
+        flex items-center justify-between px-3 py-2
+        border-b border-gray-200 rounded-t-md
+        ${className}
+      `}
+    >
       <div className="flex items-center">{children}</div>
       {closeButton && (
         <button
@@ -109,7 +109,5 @@ export function ToastHeader({
  * トーストボディ
  */
 export function ToastBody({ className = "", children }: ToastBodyProps) {
-  const baseStyles = "px-3 py-2";
-
-  return <div className={`${baseStyles} ${className}`}>{children}</div>;
+  return <div className={`px-3 py-2 ${className}`}>{children}</div>;
 }

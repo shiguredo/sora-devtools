@@ -39,25 +39,19 @@ export function Popover({ content, placement = "top", className = "", children }
       "right-full top-1/2 -translate-y-1/2 border-r-gray-200 border-y-transparent border-l-transparent",
   };
 
-  const popoverStyles = [
-    "absolute z-50",
-    "max-w-xs",
-    "px-3 py-2",
-    "text-sm",
-    "bg-white",
-    "border border-gray-200 rounded-md",
-    "shadow-lg",
-    // 表示制御
-    "invisible opacity-0",
-    "group-hover:visible group-hover:opacity-100",
-    "transition-opacity duration-150",
-    placementStyles[placement],
-  ].join(" ");
-
   return (
     <div className={`group relative inline-block ${className}`}>
       {children}
-      <div className={popoverStyles}>
+      <div
+        className={`
+          absolute z-50 max-w-xs px-3 py-2 text-sm
+          bg-white border border-gray-200 rounded-md shadow-lg
+          invisible opacity-0
+          group-hover:visible group-hover:opacity-100
+          transition-opacity duration-150
+          ${placementStyles[placement]}
+        `}
+      >
         {content}
         {/* 矢印 */}
         <div

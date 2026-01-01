@@ -1,4 +1,5 @@
 // Form components
+export { Button } from "./Button.tsx";
 export { FormGroup } from "./FormGroup.tsx";
 export { FormLabel } from "./FormLabel.tsx";
 export { FormInput } from "./FormInput.tsx";
