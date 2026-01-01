@@ -4,6 +4,7 @@ type ButtonProps = {
   variant?: "primary" | "secondary" | "light" | "dark" | "outline-secondary" | "outline-light";
   size?: "sm";
   type?: "button" | "submit" | "reset";
+  name?: string;
   disabled?: boolean;
   className?: string;
   onClick?: JSX.MouseEventHandler<HTMLButtonElement>;
@@ -30,6 +31,7 @@ export function Button({
   variant = "secondary",
   size,
   type = "button",
+  name,
   disabled = false,
   className = "",
   onClick,
@@ -41,6 +43,7 @@ export function Button({
   return (
     <button
       type={type}
+      name={name}
       disabled={disabled}
       onClick={onClick}
       className={`

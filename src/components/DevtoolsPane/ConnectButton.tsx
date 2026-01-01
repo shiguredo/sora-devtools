@@ -13,7 +13,7 @@ export function ConnectButton() {
 
   return (
     <div className="col-auto mb-1 mr-2">
-      <Button variant="secondary" onClick={connect} disabled={disabled}>
+      <Button variant="secondary" name="connect" onClick={connect} disabled={disabled}>
         connect
       </Button>
     </div>

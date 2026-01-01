@@ -13,7 +13,7 @@ export function DisconnectButton() {
 
   return (
     <div className="col-auto mb-1">
-      <Button variant="secondary" onClick={disconnect} disabled={disabled}>
+      <Button variant="secondary" name="disconnect" onClick={disconnect} disabled={disabled}>
         disconnect
       </Button>
     </div>
