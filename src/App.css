@@ -749,6 +749,42 @@ button.debug-title {
   width: 500px;
 }
 
+/* ツールチップ（バルーン）スタイル */
+.tooltip-balloon {
+  position: absolute;
+  z-index: 50;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 0.5rem;
+  min-width: 200px;
+  max-width: 300px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #212529;
+  background-color: #fff;
+  border: 1px solid #0071bc;
+  border-radius: 0.375rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  white-space: pre-wrap;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease-in-out,
+    visibility 0.15s ease-in-out;
+}
+
+.tooltip-container:hover .tooltip-balloon {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-label {
+  cursor: help;
+  border-bottom: 1px dotted #6c757d;
+}
+
 .popover {
   border-color: #0071bc !important;
   font-size: 1rem;

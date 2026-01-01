@@ -15,11 +15,11 @@ function Reconnect() {
   }, []);
   return (
     <Toast delay={20000} onClose={onClose}>
-      <ToastHeader className={"bg-warning text-white"} onClose={onClose}>
-        <strong className="mr-auto">Reconnect</strong>
+      <ToastHeader className="bg-yellow-500 text-white" onClose={onClose}>
+        <strong className="me-auto">Reconnect</strong>
       </ToastHeader>
-      <ToastBody className="bg-light">
-        <p className="break-words font-weight-bold mb-0">
+      <ToastBody className="bg-gray-100">
+        <p className="break-words font-bold mb-0">
           Reconnecting... (trials {reconnectingTrials.value})
         </p>
       </ToastBody>
@@ -31,15 +31,15 @@ function Alert(props: AlertMessage) {
   const onClose = (): void => {
     deleteAlertMessage(props.timestamp);
   };
-  const bgClassName = props.type === "error" ? "bg-danger" : "bg-info";
+  const bgClassName = props.type === "error" ? "bg-red-500" : "bg-blue-500";
   return (
     <Toast autohide={true} delay={20000} onClose={onClose}>
       <ToastHeader className={`${bgClassName} text-white`} onClose={onClose}>
-        <strong className="mr-auto">{props.title}</strong>
+        <strong className="me-auto">{props.title}</strong>
         <span>{formatUnixtime(props.timestamp)}</span>
       </ToastHeader>
-      <ToastBody className="bg-light">
-        <p className="break-words font-weight-bold mb-0">{props.message}</p>
+      <ToastBody className="bg-gray-100">
+        <p className="break-words font-bold mb-0">{props.message}</p>
       </ToastBody>
     </Toast>
   );
