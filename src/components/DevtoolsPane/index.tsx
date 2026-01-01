@@ -222,12 +222,14 @@ function RowSignalingOptions() {
     collapsed.value = !collapsed.value;
   };
   return (
-    <div className="form-row">
-      <div>
-        {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
-          Signaling options
-        </a>
+    <>
+      <div className="form-row">
+        <div>
+          {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
+          <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+            Signaling options
+          </a>
+        </div>
       </div>
       <Collapse in={!collapsed.value}>
         <div>
@@ -242,7 +244,7 @@ function RowSignalingOptions() {
           <DataChannelForm />
         </div>
       </Collapse>
-    </div>
+    </>
   );
 }
 
@@ -276,12 +278,14 @@ function RowAdvancedSignalingOptions() {
     collapsed.value = !collapsed.value;
   };
   return (
-    <div className="form-row">
-      <div>
-        {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
-          Advanced signaling options
-        </a>
+    <>
+      <div className="form-row">
+        <div>
+          {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
+          <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+            Advanced signaling options
+          </a>
+        </div>
       </div>
       <Collapse in={!collapsed.value}>
         <div>
@@ -297,7 +301,7 @@ function RowAdvancedSignalingOptions() {
           {showReceiverParams && <ForceStereoOutputForm />}
         </div>
       </Collapse>
-    </div>
+    </>
   );
 }
 
@@ -349,12 +353,14 @@ function RowMediaOptions() {
     collapsed.value = !collapsed.value;
   };
   return (
-    <div className="form-row">
-      <div>
-        {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
-        <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
-          Media options
-        </a>
+    <>
+      <div className="form-row">
+        <div>
+          {/* biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility */}
+          <a href="#" className={linkClassNames.join(" ")} onClick={onClick}>
+            Media options
+          </a>
+        </div>
       </div>
       <Collapse in={!collapsed.value}>
         <div>
@@ -404,7 +410,7 @@ function RowMediaOptions() {
           <UpdateMediaStreamButton />
         </div>
       </Collapse>
-    </div>
+    </>
   );
 }
 

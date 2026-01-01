@@ -139,12 +139,7 @@ export function DropdownToggle({
         stroke="currentColor"
         viewBox="0 0 16 16"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="m2 5 6 6 6-6"
-        />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m2 5 6 6 6-6" />
       </svg>
     </button>
   );
