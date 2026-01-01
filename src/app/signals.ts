@@ -10,7 +10,7 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
-import { WORKER_SCRIPT } from "../constants";
+import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {
   AlertMessage,
   ApiObject,
@@ -116,11 +116,9 @@ export const forceStereoOutput = signal<boolean>(false);
 export const fakeVolume = signal<string>("0");
 export const fakeContents = signal<{
   worker: Worker | null;
-  colorCode: number;
   gainNode: GainNode | null;
 }>({
   worker: null,
-  colorCode: 0,
   gainNode: null,
 });
 
@@ -327,13 +325,8 @@ export const setFakeContentsGainNode = (gainNode: GainNode | null): void => {
   fakeContents.value = { ...fakeContents.value, gainNode };
 };
 export const setInitialFakeContents = (): void => {
-  const colorCode = Math.floor(Math.random() * 0xffffff);
-  let worker: Worker | null = null;
-  if (URL.createObjectURL) {
-    const url = URL.createObjectURL(new Blob([WORKER_SCRIPT], { type: "application/javascript" }));
-    worker = new Worker(url);
-  }
-  fakeContents.value = { ...fakeContents.value, colorCode, worker };
+  const worker = new FakeVideoWorker();
+  fakeContents.value = { ...fakeContents.value, worker };
 };
 export const setFrameRate = (value: SoraDevtoolsState["frameRate"]): void => {
   frameRate.value = value;
@@ -776,7 +769,7 @@ export const resetState = (): void => {
 
     // Fake メディア
     fakeVolume.value = "0";
-    fakeContents.value = { worker: null, colorCode: 0, gainNode: null };
+    fakeContents.value = { worker: null, gainNode: null };
 
     // デバイス
     cameraDevice.value = true;

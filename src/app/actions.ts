@@ -23,7 +23,6 @@ import {
   createGetDisplayMediaVideoConstraints,
   createSignalingURL,
   createVideoConstraints,
-  drawFakeCanvas,
   getBlurRadiusNumber,
   getDevices,
   getMediaStreamTrackProperties,
@@ -634,25 +633,18 @@ async function createMediaStream(
       description: JSON.stringify(constraints),
     });
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints));
-    const { canvas, mediaStream, gainNode } = createFakeMediaStream(constraints);
-    if (canvas !== null) {
-      state.fakeContents.worker.onmessage = (event) => {
-        const data = event.data;
-        if (data.type !== "update") {
-          return;
-        }
-        drawFakeCanvas(
-          canvas,
-          state.fakeContents.colorCode,
-          constraints.fontSize,
-          data.counter.toString(),
-        );
-      };
+    const { offscreenCanvas, mediaStream, gainNode, frameRate } = createFakeMediaStream(constraints);
+    if (offscreenCanvas !== null) {
+      // 現在の Worker を停止
       state.fakeContents.worker.postMessage({ type: "stop" });
-      state.fakeContents.worker.postMessage({
-        type: "start",
-        interval: 1000 / constraints.frameRate,
-      });
+      // Worker に OffscreenCanvas を転送して描画を開始
+      state.fakeContents.worker.postMessage(
+        {
+          type: "init",
+          data: { canvas: offscreenCanvas, frameRate },
+        },
+        [offscreenCanvas],
+      );
     }
     for (const track of mediaStream.getVideoTracks()) {
       if (track.contentHint !== undefined) {
