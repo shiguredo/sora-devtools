@@ -142,6 +142,8 @@ export const debug = signal<boolean>(false);
 export const debugType = signal<DebugType>("timeline");
 export const debugFilterText = signal<string>("");
 export const debugApiUrl = signal<string>("http://localhost:3000");
+// expand: true = 全て開く, false = 全て閉じる, null = 初期状態
+export const timelineExpandAll = signal<boolean | null>(null);
 
 // --- メッセージ ---
 export const alertMessages = signal<AlertMessage[]>([]);

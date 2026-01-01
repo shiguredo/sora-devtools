@@ -1,6 +1,7 @@
-import { useSignal } from "@preact/signals";
+import { useSignal, useSignalEffect } from "@preact/signals";
 import type { ComponentChild } from "preact";
 
+import { timelineExpandAll } from "@/app/signals";
 import { Collapse } from "@/components/ui";
 
 import { formatUnixtime } from "@/utils";
@@ -84,6 +85,13 @@ export function Message(props: Props) {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props;
   const show = useSignal(defaultShow === undefined ? false : defaultShow);
   const ariaControls = timestamp ? title + timestamp : title;
+
+  // 全開/全閉シグナルに反応
+  useSignalEffect(() => {
+    if (timelineExpandAll.value !== null) {
+      show.value = timelineExpandAll.value;
+    }
+  });
   const disabled = description === undefined;
   const disabledClass = disabled ? "pointer-events-none" : "";
   return (
