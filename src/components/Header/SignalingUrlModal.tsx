@@ -293,7 +293,7 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
         )}
 
         <small className="text-gray-500 mt-2 block">設定は OPFS に保存されます</small>
-        <div className="flex justify-end gap-2 mt-3">
+        <div className="flex justify-between mt-3">
           <button
             type="button"
             className="px-3 py-1.5 text-sm text-red-600 border border-red-600 rounded-md hover:bg-red-50"
@@ -301,20 +301,22 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
           >
             Purge
           </button>
-          <button
-            type="button"
-            className="px-3 py-1.5 text-sm text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1.5 text-sm text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700"
-            onClick={handleSave}
-          >
-            Save
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="px-3 py-1.5 text-sm text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="px-3 py-1.5 text-sm text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </>
