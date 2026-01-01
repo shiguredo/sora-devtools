@@ -27,7 +27,7 @@ type ToastBodyProps = {
  * react-bootstrap の Toast 互換
  *
  * Bootstrap toast:
- * - max-width: 350px
+ * - width: 450px (App.css の .toast で指定)
  * - background-color: rgba(255, 255, 255, 0.85)
  * - border-radius: 0.375rem
  * - box-shadow
@@ -52,14 +52,23 @@ export function Toast({
 
   if (!show) return null;
 
+  // クリックで閉じる
+  const handleClick = () => {
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
     <div
-      className={`
-        max-w-sm bg-white/95
-        border border-gray-200 rounded-md
-        shadow-lg backdrop-blur-sm animate-fade-in
-        ${className}
-      `}
+      className={`toast cursor-pointer ${className}`}
+      onClick={handleClick}
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.85)",
+        border: "1px solid rgba(0, 0, 0, 0.1)",
+        borderRadius: "0.375rem",
+        boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.15)",
+      }}
     >
       {children}
     </div>
@@ -68,6 +77,7 @@ export function Toast({
 
 /**
  * トーストヘッダー
+ * Bootstrap toast-header 互換
  */
 export function ToastHeader({
   closeButton = true,
@@ -75,29 +85,34 @@ export function ToastHeader({
   className = "",
   children,
 }: ToastHeaderProps) {
+  // クリックイベントの伝播を止める（親のToastのonClickと競合しないように）
+  const handleCloseClick = (e: Event) => {
+    e.stopPropagation();
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
     <div
       className={`
         flex items-center justify-between px-3 py-2
-        border-b border-gray-200 rounded-t-md
+        rounded-t-md
         ${className}
       `}
+      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="flex items-center">{children}</div>
+      <div className="flex items-center gap-2">{children}</div>
       {closeButton && (
         <button
           type="button"
-          onClick={onClose}
-          className="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+          onClick={handleCloseClick}
+          className="ml-2 p-0 opacity-70 hover:opacity-100 transition-opacity"
           aria-label="Close"
+          style={{ background: "transparent", border: "none" }}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
           </svg>
         </button>
       )}

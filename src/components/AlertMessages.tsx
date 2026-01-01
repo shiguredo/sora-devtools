@@ -14,14 +14,12 @@ function Reconnect() {
     void reconnectSora();
   }, []);
   return (
-    <Toast delay={20000} onClose={onClose}>
-      <ToastHeader className="bg-yellow-500 text-white" onClose={onClose}>
+    <Toast delay={5000} onClose={onClose}>
+      <ToastHeader className="bg-bs-yellow text-bs-dark" onClose={onClose}>
         <strong className="me-auto">Reconnect</strong>
       </ToastHeader>
-      <ToastBody className="bg-gray-100">
-        <p className="break-words font-bold mb-0">
-          Reconnecting... (trials {reconnectingTrials.value})
-        </p>
+      <ToastBody>
+        <p className="break-words mb-0">Reconnecting... (trials {reconnectingTrials.value})</p>
       </ToastBody>
     </Toast>
   );
@@ -31,15 +29,15 @@ function Alert(props: AlertMessage) {
   const onClose = (): void => {
     deleteAlertMessage(props.timestamp);
   };
-  const bgClassName = props.type === "error" ? "bg-red-500" : "bg-blue-500";
+  const bgClassName = props.type === "error" ? "bg-bs-red" : "bg-bs-primary";
   return (
-    <Toast autohide={true} delay={20000} onClose={onClose}>
+    <Toast autohide={true} delay={5000} onClose={onClose}>
       <ToastHeader className={`${bgClassName} text-white`} onClose={onClose}>
         <strong className="me-auto">{props.title}</strong>
-        <span>{formatUnixtime(props.timestamp)}</span>
+        <span className="text-sm opacity-80">{formatUnixtime(props.timestamp)}</span>
       </ToastHeader>
-      <ToastBody className="bg-gray-100">
-        <p className="break-words font-bold mb-0">{props.message}</p>
+      <ToastBody>
+        <p className="break-words mb-0">{props.message}</p>
       </ToastBody>
     </Toast>
   );

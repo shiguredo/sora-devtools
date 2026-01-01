@@ -4,9 +4,14 @@ import { useEffect } from "preact/hooks";
 import { statsReport } from "@/app/signals";
 import type { RTCStatsCodec } from "@/types";
 
+// RTCOutboundRtpStreamStats に encoderImplementation を追加した拡張型
+type ExtendedOutboundRtpStats = RTCOutboundRtpStreamStats & {
+  encoderImplementation?: string;
+};
+
 type RTCStatsCodecPair = {
   codec?: RTCStatsCodec;
-  outboundRtpStats: RTCOutboundRtpStreamStats;
+  outboundRtpStats: ExtendedOutboundRtpStats;
 };
 
 const useLocalVideoTrackStats = (stream: MediaStream) => {
@@ -39,7 +44,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
       }
 
       const videoStats = stats.map((s) => {
-        const outboundRtpStats = s as RTCOutboundRtpStreamStats;
+        const outboundRtpStats = s as ExtendedOutboundRtpStats;
 
         // RTCStatsReport から codecId が一致する codec の情報を取得
         const codec = currentStatsReport.find((stats) => {
@@ -128,34 +133,44 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
             </div>
           )}
           {selected.value && (
-            <table className="border-collapse border-spacing-[0.2rem]">
-              <tr>
-                <th>mimeType</th>
-                <td>{selected.value.codec?.mimeType}</td>
-              </tr>
-              <tr>
-                <th>payloadType</th>
-                <td>{selected.value.codec?.payloadType}</td>
-              </tr>
-              <tr>
-                <th>sdpFmtpLine</th>
-                <td>{selected.value.codec?.sdpFmtpLine}</td>
-              </tr>
-              <tr>
-                <th>resolution</th>
-                <td>
-                  {selected.value.outboundRtpStats.frameWidth}x
-                  {selected.value.outboundRtpStats.frameHeight}
-                </td>
-              </tr>
-              <tr>
-                <th>fps</th>
-                <td>
-                  {selected.value.outboundRtpStats.framesPerSecond !== undefined
-                    ? Math.floor(selected.value.outboundRtpStats.framesPerSecond)
-                    : undefined}
-                </td>
-              </tr>
+            <table className="text-sm">
+              <tbody>
+                <tr>
+                  <th className="text-left pr-3 py-0.5">mimeType</th>
+                  <td className="py-0.5">{selected.value.codec?.mimeType}</td>
+                </tr>
+                <tr>
+                  <th className="text-left pr-3 py-0.5">payloadType</th>
+                  <td className="py-0.5">{selected.value.codec?.payloadType}</td>
+                </tr>
+                <tr>
+                  <th className="text-left pr-3 py-0.5">sdpFmtpLine</th>
+                  <td className="py-0.5">{selected.value.codec?.sdpFmtpLine}</td>
+                </tr>
+                <tr>
+                  <th className="text-left pr-3 py-0.5">resolution</th>
+                  <td className="py-0.5">
+                    {selected.value.outboundRtpStats.frameWidth}x
+                    {selected.value.outboundRtpStats.frameHeight}
+                  </td>
+                </tr>
+                <tr>
+                  <th className="text-left pr-3 py-0.5">fps</th>
+                  <td className="py-0.5">
+                    {selected.value.outboundRtpStats.framesPerSecond !== undefined
+                      ? Math.floor(selected.value.outboundRtpStats.framesPerSecond)
+                      : undefined}
+                  </td>
+                </tr>
+                {selected.value.outboundRtpStats.encoderImplementation && (
+                  <tr>
+                    <th className="text-left pr-3 py-0.5">encoder</th>
+                    <td className="py-0.5">
+                      {selected.value.outboundRtpStats.encoderImplementation}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           )}
         </>
