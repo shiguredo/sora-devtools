@@ -2,8 +2,26 @@ import { useSignal } from "@preact/signals";
 
 import { Collapse, HrForm } from "@/components/ui";
 
-import styles from "./DevtoolsPane.module.css";
 import {
+  setAspectRatio,
+  setAudioCodecType,
+  setAudioContentHint,
+  setEchoCancellationType,
+  setFacingMode,
+  setResizeMode,
+  setSimulcast,
+  setSimulcastRequestRid,
+  setSimulcastRid,
+  setSpotlight,
+  setSpotlightFocusRid,
+  setSpotlightNumber,
+  setSpotlightUnfocusRid,
+  setVideoCodecType,
+  setVideoContentHint,
+} from "@/app/actions";
+import {
+  aspectRatio,
+  audioCodecType,
   audioContentHint,
   autoGainControl,
   blurRadius,
@@ -23,26 +41,48 @@ import {
   enabledVideoH264Params,
   enabledVideoH265Params,
   enabledVideoVP9Params,
+  facingMode,
   forceStereoOutput,
   frameRate,
   mediaProcessorsNoiseSuppression,
   mediaType,
   noiseSuppression,
   reconnect,
+  resizeMode,
   resolution,
   role,
   simulcast,
+  simulcastRequestRid,
+  simulcastRid,
   spotlight,
+  spotlightFocusRid,
+  spotlightNumber,
+  spotlightUnfocusRid,
+  videoCodecType,
   videoContentHint,
 } from "@/app/signals";
+import {
+  ASPECT_RATIO_TYPES,
+  AUDIO_CODEC_TYPES,
+  AUDIO_CONTENT_HINTS,
+  ECHO_CANCELLATION_TYPES,
+  FACING_MODES,
+  RESIZE_MODE_TYPES,
+  SIMULCAST,
+  SIMULCAST_REQUEST_RID,
+  SIMULCAST_RID,
+  SPOTLIGHT,
+  SPOTLIGHT_FOCUS_RIDS,
+  SPOTLIGHT_NUMBERS,
+  VIDEO_CODEC_TYPES,
+  VIDEO_CONTENT_HINTS,
+} from "@/constants";
+import styles from "./DevtoolsPane.module.css";
 import { AlertMessages } from "@/components/AlertMessages";
 import { LocalVideo } from "@/components/Video/LocalVideo";
 import { RemoteVideos } from "@/components/Video/RemoteVideos";
 
-import { AspectRatioForm } from "./AspectRatioForm.tsx";
 import { AudioBitRateForm } from "./AudioBitRateForm.tsx";
-import { AudioCodecTypeForm } from "./AudioCodecTypeForm.tsx";
-import { AudioContentHintForm } from "./AudioContentHintForm.tsx";
 import { AudioForm } from "./AudioForm.tsx";
 import { AudioInputForm } from "./AudioInputForm.tsx";
 import { AudioOutputForm } from "./AudioOutputForm.tsx";
@@ -62,8 +102,6 @@ import { DisconnectButton } from "./DisconnectButton.tsx";
 import { DisplayResolutionForm } from "./DisplayResolutionForm.tsx";
 import { DisposeMediaButton } from "./DisposeMediaButton.tsx";
 import { EchoCancellationForm } from "./EchoCancellationForm.tsx";
-import { EchoCancellationTypeForm } from "./EchoCancellationTypeForm.tsx";
-import { FacingModeForm } from "./FacingModeForm.tsx";
 import { FakeVolumeForm } from "./FakeVolumeForm.tsx";
 import { ForceStereoOutputForm } from "./ForceStereoOutputForm.tsx";
 import { ForwardingFiltersForm } from "./ForwardingFiltersForm.tsx";
@@ -78,23 +116,14 @@ import { NoiseSuppressionForm } from "./NoiseSuppressionForm.tsx";
 import { ReconnectForm } from "./ReconnectForm.tsx";
 import { ReloadDevicesButton } from "./ReloadDevicesButton.tsx";
 import { RequestMediaButton } from "./RequestMediaButton.tsx";
-import { ResizeModeForm } from "./ResizeModeForm.tsx";
 import { ResolutionForm } from "./ResolutionForm.tsx";
 import { RoleForm } from "./RoleForm.tsx";
+import { SelectForm } from "./SelectForm.tsx";
 import { SignalingNotifyMetadataForm } from "./SignalingNotifyMetadataForm.tsx";
 import { SignalingUrlCandidatesForm } from "./SignalingUrlCandidatesForm.tsx";
-import { SimulcastForm } from "./SimulcastForm.tsx";
-import { SimulcastRequestRidForm } from "./SimulcastRequestRidForm.tsx";
-import { SimulcastRidForm } from "./SimulcastRidForm.tsx";
-import { SpotlightFocusRidForm } from "./SpotlightFocusRidForm.tsx";
-import { SpotlightForm } from "./SpotlightForm.tsx";
-import { SpotlightNumberForm } from "./SpotlightNumberForm.tsx";
-import { SpotlightUnfocusRidForm } from "./SpotlightUnfocusRidForm.tsx";
 import { UpdateMediaStreamButton } from "./UpdateMediaStreamButton.tsx";
 import { VideoAV1ParamsForm } from "./VideoAV1ParamsForm.tsx";
 import { VideoBitRateForm } from "./VideoBitRateForm.tsx";
-import { VideoCodecTypeForm } from "./VideoCodecTypeForm.tsx";
-import { VideoContentHintForm } from "./VideoContentHintForm.tsx";
 import { VideoForm } from "./VideoForm.tsx";
 import { VideoH264ParamsForm } from "./VideoH264ParamsForm.tsx";
 import { VideoH265ParamsForm } from "./VideoH265ParamsForm.tsx";
@@ -115,10 +144,22 @@ function RowChannelOptions() {
           <RoleForm />
         </div>
         <div>
-          <SimulcastForm />
+          <SelectForm
+            kind="simulcast"
+            label="simulcast:"
+            value={simulcast.value}
+            options={SIMULCAST}
+            onChange={setSimulcast}
+          />
         </div>
         <div>
-          <SpotlightForm />
+          <SelectForm
+            kind="spotlight"
+            label="spotlight:"
+            value={spotlight.value}
+            options={SPOTLIGHT}
+            onChange={setSpotlight}
+          />
         </div>
       </div>
     </>
@@ -136,7 +177,13 @@ function RowGetUserMediaConstraints() {
         {showCodecForms && (
           <>
             <div>
-              <AudioCodecTypeForm />
+              <SelectForm
+                kind="audioCodecType"
+                label="audioCodecType:"
+                value={audioCodecType.value}
+                options={AUDIO_CODEC_TYPES}
+                onChange={setAudioCodecType}
+              />
             </div>
             <div>
               <AudioBitRateForm />
@@ -151,7 +198,13 @@ function RowGetUserMediaConstraints() {
         {showCodecForms && (
           <>
             <div>
-              <VideoCodecTypeForm />
+              <SelectForm
+                kind="videoCodecType"
+                label="videoCodecType:"
+                value={videoCodecType.value}
+                options={VIDEO_CODEC_TYPES}
+                onChange={setVideoCodecType}
+              />
             </div>
             <div>
               <VideoBitRateForm />
@@ -171,10 +224,22 @@ function RowSimulcastOptions() {
   return (
     <div className="form-row flex flex-wrap gap-2">
       <div>
-        <SimulcastRequestRidForm />
+        <SelectForm
+          kind="simulcastRequestRid"
+          label="simulcastRequestRid:"
+          value={simulcastRequestRid.value}
+          options={SIMULCAST_REQUEST_RID}
+          onChange={setSimulcastRequestRid}
+        />
       </div>
       <div>
-        <SimulcastRidForm />
+        <SelectForm
+          kind="simulcastRid"
+          label="simulcastRid:"
+          value={simulcastRid.value}
+          options={SIMULCAST_RID}
+          onChange={setSimulcastRid}
+        />
       </div>
     </div>
   );
@@ -187,13 +252,31 @@ function RowSpotlightOptions() {
   return (
     <div className="form-row flex flex-wrap gap-2">
       <div>
-        <SpotlightNumberForm />
+        <SelectForm
+          kind="spotlightNumber"
+          label="spotlightNumber:"
+          value={spotlightNumber.value}
+          options={SPOTLIGHT_NUMBERS}
+          onChange={setSpotlightNumber}
+        />
       </div>
       <div>
-        <SpotlightFocusRidForm />
+        <SelectForm
+          kind="spotlightFocusRid"
+          label="spotlightFocusRid:"
+          value={spotlightFocusRid.value}
+          options={SPOTLIGHT_FOCUS_RIDS}
+          onChange={setSpotlightFocusRid}
+        />
       </div>
       <div>
-        <SpotlightUnfocusRidForm />
+        <SelectForm
+          kind="spotlightUnfocusRid"
+          label="spotlightUnfocusRid:"
+          value={spotlightUnfocusRid.value}
+          options={SPOTLIGHT_FOCUS_RIDS}
+          onChange={setSpotlightUnfocusRid}
+        />
       </div>
     </div>
   );
@@ -344,7 +427,14 @@ function RowMediaOptions() {
         <div>
           <div className="form-row flex flex-wrap gap-2">
             <div className="col-auto">
-              <AudioContentHintForm />
+              <SelectForm
+                kind="audioContentHint"
+                label="audioContentHint:"
+                value={audioContentHint.value}
+                options={AUDIO_CONTENT_HINTS}
+                onChange={setAudioContentHint}
+                disabled={false}
+              />
             </div>
             <div className="col-auto">
               <AutoGainControlForm />
@@ -356,7 +446,14 @@ function RowMediaOptions() {
               <EchoCancellationForm />
             </div>
             <div className="col-auto">
-              <EchoCancellationTypeForm />
+              <SelectForm
+                kind="echoCancellationType"
+                label="echoCancellationType:"
+                value={echoCancellationType.value}
+                options={ECHO_CANCELLATION_TYPES}
+                onChange={setEchoCancellationType}
+                disabled={false}
+              />
             </div>
             <div className="col-auto">
               <MediaProcessorsNoiseSuppressionForm />
@@ -364,7 +461,14 @@ function RowMediaOptions() {
           </div>
           <div className="form-row flex flex-wrap gap-2">
             <div className="col-auto">
-              <VideoContentHintForm />
+              <SelectForm
+                kind="videoContentHint"
+                label="videoContentHint:"
+                value={videoContentHint.value}
+                options={VIDEO_CONTENT_HINTS}
+                onChange={setVideoContentHint}
+                disabled={false}
+              />
             </div>
             <div className="col-auto">
               <ResolutionForm />
@@ -373,16 +477,37 @@ function RowMediaOptions() {
               <FrameRateForm />
             </div>
             <div className="col-auto">
-              <AspectRatioForm />
+              <SelectForm
+                kind="aspectRatio"
+                label="aspectRatio:"
+                value={aspectRatio.value}
+                options={ASPECT_RATIO_TYPES}
+                onChange={setAspectRatio}
+                disabled={false}
+              />
             </div>
             <div className="col-auto">
-              <ResizeModeForm />
+              <SelectForm
+                kind="resizeMode"
+                label="resizeMode:"
+                value={resizeMode.value}
+                options={RESIZE_MODE_TYPES}
+                onChange={setResizeMode}
+                disabled={false}
+              />
             </div>
             <div className="col-auto">
               <BlurRadiusForm />
             </div>
             <div className="col-auto">
-              <FacingModeForm />
+              <SelectForm
+                kind="facingMode"
+                label="facingMode:"
+                value={facingMode.value}
+                options={FACING_MODES}
+                onChange={setFacingMode}
+                disabled={mediaType.value !== "getUserMedia"}
+              />
             </div>
           </div>
           <UpdateMediaStreamButton />
