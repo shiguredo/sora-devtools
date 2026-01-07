@@ -29,9 +29,12 @@ export function TooltipFormCheck({ kind, children, checked, disabled, onChange }
 
   return (
     <>
-      <FormSwitch checked={checked} onChange={onChange} disabled={disabled} />
+      <FormSwitch id={kind} checked={checked} onChange={onChange} disabled={disabled} />
       <div className="group relative inline-block">
-        <FormLabel className="cursor-help border-b border-dotted border-bs-secondary">
+        <FormLabel
+          htmlFor={kind}
+          className="cursor-pointer select-none border-b border-dotted border-bs-secondary"
+        >
           {children}
         </FormLabel>
         <div

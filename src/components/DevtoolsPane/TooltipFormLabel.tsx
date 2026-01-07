@@ -51,9 +51,7 @@ export function TooltipFormLabel({ kind, children }: Props) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <FormLabel className="cursor-help border-b border-dotted border-bs-secondary">
-        {children}
-      </FormLabel>
+      <FormLabel className="border-b border-dotted border-bs-secondary">{children}</FormLabel>
       {tooltipPos.value && (
         <div
           className={`

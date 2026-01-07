@@ -15,6 +15,10 @@
   - OffscreenCanvas を使用して Worker 内で描画
   - Chrome/Edge/Safari 対応（Firefox 非対応）
   - @voluntas
+- [UPDATE] switch フォームのラベルクリックで switch を切り替え可能にする
+  - @voluntas
+- [UPDATE] tooltip 付きフォームラベルのカーソルを `?` マークから通常カーソルに変更する
+  - @voluntas
 - [ADD] signalingUrlCandidates の設定モーダルを追加する
   - OPFS を使用してブラウザに URL 設定を永続化
   - 複数 URL の有効/無効を切り替え可能
