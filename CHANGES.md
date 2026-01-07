@@ -15,6 +15,16 @@
   - OffscreenCanvas を使用して Worker 内で描画
   - Chrome/Edge/Safari 対応（Firefox 非対応）
   - @voluntas
+- [CHANGE] Fake Video の表示を改善する
+  - 経過時間を mmmm:ss.SSS 形式（ストップウォッチ形式）で表示
+  - 開始日時を上部に表示
+  - channel_id / session_id / connection_id を下部に表示
+  - 解像度に応じてフォントサイズを動的に調整
+  - @voluntas
+- [ADD] fakeVideoShowChannelId オプションを追加する
+  - Fake Video 上の channel_id 表示を切り替え可能にする
+  - URL パラメータ対応
+  - @voluntas
 - [CHANGE] デバッグパネルで長い文字列を折り返し表示にする
   - @voluntas
 - [UPDATE] switch フォームのラベルクリックで switch を切り替え可能にする

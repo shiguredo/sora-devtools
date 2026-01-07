@@ -11,6 +11,7 @@ let frameRate = 30;
 let channelId: string | null = null;
 let sessionId: string | null = null;
 let connectionId: string | null = null;
+let showChannelId = true;
 
 // 描画関数
 function drawFrame(): void {
@@ -56,7 +57,7 @@ function drawFrame(): void {
 
   // 下部に channel_id / session_id / connection_id を1行で表示
   const infoParts: string[] = [];
-  if (channelId) {
+  if (showChannelId && channelId) {
     const truncated = channelId.length > 10 ? `${channelId.slice(0, 10)}...` : channelId;
     infoParts.push(truncated);
   }
@@ -110,6 +111,11 @@ self.addEventListener("message", (event: MessageEvent) => {
         channelId = data.channelId as string;
       }
 
+      // showChannelId を設定
+      if (data.showChannelId !== undefined) {
+        showChannelId = data.showChannelId as boolean;
+      }
+
       // 完全にランダムなベース色相を選ぶ
       baseHue = Math.floor(Math.random() * 360);
       hue = baseHue;
@@ -152,16 +158,33 @@ self.addEventListener("message", (event: MessageEvent) => {
       if (data.connectionId !== undefined) connectionId = data.connectionId as string | null;
       break;
     }
+
+    case "setShowInfo": {
+      if (data.showChannelId !== undefined) showChannelId = data.showChannelId as boolean;
+      break;
+    }
   }
 });
 
 // Worker の型定義をエクスポート
 export type FakeVideoWorkerMessage =
-  | { type: "init"; data: { canvas: OffscreenCanvas; frameRate?: number; channelId?: string } }
+  | {
+      type: "init";
+      data: {
+        canvas: OffscreenCanvas;
+        frameRate?: number;
+        channelId?: string;
+        showChannelId?: boolean;
+      };
+    }
   | { type: "stop" }
   | {
       type: "setMetadata";
       data: { channelId?: string | null; sessionId?: string | null; connectionId?: string | null };
+    }
+  | {
+      type: "setShowInfo";
+      data: { showChannelId?: boolean };
     }
   | { type: "started" }
   | { type: "stopped" }

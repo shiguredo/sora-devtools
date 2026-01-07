@@ -114,6 +114,7 @@ export const forceStereoOutput = signal<boolean>(false);
 
 // --- Fake メディア ---
 export const fakeVolume = signal<string>("0");
+export const fakeVideoShowChannelId = signal<boolean>(true);
 export const fakeContents = signal<{
   worker: Worker | null;
   gainNode: GainNode | null;
@@ -323,6 +324,15 @@ export const setFakeVolume = (value: string): void => {
 };
 export const setFakeContentsGainNode = (gainNode: GainNode | null): void => {
   fakeContents.value = { ...fakeContents.value, gainNode };
+};
+export const setFakeVideoShowChannelId = (value: boolean): void => {
+  fakeVideoShowChannelId.value = value;
+  if (fakeContents.value.worker) {
+    fakeContents.value.worker.postMessage({
+      type: "setShowInfo",
+      data: { showChannelId: value },
+    });
+  }
 };
 export const setInitialFakeContents = (): void => {
   const worker = new FakeVideoWorker();
