@@ -642,7 +642,7 @@ async function createMediaStream(
       state.fakeContents.worker.postMessage(
         {
           type: "init",
-          data: { canvas: offscreenCanvas, frameRate },
+          data: { canvas: offscreenCanvas, frameRate, channelId: signals.channelId.value },
         },
         [offscreenCanvas],
       );

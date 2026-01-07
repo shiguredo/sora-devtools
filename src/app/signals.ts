@@ -416,9 +416,23 @@ export const setSora = (value: ConnectionPublisher | ConnectionSubscriber | null
 };
 export const setSoraSessionId = (value: string | null): void => {
   sessionId.value = value;
+  // Fake Video Worker に session_id を送信
+  if (fakeContents.value.worker) {
+    fakeContents.value.worker.postMessage({
+      type: "setMetadata",
+      data: { sessionId: value },
+    });
+  }
 };
 export const setSoraConnectionId = (value: string | null): void => {
   connectionId.value = value;
+  // Fake Video Worker に connection_id を送信
+  if (fakeContents.value.worker) {
+    fakeContents.value.worker.postMessage({
+      type: "setMetadata",
+      data: { connectionId: value },
+    });
+  }
 };
 export const setSoraClientId = (value: string | null): void => {
   soraClientId.value = value;
