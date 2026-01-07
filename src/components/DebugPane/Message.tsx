@@ -20,12 +20,13 @@ function Description(props: DescriptionProps) {
   if (description === undefined) {
     return null;
   }
-  const wordBreakClass = props.wordBreak ? "whitespace-pre-wrap break-all" : "";
   if (typeof description !== "object") {
     return (
-      <div className="flex flex-nowrap text-white">
-        <div className="py-1 px-4 w-full">
-          <pre className={`text-base text-white m-0 ${wordBreakClass}`}>{description}</pre>
+      <div className="text-white">
+        <div className="py-1 px-4">
+          <pre className="text-base text-white m-0 whitespace-pre-wrap break-all">
+            {description}
+          </pre>
         </div>
       </div>
     );
@@ -33,20 +34,18 @@ function Description(props: DescriptionProps) {
   // prevDescription が渡されている場合は JsonTree を使用（差分更新あり）
   if (prevDescription !== undefined) {
     return (
-      <div className="flex flex-nowrap text-white">
-        <div className="py-1 px-4 w-full">
-          <div className={wordBreakClass}>
-            <JsonTree data={description} prevData={prevDescription} />
-          </div>
+      <div className="text-white">
+        <div className="py-1 px-4">
+          <JsonTree data={description} prevData={prevDescription} />
         </div>
       </div>
     );
   }
   // prevDescription がない場合は従来通り JSON.stringify
   return (
-    <div className="flex flex-nowrap text-white">
-      <div className="py-1 px-4 w-full">
-        <pre className={`text-base text-white m-0 ${wordBreakClass}`}>
+    <div className="text-white">
+      <div className="py-1 px-4">
+        <pre className="text-base text-white m-0 whitespace-pre-wrap break-all">
           {JSON.stringify(description, null, 2)}
         </pre>
       </div>
