@@ -118,7 +118,12 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
           undefined
         </span>
       );
-    if (typeof value === "string") return <span style={highlightStyle}>"{value}"</span>;
+    if (typeof value === "string")
+      return (
+        <span className="break-all" style={highlightStyle}>
+          "{value}"
+        </span>
+      );
     if (typeof value === "number") return <span style={highlightStyle}>{value}</span>;
     if (typeof value === "boolean") return <span style={highlightStyle}>{value.toString()}</span>;
     // unknown 型の値を安全に文字列化

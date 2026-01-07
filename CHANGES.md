@@ -15,6 +15,8 @@
   - OffscreenCanvas を使用して Worker 内で描画
   - Chrome/Edge/Safari 対応（Firefox 非対応）
   - @voluntas
+- [CHANGE] デバッグパネルで長い文字列を折り返し表示にする
+  - @voluntas
 - [UPDATE] switch フォームのラベルクリックで switch を切り替え可能にする
   - @voluntas
 - [UPDATE] tooltip 付きフォームラベルのカーソルを `?` マークから通常カーソルに変更する
