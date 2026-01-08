@@ -19,6 +19,7 @@
   - 経過時間を mmmm:ss.SSS 形式（ストップウォッチ形式）で表示
   - 開始日時を上部に表示
   - channel_id / session_id / connection_id を下部に表示
+  - channel_id は 10 文字を超える場合は先頭 10 文字 + "..." で省略
   - 解像度に応じてフォントサイズを動的に調整
   - @voluntas
 - [ADD] fakeVideoShowChannelId オプションを追加する
