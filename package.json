@@ -20,8 +20,9 @@
     "fmt": "oxfmt --write .",
     "lint": "oxlint --type-aware",
     "test": "vitest run",
+    "test:ct": "vitest run --config vitest.ct.config.ts",
     "typecheck": "tsc --noEmit",
-    "e2e-test": "playwright test --project=chromium",
+    "test:e2e": "playwright test --project=chromium",
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
@@ -38,6 +39,9 @@
     "@shiguredo/virtual-background": "2023.2.0",
     "@tailwindcss/vite": "4.1.18",
     "@types/node": "25.0.3",
+    "@vitest/browser": "4.0.16",
+    "@vitest/browser-playwright": "4.0.16",
+    "@vitest/browser-preview": "4.0.16",
     "dotenv": "17.2.3",
     "fast-check": "4.5.3",
     "jsdom": "27.4.0",
@@ -47,7 +51,8 @@
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
     "vite": "7.3.1",
-    "vitest": "4.0.16"
+    "vitest": "4.0.16",
+    "vitest-browser-preact": "1.0.0"
   },
   "engines": {
     "node": ">=24",
