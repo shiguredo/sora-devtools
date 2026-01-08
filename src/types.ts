@@ -88,6 +88,7 @@ export type SoraDevtoolsState = {
     gainNode: GainNode | null;
   };
   fakeVolume: string;
+  fakeVideoShowChannelId: boolean;
   forceStereoOutput: boolean;
   frameRate: string;
   soraContents: {

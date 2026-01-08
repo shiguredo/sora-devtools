@@ -2,15 +2,16 @@
 let canvas: OffscreenCanvas | null = null;
 let ctx: OffscreenCanvasRenderingContext2D | null = null;
 let animationId: number | null = null;
-let counter = 0;
 let startTime = 0;
+let startDateTime = "";
 let hue = 0;
 let baseHue = 0;
 let animationPhase = 0;
 let frameRate = 30;
-
-// カウンター更新用のインターバル
-let counterIntervalId: number | null = null;
+let channelId: string | null = null;
+let sessionId: string | null = null;
+let connectionId: string | null = null;
+let showChannelId = true;
 
 // 描画関数
 function drawFrame(): void {
@@ -28,18 +29,49 @@ function drawFrame(): void {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // カウンターを中央に大きく表示
+  // 上部に開始日時を表示
+  if (startDateTime) {
+    const dateSize = Math.min(canvas.width, canvas.height) * 0.05;
+    ctx.fillStyle = "white";
+    ctx.font = `${dateSize}px monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(startDateTime, canvas.width / 2, canvas.height * 0.05);
+  }
+
+  // 経過時間を mmmm:ss.SSS 形式で中央に表示
+  const elapsed = Date.now() - startTime;
+  const minutes = Math.floor(elapsed / 60000);
+  const seconds = Math.floor((elapsed % 60000) / 1000);
+  const milliseconds = elapsed % 1000;
+  const text = `${minutes.toString().padStart(4, "0")}:${seconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
+  // 基本フォントサイズを解像度から計算し、桁数に応じて縮小
+  const baseSize = Math.min(canvas.width, canvas.height) * 0.15;
+  const maxChars = 11; // "0000:00.000" = 11文字
+  const fontSize = text.length > maxChars ? baseSize * (maxChars / text.length) : baseSize;
   ctx.fillStyle = "white";
-  ctx.font = "bold 80px monospace";
+  ctx.font = `bold ${fontSize}px monospace`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(counter.toString(), canvas.width / 2, canvas.height / 2);
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
-  // 経過時間を下部に表示
-  const elapsed = Date.now() - startTime;
-  ctx.font = "20px Arial";
-  ctx.textBaseline = "bottom";
-  ctx.fillText(`${elapsed}ms elapsed`, canvas.width / 2, canvas.height - 20);
+  // 下部に channel_id / session_id / connection_id を1行で表示
+  const infoParts: string[] = [];
+  if (showChannelId && channelId) {
+    const truncated = channelId.length > 10 ? `${channelId.slice(0, 10)}...` : channelId;
+    infoParts.push(truncated);
+  }
+  if (sessionId) infoParts.push(sessionId);
+  if (connectionId) infoParts.push(connectionId);
+
+  if (infoParts.length > 0) {
+    const infoSize = Math.min(canvas.width, canvas.height) * 0.04;
+    ctx.fillStyle = "white";
+    ctx.font = `${infoSize}px monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(infoParts.join(" / "), canvas.width / 2, canvas.height * 0.95);
+  }
 
   // アニメーションフェーズを進める（ベース色から±10度の範囲で振動）
   animationPhase += 0.02;
@@ -74,22 +106,25 @@ self.addEventListener("message", (event: MessageEvent) => {
         frameRate = data.frameRate;
       }
 
+      // channel_id を設定
+      if (data.channelId !== undefined) {
+        channelId = data.channelId as string;
+      }
+
+      // showChannelId を設定
+      if (data.showChannelId !== undefined) {
+        showChannelId = data.showChannelId as boolean;
+      }
+
       // 完全にランダムなベース色相を選ぶ
       baseHue = Math.floor(Math.random() * 360);
       hue = baseHue;
       animationPhase = 0;
 
-      // カウンターと開始時刻を初期化
-      counter = 0;
+      // 開始時刻を記録
       startTime = Date.now();
-
-      // カウンターを 1 ミリ秒ごとに更新
-      if (counterIntervalId !== null) {
-        clearInterval(counterIntervalId);
-      }
-      counterIntervalId = self.setInterval(() => {
-        counter++;
-      }, 1) as unknown as number;
+      const now = new Date(startTime);
+      startDateTime = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")} ${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
 
       // アニメーション開始
       animate();
@@ -104,16 +139,28 @@ self.addEventListener("message", (event: MessageEvent) => {
         clearTimeout(animationId);
         animationId = null;
       }
-      if (counterIntervalId !== null) {
-        clearInterval(counterIntervalId);
-        counterIntervalId = null;
-      }
 
       // リソースクリーンアップ
       canvas = null;
       ctx = null;
+      channelId = null;
+      sessionId = null;
+      connectionId = null;
+      startDateTime = "";
 
       self.postMessage({ type: "stopped" });
+      break;
+    }
+
+    case "setMetadata": {
+      if (data.channelId !== undefined) channelId = data.channelId as string | null;
+      if (data.sessionId !== undefined) sessionId = data.sessionId as string | null;
+      if (data.connectionId !== undefined) connectionId = data.connectionId as string | null;
+      break;
+    }
+
+    case "setShowInfo": {
+      if (data.showChannelId !== undefined) showChannelId = data.showChannelId as boolean;
       break;
     }
   }
@@ -121,8 +168,24 @@ self.addEventListener("message", (event: MessageEvent) => {
 
 // Worker の型定義をエクスポート
 export type FakeVideoWorkerMessage =
-  | { type: "init"; data: { canvas: OffscreenCanvas; frameRate?: number } }
+  | {
+      type: "init";
+      data: {
+        canvas: OffscreenCanvas;
+        frameRate?: number;
+        channelId?: string;
+        showChannelId?: boolean;
+      };
+    }
   | { type: "stop" }
+  | {
+      type: "setMetadata";
+      data: { channelId?: string | null; sessionId?: string | null; connectionId?: string | null };
+    }
+  | {
+      type: "setShowInfo";
+      data: { showChannelId?: boolean };
+    }
   | { type: "started" }
   | { type: "stopped" }
   | { type: "error"; error: string };

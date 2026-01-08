@@ -96,6 +96,9 @@ export const setInitialParameter = async (): Promise<void> => {
   if (qsParams.fakeVolume !== undefined) {
     signals.setFakeVolume(qsParams.fakeVolume);
   }
+  if (qsParams.fakeVideoShowChannelId !== undefined) {
+    signals.setFakeVideoShowChannelId(qsParams.fakeVideoShowChannelId);
+  }
   if (qsParams.frameRate !== undefined) {
     signals.setFrameRate(qsParams.frameRate);
   }
@@ -481,6 +484,11 @@ export const copyURL = (): void => {
     apiUrl: signals.apiUrl.value !== null ? signals.apiUrl.value : undefined,
     // fakeVolume
     fakeVolume: signals.mediaType.value === "fakeMedia" ? signals.fakeVolume.value : undefined,
+    // fakeVideoShowChannelId
+    fakeVideoShowChannelId:
+      signals.mediaType.value === "fakeMedia" && !signals.fakeVideoShowChannelId.value
+        ? false
+        : undefined,
     // mute
     mute: signals.mute.value === true ? true : undefined,
     // audioStreamingLanguageCode
@@ -642,7 +650,12 @@ async function createMediaStream(
       state.fakeContents.worker.postMessage(
         {
           type: "init",
-          data: { canvas: offscreenCanvas, frameRate },
+          data: {
+            canvas: offscreenCanvas,
+            frameRate,
+            channelId: signals.channelId.value,
+            showChannelId: signals.fakeVideoShowChannelId.value,
+          },
         },
         [offscreenCanvas],
       );

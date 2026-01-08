@@ -102,6 +102,7 @@ import { DisconnectButton } from "./DisconnectButton.tsx";
 import { DisplayResolutionForm } from "./DisplayResolutionForm.tsx";
 import { DisposeMediaButton } from "./DisposeMediaButton.tsx";
 import { EchoCancellationForm } from "./EchoCancellationForm.tsx";
+import { FakeVideoInfoForm } from "./FakeVideoInfoForm.tsx";
 import { FakeVolumeForm } from "./FakeVolumeForm.tsx";
 import { ForceStereoOutputForm } from "./ForceStereoOutputForm.tsx";
 import { ForwardingFiltersForm } from "./ForwardingFiltersForm.tsx";
@@ -386,6 +387,7 @@ export function RowMediaType() {
         <div>
           <FakeVolumeForm />
         </div>
+        <FakeVideoInfoForm />
       </div>
       <div className="form-row flex flex-wrap gap-2">
         <div>
