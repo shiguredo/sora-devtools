@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "oxc", "unicorn", "import", "promise", "react"],
+  "plugins": ["typescript", "oxc", "unicorn", "import", "promise", "react", "vitest"],
   "categories": {
     // 明らかに間違っているコード
     "correctness": "error",
@@ -95,6 +95,12 @@
     "radix": "error",
     // Symbol に説明を必須
     "symbol-description": "error",
+
+    // ===== eslint: 複雑度の制限 =====
+    // 循環的複雑度を制限 (分岐が多すぎる関数を検出)
+    "complexity": ["error", { "max": 20 }],
+    // 関数内のステートメント数を制限
+    "max-statements": ["error", { "max": 50 }],
 
     // ===== eslint: パフォーマンスと正確性 =====
     // ループ内での await を禁止 (Promise.all を使用)
@@ -643,6 +649,36 @@
     "promise/prefer-catch": "error",
     // 有効なパラメータを強制
     "promise/valid-params": "error",
+
+    // ===== vitest: テストの品質 =====
+    // TODO コメントの警告
+    "vitest/warn-todo": "error",
+    // vi/vitest の一貫した使用
+    "vitest/consistent-vitest-vi": "error",
+    // 呼び出し回数の検証を推奨
+    "vitest/prefer-called-times": "error",
+    // spy を推奨
+    "vitest/prefer-spy-on": "error",
+    // toHaveBeenCalled を推奨
+    "vitest/prefer-to-have-been-called": "error",
+    // toHaveBeenCalledTimes を推奨
+    "vitest/prefer-to-have-been-called-times": "error",
+    // calledWith を推奨
+    "vitest/prefer-called-with": "error",
+    // テストファイル名の一貫性
+    "vitest/consistent-test-filename": "error",
+    // require-hook を強制
+    "vitest/require-hook": "error",
+
+    // ===== react: ライフサイクル (Preact 互換) =====
+    // componentDidMount 内での setState を禁止
+    "react/no-did-mount-set-state": "error",
+    // componentWillUpdate 内での setState を禁止
+    "react/no-will-update-set-state": "error",
+    // unsafe ライフサイクルメソッドを禁止
+    "react/no-unsafe": "error",
+    // SFC 内での this 使用を禁止
+    "react/no-this-in-sfc": "error",
 
     // ===== react: JSX の正確性 (Preact 互換) =====
     // リストに key プロパティを強制
