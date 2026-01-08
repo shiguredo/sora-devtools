@@ -17,6 +17,7 @@ export function FakeVideoInfoForm() {
       <TooltipFormCheck
         kind="fakeVideoShowChannelId"
         checked={fakeVideoShowChannelId.value}
+        disabled={false}
         onChange={onChangeShowChannelId}
       >
         fakeVideoShowChannelId
