@@ -86,12 +86,15 @@ export function DataChannelForm() {
         <div className="w-auto">
           <FormGroup className="flex items-center gap-2" controlId="enabledDataChannel">
             <FormSwitch
+              id="enabledDataChannel"
               name="enabledDataChannel"
               checked={enabledDataChannel.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             />
-            <label htmlFor="enabledDataChannel">dataChannel</label>
+            <label htmlFor="enabledDataChannel" className="cursor-pointer select-none">
+              dataChannel
+            </label>
           </FormGroup>
         </div>
       </div>

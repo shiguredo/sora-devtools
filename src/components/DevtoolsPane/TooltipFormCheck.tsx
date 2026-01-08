@@ -21,8 +21,10 @@ export function TooltipFormCheck({ kind, children, checked, disabled, onChange }
   if (!instruction) {
     return (
       <>
-        <FormSwitch checked={checked} onChange={onChange} disabled={disabled} />
-        <FormLabel>{children}</FormLabel>
+        <FormSwitch id={kind} checked={checked} onChange={onChange} disabled={disabled} />
+        <FormLabel htmlFor={kind} className="cursor-pointer select-none">
+          {children}
+        </FormLabel>
       </>
     );
   }
