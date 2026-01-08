@@ -69,7 +69,7 @@ export const JSONInputField = ({
         cols={cols || 100}
         disabled={disabled}
       />
-      <div className="absolute top-2.5 right-0 flex gap-2">
+      <div className="absolute top-2.5 right-3 flex gap-2">
         {extraControls}
         <Button
           variant="light"
