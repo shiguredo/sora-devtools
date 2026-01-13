@@ -49,6 +49,11 @@
 
 ### misc
 
+- [UPDATE] oxlint v1.39.0 で追加されたルールを有効にする
+  - typescript/prefer-optional-chain
+  - unicorn/require-module-attributes
+  - vitest/consistent-each-for, hoisted-apis-on-top, no-unneeded-async-expect-function, prefer-called-once, prefer-describe-function-title
+  - @voluntas
 - [CHANGE] Bootstrap/react-bootstrap から Tailwind CSS に移行する
   - @voluntas
 - [CHANGE] React から Preact に移行する

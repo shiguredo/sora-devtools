@@ -211,6 +211,8 @@
     "typescript/no-unsafe-unary-minus": "error",
 
     // ===== typescript: モダン構文の推奨 =====
+    // オプショナルチェーンを推奨
+    "typescript/prefer-optional-chain": "error",
     // 非 null アサーションのスタイル統一
     "typescript/non-nullable-type-assertion-style": "error",
     // Error オブジェクトのみを throw
@@ -555,6 +557,8 @@
     // ===== unicorn: 必須引数 =====
     // join の区切り文字を必須
     "unicorn/require-array-join-separator": "error",
+    // モジュール属性を必須
+    "unicorn/require-module-attributes": "error",
     // toFixed の桁数を必須
     "unicorn/require-number-to-fixed-digits-argument": "error",
 
@@ -655,10 +659,20 @@
     "vitest/warn-todo": "error",
     // vi/vitest の一貫した使用
     "vitest/consistent-vitest-vi": "error",
+    // each/for の一貫性
+    "vitest/consistent-each-for": "error",
+    // ホイスト API をファイル先頭に配置
+    "vitest/hoisted-apis-on-top": "error",
+    // 不要な async expect 関数を禁止
+    "vitest/no-unneeded-async-expect-function": "error",
     // 呼び出し回数の検証を推奨
     "vitest/prefer-called-times": "error",
+    // toHaveBeenCalledOnce を推奨
+    "vitest/prefer-called-once": "error",
     // spy を推奨
     "vitest/prefer-spy-on": "error",
+    // describe の関数タイトルスタイル
+    "vitest/prefer-describe-function-title": "error",
     // toHaveBeenCalled を推奨
     "vitest/prefer-to-have-been-called": "error",
     // toHaveBeenCalledTimes を推奨
