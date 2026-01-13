@@ -19,6 +19,7 @@
     "preview": "vite preview",
     "fmt": "oxfmt --write .",
     "lint": "oxlint --type-aware",
+    "lint:fix": "oxlint --type-aware --fix",
     "test": "vitest run",
     "test:ct": "vitest run --config vitest.ct.config.ts",
     "typecheck": "tsc --noEmit",
