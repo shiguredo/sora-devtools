@@ -89,6 +89,7 @@ export const DEBUG_TYPES = [
   "api",
   "rpc",
   "codec",
+  "svc",
 ] as const;
 
 export const AUDIO_CONTENT_HINTS = ["", "speech", "speech-recognition", "music"] as const;

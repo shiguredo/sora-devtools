@@ -13,6 +13,7 @@ import { NotifyMaxMessages } from "./NotifyMaxMessages.tsx";
 import { NotifyMessages } from "./NotifyMessages.tsx";
 import { PushMessages } from "./PushMessages.tsx";
 import { Rpc } from "./Rpc.tsx";
+import { ScalabilityMode } from "./ScalabilityMode.tsx";
 import { SendDataChannelMessagingMessage } from "./SendDataChannelMessagingMessage.tsx";
 import { SignalingMessages } from "./SignalingMessages.tsx";
 import { Stats } from "./Stats.tsx";
@@ -35,7 +36,8 @@ export function DebugPane() {
       key === "messaging" ||
       // key === 'api' ||
       key === "rpc" ||
-      key === "codec"
+      key === "codec" ||
+      key === "svc"
     ) {
       setDebugType(key);
       // URL の query string を更新
@@ -89,6 +91,9 @@ export function DebugPane() {
         </Tab>
         <Tab eventKey="codec" title="Codec">
           <CapabilitiesCodec />
+        </Tab>
+        <Tab eventKey="svc" title="SVC">
+          <ScalabilityMode />
         </Tab>
       </Tabs>
     </div>
