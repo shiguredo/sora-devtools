@@ -185,7 +185,7 @@ function getStatusBgClass(status: CheckStatus): string {
     case "checking":
       return "bg-a11y-yellow text-black";
     case "supported":
-      return "bg-a11y-sky-blue";
+      return "bg-a11y-bluish-green";
     case "unsupported":
       return "bg-a11y-orange";
     case "error":
