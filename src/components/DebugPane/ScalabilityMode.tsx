@@ -269,12 +269,13 @@ export function ScalabilityMode() {
           onClick={runCheck}
           disabled={checkState.value === "running"}
           className={`
-            px-3 py-1 text-sm rounded border
+            px-2 py-1 text-sm rounded border
+            font-normal leading-normal text-center
             transition-colors duration-150
             ${
               checkState.value === "running"
-                ? "text-gray-400 bg-gray-600 border-gray-600 cursor-not-allowed"
-                : "text-white bg-blue-600 border-blue-600 hover:bg-blue-700 hover:border-blue-700 cursor-pointer"
+                ? "text-gray-400 bg-gray-500 border-gray-500 cursor-not-allowed"
+                : "text-black bg-bs-light border-bs-light hover:bg-[#e2e6ea] hover:border-[#dae0e5] cursor-pointer"
             }
           `}
         >
