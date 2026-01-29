@@ -177,20 +177,21 @@ async function checkScalabilityModeSupport(
 }
 
 // ステータスに応じた背景色クラスを返す
+// 色覚異常に配慮し、赤緑ではなく青とオレンジの組み合わせを使用
 function getStatusBgClass(status: CheckStatus): string {
   switch (status) {
     case "unchecked":
-      return "bg-gray-700";
+      return "bg-gray-600";
     case "checking":
-      return "bg-yellow-600";
+      return "bg-yellow-500";
     case "supported":
-      return "bg-green-600";
+      return "bg-sky-500";
     case "unsupported":
-      return "bg-red-600";
+      return "bg-orange-500";
     case "error":
-      return "bg-orange-600";
+      return "bg-purple-500";
     default:
-      return "bg-gray-700";
+      return "bg-gray-600";
   }
 }
 
