@@ -280,12 +280,12 @@ export function ScalabilityMode() {
           {checkState.value === "running" ? "Checking..." : "Check Support"}
         </button>
       </div>
-      <table className="w-full text-sm text-white border-collapse">
+      <table className="w-full text-sm text-white border-collapse table-fixed">
         <thead>
           <tr className="bg-dark">
-            <th className="border border-light p-1 text-left">Mode</th>
+            <th className="border border-light p-1 text-left w-36">Mode</th>
             {CODECS.map((codec) => (
-              <th key={codec} className="border border-light p-1 text-center">
+              <th key={codec} className="border border-light p-1 text-center w-16">
                 {codec}
               </th>
             ))}
