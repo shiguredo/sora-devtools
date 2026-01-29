@@ -176,21 +176,39 @@ async function checkScalabilityModeSupport(
   }
 }
 
-// ステータス表示コンポーネント
-function StatusCell({ status }: { status: CheckStatus }) {
+// ステータスに応じた背景色クラスを返す
+function getStatusBgClass(status: CheckStatus): string {
   switch (status) {
     case "unchecked":
-      return <span className="text-gray-500">-</span>;
+      return "bg-gray-700";
     case "checking":
-      return <span className="text-yellow-500">...</span>;
+      return "bg-yellow-600";
     case "supported":
-      return <span className="text-green-500">OK</span>;
+      return "bg-green-600";
     case "unsupported":
-      return <span className="text-red-500">NG</span>;
+      return "bg-red-600";
     case "error":
-      return <span className="text-orange-500">ERR</span>;
+      return "bg-orange-600";
     default:
-      return <span className="text-gray-500">-</span>;
+      return "bg-gray-700";
+  }
+}
+
+// ステータスに応じたラベルを返す
+function getStatusLabel(status: CheckStatus): string {
+  switch (status) {
+    case "unchecked":
+      return "-";
+    case "checking":
+      return "...";
+    case "supported":
+      return "OK";
+    case "unsupported":
+      return "NG";
+    case "error":
+      return "ERR";
+    default:
+      return "-";
   }
 }
 
@@ -277,11 +295,17 @@ export function ScalabilityMode() {
           {SCALABILITY_MODES.map((mode) => (
             <tr key={mode}>
               <td className="border border-light p-1 font-mono">{mode}</td>
-              {CODECS.map((codec) => (
-                <td key={`${codec}-${mode}`} className="border border-light p-1 text-center">
-                  <StatusCell status={results.value[codec][mode]} />
-                </td>
-              ))}
+              {CODECS.map((codec) => {
+                const status = results.value[codec][mode];
+                return (
+                  <td
+                    key={`${codec}-${mode}`}
+                    className={`border border-light p-1 text-center text-white ${getStatusBgClass(status)}`}
+                  >
+                    {getStatusLabel(status)}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
