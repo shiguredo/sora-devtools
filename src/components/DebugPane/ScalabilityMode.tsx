@@ -181,17 +181,17 @@ async function checkScalabilityModeSupport(
 function getStatusBgClass(status: CheckStatus): string {
   switch (status) {
     case "unchecked":
-      return "bg-a11y-gray";
+      return "bg-gray-600";
     case "checking":
-      return "bg-a11y-yellow";
+      return "bg-a11y-yellow text-black";
     case "supported":
-      return "bg-a11y-blue";
+      return "bg-a11y-sky-blue";
     case "unsupported":
       return "bg-a11y-orange";
     case "error":
       return "bg-a11y-vermilion";
     default:
-      return "bg-a11y-gray";
+      return "bg-gray-600";
   }
 }
 
