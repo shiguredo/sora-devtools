@@ -187,9 +187,9 @@ function getStatusBgClass(status: CheckStatus): string {
     case "supported":
       return "bg-a11y-bluish-green";
     case "unsupported":
-      return "bg-a11y-orange";
-    case "error":
       return "bg-a11y-vermilion";
+    case "error":
+      return "bg-a11y-reddish-purple";
     default:
       return "bg-gray-600";
   }
