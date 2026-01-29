@@ -152,6 +152,19 @@ async function checkScalabilityModeSupport(
     parameters.encodings[0].scalabilityMode = mode;
 
     await sender.setParameters(parameters);
+
+    // setParameters 後に getParameters で実際に反映されているか確認
+    // Safari など一部ブラウザは setParameters が成功しても scalabilityMode を無視する
+    const updatedParameters = sender.getParameters();
+    // @ts-ignore: scalabilityMode は標準には存在しないが、ブラウザによってはサポートしている
+    const actualMode = updatedParameters.encodings[0]?.scalabilityMode;
+    if (actualMode !== mode) {
+      return {
+        supported: false,
+        error: `scalabilityMode not applied: expected ${mode}, got ${actualMode}`,
+      };
+    }
+
     return { supported: true };
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
