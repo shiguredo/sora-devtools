@@ -177,21 +177,21 @@ async function checkScalabilityModeSupport(
 }
 
 // ステータスに応じた背景色クラスを返す
-// 色覚異常に配慮し、赤緑ではなく青とオレンジの組み合わせを使用
+// 色覚異常に配慮した Okabe-Ito パレットを使用
 function getStatusBgClass(status: CheckStatus): string {
   switch (status) {
     case "unchecked":
-      return "bg-gray-600";
+      return "bg-a11y-gray";
     case "checking":
-      return "bg-yellow-500";
+      return "bg-a11y-yellow";
     case "supported":
-      return "bg-sky-500";
+      return "bg-a11y-blue";
     case "unsupported":
-      return "bg-orange-500";
+      return "bg-a11y-orange";
     case "error":
-      return "bg-purple-500";
+      return "bg-a11y-vermilion";
     default:
-      return "bg-gray-600";
+      return "bg-a11y-gray";
   }
 }
 

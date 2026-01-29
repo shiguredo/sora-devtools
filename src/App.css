@@ -12,6 +12,15 @@
   --color-bs-yellow: #ffc107;
   --color-bs-orange: #fd7e14;
   --color-bs-red: #dc3545;
+
+  /* アクセシビリティカラー (Okabe-Ito パレット) */
+  --color-a11y-blue: #0072b2;
+  --color-a11y-orange: #e69f00;
+  --color-a11y-green: #009e73;
+  --color-a11y-yellow: #f0e442;
+  --color-a11y-vermilion: #d55e00;
+  --color-a11y-purple: #cc79a7;
+  --color-a11y-gray: #999999;
 }
 
 /* アプリ固有のユーティリティクラス */
