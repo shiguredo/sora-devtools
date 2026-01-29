@@ -19,6 +19,8 @@ import { SignalingMessages } from "./SignalingMessages.tsx";
 import { Stats } from "./Stats.tsx";
 import { TimelineMessages } from "./TimelineMessages.tsx";
 
+const enableSvcTab = import.meta.env.VITE_DEBUG_PANEL_SVC === "true";
+
 export function DebugPane() {
   const debugValue = debug.value;
   const debugTypeValue = debugType.value;
@@ -37,7 +39,7 @@ export function DebugPane() {
       // key === 'api' ||
       key === "rpc" ||
       key === "codec" ||
-      key === "svc"
+      (enableSvcTab && key === "svc")
     ) {
       setDebugType(key);
       // URL の query string を更新
@@ -92,9 +94,11 @@ export function DebugPane() {
         <Tab eventKey="codec" title="Codec">
           <CapabilitiesCodec />
         </Tab>
-        <Tab eventKey="svc" title="SVC">
-          <ScalabilityMode />
-        </Tab>
+        {enableSvcTab && (
+          <Tab eventKey="svc" title="SVC">
+            <ScalabilityMode />
+          </Tab>
+        )}
       </Tabs>
     </div>
   );
