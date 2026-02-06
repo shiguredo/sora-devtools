@@ -49,6 +49,9 @@
 
 ### misc
 
+- [ADD] prek (pre-commit の Rust 実装) を利用した pre-commit 設定を追加する
+  - pnpm fmt / pnpm test / pnpm lint / pnpm typecheck をコミット前に実行する
+  - @voluntas
 - [UPDATE] oxlint v1.39.0 で追加されたルールを有効にする
   - typescript/prefer-optional-chain
   - unicorn/require-module-attributes
