@@ -53,8 +53,8 @@ export function Stats() {
         return (
           <Log
             key={stats.id}
-            {...(stats as RTCStatsWithIndexSignature)}
-            prevStats={prevStats as RTCStatsWithIndexSignature | undefined}
+            {...(stats as unknown as RTCStatsWithIndexSignature)}
+            prevStats={prevStats as unknown as RTCStatsWithIndexSignature | undefined}
           />
         );
       })}

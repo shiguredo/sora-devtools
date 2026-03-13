@@ -25,7 +25,7 @@ function Collapse(props: CollapsePushProps) {
     <Message
       title={push.message.type}
       timestamp={push.timestamp}
-      description={push.message}
+      description={push.message as unknown as Record<string, unknown>}
       label={label}
     />
   );

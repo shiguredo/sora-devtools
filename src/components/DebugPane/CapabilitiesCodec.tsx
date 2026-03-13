@@ -51,19 +51,27 @@ export function CapabilitiesCodec() {
     <div className="capabilities-codec">
       <Log
         title="Audio RTCRtpSender CapabilitiesCodec"
-        codecs={senderAudioCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          senderAudioCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
       <Log
         title="Video RTCRtpSender CapabilitiesCodec"
-        codecs={senderVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          senderVideoCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
       <Log
         title="Audio RTCRtpReceiver CapabilitiesCodec"
-        codecs={receiverAudioCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          receiverAudioCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
       <Log
         title="Video RTCRtpReceiver CapabilitiesCodec"
-        codecs={receiverVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          receiverVideoCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
     </div>
   );

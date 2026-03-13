@@ -1,24 +1,34 @@
-import path from "path";
+import path, { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
   plugins: [preactPlugin(), tailwindcss()],
   build: {
-    minify: true,
+    minify: "oxc",
     target: "esnext",
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         index: path.resolve(__dirname, "./index.html"),
       },
       output: {
-        manualChunks: {
-          preact: ["preact"],
-          "mp4-media-stream": ["@shiguredo/mp4-media-stream"],
-          "noise-suppression": ["@shiguredo/noise-suppression"],
-          "virtual-background": ["@shiguredo/virtual-background"],
-          "sora-js-sdk": ["sora-js-sdk"],
+        manualChunks(moduleId) {
+          const chunks: Record<string, string[]> = {
+            preact: ["preact"],
+            "mp4-media-stream": ["@shiguredo/mp4-media-stream"],
+            "noise-suppression": ["@shiguredo/noise-suppression"],
+            "virtual-background": ["@shiguredo/virtual-background"],
+            "sora-js-sdk": ["sora-js-sdk"],
+          };
+          for (const [chunkName, modules] of Object.entries(chunks)) {
+            if (modules.some((mod) => moduleId.includes(`node_modules/${mod}`))) {
+              return chunkName;
+            }
+          }
         },
       },
     },

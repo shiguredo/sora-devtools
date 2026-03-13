@@ -49,7 +49,9 @@ function Visualizer(props: VisualizerProps) {
     if (props.stream.getAudioTracks().length === 0) {
       return;
     }
-    const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext;
+    const AudioContext =
+      globalThis.AudioContext ||
+      (globalThis as unknown as Record<string, typeof globalThis.AudioContext>).webkitAudioContext;
     const audioContext = new AudioContext();
     const mediaStreamSource = audioContext.createMediaStreamSource(props.stream);
     const analyser = audioContext.createAnalyser();

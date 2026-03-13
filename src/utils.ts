@@ -583,7 +583,9 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   }
   let gainNode: GainNode | null = null;
   if (parameters.audio) {
-    const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext;
+    const AudioContext =
+      globalThis.AudioContext ||
+      (globalThis as unknown as Record<string, typeof globalThis.AudioContext>).webkitAudioContext;
     const audioContext = new AudioContext();
     const oscillator = audioContext.createOscillator();
     const selectedOscillatorType = "sine";
