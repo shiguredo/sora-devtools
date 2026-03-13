@@ -11,12 +11,12 @@ import { checkFormValue } from "@/utils";
 import { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-type FormRadioProps = {
+interface FormRadioProps {
   label: string;
   mediaTypeValue: string;
   disabled: boolean;
   onChange: (event: Event) => void;
-};
+}
 function FormRadio(props: FormRadioProps) {
   const { label, disabled, onChange, mediaTypeValue } = props;
   return (

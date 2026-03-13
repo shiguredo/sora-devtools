@@ -1,10 +1,10 @@
 import type { ComponentChildren } from "preact";
 
-type FormGroupProps = {
+interface FormGroupProps {
   controlId?: string;
   className?: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * フォーム要素のグループ化コンポーネント

@@ -1,6 +1,6 @@
 import type { ComponentChildren, Ref } from "preact";
 
-type FormSelectProps = {
+interface FormSelectProps {
   name?: string;
   id?: string;
   value?: string;
@@ -9,7 +9,7 @@ type FormSelectProps = {
   children: ComponentChildren;
   className?: string;
   ref?: Ref<HTMLSelectElement>;
-};
+}
 
 // ドロップダウン矢印 SVG（URL エンコード済み）
 const dropdownArrow =

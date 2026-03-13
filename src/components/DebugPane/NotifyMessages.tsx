@@ -3,7 +3,7 @@ import type { NotifyMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const SIGNALING_COLORS: { [key: string]: string } = {
+const SIGNALING_COLORS: Record<string, string> = {
   websocket: "#00ff00",
   datachannel: "#ff00ff",
 };
@@ -18,9 +18,9 @@ function Label(props: { text: string }) {
   );
 }
 
-type CollapseNotifyProps = {
+interface CollapseNotifyProps {
   notify: NotifyMessage;
-};
+}
 function CollapseNotify(props: CollapseNotifyProps) {
   const { notify } = props;
   const label = notify.transportType ? <Label text={notify.transportType} /> : null;
@@ -41,19 +41,19 @@ function Log(props: CollapseNotifyProps) {
 export function NotifyMessages() {
   const notifyMessagesValue = notifyMessages.value;
   const debugFilterTextValue = debugFilterText.value;
-  const filteredMessages = notifyMessagesValue.filter((message) => {
-    return debugFilterTextValue.split(" ").every((filterText) => {
+  const filteredMessages = notifyMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0;
-    });
-  });
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
     <div className="overflow-y-auto h-full">
-      {filteredMessages.map((notify) => {
-        return <Log key={notify.message.type + notify.timestamp} notify={notify} />;
-      })}
+      {filteredMessages.map((notify) => (
+        <Log key={notify.message.type + notify.timestamp} notify={notify} />
+      ))}
     </div>
   );
 }

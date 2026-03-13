@@ -34,7 +34,9 @@ export function VideoVP9ParamsForm() {
               controlId="videoVP9Params"
               placeholder="videoVP9Paramsを指定"
               value={videoVP9Params.value}
-              setValue={(value) => setVideoVP9Params(value)}
+              setValue={(value) => {
+                setVideoVP9Params(value);
+              }}
               disabled={disabled}
             />
           </div>

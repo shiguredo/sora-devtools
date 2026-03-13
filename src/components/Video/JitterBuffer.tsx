@@ -11,13 +11,9 @@ function mediaStreamStatsReportFilter(
   }
   let trackIds: string[] = [];
   if (type === "video") {
-    trackIds = mediaStream.getVideoTracks().map((t) => {
-      return t.id;
-    });
+    trackIds = mediaStream.getVideoTracks().map((t) => t.id);
   } else if (type === "audio") {
-    trackIds = mediaStream.getAudioTracks().map((t) => {
-      return t.id;
-    });
+    trackIds = mediaStream.getAudioTracks().map((t) => t.id);
   }
   const targetStats = statsReport.find((stats) => {
     if (stats.type !== "inbound-rtp") {
@@ -38,10 +34,10 @@ function mediaStreamStatsReportFilter(
   return targetStats as RTCInboundRtpStreamStats;
 }
 
-type Props = {
+interface Props {
   stream: MediaStream;
   type: "video" | "audio";
-};
+}
 export function JitterButter(props: Props) {
   const currentInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
     statsReport.value,
@@ -62,11 +58,10 @@ export function JitterButter(props: Props) {
   ) {
     return null;
   }
-  let jitterBufferDelay = currentInboundRtpStreamStatsReport.jitterBufferDelay;
-  let jitterBufferEmittedCount = currentInboundRtpStreamStatsReport.jitterBufferEmittedCount;
+  let { jitterBufferDelay } = currentInboundRtpStreamStatsReport;
+  let { jitterBufferEmittedCount } = currentInboundRtpStreamStatsReport;
   if (
-    prevInboundRtpStreamStatsReport !== undefined &&
-    prevInboundRtpStreamStatsReport.jitterBufferDelay !== undefined &&
+    prevInboundRtpStreamStatsReport?.jitterBufferDelay !== undefined &&
     prevInboundRtpStreamStatsReport.jitterBufferEmittedCount !== undefined
   ) {
     jitterBufferDelay =

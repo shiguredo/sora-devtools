@@ -34,7 +34,9 @@ export function VideoAV1ParamsForm() {
               controlId="videoAV1Params"
               placeholder="videoAV1Paramsを指定"
               value={videoAV1Params.value}
-              setValue={(value) => setVideoAV1Params(value)}
+              setValue={(value) => {
+                setVideoAV1Params(value);
+              }}
               disabled={disabled}
             />
           </div>

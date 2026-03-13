@@ -1,9 +1,9 @@
 import type { ComponentChildren } from "preact";
 
-type InputGroupProps = {
+interface InputGroupProps {
   className?: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * 入力フィールドグループコンポーネント

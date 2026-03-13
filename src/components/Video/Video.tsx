@@ -3,14 +3,14 @@ import { useEffect, useRef } from "preact/hooks";
 import type { CustomHTMLVideoElement, SoraDevtoolsState } from "@/types";
 import { getVideoSizeByResolution } from "@/utils";
 
-type VideoProps = {
+interface VideoProps {
   localVideo?: boolean;
   displayResolution: SoraDevtoolsState["displayResolution"];
   stream: MediaStream | null;
   mute: boolean;
   audioOutput: string;
   setHeight: (value: number) => void;
-};
+}
 
 function VideoElement(props: VideoProps) {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props;
@@ -19,9 +19,9 @@ function VideoElement(props: VideoProps) {
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      entries.forEach((entry) => {
+      for (const entry of entries) {
         setHeight(entry.contentRect.height);
-      });
+      }
     });
     if (videoRef.current) {
       if (audioOutput && stream && stream.getAudioTracks().length > 0) {
@@ -60,13 +60,13 @@ function VideoElement(props: VideoProps) {
         originalEnabled = track.enabled;
         track.enabled = false;
       }
-      videoElement.onloadedmetadata = (_) => {
+      videoElement.addEventListener("loadedmetadata", () => {
         for (const track of stream.getVideoTracks()) {
           if (originalEnabled !== undefined) {
             track.enabled = originalEnabled;
           }
         }
-      };
+      });
 
       videoElement.srcObject = stream;
       if (audioOutput && stream.getAudioTracks().length > 0) {
@@ -90,9 +90,9 @@ function VideoElement(props: VideoProps) {
   return (
     <video
       id={props.localVideo ? "local-video" : undefined}
-      autoPlay={true}
-      playsInline={true}
-      controls={true}
+      autoPlay
+      playsInline
+      controls
       muted={mute}
       ref={videoRef}
       width={videoSize.width > 0 ? videoSize.width : undefined}

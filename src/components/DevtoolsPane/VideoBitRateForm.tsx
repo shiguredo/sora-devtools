@@ -15,7 +15,7 @@ import { VIDEO_BIT_RATES } from "@/constants";
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
-const DISPLAY_VIDEO_BIT_RATE: string[] = VIDEO_BIT_RATES.slice();
+const DISPLAY_VIDEO_BIT_RATE: string[] = [...VIDEO_BIT_RATES];
 DISPLAY_VIDEO_BIT_RATE.splice(VIDEO_BIT_RATES.indexOf("15000") + 1, 0, "support-message");
 
 const dropdownItemLabel = (value: string) => {
@@ -46,17 +46,17 @@ export function VideoBitRateForm() {
         <Dropdown>
           <DropdownToggle variant="outline-secondary" disabled={disabled} />
           <DropdownMenu>
-            {DISPLAY_VIDEO_BIT_RATE.map((value) => {
-              return (
-                <DropdownItem
-                  key={value}
-                  onClick={() => setVideoBitRate(value)}
-                  disabled={value === "support-message"}
-                >
-                  {dropdownItemLabel(value)}
-                </DropdownItem>
-              );
-            })}
+            {DISPLAY_VIDEO_BIT_RATE.map((value) => (
+              <DropdownItem
+                key={value}
+                onClick={() => {
+                  setVideoBitRate(value);
+                }}
+                disabled={value === "support-message"}
+              >
+                {dropdownItemLabel(value)}
+              </DropdownItem>
+            ))}
           </DropdownMenu>
         </Dropdown>
       </InputGroup>

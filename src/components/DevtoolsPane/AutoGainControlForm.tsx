@@ -18,13 +18,11 @@ export function AutoGainControlForm() {
     <FormGroup className="flex items-center gap-2" controlId="autoGainControl">
       <TooltipFormLabel kind="autoGainControl">autoGainControl:</TooltipFormLabel>
       <FormSelect name="autoGainControl" value={autoGainControl.value} onChange={onChange}>
-        {AUTO_GAIN_CONTROLS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
-            </option>
-          );
-        })}
+        {AUTO_GAIN_CONTROLS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

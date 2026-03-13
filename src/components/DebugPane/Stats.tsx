@@ -4,9 +4,7 @@ import { debugFilterText, prevStatsReport, statsReport } from "@/app/signals";
 
 import { Message } from "./Message.tsx";
 
-interface RTCStatsWithIndexSignature extends RTCStats {
-  [x: string]: unknown;
-}
+type RTCStatsWithIndexSignature = Record<string, unknown>;
 
 type CollapseProps = {
   prevStats?: RTCStatsWithIndexSignature;
@@ -16,7 +14,7 @@ function Collapse(props: CollapseProps) {
   const { prevStats, ...stats } = props;
   return (
     <Message
-      title={`${stats.id}(${stats.type})`}
+      title={`${String(stats.id)}(${String(stats.type)})`}
       timestamp={null}
       description={stats}
       prevDescription={prevStats}
@@ -39,14 +37,14 @@ export function Stats() {
     [prevStatsReportValue],
   );
 
-  const filteredMessages = statsReportValue.filter((message) => {
-    return debugFilterTextValue.split(" ").every((filterText) => {
+  const filteredMessages = statsReportValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0;
-    });
-  });
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
     <div className="overflow-y-auto h-full">
       {filteredMessages.map((stats) => {

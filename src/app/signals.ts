@@ -10,6 +10,7 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
+// eslint-disable-next-line import/default -- Vite の ?worker サフィックスによる Web Worker インポート
 import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {
   AlertMessage,
@@ -71,7 +72,7 @@ export const spotlight = signal<SoraDevtoolsState["spotlight"]>("");
 export const spotlightNumber = signal<SoraDevtoolsState["spotlightNumber"]>("");
 export const spotlightFocusRid = signal<SoraDevtoolsState["spotlightFocusRid"]>("");
 export const spotlightUnfocusRid = signal<SoraDevtoolsState["spotlightUnfocusRid"]>("");
-export const focusedSpotlightConnectionIds = signal<{ [key: string]: boolean }>({});
+export const focusedSpotlightConnectionIds = signal<Record<string, boolean>>({});
 
 // --- DataChannel ---
 export const dataChannelSignaling = signal<SoraDevtoolsState["dataChannelSignaling"]>("");
@@ -702,144 +703,167 @@ export const setForceStereoOutput = (value: boolean): void => {
   forceStereoOutput.value = value;
 };
 
-// --- リセット ---
+// --- リセット用ヘルパー関数 ---
+
+// Audio 関連の signal を初期値にリセットする
+function resetAudioState(): void {
+  audio.value = true;
+  audioBitRate.value = "";
+  audioCodecType.value = "";
+  audioContentHint.value = "";
+  audioInput.value = "";
+  audioInputDevices.value = [];
+  audioOutput.value = "";
+  audioOutputDevices.value = [];
+  autoGainControl.value = "";
+  audioStreamingLanguageCode.value = "";
+  enabledAudioStreamingLanguageCode.value = false;
+  audioTrack.value = true;
+}
+
+// Video 関連の signal を初期値にリセットする
+function resetVideoState(): void {
+  video.value = true;
+  videoBitRate.value = "";
+  videoCodecType.value = "";
+  videoContentHint.value = "";
+  videoInput.value = "";
+  videoInputDevices.value = [];
+  videoVP9Params.value = "";
+  videoH264Params.value = "";
+  videoH265Params.value = "";
+  videoAV1Params.value = "";
+  videoTrack.value = true;
+  enabledVideoVP9Params.value = false;
+  enabledVideoH264Params.value = false;
+  enabledVideoH265Params.value = false;
+  enabledVideoAV1Params.value = false;
+}
+
+// 接続設定関連の signal を初期値にリセットする
+function resetConnectionSettingsState(): void {
+  channelId.value = "sora";
+  clientId.value = "";
+  bundleId.value = "";
+  enabledBundleId.value = false;
+  enabledClientId.value = false;
+  role.value = "sendrecv";
+  reconnect.value = false;
+  apiUrl.value = null;
+}
+
+// Simulcast/Spotlight 関連の signal を初期値にリセットする
+function resetSimulcastSpotlightState(): void {
+  simulcast.value = "";
+  simulcastRid.value = "";
+  simulcastRequestRid.value = "";
+  spotlight.value = "";
+  spotlightNumber.value = "";
+  spotlightFocusRid.value = "";
+  spotlightUnfocusRid.value = "";
+  focusedSpotlightConnectionIds.value = {};
+}
+
+// DataChannel 関連の signal を初期値にリセットする
+function resetDataChannelState(): void {
+  dataChannelSignaling.value = "";
+  dataChannels.value = "";
+  enabledDataChannels.value = false;
+  enabledDataChannel.value = false;
+  dataChannelMessages.value = [];
+}
+
+// メタデータ関連の signal を初期値にリセットする
+function resetMetadataState(): void {
+  metadata.value = "";
+  enabledMetadata.value = false;
+  signalingNotifyMetadata.value = "";
+  enabledSignalingNotifyMetadata.value = false;
+  signalingUrlCandidates.value = [];
+  enabledSignalingUrlCandidates.value = false;
+  forwardingFilters.value = "";
+  enabledForwardingFilters.value = false;
+}
+
+// メディア設定関連の signal を初期値にリセットする
+function resetMediaSettingsState(): void {
+  frameRate.value = "";
+  resolution.value = "";
+  displayResolution.value = "";
+  aspectRatio.value = "";
+  resizeMode.value = "";
+  facingMode.value = "";
+  mediaType.value = "getUserMedia";
+  blurRadius.value = "";
+  mediaProcessorsNoiseSuppression.value = false;
+  noiseSuppression.value = "";
+  echoCancellation.value = "";
+  echoCancellationType.value = "";
+  ignoreDisconnectWebSocket.value = "";
+  forceStereoOutput.value = false;
+  fakeVolume.value = "0";
+  fakeContents.value = { worker: null, gainNode: null };
+  cameraDevice.value = true;
+  micDevice.value = true;
+  googCpuOveruseDetection.value = null;
+  mp4MediaStream.value = null;
+  noiseSuppressionProcessor.value = null;
+  virtualBackgroundProcessor.value = null;
+}
+
+// UI 状態関連の signal を初期値にリセットする
+function resetUiState(): void {
+  mute.value = false;
+  mediaStats.value = false;
+  showStats.value = false;
+  debug.value = false;
+  debugType.value = "timeline";
+  debugFilterText.value = "";
+  debugApiUrl.value = "http://localhost:3000";
+}
+
+// メッセージ関連の signal を初期値にリセットする
+function resetMessagesState(): void {
+  alertMessages.value = [];
+  logMessages.value = [];
+  timelineMessages.value = [];
+  notifyMessages.value = [];
+  pushMessages.value = [];
+  signalingMessages.value = [];
+  rpcObjects.value = [];
+  apiObjects.value = [];
+}
+
+// Sora 接続状態関連の signal を初期値にリセットする
+function resetSoraConnectionState(): void {
+  connectionStatus.value = "initializing";
+  reconnecting.value = false;
+  reconnectingTrials.value = 0;
+  sora.value = null;
+  connectionId.value = null;
+  soraClientId.value = null;
+  sessionId.value = null;
+  localMediaStream.value = null;
+  remoteClients.value = [];
+  prevStatsReport.value = [];
+  statsReport.value = [];
+  soraDataChannels.value = [];
+  turnUrl.value = null;
+}
+
+// 全ての signal を初期値にリセットする
 export const resetState = (): void => {
   batch(() => {
-    // Audio
-    audio.value = true;
-    audioBitRate.value = "";
-    audioCodecType.value = "";
-    audioContentHint.value = "";
-    audioInput.value = "";
-    audioInputDevices.value = [];
-    audioOutput.value = "";
-    audioOutputDevices.value = [];
-    autoGainControl.value = "";
-    audioStreamingLanguageCode.value = "";
-    enabledAudioStreamingLanguageCode.value = false;
-    audioTrack.value = true;
-
-    // Video
-    video.value = true;
-    videoBitRate.value = "";
-    videoCodecType.value = "";
-    videoContentHint.value = "";
-    videoInput.value = "";
-    videoInputDevices.value = [];
-    videoVP9Params.value = "";
-    videoH264Params.value = "";
-    videoH265Params.value = "";
-    videoAV1Params.value = "";
-    videoTrack.value = true;
-
-    // 接続設定
-    channelId.value = "sora";
-    clientId.value = "";
-    bundleId.value = "";
-    enabledBundleId.value = false;
-    enabledClientId.value = false;
-    role.value = "sendrecv";
-    reconnect.value = false;
-    apiUrl.value = null;
-
-    // Simulcast/Spotlight
-    simulcast.value = "";
-    simulcastRid.value = "";
-    simulcastRequestRid.value = "";
-    spotlight.value = "";
-    spotlightNumber.value = "";
-    spotlightFocusRid.value = "";
-    spotlightUnfocusRid.value = "";
-    focusedSpotlightConnectionIds.value = {};
-
-    // DataChannel
-    dataChannelSignaling.value = "";
-    dataChannels.value = "";
-    enabledDataChannels.value = false;
-    enabledDataChannel.value = false;
-    dataChannelMessages.value = [];
-
-    // メタデータ
-    metadata.value = "";
-    enabledMetadata.value = false;
-    signalingNotifyMetadata.value = "";
-    enabledSignalingNotifyMetadata.value = false;
-    signalingUrlCandidates.value = [];
-    enabledSignalingUrlCandidates.value = false;
-    forwardingFilters.value = "";
-    enabledForwardingFilters.value = false;
-
-    // Video パラメータ enabled
-    enabledVideoVP9Params.value = false;
-    enabledVideoH264Params.value = false;
-    enabledVideoH265Params.value = false;
-    enabledVideoAV1Params.value = false;
-
-    // メディア設定
-    frameRate.value = "";
-    resolution.value = "";
-    displayResolution.value = "";
-    aspectRatio.value = "";
-    resizeMode.value = "";
-    facingMode.value = "";
-    mediaType.value = "getUserMedia";
-    blurRadius.value = "";
-    mediaProcessorsNoiseSuppression.value = false;
-    noiseSuppression.value = "";
-    echoCancellation.value = "";
-    echoCancellationType.value = "";
-    ignoreDisconnectWebSocket.value = "";
-    forceStereoOutput.value = false;
-
-    // Fake メディア
-    fakeVolume.value = "0";
-    fakeContents.value = { worker: null, gainNode: null };
-
-    // デバイス
-    cameraDevice.value = true;
-    micDevice.value = true;
-    googCpuOveruseDetection.value = null;
-
-    // 外部メディア
-    mp4MediaStream.value = null;
-    noiseSuppressionProcessor.value = null;
-    virtualBackgroundProcessor.value = null;
-
-    // UI 状態
-    mute.value = false;
-    mediaStats.value = false;
-    showStats.value = false;
-    debug.value = false;
-    debugType.value = "timeline";
-    debugFilterText.value = "";
-    debugApiUrl.value = "http://localhost:3000";
-
-    // メッセージ
-    alertMessages.value = [];
-    logMessages.value = [];
-    timelineMessages.value = [];
-    notifyMessages.value = [];
-    pushMessages.value = [];
-    signalingMessages.value = [];
-
-    // RPC/API
-    rpcObjects.value = [];
-    apiObjects.value = [];
-
-    // Sora 接続状態
-    connectionStatus.value = "initializing";
-    reconnecting.value = false;
-    reconnectingTrials.value = 0;
-    sora.value = null;
-    connectionId.value = null;
-    soraClientId.value = null;
-    sessionId.value = null;
-    localMediaStream.value = null;
-    remoteClients.value = [];
-    prevStatsReport.value = [];
-    statsReport.value = [];
-    soraDataChannels.value = [];
-    turnUrl.value = null;
+    resetAudioState();
+    resetVideoState();
+    resetConnectionSettingsState();
+    resetSimulcastSpotlightState();
+    resetDataChannelState();
+    resetMetadataState();
+    resetMediaSettingsState();
+    resetUiState();
+    resetMessagesState();
+    resetSoraConnectionState();
   });
 };
 

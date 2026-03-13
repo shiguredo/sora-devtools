@@ -1,6 +1,6 @@
-import type { ComponentChildren, JSX } from "preact";
+import type { CSSProperties, ComponentChildren } from "preact";
 
-type FormCheckProps = {
+interface FormCheckProps {
   id?: string;
   name?: string;
   type?: "checkbox" | "radio";
@@ -9,7 +9,7 @@ type FormCheckProps = {
   disabled?: boolean;
   label?: ComponentChildren;
   className?: string;
-};
+}
 
 /**
  * チェックボックス/ラジオボタンコンポーネント
@@ -50,7 +50,7 @@ export function FormCheck({
 
   // インラインスタイルで正確な値を指定 (Tailwind v4 のスケーリングを回避)
   const checkMarkSvg = type === "checkbox" ? CHECKBOX_CHECK_SVG : RADIO_CHECK_SVG;
-  const inputStyle: JSX.CSSProperties = {
+  const inputStyle: CSSProperties = {
     width: "16px",
     height: "16px",
     border: checked ? "1px solid #0d6efd" : "1px solid #dee2e6",

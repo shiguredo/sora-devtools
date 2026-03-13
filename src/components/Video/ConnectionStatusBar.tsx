@@ -1,16 +1,16 @@
-import type { JSX } from "preact";
+import type { TargetedMouseEvent } from "preact";
 
 import { Button } from "@/components/ui";
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
-type TextBoxProps = {
+interface TextBoxProps {
   id?: string;
   label?: string;
   text: string;
-};
+}
 function TextBox(props: TextBoxProps) {
-  const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>): void => {
+  const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
     void copy2clipboard(props.text);
     event.currentTarget.blur();
   };
@@ -31,11 +31,11 @@ function TextBox(props: TextBoxProps) {
   );
 }
 
-type Props = {
+interface Props {
   localVideo?: boolean;
   connectionId: string | null;
   clientId?: string | null;
-};
+}
 export function ConnectionStatusBar(props: Props) {
   const { localVideo, connectionId, clientId } = props;
   return (

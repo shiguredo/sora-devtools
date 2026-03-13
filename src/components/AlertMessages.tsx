@@ -31,7 +31,7 @@ function Alert(props: AlertMessage) {
   };
   const bgClassName = props.type === "error" ? "bg-bs-red" : "bg-bs-primary";
   return (
-    <Toast autohide={true} delay={5000} onClose={onClose}>
+    <Toast autohide delay={5000} onClose={onClose}>
       <ToastHeader className={`${bgClassName} text-white`} onClose={onClose}>
         <strong className="me-auto">{props.title}</strong>
         <span className="text-sm opacity-80">{formatUnixtime(props.timestamp)}</span>
@@ -47,9 +47,9 @@ export function AlertMessages() {
   return (
     <div className="absolute top-[50px] right-5 z-[1001]">
       {reconnecting.value ? <Reconnect /> : null}
-      {alertMessages.value.map((alertMessage) => {
-        return <Alert key={alertMessage.timestamp} {...alertMessage} />;
-      })}
+      {alertMessages.value.map((alertMessage) => (
+        <Alert key={alertMessage.timestamp} {...alertMessage} />
+      ))}
     </div>
   );
 }

@@ -33,9 +33,7 @@ function mediaStreamStatsReportFilter(
   if (mediaStream === null) {
     return [];
   }
-  const trackIds = mediaStream.getTracks().map((t) => {
-    return t.id;
-  });
+  const trackIds = new Set(mediaStream.getTracks().map((t) => t.id));
   const result: RTCMediaStreamTrackStats[] = [];
   for (const stats of report) {
     if (stats.id && !rtcMediaStreamTrackRegex.test(stats.id)) {
@@ -43,7 +41,7 @@ function mediaStreamStatsReportFilter(
     }
     if ("trackIdentifier" in stats) {
       const mediaStreamStats = stats as RTCMediaStreamTrackStats;
-      if (mediaStreamStats.trackIdentifier && trackIds.includes(mediaStreamStats.trackIdentifier)) {
+      if (mediaStreamStats.trackIdentifier && trackIds.has(mediaStreamStats.trackIdentifier)) {
         result.push(mediaStreamStats);
       }
     }
@@ -58,11 +56,11 @@ function MediaStreamStatsReport({ stream }: { stream: MediaStream }) {
   const currentMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     statsReport.value,
     stream,
-  ) as RTCMediaStreamTrackStats[];
+  );
   const prevMediaStreamTrackStatsReport = mediaStreamStatsReportFilter(
     prevStatsReport.value,
     stream,
-  ) as RTCMediaStreamTrackStats[];
+  );
   return (
     <>
       {currentMediaStreamTrackStatsReport.map((s) => {
@@ -77,13 +75,11 @@ function MediaStreamStatsReport({ stream }: { stream: MediaStream }) {
         return (
           <div key={s.id}>
             <ul className="list-none p-4">
-              {Object.entries(s).map(([key, value]) => {
-                return (
-                  <li key={key}>
-                    <strong>{key}:</strong> {value}
-                  </li>
-                );
-              })}
+              {Object.entries(s).map(([key, value]) => (
+                <li key={key}>
+                  <strong>{key}:</strong> {value}
+                </li>
+              ))}
               <li>
                 <strong>[jitterBufferDelay/jitterBufferEmittedCount_in_ms]</strong>{" "}
                 {Math.floor((jitterBufferDelay / jitterBufferEmittedCount) * 1000)}
@@ -143,7 +139,7 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
             audioOutput={audioOutput.value}
             displayResolution={displayResolution.value}
           />
-          <VolumeVisualizer micDevice={true} stream={mediaStream} height={height.value} />
+          <VolumeVisualizer micDevice stream={mediaStream} height={height.value} />
         </div>
         <MediaStreamStatsReport stream={mediaStream} />
       </div>
@@ -154,9 +150,9 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
 export function RemoteVideos() {
   return (
     <div className="row my-2">
-      {remoteClients.value.map((client) => {
-        return <RemoteVideo key={client.connectionId} client={client} />;
-      })}
+      {remoteClients.value.map((client) => (
+        <RemoteVideo key={client.connectionId} client={client} />
+      ))}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Tabs, Tab } from "@/components/ui";
+import { Tab, Tabs } from "@/components/ui";
 
 import { setDebugType } from "@/app/actions";
 import { debug, debugType } from "@/app/signals";
@@ -42,7 +42,7 @@ export function DebugPane() {
       const searchParams = new URLSearchParams(location.search);
       searchParams.set("debugType", key);
       const newUrl = `${location.pathname}?${searchParams.toString()}`;
-      window.history.replaceState(null, "", newUrl);
+      globalThis.history.replaceState(null, "", newUrl);
     }
   };
   return (

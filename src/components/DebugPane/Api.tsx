@@ -10,6 +10,77 @@ import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
 
 import { JsonTree } from "./JsonTree.tsx";
 
+// パラメータの JSON をパースし、トップレベルの ID フィールドを置き換える
+function parseAndReplaceParams(
+  paramsText: string,
+  replaceOptions: {
+    replaceChannelId: boolean;
+    replaceSessionId: boolean;
+    replaceConnectionId: boolean;
+    channelIdValue: string;
+    sessionIdValue: string | null;
+    connectionIdValue: string | null;
+  },
+): Record<string, unknown> | unknown[] | undefined {
+  if (!paramsText) {
+    return undefined;
+  }
+
+  const parsed: Record<string, unknown> | unknown[] = JSON.parse(paramsText);
+
+  if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+    if (replaceOptions.replaceChannelId && "channel_id" in parsed) {
+      parsed.channel_id = replaceOptions.channelIdValue;
+    }
+    if (
+      replaceOptions.replaceSessionId &&
+      "session_id" in parsed &&
+      replaceOptions.sessionIdValue
+    ) {
+      parsed.session_id = replaceOptions.sessionIdValue;
+    }
+    if (
+      replaceOptions.replaceConnectionId &&
+      "connection_id" in parsed &&
+      replaceOptions.connectionIdValue
+    ) {
+      parsed.connection_id = replaceOptions.connectionIdValue;
+    }
+  }
+
+  return parsed;
+}
+
+// Headers オブジェクトから Record に変換する
+function headersToRecord(headers: Headers): Record<string, string> {
+  const record: Record<string, string> = {};
+  for (const [key, value] of headers) {
+    record[key] = value;
+  }
+  return record;
+}
+
+// エラーからメッセージと種別を判定する
+function classifyApiError(
+  error: unknown,
+  timeout: number,
+): { errorMessage: string; errorType: "cors" | "timeout" | "network" | "unknown" } {
+  let errorMessage = "Unknown error";
+  let errorType: "cors" | "timeout" | "network" | "unknown" = "unknown";
+
+  if (error instanceof Error) {
+    errorMessage = error.message;
+    if (error.name === "AbortError") {
+      errorType = "timeout";
+      errorMessage = `Request timeout (${timeout}ms)`;
+    }
+  } else if (typeof error === "string") {
+    errorMessage = error;
+  }
+
+  return { errorMessage, errorType };
+}
+
 function ClearButton() {
   const onClick = (): void => {
     clearApiObjects();
@@ -25,7 +96,7 @@ function ClearButton() {
   );
 }
 
-type ApiFormProps = {
+interface ApiFormProps {
   url: string;
   setUrl: (url: string) => void;
   selectedMethod: string;
@@ -33,7 +104,7 @@ type ApiFormProps = {
   setParams: (params: string) => void;
   setShowModal: (show: boolean) => void;
   buttonRef: RefObject<HTMLButtonElement>;
-};
+}
 
 function ApiForm({
   url,
@@ -111,19 +182,14 @@ function ApiForm({
     const paramsText = params.trim();
     if (paramsText) {
       try {
-        parsedParams = JSON.parse(paramsText);
-        // トップレベルの channel_id, session_id, connection_id を置き換える
-        if (parsedParams && typeof parsedParams === "object" && !Array.isArray(parsedParams)) {
-          if (replaceChannelId.value && "channel_id" in parsedParams) {
-            parsedParams.channel_id = channelIdValue;
-          }
-          if (replaceSessionId.value && "session_id" in parsedParams && sessionIdValue) {
-            parsedParams.session_id = sessionIdValue;
-          }
-          if (replaceConnectionId.value && "connection_id" in parsedParams && connectionIdValue) {
-            parsedParams.connection_id = connectionIdValue;
-          }
-        }
+        parsedParams = parseAndReplaceParams(paramsText, {
+          replaceChannelId: replaceChannelId.value,
+          replaceSessionId: replaceSessionId.value,
+          replaceConnectionId: replaceConnectionId.value,
+          channelIdValue,
+          sessionIdValue,
+          connectionIdValue,
+        });
       } catch (error) {
         console.error("Invalid JSON in params:", error);
         return;
@@ -137,9 +203,11 @@ function ApiForm({
     const startTime = performance.now();
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, timeout);
 
-    const fetchOptions: RequestInit = {
+    const request = new Request(urlValue, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -149,35 +217,19 @@ function ApiForm({
       body: JSON.stringify(parsedParams),
       mode: "cors",
       signal: controller.signal,
-    };
-
-    const request = new Request(urlValue, fetchOptions);
-
-    // Request headers を取得
-    const requestHeaders: Record<string, string> = {};
-    request.headers.forEach((value, key) => {
-      requestHeaders[key] = value;
     });
+
+    const requestHeaders = headersToRecord(request.headers);
 
     try {
       const response = await fetch(request);
       clearTimeout(timeoutId);
-      const endTime = performance.now();
-      const duration = endTime - startTime;
+      const duration = performance.now() - startTime;
 
-      // Response headers を取得
-      const responseHeaders: Record<string, string> = {};
-      response.headers.forEach((value, key) => {
-        responseHeaders[key] = value;
-      });
-
-      let responseBody: unknown;
       const contentType = response.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
-        responseBody = await response.json();
-      } else {
-        responseBody = await response.text();
-      }
+      const responseBody: unknown = contentType?.includes("application/json")
+        ? await response.json()
+        : await response.text();
 
       setApiObject({
         timestamp,
@@ -186,31 +238,14 @@ function ApiForm({
         requestHeaders,
         requestBody: parsedParams,
         status: response.status,
-        responseHeaders,
+        responseHeaders: headersToRecord(response.headers),
         responseBody,
         duration,
       });
     } catch (error) {
       clearTimeout(timeoutId);
-      const endTime = performance.now();
-      const duration = endTime - startTime;
-
-      let errorMessage = "Unknown error";
-      let errorType: "cors" | "timeout" | "network" | "unknown" = "unknown";
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-
-        // エラー種別を判定
-        if (error.name === "AbortError") {
-          errorType = "timeout";
-          errorMessage = `Request timeout (${timeout}ms)`;
-        } else {
-          errorType = "unknown";
-        }
-      } else if (typeof error === "string") {
-        errorMessage = error;
-      }
+      const duration = performance.now() - startTime;
+      const { errorMessage, errorType } = classifyApiError(error, timeout);
 
       setApiObject({
         timestamp,
@@ -237,7 +272,9 @@ function ApiForm({
             placeholder="http://sora-test.shiguredo.co.jp:3000"
             ref={urlRef}
             value={url}
-            onChange={(e) => setUrl((e.target as HTMLInputElement).value)}
+            onChange={(e) => {
+              setUrl((e.target as HTMLInputElement).value);
+            }}
             className="block w-full px-3 py-1.5 text-base leading-normal bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
           />
         </div>
@@ -249,7 +286,9 @@ function ApiForm({
           <button
             type="button"
             ref={buttonRef}
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              setShowModal(true);
+            }}
             className="w-full px-3 py-1.5 text-base font-bold bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700"
           >
             {selectedMethod || "Select method"}
@@ -378,10 +417,30 @@ function ApiForm({
   );
 }
 
-type ApiObjectItemProps = {
+interface ApiObjectItemProps {
   apiObject: ApiObject;
   onReuse: (apiObject: ApiObject) => void;
-};
+}
+
+// HTTP ステータスコードに対応する色を返す
+function getStatusColor(status?: number): string {
+  if (!status) {
+    return "#fff";
+  }
+  if (status >= 200 && status < 300) {
+    return "#28a745";
+  }
+  if (status >= 300 && status < 400) {
+    return "#17a2b8";
+  }
+  if (status >= 400 && status < 500) {
+    return "#ffc107";
+  }
+  if (status >= 500) {
+    return "#dc3545";
+  }
+  return "#fff";
+}
 
 function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
   const date = new Date(apiObject.timestamp);
@@ -394,15 +453,6 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
   const milliseconds = date.getMilliseconds().toString().padStart(3, "0");
   const fullTimeString = `[${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}]`;
 
-  const getStatusColor = (status?: number): string => {
-    if (!status) return "#fff";
-    if (status >= 200 && status < 300) return "#28a745"; // green
-    if (status >= 300 && status < 400) return "#17a2b8"; // blue
-    if (status >= 400 && status < 500) return "#ffc107"; // yellow
-    if (status >= 500) return "#dc3545"; // red
-    return "#fff";
-  };
-
   return (
     <div
       className="mb-3 me-2 p-3 border rounded"
@@ -413,7 +463,9 @@ function ApiObjectItem({ apiObject, onReuse }: ApiObjectItemProps) {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => onReuse(apiObject)}
+            onClick={() => {
+              onReuse(apiObject);
+            }}
             className="px-2 py-1 text-sm bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700"
           >
             Reuse
@@ -592,13 +644,10 @@ export function Api() {
   const handleReuse = (apiObject: ApiObject): void => {
     setUrl(apiObject.url);
     selectedMethod.value = apiObject.method;
-    if (apiObject.requestBody !== undefined) {
-      params.value = JSON.stringify(apiObject.requestBody, null, 2);
-    } else {
-      params.value = "";
-    }
+    params.value =
+      apiObject.requestBody !== undefined ? JSON.stringify(apiObject.requestBody, null, 2) : "";
     // フォームの位置までスクロール
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    globalThis.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleMethodSelect = (
@@ -606,11 +655,7 @@ export function Api() {
     methodParams?: Record<string, unknown> | unknown[],
   ): void => {
     selectedMethod.value = method;
-    if (methodParams) {
-      params.value = JSON.stringify(methodParams, null, 2);
-    } else {
-      params.value = "";
-    }
+    params.value = methodParams ? JSON.stringify(methodParams, null, 2) : "";
     showModal.value = false;
   };
 
@@ -672,12 +717,14 @@ export function Api() {
           </button>
           {(() => {
             type TemplateType = (typeof API_TEMPLATES)[number];
-            const groups = API_TEMPLATES.reduce((acc: Record<string, TemplateType[]>, template) => {
-              const group = template.group || "Other";
-              if (!acc[group]) acc[group] = [];
-              acc[group].push(template);
-              return acc;
-            }, {});
+            const groups: Record<string, TemplateType[]> = {};
+            for (const template of API_TEMPLATES) {
+              const group = template.group ?? "Other";
+              if (!groups[group]) {
+                groups[group] = [];
+              }
+              groups[group].push(template);
+            }
 
             return Object.entries(groups).map(([groupName, templates]) => (
               <div key={groupName} className="mb-4">
@@ -696,7 +743,9 @@ export function Api() {
                     <button
                       type="button"
                       key={template.method}
-                      onClick={() => handleMethodSelect(template.method, template.params)}
+                      onClick={() => {
+                        handleMethodSelect(template.method, template.params);
+                      }}
                       className={`w-full px-3 py-3 text-lg font-bold rounded-md ${
                         selectedMethod.value === template.method
                           ? "bg-blue-600 text-white border border-blue-600 hover:bg-blue-700"

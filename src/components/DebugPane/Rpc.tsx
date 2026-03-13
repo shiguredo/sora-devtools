@@ -3,11 +3,11 @@ import { useEffect, useRef } from "preact/hooks";
 
 import {
   Button,
-  InputGroup,
   Dropdown,
-  DropdownToggle,
-  DropdownMenu,
   DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  InputGroup,
 } from "@/components/ui";
 
 import { clearRpcObjects } from "@/app/actions";

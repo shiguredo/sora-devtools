@@ -9,11 +9,11 @@ import { formatUnixtime } from "@/utils";
 import { CopyLogButton } from "./CopyLogButton.tsx";
 import { JsonTree } from "./JsonTree.tsx";
 
-type DescriptionProps = {
+interface DescriptionProps {
   description: string | number | Record<string, unknown>;
   prevDescription?: unknown;
   wordBreak?: boolean;
-};
+}
 
 function Description(props: DescriptionProps) {
   const { description, prevDescription } = props;
@@ -53,7 +53,7 @@ function Description(props: DescriptionProps) {
   );
 }
 
-type Props = {
+interface Props {
   timestamp: number | null;
   title: string;
   description: string | number | Record<string, unknown>;
@@ -61,7 +61,7 @@ type Props = {
   defaultShow?: boolean;
   label?: ComponentChild;
   wordBreak?: boolean;
-};
+}
 
 // 矢印アイコン（折りたたみ状態用）
 function ArrowIcon({ expanded, disabled }: { expanded: boolean; disabled: boolean }) {
@@ -82,7 +82,7 @@ function ArrowIcon({ expanded, disabled }: { expanded: boolean; disabled: boolea
 
 export function Message(props: Props) {
   const { defaultShow, description, prevDescription, title, timestamp, label } = props;
-  const show = useSignal(defaultShow === undefined ? false : defaultShow);
+  const show = useSignal(defaultShow ?? false);
   const ariaControls = timestamp ? title + timestamp : title;
 
   // 全開/全閉シグナルに反応

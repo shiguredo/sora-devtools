@@ -36,11 +36,11 @@ function createVolumeForeground(
   }
 }
 
-type VisualizerProps = {
+interface VisualizerProps {
   micDevice: boolean;
   stream: MediaStream;
   height: number;
-};
+}
 
 function Visualizer(props: VisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -49,7 +49,7 @@ function Visualizer(props: VisualizerProps) {
     if (props.stream.getAudioTracks().length === 0) {
       return;
     }
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext;
     const audioContext = new AudioContext();
     const mediaStreamSource = audioContext.createMediaStreamSource(props.stream);
     const analyser = audioContext.createAnalyser();
@@ -62,7 +62,7 @@ function Visualizer(props: VisualizerProps) {
     function draw(): void {
       animationFrameId = requestAnimationFrame(draw);
       analyser.getByteTimeDomainData(dataArray);
-      const array = Array.from(dataArray);
+      const array = [...dataArray];
       // dataArray の最低値が 128 のため、最小値を 0 にする
       const currentVolume = Math.max.apply(null, array) - 128;
       const canvas = canvasRef.current;
@@ -96,9 +96,9 @@ function Visualizer(props: VisualizerProps) {
   );
 }
 
-type MutedVisualizerProps = {
+interface MutedVisualizerProps {
   height: number;
-};
+}
 
 function MutedVisualizer(props: MutedVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

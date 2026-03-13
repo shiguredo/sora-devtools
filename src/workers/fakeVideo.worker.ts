@@ -15,7 +15,9 @@ let showChannelId = true;
 
 // 描画関数
 function drawFrame(): void {
-  if (!ctx || !canvas) return;
+  if (!ctx || !canvas) {
+    return;
+  }
 
   // 背景をグラデーションで描画
   // アニメーションで彩度と明度も少し変化させる
@@ -41,8 +43,8 @@ function drawFrame(): void {
 
   // 経過時間を mmmm:ss.SSS 形式で中央に表示
   const elapsed = Date.now() - startTime;
-  const minutes = Math.floor(elapsed / 60000);
-  const seconds = Math.floor((elapsed % 60000) / 1000);
+  const minutes = Math.floor(elapsed / 60_000);
+  const seconds = Math.floor((elapsed % 60_000) / 1000);
   const milliseconds = elapsed % 1000;
   const text = `${minutes.toString().padStart(4, "0")}:${seconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
   // 基本フォントサイズを解像度から計算し、桁数に応じて縮小
@@ -61,8 +63,12 @@ function drawFrame(): void {
     const truncated = channelId.length > 10 ? `${channelId.slice(0, 10)}...` : channelId;
     infoParts.push(truncated);
   }
-  if (sessionId) infoParts.push(sessionId);
-  if (connectionId) infoParts.push(connectionId);
+  if (sessionId) {
+    infoParts.push(sessionId);
+  }
+  if (connectionId) {
+    infoParts.push(connectionId);
+  }
 
   if (infoParts.length > 0) {
     const infoSize = Math.min(canvas.width, canvas.height) * 0.04;
@@ -83,7 +89,9 @@ function animate(): void {
   drawFrame();
   // Worker 内では setTimeout を使用（requestAnimationFrame は使えない）
   const interval = Math.floor(1000 / frameRate);
-  animationId = self.setTimeout(() => animate(), interval) as unknown as number;
+  animationId = globalThis.setTimeout(() => {
+    animate();
+  }, interval) as unknown as number;
 }
 
 // メッセージハンドラー
@@ -103,7 +111,7 @@ self.addEventListener("message", (event: MessageEvent) => {
 
       // フレームレートを設定
       if (data.frameRate !== undefined) {
-        frameRate = data.frameRate;
+        ({ frameRate } = data);
       }
 
       // channel_id を設定
@@ -153,14 +161,22 @@ self.addEventListener("message", (event: MessageEvent) => {
     }
 
     case "setMetadata": {
-      if (data.channelId !== undefined) channelId = data.channelId as string | null;
-      if (data.sessionId !== undefined) sessionId = data.sessionId as string | null;
-      if (data.connectionId !== undefined) connectionId = data.connectionId as string | null;
+      if (data.channelId !== undefined) {
+        channelId = data.channelId as string | null;
+      }
+      if (data.sessionId !== undefined) {
+        sessionId = data.sessionId as string | null;
+      }
+      if (data.connectionId !== undefined) {
+        connectionId = data.connectionId as string | null;
+      }
       break;
     }
 
     case "setShowInfo": {
-      if (data.showChannelId !== undefined) showChannelId = data.showChannelId as boolean;
+      if (data.showChannelId !== undefined) {
+        showChannelId = data.showChannelId as boolean;
+      }
       break;
     }
   }

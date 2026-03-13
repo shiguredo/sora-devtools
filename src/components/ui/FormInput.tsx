@@ -1,4 +1,4 @@
-type FormInputProps = {
+interface FormInputProps {
   type?: string;
   name?: string;
   id?: string;
@@ -10,7 +10,7 @@ type FormInputProps = {
   readOnly?: boolean;
   accept?: string;
   className?: string;
-};
+}
 
 /**
  * テキスト入力コンポーネント

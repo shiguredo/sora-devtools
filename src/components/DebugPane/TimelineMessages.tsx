@@ -5,7 +5,7 @@ import type { TimelineMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const DATA_CHANNEL_COLORS: { [key: string]: string } = {
+const DATA_CHANNEL_COLORS: Record<string, string> = {
   signaling: "#ff00ff",
   notify: "#ffff00",
   push: "#98fb98",
@@ -44,10 +44,10 @@ function SoraDevtoolsLabel() {
   );
 }
 
-type DataChannelLabelProps = {
+interface DataChannelLabelProps {
   id?: number | null;
   label?: string | null;
-};
+}
 function DataChannelLabel(props: DataChannelLabelProps) {
   const { label, id } = props;
   const color =
@@ -64,7 +64,7 @@ function DataChannelLabel(props: DataChannelLabelProps) {
 
 function Collapse(props: TimelineMessage) {
   const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
-  const title = `${type}`;
+  const title = type;
   let labelComponent: ComponentChild;
   if (logType === "websocket") {
     labelComponent = <WebSocketLabel />;
@@ -77,7 +77,9 @@ function Collapse(props: TimelineMessage) {
   } else if (logType === "sora-devtools") {
     labelComponent = <SoraDevtoolsLabel />;
   }
-  return <Message title={title} timestamp={timestamp} description={data} label={labelComponent} />;
+  return (
+    <Message title={title} timestamp={timestamp} description={data ?? ""} label={labelComponent} />
+  );
 }
 
 function Log(props: TimelineMessage) {
@@ -87,14 +89,14 @@ function Log(props: TimelineMessage) {
 export function TimelineMessages() {
   const timelineMessagesValue = timelineMessages.value;
   const debugFilterTextValue = debugFilterText.value;
-  const filteredMessages = timelineMessagesValue.filter((message) => {
-    return debugFilterTextValue.split(" ").every((filterText) => {
+  const filteredMessages = timelineMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0;
-    });
-  });
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
     <div className="overflow-y-auto h-full">
       {filteredMessages.map((message) => {

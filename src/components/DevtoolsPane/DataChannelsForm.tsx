@@ -48,14 +48,18 @@ export function DataChannelsForm() {
               controlId="dataChannels"
               placeholder={textareaPlaceholder}
               value={dataChannels.value}
-              setValue={(value) => setDataChannels(value)}
+              setValue={(value) => {
+                setDataChannels(value);
+              }}
               disabled={disabled}
               rows={12}
               extraControls={
                 <Button
                   variant="light"
                   size="sm"
-                  onClick={() => setDataChannels(exampleJsonString)}
+                  onClick={() => {
+                    setDataChannels(exampleJsonString);
+                  }}
                 >
                   load template
                 </Button>

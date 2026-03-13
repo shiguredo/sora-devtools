@@ -21,13 +21,11 @@ export function AudioInputForm() {
         disabled={audioInputDevices.value.length === 0}
       >
         <option value="">未指定</option>
-        {audioInputDevices.value.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          );
-        })}
+        {audioInputDevices.value.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

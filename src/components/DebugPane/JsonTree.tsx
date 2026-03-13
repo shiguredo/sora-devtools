@@ -1,13 +1,13 @@
 import { useSignal } from "@preact/signals";
 import { useEffect, useMemo, useRef } from "preact/hooks";
 
-type JsonTreeProps = {
+interface JsonTreeProps {
   data: unknown;
   prevData?: unknown;
   name?: string;
   isLast?: boolean;
   level?: number;
-};
+}
 
 /**
  * 深い等価比較関数
@@ -24,7 +24,9 @@ type JsonTreeProps = {
  */
 const deepEqual = (a: unknown, b: unknown): boolean => {
   // 参照が同じなら等しい（最重要な最適化）
-  if (a === b) return true;
+  if (a === b) {
+    return true;
+  }
 
   // null/undefined のチェック
   if (a === null || b === null || a === undefined || b === undefined) {
@@ -32,23 +34,33 @@ const deepEqual = (a: unknown, b: unknown): boolean => {
   }
 
   // 型が異なれば不等
-  if (typeof a !== typeof b) return false;
+  if (typeof a !== typeof b) {
+    return false;
+  }
 
   // プリミティブ型の場合、a === b が false だったのでここに到達
   // つまり値が異なるため不等
-  if (typeof a !== "object") return false;
+  if (typeof a !== "object") {
+    return false;
+  }
 
   // 配列の深い比較
   if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
+    if (a.length !== b.length) {
+      return false;
+    }
     for (let i = 0; i < a.length; i++) {
-      if (!deepEqual(a[i], b[i])) return false;
+      if (!deepEqual(a[i], b[i])) {
+        return false;
+      }
     }
     return true;
   }
 
   // 配列と非配列の混在
-  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) {
+    return false;
+  }
 
   // オブジェクトの深い比較
   const aObj = a as Record<string, unknown>;
@@ -56,16 +68,33 @@ const deepEqual = (a: unknown, b: unknown): boolean => {
   const aKeys = Object.keys(aObj);
 
   // キー数が異なれば不等
-  if (aKeys.length !== Object.keys(bObj).length) return false;
+  if (aKeys.length !== Object.keys(bObj).length) {
+    return false;
+  }
 
   // 各キーと値を再帰的に比較
   for (const key of aKeys) {
-    if (!(key in bObj)) return false;
-    if (!deepEqual(aObj[key], bObj[key])) return false;
+    if (!(key in bObj)) {
+      return false;
+    }
+    if (!deepEqual(aObj[key], bObj[key])) {
+      return false;
+    }
   }
 
   return true;
 };
+
+// プリミティブ型かどうかを判定
+const isPrimitive = (value: unknown): boolean =>
+  value === null || value === undefined || typeof value !== "object";
+
+// 配列かどうかを判定
+const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
+
+// オブジェクトかどうかを判定
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
 
 export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: JsonTreeProps) {
   const isHighlighted = useSignal(false);
@@ -84,7 +113,9 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
       const timer = setTimeout(() => {
         isHighlighted.value = false;
       }, 1000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [data, isHighlighted]);
 
@@ -106,44 +137,39 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
   );
 
   const renderPrimitive = (value: unknown) => {
-    if (value === null)
+    if (value === null) {
       return (
         <span className="italic" style={highlightStyle}>
           null
         </span>
       );
-    if (value === undefined)
+    }
+    if (value === undefined) {
       return (
         <span className="italic" style={highlightStyle}>
           undefined
         </span>
       );
-    if (typeof value === "string")
+    }
+    if (typeof value === "string") {
       return (
         <span className="break-all" style={highlightStyle}>
-          "{value}"
+          &quot;{value}&quot;
         </span>
       );
-    if (typeof value === "number") return <span style={highlightStyle}>{value}</span>;
-    if (typeof value === "boolean") return <span style={highlightStyle}>{value.toString()}</span>;
+    }
+    if (typeof value === "number") {
+      return <span style={highlightStyle}>{value}</span>;
+    }
+    if (typeof value === "boolean") {
+      return <span style={highlightStyle}>{value.toString()}</span>;
+    }
     // unknown 型の値を安全に文字列化
     return (
       <span style={highlightStyle}>
         {typeof value === "object" ? JSON.stringify(value) : String(value as string | number)}
       </span>
     );
-  };
-
-  const isPrimitive = (value: unknown) => {
-    return value === null || value === undefined || typeof value !== "object";
-  };
-
-  const isArray = (value: unknown): value is unknown[] => {
-    return Array.isArray(value);
-  };
-
-  const isObject = (value: unknown): value is Record<string, unknown> => {
-    return value !== null && typeof value === "object" && !Array.isArray(value);
   };
 
   if (isPrimitive(data)) {
@@ -161,11 +187,12 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
     );
   }
 
-  const entries = isArray(data)
-    ? data.map((item, index) => ({ key: String(index), value: item }))
-    : isObject(data)
-      ? Object.entries(data).map(([key, value]) => ({ key, value }))
-      : [];
+  let entries: Array<{ key: string; value: unknown }> = [];
+  if (isArray(data)) {
+    entries = data.map((item, index) => ({ key: String(index), value: item }));
+  } else if (isObject(data)) {
+    entries = Object.entries(data).map(([key, value]) => ({ key, value }));
+  }
 
   const bracketOpen = isArray(data) ? "[" : "{";
   const bracketClose = isArray(data) ? "]" : "}";
@@ -183,11 +210,12 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
       </div>
       <div style={{ marginLeft: "1.25rem" }}>
         {entries.map((entry, index) => {
-          const prevValue = isArray(prevData)
-            ? prevData[Number(entry.key)]
-            : isObject(prevData)
-              ? prevData[entry.key]
-              : undefined;
+          let prevValue: unknown;
+          if (isArray(prevData)) {
+            prevValue = prevData[Number(entry.key)];
+          } else if (isObject(prevData)) {
+            prevValue = prevData[entry.key];
+          }
 
           return (
             <JsonTree

@@ -27,8 +27,8 @@ import type {
   NOISE_SUPPRESSIONS,
   RESIZE_MODE_TYPES,
   SIMULCAST,
-  SIMULCAST_RID,
   SIMULCAST_REQUEST_RID,
+  SIMULCAST_RID,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
@@ -36,13 +36,13 @@ import type {
   VIDEO_CONTENT_HINTS,
 } from "@/constants";
 
-export type RemoteClient = {
+export interface RemoteClient {
   mediaStream: MediaStream;
   clientId: string | null;
   connectionId: string;
-};
+}
 
-export type SoraDevtoolsState = {
+export interface SoraDevtoolsState {
   alertMessages: AlertMessage[];
   audio: boolean;
   audioBitRate: string;
@@ -127,9 +127,7 @@ export type SoraDevtoolsState = {
   simulcastRid: (typeof SIMULCAST_RID)[number];
   simulcastRequestRid: (typeof SIMULCAST_REQUEST_RID)[number];
   spotlight: (typeof SPOTLIGHT)[number];
-  focusedSpotlightConnectionIds: {
-    [key: string]: boolean;
-  };
+  focusedSpotlightConnectionIds: Record<string, boolean>;
   spotlightNumber: (typeof SPOTLIGHT_NUMBERS)[number];
   spotlightFocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number];
   spotlightUnfocusRid: (typeof SPOTLIGHT_FOCUS_RIDS)[number];
@@ -158,9 +156,9 @@ export type SoraDevtoolsState = {
   facingMode: (typeof FACING_MODES)[number];
   rpcObjects: RpcObject[];
   apiObjects: ApiObject[];
-};
+}
 
-export type RpcObject = {
+export interface RpcObject {
   timestamp: number;
   method: string;
   params?: Record<string, unknown> | unknown[];
@@ -175,9 +173,9 @@ export type RpcObject = {
     data?: unknown;
   };
   duration?: number;
-};
+}
 
-export type ApiObject = {
+export interface ApiObject {
   timestamp: number;
   url: string;
   method: string;
@@ -189,25 +187,25 @@ export type ApiObject = {
   error?: string;
   errorType?: "cors" | "timeout" | "network" | "unknown";
   duration?: number;
-};
+}
 
 // 画面表示する message の Type
-export type AlertMessage = {
+export interface AlertMessage {
   timestamp: number;
   type: "error" | "info";
   title: string;
   message: string;
-};
+}
 
 // Debug timeline message の Type
-export type TimelineMessage = {
+export interface TimelineMessage {
   timestamp: number;
   type: string;
   logType: TimelineEventLogType | "sora-devtools";
-  data?: any;
+  data?: Record<string, unknown>;
   dataChannelId?: number | null;
   dataChannelLabel?: string | null;
-};
+}
 
 // HTMLCanvasElement interface に captureStream を追加
 export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
@@ -290,57 +288,55 @@ export interface RTCInboundRtpStreamStats extends RTCReceivedRtpStreamStats {
 }
 
 // Debug log message の Type
-export type LogMessage = {
+export interface LogMessage {
   timestamp: number;
   message: {
     title: string;
     description: string;
   };
-};
+}
 
 // Sora on notify callback の引数 Type
-export type SoraNotifyMessage = {
+export interface SoraNotifyMessage {
   type: "notify";
   event_type: string;
   [x: string]: unknown;
-};
+}
 
 // Debug notify message の Type
-export type NotifyMessage = {
+export interface NotifyMessage {
   timestamp: number;
   message: SoraNotifyMessage;
   transportType: TransportType;
-};
+}
 
 // Sora on push callback の引数 Type
-export type SoraPushMessage = {
+export interface SoraPushMessage {
   type: "push";
-  data: {
-    [x: string]: unknown;
-  };
-};
+  data: Record<string, unknown>;
+}
 
 // Debug push message の Type
-export type PushMessage = {
+export interface PushMessage {
   timestamp: number;
   message: SoraPushMessage;
   transportType: TransportType;
-};
+}
 
 // Debug signaling message の Type
-export type SignalingMessage = {
+export interface SignalingMessage {
   timestamp: number;
   type: string;
   transportType: TransportType;
-  data?: any;
-};
+  data?: Record<string, unknown>;
+}
 
 // Debug data channel message の Type
-export type DataChannelMessage = {
+export interface DataChannelMessage {
   timestamp: number;
   label: string;
-  data?: any;
-};
+  data?: ArrayBuffer;
+}
 
 // Debug 表示タブ選択状態用の Type
 export type DebugType = (typeof DEBUG_TYPES)[number];
@@ -433,7 +429,7 @@ export type DownloadReportParameters = Omit<
   | "virtualBackgroundProcessor"
 >;
 
-export type DownloadReport = {
+export interface DownloadReport {
   userAgent: string;
   "sora-devtools": string;
   "sora-js-sdk": string;
@@ -441,7 +437,7 @@ export type DownloadReport = {
   timeline: unknown[];
   notify: unknown[];
   stats: unknown[];
-};
+}
 
 export type RTCStatsCodec = RTCStats & RTCRtpCodecParameters;
 

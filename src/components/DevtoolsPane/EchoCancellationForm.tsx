@@ -18,13 +18,11 @@ export function EchoCancellationForm() {
     <FormGroup className="flex items-center gap-2" controlId="echoCancellation">
       <TooltipFormLabel kind="echoCancellation">echoCancellation:</TooltipFormLabel>
       <FormSelect name="echoCancellation" value={echoCancellation.value} onChange={onChange}>
-        {ECHO_CANCELLATIONS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
-            </option>
-          );
-        })}
+        {ECHO_CANCELLATIONS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

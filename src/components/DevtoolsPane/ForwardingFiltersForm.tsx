@@ -34,7 +34,9 @@ export function ForwardingFiltersForm() {
               controlId="forwardingFilters"
               placeholder="forwardingFiltersを指定"
               value={forwardingFilters.value}
-              setValue={(value) => setForwardingFilters(value)}
+              setValue={(value) => {
+                setForwardingFilters(value);
+              }}
               disabled={disabled}
             />
           </div>

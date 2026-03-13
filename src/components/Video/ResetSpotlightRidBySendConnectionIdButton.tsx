@@ -2,9 +2,9 @@ import { Button } from "@/components/ui";
 import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
-type Props = {
+interface Props {
   sendConnectionId: string;
-};
+}
 export function ResetSpotlightRidBySendConnectionIdButton(props: Props) {
   const conn = sora.value;
 

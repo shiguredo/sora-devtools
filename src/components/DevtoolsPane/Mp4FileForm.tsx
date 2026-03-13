@@ -9,7 +9,7 @@ export function Mp4FileForm() {
   const disabled = localMediaStream.value !== null || isFormDisabled.value;
   const onChange = async (event: Event): Promise<void> => {
     const target = event.target as HTMLInputElement;
-    const files = target.files;
+    const { files } = target;
     if (files === null || files.length === 0) {
       return;
     }
@@ -18,14 +18,14 @@ export function Mp4FileForm() {
     try {
       const mp4MediaStream = await Mp4MediaStream.load(files[0]);
       setMp4MediaStream(mp4MediaStream);
-    } catch (e) {
+    } catch (error) {
       // ロードに失敗したらファイル選択をクリアする
       target.value = "";
 
       // 以前の内容が残っていた場合に備えて null を入れておく
       setMp4MediaStream(null);
 
-      throw e;
+      throw error;
     }
   };
   if (mediaType.value !== "mp4Media") {

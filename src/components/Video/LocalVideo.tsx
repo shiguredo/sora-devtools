@@ -30,7 +30,7 @@ import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 function VideoBox() {
   const height = useSignal<number>(0);
   const focused = connectionId.value && focusedSpotlightConnectionIds.value[connectionId.value];
-  if (audio.value === false && video.value === false) {
+  if (!audio.value && !video.value) {
     return null;
   }
   const wrapperClasses = focused
@@ -51,8 +51,8 @@ function VideoBox() {
           }}
           audioOutput={audioOutput.value}
           displayResolution={displayResolution.value}
-          localVideo={true}
-          mute={true}
+          localVideo
+          mute
         />
         {localMediaStream.value !== null ? (
           <VolumeVisualizer
@@ -81,7 +81,7 @@ export function LocalVideo() {
               <ConnectionStatusBar
                 connectionId={connectionId.value}
                 clientId={soraClientId.value}
-                localVideo={true}
+                localVideo
               />
             </div>
           ) : null}
@@ -91,10 +91,10 @@ export function LocalVideo() {
           role.value !== "sendonly" ? (
             <div className="flex items-center mb-1 first:*:ml-0">
               <TooltipFormLabel kind="changeAllRecvStream">change all:</TooltipFormLabel>
-              <RequestSimulcastRidButton rid={"none"} />
-              <RequestSimulcastRidButton rid={"r0"} />
-              <RequestSimulcastRidButton rid={"r1"} />
-              <RequestSimulcastRidButton rid={"r2"} />
+              <RequestSimulcastRidButton rid="none" />
+              <RequestSimulcastRidButton rid="r0" />
+              <RequestSimulcastRidButton rid="r1" />
+              <RequestSimulcastRidButton rid="r2" />
             </div>
           ) : null}
           {connectionId.value !== null && spotlight.value === "true" ? (

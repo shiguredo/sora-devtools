@@ -38,7 +38,9 @@ export function SignalingNotifyMetadataForm() {
               controlId="signalingNotifyMetadata"
               placeholder="signalingNotifyMetadataを指定"
               value={signalingNotifyMetadata.value}
-              setValue={(value) => setSignalingNotifyMetadata(value)}
+              setValue={(value) => {
+                setSignalingNotifyMetadata(value);
+              }}
               disabled={disabled}
             />
           </div>

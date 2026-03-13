@@ -35,13 +35,16 @@ export function AudioBitRateForm() {
         <Dropdown>
           <DropdownToggle variant="outline-secondary" disabled={disabled} />
           <DropdownMenu>
-            {AUDIO_BIT_RATES.map((value) => {
-              return (
-                <DropdownItem key={value} onClick={() => setAudioBitRate(value)}>
-                  {value === "" ? "未指定" : value}
-                </DropdownItem>
-              );
-            })}
+            {AUDIO_BIT_RATES.map((value) => (
+              <DropdownItem
+                key={value}
+                onClick={() => {
+                  setAudioBitRate(value);
+                }}
+              >
+                {value === "" ? "未指定" : value}
+              </DropdownItem>
+            ))}
           </DropdownMenu>
         </Dropdown>
       </InputGroup>

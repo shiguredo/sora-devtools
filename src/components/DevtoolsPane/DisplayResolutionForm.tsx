@@ -13,10 +13,10 @@ import { displayResolution } from "@/app/signals";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-type DisplayResolutionData = {
+interface DisplayResolutionData {
   label: string;
   value: string;
-};
+}
 
 const DISPLAY_RESOLUTION_DATA_LIST = [
   { label: "未指定", value: "" },
@@ -31,13 +31,15 @@ const DISPLAY_RESOLUTION_DATA_LIST = [
   { label: "2160p", value: "3840x2160" },
 ];
 
-const DisplayResolutionDropdownItem = ({ label, value }: DisplayResolutionData) => {
-  return (
-    <DropdownItem onClick={() => setDisplayResolution(value)}>
-      {label} {value !== "" && `(${value})`}
-    </DropdownItem>
-  );
-};
+const DisplayResolutionDropdownItem = ({ label, value }: DisplayResolutionData) => (
+  <DropdownItem
+    onClick={() => {
+      setDisplayResolution(value);
+    }}
+  >
+    {label} {value !== "" && `(${value})`}
+  </DropdownItem>
+);
 
 export function DisplayResolutionForm() {
   const onChange = (event: Event): void => {
@@ -58,9 +60,9 @@ export function DisplayResolutionForm() {
         <Dropdown>
           <DropdownToggle variant="outline-secondary" />
           <DropdownMenu className="right-0">
-            {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => {
-              return <DisplayResolutionDropdownItem key={value} label={label} value={value} />;
-            })}
+            {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => (
+              <DisplayResolutionDropdownItem key={value} label={label} value={value} />
+            ))}
           </DropdownMenu>
         </Dropdown>
       </InputGroup>

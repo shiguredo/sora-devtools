@@ -5,7 +5,7 @@ import { checkFormValue } from "@/utils";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-type SelectFormProps<T extends readonly string[]> = {
+interface SelectFormProps<T extends readonly string[]> {
   kind: string;
   label: string;
   value: string;
@@ -13,7 +13,7 @@ type SelectFormProps<T extends readonly string[]> = {
   onChange: (value: T[number]) => void;
   disabled?: boolean;
   emptyLabel?: string;
-};
+}
 
 export function SelectForm<T extends readonly string[]>({
   kind,

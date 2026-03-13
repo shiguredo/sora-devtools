@@ -1,15 +1,15 @@
-import type { ComponentChildren, JSX } from "preact";
+import type { ComponentChildren, MouseEventHandler } from "preact";
 
-type ButtonProps = {
+interface ButtonProps {
   variant?: "primary" | "secondary" | "light" | "dark" | "outline-secondary" | "outline-light";
   size?: "sm";
   type?: "button" | "submit" | "reset";
   name?: string;
   disabled?: boolean;
   className?: string;
-  onClick?: JSX.MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   children: ComponentChildren;
-};
+}
 
 const variantStyles = {
   primary: "text-white bg-bs-primary border-bs-primary hover:bg-[#0b5ed7] hover:border-[#0a58ca]",
@@ -42,6 +42,7 @@ export function Button({
 
   return (
     <button
+      // oxlint-disable-next-line eslint-plugin-react(button-has-type)
       type={type}
       name={name}
       disabled={disabled}

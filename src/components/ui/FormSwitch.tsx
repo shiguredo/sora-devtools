@@ -1,13 +1,13 @@
-import type { JSX } from "preact";
+import type { CSSProperties } from "preact";
 
-type FormSwitchProps = {
+interface FormSwitchProps {
   id?: string;
   name?: string;
   checked?: boolean;
   onChange?: (event: Event) => void;
   disabled?: boolean;
   className?: string;
-};
+}
 
 // SVG 背景画像（URL エンコード済み）- Bootstrap form-switch 互換
 const UNCHECKED_THUMB =
@@ -34,7 +34,7 @@ export function FormSwitch({
   disabled = false,
   className = "",
 }: FormSwitchProps) {
-  const inputStyle: JSX.CSSProperties = {
+  const inputStyle: CSSProperties = {
     width: "2em",
     height: "1em",
     border: checked ? "1px solid #0d6efd" : "1px solid rgba(0, 0, 0, 0.25)",

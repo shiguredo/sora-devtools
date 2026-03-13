@@ -1,4 +1,4 @@
-type FormTextareaProps = {
+interface FormTextareaProps {
   name?: string;
   id?: string;
   placeholder?: string;
@@ -10,7 +10,7 @@ type FormTextareaProps = {
   rows?: number;
   cols?: number;
   className?: string;
-};
+}
 
 /**
  * テキストエリアコンポーネント

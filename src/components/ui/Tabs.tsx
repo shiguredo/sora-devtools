@@ -1,25 +1,25 @@
 import type { ComponentChildren, VNode } from "preact";
 import { toChildArray } from "preact";
 
-type TabsProps = {
+interface TabsProps {
   activeKey: string;
   onSelect?: (key: string | null) => void;
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type TabProps = {
+interface TabProps {
   eventKey: string;
   title: ComponentChildren;
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type TabInfo = {
+interface TabInfo {
   eventKey: string;
   title: ComponentChildren;
   children: ComponentChildren;
-};
+}
 
 function isTabElement(child: unknown): child is VNode {
   return child !== null && typeof child === "object" && "props" in (child as VNode);
@@ -80,7 +80,9 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
               key={eventKey}
               role="tab"
               aria-selected={isActive}
-              onClick={() => handleSelect(eventKey)}
+              onClick={() => {
+                handleSelect(eventKey);
+              }}
               className={`
                 px-4 py-2 text-sm font-medium
                 border-b-2 -mb-px transition-colors duration-150

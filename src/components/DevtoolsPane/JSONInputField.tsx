@@ -16,7 +16,7 @@ const prettyFormat = (jsonString: string, setValue: (value: string) => void): vo
   }
 };
 
-type JSONInputFieldProps = {
+interface JSONInputFieldProps {
   controlId: string;
   placeholder: string;
   value: string;
@@ -25,7 +25,7 @@ type JSONInputFieldProps = {
   extraControls?: ComponentChildren;
   rows?: number;
   cols?: number;
-};
+}
 
 export const JSONInputField = ({
   value,
@@ -65,8 +65,8 @@ export const JSONInputField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChangeText}
-        rows={rows || 10}
-        cols={cols || 100}
+        rows={rows ?? 10}
+        cols={cols ?? 100}
         disabled={disabled}
       />
       <div className="absolute top-2.5 right-3 flex gap-2">
@@ -74,7 +74,9 @@ export const JSONInputField = ({
         <Button
           variant="light"
           size="sm"
-          onClick={() => prettyFormat(value, setValue)}
+          onClick={() => {
+            prettyFormat(value, setValue);
+          }}
           disabled={invalidJsonString.value}
         >
           pretty format

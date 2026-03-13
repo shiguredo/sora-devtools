@@ -3,13 +3,13 @@ import type { ComponentChildren } from "preact";
 import { FormLabel, FormSwitch } from "@/components/ui";
 import { INSTRUCTIONS } from "@/constants";
 
-type Props = {
+interface Props {
   kind: string;
   children: ComponentChildren;
   checked: boolean;
   disabled: boolean;
   onChange: (event: Event) => void;
-};
+}
 
 /**
  * ツールチップ付きスイッチコンポーネント

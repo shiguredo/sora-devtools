@@ -18,13 +18,11 @@ export function BlurRadiusForm() {
     <FormGroup className="flex items-center gap-2" controlId="blurRadius">
       <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
       <FormSelect value={blurRadius.value} onChange={onChange} disabled={disabled}>
-        {BLUR_RADIUS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === "" || disabled ? "未指定" : value}
-            </option>
-          );
-        })}
+        {BLUR_RADIUS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" || disabled ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

@@ -295,7 +295,7 @@ function RowSignalingOptions() {
     enabledSignalingNotifyMetadata.value,
     enabledSignalingUrlCandidates.value,
     reconnect.value,
-  ].some((e) => e);
+  ].some(Boolean);
   const onClick = (event: Event): void => {
     event.preventDefault();
     collapsed.value = !collapsed.value;
@@ -343,7 +343,7 @@ function RowAdvancedSignalingOptions() {
   if (showReceiverParams) {
     showOptions.push(forceStereoOutput.value);
   }
-  const enabledOptions = showOptions.some((e) => e);
+  const enabledOptions = showOptions.some(Boolean);
   const onClick = (event: Event): void => {
     event.preventDefault();
     collapsed.value = !collapsed.value;
@@ -411,7 +411,7 @@ function RowMediaOptions() {
     frameRate.value !== "",
     blurRadius.value !== "",
     mediaProcessorsNoiseSuppression.value,
-  ].some((e) => e);
+  ].some(Boolean);
   const onClick = (event: Event): void => {
     event.preventDefault();
     collapsed.value = !collapsed.value;

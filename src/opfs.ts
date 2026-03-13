@@ -5,20 +5,20 @@
 
 const SETTINGS_FILE_NAME = "signaling-url-candidates.json";
 
-export type UrlEntry = {
+export interface UrlEntry {
   url: string;
   enabled: boolean;
-};
+}
 
-export type SignalingUrlCandidatesSettings = {
+export interface SignalingUrlCandidatesSettings {
   urlEntries: UrlEntry[];
-};
+}
 
 // OPFS から URL エントリを読み込む
 export async function loadUrlEntries(): Promise<UrlEntry[]> {
   try {
     // OPFS がサポートされているか確認
-    if (!navigator.storage || !navigator.storage.getDirectory) {
+    if (!navigator.storage?.getDirectory) {
       return [];
     }
 
@@ -43,7 +43,7 @@ export async function loadUrlEntries(): Promise<UrlEntry[]> {
 export async function saveUrlEntriesToOPFS(urlEntries: UrlEntry[]): Promise<void> {
   try {
     // OPFS がサポートされているか確認
-    if (!navigator.storage || !navigator.storage.getDirectory) {
+    if (!navigator.storage?.getDirectory) {
       return;
     }
 
@@ -98,7 +98,7 @@ export async function saveUrlEntriesToOPFS(urlEntries: UrlEntry[]): Promise<void
 export async function purgeUrlEntriesFromOPFS(): Promise<void> {
   try {
     // OPFS がサポートされているか確認
-    if (!navigator.storage || !navigator.storage.getDirectory) {
+    if (!navigator.storage?.getDirectory) {
       return;
     }
 

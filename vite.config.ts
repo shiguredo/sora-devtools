@@ -1,10 +1,10 @@
 import path from "path";
-import preact from "@preact/preset-vite";
+import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [preact(), tailwindcss()],
+  plugins: [preactPlugin(), tailwindcss()],
   build: {
     minify: true,
     target: "esnext",

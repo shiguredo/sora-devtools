@@ -1,33 +1,34 @@
 import { useSignal } from "@preact/signals";
 import type { ComponentChildren } from "preact";
-import { useCallback, useEffect, useRef } from "preact/hooks";
+import { createContext } from "preact";
+import { useCallback, useContext, useEffect, useMemo, useRef } from "preact/hooks";
 
-type DropdownProps = {
+interface DropdownProps {
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type DropdownToggleProps = {
+interface DropdownToggleProps {
   variant?: "primary" | "secondary" | "outline-secondary";
   disabled?: boolean;
   className?: string;
   children?: ComponentChildren;
   onClick?: () => void;
-};
+}
 
-type DropdownMenuProps = {
+interface DropdownMenuProps {
   show?: boolean;
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type DropdownItemProps = {
+interface DropdownItemProps {
   active?: boolean;
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * ドロップダウンコンテナ
@@ -47,7 +48,9 @@ export function Dropdown({ className = "", children }: DropdownProps) {
 
     if (isOpen.value) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
     }
   }, [isOpen.value]);
 
@@ -58,24 +61,25 @@ export function Dropdown({ className = "", children }: DropdownProps) {
     isOpen.value = false;
   }, [isOpen]);
 
+  // Context の値をメモ化して不要な再レンダリングを防ぐ
+  const contextValue = useMemo(
+    () => ({ isOpen: isOpen.value, toggle, close }),
+    [isOpen.value, toggle, close],
+  );
+
   return (
     <div ref={containerRef} className={`inline-flex self-stretch ${className}`}>
-      <DropdownContext.Provider value={{ isOpen: isOpen.value, toggle, close }}>
-        {children}
-      </DropdownContext.Provider>
+      <DropdownContext.Provider value={contextValue}>{children}</DropdownContext.Provider>
     </div>
   );
 }
 
 // シンプルな Context
-import { createContext } from "preact";
-import { useContext } from "preact/hooks";
-
-type DropdownContextType = {
+interface DropdownContextType {
   isOpen: boolean;
   toggle: () => void;
   close: () => void;
-};
+}
 
 const DropdownContext = createContext<DropdownContextType>({
   isOpen: false,
@@ -147,7 +151,9 @@ export function DropdownMenu({ show, className = "", children }: DropdownMenuPro
   const { isOpen } = useContext(DropdownContext);
   const visible = show ?? isOpen;
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div

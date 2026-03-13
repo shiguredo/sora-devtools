@@ -1,10 +1,10 @@
 import type { ComponentChildren } from "preact";
 
-type CollapseProps = {
+interface CollapseProps {
   in: boolean;
   className?: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * 折りたたみコンポーネント

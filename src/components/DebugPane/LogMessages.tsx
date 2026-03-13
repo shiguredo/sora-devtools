@@ -21,19 +21,19 @@ function Log(props: LogMessage) {
 export function LogMessages() {
   const logMessagesValue = logMessages.value;
   const debugFilterTextValue = debugFilterText.value;
-  const filteredMessages = logMessagesValue.filter((message) => {
-    return debugFilterTextValue.split(" ").every((filterText) => {
+  const filteredMessages = logMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0;
-    });
-  });
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
     <div className="overflow-y-auto h-full">
-      {filteredMessages.map((log, index) => {
-        return <Log key={log.message.title + String(index) + log.timestamp} {...log} />;
-      })}
+      {filteredMessages.map((log) => (
+        <Log key={`${log.timestamp}-${log.message.title}-${log.message.description}`} {...log} />
+      ))}
     </div>
   );
 }

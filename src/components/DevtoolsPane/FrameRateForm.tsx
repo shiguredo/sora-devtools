@@ -13,10 +13,10 @@ import { frameRate } from "@/app/signals";
 
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-type FrameRateData = {
+interface FrameRateData {
   label: string;
   value: string;
-};
+}
 
 const FRAME_RATE_DATA = [
   { label: "未指定", value: "" },
@@ -29,9 +29,15 @@ const FRAME_RATE_DATA = [
   { label: "5", value: "5" },
 ];
 
-const FrameRateDropdownItem = ({ label, value }: FrameRateData) => {
-  return <DropdownItem onClick={() => setFrameRate(value)}>{label}</DropdownItem>;
-};
+const FrameRateDropdownItem = ({ label, value }: FrameRateData) => (
+  <DropdownItem
+    onClick={() => {
+      setFrameRate(value);
+    }}
+  >
+    {label}
+  </DropdownItem>
+);
 
 export function FrameRateForm() {
   const onChange = (event: Event): void => {
@@ -52,9 +58,9 @@ export function FrameRateForm() {
         <Dropdown>
           <DropdownToggle variant="outline-secondary" />
           <DropdownMenu>
-            {FRAME_RATE_DATA.map(({ label, value }) => {
-              return <FrameRateDropdownItem key={value} label={label} value={value} />;
-            })}
+            {FRAME_RATE_DATA.map(({ label, value }) => (
+              <FrameRateDropdownItem key={value} label={label} value={value} />
+            ))}
           </DropdownMenu>
         </Dropdown>
       </InputGroup>

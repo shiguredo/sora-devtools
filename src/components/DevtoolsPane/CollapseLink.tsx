@@ -1,11 +1,11 @@
 import type { ComponentChildren } from "preact";
 
-type CollapseLinkProps = {
+interface CollapseLinkProps {
   collapsed: boolean;
   enabled?: boolean;
   onClick: (event: Event) => void;
   children: ComponentChildren;
-};
+}
 
 /**
  * 折りたたみ可能なセクションのリンクコンポーネント

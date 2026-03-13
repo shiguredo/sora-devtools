@@ -12,6 +12,6 @@ interface MediaStreamTrack {
 }
 
 // CropTarget 型定義
-type CropTarget = {
+interface CropTarget {
   symbol: "CropTarget";
-};
+}

@@ -3,7 +3,7 @@ import type { SignalingMessage } from "@/types";
 
 import { Message } from "./Message.tsx";
 
-const SIGNALING_COLORS: { [key: string]: string } = {
+const SIGNALING_COLORS: Record<string, string> = {
   websocket: "#00ff00",
   datachannel: "#ff00ff",
 };
@@ -20,7 +20,7 @@ function Label({ text }: { text: string }) {
 function Collapse(props: SignalingMessage) {
   const { data, type, timestamp, transportType } = props;
   const label = transportType ? <Label text={transportType} /> : null;
-  return <Message title={type} timestamp={timestamp} description={data} label={label} />;
+  return <Message title={type} timestamp={timestamp} description={data ?? ""} label={label} />;
 }
 
 function Log(props: SignalingMessage) {
@@ -30,14 +30,14 @@ function Log(props: SignalingMessage) {
 export function SignalingMessages() {
   const signalingMessagesValue = signalingMessages.value;
   const debugFilterTextValue = debugFilterText.value;
-  const filteredMessages = signalingMessagesValue.filter((message) => {
-    return debugFilterTextValue.split(" ").every((filterText) => {
+  const filteredMessages = signalingMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
       if (filterText === "") {
         return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0;
-    });
-  });
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
     <div className="overflow-y-auto h-full">
       {filteredMessages.map((message) => {

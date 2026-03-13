@@ -1,35 +1,69 @@
 import { useSignal } from "@preact/signals";
 import type { ComponentChildren } from "preact";
+import { createContext } from "preact";
+import { useContext, useMemo } from "preact/hooks";
 
-type NavbarProps = {
+interface NavbarProps {
   variant?: "light" | "dark";
   bg?: string;
   expand?: "sm" | "md" | "lg" | "xl" | boolean;
   fixed?: "top" | "bottom";
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type NavbarBrandProps = {
+interface NavbarBrandProps {
   href?: string;
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type NavbarTextProps = {
+interface NavbarTextProps {
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type NavbarCollapseProps = {
+interface NavbarCollapseProps {
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type NavbarToggleProps = {
+interface NavbarToggleProps {
   className?: string;
   onClick?: () => void;
-};
+}
+
+interface NavbarContextType {
+  isExpanded: boolean;
+  toggle: () => void;
+}
+
+const NavbarContext = createContext<NavbarContextType>({
+  isExpanded: false,
+  toggle: () => {},
+});
+
+// bg プロパティに応じた背景スタイルを返す
+function getBgStyles(bg: string | undefined): string {
+  if (bg === "sora") {
+    return "bg-[#0071bc]";
+  }
+  if (bg) {
+    return `bg-${bg}`;
+  }
+  return "";
+}
+
+// fixed プロパティに応じた固定位置スタイルを返す
+function getFixedStyles(fixed: "top" | "bottom" | undefined): string {
+  if (fixed === "top") {
+    return "fixed top-0 left-0 right-0 z-50";
+  }
+  if (fixed === "bottom") {
+    return "fixed bottom-0 left-0 right-0 z-50";
+  }
+  return "";
+}
 
 /**
  * ナビゲーションバーコンポーネント
@@ -53,17 +87,23 @@ export function Navbar({
   const variantStyles = variant === "dark" ? "text-white" : "text-gray-900";
 
   // bg が "sora" の場合は Sora ブランドカラーを使用
-  const bgStyles = bg === "sora" ? "bg-[#0071bc]" : bg ? `bg-${bg}` : "";
+  const bgStyles = getBgStyles(bg);
 
-  const fixedStyles =
-    fixed === "top"
-      ? "fixed top-0 left-0 right-0 z-50"
-      : fixed === "bottom"
-        ? "fixed bottom-0 left-0 right-0 z-50"
-        : "";
+  const fixedStyles = getFixedStyles(fixed);
 
   // expand は現在未使用（常に flex-nowrap）
   void expand;
+
+  // Context の値をメモ化して不要な再レンダリングを防ぐ
+  const contextValue = useMemo(
+    () => ({
+      isExpanded: isExpanded.value,
+      toggle: () => {
+        isExpanded.value = !isExpanded.value;
+      },
+    }),
+    [isExpanded.value],
+  );
 
   return (
     <nav
@@ -73,33 +113,10 @@ export function Navbar({
       `}
       data-expanded={isExpanded.value}
     >
-      <NavbarContext.Provider
-        value={{
-          isExpanded: isExpanded.value,
-          toggle: () => {
-            isExpanded.value = !isExpanded.value;
-          },
-        }}
-      >
-        {children}
-      </NavbarContext.Provider>
+      <NavbarContext.Provider value={contextValue}>{children}</NavbarContext.Provider>
     </nav>
   );
 }
-
-// Navbar Context
-import { createContext } from "preact";
-import { useContext } from "preact/hooks";
-
-type NavbarContextType = {
-  isExpanded: boolean;
-  toggle: () => void;
-};
-
-const NavbarContext = createContext<NavbarContextType>({
-  isExpanded: false,
-  toggle: () => {},
-});
 
 /**
  * ナビゲーションバーブランド

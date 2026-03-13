@@ -5,10 +5,10 @@ import { useRef } from "preact/hooks";
 import { FormLabel } from "@/components/ui";
 import { INSTRUCTIONS } from "@/constants";
 
-type Props = {
+interface Props {
   kind: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * ツールチップ付きフォームラベル

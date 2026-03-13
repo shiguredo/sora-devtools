@@ -9,10 +9,10 @@ type ExtendedOutboundRtpStats = RTCOutboundRtpStreamStats & {
   encoderImplementation?: string;
 };
 
-type RTCStatsCodecPair = {
+interface RTCStatsCodecPair {
   codec?: RTCStatsCodec;
   outboundRtpStats: ExtendedOutboundRtpStats;
-};
+}
 
 const useLocalVideoTrackStats = (stream: MediaStream) => {
   const currentStatsReport = statsReport.value;
@@ -21,9 +21,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
   useEffect(() => {
     void (async () => {
       // 現在の VideoTrack を取得
-      const track = stream.getVideoTracks().find((track) => {
-        return track;
-      });
+      const track = stream.getVideoTracks().find(Boolean);
       if (track === undefined) {
         return;
       }
@@ -64,7 +62,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
           outboundRtpStats: outboundRtpStats,
         };
       });
-      trackStats.value = videoStats.sort((a, b) => {
+      trackStats.value = videoStats.toSorted((a, b) => {
         if (a.outboundRtpStats.rid === undefined) {
           return 1;
         }
@@ -77,7 +75,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
         // selected が未指定の場合は frameWidth が最大のものを選択
         const selectedVideoStats = videoStats
           .filter((s) => s.outboundRtpStats.frameWidth !== undefined)
-          .sort((a, b) => {
+          .toSorted((a, b) => {
             if (a.outboundRtpStats.frameWidth === undefined) {
               return 1;
             }
@@ -87,7 +85,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
             return b.outboundRtpStats.frameWidth - a.outboundRtpStats.frameWidth;
           });
         if (selectedVideoStats.length > 0) {
-          selected.value = selectedVideoStats[0];
+          [selected.value] = selectedVideoStats;
         }
       } else {
         const selectedStats = videoStats.find(

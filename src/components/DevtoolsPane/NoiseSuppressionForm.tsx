@@ -18,13 +18,11 @@ export function NoiseSuppressionForm() {
     <FormGroup className="flex items-center gap-2" controlId="noiseSuppression">
       <TooltipFormLabel kind="noiseSuppression">noiseSuppression:</TooltipFormLabel>
       <FormSelect name="noiseSuppression" value={noiseSuppression.value} onChange={onChange}>
-        {NOISE_SUPPRESSIONS.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
-            </option>
-          );
-        })}
+        {NOISE_SUPPRESSIONS.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

@@ -1,26 +1,26 @@
 import type { ComponentChildren } from "preact";
 import { useEffect } from "preact/hooks";
 
-type ToastProps = {
+interface ToastProps {
   show?: boolean;
   autohide?: boolean;
   delay?: number;
   onClose?: () => void;
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type ToastHeaderProps = {
+interface ToastHeaderProps {
   closeButton?: boolean;
   onClose?: () => void;
   className?: string;
   children: ComponentChildren;
-};
+}
 
-type ToastBodyProps = {
+interface ToastBodyProps {
   className?: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * トースト通知コンポーネント
@@ -46,11 +46,15 @@ export function Toast({
       const timer = setTimeout(() => {
         onClose();
       }, delay);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [show, autohide, delay, onClose]);
 
-  if (!show) return null;
+  if (!show) {
+    return null;
+  }
 
   // クリックで閉じる
   const handleClick = () => {

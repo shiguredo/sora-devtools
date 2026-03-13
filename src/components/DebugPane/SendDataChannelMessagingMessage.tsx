@@ -26,13 +26,11 @@ export function SendDataChannelMessagingMessage() {
             ref={selectRef}
             className="block w-full px-3 py-1.5 pr-8 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md appearance-none cursor-pointer focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
           >
-            {dataChannelsValue.map((datachannel) => {
-              return (
-                <option key={datachannel.label} value={datachannel.label}>
-                  {datachannel.label}
-                </option>
-              );
-            })}
+            {dataChannelsValue.map((datachannel) => (
+              <option key={datachannel.label} value={datachannel.label}>
+                {datachannel.label}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex-grow mr-1">

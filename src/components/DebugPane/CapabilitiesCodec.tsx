@@ -1,13 +1,11 @@
 import { Message } from "./Message.tsx";
 
-interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodec {
-  [x: string]: string | number | undefined;
-}
+type RTCRtpCapabilitiesCodecWithIndexSignature = Record<string, string | number | undefined>;
 
-type LogProps = {
+interface LogProps {
   title: string;
   codecs: RTCRtpCapabilitiesCodecWithIndexSignature[];
-};
+}
 
 function Collapse({ title, codecs }: LogProps) {
   return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />;
@@ -25,7 +23,7 @@ const getCapabilitiesCodec = (
     return [];
   }
   const capabilities = getCapabilities(kind);
-  if (!capabilities || !capabilities.codecs) {
+  if (!capabilities?.codecs) {
     return [];
   }
 

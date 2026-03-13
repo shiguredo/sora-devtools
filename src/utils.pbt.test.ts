@@ -98,7 +98,7 @@ const parametersArb = fc.record({
   audioBitRate: fc.option(fc.integer({ min: 1, max: 1000 }).map(String), {
     nil: undefined,
   }),
-  videoBitRate: fc.option(fc.integer({ min: 1, max: 10000 }).map(String), {
+  videoBitRate: fc.option(fc.integer({ min: 1, max: 10_000 }).map(String), {
     nil: undefined,
   }),
   frameRate: fc.option(fc.integer({ min: 1, max: 60 }).map(String), {
@@ -232,10 +232,11 @@ test.prop([audioCodecTypeArb, roleArb, videoCodecTypeArb])(
   "parseQueryString は指定された文字列パラメータを正しく解析すること",
   (audioCodecType, role, videoCodecType) => {
     // 定数から正確な型でパラメータを作成
-    const params: Record<string, unknown> = {};
-    params.audioCodecType = audioCodecType;
-    params.role = role;
-    params.videoCodecType = videoCodecType;
+    const params: Record<string, unknown> = {
+      audioCodecType,
+      role,
+      videoCodecType,
+    };
 
     const searchParams = createSearchParams(params);
     const result = parseQueryString(searchParams);
@@ -335,12 +336,13 @@ test.prop({
   "parseQueryString はすべてのパラメータタイプの混合を処理すること",
   ({ channelId, audio, audioCodecType, signalingUrlCandidates, resolution }) => {
     // 定数から正確な型でパラメータを作成
-    const params: Record<string, unknown> = {};
-    params.channelId = channelId;
-    params.audio = audio;
-    params.audioCodecType = audioCodecType;
-    params.signalingUrlCandidates = signalingUrlCandidates;
-    params.resolution = resolution;
+    const params: Record<string, unknown> = {
+      channelId,
+      audio,
+      audioCodecType,
+      signalingUrlCandidates,
+      resolution,
+    };
 
     const searchParams = createSearchParams(params);
     const result = parseQueryString(searchParams);

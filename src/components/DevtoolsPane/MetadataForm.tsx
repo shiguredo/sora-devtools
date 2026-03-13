@@ -34,7 +34,9 @@ export function MetadataForm() {
               controlId="metadata"
               placeholder="Metadataを指定"
               value={metadata.value}
-              setValue={(value) => setMetadata(value)}
+              setValue={(value) => {
+                setMetadata(value);
+              }}
               disabled={disabled}
             />
           </div>

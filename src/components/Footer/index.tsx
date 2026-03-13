@@ -5,10 +5,10 @@ import { Navbar, NavbarCollapse } from "@/components/ui";
 
 import { DebugButton } from "./DebugButton.tsx";
 
-type GitHubLinkProps = {
+interface GitHubLinkProps {
   repo: string;
   version: string;
-};
+}
 
 function GitHubLink({ repo, version }: GitHubLinkProps) {
   return (

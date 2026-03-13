@@ -21,13 +21,11 @@ export function VideoInputForm() {
         disabled={videoInputDevices.value.length === 0}
       >
         <option value="">未指定</option>
-        {videoInputDevices.value.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          );
-        })}
+        {videoInputDevices.value.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

@@ -34,13 +34,11 @@ function IgnoreDisconnectWebSocketForm(props: { disabled: boolean }) {
         onChange={onChange}
         disabled={props.disabled}
       >
-        {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
-            </option>
-          );
-        })}
+        {IGNORE_DISCONNECT_WEBSOCKET.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );
@@ -62,13 +60,11 @@ function DataChannelSignalingForm(props: { disabled: boolean }) {
         onChange={onChange}
         disabled={props.disabled}
       >
-        {DATA_CHANNEL_SIGNALING.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === "" ? "未指定" : value}
-            </option>
-          );
-        })}
+        {DATA_CHANNEL_SIGNALING.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
   );

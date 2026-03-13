@@ -34,7 +34,9 @@ export function VideoH264ParamsForm() {
               controlId="videoH264Params"
               placeholder="videoH264Paramsを指定"
               value={videoH264Params.value}
-              setValue={(value) => setVideoH264Params(value)}
+              setValue={(value) => {
+                setVideoH264Params(value);
+              }}
               disabled={disabled}
             />
           </div>

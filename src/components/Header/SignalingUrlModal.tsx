@@ -4,18 +4,28 @@ import { createPortal } from "preact/compat";
 import { useEffect, useRef } from "preact/hooks";
 
 import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/actions";
-import {
-  type UrlEntry,
-  loadUrlEntries,
-  purgeUrlEntriesFromOPFS,
-  saveUrlEntriesToOPFS,
-} from "@/opfs";
+import { loadUrlEntries, purgeUrlEntriesFromOPFS, saveUrlEntriesToOPFS } from "@/opfs";
+import type { UrlEntry } from "@/opfs";
 
-type SignalingUrlModalProps = {
+// URL が wss:// または ws:// で始まるかチェック
+const isValidUrl = (url: string): boolean => url.startsWith("wss://") || url.startsWith("ws://");
+
+// エントリの背景色を決定する
+function getEntryBackgroundColor(isDragOver: boolean, isEnabled: boolean): string {
+  if (isDragOver) {
+    return "#e9ecef";
+  }
+  if (isEnabled) {
+    return "transparent";
+  }
+  return "#f8f9fa";
+}
+
+interface SignalingUrlModalProps {
   show: boolean;
   onClose: () => void;
   buttonRef: RefObject<HTMLButtonElement>;
-};
+}
 
 export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModalProps) {
   const modalTop = useSignal(0);
@@ -27,17 +37,14 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
   const dragOverIndex = useSignal<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // URL が wss:// または ws:// で始まるかチェック
-  const isValidUrl = (url: string): boolean => {
-    return url.startsWith("wss://") || url.startsWith("ws://");
-  };
-
   // モーダル表示時に OPFS から URL エントリを読み込む
   useEffect(() => {
     if (show) {
-      void loadUrlEntries().then((entries) => {
+      const loadEntries = async () => {
+        const entries = await loadUrlEntries();
         urlEntries.value = entries;
-      });
+      };
+      void loadEntries();
       newUrl.value = "";
       error.value = "";
       draggedIndex.value = null;
@@ -66,7 +73,9 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
       }
     };
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [show, onClose]);
 
   const handleAddUrl = () => {
@@ -158,7 +167,7 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
   };
 
   const handleInputChange = (e: Event) => {
-    const value = (e.target as HTMLInputElement).value;
+    const { value } = e.target as HTMLInputElement;
     newUrl.value = value;
     // リアルタイムバリデーション
     if (value.trim() === "") {
@@ -203,7 +212,9 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
           top: `${modalTop.value}px`,
           left: `${modalLeft.value}px`,
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
         <div className="mb-3">
           <strong>signalingUrlCandidates</strong>
@@ -243,21 +254,25 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
             <div
               key={entry.url}
               draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
+              onDragStart={() => {
+                handleDragStart(index);
+              }}
+              onDragOver={(e) => {
+                handleDragOver(e, index);
+              }}
               onDragLeave={handleDragLeave}
-              onDrop={() => handleDrop(index)}
+              onDrop={() => {
+                handleDrop(index);
+              }}
               onDragEnd={handleDragEnd}
               className={`flex items-center gap-2 p-2 ${
                 index < urlEntries.value.length - 1 ? "border-b border-gray-300" : ""
               }`}
               style={{
-                backgroundColor:
-                  dragOverIndex.value === index
-                    ? "#e9ecef"
-                    : entry.enabled
-                      ? "transparent"
-                      : "#f8f9fa",
+                backgroundColor: getEntryBackgroundColor(
+                  dragOverIndex.value === index,
+                  entry.enabled,
+                ),
                 opacity: draggedIndex.value === index ? 0.5 : 1,
                 cursor: "grab",
               }}
@@ -266,7 +281,9 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
               <input
                 type="checkbox"
                 checked={entry.enabled}
-                onChange={() => handleToggleEnabled(index)}
+                onChange={() => {
+                  handleToggleEnabled(index);
+                }}
                 className="cursor-pointer"
               />
               <span
@@ -280,7 +297,9 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
               <button
                 type="button"
                 className="px-1.5 py-0.5 text-sm text-red-600 border border-red-600 rounded hover:bg-red-50"
-                onClick={() => handleDeleteUrl(index)}
+                onClick={() => {
+                  handleDeleteUrl(index);
+                }}
               >
                 &times;
               </button>

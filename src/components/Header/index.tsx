@@ -27,7 +27,7 @@ export function Header() {
 
   const turnUrlLabel = (() => {
     if (sora.value && connectionStatus.value === "connected") {
-      return turnUrl.value !== null ? turnUrl.value : "不明";
+      return turnUrl.value ?? "不明";
     }
     return "TURN URL";
   })();

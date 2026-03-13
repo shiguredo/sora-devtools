@@ -1,10 +1,10 @@
 import type { ComponentChildren } from "preact";
 
-type FormLabelProps = {
+interface FormLabelProps {
   htmlFor?: string;
   className?: string;
   children: ComponentChildren;
-};
+}
 
 /**
  * フォームラベルコンポーネント

@@ -1,15 +1,15 @@
-import type { JSX } from "preact";
+import type { TargetedMouseEvent } from "preact";
 
 import { Button } from "@/components/ui";
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
-type TextBoxProps = {
+interface TextBoxProps {
   id?: string;
   text: string;
-};
+}
 function TextBox(props: TextBoxProps) {
-  const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>): void => {
+  const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
     void copy2clipboard(props.text);
     event.currentTarget.blur();
   };
@@ -30,9 +30,9 @@ function TextBox(props: TextBoxProps) {
   );
 }
 
-type Props = {
+interface Props {
   sessionId: string;
-};
+}
 export function SessionStatusBar(props: Props) {
   const { sessionId } = props;
   return <TextBox id="session-id" text={sessionId} />;

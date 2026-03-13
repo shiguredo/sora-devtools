@@ -6,10 +6,10 @@ import { rpc } from "@/rpc";
 
 type SimulcastRequestRid = "none" | SimulcastRid;
 
-type Props = {
+interface Props {
   rid: SimulcastRequestRid;
   sendConnectionId?: string;
-};
+}
 
 export function RequestSimulcastRidButton(props: Props) {
   const conn = sora.value;

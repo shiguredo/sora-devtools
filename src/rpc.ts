@@ -1,18 +1,20 @@
 import type { ConnectionPublisher, ConnectionSubscriber } from "sora-js-sdk";
 
-import { setRpcObject, setRPCErrorAlertMessage } from "@/app/actions";
+import { setRPCErrorAlertMessage, setRpcObject } from "@/app/actions";
 
-type RpcOptions = {
+interface RpcOptions {
   timeout?: number;
   notification?: boolean;
   showMethodAlert?: boolean;
-};
+}
+
+const DEFAULT_RPC_OPTIONS: RpcOptions = { notification: true };
 
 export async function rpc(
   conn: ConnectionPublisher | ConnectionSubscriber,
   method: string,
   params?: Record<string, unknown>,
-  options: RpcOptions = { notification: true },
+  options: RpcOptions = DEFAULT_RPC_OPTIONS,
 ): Promise<void> {
   // Show alert if method is not in rpcMethods
   if (options.showMethodAlert) {

@@ -1,13 +1,13 @@
-import type { JSX } from "preact";
+import type { TargetedMouseEvent } from "preact";
 import { useSignal } from "@preact/signals";
 
 import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copy2clipboard } from "@/utils";
 
-type Props = {
+interface Props {
   text: string;
   disabled?: boolean;
-};
+}
 
 // クリップボード + チェックマーク アイコン
 function ClipboardCheckIcon() {
@@ -39,7 +39,7 @@ function ClipboardCheckIcon() {
 export function CopyLogButton(props: Props) {
   const copied = useSignal(false);
 
-  const onClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>): void => {
+  const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
     void copy2clipboard(props.text);
     event.currentTarget.blur();
     copied.value = true;

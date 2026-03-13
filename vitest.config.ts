@@ -1,8 +1,8 @@
-import preact from "@preact/preset-vite";
+import preactPlugin from "@preact/preset-vite";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [preact()],
+  plugins: [preactPlugin()],
   test: {
     include: ["src/app/app.test.ts", "src/utils.test.ts", "src/utils.pbt.test.ts"],
     globals: true,

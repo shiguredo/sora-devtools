@@ -17,13 +17,13 @@ test("FormLabel: htmlFor 属性を設定する", async () => {
 test("FormLabel: デフォルト className に me-2 を含む", async () => {
   const screen = render(<FormLabel>ラベル</FormLabel>);
   const label = screen.getByText("ラベル");
-  assert.include(label.element().className, "me-2");
+  assert.isTrue(label.element().classList.contains("me-2"));
 });
 
 test("FormLabel: カスタム className をマージする", async () => {
   const screen = render(<FormLabel className="custom-class">ラベル</FormLabel>);
   const label = screen.getByText("ラベル");
-  const className = label.element().className;
-  assert.include(className, "me-2");
-  assert.include(className, "custom-class");
+  const { classList } = label.element();
+  assert.isTrue(classList.contains("me-2"));
+  assert.isTrue(classList.contains("custom-class"));
 });

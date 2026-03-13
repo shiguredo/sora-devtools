@@ -7,9 +7,9 @@ import { connectionStatus, sora } from "@/app/signals";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 import { rpc } from "@/rpc";
 
-type Props = {
+interface Props {
   sendConnectionId: string;
-};
+}
 export function RequestSpotlightRidBySendConnectionIdButton(props: Props) {
   const focusRidRef = useRef<HTMLSelectElement>(null);
   const unfocusRidRef = useRef<HTMLSelectElement>(null);

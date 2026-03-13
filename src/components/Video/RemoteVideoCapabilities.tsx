@@ -22,9 +22,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
         return;
       }
       // 現在の VideoTrack を取得
-      const track = stream.getVideoTracks().find((track) => {
-        return track;
-      });
+      const track = stream.getVideoTracks().find(Boolean);
       if (track === undefined) {
         return;
       }
@@ -44,8 +42,8 @@ const useVideoTrackStats = (stream: MediaStream) => {
       for (const stats of receiverStatsReport) {
         const [, value] = stats;
         if (value.type === "inbound-rtp" && value.kind === "video") {
-          codecId = value.codecId;
-          decoderImplementation = value.decoderImplementation;
+          ({ codecId } = value);
+          ({ decoderImplementation } = value);
           break;
         }
       }
@@ -71,7 +69,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
             height: track.getSettings().height,
             frameRate:
               track.getSettings().frameRate !== undefined
-                ? Math.floor(track.getSettings().frameRate || 0)
+                ? Math.floor(track.getSettings().frameRate ?? 0)
                 : undefined,
             decoderImplementation,
           },
@@ -117,9 +115,7 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
             <tr>
               <th className="text-left pr-3 py-0.5">fps</th>
               <td className="py-0.5">
-                {trackStats.value.videoTrackStats.frameRate === undefined
-                  ? "undefined"
-                  : trackStats.value.videoTrackStats.frameRate}
+                {trackStats.value.videoTrackStats.frameRate ?? "undefined"}
               </td>
             </tr>
             {trackStats.value.videoTrackStats.decoderImplementation && (

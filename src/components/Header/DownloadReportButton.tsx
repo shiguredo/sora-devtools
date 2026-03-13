@@ -71,16 +71,16 @@ import {
   timelineMessages,
   version,
   video,
+  videoAV1Params,
   videoBitRate,
   videoCodecType,
   videoContentHint,
+  videoH264Params,
+  videoH265Params,
   videoInput,
   videoInputDevices,
   videoTrack,
   videoVP9Params,
-  videoH264Params,
-  videoH265Params,
-  videoAV1Params,
 } from "@/app/signals";
 import type { DownloadReport, DownloadReportParameters } from "@/types";
 
@@ -165,13 +165,10 @@ function createDownloadReport(): DownloadReport {
     "sora-devtools": version.value,
     "sora-js-sdk": Sora.version(),
     parameters: parameters,
-    timeline: timelineMessages.value.map((message) => {
-      // Redux non-serializable value 対応で log を string にして保存してあるため parse する
-      return {
-        timestamp: message.timestamp,
-        message: message,
-      };
-    }),
+    timeline: timelineMessages.value.map((message) => ({
+      timestamp: message.timestamp,
+      message: message,
+    })),
     notify: notifyMessages.value,
     stats: soraContents.value.statsReport,
   };
@@ -184,11 +181,11 @@ export function DownloadReportButton() {
     const report = createDownloadReport();
     const data = JSON.stringify(report);
     const blob = new Blob([data], { type: "text/plain" });
-    window.URL = window.URL || window.webkitURL;
+    globalThis.URL = globalThis.URL || globalThis.webkitURL;
     if (anchorRef.current) {
       const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
       anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
-      anchorRef.current.href = window.URL.createObjectURL(blob);
+      anchorRef.current.href = globalThis.URL.createObjectURL(blob);
       anchorRef.current.click();
     }
   };
