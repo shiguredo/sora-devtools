@@ -2,7 +2,7 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { defineConfig } from "vite-plus";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -37,5 +37,16 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  test: {
+    include: ["src/app/app.test.ts", "src/utils.test.ts", "src/utils.pbt.test.ts"],
+    globals: true,
+    environment: "jsdom",
+  },
+  lint: {
+    ignorePatterns: ["dist/**"],
+  },
+  fmt: {
+    ignorePatterns: ["dist/**"],
   },
 });
