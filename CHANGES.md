@@ -54,6 +54,8 @@
   - vitest.config.ts を vite.config.ts に統合する
   - GitHub Actions を setup-vp に移行する
   - pre-commit のコマンドを vp に変更する
+  - vite / vitest は vite-plus-core / vite-plus-test の npm エイリアスとして残す
+    - vite/client の型定義や @fast-check/vitest 等の peer dependency 解決に必要なため
   - @voluntas
 - [ADD] prek (pre-commit の Rust 実装) を利用した pre-commit 設定を追加する
   - pnpm fmt / pnpm test / pnpm lint / pnpm typecheck をコミット前に実行する
