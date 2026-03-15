@@ -48,6 +48,7 @@
     "jsdom": "28.1.0",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.1.11",
     "vite-plus": "0.1.11",
     "vitest": "npm:@voidzero-dev/vite-plus-test@0.1.11",
     "vitest-browser-preact": "1.0.0"
