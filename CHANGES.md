@@ -49,6 +49,12 @@
 
 ### misc
 
+- [CHANGE] Vite / Vitest / oxlint / oxfmt から Vite+ に移行する
+  - vite-plus 0.1.11 を導入し vp コマンドに統一する
+  - vitest.config.ts を vite.config.ts に統合する
+  - GitHub Actions を setup-vp に移行する
+  - pre-commit のコマンドを vp に変更する
+  - @voluntas
 - [ADD] prek (pre-commit の Rust 実装) を利用した pre-commit 設定を追加する
   - pnpm fmt / pnpm test / pnpm lint / pnpm typecheck をコミット前に実行する
   - @voluntas

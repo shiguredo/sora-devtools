@@ -13,23 +13,17 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        node-version: [24]
     steps:
       - uses: actions/checkout@v5
-      - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - run: pnpm install
-      - run: pnpm run lint
-      - run: pnpm run typecheck
-      - run: pnpm run test
-      - run: pnpm run build
+          node-version: "24"
+          cache: true
+      - run: vp install
+      - run: vp lint --type-aware
+      - run: tsc --noEmit
+      - run: vp test run
+      - run: vp build
       - name: Slack Notification
         if: failure()
         uses: rtCamp/action-slack-notify@v2
