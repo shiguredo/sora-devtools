@@ -14,21 +14,31 @@ jobs:
   ci:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: voidzero-dev/setup-vp@v1
         with:
           node-version: "24"
-          cache: true
       - run: vp install
       - run: vp lint --type-aware
       - run: tsc --noEmit
       - run: vp test run
       - run: vp build
+
+  slack_notify:
+    needs:
+      - ci
+    permissions:
+      actions: read
+    timeout-minutes: 5
+    runs-on: ubuntu-slim
+    if: always()
+    steps:
       - name: Slack Notification
-        if: failure()
-        uses: rtCamp/action-slack-notify@v2
+        uses: shiguredo/github-actions/.github/actions/slack-notify@main
+        with:
+          status: ${{ job.status }}
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          slack_channel: sora-devtools
+          notify_mode: failure_and_fixed
         env:
-          SLACK_CHANNEL: sora-devtools
-          SLACK_COLOR: danger
-          SLACK_TITLE: Failure test
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          GH_TOKEN: ${{ github.token }}
