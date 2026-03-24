@@ -35,27 +35,28 @@
   "devDependencies": {
     "@fast-check/vitest": "0.3.0",
     "@playwright/test": "1.58.2",
-    "@preact/preset-vite": "2.10.4",
+    "@preact/preset-vite": "2.10.5",
     "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2025.1.0",
     "@shiguredo/virtual-background": "2023.2.0",
     "@tailwindcss/vite": "4.2.2",
     "@types/node": "25.5.0",
-    "@vitest/browser": "4.1.0",
-    "@vitest/browser-playwright": "4.1.0",
-    "@vitest/browser-preview": "4.1.0",
+    "@vitest/browser": "4.1.1",
+    "@vitest/browser-playwright": "4.1.1",
+    "@vitest/browser-preview": "4.1.1",
     "dotenv": "17.3.1",
     "fast-check": "4.6.0",
-    "jsdom": "29.0.0",
+    "jsdom": "29.0.1",
     "tailwindcss": "4.2.2",
-    "typescript": "5.9.3",
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.1.12",
-    "vite-plus": "0.1.12",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@0.1.12",
+    "typescript": "6.0.2",
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.1.13",
+    "vite-plus": "0.1.13",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@0.1.13",
     "vitest-browser-preact": "1.0.0"
   },
   "engines": {
     "node": ">=24",
     "pnpm": ">=10"
-  }
+  },
+  "packageManager": "pnpm@10.32.1"
 }
