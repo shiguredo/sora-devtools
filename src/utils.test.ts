@@ -1,4 +1,4 @@
-import { assert, test } from "vitest";
+import { assert, test } from "vite-plus/test";
 import {
   ASPECT_RATIO_TYPES,
   AUDIO_CODEC_TYPES,

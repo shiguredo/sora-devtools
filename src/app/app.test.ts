@@ -1,4 +1,4 @@
-import { assert, beforeEach, test, vi } from "vitest";
+import { assert, beforeEach, test, vi } from "vite-plus/test";
 
 import {
   ASPECT_RATIO_TYPES,

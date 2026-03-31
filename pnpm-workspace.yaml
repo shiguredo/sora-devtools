@@ -1,2 +1,8 @@
 onlyBuiltDependencies:
   - esbuild
+
+peerDependencyRules:
+  allowedVersions:
+    vite: ">=0.1.0"
+    vitest: ">=0.1.0"
+    typescript: ">=6.0.0"

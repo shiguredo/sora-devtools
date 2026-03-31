@@ -1,7 +1,7 @@
 // このテストは Cline https://cline.bot/ による自動生成です。
 
 import { fc, test } from "@fast-check/vitest";
-import { assert } from "vitest";
+import { assert } from "vite-plus/test";
 import {
   ASPECT_RATIO_TYPES,
   AUDIO_CODEC_TYPES,

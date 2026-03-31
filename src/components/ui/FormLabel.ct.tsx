@@ -1,4 +1,4 @@
-import { assert, test } from "vitest";
+import { assert, test } from "vite-plus/test";
 import { render } from "vitest-browser-preact";
 import { FormLabel } from "./FormLabel";
 

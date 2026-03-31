@@ -27,6 +27,9 @@ importers:
       '@preact/preset-vite':
         specifier: 2.10.5
         version: 2.10.5(@babel/core@7.29.0)(@voidzero-dev/vite-plus-core@0.1.14(@types/node@25.5.0)(jiti@2.6.1)(typescript@6.0.2))(preact@10.29.0)
+      '@preact/signals-agent-vite':
+        specifier: 0.1.0
+        version: 0.1.0(@preact/signals-core@1.14.0)(@preact/signals@2.9.0(preact@10.29.0))(@voidzero-dev/vite-plus-core@0.1.14(@types/node@25.5.0)(jiti@2.6.1)(typescript@6.0.2))
       '@shiguredo/mp4-media-stream':
         specifier: 2024.3.0
         version: 2024.3.0
@@ -557,8 +560,32 @@ packages:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x || 5.x || 6.x || 7.x || 8.x
 
+  '@preact/signals-agent-vite@0.1.0':
+    resolution: {integrity: sha512-2ollRDZhJgfH/r9esbSTfLUkQXrDiaKjzHs1C/GLTNPw+GuHnB0ySbxAOiKvl1kUvC4a6ql+JjCoUMU/hKQLZg==}
+    peerDependencies:
+      '@preact/signals-preact-transform': ^0.1.0
+      '@preact/signals-react-transform': ^0.8.1
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+    peerDependenciesMeta:
+      '@preact/signals-preact-transform':
+        optional: true
+      '@preact/signals-react-transform':
+        optional: true
+
   '@preact/signals-core@1.14.0':
     resolution: {integrity: sha512-AowtCcCU/33lFlh1zRFf/u+12rfrhtNakj7UpaGEsmMwUKpKWMVvcktOGcwBBNiB4lWrZWc01LhiyyzVklJyaQ==}
+
+  '@preact/signals-debug@1.4.2':
+    resolution: {integrity: sha512-qof6mB6vHnt2CPvrhbAEGismdlPdikdmYkj8/o4pP2Jh63ZeQ3kBqQx+GsaE/byzkqVHSL5a8UYg1q+E6dbe+A==}
+    peerDependencies:
+      '@preact/signals': '>=2.6.0'
+      '@preact/signals-core': '>=1.12.2'
+      '@preact/signals-react': '>=3.6.2'
+    peerDependenciesMeta:
+      '@preact/signals':
+        optional: true
+      '@preact/signals-react':
+        optional: true
 
   '@preact/signals@2.9.0':
     resolution: {integrity: sha512-hYrY0KyUqkDgOl1qba/JGn6y81pXnurn21PMaxfcMwdncdZ3M/oVdmpTvEnsGjh48dIwDVc7bjWHqIsngSjYug==}
@@ -1845,7 +1872,24 @@ snapshots:
       - rollup
       - supports-color
 
+  '@preact/signals-agent-vite@0.1.0(@preact/signals-core@1.14.0)(@preact/signals@2.9.0(preact@10.29.0))(@voidzero-dev/vite-plus-core@0.1.14(@types/node@25.5.0)(jiti@2.6.1)(typescript@6.0.2))':
+    dependencies:
+      '@babel/core': 7.29.0
+      '@preact/signals-debug': 1.4.2(@preact/signals-core@1.14.0)(@preact/signals@2.9.0(preact@10.29.0))
+      vite: '@voidzero-dev/vite-plus-core@0.1.14(@types/node@25.5.0)(jiti@2.6.1)(typescript@6.0.2)'
+    transitivePeerDependencies:
+      - '@preact/signals'
+      - '@preact/signals-core'
+      - '@preact/signals-react'
+      - supports-color
+
   '@preact/signals-core@1.14.0': {}
+
+  '@preact/signals-debug@1.4.2(@preact/signals-core@1.14.0)(@preact/signals@2.9.0(preact@10.29.0))':
+    dependencies:
+      '@preact/signals-core': 1.14.0
+    optionalDependencies:
+      '@preact/signals': 2.9.0(preact@10.29.0)
 
   '@preact/signals@2.9.0(preact@10.29.0)':
     dependencies:
