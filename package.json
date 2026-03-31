@@ -28,7 +28,7 @@
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
-    "@preact/signals": "2.8.2",
+    "@preact/signals": "2.9.0",
     "preact": "10.29.0",
     "sora-js-sdk": "2025.2.0"
   },
@@ -41,9 +41,9 @@
     "@shiguredo/virtual-background": "2023.2.0",
     "@tailwindcss/vite": "4.2.2",
     "@types/node": "25.5.0",
-    "@vitest/browser": "4.1.1",
-    "@vitest/browser-playwright": "4.1.1",
-    "@vitest/browser-preview": "4.1.1",
+    "@vitest/browser": "4.1.2",
+    "@vitest/browser-playwright": "4.1.2",
+    "@vitest/browser-preview": "4.1.2",
     "dotenv": "17.3.1",
     "fast-check": "4.6.0",
     "jsdom": "29.0.1",
