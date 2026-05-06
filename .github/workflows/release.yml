@@ -15,7 +15,7 @@ jobs:
 
       - uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: "24"
+          node-version: "26"
 
       - name: Install dependencies
         run: vp install
