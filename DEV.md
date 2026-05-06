@@ -33,7 +33,7 @@ corepack prepare pnpm@latest --activate
 
 ## 開発サーバー
 
-- `pnpm run dev` でローカルサーバーを起動する
+- `vp dev` でローカルサーバーを起動する
 
 ## パッケージ更新
 
@@ -48,4 +48,4 @@ sora-devtools の package 更新
 - sora-js-sdk のトップディレクトリで `pnpm link --dir <devtools path>` を実行する
   - `<devtools path>` は sora-devtools を clone したディレクトリパスを指定する
 - sora-devtools の package.json ファイル内で `"sora-js-sdk": "link:<sora-js-sdk path>"` と置き換えられていたら成功
-  - sora-devtools のトップディレクトリで `pnpm i` `pnpm run dev` を実行するとローカルの sora-js-sdk が利用される
+  - sora-devtools のトップディレクトリで `pnpm i` `vp dev` を実行するとローカルの sora-js-sdk が利用される
