@@ -1,6 +1,7 @@
 # 0006 getValueByAspectRatio の "21:9" に対する誤った数値を修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -35,3 +36,8 @@ case "21:9": {
 - `getValueByAspectRatio("21:9")` が `21 / 9` (≈2.333) を返すこと
 - `getValueByAspectRatio("4:3")`, `getValueByAspectRatio("16:9")` も同様に正しい値を返すことの確認
 - 無効な入力で `Number.NaN` が返ることの確認（既存テスト未カバー）
+
+## 解決方法
+
+- `src/utils.ts` の `getValueByAspectRatio` で `case "21:9"` の戻り値を `20 / 9` から `21 / 9` に修正した。
+- `src/utils.test.ts` に 4:3 / 16:9 / 21:9 / 未対応値のテストケースを追加した。
