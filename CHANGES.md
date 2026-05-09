@@ -55,7 +55,7 @@
   - @voluntas
 - [CHANGE] e2e-test ワークフローの playwright 実行を `vp exec` から `pnpm exec` に変更する
   - `vp exec playwright install` のダウンロードが CI 上で失敗していたため
-  - `pnpm/action-setup@v4` を追加して pnpm をセットアップ
+  - `pnpm/action-setup@v6` を追加して pnpm をセットアップ
   - @voluntas
 - [CHANGE] prek フックを `pnpm run` 経由から `vp` 直接呼び出しに変更する
   - @voluntas
