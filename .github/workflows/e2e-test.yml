@@ -25,10 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6.0.6
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
-          node-version: "26"
-          cache: "pnpm"
+          node-version: "24"
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install ${{ matrix.browser }} --with-deps
 
