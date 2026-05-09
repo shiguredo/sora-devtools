@@ -10,7 +10,7 @@ import {
   InputGroup,
 } from "@/components/ui";
 
-import { clearRpcObjects } from "@/app/actions";
+import { clearRpcObjects, setRPCErrorAlertMessage } from "@/app/actions";
 import { connectionStatus, rpcObjects, sora } from "@/app/signals";
 import { RPC_TEMPLATES } from "@/constants";
 import { rpc } from "@/rpc";
@@ -78,7 +78,9 @@ function RpcForm() {
       try {
         parsedParams = JSON.parse(paramsText);
       } catch (error) {
-        console.error("Invalid JSON in params:", error);
+        setRPCErrorAlertMessage(
+          `invalid JSON in params: ${error instanceof Error ? error.message : String(error)}`,
+        );
         return;
       }
     }

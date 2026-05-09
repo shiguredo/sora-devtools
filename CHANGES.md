@@ -42,9 +42,17 @@
   - デフォルト 1000 件、100/500/1000/5000 から選択可能
   - URL パラメータ maxNotifyMessages に対応
   - @voluntas
+- [CHANGE] DebugPane の API タブを削除する
+  - DEBUG_TYPES から api を削除する。`debugType=api` は無効になる
+  - 未使用の Api.tsx を削除する
+  - @voluntas
 - [FIX] forwardingFilter（単数形）を削除し forwardingFilters（複数形）に統一する
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
+  - @voluntas
+- [FIX] DebugPane の Notify タブのタイポ (Notfiy) を修正する
+  - @voluntas
+- [FIX] Rpc.tsx の console.error を setRPCErrorAlertMessage によるアラート通知に置き換える
   - @voluntas
 - [FIX] エラーメッセージとアラートメッセージを規約に準拠させる
   - 小文字始まり、末尾ピリオドなし、英語に統一する

@@ -4,7 +4,6 @@ import { setDebugType } from "@/app/actions";
 import { debug, debugType } from "@/app/signals";
 import styles from "./DebugPane.module.css";
 
-// import { Api } from './Api.tsx'
 import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
 import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages.tsx";
 import { DebugFilter } from "./Filter.tsx";
@@ -33,7 +32,6 @@ export function DebugPane() {
       key === "timeline" ||
       key === "signaling" ||
       key === "messaging" ||
-      // key === 'api' ||
       key === "rpc" ||
       key === "codec"
     ) {
@@ -56,7 +54,7 @@ export function DebugPane() {
           <DebugFilter />
           <SignalingMessages />
         </Tab>
-        <Tab eventKey="notify" title="Notfiy">
+        <Tab eventKey="notify" title="Notify">
           <div className="flex items-center gap-4">
             <DebugFilter />
             <NotifyMaxMessages />
@@ -79,11 +77,6 @@ export function DebugPane() {
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
         </Tab>
-        {/*
-        <Tab eventKey="api" title="API">
-          <Api />
-        </Tab>
-*/}
         <Tab eventKey="rpc" title="RPC">
           <Rpc />
         </Tab>
