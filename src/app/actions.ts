@@ -1001,8 +1001,15 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
     // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
     void (async () => {
-      // ローカルの MediaStream の Track と MediaProcessor を止める
-      await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
+      try {
+        // ローカルの MediaStream の Track と MediaProcessor を止める
+        await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
+      } catch (error) {
+        signals.setLogMessages({
+          title: "STOP_LOCAL_VIDEO_TRACK",
+          description: error instanceof Error ? error.message : String(error),
+        });
+      }
     })();
     stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
     for (const client of remoteClientsValue) {
@@ -1456,11 +1463,17 @@ export const reconnectSora = async (): Promise<void> => {
   const channelIdValue = signals.channelId.value;
   const googCpuOveruseDetectionValue = signals.googCpuOveruseDetection.value;
   if (roleValue === "sendonly" || roleValue === "sendrecv") {
-    [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch((error) => {
-      signals.setSoraErrorAlertMessage(error.toString());
+    try {
+      [mediaStream, gainNode, audioContext] = await createMediaStream(state);
+    } catch (error) {
+      // createMediaStream の失敗時は再接続を中止し disconnected 状態に戻す
+      if (error instanceof Error) {
+        signals.setSoraErrorAlertMessage(error.toString());
+      }
       signals.setSoraConnectionStatus("disconnected");
-      throw error;
-    });
+      signals.setSoraReconnecting(false);
+      return;
+    }
   }
   for (let i = 1; i <= 10; i++) {
     const reconnectingValue = signals.reconnecting.value;
@@ -1686,7 +1699,12 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
     stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
-    void soraValue.removeAudioTrack(localMediaStreamValue);
+    soraValue.removeAudioTrack(localMediaStreamValue).catch((error: unknown) => {
+      signals.setLogMessages({
+        title: "REMOVE_AUDIO_TRACK",
+        description: error instanceof Error ? error.message : String(error),
+      });
+    });
   } else if (localMediaStreamValue) {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
@@ -1744,7 +1762,14 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     if (mediaStream.getVideoTracks().length > 0) {
       if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
         // Sora 接続中の場合
-        void soraValue.replaceVideoTrack(localMediaStreamValue, mediaStream.getVideoTracks()[0]);
+        soraValue
+          .replaceVideoTrack(localMediaStreamValue, mediaStream.getVideoTracks()[0])
+          .catch((error: unknown) => {
+            signals.setLogMessages({
+              title: "REPLACE_VIDEO_TRACK",
+              description: error instanceof Error ? error.message : String(error),
+            });
+          });
       } else if (localMediaStreamValue) {
         // Sora は未接続で media access での表示を行っている場合
         // 現在の VideoTrack を停止、削除してから、新しい VideoTrack を追加する
@@ -1761,7 +1786,12 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     // Sora 接続中の場合
     const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
     await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
-    void soraValue.removeVideoTrack(localMediaStreamValue);
+    soraValue.removeVideoTrack(localMediaStreamValue).catch((error: unknown) => {
+      signals.setLogMessages({
+        title: "REMOVE_VIDEO_TRACK",
+        description: error instanceof Error ? error.message : String(error),
+      });
+    });
   } else if (localMediaStreamValue) {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する

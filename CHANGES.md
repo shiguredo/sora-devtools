@@ -46,6 +46,11 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] reconnectSora と disconnect コールバックでの unhandled promise rejection を修正する
+  - reconnectSora 内の createMediaStream 失敗時に try/catch で捕捉して disconnected 状態へ戻す
+  - disconnect コールバック内の stopLocalVideoTrack に try/catch を追加する
+  - setMicDeviceAction / setCameraDeviceAction の void 呼び出しに catch ハンドラを追加する
+  - @voluntas
 - [FIX] getDisplayMedia 利用時に cameraDevice=false で画面共有が行われない問題を修正する
   - createDisplayMediaStream のガード条件から cameraDevice チェックを除外する
   - @voluntas

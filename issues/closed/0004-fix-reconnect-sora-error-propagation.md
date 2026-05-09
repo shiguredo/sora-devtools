@@ -1,6 +1,7 @@
 # 0004 reconnectSora のエラー伝播漏れを修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -47,3 +48,9 @@ Model: deepseek-v4-pro
 
 - `reconnectSora` で `createMediaStream` が reject した場合、`connectionStatus` が `"disconnected"` になり `reconnecting` が false になること
 - disconnect callback 内の `stopLocalVideoTrack` が throw しても、後続のクリーンアップ処理が継続されること
+
+## 解決方法
+
+- `src/app/actions.ts` の `reconnectSora` で `createMediaStream` 呼び出しを `try/catch` で囲み、失敗時に `setSoraConnectionStatus("disconnected")` と `setSoraReconnecting(false)` を呼んで `return` するようにした。
+- disconnect コールバックの `void IIFE` 内に `try/catch` を追加し、`stopLocalVideoTrack` の例外を `setLogMessages` で記録する。
+- `setMicDeviceAction` の `removeAudioTrack`、`setCameraDeviceAction` の `replaceVideoTrack` / `removeVideoTrack` の `void` 呼び出しを `.catch(...)` 付きに変更し、unhandled rejection を防ぐ。
