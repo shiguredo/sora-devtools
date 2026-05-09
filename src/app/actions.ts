@@ -15,7 +15,7 @@ import type {
   TimelineMessage,
 } from "./../types.ts";
 import {
-  copy2clipboard,
+  copyToClipboard,
   createAudioConstraints,
   createConnectOptions,
   createFakeMediaConstraints,
@@ -522,8 +522,8 @@ function buildQueryStrings(parameters: Partial<QueryStringParameters>): string[]
   });
 }
 
-// URL をクリップボードにコピーする
-export const copyURL = (): void => {
+// URL をクリップボードにコピーする。成功時 true、失敗時 false を返す
+export const copyURL = async (): Promise<boolean> => {
   const appendAudioVideoParams = signals.role.value !== "recvonly";
   const appendReceiverParams = signals.role.value !== "sendonly";
   const parameters: Partial<QueryStringParameters> = {
@@ -567,8 +567,15 @@ export const copyURL = (): void => {
     mute: signals.mute.value ? true : undefined,
   };
   const queryStrings = buildQueryStrings(parameters);
-  void copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join("&")}`);
+  const success = await copyToClipboard(
+    `${location.origin}${location.pathname}?${queryStrings.join("&")}`,
+  );
+  if (!success) {
+    signals.setAPIErrorAlertMessage("failed to copy URL to clipboard");
+    return false;
+  }
   globalThis.history.replaceState(null, "", `${location.pathname}?${queryStrings.join("&")}`);
+  return true;
 };
 
 // State に応じて MediaStream インスタンスを生成する

@@ -46,6 +46,11 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] copy2clipboard 失敗時にユーザーへ通知されない問題を修正する
+  - copyToClipboard にリネームし戻り値を Promise<boolean> に変更する
+  - 失敗時に setAPIErrorAlertMessage で通知する
+  - copyURL を async 関数に変更しコピー完了を待ってから history を更新する
+  - @voluntas
 - [FIX] parseMetadata が JSON パース失敗時に生文字列を返していた問題を修正する
   - JSON パース失敗時は undefined を返すようにする
   - parseMetadata の単体テストを追加する

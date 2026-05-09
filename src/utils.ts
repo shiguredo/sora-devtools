@@ -46,10 +46,16 @@ export function formatUnixtime(time: number): string {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
-// OS の Clipboard にテキストを書き込む
-export async function copy2clipboard(text: string): Promise<void> {
-  if (navigator.clipboard) {
-    return navigator.clipboard.writeText(text);
+// OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (!navigator.clipboard) {
+    return false;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
   }
 }
 

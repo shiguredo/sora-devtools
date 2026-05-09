@@ -2,7 +2,8 @@ import type { TargetedMouseEvent } from "preact";
 
 import { Button } from "@/components/ui";
 import { ClipboardIcon } from "@/components/ClipboardIcon";
-import { copy2clipboard } from "@/utils";
+import { copyToClipboard } from "@/utils";
+import * as signals from "@/app/signals";
 
 interface TextBoxProps {
   id?: string;
@@ -11,7 +12,11 @@ interface TextBoxProps {
 }
 function TextBox(props: TextBoxProps) {
   const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
-    void copy2clipboard(props.text);
+    void copyToClipboard(props.text).then((success) => {
+      if (!success) {
+        signals.setAPIErrorAlertMessage("failed to copy text to clipboard");
+      }
+    });
     event.currentTarget.blur();
   };
   return (
