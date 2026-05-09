@@ -1,6 +1,7 @@
 # 0008 updateMediaStream の replaceTrack エラー処理を追加する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -73,3 +74,7 @@ if (failures.length > 0) {
 - 全 `replaceTrack` が成功した場合、アラートが表示されないこと
 - 一部の `replaceTrack` が失敗した場合、アラートが表示されること
 - `soraValue.pc` が null の場合、`replaceTrack` が呼ばれずエラーにならないこと
+
+## 解決方法
+
+`src/app/actions.ts` の `updateMediaStream` の `for` ループを `Promise.allSettled` に書き換え、全 track の `replaceTrack` を並列で待機するようにした。失敗件数を集計して `setSoraErrorAlertMessage` で通知する。
