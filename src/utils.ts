@@ -294,7 +294,7 @@ export function getValueByAspectRatio(aspectRatio: string): number {
       return 16 / 9;
     }
     case "21:9": {
-      return 20 / 9;
+      return 21 / 9;
     }
     default: {
       return Number.NaN;

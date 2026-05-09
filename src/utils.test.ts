@@ -22,7 +22,7 @@ import {
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from "./constants.ts";
-import { parseQueryString } from "./utils.ts";
+import { getValueByAspectRatio, parseQueryString } from "./utils.ts";
 
 // テスト用のヘルパー関数
 function createSearchParams(parameters: Record<string, unknown>): URLSearchParams {
@@ -226,4 +226,21 @@ test("すべての特定の文字列リストからの値を解析する", () =>
   const searchParams = createSearchParams(params);
   const result = parseQueryString(searchParams);
   assert.deepEqual(result, params);
+});
+
+// getValueByAspectRatio のテスト
+test("getValueByAspectRatio: 4:3 は 4/3 を返す", () => {
+  assert.equal(getValueByAspectRatio("4:3"), 4 / 3);
+});
+
+test("getValueByAspectRatio: 16:9 は 16/9 を返す", () => {
+  assert.equal(getValueByAspectRatio("16:9"), 16 / 9);
+});
+
+test("getValueByAspectRatio: 21:9 は 21/9 を返す", () => {
+  assert.equal(getValueByAspectRatio("21:9"), 21 / 9);
+});
+
+test("getValueByAspectRatio: 未対応の値は NaN を返す", () => {
+  assert.isTrue(Number.isNaN(getValueByAspectRatio("unknown")));
 });
