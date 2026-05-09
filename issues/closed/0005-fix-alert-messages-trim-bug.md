@@ -1,6 +1,7 @@
 # 0005 アラートメッセージの配列トリミングバグを修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -63,3 +64,8 @@ if (currentAlertMessages.length >= MAX_ALERT_MESSAGES) {
 - アラートメッセージが 10 件の状態で 11 件目を追加 → 最大 10 件（unshift 後で MAX_ALERT_MESSAGES 件）以下であること
 - アラートメッセージが 9 件の状態ではトリミングが発生しないこと
 - アラートメッセージが 20 件蓄積した状態でも正しくトリミングされること
+
+## 解決方法
+
+- `src/app/signals.ts` で `MAX_ALERT_MESSAGES = 10` 定数を定義し、`setAlertMessagesAndLogMessages` のトリミングを `slice(0, MAX_ALERT_MESSAGES - 1)` に書き換えた。
+- `src/app/app.test.ts` に 9 件 / 10 件 / 20 件のテストケースを追加し、トリミングが期待どおり動作することを確認した。

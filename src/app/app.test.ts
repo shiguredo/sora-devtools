@@ -26,6 +26,7 @@ import {
 } from "../constants.ts";
 import { setInitialParameter } from "./actions.ts";
 import {
+  alertMessages,
   apiUrl,
   aspectRatio,
   audio,
@@ -58,6 +59,8 @@ import {
   resizeMode,
   resolution,
   role,
+  setAPIInfoAlertMessage,
+  setSoraInfoAlertMessage,
   showStats,
   signalingNotifyMetadata,
   signalingUrlCandidates,
@@ -454,4 +457,35 @@ test("should handle 'apiUrl'", async () => {
   setLocationSearch({ apiUrl: value });
   await setInitialParameter();
   assert.equal(apiUrl.value, value);
+});
+
+// alertMessages のトリミング動作をテストする
+test("alertMessages: 9 件状態でアラートを追加してもトリミングされない", () => {
+  alertMessages.value = [];
+  for (let i = 0; i < 9; i++) {
+    setSoraInfoAlertMessage(`m${i}`);
+  }
+  assert.equal(alertMessages.value.length, 9);
+  setSoraInfoAlertMessage("m9");
+  assert.equal(alertMessages.value.length, 10);
+});
+
+test("alertMessages: 10 件状態でアラートを追加すると 10 件以下に保たれる", () => {
+  alertMessages.value = [];
+  for (let i = 0; i < 10; i++) {
+    setSoraInfoAlertMessage(`m${i}`);
+  }
+  assert.equal(alertMessages.value.length, 10);
+  setSoraInfoAlertMessage("new");
+  assert.equal(alertMessages.value.length, 10);
+  assert.equal(alertMessages.value[0].message, "new");
+});
+
+test("alertMessages: 20 件分追加しても 10 件以下に保たれる", () => {
+  alertMessages.value = [];
+  for (let i = 0; i < 20; i++) {
+    setAPIInfoAlertMessage(`m${i}`);
+  }
+  assert.equal(alertMessages.value.length, 10);
+  assert.equal(alertMessages.value[0].message, "m19");
 });
