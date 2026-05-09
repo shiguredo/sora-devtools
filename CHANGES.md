@@ -53,10 +53,6 @@
   - check-merge-conflict / detect-private-key / check-added-large-files
   - check-toml / check-yaml / check-json5 (`.json` / `.json5` / `.jsonc` を対象)
   - @voluntas
-- [CHANGE] e2e-test ワークフローの playwright 実行を `vp exec` から `pnpm exec` に変更する
-  - `vp exec playwright install` のダウンロードが CI 上で失敗していたため
-  - `pnpm/action-setup@v6` を追加して pnpm をセットアップ
-  - @voluntas
 - [CHANGE] prek フックを `pnpm run` 経由から `vp` 直接呼び出しに変更する
   - @voluntas
 - [CHANGE] pnpm scripts と prek フックを `vp check` に統合する
@@ -65,7 +61,7 @@
   - CI から `vp check` と重複する `tsc --noEmit` を削除する
   - @voluntas
 - [CHANGE] Vite / Vitest / oxlint / oxfmt から Vite+ に移行する
-  - vite-plus 0.1.11 を導入し vp コマンドに統一する
+  - vite-plus を導入し vp コマンドに統一する
   - vitest.config.ts を vite.config.ts に統合する
   - GitHub Actions を setup-vp に移行する
   - pre-commit のコマンドを vp に変更する
