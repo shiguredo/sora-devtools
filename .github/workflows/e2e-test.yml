@@ -27,7 +27,7 @@ jobs:
       - uses: voidzero-dev/setup-vp@v1
         with:
           node-version: "26"
-          cache: true
+          cache: false
       - run: vp install
       - run: vp exec playwright install ${{ matrix.browser }} --with-deps
 
