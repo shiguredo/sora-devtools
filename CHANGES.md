@@ -46,6 +46,10 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] connecting / preparing 状態で disconnectSora が無視される問題を修正する
+  - connected 以外の連結中状態でも切断と状態リセットを行うようにする
+  - sora が null の場合でも disconnected に戻し reconnecting フラグも解除する
+  - @voluntas
 - [FIX] aspectRatio 21:9 で 20/9 (≈2.222) の誤った値を返していた問題を修正する
   - 21:9 を選んだ際に 21/9 (≈2.333) を返すよう修正する
   - getValueByAspectRatio の 4:3 / 16:9 / 21:9 / 未対応値の単体テストを追加する

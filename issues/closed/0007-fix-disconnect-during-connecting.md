@@ -1,6 +1,7 @@
 # 0007 接続中・準備中の切断が無視される問題を修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -66,3 +67,11 @@ signals.setSoraReconnecting(false);
 - `disconnectSora` を `connectionStatus="preparing"`, `soraValue=null` で呼んだ場合、`connectionStatus` が `"disconnected"` になること
 - `disconnectSora` を `connectionStatus="connecting"`, `soraValue` が存在する場合、`soraValue.disconnect()` が呼ばれること
 - `disconnectSora` を `connectionStatus="disconnected"` で呼んだ場合、二重 disconnect が発生しないこと
+
+## 解決方法
+
+- `src/app/actions.ts` の `disconnectSora` を以下のように書き換えた:
+  - `connectionStatus === "disconnected"` の場合は早期 return で二重 disconnect を防ぐ
+  - 状態に関わらず `stopStatsReportTimer` を呼んでタイマーを即停止する
+  - `connected` / `connecting` / `preparing` のいずれの状態でも `soraValue` があれば `disconnect()` を呼ぶ
+  - `soraValue` が無くても `connectionStatus` を `disconnected` に戻し、`reconnecting` フラグを解除して UI を再有効化する
