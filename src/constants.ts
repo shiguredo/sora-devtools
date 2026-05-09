@@ -86,7 +86,6 @@ export const DEBUG_TYPES = [
   "timeline",
   "signaling",
   "messaging",
-  "api",
   "rpc",
   "codec",
 ] as const;

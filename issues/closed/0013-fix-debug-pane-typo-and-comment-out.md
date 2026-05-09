@@ -1,6 +1,7 @@
 # 0013 DebugPane の typo とコメントアウトされた API タブを整理する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -22,3 +23,11 @@ Model: deepseek-v4-pro
 
 - typo 修正と `console` 削除はコードレビューで確認
 - `DEBUG_TYPES` から `"api"` 削除後、`parseQueryString` に `debugType=api` を渡しても `debugType` が設定されないこと（既存の PBT でカバー可能）
+
+## 解決方法
+
+- `src/components/DebugPane/index.tsx` の `title="Notfiy"` を `title="Notify"` に修正した。
+- `src/components/DebugPane/index.tsx` の API タブのコメントアウト（import / onSelect 内のキー判定 / Tab 要素）を完全に削除した。
+- `src/constants.ts` の `DEBUG_TYPES` から `"api"` を削除し、`debugType=api` が無効値になるようにした。
+- 未使用となった `src/components/DebugPane/Api.tsx` ファイルを削除した。
+- `src/components/DebugPane/Rpc.tsx` の `console.error` を `setRPCErrorAlertMessage` によるアラート通知に置き換えた。
