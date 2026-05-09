@@ -33,7 +33,7 @@ jobs:
       - run: vp build
       # --with-deps を install-deps と install に分離して、どちらでハングするかを切り分ける
       - name: playwright install-deps
-        run: sudo pnpm exec playwright install-deps ${{ matrix.browser }}
+        run: pnpm exec playwright install-deps ${{ matrix.browser }}
       - name: playwright install (no deps)
         run: pnpm exec playwright install ${{ matrix.browser }}
       - run: pnpm exec playwright test --project=${{ matrix.browser }}
