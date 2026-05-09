@@ -46,6 +46,9 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] rpc.ts の conn.rpcMethods への型安全でないアクセスを修正する
+  - Array.isArray による型ガードで rpcMethods が undefined のときも安全に処理する
+  - @voluntas
 - [FIX] copy2clipboard 失敗時にユーザーへ通知されない問題を修正する
   - copyToClipboard にリネームし戻り値を Promise<boolean> に変更する
   - 失敗時に setAPIErrorAlertMessage で通知する
