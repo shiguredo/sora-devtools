@@ -1,6 +1,7 @@
 # 0015 コードベースから死にコード・不要なコメントを削除する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -77,3 +78,21 @@ Model: deepseek-v4-pro
 - 削除後に `vp check`（fmt + lint + typecheck）が pass すること
 - 削除後に `vp test run` が pass すること
 - `INSTRUCTIONS` 削除に伴い、`instructions.json` の import が不要になる場合は `constants.ts` の import 行も削除すること
+
+## 解決方法
+
+- `src/types.ts` から未使用の `CustomHTMLCanvasElement` インターフェースを削除した。
+- `src/utils.ts` から未使用の `testVideoResolutionPattern` 関数を削除した。
+- `src/utils.ts` から signals 版に置き換えられた `isFormDisabled` 関数を削除した（callers は `signals.ts` の computed を使用済み）。
+- `src/types.ts` の `DownloadReportParameters` から存在しない `"localTestMediaStream"` を Omit リストから削除した。
+- `src/app/signals.ts` から不要な `// eslint-disable-next-line import/default` を削除した（eslint 不使用）。
+- `src/utils.ts` から不要な `// biome-ignore lint:` を削除した（Biome 不使用）。
+- `src/types.ts` の `RTCInboundRtpStreamStats` 内の口語コメント `// 元々定義されてたやつ` / `// 新しく追加したやつ` を削除した。
+- `src/utils.pbt.test.ts` 冒頭の `// このテストは Cline ... による自動生成です。` コメントを削除した。
+
+備考: 以下は issue では削除候補として挙がっていたが実際には使用されていたため残した。
+
+- `INSTRUCTIONS` (`src/constants.ts`) は `TooltipFormLabel.tsx` / `TooltipFormCheck.tsx` で使用中。
+- `purgeUrlEntriesFromOPFS` (`src/opfs.ts`) は `SignalingUrlModal.tsx` で使用中。
+
+`src/app/actions.ts` の signals 再エクスポートブロックは 50 ファイルからの import に依存しており、削除は別途まとまった移行作業を要するため今回は触っていない。

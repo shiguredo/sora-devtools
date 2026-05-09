@@ -10,7 +10,6 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
-// eslint-disable-next-line import/default -- Vite の ?worker サフィックスによる Web Worker インポート
 import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {
   AlertMessage,
