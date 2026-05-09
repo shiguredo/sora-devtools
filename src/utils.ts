@@ -563,6 +563,7 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   offscreenCanvas: OffscreenCanvas | null;
   mediaStream: MediaStream;
   gainNode: GainNode | null;
+  audioContext: AudioContext | null;
   frameRate: number;
 } {
   const mediaStream = new MediaStream();
@@ -582,11 +583,12 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     offscreenCanvas = canvas.transferControlToOffscreen();
   }
   let gainNode: GainNode | null = null;
+  let audioContext: AudioContext | null = null;
   if (parameters.audio) {
-    const AudioContext =
+    const AudioContextCtor =
       globalThis.AudioContext ||
       (globalThis as unknown as Record<string, typeof globalThis.AudioContext>).webkitAudioContext;
-    const audioContext = new AudioContext();
+    audioContext = new AudioContextCtor();
     const oscillator = audioContext.createOscillator();
     const selectedOscillatorType = "sine";
     oscillator.type = selectedOscillatorType;
@@ -599,7 +601,13 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     mediaStream.addTrack(audioTracks[0]);
     gainNode.gain.setValueAtTime(parameters.volume, 0);
   }
-  return { offscreenCanvas, mediaStream, gainNode, frameRate: parameters.frameRate };
+  return {
+    offscreenCanvas,
+    mediaStream,
+    gainNode,
+    audioContext,
+    frameRate: parameters.frameRate,
+  };
 }
 
 export function parseBooleanString(value: string): boolean | undefined {

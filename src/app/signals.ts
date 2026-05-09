@@ -119,9 +119,11 @@ export const fakeVideoShowChannelId = signal<boolean>(true);
 export const fakeContents = signal<{
   worker: Worker | null;
   gainNode: GainNode | null;
+  audioContext: AudioContext | null;
 }>({
   worker: null,
   gainNode: null,
+  audioContext: null,
 });
 
 // --- デバイス ---
@@ -323,8 +325,21 @@ export const setFakeVolume = (value: string): void => {
     fakeContents.value.gainNode.gain.setValueAtTime(Number.parseFloat(newVolume), 0);
   }
 };
-export const setFakeContentsGainNode = (gainNode: GainNode | null): void => {
-  fakeContents.value = { ...fakeContents.value, gainNode };
+export const setFakeContentsAudio = (
+  audioContext: AudioContext | null,
+  gainNode: GainNode | null,
+): void => {
+  fakeContents.value = { ...fakeContents.value, gainNode, audioContext };
+};
+// fakeContents の AudioContext を close して signal をクリアする
+// AudioContext は GC で解放されないため明示的に close する必要がある
+// close しないと Chrome のハードウェアコンテキスト上限に到達して NotAllowedError になる
+export const closeFakeContentsAudio = (): void => {
+  const previousAudioContext = fakeContents.value.audioContext;
+  if (previousAudioContext !== null) {
+    void previousAudioContext.close();
+  }
+  fakeContents.value = { ...fakeContents.value, gainNode: null, audioContext: null };
 };
 export const setFakeVideoShowChannelId = (value: boolean): void => {
   fakeVideoShowChannelId.value = value;
@@ -802,7 +817,12 @@ function resetMediaSettingsState(): void {
   ignoreDisconnectWebSocket.value = "";
   forceStereoOutput.value = false;
   fakeVolume.value = "0";
-  fakeContents.value = { worker: null, gainNode: null };
+  // 旧 AudioContext を close してから signal をリセットする
+  const previousAudioContext = fakeContents.value.audioContext;
+  if (previousAudioContext !== null) {
+    void previousAudioContext.close();
+  }
+  fakeContents.value = { worker: null, gainNode: null, audioContext: null };
   cameraDevice.value = true;
   micDevice.value = true;
   googCpuOveruseDetection.value = null;

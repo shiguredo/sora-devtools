@@ -86,6 +86,7 @@ export interface SoraDevtoolsState {
   fakeContents: {
     worker: Worker | null;
     gainNode: GainNode | null;
+    audioContext: AudioContext | null;
   };
   fakeVolume: string;
   fakeVideoShowChannelId: boolean;

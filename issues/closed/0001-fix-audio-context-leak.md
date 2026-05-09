@@ -1,6 +1,7 @@
 # 0001 FakeMedia 生成時の AudioContext リソースリークを修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -123,3 +124,13 @@ fakeContents.value = { ...fakeContents.value, audioContext, gainNode };
 - `disposeMedia` 実行後に `fakeContents.value.audioContext` が null になっていること（close 後）
 - 上記テストは `vitest-browser-preact` の browser mode で実行する（`AudioContext` はブラウザ API のため Node.js では利用不可）
 - `fakeContents` の `audioContext` 型追加に伴う TypeScript コンパイルエラーがないこと
+
+## 解決方法
+
+- `src/types.ts` の `fakeContents` 型に `audioContext: AudioContext | null` を追加。
+- `src/utils.ts` の `createFakeMediaStream` の戻り値に `audioContext` を追加。
+- `src/app/signals.ts` で `setFakeContentsGainNode` を `setFakeContentsAudio(audioContext, gainNode)` に置き換え、close 専用の `closeFakeContentsAudio` を追加。`resetState` でも close する。
+- `src/app/actions.ts` で createMediaStream / createFakeMediaStreamFromState / createDisplayMediaStream / createUserMediaStream の戻り値タプルに `AudioContext | null` を追加。
+- `createFakeMediaStreamFromState` で `createFakeMediaStream` 呼び出し前に `closeFakeContentsAudio` で旧 AudioContext を close する。Chrome のハードウェアコンテキスト上限に達するのを防ぐため、新規生成前に close する必要がある。
+- `requestMedia` / `connectSora` / `reconnectSora` / `updateMediaStream` (mic/camera デバイスアクション) で `setFakeContentsAudio(audioContext, gainNode)` を使って signal を更新する。
+- `disposeMedia` および disconnect コールバックで `closeFakeContentsAudio` を呼び出して AudioContext を確実に close する。
