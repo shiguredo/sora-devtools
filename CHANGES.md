@@ -49,6 +49,8 @@
 
 ### misc
 
+- [CHANGE] prek フックを `pnpm run` 経由から `vp` 直接呼び出しに変更する
+  - @voluntas
 - [CHANGE] pnpm scripts と prek フックを `vp check` に統合する
   - `fmt` / `lint` / `lint:fix` / `typecheck` を削除し `check` / `check:fix` に置き換える
   - prek の `fmt` / `lint` / `typecheck` フックを `check` 1 本にまとめる

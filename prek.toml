@@ -8,6 +8,6 @@ default_stages = ["pre-commit"]
 [[repos]]
 repo = "local"
 hooks = [
-  { id = "check", name = "pnpm check", entry = "pnpm run check", language = "system", pass_filenames = false, priority = 0 },
-  { id = "test", name = "pnpm test", entry = "pnpm run test", language = "system", pass_filenames = false, always_run = true, priority = 20 },
+  { id = "check", name = "vp check", entry = "vp check", language = "system", pass_filenames = false, priority = 0 },
+  { id = "test", name = "vp test run", entry = "vp test run", language = "system", pass_filenames = false, always_run = true, priority = 20 },
 ]
