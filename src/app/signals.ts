@@ -185,15 +185,17 @@ export const isFormDisabled = computed(() => {
   return status === "preparing" || status === "connected" || status === "connecting";
 });
 
+// アラートメッセージの最大保持件数。unshift 後にこの件数までトリムする
+const MAX_ALERT_MESSAGES = 10;
+
 // --- ヘルパー関数 ---
 function setAlertMessagesAndLogMessages(alertMessage: AlertMessage): void {
-  const currentAlertMessages = [...alertMessages.value];
+  let currentAlertMessages = [...alertMessages.value];
   const currentLogMessages = [...logMessages.value];
 
-  if (currentAlertMessages.length >= 10) {
-    for (let i = 0; i <= currentAlertMessages.length - 5; i++) {
-      currentAlertMessages.pop();
-    }
+  // unshift 後に MAX_ALERT_MESSAGES 件以下になるよう先にトリムする
+  if (currentAlertMessages.length >= MAX_ALERT_MESSAGES) {
+    currentAlertMessages = currentAlertMessages.slice(0, MAX_ALERT_MESSAGES - 1);
   }
   currentAlertMessages.unshift(alertMessage);
   currentLogMessages.push({

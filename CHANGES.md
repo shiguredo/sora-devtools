@@ -46,6 +46,10 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] アラートメッセージの配列トリミングロジックの不具合を修正する
+  - ループ条件が変動する length に依存していたため期待件数より残るバグを修正する
+  - MAX_ALERT_MESSAGES 定数で最大保持件数を明示し slice で確実にトリミングする
+  - @voluntas
 - [FIX] reconnectSora と disconnect コールバックでの unhandled promise rejection を修正する
   - reconnectSora 内の createMediaStream 失敗時に try/catch で捕捉して disconnected 状態へ戻す
   - disconnect コールバック内の stopLocalVideoTrack に try/catch を追加する
