@@ -1014,6 +1014,8 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     }
     // fakeMedia 利用時の AudioContext を close する
     signals.closeFakeContentsAudio();
+    // statsReport タイマーを即時停止する。setSora(null) による次回 tick 自滅を待たない
+    stopStatsReportTimer();
     signals.setSora(null);
     signals.setSoraSessionId(null);
     signals.setSoraConnectionId(null);
@@ -1318,16 +1320,41 @@ function cleanupMediaStreamOnError(
   }
 }
 
-// statsReport の定期更新タイマーを開始する
+// statsReport の定期更新タイマー
+// setInterval ではなく setTimeout チェーンにすることで getStats の完了を待ってから
+// 次回をスケジュールする。setInterval だと getStats が長時間かかった際に並行呼び出しが蓄積する
+let statsReportTimerId: ReturnType<typeof setTimeout> | null = null;
+
+function stopStatsReportTimer(): void {
+  if (statsReportTimerId !== null) {
+    clearTimeout(statsReportTimerId);
+    statsReportTimerId = null;
+  }
+}
+
 function startStatsReportTimer(): void {
-  const timerId = setInterval(async () => {
+  // 既存タイマーがあれば停止してから起動する。再接続のたびにタイマーが増殖するのを防ぐ
+  stopStatsReportTimer();
+  const schedule = async (): Promise<void> => {
     const soraValue = signals.sora.value;
-    if (soraValue) {
-      await setStatsReportInternal(soraValue);
-    } else {
-      clearInterval(timerId);
+    if (!soraValue) {
+      statsReportTimerId = null;
+      return;
     }
-  }, 1000);
+    try {
+      await setStatsReportInternal(soraValue);
+    } catch {
+      // getStats のエラーはタイマーを停止させない
+    }
+    if (signals.sora.value !== null) {
+      statsReportTimerId = setTimeout(() => {
+        void schedule();
+      }, 1000);
+    } else {
+      statsReportTimerId = null;
+    }
+  };
+  void schedule();
 }
 
 export const connectSora = async (): Promise<void> => {
@@ -1496,6 +1523,8 @@ export const disconnectSora = async (): Promise<void> => {
   const connectionStatusValue = signals.connectionStatus.value;
   if (soraValue && connectionStatusValue === "connected") {
     signals.setSoraConnectionStatus("disconnecting");
+    // statsReport タイマーを即時停止する
+    stopStatsReportTimer();
     await soraValue.disconnect();
     signals.setSoraConnectionStatus("disconnected");
   }

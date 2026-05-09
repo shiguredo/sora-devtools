@@ -1,6 +1,7 @@
 # 0002 StatsReport タイマーの構造的問題を修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -117,3 +118,13 @@ function stopStatsReportTimer(): void {
   - `startStatsReportTimer` を連続で呼んでもタイマーが増殖しないこと
   - `getStats` が reject してもタイマーが継続すること
   - `sora` が null になったら次回 schedule が行われないこと
+
+## 解決方法
+
+- `src/app/actions.ts` の `startStatsReportTimer` を `setInterval` + async コールバックから `setTimeout` チェーンに書き換えた。`getStats` 完了後に次回をスケジュールするため並行呼び出しが蓄積しない。
+- モジュールスコープに `statsReportTimerId` を保持し、`stopStatsReportTimer` で `clearTimeout` できるようにした。
+- `startStatsReportTimer` の先頭で既存タイマーを停止し、再接続時のタイマー増殖を防いだ。
+- disconnect コールバックと `disconnectSora` で `stopStatsReportTimer` を呼び、即時停止するようにした。
+- `getStats` が例外を投げてもタイマーが継続するよう `try/catch` で握りつぶす。
+
+備考: ユニットテストはモック禁止のため追加せず、e2e (sendonly / recvonly / sendrecv) で接続〜切断の動作を確認した。

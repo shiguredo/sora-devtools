@@ -46,6 +46,11 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] StatsReport タイマーの並行呼び出し蓄積・二重起動・即時停止できない問題を修正する
+  - setInterval から setTimeout チェーンに変更し getStats 完了後に次回をスケジュールする
+  - stopStatsReportTimer を新設し disconnect / disconnect コールバックで即時停止する
+  - startStatsReportTimer の先頭で既存タイマーを停止し再接続時のタイマー増殖を防ぐ
+  - @voluntas
 - [FIX] fakeMedia 利用時に AudioContext がリークしてハードウェアコンテキスト上限に達する問題を修正する
   - createFakeMediaStream の戻り値に audioContext を追加し signal で保持する
   - 解像度変更や再接続などで MediaStream を作り直す際に旧 AudioContext を close する
