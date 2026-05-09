@@ -1,6 +1,7 @@
 # 0009 parseMetadata が JSON パース失敗時に生文字列を返す問題を修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -62,3 +63,8 @@ UI 側でも JSON パースエラーをユーザーに通知できるよう、`m
 - `parseMetadata(true, '{invalid}')` が `undefined` を返すこと
 - `parseMetadata(false, ...)` が常に `undefined` を返すこと
 - 上記を PBT で検証（`fc.json()` で有効な JSON、`fc.string()` で任意文字列入力）
+
+## 解決方法
+
+- `src/utils.ts` の `parseMetadata` の catch ブロックで `return undefined;` するように変更し、生文字列が SDK に渡るのを防いだ。
+- `src/utils.test.ts` に enabled=false / 有効 JSON / 無効 JSON / 空文字列の単体テストを追加した。PBT は今回追加していない。

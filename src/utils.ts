@@ -626,9 +626,10 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
   try {
     return JSON.parse(metadata);
   } catch {
-    // JSON parse に失敗しても何もしない
+    // JSON パースに失敗した場合は undefined を返す
+    // 生文字列を返すと SDK へ意図しない値が渡るため
+    return undefined;
   }
-  return metadata;
 }
 
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
