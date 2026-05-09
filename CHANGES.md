@@ -46,6 +46,10 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] parseMetadata が JSON パース失敗時に生文字列を返していた問題を修正する
+  - JSON パース失敗時は undefined を返すようにする
+  - parseMetadata の単体テストを追加する
+  - @voluntas
 - [FIX] updateMediaStream の replaceTrack のエラーが捕捉されない問題を修正する
   - Promise.allSettled で並列実行し失敗件数をアラートで通知する
   - @voluntas

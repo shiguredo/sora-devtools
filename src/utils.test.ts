@@ -22,7 +22,7 @@ import {
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from "./constants.ts";
-import { getValueByAspectRatio, parseQueryString } from "./utils.ts";
+import { getValueByAspectRatio, parseMetadata, parseQueryString } from "./utils.ts";
 
 // テスト用のヘルパー関数
 function createSearchParams(parameters: Record<string, unknown>): URLSearchParams {
@@ -243,4 +243,21 @@ test("getValueByAspectRatio: 21:9 は 21/9 を返す", () => {
 
 test("getValueByAspectRatio: 未対応の値は NaN を返す", () => {
   assert.isTrue(Number.isNaN(getValueByAspectRatio("unknown")));
+});
+
+// parseMetadata のテスト
+test("parseMetadata: enabledMetadata=false なら undefined を返す", () => {
+  assert.equal(parseMetadata(false, '{"a":1}'), undefined);
+});
+
+test("parseMetadata: 有効な JSON はパース済みオブジェクトを返す", () => {
+  assert.deepEqual(parseMetadata(true, '{"a":1,"b":"x"}'), { a: 1, b: "x" });
+});
+
+test("parseMetadata: 無効な JSON は undefined を返す", () => {
+  assert.equal(parseMetadata(true, "{invalid}"), undefined);
+});
+
+test("parseMetadata: 空文字列も undefined を返す", () => {
+  assert.equal(parseMetadata(true, ""), undefined);
 });
