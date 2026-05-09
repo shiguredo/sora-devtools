@@ -1627,19 +1627,28 @@ export const updateMediaStream = async (): Promise<void> => {
     signals.setSoraConnectionStatus("disconnected");
     throw error;
   });
-  for (const track of mediaStream.getTracks()) {
-    if (!soraValue?.pc) {
-      continue;
-    }
-    const sender = soraValue.pc.getSenders().find((s) => {
-      if (!s.track) {
-        return false;
+  // 全トラックの replaceTrack を Promise.allSettled で並列実行し、失敗をまとめて通知する
+  const replaceResults = await Promise.allSettled(
+    mediaStream.getTracks().map(async (track) => {
+      if (!soraValue?.pc) {
+        return;
       }
-      return s.track.kind === track.kind;
-    });
-    if (sender) {
-      void sender.replaceTrack(track);
-    }
+      const sender = soraValue.pc.getSenders().find((s) => {
+        if (!s.track) {
+          return false;
+        }
+        return s.track.kind === track.kind;
+      });
+      if (sender) {
+        await sender.replaceTrack(track);
+      }
+    }),
+  );
+  const failures = replaceResults.filter((result) => result.status === "rejected");
+  if (failures.length > 0) {
+    signals.setSoraErrorAlertMessage(
+      `failed to replace ${failures.length} track(s) of ${replaceResults.length}`,
+    );
   }
   signals.setLocalMediaStream(mediaStream);
   signals.setFakeContentsAudio(audioContext, gainNode);

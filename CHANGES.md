@@ -46,6 +46,9 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] updateMediaStream の replaceTrack のエラーが捕捉されない問題を修正する
+  - Promise.allSettled で並列実行し失敗件数をアラートで通知する
+  - @voluntas
 - [FIX] connecting / preparing 状態で disconnectSora が無視される問題を修正する
   - connected 以外の連結中状態でも切断と状態リセットを行うようにする
   - sora が null の場合でも disconnected に戻し reconnecting フラグも解除する
