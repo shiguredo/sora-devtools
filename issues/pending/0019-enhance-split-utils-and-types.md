@@ -3,6 +3,16 @@
 Created: 2026-05-09
 Model: deepseek-v4-pro
 
+## pending 理由
+
+issue 内の「前提」セクションで `#0017` (signals ボイラープレート削減) と `#0018` (actions 重複解消) の完了を分割の前提としているが、両者とも pending に移動済み。前提を満たしていない状態で `utils.ts` (877 行) を 9 ファイル、`types.ts` (447 行) を 7 ファイルに分割すると、後続の 0017/0018 のリファクタとマージ衝突を起こすリスクが高い。
+
+実施は以下の順で再着手するのが望ましい:
+
+1. issues/pending/0017 (signals ボイラープレート削減) を完了
+2. issues/pending/0018 (actions 重複解消) を完了
+3. その後に utils / types の分割を実施し、合わせて issue 0016 で残した browser-mode テストを追加する
+
 ## 概要
 
 `src/utils.ts` (877行) と `src/types.ts` (447行) に複数の関心事が混在している。
