@@ -1,6 +1,7 @@
 # 0011 rpc.ts の conn.rpcMethods への型安全でないアクセスを修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -47,3 +48,7 @@ if (options.showMethodAlert) {
 - `rpcMethods` が `undefined` の場合、`setRPCErrorAlertMessage("rpc_methods in type: offer is empty")` が呼ばれること
 - `rpcMethods` が空配列の場合も同上
 - `rpcMethods` に指定メソッドが含まれていない場合、適切なエラーメッセージが表示されること
+
+## 解決方法
+
+`src/rpc.ts` の `showMethodAlert` ブロックで `(conn as { rpcMethods?: unknown }).rpcMethods` で値を取り出し、`Array.isArray` による型ガードを追加した。これにより `rpcMethods` が `undefined` でもランタイムエラーにならず、空配列と同じ扱いで「rpc_methods in type: offer is empty」のアラートを表示する。

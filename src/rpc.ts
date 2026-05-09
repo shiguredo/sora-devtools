@@ -17,10 +17,12 @@ export async function rpc(
   options: RpcOptions = DEFAULT_RPC_OPTIONS,
 ): Promise<void> {
   // Show alert if method is not in rpcMethods
+  // sora-js-sdk のバージョン差で rpcMethods が undefined になり得るため型ガードする
   if (options.showMethodAlert) {
-    if (conn.rpcMethods.length === 0) {
+    const methods = (conn as { rpcMethods?: unknown }).rpcMethods;
+    if (!Array.isArray(methods) || methods.length === 0) {
       setRPCErrorAlertMessage("rpc_methods in type: offer is empty");
-    } else if (!conn.rpcMethods.includes(method)) {
+    } else if (!methods.includes(method)) {
       setRPCErrorAlertMessage(`"${method}" is not in rpc_methods in type: offer`);
     }
   }
