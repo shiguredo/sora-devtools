@@ -1,6 +1,7 @@
 # 0003 createDisplayMediaStream の cameraDevice 誤チェックを修正する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -38,3 +39,7 @@ if (!state.video || !state.cameraDevice) {
 
 - `createDisplayMediaStream` に `state.cameraDevice=false, state.video=true` を渡したとき、空の MediaStream ではなく `getDisplayMedia` が呼ばれること
 - `state.video=false` のときは引き続き空の MediaStream が返ること
+
+## 解決方法
+
+`src/app/actions.ts` の `createDisplayMediaStream` のガード条件から `cameraDevice` チェックを除外し `if (!state.video)` のみで判定するようにした。`cameraDevice` はカメラ利用フラグであり画面共有とは無関係。
