@@ -208,11 +208,6 @@ export interface TimelineMessage {
   dataChannelLabel?: string | null;
 }
 
-// HTMLCanvasElement interface に captureStream を追加
-export interface CustomHTMLCanvasElement extends HTMLCanvasElement {
-  captureStream(fps?: number): MediaStream;
-}
-
 // MediaTrackConstraints interface に property を追加
 export interface SoraDevtoolsMediaTrackConstraints extends MediaTrackConstraintSet {
   echoCancellationType?: "system" | "browser";
@@ -271,15 +266,12 @@ export interface RTCMediaStreamTrackStats extends RTCStats {
 // RTCInboundRtpStreamStats に jitterBuffer 関連を追加
 // ref: https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats
 export interface RTCInboundRtpStreamStats extends RTCReceivedRtpStreamStats {
-  // 元々定義されてたやつ
   firCount?: number;
   framesDecoded?: number;
   nackCount?: number;
   pliCount?: number;
   qpSum?: number;
   remoteId?: string;
-
-  // 新しく追加したやつ
   trackIdentifier: string;
   kind: string;
   jitterBufferDelay?: number;
@@ -413,7 +405,6 @@ export type DownloadReportParameters = Omit<
   | "debugType"
   | "fakeContents"
   | "focusedSpotlightConnectionIds"
-  | "localTestMediaStream"
   | "logMessages"
   | "mediaProcessorsNoiseSuppression"
   | "mp4MediaStream"

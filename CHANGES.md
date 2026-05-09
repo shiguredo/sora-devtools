@@ -42,6 +42,13 @@
   - デフォルト 1000 件、100/500/1000/5000 から選択可能
   - URL パラメータ maxNotifyMessages に対応
   - @voluntas
+- [CHANGE] 未使用コード・コメント・lint ディレクティブを削除する
+  - `CustomHTMLCanvasElement` / `testVideoResolutionPattern` / utils 版 `isFormDisabled` を削除
+  - `SoraDevtoolsState` の Omit から存在しない `localTestMediaStream` を削除
+  - 不要な `eslint-disable` / `biome-ignore` ディレクティブを削除
+  - `RTCInboundRtpStreamStats` の口語コメントを削除
+  - `utils.pbt.test.ts` の Cline 自動生成コメントを削除
+  - @voluntas
 - [CHANGE] connectSora の `soraConnection.stream = null` ハックを削除する
   - sora-js-sdk 2025.2.0 では disconnect で stream を停止しないため不要
   - @voluntas

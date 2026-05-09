@@ -243,7 +243,6 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
   const filteredResult: Partial<QueryStringParameters> = {};
   for (const key of Object.keys(result) as Array<keyof Partial<QueryStringParameters>>) {
     if (result[key] !== undefined) {
-      // biome-ignore lint: 型安全なキーによる代入
       (filteredResult as Record<string, unknown>)[key] = result[key];
     }
   }
@@ -269,10 +268,6 @@ export function createSignalingURL(
 
 // 解像度に対応する width と height を返す
 const videoResolutionPattern = /^(\d+)x(\d+)$/;
-
-export function testVideoResolutionPattern(resolution: string): boolean {
-  return videoResolutionPattern.test(resolution);
-}
 
 export function getVideoSizeByResolution(resolution: string): {
   width: number;
@@ -678,17 +673,6 @@ export async function getDevices(): Promise<MediaDeviceInfo[]> {
     // 例外が起きた場合は何もしない
   }
   return [];
-}
-
-// Sora との接続状態に応じて特定の Form を表示するかしないかを返す
-export function isFormDisabled(
-  connectionStatus: SoraDevtoolsState["soraContents"]["connectionStatus"],
-): boolean {
-  return (
-    connectionStatus === "preparing" ||
-    connectionStatus === "connected" ||
-    connectionStatus === "connecting"
-  );
 }
 
 // track の設定情報を返す
