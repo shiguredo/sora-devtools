@@ -1535,13 +1535,24 @@ export const reconnectSora = async (): Promise<void> => {
 export const disconnectSora = async (): Promise<void> => {
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
-  if (soraValue && connectionStatusValue === "connected") {
-    signals.setSoraConnectionStatus("disconnecting");
-    // statsReport タイマーを即時停止する
-    stopStatsReportTimer();
-    await soraValue.disconnect();
-    signals.setSoraConnectionStatus("disconnected");
+  // 既に切断済みの場合は何もしない
+  if (connectionStatusValue === "disconnected") {
+    return;
   }
+  // statsReport タイマーは状態に関わらず即時停止する
+  stopStatsReportTimer();
+  if (
+    soraValue &&
+    (connectionStatusValue === "connected" ||
+      connectionStatusValue === "connecting" ||
+      connectionStatusValue === "preparing")
+  ) {
+    signals.setSoraConnectionStatus("disconnecting");
+    await soraValue.disconnect();
+  }
+  // soraValue が存在しない / 切断できない状態でもクリーンアップして UI を再有効化する
+  signals.setSoraConnectionStatus("disconnected");
+  signals.setSoraReconnecting(false);
 };
 
 // デバイス一覧を取得
