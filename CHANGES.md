@@ -46,6 +46,11 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] fakeMedia 利用時に AudioContext がリークしてハードウェアコンテキスト上限に達する問題を修正する
+  - createFakeMediaStream の戻り値に audioContext を追加し signal で保持する
+  - 解像度変更や再接続などで MediaStream を作り直す際に旧 AudioContext を close する
+  - disposeMedia / disconnect / resetState で確実に close する
+  - @voluntas
 
 ### misc
 
