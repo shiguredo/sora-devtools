@@ -29,8 +29,6 @@
     "no-new-func": "error",
     // javascript: URL の使用を禁止
     "no-script-url": "error",
-    // void 演算子の使用を禁止
-    "no-void": "error",
     // with 文の使用を禁止
     "no-with": "error",
 
@@ -103,8 +101,6 @@
     "max-statements": ["error", { "max": 50 }],
 
     // ===== eslint: パフォーマンスと正確性 =====
-    // ループ内での await を禁止 (Promise.all を使用)
-    "no-await-in-loop": "error",
     // 配列メソッドのコールバックで return を強制
     "array-callback-return": "error",
     // コンストラクタでの return を禁止
@@ -129,8 +125,6 @@
     "grouped-accessor-pairs": "error",
     // 不要な計算プロパティを禁止
     "no-useless-computed-key": "error",
-    // 重複 import を禁止
-    "no-duplicate-imports": "error",
     // Object.hasOwn() を推奨
     "prefer-object-has-own": "error",
     // parseInt より数値リテラルを推奨
@@ -141,8 +135,6 @@
     "yoda": "error",
     // 不要な else を禁止
     "no-else-return": "error",
-    // 否定条件を回避
-    "no-negated-condition": "error",
     // new Object() を禁止
     "no-object-constructor": "error",
     // 不要な return を禁止
@@ -197,22 +189,10 @@
     // ===== typescript: 型安全性 =====
     // any 型の引数を禁止
     // sora-js-sdk や WebRTC API など外部ライブラリとの連携で
-    // any 型の値を扱う場面が多いため unsafe 系ルールを無効化
-    "typescript/no-unsafe-argument": "off",
-    // any 型の代入を禁止
-    "typescript/no-unsafe-assignment": "off",
-    // any 型の呼び出しを禁止
-    "typescript/no-unsafe-call": "off",
     // 安全でない enum 比較を禁止
     "typescript/no-unsafe-enum-comparison": "error",
-    // any 型のメンバーアクセスを禁止
-    "typescript/no-unsafe-member-access": "off",
-    // any 型の return を禁止
-    "typescript/no-unsafe-return": "off",
     // 安全でない型アサーションを禁止
     // DOM イベントハンドラで event.target as HTMLInputElement 等の
-    // 型アサーションが頻出するため無効化
-    "typescript/no-unsafe-type-assertion": "off",
     // 安全でない単項マイナスを禁止
     "typescript/no-unsafe-unary-minus": "error",
 
@@ -265,16 +245,12 @@
     // ===== typescript: enum =====
     // enum の重複値を禁止
     "typescript/no-duplicate-enum-values": "error",
-    // any 型の明示的使用を禁止
-    "typescript/no-explicit-any": "error",
 
     // ===== typescript: null/undefined =====
     // 余分な非 null アサーションを禁止
     "typescript/no-extra-non-null-assertion": "error",
     // オプショナルチェーン後の非 null アサーションを禁止
     "typescript/no-non-null-asserted-optional-chain": "error",
-    // 非 null アサーションを禁止
-    "typescript/no-non-null-assertion": "error",
 
     // ===== typescript: その他 =====
     // this のエイリアスを禁止
@@ -607,8 +583,6 @@
     "import/no-absolute-path": "error",
     // AMD を禁止
     "import/no-amd": "error",
-    // CommonJS を禁止
-    "import/no-commonjs": "error",
     // 循環依存を禁止
     "import/no-cycle": "error",
     // 重複 import を禁止
@@ -627,10 +601,6 @@
     "import/no-self-import": "error",
     // webpack ローダー構文を禁止
     "import/no-webpack-loader-syntax": "error",
-    // モジュールの明確化を強制
-    "import/unambiguous": "error",
-    // export を最後に配置
-    "import/exports-last": "error",
 
     // ===== promise: 必須パターン =====
     // always return を強制

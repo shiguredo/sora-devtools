@@ -49,6 +49,10 @@
 
 ### misc
 
+- [ADD] prek に builtin フックを追加してセキュリティと設定ファイルの構文検証を行う
+  - check-merge-conflict / detect-private-key / check-added-large-files
+  - check-toml / check-yaml / check-json5 (`.json` / `.json5` / `.jsonc` を対象)
+  - @voluntas
 - [CHANGE] prek フックを `pnpm run` 経由から `vp` 直接呼び出しに変更する
   - @voluntas
 - [CHANGE] pnpm scripts と prek フックを `vp check` に統合する
@@ -77,6 +81,9 @@
 - [CHANGE] React から Preact に移行する
   - @voluntas
 - [CHANGE] Biome から Oxc (oxlint/oxfmt) に移行する
+  - @voluntas
+- [FIX] `.oxlintrc.jsonc` の重複キー 14 件を削除する
+  - 前半の `error` 指定が後半の `off` で上書きされて形骸化していた行を一括削除
   - @voluntas
 
 ## 2025.2.1

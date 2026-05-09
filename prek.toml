@@ -5,9 +5,23 @@
 fail_fast = true
 default_stages = ["pre-commit"]
 
+# オフラインで動作する builtin フックでセキュリティと設定ファイルの構文を先に検証する
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "check-merge-conflict", priority = 0 },
+  { id = "detect-private-key", priority = 0 },
+  { id = "check-added-large-files", priority = 0 },
+  { id = "check-toml", priority = 0 },
+  { id = "check-yaml", priority = 0 },
+  { id = "check-json5", priority = 0, types = [
+    "file",
+  ], files = "\\.(json|json5|jsonc)$" },
+]
+
 [[repos]]
 repo = "local"
 hooks = [
-  { id = "check", name = "vp check", entry = "vp check", language = "system", pass_filenames = false, priority = 0 },
+  { id = "check", name = "vp check", entry = "vp check", language = "system", pass_filenames = false, priority = 10 },
   { id = "test", name = "vp test run", entry = "vp test run", language = "system", pass_filenames = false, always_run = true, priority = 20 },
 ]
