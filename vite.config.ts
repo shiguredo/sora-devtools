@@ -39,7 +39,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["src/app/app.test.ts", "src/utils.test.ts", "src/utils.pbt.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.prop.ts"],
     globals: true,
     environment: "jsdom",
   },

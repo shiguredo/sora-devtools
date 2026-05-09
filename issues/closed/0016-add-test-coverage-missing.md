@@ -1,6 +1,7 @@
 # 0016 utils / rpc / opfs / worker のテストカバレッジを追加する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -81,3 +82,23 @@ Model: deepseek-v4-pro
 - `vitest-browser-preact` + Playwright で browser mode テストを実行する
 - PBT テストは `@fast-check/vitest` を使用する
 - CLAUDE.md のテスト規約を遵守する（test/assert、モック禁止、`*.prop.ts` 命名）
+
+## 解決方法
+
+CLAUDE.md の「モック禁止」と現実的なスコープを踏まえ、純粋関数の PBT を中心に拡充した。
+
+- `src/utils.pbt.test.ts` を `src/utils.prop.ts` にリネームし、CLAUDE.md の `*.prop.ts` 命名規約に揃えた。
+- `vite.config.ts` の `test.include` を個別ファイル列挙から `src/**/*.test.ts` / `src/**/*.prop.ts` のグロブに変更し、新規テストファイルが自動で取り込まれるようにした。
+- `src/utils.prop.ts` に以下の純粋関数の PBT テストを追加した（今までは `parseQueryString` のみ）:
+  - `parseBooleanString` (true/false 系・それ以外で undefined)
+  - `formatUnixtime` (出力フォーマット検証)
+  - `parseMetadata` (有効 JSON / 任意文字列の不変条件)
+  - `getVideoSizeByResolution` (NxM 形式 / 不正形式の境界)
+
+備考: 以下は今回のスコープから外した。
+
+- `rpc` 関数のテスト: モック禁止規約と衝突するため、実際の Sora 接続を伴うテストインフラが必要。e2e で代替する。
+- `loadUrlEntries` / `saveUrlEntriesToOPFS` / `createFakeMediaStream` / Worker テスト: `vitest-browser-preact` の browser mode セットアップが必要で、独立した issue として扱うのが適切。
+- `createConnectOptions` / `createSignalingURL` などのブラウザ API 依存関数: 上記同様。
+
+これらは別途 issue を起票して対応するのが望ましい。

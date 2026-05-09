@@ -24,7 +24,13 @@ import {
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from "./constants.ts";
-import { parseQueryString } from "./utils.ts";
+import {
+  formatUnixtime,
+  getVideoSizeByResolution,
+  parseBooleanString,
+  parseMetadata,
+  parseQueryString,
+} from "./utils.ts";
 
 // オブジェクトから URLSearchParams を作成するヘルパー関数
 function createSearchParams(parameters: Record<string, unknown>): URLSearchParams {
@@ -350,5 +356,71 @@ test.prop({
     assert.equal(result.audioCodecType, audioCodecType);
     assert.deepEqual(result.signalingUrlCandidates, signalingUrlCandidates);
     assert.equal(result.resolution, resolution);
+  },
+);
+
+// parseBooleanString のテスト
+test.prop([fc.boolean()])("parseBooleanString は 'true'/'false' を boolean に変換する", (value) => {
+  const result = parseBooleanString(String(value));
+  assert.equal(result, value);
+});
+
+test.prop([fc.string().filter((s) => s !== "true" && s !== "false")])(
+  "parseBooleanString は 'true'/'false' 以外の文字列で undefined を返す",
+  (value) => {
+    assert.equal(parseBooleanString(value), undefined);
+  },
+);
+
+// formatUnixtime のテスト
+test.prop([fc.integer({ min: 0, max: 4_102_444_800_000 })])(
+  "formatUnixtime は YYYY-M-D HH:MM:SS.mmm 形式の文字列を返す",
+  (time) => {
+    const result = formatUnixtime(time);
+    assert.match(result, /^\d{4}-\d{1,2}-\d{1,2} \d{2}:\d{2}:\d{2}\.\d{3}$/);
+  },
+);
+
+// parseMetadata のテスト
+test.prop([fc.boolean(), fc.json()])(
+  "parseMetadata: enabled=true で有効な JSON はパース済みの値を返す",
+  (enabled, jsonStr) => {
+    const result = parseMetadata(enabled, jsonStr);
+    if (enabled) {
+      assert.deepEqual(result, JSON.parse(jsonStr));
+    } else {
+      assert.equal(result, undefined);
+    }
+  },
+);
+
+test.prop([fc.string().filter((s) => s.length > 0 && s !== "null")])(
+  "parseMetadata: 任意文字列で常に undefined または有効値を返す（生文字列は返さない）",
+  (anyStr) => {
+    const result = parseMetadata(true, anyStr);
+    if (result === undefined) {
+      return;
+    }
+    // undefined でない場合はパース可能だったので、JSON.parse の結果と一致する
+    assert.deepEqual(result, JSON.parse(anyStr));
+  },
+);
+
+// getVideoSizeByResolution のテスト
+test.prop([fc.integer({ min: 1, max: 7680 }), fc.integer({ min: 1, max: 4320 })])(
+  "getVideoSizeByResolution: NxM 形式は { width, height } を返す",
+  (width, height) => {
+    const result = getVideoSizeByResolution(`${width}x${height}`);
+    assert.equal(result.width, width);
+    assert.equal(result.height, height);
+  },
+);
+
+test.prop([fc.string().filter((s) => !/^\d+x\d+$/.test(s))])(
+  "getVideoSizeByResolution: 不正な形式は { width: 0, height: 0 } を返す",
+  (invalidResolution) => {
+    const result = getVideoSizeByResolution(invalidResolution);
+    assert.equal(result.width, 0);
+    assert.equal(result.height, 0);
   },
 );
