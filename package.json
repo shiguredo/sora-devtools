@@ -18,12 +18,10 @@
     "dev": "vp dev --port 3333",
     "build": "vp build",
     "preview": "vp preview",
-    "fmt": "vp fmt",
-    "lint": "vp lint",
-    "lint:fix": "vp lint --fix",
+    "check": "vp check",
+    "check:fix": "vp check --fix",
     "test": "vp test run",
     "test:ct": "vp test run --config vitest.ct.config.ts",
-    "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test --project=chromium",
     "cleanup": "git clean -ffdx --exclude .env"
   },
@@ -59,5 +57,5 @@
     "node": ">=26",
     "pnpm": ">=10"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@11.0.9"
 }

@@ -49,6 +49,11 @@
 
 ### misc
 
+- [CHANGE] pnpm scripts と prek フックを `vp check` に統合する
+  - `fmt` / `lint` / `lint:fix` / `typecheck` を削除し `check` / `check:fix` に置き換える
+  - prek の `fmt` / `lint` / `typecheck` フックを `check` 1 本にまとめる
+  - CI から `vp check` と重複する `tsc --noEmit` を削除する
+  - @voluntas
 - [CHANGE] Vite / Vitest / oxlint / oxfmt から Vite+ に移行する
   - vite-plus 0.1.11 を導入し vp コマンドに統一する
   - vitest.config.ts を vite.config.ts に統合する
