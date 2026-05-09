@@ -42,6 +42,11 @@
   - デフォルト 1000 件、100/500/1000/5000 から選択可能
   - URL パラメータ maxNotifyMessages に対応
   - @voluntas
+- [ADD] テストカバレッジを拡充する
+  - `utils.pbt.test.ts` を `utils.prop.ts` にリネームし命名規約に揃える
+  - vite.config.ts の test.include を `src/**/*.test.ts` / `src/**/*.prop.ts` に変更する
+  - `parseBooleanString` / `formatUnixtime` / `parseMetadata` / `getVideoSizeByResolution` の PBT テストを追加する
+  - @voluntas
 - [CHANGE] 未使用コード・コメント・lint ディレクティブを削除する
   - `CustomHTMLCanvasElement` / `testVideoResolutionPattern` / utils 版 `isFormDisabled` を削除
   - `SoraDevtoolsState` の Omit から存在しない `localTestMediaStream` を削除
