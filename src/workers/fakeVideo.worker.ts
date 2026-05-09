@@ -105,7 +105,7 @@ self.addEventListener("message", (event: MessageEvent) => {
       ctx = canvas.getContext("2d", { alpha: false });
 
       if (!ctx) {
-        self.postMessage({ type: "error", error: "Failed to get 2D context" });
+        self.postMessage({ type: "error", error: "failed to get 2D context" });
         return;
       }
 

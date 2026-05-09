@@ -1,6 +1,7 @@
 # 0012 エラーメッセージを CLAUDE.md 規約に準拠させる
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -77,3 +78,9 @@ Model: deepseek-v4-pro
 ## テスト戦略
 
 エラーメッセージの文字列変更のみのため、既存テストがあればそれを更新する。新規テストは不要。
+
+## 解決方法
+
+- `src/app/actions.ts` の 12 箇所のエラー / 情報メッセージを小文字始まり・末尾ピリオドなしの英語に書き換えた。
+- `src/workers/fakeVideo.worker.ts` の "Failed to get 2D context" を小文字始まりに変更した。
+- `src/components/Header/SignalingUrlModal.tsx` の日本語メッセージ (`URL は wss:// または ws://...`、`この URL は既に追加されています`) を英語化した。
