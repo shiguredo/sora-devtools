@@ -19,6 +19,26 @@ soraConnection.stream = null;
 
 ## 修正方針
 
-- sora-js-sdk に disconnect 時も stream を保持する正式なオプションや API が存在するか調査する
-- 存在しない場合は sora-js-sdk に機能追加を依頼する issue を起票する
-- 短期的には、このハックに依存せずに stream を再生成する方式に変更する
+1. sora-js-sdk のソースコードまたは型定義を確認し、`stream` プロパティが public API か内部プロパティかを調査する
+2. public API であれば利用を継続し、コメントから `ハック` の文言を削除する
+3. 内部プロパティの場合:
+   - sora-js-sdk の該当バージョンの disconnect 実装を確認し、`stream` へのアクセスが実際に必要か検証する
+   - 必要なければ `soraConnection.stream = null` の行を削除する
+   - 必要であれば、disconnect 前に `MediaStream` の参照を退避し、disconnect 後に再設定する方式に変更する:
+     ```typescript
+     const savedStream = soraConnection.stream;
+     await soraValue.disconnect();
+     // ... クリーンアップ ...
+     // 再接続時などに savedStream を利用
+     ```
+4. sora-js-sdk 側に「disconnect 時に stream を自動停止しない」オプションの追加を提案する（上流 issue の起票）
+
+## 調査手順
+
+- `node_modules/sora-js-sdk/` 内の型定義ファイル（`.d.ts`）で `stream` プロパティの有無と可視性を確認する
+- 同ディレクトリ内の disconnect 実装を grep し、`stream` への操作（`stream.getTracks()` や `track.stop()` 等）の有無を確認する
+
+## テスト戦略
+
+- ハック解除後、通常の connect → disconnect サイクルでエラーが発生しないこと
+- 再接続シナリオで stream が正しく引き継がれること

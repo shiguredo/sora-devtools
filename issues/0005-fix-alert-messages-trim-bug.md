@@ -35,4 +35,31 @@ if (currentAlertMessages.length >= 10) {
 
 ## 修正方針
 
-ループ前に目標長を固定する。例: `const target = 5; while (currentAlertMessages.length > target) { currentAlertMessages.pop(); }` または `slice` を使用する。
+`src/app/signals.ts:189-193` を以下のように変更する。ループ前に目標長を固定し、`pop()` のたびに変動する `length` への依存を解消する:
+
+```typescript
+const MAX_ALERT_MESSAGES = 10;
+if (currentAlertMessages.length >= MAX_ALERT_MESSAGES) {
+  const targetLength = MAX_ALERT_MESSAGES - 1; // unshift 後の最大長
+  while (currentAlertMessages.length > targetLength) {
+    currentAlertMessages.pop();
+  }
+}
+```
+
+または `slice` を直接使う:
+
+```typescript
+const MAX_ALERT_MESSAGES = 10;
+if (currentAlertMessages.length >= MAX_ALERT_MESSAGES) {
+  currentAlertMessages = currentAlertMessages.slice(0, MAX_ALERT_MESSAGES - 1);
+}
+```
+
+意図を明確にするため、マジックナンバーを定数化する。
+
+## テスト戦略
+
+- アラートメッセージが 10 件の状態で 11 件目を追加 → 最大 10 件（unshift 後で MAX_ALERT_MESSAGES 件）以下であること
+- アラートメッセージが 9 件の状態ではトリミングが発生しないこと
+- アラートメッセージが 20 件蓄積した状態でも正しくトリミングされること

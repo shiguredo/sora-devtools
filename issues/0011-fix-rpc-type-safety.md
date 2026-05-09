@@ -27,6 +27,23 @@ if (conn.rpcMethods.length === 0) {
 
 ## 修正方針
 
-- `Array.isArray(conn.rpcMethods)` でガードする
-- または `(conn as Record<string, unknown>).rpcMethods` として安全にアクセスする
-- エラーメッセージは小文字始まりに修正する（#0012 と合わせて対応）
+`src/rpc.ts:20-26` の `showMethodAlert` ブロックで `Array.isArray` による型ガードを追加する:
+
+```typescript
+if (options.showMethodAlert) {
+  const methods = (conn as Record<string, unknown>).rpcMethods;
+  if (!Array.isArray(methods) || methods.length === 0) {
+    setRPCErrorAlertMessage("rpc_methods in type: offer is empty");
+  } else if (!methods.includes(method)) {
+    setRPCErrorAlertMessage(`"${method}" is not in rpc_methods in type: offer`);
+  }
+}
+```
+
+または `conn` が持つべき型を `sora-js-sdk` の型定義で確認し、`ConnectionPublisher` / `ConnectionSubscriber` に `rpcMethods: string[]` が存在することを型安全に確認した上で、型ガード不要と判断する。いずれの場合も、`conn` の型定義を明示的に確認することが先決。
+
+## テスト戦略
+
+- `rpcMethods` が `undefined` の場合、`setRPCErrorAlertMessage("rpc_methods in type: offer is empty")` が呼ばれること
+- `rpcMethods` が空配列の場合も同上
+- `rpcMethods` に指定メソッドが含まれていない場合、適切なエラーメッセージが表示されること

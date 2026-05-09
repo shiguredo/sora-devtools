@@ -52,6 +52,32 @@ Model: deepseek-v4-pro
 
 ## 修正方針
 
-- PBT で書ける関数は PBT（`*.prop.ts`）でテストする
-- ブラウザ API 依存の関数は Vitest の browser mode でテストする
-- CLAUDE.md のテスト規約（Vitest Chai API, モック禁止, PBT 優先）を遵守する
+### テストファイルの配置
+
+| 新規テストファイル                   | 対象関数                                                                                                                                                 | テスト方式                                                                    |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `src/utils.prop.ts`                  | `parseBooleanString`, `parseMetadata`, `formatUnixtime`, `checkFormValue` 等の純粋関数                                                                   | PBT (fast-check)                                                              |
+| `src/utils.ct.ts`                    | `createConnectOptions`, `createSignalingURL`, `createAudioConstraints`, `createVideoConstraints`, `createFakeMediaConstraints` 等のブラウザ API 依存関数 | Vitest browser mode (`.ct.ts`)                                                |
+| `src/rpc.prop.ts`                    | `rpc` 関数                                                                                                                                               | PBT（テスト用の mock connection を注入できるよう rpc 関数のシグネチャを調整） |
+| `src/opfs.ct.ts`                     | `loadUrlEntries`, `saveUrlEntriesToOPFS`                                                                                                                 | Vitest browser mode                                                           |
+| `src/workers/fakeVideo.worker.ct.ts` | Worker のメッセージハンドリング                                                                                                                          | Vitest browser mode                                                           |
+
+### 既存テストの修正
+
+| 対象                    | 内容                                                                                                                                                      |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/utils.test.ts`     | 全 229 行を削除。`parseQueryString` は PBT で網羅済み                                                                                                     |
+| `src/utils.pbt.test.ts` | `src/utils.prop.ts` にリネーム。`fc.constant` の実質的単体テストを削除。`debugApiUrl`/`simulcastRequestRid`/`forceStereoOutput` を `parametersArb` に追加 |
+| `src/app/app.test.ts`   | `vi.stubGlobal` / `vi.fn()` を排除し、Vitest browser mode で実際のブラウザ API を使用                                                                     |
+
+### 他の issue との依存関係
+
+- #0001 (AudioContext) の修正完了後に `createFakeMediaStream` のテストを追加する
+- #0017 (signals ボイラープレート) の後、残った副作用セッターのテストを追加する
+- #0002 (StatsReport タイマー) の修正後、`startStatsReportTimer` / `stopStatsReportTimer` のテストを追加する
+
+### テスト環境
+
+- `vitest-browser-preact` + Playwright で browser mode テストを実行する
+- PBT テストは `@fast-check/vitest` を使用する
+- CLAUDE.md のテスト規約を遵守する（test/assert、モック禁止、`*.prop.ts` 命名）

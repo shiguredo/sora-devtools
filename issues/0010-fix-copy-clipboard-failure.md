@@ -33,6 +33,33 @@ void copy2clipboard(`${location.origin}${location.pathname}?${queryStrings.join(
 
 ## 修正方針
 
-- 関数名を `copyToClipboard` に変更する（省略形 `2` の排除）
-- `navigator.clipboard` が使えない場合にエラーを throw または戻り値で通知する
-- 呼び出し元で失敗時にアラートを表示する
+1. `src/utils.ts:50-54` の `copy2clipboard` を `copyToClipboard` にリネームし、戻り値型を `Promise<boolean>` に変更する:
+
+```typescript
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  return false;
+}
+```
+
+2. `src/app/actions.ts:570` の呼び出し元で成否を確認し、失敗時にアラートを表示する:
+
+```typescript
+const success = await copyToClipboard(
+  `${location.origin}${location.pathname}?${queryStrings.join("&")}`,
+);
+if (success) {
+  globalThis.history.replaceState(null, "", `${location.pathname}?${queryStrings.join("&")}`);
+} else {
+  signals.setAPIErrorAlertMessage("failed to copy URL to clipboard");
+}
+```
+
+## テスト戦略
+
+- `navigator.clipboard` が存在する場合、`writeText` が呼ばれ `true` が返ること
+- `navigator.clipboard` が存在しない場合、`false` が返ること
+- `navigator.clipboard.writeText` が reject した場合の挙動（現状は catch されていないため、必要に応じて try/catch を追加）

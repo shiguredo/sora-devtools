@@ -43,7 +43,37 @@ Model: deepseek-v4-pro
 
 ## 修正方針
 
-- 未使用エクスポートは削除する
-- 虚偽の型参照は削除する
-- 不使用ディレクティブ・宣伝コメント・口語的コメントは削除する
-- 再エクスポートブロックは、全コンポーネントの import 元を signals.ts に直接変更した上で削除する
+### 1. 未使用エクスポートの削除
+
+| ファイル               | 削除対象                                   | 確認結果                                                               |
+| ---------------------- | ------------------------------------------ | ---------------------------------------------------------------------- |
+| `src/types.ts:211-213` | `CustomHTMLCanvasElement` インターフェース | 全 import なし → 削除                                                  |
+| `src/utils.ts:267-269` | `testVideoResolutionPattern` 関数          | 全 import なし → 削除                                                  |
+| `src/utils.ts:669-677` | `isFormDisabled` 関数                      | `signals.ts:181` の computed 版が全コンポーネントで使われている → 削除 |
+| `src/opfs.ts:98-110`   | `purgeUrlEntriesFromOPFS` 関数             | 全 import なし → 削除                                                  |
+| `src/constants.ts:117` | `INSTRUCTIONS` 定数                        | 全 import なし → 削除（`instructions.json` の import も合わせて削除）  |
+
+### 2. 虚偽の型参照の削除
+
+`src/types.ts:415` の `"localTestMediaStream"` を `DownloadReportParameters` の Omit リストから削除する。`SoraDevtoolsState` に存在しないプロパティ名であり、TypeScript はエラーを出さないが誤解を招く。
+
+### 3. 不使用ディレクティブの削除
+
+- `src/app/signals.ts:13` — `// eslint-disable-next-line import/default -- Vite の ?worker サフィックスによる Web Worker インポート` を削除（eslint 不使用）
+- `src/utils.ts:240` — `// biome-ignore lint: 型安全なキーによる代入` を削除（Biome 不使用）
+
+### 4. 口語的・宣伝コメントの削除
+
+- `src/utils.pbt.test.ts:1` — `// このテストは Cline https://cline.bot/ による自動生成です。` を削除
+- `src/types.ts:273-274` — `// 元々定義されてたやつ` を削除
+- `src/types.ts:281-282` — `// 新しく追加したやつ` を削除
+
+### 5. 後方互換 re-export ブロックの削除（条件付き）
+
+`src/app/actions.ts:1811-1901` の再エクスポートブロックは、全コンポーネントの import 元を `@/app/actions` から `@/app/signals` に直接変更できる場合に限り削除する。CLAUDE.md に「後方互換性は考慮しないこと」と明記されているため、段階的移行は不要。
+
+## テスト戦略
+
+- 削除後に `vp check`（fmt + lint + typecheck）が pass すること
+- 削除後に `vp test run` が pass すること
+- `INSTRUCTIONS` 削除に伴い、`instructions.json` の import が不要になる場合は `constants.ts` の import 行も削除すること

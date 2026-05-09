@@ -34,6 +34,42 @@ for (const track of mediaStream.getTracks()) {
 
 `replaceTrack` のエラーが捕捉され、ユーザーに通知される。または `Promise.allSettled` で全トラックの結果を収集する。
 
+## 影響範囲
+
+| ファイル                       | 変更内容                                                                                |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| `src/app/actions.ts:1567-1580` | `updateMediaStream` の `void sender.replaceTrack(track)` を `Promise.allSettled` に変更 |
+
 ## 修正方針
 
-`void` をやめ、`Promise.allSettled` で全トラックの置き換え結果を待ち、失敗した場合はアラートを表示する。
+`src/app/actions.ts:1567-1580` の for ループを以下のように変更する:
+
+```typescript
+const replaceResults = await Promise.allSettled(
+  mediaStream.getTracks().map(async (track) => {
+    if (!soraValue?.pc) {
+      return;
+    }
+    const sender = soraValue.pc.getSenders().find((s) => {
+      if (!s.track) {
+        return false;
+      }
+      return s.track.kind === track.kind;
+    });
+    if (sender) {
+      await sender.replaceTrack(track);
+    }
+  }),
+);
+
+const failures = replaceResults.filter((r) => r.status === "rejected");
+if (failures.length > 0) {
+  signals.setSoraErrorAlertMessage(`failed to replace ${failures.length} track(s)`);
+}
+```
+
+## テスト戦略
+
+- 全 `replaceTrack` が成功した場合、アラートが表示されないこと
+- 一部の `replaceTrack` が失敗した場合、アラートが表示されること
+- `soraValue.pc` が null の場合、`replaceTrack` が呼ばれずエラーにならないこと

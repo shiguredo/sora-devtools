@@ -28,4 +28,10 @@ case "21:9": {
 
 ## 修正方針
 
-`return 21 / 9;` に変更する。
+`src/utils.ts:298` の `return 20 / 9;` を `return 21 / 9;` に変更する。
+
+## テスト戦略
+
+- `getValueByAspectRatio("21:9")` が `21 / 9` (≈2.333) を返すこと
+- `getValueByAspectRatio("4:3")`, `getValueByAspectRatio("16:9")` も同様に正しい値を返すことの確認
+- 無効な入力で `Number.NaN` が返ることの確認（既存テスト未カバー）

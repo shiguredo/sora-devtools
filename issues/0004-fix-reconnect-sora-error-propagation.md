@@ -28,6 +28,22 @@ Model: deepseek-v4-pro
 
 エラーが適切に捕捉され、`setSoraConnectionStatus("disconnected")` が確実に呼ばれる。
 
+## 影響範囲
+
+| ファイル                       | 変更内容                                                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `src/app/actions.ts:1421-1427` | `reconnectSora` 内の `createMediaStream` 呼び出しを try/catch で囲む                                            |
+| `src/app/actions.ts:998-1001`  | disconnect callback 内の `void (async () => { await stopLocalVideoTrack(...); })()` を try/catch 付きに変更する |
+| `src/app/actions.ts:1704`      | `setCameraDeviceAction` 内の `void soraValue.replaceVideoTrack(...)` も同様にエラー捕捉を追加                   |
+| `src/app/actions.ts:1648`      | `setMicDeviceAction` 内の `void soraValue.removeAudioTrack(...)` も同様                                         |
+
 ## 修正方針
 
-`createMediaStream(state).catch(...)` の外側を try/catch で囲む。`void IIFE` パターンも try/catch で内部エラーを捕捉する。
+1. `reconnectSora` の `createMediaStream(state).catch(...)` を try/catch で囲み、catch 節で `setSoraConnectionStatus("disconnected")` と `setSoraReconnecting(false)` を呼ぶ
+2. disconnect callback の `void IIFE` パターンでは、内部に try/catch を追加し、例外を `signals.setLogMessages` で記録する
+3. `setCameraDeviceAction` と `setMicDeviceAction` の `void` パターンも同様に try/catch を追加する
+
+## テスト戦略
+
+- `reconnectSora` で `createMediaStream` が reject した場合、`connectionStatus` が `"disconnected"` になり `reconnecting` が false になること
+- disconnect callback 内の `stopLocalVideoTrack` が throw しても、後続のクリーンアップ処理が継続されること

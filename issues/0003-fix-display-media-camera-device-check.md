@@ -30,4 +30,11 @@ if (!state.video || !state.cameraDevice) {
 
 ## 修正方針
 
-`!state.cameraDevice` のチェックを削除し、`!state.video` のみをガード条件とする。
+`src/app/actions.ts:660` の条件を `if (!state.video || !state.cameraDevice)` から `if (!state.video)` に変更する。
+
+`cameraDevice` はカメラ利用フラグであり、画面共有（`getDisplayMedia`）ではカメラを使わない。画面共有には `createDisplayMediaStream` が使われるため、このガード条件に `cameraDevice` を含めるのは誤り。
+
+## テスト戦略
+
+- `createDisplayMediaStream` に `state.cameraDevice=false, state.video=true` を渡したとき、空の MediaStream ではなく `getDisplayMedia` が呼ばれること
+- `state.video=false` のときは引き続き空の MediaStream が返ること

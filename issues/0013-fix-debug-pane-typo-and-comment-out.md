@@ -12,6 +12,13 @@ Model: deepseek-v4-pro
 
 ## 修正方針
 
-- typo を `"Notify"` に修正する
-- API タブを復活させるか、`DEBUG_TYPES` から `"api"` を削除しコメントアウトコードも削除する
-- デバッグ用の `console.log` / `console.error` を削除する（CLAUDE.md に準拠）
+1. `src/components/DebugPane/index.tsx:59` の `title="Notfiy"` を `title="Notify"` に修正する
+2. API タブのコメントアウト (`index.tsx:7, :36, :82-86`) を完全に削除する。API 機能は別の形で提供済みのため、コメントアウトでの放置は不適切
+3. `src/constants.ts:81-92` の `DEBUG_TYPES` から `"api"` を削除する。現状 API タブは存在しないため、URL パラメータで無効な状態を指定可能なのはバグ
+4. `src/components/DebugPane/Api.tsx:179` の `console.log` および `:194` の `console.error` を削除する
+5. `src/components/DebugPane/Rpc.tsx` の `console` 出力があれば同様に削除する
+
+## テスト戦略
+
+- typo 修正と `console` 削除はコードレビューで確認
+- `DEBUG_TYPES` から `"api"` 削除後、`parseQueryString` に `debugType=api` を渡しても `debugType` が設定されないこと（既存の PBT でカバー可能）

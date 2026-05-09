@@ -38,7 +38,48 @@ Model: deepseek-v4-pro
 
 ## 修正方針
 
-1. `connectSora` と `reconnectSora` の共通接続ロジックを `connectWithRetry` 等の共通関数に抽出する
-2. `setMicDeviceAction` と `setCameraDeviceAction` を、`kind`（`"audio"` / `"video"`）をパラメータとする共通関数に統一する
-3. ガード条件の不一致（`||` vs `&&`）を意図に合わせて統一する
-4. `pickConnectionOptionsState` や `getStateForMediaStream` のような手動フィールド列挙も、よりメンテナンス性の高い方式に改善する
+### 1. `connectSora` と `reconnectSora` の共通化
+
+共通化した関数 `doConnect` を新設する。`connectSora` は `doConnect({ retry: false })`、`reconnectSora` は `doConnect({ retry: true })` として呼ぶ:
+
+```typescript
+interface DoConnectOptions {
+  retry: boolean;
+  maxRetries?: number; // デフォルト 10
+}
+
+async function doConnect(options: DoConnectOptions): Promise<void> {
+  // prepareSignalingConnection → createMediaStream → createSoraConnectionByRole
+  // → await connect → setStatsReportInternal → startStatsReportTimer
+  // → setLocalMediaStream / setFakeContentsGainNode → setSoraConnectionStatus("connected")
+  // の共通ロジック
+  //
+  // options.retry === true の場合、失敗時にループで retry する
+}
+```
+
+### 2. `setMicDeviceAction` と `setCameraDeviceAction` の共通化
+
+`kind` (`"audio"` | `"video"`) をパラメータとする `setDeviceAction(kind, enabled)` に統合する:
+
+```typescript
+type DeviceKind = "audio" | "video";
+
+async function setDeviceAction(kind: DeviceKind, enabled: boolean): Promise<void> {
+  const state = getStateForMediaStream();
+  const signalMap = {
+    audio: { setSignal: signals.setMicDevice, trackGetter: "getAudioTracks" /* ... */ },
+    video: { setSignal: signals.setCameraDevice, trackGetter: "getVideoTracks" /* ... */ },
+  };
+  // 共通ロジック
+}
+```
+
+### 3. ガード条件の不一致を修正
+
+`setMicDeviceAction` (line 1591) は `!localMediaStreamValue || !soraValue` だが、`setCameraDeviceAction` (line 1663) は `!localMediaStreamValue && !soraValue && connectionStatusValue !== "connected"`。両者の意図すべき動作を確認し、統一する。論理的には `!localMediaStreamValue || !soraValue` が正しい（signal の更新だけ行って早期リターン）。
+
+### 4. テスト戦略
+
+- 共通化後も既存の E2E テスト (`tests/sendrecv.test.ts` 等) が pass すること
+- `doConnect` の `retry=false` / `retry=true` の各経路をテストする（できれば browser mode で非 mock テスト）
