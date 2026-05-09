@@ -84,12 +84,12 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
       return;
     }
     if (!isValidUrl(trimmedUrl)) {
-      error.value = "URL は wss:// または ws:// で始まる必要があります";
+      error.value = "URL must start with wss:// or ws://";
       return;
     }
     // 重複チェック
     if (urlEntries.value.some((entry) => entry.url === trimmedUrl)) {
-      error.value = "この URL は既に追加されています";
+      error.value = "this URL has already been added";
       return;
     }
     urlEntries.value = [...urlEntries.value, { url: trimmedUrl, enabled: true }];
@@ -173,9 +173,9 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
     if (value.trim() === "") {
       error.value = "";
     } else if (!isValidUrl(value.trim())) {
-      error.value = "URL は wss:// または ws:// で始まる必要があります";
+      error.value = "URL must start with wss:// or ws://";
     } else if (urlEntries.value.some((entry) => entry.url === value.trim())) {
-      error.value = "この URL は既に追加されています";
+      error.value = "this URL has already been added";
     } else {
       error.value = "";
     }

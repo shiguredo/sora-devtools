@@ -46,6 +46,10 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] エラーメッセージとアラートメッセージを規約に準拠させる
+  - 小文字始まり、末尾ピリオドなし、英語に統一する
+  - SignalingUrlModal の日本語メッセージを英語化する
+  - @voluntas
 - [FIX] rpc.ts の conn.rpcMethods への型安全でないアクセスを修正する
   - Array.isArray による型ガードで rpcMethods が undefined のときも安全に処理する
   - @voluntas

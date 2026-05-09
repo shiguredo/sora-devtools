@@ -669,7 +669,7 @@ async function createDisplayMediaStream(
     return [new MediaStream(), null, null];
   }
   if (navigator.mediaDevices === undefined) {
-    throw new Error("Failed to call getUserMedia. Make sure domain is secure");
+    throw new Error("failed to call getUserMedia, make sure domain is secure");
   }
   const mediaConstraints = {
     // getDisplayMedia では配信する画面の音声を利用するため、デバイス指定 (audioInput) は使わない
@@ -768,7 +768,7 @@ async function createUserMediaStream(
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   if (navigator.mediaDevices === undefined) {
-    throw new Error("Failed to call getUserMedia. Make sure domain is secure");
+    throw new Error("failed to call getUserMedia, make sure domain is secure");
   }
   const mediaStream = new MediaStream();
   const audioConstraints = createAudioConstraints({
@@ -817,9 +817,7 @@ async function createUserMediaStream(
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", audioTrack));
       if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
         if (state.noiseSuppressionProcessor === null) {
-          throw new Error(
-            "Failed to start NoiseSuppressionProcessor. NoiseSuppressionProcessor is 'null'",
-          );
+          throw new Error("failed to start NoiseSuppressionProcessor, processor is null");
         }
         state.noiseSuppressionProcessor.stopProcessing();
         audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
@@ -832,9 +830,7 @@ async function createUserMediaStream(
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack));
       if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
         if (state.virtualBackgroundProcessor === null) {
-          throw new Error(
-            "Failed to start VirtualBackgroundProcessor. VirtualBackgroundProcessor is 'null'",
-          );
+          throw new Error("failed to start VirtualBackgroundProcessor, processor is null");
         }
         const options = {
           blurRadius: getBlurRadiusNumber(state.blurRadius),
@@ -862,7 +858,7 @@ async function createMediaStream(
   }
   if (state.mediaType === "mp4Media") {
     if (state.mp4MediaStream === null) {
-      throw new Error("No MP4 file has been selected");
+      throw new Error("no MP4 file has been selected");
     }
     // 指定の MP4 を再生するための MediaStream を返す
     // DevTools ではいったん常に繰り返し再生にしておく
@@ -1039,7 +1035,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     signals.setSoraConnectionStatus("disconnected");
     signals.setLocalMediaStream(null);
     signals.removeAllRemoteClients();
-    signals.setSoraInfoAlertMessage("Disconnect Sora.");
+    signals.setSoraInfoAlertMessage("disconnected Sora");
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected"));
     if (event.type === "abend" && reconnectValue) {
       // 再接続処理開始フラグ
@@ -1194,7 +1190,7 @@ export const requestMedia = async (): Promise<void> => {
         title: LOG_TITLE,
         description: JSON.stringify(error.message),
       });
-      signals.setAPIErrorAlertMessage(`Failed to get user devices. ${error.message}`);
+      signals.setAPIErrorAlertMessage(`failed to get user devices: ${error.message}`);
     }
     cleanupMediaStreamOnError(state, mediaStream);
     throw error;
@@ -1427,16 +1423,16 @@ export const connectSora = async (): Promise<void> => {
     // 先に setSora で state を参照できるようにした state の参照を削除
     signals.setSora(null);
     if (error instanceof Error) {
-      signals.setSoraErrorAlertMessage(`Failed to connect Sora. ${error.message}`);
+      signals.setSoraErrorAlertMessage(`failed to connect Sora: ${error.message}`);
     }
     cleanupMediaStreamOnError(state, mediaStream);
     signals.setSoraConnectionStatus("disconnected");
     throw error;
   }
   if (soraConnection === undefined) {
-    throw new Error("Failed to connect Sora. Connection object is 'undefined'");
+    throw new Error("failed to connect Sora, connection object is undefined");
   }
-  signals.setSoraInfoAlertMessage("Succeeded to connect Sora.");
+  signals.setSoraInfoAlertMessage("succeeded to connect Sora");
   await setStatsReportInternal(soraConnection);
   startStatsReportTimer();
   // disconnect 時に stream を止めないためのハック
@@ -1506,7 +1502,7 @@ export const reconnectSora = async (): Promise<void> => {
       }
     } catch (error) {
       if (error instanceof Error) {
-        signals.setSoraErrorAlertMessage(`(trials ${i}) Failed to connect Sora. ${error.message}`);
+        signals.setSoraErrorAlertMessage(`(trials ${i}) failed to connect Sora: ${error.message}`);
       }
       soraConnection = undefined;
     }
@@ -1518,12 +1514,12 @@ export const reconnectSora = async (): Promise<void> => {
     });
   }
   if (soraConnection === undefined) {
-    signals.setSoraErrorAlertMessage("Failed to reconnect Sora.");
+    signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraReconnecting(false);
     return;
   }
-  signals.setSoraInfoAlertMessage("Succeeded to reconnect Sora.");
+  signals.setSoraInfoAlertMessage("succeeded to reconnect Sora");
   await setStatsReportInternal(soraConnection);
   startStatsReportTimer();
   signals.setSora(soraConnection);
