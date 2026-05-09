@@ -46,6 +46,9 @@
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
   - @voluntas
+- [FIX] getDisplayMedia 利用時に cameraDevice=false で画面共有が行われない問題を修正する
+  - createDisplayMediaStream のガード条件から cameraDevice チェックを除外する
+  - @voluntas
 - [FIX] StatsReport タイマーの並行呼び出し蓄積・二重起動・即時停止できない問題を修正する
   - setInterval から setTimeout チェーンに変更し getStats 完了後に次回をスケジュールする
   - stopStatsReportTimer を新設し disconnect / disconnect コールバックで即時停止する

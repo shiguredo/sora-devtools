@@ -657,7 +657,8 @@ async function createDisplayMediaStream(
   state: createMediaStreamPickedState,
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
-  if (!state.video || !state.cameraDevice) {
+  // cameraDevice はカメラ利用フラグなので getDisplayMedia とは無関係。video のみで判定する
+  if (!state.video) {
     return [new MediaStream(), null, null];
   }
   if (navigator.mediaDevices === undefined) {
