@@ -3,6 +3,17 @@
 Created: 2026-05-09
 Model: deepseek-v4-pro
 
+## pending 理由
+
+`connectSora` / `reconnectSora`（合計 ~150 行）の統合は retry ロジックや setSora タイミングなど挙動が微妙に異なるため、振る舞いを変えずに共通化するには検証コストが大きい。`setMicDeviceAction` / `setCameraDeviceAction`（合計 ~140 行）の統合とガード条件 (`||` vs `&&`) の不一致修正も同様に意図確認が必要。
+
+単一 PR としてはリスクが高いため、以下のフェーズに分割して再着手するのが望ましい:
+
+1. 4 関数の振る舞いを表に書き出し、差分を最小化する
+2. ガード条件の不一致を別 issue で先行修正する
+3. setMicDeviceAction / setCameraDeviceAction の統合を先に実施する
+4. connectSora / reconnectSora の統合を最後に実施する
+
 ## 概要
 
 `src/app/actions.ts` (1901行) に大規模なコード重複が 2 箇所存在する。
