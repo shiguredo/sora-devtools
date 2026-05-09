@@ -1435,8 +1435,6 @@ export const connectSora = async (): Promise<void> => {
   signals.setSoraInfoAlertMessage("succeeded to connect Sora");
   await setStatsReportInternal(soraConnection);
   startStatsReportTimer();
-  // disconnect 時に stream を止めないためのハック
-  soraConnection.stream = null;
   if (mediaStream && (localMediaStreamValue === null || forceCreateMediaStream)) {
     signals.setLocalMediaStream(mediaStream);
   }

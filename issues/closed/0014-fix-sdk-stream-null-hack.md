@@ -1,6 +1,7 @@
 # 0014 soraConnection.stream = null の SDK 内部状態直接改変を調査する
 
 Created: 2026-05-09
+Completed: 2026-05-09
 Model: deepseek-v4-pro
 
 ## 概要
@@ -42,3 +43,9 @@ soraConnection.stream = null;
 
 - ハック解除後、通常の connect → disconnect サイクルでエラーが発生しないこと
 - 再接続シナリオで stream が正しく引き継がれること
+
+## 解決方法
+
+sora-js-sdk 2025.2.0 (`node_modules/.pnpm/sora-js-sdk@2025.2.0/.../sora.mjs`) を確認した結果、`disconnect()` 経路では `this.stream` に対して `getTracks()` や `track.stop()` の呼び出しは発生せず、`initializeConnection()` で `this.stream = null` にリセットされるのみであった。`stream` プロパティは `base.d.ts` で `MediaStream | null` の public プロパティとして公開されている。
+
+したがって `soraConnection.stream = null` のハックは不要と判断し、`src/app/actions.ts` から該当行とコメントを削除した。e2e の sendonly / recvonly / sendrecv は引き続き通っている。

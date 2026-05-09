@@ -42,6 +42,9 @@
   - デフォルト 1000 件、100/500/1000/5000 から選択可能
   - URL パラメータ maxNotifyMessages に対応
   - @voluntas
+- [CHANGE] connectSora の `soraConnection.stream = null` ハックを削除する
+  - sora-js-sdk 2025.2.0 では disconnect で stream を停止しないため不要
+  - @voluntas
 - [CHANGE] DebugPane の API タブを削除する
   - DEBUG_TYPES から api を削除する。`debugType=api` は無効になる
   - 未使用の Api.tsx を削除する
