@@ -6,11 +6,15 @@ export function CopyUrlButton() {
   const copied = useSignal(false);
 
   const onClick = (): void => {
-    copyURL();
-    copied.value = true;
-    setTimeout(() => {
-      copied.value = false;
-    }, 2000);
+    void copyURL().then((success) => {
+      if (!success) {
+        return;
+      }
+      copied.value = true;
+      setTimeout(() => {
+        copied.value = false;
+      }, 2000);
+    });
   };
 
   const baseClasses = `

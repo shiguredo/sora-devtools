@@ -2,7 +2,8 @@ import type { TargetedMouseEvent } from "preact";
 import { useSignal } from "@preact/signals";
 
 import { ClipboardIcon } from "@/components/ClipboardIcon";
-import { copy2clipboard } from "@/utils";
+import { copyToClipboard } from "@/utils";
+import * as signals from "@/app/signals";
 
 interface Props {
   text: string;
@@ -40,12 +41,17 @@ export function CopyLogButton(props: Props) {
   const copied = useSignal(false);
 
   const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
-    void copy2clipboard(props.text);
     event.currentTarget.blur();
-    copied.value = true;
-    setTimeout(() => {
-      copied.value = false;
-    }, 2000);
+    void copyToClipboard(props.text).then((success) => {
+      if (!success) {
+        signals.setAPIErrorAlertMessage("failed to copy log to clipboard");
+        return;
+      }
+      copied.value = true;
+      setTimeout(() => {
+        copied.value = false;
+      }, 2000);
+    });
   };
 
   if (props.disabled) {
