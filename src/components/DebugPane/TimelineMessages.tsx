@@ -87,10 +87,6 @@ function Collapse(props: TimelineMessage) {
       labelComponent = <SoraDevtoolsLabel />;
       break;
     }
-    default: {
-      labelComponent = undefined;
-      break;
-    }
   }
   return (
     <Message title={title} timestamp={timestamp} description={data ?? ""} label={labelComponent} />
