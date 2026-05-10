@@ -1197,9 +1197,7 @@ export const requestMedia = async (): Promise<void> => {
   let gainNode: undefined | GainNode | null;
   let audioContext: undefined | AudioContext | null;
   try {
-    [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch((error) => {
-      throw error;
-    });
+    [mediaStream, gainNode, audioContext] = await createMediaStream(state);
   } catch (error) {
     if (error instanceof Error) {
       signals.setLogMessages({

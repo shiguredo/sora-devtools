@@ -64,6 +64,10 @@
   - 未使用の Api.tsx を削除する
   - @voluntas
 
+- [FIX] requestMedia の no-op catch を削除する
+  - `createMediaStream(state).catch((error) => { throw error; })` の catch ハンドラがエラーをそのまま再スローしているだけで実質何もしていなかったため削除する
+  - 直後の try/catch が同じエラーを捕捉するため挙動は変わらない
+  - @voluntas
 - [FIX] forwardingFilter（単数形）を削除し forwardingFilters（複数形）に統一する
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
