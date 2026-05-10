@@ -41,7 +41,6 @@ export function Toast({
   children,
 }: ToastProps) {
   // 自動非表示
-  // no-else-return に従い早期 return でネストを浅くする
   useEffect(() => {
     if (!(show && autohide && onClose)) {
       return;

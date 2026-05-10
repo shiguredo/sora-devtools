@@ -1,6 +1,7 @@
 # 0026-fmt-remove-lint-rule-name-comments
 
 Created: 2026-05-10
+Completed: 2026-05-10
 Model: deepseek-v4-pro
 
 ## 背景
@@ -19,6 +20,6 @@ Model: deepseek-v4-pro
 | `Toast.tsx`               | 44  | 同上                                                            |
 | `JsonTree.tsx`            | 110 | 同上                                                            |
 
-## 期待される結果
+## 解決方法
 
-全 7 箇所のコメント行を削除する。lint ルール由来の変更であることは `vp check` の実行結果や CHANGES.md で記録されており、コード内コメントとして残す価値はない。
+全 7 箇所の lint ルール名コメント行を削除した。コード変更内容自体が自明であり、lint ルール由来の変更であることは `vp check` の実行結果や CHANGES.md で記録されているため、コード内コメントとして残す価値はない。

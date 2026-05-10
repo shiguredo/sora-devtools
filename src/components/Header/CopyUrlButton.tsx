@@ -5,7 +5,6 @@ import { copyURL } from "@/app/actions";
 export function CopyUrlButton() {
   const copied = useSignal(false);
 
-  // promise/prefer-await-to-then に従い async/await で記述する
   const onClick = async (): Promise<void> => {
     const success = await copyURL();
     if (!success) {

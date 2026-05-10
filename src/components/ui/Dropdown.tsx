@@ -46,7 +46,6 @@ export function Dropdown({ className = "", children }: DropdownProps) {
       }
     }
 
-    // no-else-return に従い早期 return でネストを浅くする
     if (!isOpen.value) {
       return;
     }

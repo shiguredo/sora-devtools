@@ -11,7 +11,6 @@ interface TextBoxProps {
   text: string;
 }
 function TextBox(props: TextBoxProps) {
-  // promise/prefer-await-to-then に従い async/await で記述する
   const onClick = async (event: TargetedMouseEvent<HTMLButtonElement>): Promise<void> => {
     event.currentTarget.blur();
     const success = await copyToClipboard(props.text);
