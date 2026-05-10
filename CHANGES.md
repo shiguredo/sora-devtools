@@ -11,26 +11,14 @@
 
 ## develop
 
-- [CHANGE] Fake Video を Worker ベースに書き換える
-  - OffscreenCanvas を使用して Worker 内で描画
-  - Chrome/Edge/Safari 対応（Firefox 非対応）
-  - @voluntas
-- [CHANGE] Fake Video の表示を改善する
-  - 経過時間を mmmm:ss.SSS 形式（ストップウォッチ形式）で表示
-  - 開始日時を上部に表示
-  - channel_id / session_id / connection_id を下部に表示
-  - channel_id は 10 文字を超える場合は先頭 10 文字 + "..." で省略
-  - 解像度に応じてフォントサイズを動的に調整
-  - @voluntas
-- [ADD] fakeVideoShowChannelId オプションを追加する
-  - Fake Video 上の channel_id 表示を切り替え可能にする
-  - URL パラメータ対応
-  - @voluntas
-- [CHANGE] デバッグパネルで長い文字列を折り返し表示にする
-  - @voluntas
 - [UPDATE] switch フォームのラベルクリックで switch を切り替え可能にする
   - @voluntas
 - [UPDATE] tooltip 付きフォームラベルのカーソルを `?` マークから通常カーソルに変更する
+  - @voluntas
+
+- [ADD] fakeVideoShowChannelId オプションを追加する
+  - Fake Video 上の channel_id 表示を切り替え可能にする
+  - URL パラメータ対応
   - @voluntas
 - [ADD] signalingUrlCandidates の設定モーダルを追加する
   - OPFS を使用してブラウザに URL 設定を永続化
@@ -47,6 +35,20 @@
   - vite.config.ts の test.include を `src/**/*.test.ts` / `src/**/*.prop.ts` に変更する
   - `parseBooleanString` / `formatUnixtime` / `parseMetadata` / `getVideoSizeByResolution` の PBT テストを追加する
   - @voluntas
+
+- [CHANGE] Fake Video を Worker ベースに書き換える
+  - OffscreenCanvas を使用して Worker 内で描画
+  - Chrome/Edge/Safari 対応（Firefox 非対応）
+  - @voluntas
+- [CHANGE] Fake Video の表示を改善する
+  - 経過時間を mmmm:ss.SSS 形式（ストップウォッチ形式）で表示
+  - 開始日時を上部に表示
+  - channel_id / session_id / connection_id を下部に表示
+  - channel_id は 10 文字を超える場合は先頭 10 文字 + "..." で省略
+  - 解像度に応じてフォントサイズを動的に調整
+  - @voluntas
+- [CHANGE] デバッグパネルで長い文字列を折り返し表示にする
+  - @voluntas
 - [CHANGE] 未使用コード・コメント・lint ディレクティブを削除する
   - `CustomHTMLCanvasElement` / `testVideoResolutionPattern` / utils 版 `isFormDisabled` を削除
   - `SoraDevtoolsState` の Omit から存在しない `localTestMediaStream` を削除
@@ -61,6 +63,7 @@
   - DEBUG_TYPES から api を削除する。`debugType=api` は無効になる
   - 未使用の Api.tsx を削除する
   - @voluntas
+
 - [FIX] forwardingFilter（単数形）を削除し forwardingFilters（複数形）に統一する
   - @voluntas
 - [FIX] アラートメッセージが RPC メソッドのボタンより背面に表示される問題を修正する
@@ -118,12 +121,60 @@
   - 解像度変更や再接続などで MediaStream を作り直す際に旧 AudioContext を close する
   - disposeMedia / disconnect / resetState で確実に close する
   - @voluntas
+- [FIX] JitterBuffer の jitterBufferEmittedCount が 0 の場合のゼロ除算で NaN が表示される問題を修正する
+  - ガードを追加し jitterBufferEmittedCount === 0 の場合は描画しない
+  - @voluntas
+- [FIX] replaceAudioTrack / removeAudioTrack / removeVideoTrack のエラーハンドリングを try/catch に統一する
+  - setMicDeviceAction の replaceAudioTrack に try/catch を追加する
+  - removeAudioTrack / removeVideoTrack の .catch() を try/await/catch に変更する
+  - error.toString() を error.message に統一する
+  - @voluntas
+- [FIX] AudioContext コンストラクタが未定義の環境でクラッシュする問題を修正する
+  - VolumeVisualizer / createFakeMediaStream に undefined ガードを追加する
+  - 変数名を AudioContextCtor から AudioContextConstructor に変更する
+  - @voluntas
+- [FIX] Video.tsx の loadedmetadata リスナーがアンマウント時に解除されず蓄積する問題を修正する
+  - useEffect の cleanup に removeEventListener を追加する
+  - 名前付き関数化して参照の一貫性を確保する
+  - @voluntas
+- [FIX] Video.tsx の setSinkId が render と stream 設定の両方で二重呼び出しされる問題を修正する
+  - render 時の setSinkId 呼び出しを削除し srcObject 設定後 (useEffect) のみに集約する
+  - @voluntas
+- [FIX] attemptReconnection で signals.sora が connect() 前に更新されず再接続時のクライアント誤認識を引き起こす問題を修正する
+  - connect() の前に signals.setSora() を追加する
+  - 失敗時に signals.setSora(null) でリセットする
+  - @voluntas
+- [FIX] setMicDeviceAction / setCameraDeviceAction でトラックが生成されなかった場合の AudioContext リークを修正する
+  - mediaStream.getTracks().length === 0 時に audioContext.close() する
+  - micDevice=false 時に closeFakeContentsAudio() を追加する
+  - @voluntas
+- [FIX] MutedVisualizer の height 変更時にキャンバスが再描画されない問題を修正する
+  - useEffect の依存配列に props.height を追加する
+  - @voluntas
 
 ### misc
 
+- [UPDATE] oxlint v1.39.0 で追加されたルールを有効にする
+  - typescript/prefer-optional-chain
+  - unicorn/require-module-attributes
+  - vitest/consistent-each-for, hoisted-apis-on-top, no-unneeded-async-expect-function, prefer-called-once, prefer-describe-function-title
+  - @voluntas
 - [ADD] prek に builtin フックを追加してセキュリティと設定ファイルの構文検証を行う
   - check-merge-conflict / detect-private-key / check-added-large-files
   - check-toml / check-yaml / check-json5 (`.json` / `.json5` / `.jsonc` を対象)
+  - @voluntas
+- [ADD] prek (pre-commit の Rust 実装) を利用した pre-commit 設定を追加する
+  - pnpm fmt / pnpm test / pnpm lint / pnpm typecheck をコミット前に実行する
+  - @voluntas
+- [CHANGE] `.oxlintrc.jsonc` / `.oxfmtrc.jsonc` を `vite.config.ts` の `lint:` / `fmt:` に統合する
+  - vite-plus は `.oxlintrc.*` / `.oxfmtrc.*` を runtime では参照せず `vite.config.ts` の `lint` / `fmt` キーを唯一の設定源とする仕様のため、これまで `.oxlintrc.jsonc` に書いていた 573 ルールが `vp check` で実質無効になっていた
+  - 設定本体を `vite.config.ts` に移植し `.oxlintrc.jsonc` / `.oxfmtrc.jsonc` を削除する
+  - 既存の `vitest/prefer-to-have-been-called` (vitest プラグインに存在しない) を削除する
+  - `unicorn/no-instanceof-array` を `no-instanceof-builtins` に集約する
+  - `vitest/prefer-importing-vitest-globals` を off にする (vite-plus/test や @playwright/test 経由のため自動修正で重複 import が生じるのを防ぐ)
+  - 型情報を活かす `typescript/no-unnecessary-condition` / `no-unnecessary-type-conversion` / `no-unnecessary-type-parameters` / `consistent-type-exports` / `dot-notation` を追加する
+  - DOM/OPFS 向けに `unicorn/prefer-blob-reading-methods` / `prefer-add-event-listener` / `prefer-dom-node-{append,dataset,remove,text-content}` / `prefer-query-selector` / `prefer-keyboard-event-key` / `prefer-import-meta-properties` / `no-document-cookie` / `no-useless-error-capture-stack-trace` を追加する
+  - テスト衛生のため `vitest/no-focused-tests` / `no-disabled-tests` / `no-conditional-tests` / `no-test-prefixes` / `no-test-return-statement` / `valid-title` / `no-import-node-test` / `prefer-mock-promise-shorthand` / `prefer-mock-return-shorthand` / `require-mock-type-parameters` を追加する
   - @voluntas
 - [CHANGE] prek フックを `pnpm run` 経由から `vp` 直接呼び出しに変更する
   - @voluntas
@@ -139,14 +190,6 @@
   - pre-commit のコマンドを vp に変更する
   - vite / vitest は vite-plus-core / vite-plus-test の npm エイリアスとして残す
     - vite/client の型定義や @fast-check/vitest 等の peer dependency 解決に必要なため
-  - @voluntas
-- [ADD] prek (pre-commit の Rust 実装) を利用した pre-commit 設定を追加する
-  - pnpm fmt / pnpm test / pnpm lint / pnpm typecheck をコミット前に実行する
-  - @voluntas
-- [UPDATE] oxlint v1.39.0 で追加されたルールを有効にする
-  - typescript/prefer-optional-chain
-  - unicorn/require-module-attributes
-  - vitest/consistent-each-for, hoisted-apis-on-top, no-unneeded-async-expect-function, prefer-called-once, prefer-describe-function-title
   - @voluntas
 - [CHANGE] Bootstrap/react-bootstrap から Tailwind CSS に移行する
   - @voluntas

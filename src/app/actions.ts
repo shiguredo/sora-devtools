@@ -644,15 +644,17 @@ function getStateForMediaStream(): createMediaStreamPickedState {
 }
 
 // MediaStream のトラックに contentHint と enabled を設定する
+// contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+// c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
 function applyTrackSettings(mediaStream: MediaStream, state: createMediaStreamPickedState): void {
   for (const track of mediaStream.getVideoTracks()) {
-    if (track.contentHint !== undefined) {
+    if ("contentHint" in track) {
       track.contentHint = state.videoContentHint;
     }
     track.enabled = state.videoTrack;
   }
   for (const track of mediaStream.getAudioTracks()) {
-    if (track.contentHint !== undefined) {
+    if ("contentHint" in track) {
       track.contentHint = state.audioContentHint;
     }
     track.enabled = state.audioTrack;
@@ -668,6 +670,8 @@ async function createDisplayMediaStream(
   if (!state.video) {
     return [new MediaStream(), null, null];
   }
+  // navigator.mediaDevices は HTTPS / localhost 以外では undefined になり得る
+  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
   if (navigator.mediaDevices === undefined) {
     throw new Error("failed to call getUserMedia, make sure domain is secure");
   }
@@ -696,8 +700,10 @@ async function createDisplayMediaStream(
   );
   const stream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media"));
+  // contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+  // c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
   for (const track of stream.getVideoTracks()) {
-    if (track.contentHint !== undefined) {
+    if ("contentHint" in track) {
       track.contentHint = state.videoContentHint;
     }
     track.enabled = state.videoTrack;
@@ -767,6 +773,8 @@ async function createUserMediaStream(
   state: createMediaStreamPickedState,
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
+  // navigator.mediaDevices は HTTPS / localhost 以外では undefined になり得る
+  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
   if (navigator.mediaDevices === undefined) {
     throw new Error("failed to call getUserMedia, make sure domain is secure");
   }
@@ -898,8 +906,14 @@ function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
       signals.setSoraClientId(message.client_id);
     }
     // 接続時点で存在する remote client の client_id を保存する
+    // message.data は [x: string]: unknown のため Array.isArray で unknown[] に絞り込む
+    // 要素は unknown 型なので object チェック後にプロパティアクセスする
     if (Array.isArray(message.data)) {
-      for (const remoteClient of message.data) {
+      for (const item of message.data) {
+        if (typeof item !== "object" || item === null) {
+          continue;
+        }
+        const remoteClient = item as Record<string, unknown>;
         if (
           typeof remoteClient.connection_id === "string" &&
           typeof remoteClient.client_id === "string"
@@ -924,7 +938,7 @@ function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
 function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscriber): void {
   soraConnection.on("log", (title: string, description: Json) => {
     signals.setLogMessages({
-      title: title,
+      title,
       description: JSON.stringify(description),
     });
   });
@@ -933,15 +947,15 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     handleConnectionCreatedNotify(message);
     signals.setNotifyMessages({
       timestamp: Date.now(),
-      message: message,
-      transportType: transportType,
+      message,
+      transportType,
     });
   });
   soraConnection.on("push", (message: SoraPushMessage, transportType: TransportType) => {
     signals.setPushMessages({
       timestamp: Date.now(),
-      message: message,
-      transportType: transportType,
+      message,
+      transportType,
     });
   });
   soraConnection.on("track", (event: RTCTrackEvent) => {
@@ -969,8 +983,9 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
   soraConnection.on("removetrack", (event: MediaStreamTrackEvent) => {
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-removetrack"));
     const remoteClientsValue = signals.remoteClients.value;
+    // sora-js-sdk の "track" イベントは常に RTCTrackEvent を渡すため event は non-null
     const remoteClient = remoteClientsValue.find((client) => {
-      if (event?.target) {
+      if (event.target) {
         return client.connectionId === (event.target as MediaStream).id;
       }
       return false;
@@ -1130,7 +1145,7 @@ function pickConnectionOptionsState(): ConnectionOptionsState {
 
 function createSoraDevtoolsTimelineMessage(type: string, data?: unknown): TimelineMessage {
   return {
-    type: type,
+    type,
     logType: "sora-devtools",
     timestamp: Date.now(),
     data: data as Record<string, unknown> | undefined,
@@ -1149,7 +1164,8 @@ function createSoraDevtoolsMediaStreamTrackLog(
 async function setStatsReportInternal(
   soraConnection: ConnectionPublisher | ConnectionSubscriber,
 ): Promise<void> {
-  if (soraConnection.pc && soraConnection.pc?.iceConnectionState !== "closed") {
+  // 前行の soraConnection.pc && で null チェック済みのため ?. は冗長
+  if (soraConnection.pc && soraConnection.pc.iceConnectionState !== "closed") {
     const stats = await soraConnection.pc.getStats();
     const statsReportData: RTCStats[] = [];
     const localCandidateStats: RTCIceLocalCandidateStats[] = [];
@@ -1403,11 +1419,14 @@ export const connectSora = async (): Promise<void> => {
       if (!forceCreateMediaStream && localMediaStreamValue) {
         mediaStream = localMediaStreamValue;
       } else {
-        [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch((error) => {
-          signals.setSoraErrorAlertMessage(error.toString());
-          signals.setSoraConnectionStatus("disconnected");
-          throw error;
-        });
+        [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
+          (error: unknown) => {
+            const message = error instanceof Error ? error.message : String(error);
+            signals.setSoraErrorAlertMessage(message);
+            signals.setSoraConnectionStatus("disconnected");
+            throw error;
+          },
+        );
       }
       signals.setSoraConnectionStatus("connecting");
       // 先に setSora で state を参照できるようにしておかないと connection.created の notify が来た時に処理に困るため
@@ -1429,9 +1448,7 @@ export const connectSora = async (): Promise<void> => {
     signals.setSoraConnectionStatus("disconnected");
     throw error;
   }
-  if (soraConnection === undefined) {
-    throw new Error("failed to connect Sora, connection object is undefined");
-  }
+  // createSoraConnectionByRole は常に ConnectionPublisher | ConnectionSubscriber を返すため soraConnection は non-null
   signals.setSoraInfoAlertMessage("succeeded to connect Sora");
   await setStatsReportInternal(soraConnection);
   startStatsReportTimer();
@@ -1445,6 +1462,58 @@ export const connectSora = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected"));
 };
 
+// 再接続を最大 10 回試行し成功した SoraConnection を返す。失敗時は undefined。
+async function attemptReconnection(
+  connection: ReturnType<typeof prepareSignalingConnection>["connection"],
+  connectionOptions: ReturnType<typeof prepareSignalingConnection>["connectionOptions"],
+  metadata: ReturnType<typeof prepareSignalingConnection>["metadata"],
+  roleValue: SoraDevtoolsState["role"],
+  channelIdValue: string,
+  googCpuOveruseDetectionValue: boolean | null,
+  mediaStream: MediaStream | undefined,
+): Promise<ConnectionPublisher | ConnectionSubscriber | undefined> {
+  for (let i = 1; i <= 10; i++) {
+    if (!signals.reconnecting.value) {
+      break;
+    }
+    signals.setSoraReconnectingTrials(i);
+    let soraConnection: undefined | ConnectionPublisher | ConnectionSubscriber;
+    try {
+      soraConnection = createSoraConnectionByRole(
+        connection,
+        roleValue,
+        channelIdValue,
+        connectionOptions,
+        metadata,
+        googCpuOveruseDetectionValue,
+      );
+      // connectSora と同様に connect() の前に setSora で state を参照できるようにする
+      // connection.created の notify が来た時に自分のコネクションと照合するため
+      signals.setSora(soraConnection);
+      if (roleValue === "sendonly" || roleValue === "sendrecv") {
+        if (mediaStream) {
+          await (soraConnection as ConnectionPublisher).connect(mediaStream);
+        }
+      } else {
+        await (soraConnection as ConnectionSubscriber).connect();
+      }
+    } catch (error) {
+      signals.setSora(null);
+      if (error instanceof Error) {
+        signals.setSoraErrorAlertMessage(`(trials ${i}) failed to connect Sora: ${error.message}`);
+      }
+      soraConnection = undefined;
+    }
+    if (soraConnection !== undefined) {
+      return soraConnection;
+    }
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, i * 500 + 500);
+    });
+  }
+  return undefined;
+}
+
 export const reconnectSora = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect"));
   signals.setSoraConnectionStatus("connecting");
@@ -1456,7 +1525,6 @@ export const reconnectSora = async (): Promise<void> => {
     await soraValue.disconnect();
   }
   const { connection, connectionOptions, metadata } = prepareSignalingConnection();
-  let soraConnection: undefined | ConnectionPublisher | ConnectionSubscriber;
   let mediaStream: undefined | MediaStream;
   let gainNode: undefined | GainNode | null;
   let audioContext: undefined | AudioContext | null;
@@ -1469,49 +1537,24 @@ export const reconnectSora = async (): Promise<void> => {
     } catch (error) {
       // createMediaStream の失敗時は再接続を中止し disconnected 状態に戻す
       if (error instanceof Error) {
-        signals.setSoraErrorAlertMessage(error.toString());
+        signals.setSoraErrorAlertMessage(error.message);
       }
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
       return;
     }
   }
-  for (let i = 1; i <= 10; i++) {
-    const reconnectingValue = signals.reconnecting.value;
-    if (!reconnectingValue) {
-      break;
-    }
-    signals.setSoraReconnectingTrials(i);
-    try {
-      soraConnection = createSoraConnectionByRole(
-        connection,
-        roleValue,
-        channelIdValue,
-        connectionOptions,
-        metadata,
-        googCpuOveruseDetectionValue,
-      );
-      if (roleValue === "sendonly" || roleValue === "sendrecv") {
-        if (mediaStream) {
-          await (soraConnection as ConnectionPublisher).connect(mediaStream);
-        }
-      } else {
-        await (soraConnection as ConnectionSubscriber).connect();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        signals.setSoraErrorAlertMessage(`(trials ${i}) failed to connect Sora: ${error.message}`);
-      }
-      soraConnection = undefined;
-    }
-    if (soraConnection !== undefined) {
-      break;
-    }
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, i * 500 + 500);
-    });
-  }
+  const soraConnection = await attemptReconnection(
+    connection,
+    connectionOptions,
+    metadata,
+    roleValue,
+    channelIdValue,
+    googCpuOveruseDetectionValue,
+    mediaStream,
+  );
   if (soraConnection === undefined) {
+    signals.setSora(null);
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraReconnecting(false);
@@ -1566,12 +1609,16 @@ export const setMediaDevices = async (): Promise<void> => {
     if (deviceInfo.deviceId === "") {
       continue;
     }
+    // MediaDeviceInfo.toJSON は lib.dom の宣言上 any なので MediaDeviceInfo に縮約する
+    const json = deviceInfo.toJSON() as MediaDeviceInfo;
     if (deviceInfo.kind === "audioinput") {
-      audioInputDevicesData.push(deviceInfo.toJSON());
+      audioInputDevicesData.push(json);
     } else if (deviceInfo.kind === "audiooutput") {
-      audioOutputDevicesData.push(deviceInfo.toJSON());
-    } else if (deviceInfo.kind === "videoinput") {
-      videoInputDevicesData.push(deviceInfo.toJSON());
+      audioOutputDevicesData.push(json);
+      // MediaDeviceKind は "audioinput" | "audiooutput" | "videoinput" のみのため
+      // audio 系を除外した後の else は videoinput で確定する
+    } else {
+      videoInputDevicesData.push(json);
     }
   }
   signals.setAudioInputDevices(audioInputDevicesData);
@@ -1603,7 +1650,8 @@ export const updateMediaStream = async (): Promise<void> => {
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
     }
     virtualBackgroundProcessorValue.stopProcessing();
-  } else if (localMediaStreamValue) {
+    // 関数先頭の if (!localMediaStreamValue) return によりここでは localMediaStreamValue は non-null
+  } else {
     for (const track of localMediaStreamValue.getVideoTracks()) {
       track.stop();
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
@@ -1617,17 +1665,21 @@ export const updateMediaStream = async (): Promise<void> => {
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
     }
     noiseSuppressionProcessorValue.stopProcessing();
-  } else if (localMediaStreamValue) {
+    // 関数先頭の if (!localMediaStreamValue) return によりここでは localMediaStreamValue は non-null
+  } else {
     for (const track of localMediaStreamValue.getAudioTracks()) {
       track.stop();
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
     }
   }
-  const [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch((error) => {
-    signals.setSoraErrorAlertMessage(error.toString());
-    signals.setSoraConnectionStatus("disconnected");
-    throw error;
-  });
+  const [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
+    (error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      signals.setSoraErrorAlertMessage(message);
+      signals.setSoraConnectionStatus("disconnected");
+      throw error;
+    },
+  );
   // 全トラックの replaceTrack を Promise.allSettled で並列実行し、失敗をまとめて通知する
   const replaceResults = await Promise.allSettled(
     mediaStream.getTracks().map(async (track) => {
@@ -1661,7 +1713,9 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
   const noiseSuppressionProcessorValue = signals.noiseSuppressionProcessor.value;
-  if (!localMediaStreamValue || !soraValue) {
+  // connected 状態では soraValue が null でも localMediaStreamValue の操作が必要な場合があるため
+  // setCameraDeviceAction と同じく 3 条件の AND で判定する
+  if (!localMediaStreamValue && !soraValue && connectionStatusValue !== "connected") {
     signals.setMicDevice(micDevice);
     return;
   }
@@ -1684,7 +1738,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
       mediaProcessorsNoiseSuppression: state.mediaProcessorsNoiseSuppression,
       mediaType: state.mediaType,
       mp4MediaStream: state.mp4MediaStream,
-      micDevice: micDevice,
+      micDevice,
       noiseSuppression: state.noiseSuppression,
       noiseSuppressionProcessor: state.noiseSuppressionProcessor,
       resizeMode: state.resizeMode,
@@ -1696,40 +1750,55 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
       virtualBackgroundProcessor: state.virtualBackgroundProcessor,
     };
     const [mediaStream, gainNode, audioContext] = await createMediaStream(pickedState).catch(
-      (error) => {
-        signals.setSoraErrorAlertMessage(error.toString());
+      (error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        signals.setSoraErrorAlertMessage(message);
         throw error;
       },
     );
     if (mediaStream.getAudioTracks().length > 0) {
       if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
         // Sora 接続中の場合
-        await soraValue.replaceAudioTrack(localMediaStreamValue, mediaStream.getAudioTracks()[0]);
+        try {
+          await soraValue.replaceAudioTrack(localMediaStreamValue, mediaStream.getAudioTracks()[0]);
+        } catch (error) {
+          signals.setLogMessages({
+            title: "REPLACE_AUDIO_TRACK",
+            description: error instanceof Error ? error.message : String(error),
+          });
+        }
       } else if (localMediaStreamValue) {
         // Sora は未接続で media access での表示を行っている場合
         // 現在の AudioTrack を停止、削除してから、新しい AudioTrack を追加する
         for (const track of localMediaStreamValue.getAudioTracks()) {
           track.enabled = false;
           track.stop();
-          localMediaStreamValue?.removeTrack(track);
+          localMediaStreamValue.removeTrack(track);
         }
         localMediaStreamValue.addTrack(mediaStream.getAudioTracks()[0]);
       }
       signals.setFakeContentsAudio(audioContext, gainNode);
+    } else if (audioContext) {
+      // トラックが生成されなかった場合は AudioContext を close してリークを防ぐ
+      void audioContext.close();
     }
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
     stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
-    soraValue.removeAudioTrack(localMediaStreamValue).catch((error: unknown) => {
+    signals.closeFakeContentsAudio();
+    try {
+      await soraValue.removeAudioTrack(localMediaStreamValue);
+    } catch (error) {
       signals.setLogMessages({
         title: "REMOVE_AUDIO_TRACK",
         description: error instanceof Error ? error.message : String(error),
       });
-    });
+    }
   } else if (localMediaStreamValue) {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
     stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    signals.closeFakeContentsAudio();
   }
   signals.setMicDevice(micDevice);
 };
@@ -1753,7 +1822,7 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
       audioTrack: state.audioTrack,
       autoGainControl: state.autoGainControl,
       blurRadius: state.blurRadius,
-      cameraDevice: cameraDevice,
+      cameraDevice,
       echoCancellation: state.echoCancellation,
       echoCancellationType: state.echoCancellationType,
       facingMode: state.facingMode,
@@ -1775,44 +1844,50 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
       virtualBackgroundProcessor: state.virtualBackgroundProcessor,
     };
     const [mediaStream, gainNode, audioContext] = await createMediaStream(pickedState).catch(
-      (error) => {
-        signals.setSoraErrorAlertMessage(error.toString());
+      (error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        signals.setSoraErrorAlertMessage(message);
         throw error;
       },
     );
     if (mediaStream.getVideoTracks().length > 0) {
       if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
         // Sora 接続中の場合
-        soraValue
-          .replaceVideoTrack(localMediaStreamValue, mediaStream.getVideoTracks()[0])
-          .catch((error: unknown) => {
-            signals.setLogMessages({
-              title: "REPLACE_VIDEO_TRACK",
-              description: error instanceof Error ? error.message : String(error),
-            });
+        try {
+          await soraValue.replaceVideoTrack(localMediaStreamValue, mediaStream.getVideoTracks()[0]);
+        } catch (error) {
+          signals.setLogMessages({
+            title: "REPLACE_VIDEO_TRACK",
+            description: error instanceof Error ? error.message : String(error),
           });
+        }
       } else if (localMediaStreamValue) {
         // Sora は未接続で media access での表示を行っている場合
         // 現在の VideoTrack を停止、削除してから、新しい VideoTrack を追加する
         for (const track of localMediaStreamValue.getVideoTracks()) {
           track.enabled = false;
           track.stop();
-          localMediaStreamValue?.removeTrack(track);
+          localMediaStreamValue.removeTrack(track);
         }
         localMediaStreamValue.addTrack(mediaStream.getVideoTracks()[0]);
       }
       signals.setFakeContentsAudio(audioContext, gainNode);
+    } else if (audioContext) {
+      // トラックが生成されなかった場合は AudioContext を close してリークを防ぐ
+      void audioContext.close();
     }
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
     const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
     await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
-    soraValue.removeVideoTrack(localMediaStreamValue).catch((error: unknown) => {
+    try {
+      await soraValue.removeVideoTrack(localMediaStreamValue);
+    } catch (error) {
       signals.setLogMessages({
         title: "REMOVE_VIDEO_TRACK",
         description: error instanceof Error ? error.message : String(error),
       });
-    });
+    }
   } else if (localMediaStreamValue) {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する

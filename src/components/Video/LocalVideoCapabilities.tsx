@@ -54,12 +54,12 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
         });
         if (codec === undefined) {
           return {
-            outboundRtpStats: outboundRtpStats,
+            outboundRtpStats,
           };
         }
         return {
           codec: codec as RTCStatsCodec,
-          outboundRtpStats: outboundRtpStats,
+          outboundRtpStats,
         };
       });
       trackStats.value = videoStats.toSorted((a, b) => {

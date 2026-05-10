@@ -9,10 +9,11 @@ function mediaStreamStatsReportFilter(
   if (mediaStream === null) {
     return undefined;
   }
-  let trackIds: string[] = [];
+  // type が "video" 以外の場合の意図を明確にするため if/else を使用する
+  let trackIds: string[];
   if (type === "video") {
     trackIds = mediaStream.getVideoTracks().map((t) => t.id);
-  } else if (type === "audio") {
+  } else {
     trackIds = mediaStream.getAudioTracks().map((t) => t.id);
   }
   const targetStats = statsReport.find((stats) => {
@@ -70,6 +71,11 @@ export function JitterButter(props: Props) {
     jitterBufferEmittedCount =
       currentInboundRtpStreamStatsReport.jitterBufferEmittedCount -
       prevInboundRtpStreamStatsReport.jitterBufferEmittedCount;
+  }
+  // ポーリング間隔の間に新規パケットが到着しなかった場合 (差分が 0)、
+  // または受信開始直後で累計パケット数が 0 の場合はゼロ除算で NaN になるため描画しない
+  if (jitterBufferEmittedCount === 0) {
+    return null;
   }
   const currentJitterBufferDelay = Math.floor(
     (jitterBufferDelay / jitterBufferEmittedCount) * 1000,

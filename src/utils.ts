@@ -48,6 +48,8 @@ export function formatUnixtime(time: number): string {
 
 // OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す
 export async function copyToClipboard(text: string): Promise<boolean> {
+  // navigator.clipboard は HTTPS / localhost 以外では undefined になり得る
+  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
   if (!navigator.clipboard) {
     return false;
   }
@@ -76,6 +78,7 @@ function parseStringParameter(searchParams: URLSearchParams, key: string): strin
   if (value !== null) {
     return value;
   }
+  return undefined;
 }
 
 // クエリ文字列パーサー
@@ -89,6 +92,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     if (value !== null) {
       return parseBooleanString(value);
     }
+    return undefined;
   };
   // URLSearchParams から値を取得して特定の文字列かどうかを判定して string | undefined を返す
   const parseSpecifiedStringParameter = <T extends readonly string[]>(
@@ -100,6 +104,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     if (value !== null && checkFormValue(value, candidates)) {
       return value;
     }
+    return undefined;
   };
 
   // signalingUrlCandidates のパース
@@ -274,7 +279,7 @@ export function getVideoSizeByResolution(resolution: string): {
   height: number;
 } {
   if (videoResolutionPattern.test(resolution)) {
-    const match = resolution.match(videoResolutionPattern);
+    const match = videoResolutionPattern.exec(resolution);
     if (match) {
       return {
         width: Number.parseInt(match[1], 10),
@@ -317,6 +322,9 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
     }
     case "strong": {
       return 15;
+    }
+    default: {
+      throw new Error(`unexpected blurRadius value: ${blurRadius as string}`);
     }
   }
 }
@@ -463,12 +471,12 @@ export function createFakeMediaConstraints(
   const height = resolutionSize.height || 160;
   const fontSize = Math.floor(width / 5);
   const constraints: FakeMediaStreamConstraints = {
-    audio: audio,
-    video: video,
+    audio,
+    video,
     frameRate: parsedFrameRate,
-    width: width,
-    height: height,
-    fontSize: fontSize,
+    width,
+    height,
+    fontSize,
     volume: Number.parseFloat(volume),
   };
   if (video && (aspectRatio || resizeMode)) {
@@ -586,10 +594,23 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
   let gainNode: GainNode | null = null;
   let audioContext: AudioContext | null = null;
   if (parameters.audio) {
-    const AudioContextCtor =
-      globalThis.AudioContext ||
-      (globalThis as unknown as Record<string, typeof globalThis.AudioContext>).webkitAudioContext;
-    audioContext = new AudioContextCtor();
+    // Safari 等で globalThis.AudioContext が未定義な環境では webkitAudioContext を使用する
+    const { webkitAudioContext } = globalThis as unknown as {
+      webkitAudioContext: typeof globalThis.AudioContext;
+    };
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    const AudioContextConstructor = globalThis.AudioContext || webkitAudioContext;
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    if (!AudioContextConstructor) {
+      return {
+        offscreenCanvas,
+        mediaStream,
+        gainNode: null,
+        audioContext: null,
+        frameRate: parameters.frameRate,
+      };
+    }
+    audioContext = new AudioContextConstructor();
     const oscillator = audioContext.createOscillator();
     const selectedOscillatorType = "sine";
     oscillator.type = selectedOscillatorType;
@@ -618,6 +639,7 @@ export function parseBooleanString(value: string): boolean | undefined {
   if (value === "false") {
     return false;
   }
+  return undefined;
 }
 
 export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
@@ -625,7 +647,8 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
     return undefined;
   }
   try {
-    return JSON.parse(metadata);
+    // JSON.parse は any を返すが Json | undefined に縮約する
+    return JSON.parse(metadata) as Json;
   } catch {
     // JSON パースに失敗した場合は undefined を返す
     // 生文字列を返すと SDK へ意図しない値が渡るため
@@ -634,7 +657,8 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
 }
 
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
-  // getCapabilities API が存在しない場合
+  // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
+  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
   if (!globalThis.RTCRtpSender || !RTCRtpSender.getCapabilities) {
     return "VP9";
   }
@@ -664,6 +688,7 @@ export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
 
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
   // https じゃない場合などで mediaDevices が undefined になる可能性がある
+  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
   if (navigator.mediaDevices === undefined) {
     return [];
   }
@@ -700,6 +725,8 @@ export function getMediaStreamTrackProperties(
     readyState: track.readyState,
     contentHint: track.contentHint,
     getConstraints: track.getConstraints(),
+    // 古いブラウザでは getCapabilities が未定義
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
     getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
     getSettings: track.getSettings(),
   };

@@ -42,14 +42,15 @@ export function Toast({
 }: ToastProps) {
   // 自動非表示
   useEffect(() => {
-    if (show && autohide && onClose) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, delay);
-      return () => {
-        clearTimeout(timer);
-      };
+    if (!(show && autohide && onClose)) {
+      return;
     }
+    const timer = setTimeout(() => {
+      onClose();
+    }, delay);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [show, autohide, delay, onClose]);
 
   if (!show) {

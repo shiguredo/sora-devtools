@@ -40,8 +40,9 @@ function RpcForm() {
 
   const conn = sora.value;
   const connectionStatusValue = connectionStatus.value;
-  // rpcMethods は sora-js-sdk 2025.2.0 以降で利用可能
-  const rpcMethods: string[] = (conn as unknown as { rpcMethods?: string[] })?.rpcMethods ?? [];
+  // conn は signal 由来で null を取りうるため | null を追加する
+  const rpcMethods: string[] =
+    (conn as unknown as { rpcMethods?: string[] } | null)?.rpcMethods ?? [];
 
   // params の JSON パースエラーをチェック
   useEffect(() => {
@@ -76,7 +77,8 @@ function RpcForm() {
     const paramsText = params.value.trim();
     if (paramsText) {
       try {
-        parsedParams = JSON.parse(paramsText);
+        // RPC params は任意の key-value を持つオブジェクトのため Record<string, unknown> に縮約する
+        parsedParams = JSON.parse(paramsText) as Record<string, unknown>;
       } catch (error) {
         setRPCErrorAlertMessage(
           `invalid JSON in params: ${error instanceof Error ? error.message : String(error)}`,

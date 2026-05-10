@@ -5,13 +5,9 @@ import { Message } from "./Message.tsx";
 
 function Collapse(props: LogMessage) {
   const { message, timestamp } = props;
-  return (
-    <Message
-      title={message.title}
-      timestamp={timestamp}
-      description={JSON.parse(message.description)}
-    />
-  );
+  // Message.description が受け付ける型に合わせて any を縮約する
+  const description = JSON.parse(message.description) as string | number | Record<string, unknown>;
+  return <Message title={message.title} timestamp={timestamp} description={description} />;
 }
 
 function Log(props: LogMessage) {

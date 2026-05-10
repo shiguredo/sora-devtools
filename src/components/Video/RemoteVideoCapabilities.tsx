@@ -39,12 +39,14 @@ const useVideoTrackStats = (stream: MediaStream) => {
       let codecId: string | undefined;
       let decoderImplementation: string | undefined;
       const receiverStatsReport = await receiver.getStats();
-      for (const stats of receiverStatsReport) {
-        const [, value] = stats;
-        if (value.type === "inbound-rtp" && value.kind === "video") {
-          ({ codecId } = value);
-          ({ decoderImplementation } = value);
-          break;
+      // RTCStatsReport は Map 互換だが lib.dom の型定義の generic が合わないためキャストする
+      for (const [, value] of receiverStatsReport as ReadonlyMap<string, RTCStats>) {
+        if (value.type === "inbound-rtp") {
+          const inboundRtp = value as RTCInboundRtpStreamStats;
+          if (inboundRtp.kind === "video") {
+            ({ codecId, decoderImplementation } = inboundRtp);
+            break;
+          }
         }
       }
       if (codecId === undefined) {

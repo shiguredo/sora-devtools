@@ -24,8 +24,6 @@ import { ResetSpotlightRidBySendConnectionIdButton } from "./ResetSpotlightRidBy
 import { Video } from "./Video.tsx";
 import { VolumeVisualizer } from "./VolumeVisualizer.tsx";
 
-const rtcMediaStreamTrackRegex = /^RTCMediaStreamTrack/;
-
 function mediaStreamStatsReportFilter(
   report: RTCStats[],
   mediaStream: MediaStream | null,
@@ -36,7 +34,7 @@ function mediaStreamStatsReportFilter(
   const trackIds = new Set(mediaStream.getTracks().map((t) => t.id));
   const result: RTCMediaStreamTrackStats[] = [];
   for (const stats of report) {
-    if (stats.id && !rtcMediaStreamTrackRegex.test(stats.id)) {
+    if (stats.id && !stats.id.startsWith("RTCMediaStreamTrack")) {
       continue;
     }
     if ("trackIdentifier" in stats) {

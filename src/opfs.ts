@@ -17,7 +17,8 @@ export interface SignalingUrlCandidatesSettings {
 // OPFS から URL エントリを読み込む
 export async function loadUrlEntries(): Promise<UrlEntry[]> {
   try {
-    // OPFS がサポートされているか確認
+    // OPFS がサポートされているか確認 (lib.dom 上は常に存在するが古い Safari 等で undefined になり得る)
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
     if (!navigator.storage?.getDirectory) {
       return [];
     }
@@ -42,7 +43,8 @@ export async function loadUrlEntries(): Promise<UrlEntry[]> {
 // OPFS に URL エントリを保存する
 export async function saveUrlEntriesToOPFS(urlEntries: UrlEntry[]): Promise<void> {
   try {
-    // OPFS がサポートされているか確認
+    // OPFS がサポートされているか確認 (lib.dom 上は常に存在するが古い Safari 等で undefined になり得る)
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
     if (!navigator.storage?.getDirectory) {
       return;
     }
@@ -97,7 +99,8 @@ export async function saveUrlEntriesToOPFS(urlEntries: UrlEntry[]): Promise<void
 // OPFS から設定ファイルを削除する
 export async function purgeUrlEntriesFromOPFS(): Promise<void> {
   try {
-    // OPFS がサポートされているか確認
+    // OPFS がサポートされているか確認 (lib.dom 上は常に存在するが古い Safari 等で undefined になり得る)
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
     if (!navigator.storage?.getDirectory) {
       return;
     }

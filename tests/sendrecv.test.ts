@@ -9,7 +9,7 @@ test("sendrecv", async ({ page }) => {
   const channelId = `${channelIdPrefix}sendrecv`;
 
   const params = new URLSearchParams({
-    channelId: channelId,
+    channelId,
     signalingUrlCandidates: JSON.stringify([signalingUrl]),
     multistream: "true",
     role: "sendrecv",

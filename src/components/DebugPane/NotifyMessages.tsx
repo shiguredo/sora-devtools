@@ -12,7 +12,7 @@ function Label(props: { text: string }) {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
-    <span className="me-1" style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color } : {}}>
       [{text}]
     </span>
   );
@@ -23,7 +23,8 @@ interface CollapseNotifyProps {
 }
 function CollapseNotify(props: CollapseNotifyProps) {
   const { notify } = props;
-  const label = notify.transportType ? <Label text={notify.transportType} /> : null;
+  // transportType は型定義上必須 (TransportType) のため常に truthy
+  const label = <Label text={notify.transportType} />;
   return (
     <Message
       title={notify.message.event_type}

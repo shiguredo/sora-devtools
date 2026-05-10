@@ -94,14 +94,36 @@ function animate(): void {
   }, interval) as unknown as number;
 }
 
-// メッセージハンドラー
-self.addEventListener("message", (event: MessageEvent) => {
-  const { type, data } = event.data;
+// host から worker へ送るリクエスト型
+type FakeVideoWorkerRequest =
+  | {
+      type: "init";
+      data: {
+        canvas: OffscreenCanvas;
+        frameRate?: number;
+        channelId?: string;
+        showChannelId?: boolean;
+      };
+    }
+  | { type: "stop" }
+  | {
+      type: "setMetadata";
+      data: { channelId?: string | null; sessionId?: string | null; connectionId?: string | null };
+    }
+  | {
+      type: "setShowInfo";
+      data: { showChannelId?: boolean };
+    };
 
-  switch (type) {
+// メッセージハンドラー
+self.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) => {
+  const message = event.data;
+
+  switch (message.type) {
     case "init": {
+      const { data } = message;
       // OffscreenCanvas を受け取って初期化
-      canvas = data.canvas as OffscreenCanvas;
+      ({ canvas } = data);
       ctx = canvas.getContext("2d", { alpha: false });
 
       if (!ctx) {
@@ -116,12 +138,12 @@ self.addEventListener("message", (event: MessageEvent) => {
 
       // channel_id を設定
       if (data.channelId !== undefined) {
-        channelId = data.channelId as string;
+        ({ channelId } = data);
       }
 
       // showChannelId を設定
       if (data.showChannelId !== undefined) {
-        showChannelId = data.showChannelId as boolean;
+        ({ showChannelId } = data);
       }
 
       // 完全にランダムなベース色相を選ぶ
@@ -161,21 +183,23 @@ self.addEventListener("message", (event: MessageEvent) => {
     }
 
     case "setMetadata": {
+      const { data } = message;
       if (data.channelId !== undefined) {
-        channelId = data.channelId as string | null;
+        ({ channelId } = data);
       }
       if (data.sessionId !== undefined) {
-        sessionId = data.sessionId as string | null;
+        ({ sessionId } = data);
       }
       if (data.connectionId !== undefined) {
-        connectionId = data.connectionId as string | null;
+        ({ connectionId } = data);
       }
       break;
     }
 
     case "setShowInfo": {
+      const { data } = message;
       if (data.showChannelId !== undefined) {
-        showChannelId = data.showChannelId as boolean;
+        ({ showChannelId } = data);
       }
       break;
     }
@@ -184,24 +208,7 @@ self.addEventListener("message", (event: MessageEvent) => {
 
 // Worker の型定義をエクスポート
 export type FakeVideoWorkerMessage =
-  | {
-      type: "init";
-      data: {
-        canvas: OffscreenCanvas;
-        frameRate?: number;
-        channelId?: string;
-        showChannelId?: boolean;
-      };
-    }
-  | { type: "stop" }
-  | {
-      type: "setMetadata";
-      data: { channelId?: string | null; sessionId?: string | null; connectionId?: string | null };
-    }
-  | {
-      type: "setShowInfo";
-      data: { showChannelId?: boolean };
-    }
+  | FakeVideoWorkerRequest
   | { type: "started" }
   | { type: "stopped" }
   | { type: "error"; error: string };
