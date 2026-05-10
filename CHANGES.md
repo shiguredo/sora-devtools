@@ -30,6 +30,10 @@
   - デフォルト 1000 件、100/500/1000/5000 から選択可能
   - URL パラメータ maxNotifyMessages に対応
   - @voluntas
+- [ADD] `setTrackContentHint` ユーティリティを追加して contentHint の機能検出を一元化する
+  - `src/utils.ts` に `setTrackContentHint(track, hint)` を追加する
+  - `actions.ts` の `applyTrackSettings` / `createDisplayMediaStream`、`signals.ts` の `setAudioContentHint` / `setVideoContentHint` から重複した `"contentHint" in track` の機能検出と Firefox 非対応コメントを削除して同関数に置き換える
+  - @voluntas
 - [ADD] テストカバレッジを拡充する
   - `utils.pbt.test.ts` を `utils.prop.ts` にリネームし命名規約に揃える
   - vite.config.ts の test.include を `src/**/*.test.ts` / `src/**/*.prop.ts` に変更する

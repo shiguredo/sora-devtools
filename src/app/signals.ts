@@ -26,6 +26,7 @@ import type {
   SoraDevtoolsState,
   TimelineMessage,
 } from "../types";
+import { setTrackContentHint } from "../utils.ts";
 
 // --- Audio 関連 ---
 export const audio = signal<boolean>(true);
@@ -233,12 +234,8 @@ export const setAudioCodecType = (value: SoraDevtoolsState["audioCodecType"]): v
 export const setAudioContentHint = (value: SoraDevtoolsState["audioContentHint"]): void => {
   audioContentHint.value = value;
   if (localMediaStream.value) {
-    // contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
-    // c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
     for (const track of localMediaStream.value.getAudioTracks()) {
-      if ("contentHint" in track) {
-        track.contentHint = value;
-      }
+      setTrackContentHint(track, value);
     }
   }
 };
@@ -423,12 +420,8 @@ export const setVideoCodecType = (value: SoraDevtoolsState["videoCodecType"]): v
 export const setVideoContentHint = (value: SoraDevtoolsState["videoContentHint"]): void => {
   videoContentHint.value = value;
   if (localMediaStream.value) {
-    // contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
-    // c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
     for (const track of localMediaStream.value.getVideoTracks()) {
-      if ("contentHint" in track) {
-        track.contentHint = value;
-      }
+      setTrackContentHint(track, value);
     }
   }
 };
