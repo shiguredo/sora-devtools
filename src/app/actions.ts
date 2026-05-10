@@ -26,6 +26,7 @@ import {
   createVideoConstraints,
   getBlurRadiusNumber,
   getDevices,
+  getErrorMessage,
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
@@ -1016,7 +1017,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
       } catch (error) {
         signals.setLogMessages({
           title: "STOP_LOCAL_VIDEO_TRACK",
-          description: error instanceof Error ? error.message : String(error),
+          description: getErrorMessage(error),
         });
       }
     })();
@@ -1410,7 +1411,7 @@ export const connectSora = async (): Promise<void> => {
       } else {
         [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
           (error: unknown) => {
-            const message = error instanceof Error ? error.message : String(error);
+            const message = getErrorMessage(error);
             signals.setSoraErrorAlertMessage(message);
             signals.setSoraConnectionStatus("disconnected");
             throw error;
@@ -1663,7 +1664,7 @@ export const updateMediaStream = async (): Promise<void> => {
   }
   const [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
     (error: unknown) => {
-      const message = error instanceof Error ? error.message : String(error);
+      const message = getErrorMessage(error);
       signals.setSoraErrorAlertMessage(message);
       signals.setSoraConnectionStatus("disconnected");
       throw error;
@@ -1740,7 +1741,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
     };
     const [mediaStream, gainNode, audioContext] = await createMediaStream(pickedState).catch(
       (error: unknown) => {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = getErrorMessage(error);
         signals.setSoraErrorAlertMessage(message);
         throw error;
       },
@@ -1753,7 +1754,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
         } catch (error) {
           signals.setLogMessages({
             title: "REPLACE_AUDIO_TRACK",
-            description: error instanceof Error ? error.message : String(error),
+            description: getErrorMessage(error),
           });
         }
       } else if (localMediaStreamValue) {
@@ -1780,7 +1781,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
     } catch (error) {
       signals.setLogMessages({
         title: "REMOVE_AUDIO_TRACK",
-        description: error instanceof Error ? error.message : String(error),
+        description: getErrorMessage(error),
       });
     }
   } else if (localMediaStreamValue) {
@@ -1834,7 +1835,7 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     };
     const [mediaStream, gainNode, audioContext] = await createMediaStream(pickedState).catch(
       (error: unknown) => {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = getErrorMessage(error);
         signals.setSoraErrorAlertMessage(message);
         throw error;
       },
@@ -1847,7 +1848,7 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
         } catch (error) {
           signals.setLogMessages({
             title: "REPLACE_VIDEO_TRACK",
-            description: error instanceof Error ? error.message : String(error),
+            description: getErrorMessage(error),
           });
         }
       } else if (localMediaStreamValue) {
@@ -1874,7 +1875,7 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     } catch (error) {
       signals.setLogMessages({
         title: "REMOVE_VIDEO_TRACK",
-        description: error instanceof Error ? error.message : String(error),
+        description: getErrorMessage(error),
       });
     }
   } else if (localMediaStreamValue) {
