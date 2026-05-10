@@ -63,6 +63,10 @@
   - DEBUG_TYPES から api を削除する。`debugType=api` は無効になる
   - 未使用の Api.tsx を削除する
   - @voluntas
+- [CHANGE] 到達不能な switch の default 節を整理する
+  - `TimelineMessages.tsx` の `logType` switch の到達不能な default 節を削除し、sora-js-sdk が新しい logType を追加した際に exhaustiveness-check で検出できるようにする
+  - `utils.ts` の `getBlurRadiusNumber` の default 節を `const _exhaustiveCheck: never = blurRadius;` パターンに置き換え、新しい blur radius が追加された際にコンパイル時に検出できるようにする
+  - @voluntas
 
 - [FIX] Video.tsx の setSinkId が ResizeObserver 用 useEffect と stream 用 useEffect の両方で発火する問題を修正する
   - ResizeObserver 用の useEffect から setSinkId 呼び出しを削除し依存配列を `[setHeight]` のみにする

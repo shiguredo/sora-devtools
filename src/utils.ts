@@ -324,7 +324,8 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
       return 15;
     }
     default: {
-      throw new Error(`unexpected blurRadius value: ${blurRadius as string}`);
+      const _exhaustiveCheck: never = blurRadius;
+      throw new Error(`unexpected blurRadius value: ${_exhaustiveCheck as string}`);
     }
   }
 }

@@ -1,6 +1,7 @@
 # 0023-design-remove-unreachable-switch-defaults
 
 Created: 2026-05-10
+Completed: 2026-05-10
 Model: deepseek-v4-pro
 
 ## 背景
@@ -55,3 +56,13 @@ switch (blurRadius) {
 
 - TimelineMessages.tsx: `default` 節を削除
 - utils.ts: `default: throw Error` を `default: { const _: never = blurRadius; throw ...}` に変更
+
+## 解決方法
+
+### 1. TimelineMessages.tsx
+
+到達不能な `default` 節を削除した。`logType` 型は `"websocket" | "datachannel" | "peerconnection" | "sora" | "sora-devtools"` で網羅済みのため挙動は変わらない。sora-js-sdk が新しい logType を追加した際は TypeScript の exhaustiveness check で検出される。
+
+### 2. utils.ts (getBlurRadiusNumber)
+
+`default` 節を `const _exhaustiveCheck: never = blurRadius;` パターンに変更した。`BLUR_RADIUS = ["", "weak", "medium", "strong"] as const` を網羅済みのため挙動は変わらないが、新しい blur radius を追加した際にコンパイルエラーで検出できる。
