@@ -1,6 +1,7 @@
 # 0022-bug-fix-duplicate-setsinkid-calls
 
 Created: 2026-05-10
+Completed: 2026-05-10
 Model: deepseek-v4-pro
 
 ## 背景
@@ -33,3 +34,7 @@ if (audioOutput && stream.getAudioTracks().length > 0) {
 ## 期待される結果
 
 1 つ目の useEffect から `setSinkId` 呼び出しを削除し、ResizeObserver 専用にする。`setSinkId` の呼び出しは `srcObject` 設定後（3 つ目の useEffect）のみで十分。
+
+## 解決方法
+
+`Video.tsx` の ResizeObserver 用 useEffect から `setSinkId` 呼び出しを削除し、依存配列を `[setHeight]` のみに変更した。これにより `audioOutput` 変更時に発火するのは srcObject 設定後の useEffect のみとなり、`setSinkId` の二重呼び出しが解消する。
