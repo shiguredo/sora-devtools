@@ -170,6 +170,11 @@
 
 ### misc
 
+- [CHANGE] CLAUDE.md 違反を解消する
+  - `DownloadReportButton.tsx` / `Rpc.tsx` の英語 JSX コメントを日本語化する
+  - `fakeVideo.worker.ts` の末尾コメントを直前行のコメントに移動する
+  - `Video.tsx` の `c.f.` を `参照:` に置き換える
+  - @voluntas
 - [UPDATE] oxlint v1.39.0 で追加されたルールを有効にする
   - typescript/prefer-optional-chain
   - unicorn/require-module-attributes
