@@ -1925,7 +1925,9 @@ const stopLocalVideoTrack = async (
     if (!localMediaStreamValue) {
       return;
     }
-    for (const track of localMediaStreamValue.getVideoTracks()) {
+    // getVideoTracks() は live collection を返すため待機中に新規トラックが追加されても巻き込まないよう先に配列に固定する
+    const tracks = [...localMediaStreamValue.getVideoTracks()];
+    for (const track of tracks) {
       track.enabled = false;
     }
     // track enabled = false から sleep を sleep を入れないと配信側にカメラの最後のコマが残る問題へのハック
@@ -1933,7 +1935,7 @@ const stopLocalVideoTrack = async (
     await new Promise<void>((resolve) => {
       setTimeout(resolve, 100);
     });
-    for (const track of localMediaStreamValue.getVideoTracks()) {
+    for (const track of tracks) {
       track.stop();
       localMediaStreamValue.removeTrack(track);
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));

@@ -76,6 +76,10 @@
   - `utils.ts` の `getBlurRadiusNumber` の default 節を `const _exhaustiveCheck: never = blurRadius;` パターンに置き換え、新しい blur radius が追加された際にコンパイル時に検出できるようにする
   - @voluntas
 
+- [FIX] stopLocalVideoTrack の getVideoTracks() の live collection 反復で待機中に新規トラックが巻き込まれる問題を修正する
+  - getVideoTracks() の戻り値を最初に配列にコピーしてからループするように変更する
+  - 100ms 待機中に updateMediaStream などが新規トラックを追加した場合でも対象が固定されるようにする
+  - @voluntas
 - [FIX] Video.tsx の setSinkId が ResizeObserver 用 useEffect と stream 用 useEffect の両方で発火する問題を修正する
   - ResizeObserver 用の useEffect から setSinkId 呼び出しを削除し依存配列を `[setHeight]` のみにする
   - setSinkId は srcObject 設定後の useEffect のみに集約する
