@@ -126,7 +126,7 @@ function MutedVisualizer(props: MutedVisualizerProps) {
     // 背景のバーをレンダリングする
     createVolumeBackground(ctx, canvas.height);
     ctx.restore();
-  }, []);
+  }, [props.height]);
   return (
     <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
   );

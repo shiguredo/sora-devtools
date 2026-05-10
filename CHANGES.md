@@ -121,6 +121,36 @@
   - 解像度変更や再接続などで MediaStream を作り直す際に旧 AudioContext を close する
   - disposeMedia / disconnect / resetState で確実に close する
   - @voluntas
+- [FIX] JitterBuffer の jitterBufferEmittedCount が 0 の場合のゼロ除算で NaN が表示される問題を修正する
+  - ガードを追加し jitterBufferEmittedCount === 0 の場合は描画しない
+  - @voluntas
+- [FIX] replaceAudioTrack / removeAudioTrack / removeVideoTrack のエラーハンドリングを try/catch に統一する
+  - setMicDeviceAction の replaceAudioTrack に try/catch を追加する
+  - removeAudioTrack / removeVideoTrack の .catch() を try/await/catch に変更する
+  - error.toString() を error.message に統一する
+  - @voluntas
+- [FIX] AudioContext コンストラクタが未定義の環境でクラッシュする問題を修正する
+  - VolumeVisualizer / createFakeMediaStream に undefined ガードを追加する
+  - 変数名を AudioContextCtor から AudioContextConstructor に変更する
+  - @voluntas
+- [FIX] Video.tsx の loadedmetadata リスナーがアンマウント時に解除されず蓄積する問題を修正する
+  - useEffect の cleanup に removeEventListener を追加する
+  - 名前付き関数化して参照の一貫性を確保する
+  - @voluntas
+- [FIX] Video.tsx の setSinkId が render と stream 設定の両方で二重呼び出しされる問題を修正する
+  - render 時の setSinkId 呼び出しを削除し srcObject 設定後 (useEffect) のみに集約する
+  - @voluntas
+- [FIX] attemptReconnection で signals.sora が connect() 前に更新されず再接続時のクライアント誤認識を引き起こす問題を修正する
+  - connect() の前に signals.setSora() を追加する
+  - 失敗時に signals.setSora(null) でリセットする
+  - @voluntas
+- [FIX] setMicDeviceAction / setCameraDeviceAction でトラックが生成されなかった場合の AudioContext リークを修正する
+  - mediaStream.getTracks().length === 0 時に audioContext.close() する
+  - micDevice=false 時に closeFakeContentsAudio() を追加する
+  - @voluntas
+- [FIX] MutedVisualizer の height 変更時にキャンバスが再描画されない問題を修正する
+  - useEffect の依存配列に props.height を追加する
+  - @voluntas
 
 ### misc
 

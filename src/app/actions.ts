@@ -1373,7 +1373,6 @@ function startStatsReportTimer(): void {
     } catch {
       // getStats のエラーはタイマーを停止させない
     }
-    // setTimeout のコールバックが多行のため if/else で可読性を確保する
     if (signals.sora.value !== null) {
       statsReportTimerId = setTimeout(() => {
         void schedule();
@@ -1488,6 +1487,9 @@ async function attemptReconnection(
         metadata,
         googCpuOveruseDetectionValue,
       );
+      // connectSora と同様に connect() の前に setSora で state を参照できるようにする
+      // connection.created の notify が来た時に自分のコネクションと照合するため
+      signals.setSora(soraConnection);
       if (roleValue === "sendonly" || roleValue === "sendrecv") {
         if (mediaStream) {
           await (soraConnection as ConnectionPublisher).connect(mediaStream);
@@ -1496,6 +1498,7 @@ async function attemptReconnection(
         await (soraConnection as ConnectionSubscriber).connect();
       }
     } catch (error) {
+      signals.setSora(null);
       if (error instanceof Error) {
         signals.setSoraErrorAlertMessage(`(trials ${i}) failed to connect Sora: ${error.message}`);
       }
@@ -1551,6 +1554,7 @@ export const reconnectSora = async (): Promise<void> => {
     mediaStream,
   );
   if (soraConnection === undefined) {
+    signals.setSora(null);
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraReconnecting(false);
@@ -1774,10 +1778,14 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
         localMediaStreamValue.addTrack(mediaStream.getAudioTracks()[0]);
       }
       signals.setFakeContentsAudio(audioContext, gainNode);
+    } else if (audioContext) {
+      // トラックが生成されなかった場合は AudioContext を close してリークを防ぐ
+      void audioContext.close();
     }
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
     stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    signals.closeFakeContentsAudio();
     try {
       await soraValue.removeAudioTrack(localMediaStreamValue);
     } catch (error) {
@@ -1790,6 +1798,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
     stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    signals.closeFakeContentsAudio();
   }
   signals.setMicDevice(micDevice);
 };
@@ -1863,6 +1872,9 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
         localMediaStreamValue.addTrack(mediaStream.getVideoTracks()[0]);
       }
       signals.setFakeContentsAudio(audioContext, gainNode);
+    } else if (audioContext) {
+      // トラックが生成されなかった場合は AudioContext を close してリークを防ぐ
+      void audioContext.close();
     }
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
