@@ -21,9 +21,10 @@ function drawFrame(): void {
 
   // 背景をグラデーションで描画
   // アニメーションで彩度と明度も少し変化させる
-  const saturation = 70 + Math.sin(animationPhase * 0.7) * 5; // 65-75%
-  const lightness1 = 50 + Math.sin(animationPhase * 0.5) * 5; // 45-55%
-  const lightness2 = 40 + Math.sin(animationPhase * 0.5) * 5; // 35-45%
+  // 彩度は 65-75%、明度 1 は 45-55%、明度 2 は 35-45% の範囲で振動する
+  const saturation = 70 + Math.sin(animationPhase * 0.7) * 5;
+  const lightness1 = 50 + Math.sin(animationPhase * 0.5) * 5;
+  const lightness2 = 40 + Math.sin(animationPhase * 0.5) * 5;
 
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
   gradient.addColorStop(0, `hsl(${hue}, ${saturation}%, ${lightness1}%)`);

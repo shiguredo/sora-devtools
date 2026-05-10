@@ -51,7 +51,7 @@ function VideoElement(props: VideoProps) {
 
     // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
     // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
-    // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
+    // 参照: https://bugs.chromium.org/p/chromium/issues/detail?id=403710
     let originalEnabled: boolean | undefined;
     for (const track of stream.getVideoTracks()) {
       originalEnabled = track.enabled;

@@ -194,7 +194,7 @@ export function DownloadReportButton() {
       <Button variant="light" size="sm" className="ml-1" onClick={onClick}>
         Download report
       </Button>
-      {/* This is a hidden anchor used for programmatic file download */}
+      {/* プログラムからファイルダウンロードを行うための非表示アンカー */}
       <a ref={anchorRef} style={{ display: "none" }} />
     </>
   );

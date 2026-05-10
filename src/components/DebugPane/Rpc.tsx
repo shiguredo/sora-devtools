@@ -232,7 +232,7 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
         {rpcObject.duration !== undefined && <small>{rpcObject.duration.toFixed(2)} ms</small>}
       </div>
 
-      {/* Request */}
+      {/* リクエスト */}
       <div className="mb-3">
         <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
           <strong>Request:</strong>
@@ -266,7 +266,7 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
         )}
       </div>
 
-      {/* Response */}
+      {/* レスポンス */}
       {rpcObject.result !== undefined && (
         <div>
           <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
