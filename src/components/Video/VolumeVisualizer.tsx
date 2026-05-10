@@ -54,8 +54,12 @@ function Visualizer(props: VisualizerProps) {
       webkitAudioContext: typeof globalThis.AudioContext;
     };
     // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
-    const AudioContextCtor = globalThis.AudioContext || webkitAudioContext;
-    const audioContext = new AudioContextCtor();
+    const AudioContextConstructor = globalThis.AudioContext || webkitAudioContext;
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    if (!AudioContextConstructor) {
+      return;
+    }
+    const audioContext = new AudioContextConstructor();
     const mediaStreamSource = audioContext.createMediaStreamSource(props.stream);
     const analyser = audioContext.createAnalyser();
     analyser.fftSize = 2048;

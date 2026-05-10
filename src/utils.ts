@@ -599,8 +599,18 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
       webkitAudioContext: typeof globalThis.AudioContext;
     };
     // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
-    const AudioContextCtor = globalThis.AudioContext || webkitAudioContext;
-    audioContext = new AudioContextCtor();
+    const AudioContextConstructor = globalThis.AudioContext || webkitAudioContext;
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    if (!AudioContextConstructor) {
+      return {
+        offscreenCanvas,
+        mediaStream,
+        gainNode: null,
+        audioContext: null,
+        frameRate: parameters.frameRate,
+      };
+    }
+    audioContext = new AudioContextConstructor();
     const oscillator = audioContext.createOscillator();
     const selectedOscillatorType = "sine";
     oscillator.type = selectedOscillatorType;

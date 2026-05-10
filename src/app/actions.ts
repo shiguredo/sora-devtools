@@ -1534,7 +1534,7 @@ export const reconnectSora = async (): Promise<void> => {
     } catch (error) {
       // createMediaStream の失敗時は再接続を中止し disconnected 状態に戻す
       if (error instanceof Error) {
-        signals.setSoraErrorAlertMessage(error.toString());
+        signals.setSoraErrorAlertMessage(error.message);
       }
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
@@ -1755,7 +1755,14 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
     if (mediaStream.getAudioTracks().length > 0) {
       if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
         // Sora 接続中の場合
-        await soraValue.replaceAudioTrack(localMediaStreamValue, mediaStream.getAudioTracks()[0]);
+        try {
+          await soraValue.replaceAudioTrack(localMediaStreamValue, mediaStream.getAudioTracks()[0]);
+        } catch (error) {
+          signals.setLogMessages({
+            title: "REPLACE_AUDIO_TRACK",
+            description: error instanceof Error ? error.message : String(error),
+          });
+        }
       } else if (localMediaStreamValue) {
         // Sora は未接続で media access での表示を行っている場合
         // 現在の AudioTrack を停止、削除してから、新しい AudioTrack を追加する

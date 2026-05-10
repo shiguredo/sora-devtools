@@ -72,6 +72,11 @@ export function JitterButter(props: Props) {
       currentInboundRtpStreamStatsReport.jitterBufferEmittedCount -
       prevInboundRtpStreamStatsReport.jitterBufferEmittedCount;
   }
+  // ポーリング間隔の間に新規パケットが到着しなかった場合 (差分が 0)、
+  // または受信開始直後で累計パケット数が 0 の場合はゼロ除算で NaN になるため描画しない
+  if (jitterBufferEmittedCount === 0) {
+    return null;
+  }
   const currentJitterBufferDelay = Math.floor(
     (jitterBufferDelay / jitterBufferEmittedCount) * 1000,
   );
