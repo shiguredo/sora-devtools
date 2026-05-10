@@ -64,6 +64,10 @@
   - 未使用の Api.tsx を削除する
   - @voluntas
 
+- [FIX] Video.tsx の setSinkId が ResizeObserver 用 useEffect と stream 用 useEffect の両方で発火する問題を修正する
+  - ResizeObserver 用の useEffect から setSinkId 呼び出しを削除し依存配列を `[setHeight]` のみにする
+  - setSinkId は srcObject 設定後の useEffect のみに集約する
+  - @voluntas
 - [FIX] requestMedia の no-op catch を削除する
   - `createMediaStream(state).catch((error) => { throw error; })` の catch ハンドラがエラーをそのまま再スローしているだけで実質何もしていなかったため削除する
   - 直後の try/catch が同じエラーを捕捉するため挙動は変わらない

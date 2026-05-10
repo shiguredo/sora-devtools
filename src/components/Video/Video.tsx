@@ -24,15 +24,12 @@ function VideoElement(props: VideoProps) {
       }
     });
     if (videoRef.current) {
-      if (audioOutput && stream && stream.getAudioTracks().length > 0) {
-        void videoRef.current.setSinkId(audioOutput);
-      }
       resizeObserver.observe(videoRef.current);
     }
     return () => {
       resizeObserver.disconnect();
     };
-  }, [setHeight, audioOutput, stream]);
+  }, [setHeight]);
 
   useEffect(() => {
     if (videoRef.current && mute) {
@@ -70,7 +67,7 @@ function VideoElement(props: VideoProps) {
     videoElement.addEventListener("loadedmetadata", onLoadedMetadata);
 
     videoElement.srcObject = stream;
-    // srcObject 設定後に音声出力先を指定する。render 時の重複呼び出しは削除済み
+    // 音声出力先の指定は srcObject 設定後のこの useEffect に集約する
     if (audioOutput && stream.getAudioTracks().length > 0) {
       void videoElement.setSinkId(audioOutput);
     }
