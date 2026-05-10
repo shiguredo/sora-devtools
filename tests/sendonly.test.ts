@@ -9,7 +9,7 @@ test("sendonly", async ({ page }) => {
   const channelId = `${channelIdPrefix}sendonly`;
 
   const params = new URLSearchParams({
-    channelId: channelId,
+    channelId,
     signalingUrlCandidates: JSON.stringify([signalingUrl]),
     multistream: "true",
     role: "sendonly",

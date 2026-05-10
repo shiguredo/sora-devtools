@@ -107,16 +107,18 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
     const prevValue = prevDataRef.current;
     prevDataRef.current = data;
 
+    // no-else-return に従い早期 return でネストを浅くする
     // 前回の値が存在し、値が変更された場合はハイライト表示
-    if (prevValue !== undefined && !deepEqual(prevValue, data)) {
-      isHighlighted.value = true;
-      const timer = setTimeout(() => {
-        isHighlighted.value = false;
-      }, 1000);
-      return () => {
-        clearTimeout(timer);
-      };
+    if (prevValue === undefined || deepEqual(prevValue, data)) {
+      return;
     }
+    isHighlighted.value = true;
+    const timer = setTimeout(() => {
+      isHighlighted.value = false;
+    }, 1000);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [data, isHighlighted]);
 
   // スタイルオブジェクトをメモ化して再レンダリング最適化

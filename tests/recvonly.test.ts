@@ -9,7 +9,7 @@ test("recvonly", async ({ page }) => {
   const channelId = `${channelIdPrefix}recvonly`;
 
   const params = new URLSearchParams({
-    channelId: channelId,
+    channelId,
     signalingUrlCandidates: JSON.stringify([signalingUrl]),
     multistream: "true",
     role: "recvonly",

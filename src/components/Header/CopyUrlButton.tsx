@@ -5,16 +5,16 @@ import { copyURL } from "@/app/actions";
 export function CopyUrlButton() {
   const copied = useSignal(false);
 
-  const onClick = (): void => {
-    void copyURL().then((success) => {
-      if (!success) {
-        return;
-      }
-      copied.value = true;
-      setTimeout(() => {
-        copied.value = false;
-      }, 2000);
-    });
+  // promise/prefer-await-to-then に従い async/await で記述する
+  const onClick = async (): Promise<void> => {
+    const success = await copyURL();
+    if (!success) {
+      return;
+    }
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
   };
 
   const baseClasses = `

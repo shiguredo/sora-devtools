@@ -10,13 +10,13 @@ interface TextBoxProps {
   text: string;
 }
 function TextBox(props: TextBoxProps) {
-  const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
-    void copyToClipboard(props.text).then((success) => {
-      if (!success) {
-        signals.setAPIErrorAlertMessage("failed to copy text to clipboard");
-      }
-    });
+  // promise/prefer-await-to-then に従い async/await で記述する
+  const onClick = async (event: TargetedMouseEvent<HTMLButtonElement>): Promise<void> => {
     event.currentTarget.blur();
+    const success = await copyToClipboard(props.text);
+    if (!success) {
+      signals.setAPIErrorAlertMessage("failed to copy text to clipboard");
+    }
   };
   return (
     <div className="flex items-center">

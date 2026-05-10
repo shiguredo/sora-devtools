@@ -10,6 +10,7 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
+// eslint-disable-next-line import/default -- vite の `?worker` は default export を提供する仮想モジュールで eslint-plugin-import が解釈できない
 import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {
   AlertMessage,
@@ -232,8 +233,12 @@ export const setAudioCodecType = (value: SoraDevtoolsState["audioCodecType"]): v
 export const setAudioContentHint = (value: SoraDevtoolsState["audioContentHint"]): void => {
   audioContentHint.value = value;
   if (localMediaStream.value) {
+    // contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+    // c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
     for (const track of localMediaStream.value.getAudioTracks()) {
-      track.contentHint = value;
+      if ("contentHint" in track) {
+        track.contentHint = value;
+      }
     }
   }
 };
@@ -418,8 +423,12 @@ export const setVideoCodecType = (value: SoraDevtoolsState["videoCodecType"]): v
 export const setVideoContentHint = (value: SoraDevtoolsState["videoContentHint"]): void => {
   videoContentHint.value = value;
   if (localMediaStream.value) {
+    // contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+    // c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
     for (const track of localMediaStream.value.getVideoTracks()) {
-      track.contentHint = value;
+      if ("contentHint" in track) {
+        track.contentHint = value;
+      }
     }
   }
 };
@@ -529,7 +538,7 @@ export const setSoraInfoAlertMessage = (message: string): void => {
   const alertMessage: AlertMessage = {
     title: "Sora info",
     type: "info",
-    message: message,
+    message,
     timestamp: Date.now(),
   };
   setAlertMessagesAndLogMessages(alertMessage);
@@ -538,7 +547,7 @@ export const setSoraErrorAlertMessage = (message: string): void => {
   const alertMessage: AlertMessage = {
     title: "Sora error",
     type: "error",
-    message: message,
+    message,
     timestamp: Date.now(),
   };
   setAlertMessagesAndLogMessages(alertMessage);
@@ -547,7 +556,7 @@ export const setAPIInfoAlertMessage = (message: string): void => {
   const alertMessage: AlertMessage = {
     title: "API info",
     type: "info",
-    message: message,
+    message,
     timestamp: Date.now(),
   };
   setAlertMessagesAndLogMessages(alertMessage);
@@ -556,7 +565,7 @@ export const setAPIErrorAlertMessage = (message: string): void => {
   const alertMessage: AlertMessage = {
     title: "API error",
     type: "error",
-    message: message,
+    message,
     timestamp: Date.now(),
   };
   setAlertMessagesAndLogMessages(alertMessage);
@@ -565,7 +574,7 @@ export const setRPCErrorAlertMessage = (message: string): void => {
   const alertMessage: AlertMessage = {
     title: "RPC error",
     type: "error",
-    message: message,
+    message,
     timestamp: Date.now(),
   };
   setAlertMessagesAndLogMessages(alertMessage);

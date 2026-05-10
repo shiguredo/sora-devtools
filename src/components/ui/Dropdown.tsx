@@ -46,12 +46,14 @@ export function Dropdown({ className = "", children }: DropdownProps) {
       }
     }
 
-    if (isOpen.value) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
+    // no-else-return に従い早期 return でネストを浅くする
+    if (!isOpen.value) {
+      return;
     }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [isOpen.value]);
 
   const toggle = useCallback(() => {

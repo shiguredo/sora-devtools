@@ -7,7 +7,6 @@ import * as signals from "@/app/signals";
 
 interface Props {
   text: string;
-  disabled?: boolean;
 }
 
 // クリップボード + チェックマーク アイコン
@@ -40,23 +39,19 @@ function ClipboardCheckIcon() {
 export function CopyLogButton(props: Props) {
   const copied = useSignal(false);
 
-  const onClick = (event: TargetedMouseEvent<HTMLButtonElement>): void => {
+  // promise/prefer-await-to-then に従い async/await で記述する
+  const onClick = async (event: TargetedMouseEvent<HTMLButtonElement>): Promise<void> => {
     event.currentTarget.blur();
-    void copyToClipboard(props.text).then((success) => {
-      if (!success) {
-        signals.setAPIErrorAlertMessage("failed to copy log to clipboard");
-        return;
-      }
-      copied.value = true;
-      setTimeout(() => {
-        copied.value = false;
-      }, 2000);
-    });
+    const success = await copyToClipboard(props.text);
+    if (!success) {
+      signals.setAPIErrorAlertMessage("failed to copy log to clipboard");
+      return;
+    }
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
   };
-
-  if (props.disabled) {
-    return <div style={{ height: "31px" }} />;
-  }
 
   const baseClasses = `
     px-2 py-1 text-sm rounded

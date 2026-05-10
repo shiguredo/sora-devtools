@@ -16,21 +16,22 @@ function Log(props: LogProps) {
 }
 
 const getCapabilitiesCodec = (
-  getCapabilities: (kind: string) => RTCRtpCapabilities | null,
+  getCapabilities: ((kind: string) => RTCRtpCapabilities | null) | undefined,
   kind: string,
 ): RTCRtpCodec[] => {
   if (!getCapabilities) {
     return [];
   }
   const capabilities = getCapabilities(kind);
-  if (!capabilities?.codecs) {
-    return [];
-  }
-
-  return capabilities.codecs;
+  return capabilities?.codecs ?? [];
 };
 
 export function CapabilitiesCodec() {
+  // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
+  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  if (!globalThis.RTCRtpSender || !RTCRtpSender.getCapabilities) {
+    return null;
+  }
   const senderAudioCapabilitiesCodec = getCapabilitiesCodec(
     (kind) => RTCRtpSender.getCapabilities(kind),
     "audio",

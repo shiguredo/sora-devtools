@@ -9,10 +9,11 @@ function mediaStreamStatsReportFilter(
   if (mediaStream === null) {
     return undefined;
   }
-  let trackIds: string[] = [];
+  // type が "video" 以外の場合の意図を明確にするため if/else を使用する
+  let trackIds: string[];
   if (type === "video") {
     trackIds = mediaStream.getVideoTracks().map((t) => t.id);
-  } else if (type === "audio") {
+  } else {
     trackIds = mediaStream.getAudioTracks().map((t) => t.id);
   }
   const targetStats = statsReport.find((stats) => {

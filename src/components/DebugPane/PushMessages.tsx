@@ -11,7 +11,7 @@ const SIGNALING_COLORS: Record<string, string> = {
 function Label(props: { text: string }) {
   const { text } = props;
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
-  return <span style={color ? { color: color } : {}}>[{text}]</span>;
+  return <span style={color ? { color } : {}}>[{text}]</span>;
 }
 
 interface CollapsePushProps {
@@ -20,7 +20,8 @@ interface CollapsePushProps {
 }
 function Collapse(props: CollapsePushProps) {
   const { push } = props;
-  const label = push.transportType ? <Label text={push.transportType} /> : null;
+  // transportType は型定義上必須 (TransportType) のため常に truthy
+  const label = <Label text={push.transportType} />;
   return (
     <Message
       title={push.message.type}

@@ -55,7 +55,7 @@ function DataChannelLabel(props: DataChannelLabelProps) {
       ? DATA_CHANNEL_COLORS[label]
       : undefined;
   return (
-    <span className="me-1" style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color } : {}}>
       [datachannel]{label ? `[${label}]` : ""}
       {typeof id === "number" ? `[${id}]` : ""}
     </span>
@@ -66,16 +66,31 @@ function Collapse(props: TimelineMessage) {
   const { timestamp, logType, dataChannelId, dataChannelLabel, type, data } = props;
   const title = type;
   let labelComponent: ComponentChild;
-  if (logType === "websocket") {
-    labelComponent = <WebSocketLabel />;
-  } else if (logType === "datachannel") {
-    labelComponent = <DataChannelLabel id={dataChannelId} label={dataChannelLabel} />;
-  } else if (logType === "peerconnection") {
-    labelComponent = <PeerConnectionLabel />;
-  } else if (logType === "sora") {
-    labelComponent = <SoraLabel />;
-  } else if (logType === "sora-devtools") {
-    labelComponent = <SoraDevtoolsLabel />;
+  switch (logType) {
+    case "websocket": {
+      labelComponent = <WebSocketLabel />;
+      break;
+    }
+    case "datachannel": {
+      labelComponent = <DataChannelLabel id={dataChannelId} label={dataChannelLabel} />;
+      break;
+    }
+    case "peerconnection": {
+      labelComponent = <PeerConnectionLabel />;
+      break;
+    }
+    case "sora": {
+      labelComponent = <SoraLabel />;
+      break;
+    }
+    case "sora-devtools": {
+      labelComponent = <SoraDevtoolsLabel />;
+      break;
+    }
+    default: {
+      labelComponent = undefined;
+      break;
+    }
   }
   return (
     <Message title={title} timestamp={timestamp} description={data ?? ""} label={labelComponent} />

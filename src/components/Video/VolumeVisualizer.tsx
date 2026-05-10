@@ -49,10 +49,13 @@ function Visualizer(props: VisualizerProps) {
     if (props.stream.getAudioTracks().length === 0) {
       return;
     }
-    const AudioContext =
-      globalThis.AudioContext ||
-      (globalThis as unknown as Record<string, typeof globalThis.AudioContext>).webkitAudioContext;
-    const audioContext = new AudioContext();
+    // Safari 等で globalThis.AudioContext が未定義な環境では webkitAudioContext を使用する
+    const { webkitAudioContext } = globalThis as unknown as {
+      webkitAudioContext: typeof globalThis.AudioContext;
+    };
+    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    const AudioContextCtor = globalThis.AudioContext || webkitAudioContext;
+    const audioContext = new AudioContextCtor();
     const mediaStreamSource = audioContext.createMediaStreamSource(props.stream);
     const analyser = audioContext.createAnalyser();
     analyser.fftSize = 2048;
@@ -85,10 +88,10 @@ function Visualizer(props: VisualizerProps) {
     }
     draw();
     return () => {
-      if (audioContext) {
-        void audioContext.close();
-      }
-      if (animationFrameId) {
+      // audioContext は const で必ず初期化されるため null チェック不要
+      void audioContext.close();
+      // number | null 型のため明示的な null チェックで意図を明確にする
+      if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId);
       }
     };

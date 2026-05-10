@@ -10,7 +10,7 @@ import { CopyLogButton } from "./CopyLogButton.tsx";
 import { JsonTree } from "./JsonTree.tsx";
 
 interface DescriptionProps {
-  description: string | number | Record<string, unknown>;
+  description: string | number | Record<string, unknown> | undefined;
   prevDescription?: unknown;
   wordBreak?: boolean;
 }
@@ -56,7 +56,7 @@ function Description(props: DescriptionProps) {
 interface Props {
   timestamp: number | null;
   title: string;
-  description: string | number | Record<string, unknown>;
+  description: string | number | Record<string, unknown> | undefined;
   prevDescription?: unknown;
   defaultShow?: boolean;
   label?: ComponentChild;
@@ -64,12 +64,11 @@ interface Props {
 }
 
 // 矢印アイコン（折りたたみ状態用）
-function ArrowIcon({ expanded, disabled }: { expanded: boolean; disabled: boolean }) {
+function ArrowIcon({ expanded }: { expanded: boolean }) {
   const rotation = expanded ? "rotate-90" : "";
-  const opacity = disabled ? "opacity-10" : "";
   return (
     <svg
-      className={`inline-block w-2.5 h-2.5 mx-1.5 transition-transform ${rotation} ${opacity}`}
+      className={`inline-block w-2.5 h-2.5 mx-1.5 transition-transform ${rotation}`}
       fill="none"
       stroke="white"
       strokeWidth="2"
@@ -91,25 +90,22 @@ export function Message(props: Props) {
       show.value = timelineExpandAll.value;
     }
   });
-  const disabled = description === undefined;
-  const disabledClass = disabled ? "pointer-events-none" : "";
   return (
     <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
       <div className="flex justify-between items-center break-words">
         <button
           type="button"
-          className={`
+          className="
             cursor-pointer text-white w-full no-underline
             bg-transparent border-0 p-0 text-left font-inherit block
-            ${disabledClass}
-          `}
+          "
           onClick={() => {
             show.value = !show.value;
           }}
           aria-controls={ariaControls}
           aria-expanded={show.value}
         >
-          <ArrowIcon expanded={show.value} disabled={disabled} />
+          <ArrowIcon expanded={show.value} />
           {timestamp ? (
             <span className="text-white/50 mr-1">[{formatUnixtime(timestamp)}]</span>
           ) : null}
@@ -121,7 +117,6 @@ export function Message(props: Props) {
             text={
               typeof description === "string" ? description : JSON.stringify(description, null, 2)
             }
-            disabled={disabled}
           />
         </div>
       </div>

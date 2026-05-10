@@ -49,44 +49,44 @@ function VideoElement(props: VideoProps) {
     if (stream === null) {
       // stream が null の場合は video 要素をリセットする
       videoElement.srcObject = null;
+      return;
     }
 
-    if (stream) {
-      // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
-      // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
-      // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
-      let originalEnabled: boolean | undefined;
+    // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
+    // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
+    // c.f. https://bugs.chromium.org/p/chromium/issues/detail?id=403710
+    let originalEnabled: boolean | undefined;
+    for (const track of stream.getVideoTracks()) {
+      originalEnabled = track.enabled;
+      track.enabled = false;
+    }
+    const onLoadedMetadata = (): void => {
       for (const track of stream.getVideoTracks()) {
-        originalEnabled = track.enabled;
-        track.enabled = false;
-      }
-      videoElement.addEventListener("loadedmetadata", () => {
-        for (const track of stream.getVideoTracks()) {
-          if (originalEnabled !== undefined) {
-            track.enabled = originalEnabled;
-          }
+        if (originalEnabled !== undefined) {
+          track.enabled = originalEnabled;
         }
-      });
-
-      videoElement.srcObject = stream;
-      if (audioOutput && stream.getAudioTracks().length > 0) {
-        void videoElement.setSinkId(audioOutput);
       }
+    };
+    videoElement.addEventListener("loadedmetadata", onLoadedMetadata);
 
-      return () => {
-        // onloadedmetadata が呼ばれない場合にアンマウントされた場合は track.enabled をオリジナルの状態に戻す
-        for (const track of stream.getVideoTracks()) {
-          if (originalEnabled !== undefined) {
-            track.enabled = originalEnabled;
-          }
-        }
-      };
+    videoElement.srcObject = stream;
+    // srcObject 設定後に音声出力先を指定する。render 時の重複呼び出しは削除済み
+    if (audioOutput && stream.getAudioTracks().length > 0) {
+      void videoElement.setSinkId(audioOutput);
     }
+
+    // stream 変更時にリスナーが蓄積するのを防ぐため cleanup で removeEventListener する
+    return () => {
+      videoElement.removeEventListener("loadedmetadata", onLoadedMetadata);
+      // onloadedmetadata が呼ばれない場合にアンマウントされた場合は track.enabled をオリジナルの状態に戻す
+      for (const track of stream.getVideoTracks()) {
+        if (originalEnabled !== undefined) {
+          track.enabled = originalEnabled;
+        }
+      }
+    };
   }, [stream, audioOutput]);
 
-  if (audioOutput && videoRef.current?.setSinkId && stream && stream.getAudioTracks().length > 0) {
-    void videoRef.current.setSinkId(audioOutput);
-  }
   return (
     <video
       id={props.localVideo ? "local-video" : undefined}

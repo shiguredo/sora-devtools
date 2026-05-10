@@ -164,10 +164,10 @@ function createDownloadReport(): DownloadReport {
     userAgent: navigator.userAgent,
     "sora-devtools": version.value,
     "sora-js-sdk": Sora.version(),
-    parameters: parameters,
+    parameters,
     timeline: timelineMessages.value.map((message) => ({
       timestamp: message.timestamp,
-      message: message,
+      message,
     })),
     notify: notifyMessages.value,
     stats: soraContents.value.statsReport,
@@ -181,7 +181,7 @@ export function DownloadReportButton() {
     const report = createDownloadReport();
     const data = JSON.stringify(report);
     const blob = new Blob([data], { type: "text/plain" });
-    globalThis.URL = globalThis.URL || globalThis.webkitURL;
+    // 対象ブラウザはすべて URL.createObjectURL をネイティブサポート済みのため webkitURL fallback は不要
     if (anchorRef.current) {
       const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
       anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
@@ -194,8 +194,7 @@ export function DownloadReportButton() {
       <Button variant="light" size="sm" className="ml-1" onClick={onClick}>
         Download report
       </Button>
-      {/* biome-ignore lint/a11y/useAnchorContent: This is a hidden anchor used for programmatic file download */}
-      {/* biome-ignore lint/a11y/useValidAnchor: This is a hidden anchor used for programmatic file download */}
+      {/* This is a hidden anchor used for programmatic file download */}
       <a ref={anchorRef} style={{ display: "none" }} />
     </>
   );

@@ -11,7 +11,7 @@ const SIGNALING_COLORS: Record<string, string> = {
 function Label({ text }: { text: string }) {
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
-    <span className="me-1" style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color } : {}}>
       [{text}]
     </span>
   );
@@ -19,7 +19,8 @@ function Label({ text }: { text: string }) {
 
 function Collapse(props: SignalingMessage) {
   const { data, type, timestamp, transportType } = props;
-  const label = transportType ? <Label text={transportType} /> : null;
+  // transportType は型定義上必須 (TransportType) のため常に truthy
+  const label = <Label text={transportType} />;
   return <Message title={type} timestamp={timestamp} description={data ?? ""} label={label} />;
 }
 
