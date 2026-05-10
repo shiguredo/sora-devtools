@@ -1,6 +1,7 @@
 # 0029-bug-fix-live-collection-race-in-stop-video-track
 
 Created: 2026-05-10
+Completed: 2026-05-10
 Model: deepseek-v4-pro
 
 ## 背景
@@ -50,3 +51,7 @@ for (const track of tracks) {
   localMediaStreamValue.removeTrack(track);
 }
 ```
+
+## 解決方法
+
+`stopLocalVideoTrack` の `originalTrack` が未指定の分岐で、`localMediaStreamValue.getVideoTracks()` の戻り値を最初に配列へスプレッドコピーしてからループするように変更した。これにより 100ms 待機中に `updateMediaStream` などが新規トラックを追加しても、`stop()` / `removeTrack()` の対象は最初に取得したトラック群に固定される。
