@@ -16,6 +16,7 @@ import { RPC_TEMPLATES } from "@/constants";
 import { rpc } from "@/rpc";
 import type { RpcObject } from "@/types";
 import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
+import { getErrorMessage } from "@/utils";
 
 import { JsonTree } from "./JsonTree.tsx";
 
@@ -80,9 +81,7 @@ function RpcForm() {
         // RPC params は任意の key-value を持つオブジェクトのため Record<string, unknown> に縮約する
         parsedParams = JSON.parse(paramsText) as Record<string, unknown>;
       } catch (error) {
-        setRPCErrorAlertMessage(
-          `invalid JSON in params: ${error instanceof Error ? error.message : String(error)}`,
-        );
+        setRPCErrorAlertMessage(`invalid JSON in params: ${getErrorMessage(error)}`);
         return;
       }
     }

@@ -46,6 +46,11 @@ export function formatUnixtime(time: number): string {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
+// catch で受け取った unknown 値からエラーメッセージを取り出す
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 // OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す
 export async function copyToClipboard(text: string): Promise<boolean> {
   // navigator.clipboard は HTTPS / localhost 以外では undefined になり得る

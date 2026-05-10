@@ -30,6 +30,10 @@
   - デフォルト 1000 件、100/500/1000/5000 から選択可能
   - URL パラメータ maxNotifyMessages に対応
   - @voluntas
+- [ADD] `getErrorMessage` ユーティリティを追加して `error instanceof Error ? error.message : String(error)` を一元化する
+  - `src/utils.ts` に `getErrorMessage(error: unknown): string` を追加する
+  - `actions.ts` 9 箇所と `Rpc.tsx` 1 箇所をこの関数の呼び出しに置き換える
+  - @voluntas
 - [ADD] `setTrackContentHint` ユーティリティを追加して contentHint の機能検出を一元化する
   - `src/utils.ts` に `setTrackContentHint(track, hint)` を追加する
   - `actions.ts` の `applyTrackSettings` / `createDisplayMediaStream`、`signals.ts` の `setAudioContentHint` / `setVideoContentHint` から重複した `"contentHint" in track` の機能検出と Firefox 非対応コメントを削除して同関数に置き換える
