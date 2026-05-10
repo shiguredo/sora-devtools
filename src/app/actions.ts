@@ -29,6 +29,7 @@ import {
   getMediaStreamTrackProperties,
   parseMetadata,
   parseQueryString,
+  setTrackContentHint,
 } from "./../utils.ts";
 import { loadUrlEntries } from "./../opfs.ts";
 import * as signals from "./signals.ts";
@@ -644,19 +645,13 @@ function getStateForMediaStream(): createMediaStreamPickedState {
 }
 
 // MediaStream のトラックに contentHint と enabled を設定する
-// contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
-// c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
 function applyTrackSettings(mediaStream: MediaStream, state: createMediaStreamPickedState): void {
   for (const track of mediaStream.getVideoTracks()) {
-    if ("contentHint" in track) {
-      track.contentHint = state.videoContentHint;
-    }
+    setTrackContentHint(track, state.videoContentHint);
     track.enabled = state.videoTrack;
   }
   for (const track of mediaStream.getAudioTracks()) {
-    if ("contentHint" in track) {
-      track.contentHint = state.audioContentHint;
-    }
+    setTrackContentHint(track, state.audioContentHint);
     track.enabled = state.audioTrack;
   }
 }
@@ -700,12 +695,8 @@ async function createDisplayMediaStream(
   );
   const stream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media"));
-  // contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
-  // c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
   for (const track of stream.getVideoTracks()) {
-    if ("contentHint" in track) {
-      track.contentHint = state.videoContentHint;
-    }
+    setTrackContentHint(track, state.videoContentHint);
     track.enabled = state.videoTrack;
     signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track));
   }

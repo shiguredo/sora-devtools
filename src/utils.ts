@@ -714,6 +714,15 @@ interface GetMediaStreamTrackProperties {
   getCapabilities: MediaTrackCapabilities | null;
   getSettings: MediaTrackSettings;
 }
+// MediaStreamTrack に contentHint を設定する
+// contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+// 参照: https://caniuse.com/mdn-api_mediastreamtrack_contenthint
+export function setTrackContentHint(track: MediaStreamTrack, hint: string): void {
+  if ("contentHint" in track) {
+    track.contentHint = hint;
+  }
+}
+
 export function getMediaStreamTrackProperties(
   track: MediaStreamTrack,
 ): GetMediaStreamTrackProperties {

@@ -1,6 +1,7 @@
 # 0024-enhance-extract-contenthint-utility
 
 Created: 2026-05-10
+Completed: 2026-05-10
 Model: deepseek-v4-pro
 
 ## 背景
@@ -40,3 +41,20 @@ function setTrackContentHint(track: MediaStreamTrack, hint: string): void {
 ```
 
 上記のユーティリティ関数を抽出し、全 5 箇所から呼び出す。
+
+## 解決方法
+
+`src/utils.ts` に以下のユーティリティを追加した。
+
+```typescript
+// MediaStreamTrack に contentHint を設定する
+// contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+// c.f. https://caniuse.com/mdn-api_mediastreamtrack_contenthint
+export function setTrackContentHint(track: MediaStreamTrack, hint: string): void {
+  if ("contentHint" in track) {
+    track.contentHint = hint;
+  }
+}
+```
+
+`src/app/actions.ts` の `applyTrackSettings` (video / audio 各ループ) と `createDisplayMediaStream` の video ループ、`src/app/signals.ts` の `setAudioContentHint` / `setVideoContentHint` の合計 5 箇所をこの関数の呼び出しに置き換え、重複していた機能検出と Firefox 非対応コメントを 1 箇所に集約した。
