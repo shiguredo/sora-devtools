@@ -1645,7 +1645,8 @@ export const disconnectSora = async (): Promise<void> => {
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
   // disconnected 状態でも残留メディアを掃除する
-  // connected 時は SDK への切断通知前にローカル track を止めるが、UI を即座に消すための意図的な順序であり冪等で安全
+  // connected / connecting / preparing 時は SDK への切断通知前にローカル track を止めるが、UI を即座に消すための意図的な順序であり冪等で安全
+  // sora-js-sdk の disconnect() は WebSocket / PeerConnection を close するだけでローカル track を停止しないため、切断通知前に止めても例外や ICE エラーは起きない
   cleanupSoraMediaState();
   // statsReport タイマーは状態に関わらず即時停止する
   stopStatsReportTimer();

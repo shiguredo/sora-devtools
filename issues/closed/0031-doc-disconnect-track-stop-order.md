@@ -4,6 +4,7 @@ Created: 2026-06-03
 Model: Opus 4.8
 Branch: feature/fix-video-persists-after-disconnect
 Polished: 2026-06-03
+Completed: 2026-06-03
 
 ## 背景
 
@@ -41,3 +42,12 @@ issue 0030 の修正で `disconnectSora`（`src/app/actions.ts`）は冒頭で c
 ## 影響範囲
 
 - `src/app/actions.ts` の `disconnectSora`（既存コメントの主語修正と根拠 1 行の追記のみ）
+
+## 解決方法
+
+`src/app/actions.ts` の `disconnectSora` の `cleanupSoraMediaState()` 呼び出し直前のコメントを修正した。
+
+- 主語を「connected 時は」から「connected / connecting / preparing 時は」に変更し、実装が対象とする 3 状態に揃えた。
+- 「sora-js-sdk の disconnect() は WebSocket / PeerConnection を close するだけでローカル track を停止しないため、切断通知前に止めても例外や ICE エラーは起きない」という SDK の無害根拠を 1 行追記した。
+
+コメントの修正のみで動作は変わらないため、テストの追加・修正と `CHANGES.md` への記載は行っていない。既存 93 テストが通ることを確認した。
