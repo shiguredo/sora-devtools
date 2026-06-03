@@ -4,6 +4,7 @@ Created: 2026-06-03
 Model: Opus 4.8
 Branch: feature/fix-video-persists-after-disconnect
 Polished: 2026-06-03
+Completed: 2026-06-03
 
 ## 背景
 
@@ -47,3 +48,9 @@ Polished: 2026-06-03
 ## 影響範囲
 
 - `CHANGES.md`（`### misc` への 1 エントリ追加のみ）
+
+## 解決方法
+
+`CHANGES.md` の `## develop` 内 `### misc` サブセクションの既存 `[UPDATE] oxlint v1.39.0 で追加されたルールを有効にする` の直後に、`[UPDATE] package を更新する` エントリを追加した。コミット `c9ff3067` で更新した直接依存 9 件を `旧 -> 新` 表記で列挙し、担当者行 `- @voluntas` を付けた。`pnpm-lock.yaml` の推移的依存は記載していない。
+
+`CHANGES.md` への追記のみで、コード・依存は変更していない。

@@ -195,6 +195,17 @@
   - unicorn/require-module-attributes
   - vitest/consistent-each-for, hoisted-apis-on-top, no-unneeded-async-expect-function, prefer-called-once, prefer-describe-function-title
   - @voluntas
+- [UPDATE] package を更新する
+  - preact: 10.29.1 -> 10.29.2
+  - @preact/signals: 2.9.0 -> 2.9.1
+  - @preact/signals-agent-vite: 0.1.1 -> 0.1.2
+  - @playwright/test: 1.59.1 -> 1.60.0
+  - @tailwindcss/vite: 4.2.4 -> 4.3.0
+  - tailwindcss: 4.2.4 -> 4.3.0
+  - @types/node: 25.6.0 -> 25.9.1
+  - @vitest/browser / @vitest/browser-playwright / @vitest/browser-preview: 4.1.5 -> 4.1.8
+  - fast-check: 4.7.0 -> 4.8.0
+  - @voluntas
 - [ADD] prek に builtin フックを追加してセキュリティと設定ファイルの構文検証を行う
   - check-merge-conflict / detect-private-key / check-added-large-files
   - check-toml / check-yaml / check-json5 (`.json` / `.json5` / `.jsonc` を対象)
