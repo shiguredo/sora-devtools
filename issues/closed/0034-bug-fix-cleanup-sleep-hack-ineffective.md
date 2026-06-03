@@ -4,6 +4,7 @@ Created: 2026-06-03
 Model: Opus 4.8
 Branch: feature/fix-video-persists-after-disconnect
 Polished: 2026-06-03
+Completed: 2026-06-03
 
 ## 背景
 
@@ -49,3 +50,9 @@ video track を `localMediaStream` から `removeTrack` で外して fire-and-fo
 
 - `src/app/actions.ts` の `cleanupSoraMediaState` および `stopLocalVideoTrack`（修正する場合）。`stopLocalVideoTrack` のシグネチャを変える場合は `setCameraDeviceAction` の呼び出し（`actions.ts` の `stopLocalVideoTrack` 呼び出し 2 箇所）にも波及する
 - 受信側の最終コマ確認は配信中の切断（disconnect ハンドラ経由、または connected 状態での disconnectSora 経由）でのみ可能。disconnected 状態での Disconnect は配信していないため最終コマ確認の対象外で、ローカル掃除が regress しないことの確認に留める
+
+## 解決方法
+
+Safari で手動確認を実施した。sendonly / sendrecv で配信し、別タブ / 別端末の recvonly で受信表示した状態から配信側を Disconnect し、受信側の `<video>` を観察した。仮想背景 ON / OFF の両方で、受信側の映像は最終コマを残さず即座に消えた。
+
+コード上は最終フレーム対策の sleep が `setLocalMediaStream(null)` の即 stop に追い越されているが、Safari は track の即停止で最終コマを残さないため実害は生じない。よって 0030 L112 の「即 stop を安全網とする」設計のまま修正不要と判断し、コード変更なしで close する。
