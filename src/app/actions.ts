@@ -867,6 +867,12 @@ async function createMediaStream(
   return createUserMediaStream(state);
 }
 
+// connection.destroyed の notify かを判定する型ガード
+export const isConnectionDestroyedNotify = (
+  message: SoraNotifyMessage,
+): message is SoraNotifyMessage & { connection_id: string } =>
+  message.event_type === "connection.destroyed" && typeof message.connection_id === "string";
+
 // スポットライトイベントを処理する
 function handleSpotlightEvent(message: SoraNotifyMessage): void {
   if (message.event_type === "spotlight.focused" && typeof message.connection_id === "string") {
@@ -875,7 +881,7 @@ function handleSpotlightEvent(message: SoraNotifyMessage): void {
   if (message.event_type === "spotlight.unfocused" && typeof message.connection_id === "string") {
     signals.setUnFocusedSpotlightConnectionId(message.connection_id);
   }
-  if (message.event_type === "connection.destroyed" && typeof message.connection_id === "string") {
+  if (isConnectionDestroyedNotify(message)) {
     signals.deleteFocusedSpotlightConnectionId(message.connection_id);
   }
 }
@@ -985,7 +991,7 @@ const clearRemoteMediaClients = (): void => {
 // Sora 切断時の完全なメディア掃除
 // リモート・ローカル両方のメディアリソースを解放する
 // 冪等（null・空で再呼び出ししても安全）
-const cleanupSoraMediaState = (): void => {
+export const cleanupSoraMediaState = (): void => {
   clearRemoteMediaClients();
   const localMediaStreamValue = signals.localMediaStream.value;
   const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
@@ -1025,10 +1031,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     handleSpotlightEvent(message);
     handleConnectionCreatedNotify(message);
     // 他参加者が退出したらリモートクライアントを削除する
-    if (
-      message.event_type === "connection.destroyed" &&
-      typeof message.connection_id === "string"
-    ) {
+    if (isConnectionDestroyedNotify(message)) {
       removeRemoteClientCleanup(message.connection_id);
     }
     signals.setNotifyMessages({

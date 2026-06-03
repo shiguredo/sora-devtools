@@ -43,6 +43,10 @@
   - vite.config.ts の test.include を `src/**/*.test.ts` / `src/**/*.prop.ts` に変更する
   - `parseBooleanString` / `formatUnixtime` / `parseMetadata` / `getVideoSizeByResolution` の PBT テストを追加する
   - @voluntas
+- [ADD] connection.destroyed 判定とメディア掃除のテストを追加する
+  - connection.destroyed 判定を `isConnectionDestroyedNotify` 型ガードに切り出して export する
+  - `cleanupSoraMediaState` を export し初期状態の冪等性をテストする
+  - @voluntas
 
 - [CHANGE] Fake Video を Worker ベースに書き換える
   - OffscreenCanvas を使用して Worker 内で描画

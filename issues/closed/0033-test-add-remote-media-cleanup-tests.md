@@ -4,6 +4,7 @@ Created: 2026-06-03
 Model: Opus 4.8
 Branch: feature/fix-video-persists-after-disconnect
 Polished: 2026-06-03
+Completed: 2026-06-03
 
 ## 背景
 
@@ -60,3 +61,17 @@ export const isConnectionDestroyedNotify = (
 - 新規 `src/app/actions.test.ts`
 - `src/app/actions.ts`（`isConnectionDestroyedNotify` の新設・export と 2 箇所の置換、`cleanupSoraMediaState` の export 追加）
 - `CHANGES.md`（通常 `[ADD]` 群への記載）
+
+## 解決方法
+
+### 実装
+
+- `src/app/actions.ts` に `isConnectionDestroyedNotify(message)` 型ガードを新設・export し、`handleSpotlightEvent` と notify コールバックの 2 箇所のインライン判定をこれに置き換えた（重複排除）。
+- `cleanupSoraMediaState` を export した。
+- `src/app/actions.test.ts` を新規作成し、テストを 5 件追加した。
+  - `isConnectionDestroyedNotify` の 4 ケース（connection.destroyed と connection_id が string で true、connection_id 無し / string でない / 別 event_type で false）
+  - `cleanupSoraMediaState` を初期状態で呼んでも例外を投げないこと
+
+### テスト
+
+- `pnpm test` で 98 件（既存 93 + 新規 5）全通過、`pnpm check`（lint + 型）も通過を確認した。
