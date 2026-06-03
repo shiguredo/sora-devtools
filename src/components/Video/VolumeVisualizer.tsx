@@ -53,9 +53,9 @@ function Visualizer(props: VisualizerProps) {
     const { webkitAudioContext } = globalThis as unknown as {
       webkitAudioContext: typeof globalThis.AudioContext;
     };
-    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     const AudioContextConstructor = globalThis.AudioContext || webkitAudioContext;
-    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     if (!AudioContextConstructor) {
       return;
     }

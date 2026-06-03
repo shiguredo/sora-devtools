@@ -667,7 +667,7 @@ async function createDisplayMediaStream(
     return [new MediaStream(), null, null];
   }
   // navigator.mediaDevices は HTTPS / localhost 以外では undefined になり得る
-  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (navigator.mediaDevices === undefined) {
     throw new Error("failed to call getUserMedia, make sure domain is secure");
   }
@@ -766,7 +766,7 @@ async function createUserMediaStream(
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   // navigator.mediaDevices は HTTPS / localhost 以外では undefined になり得る
-  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (navigator.mediaDevices === undefined) {
     throw new Error("failed to call getUserMedia, make sure domain is secure");
   }
