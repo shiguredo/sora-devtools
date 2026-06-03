@@ -208,7 +208,7 @@ signal クリア（`setLocalMediaStream(null)` / `removeAllRemoteClients()`）�
 - disconnect ハンドラ: 掃除ロジックを `cleanupSoraMediaState()` 呼出に置換
 - `disconnectSora`: `cleanupSoraMediaState()` + `stopStatsReportTimer()` を早期 return 前に常時呼出
 - `connectSora` 冒頭: `clearRemoteMediaClients()` を `soraValue.disconnect()` 前に呼出
-- `connectSora` catch: `setSora(null)` 後に `clearRemoteMediaClients()` を呼出
+- `connectSora` catch: `cleanupMediaStreamOnError` 後に `cleanupSoraMediaState()` を呼出（remoteClients と localMediaStream を掃除）
 - `reconnectSora` 冒頭: `clearRemoteMediaClients()` を呼出
 - `reconnectSora`: `createMediaStream` 失敗時と `attemptReconnection` 全失敗時に `cleanupSoraMediaState()` を呼出
 
@@ -226,6 +226,5 @@ signal クリア（`setLocalMediaStream(null)` / `removeAllRemoteClients()`）�
 
 ### テスト
 
-- 既存 93 テスト全通過を確認
-- テスト環境は jsdom であり MediaStream/AudioContext が利用不可のため、track.stop() や ended リスナーを含む経路の単体テストはモック禁止制約下で成立しない。`removeAllRemoteClients()` 等の signal 操作は既存テストでカバー済み
-  - それ以外の track.stop / worker 停止 / AudioContext close を伴う経路は手動確認・e2e に委ねる
+- 既存 93 テスト全通過を確認（新規ロジックは下記制約によりテスト未追加）
+- テスト環境は jsdom であり MediaStream/AudioContext が利用不可のため、track.stop() や ended リスナーを含む経路の単体テストはモック禁止制約下で成立しない。`removeRemoteClient` / `removeAllRemoteClients` の signal 操作も `RemoteClient` の `mediaStream` が `MediaStream` 必須で要素を積めないため、テストは追加せず手動確認・e2e で検証する

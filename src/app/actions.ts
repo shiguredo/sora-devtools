@@ -876,7 +876,6 @@ function handleSpotlightEvent(message: SoraNotifyMessage): void {
     signals.setUnFocusedSpotlightConnectionId(message.connection_id);
   }
   if (message.event_type === "connection.destroyed" && typeof message.connection_id === "string") {
-    removeRemoteClientCleanup(message.connection_id);
     signals.deleteFocusedSpotlightConnectionId(message.connection_id);
   }
 }
@@ -928,7 +927,7 @@ function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
 }
 
 // track の ended イベントリスナー管理
-// connectionId をキー、 {track, listener} の配列を値とする Map
+// connectionId をキー、{track, listener} の配列を値とする Map
 const trackEndedListeners = new Map<
   string,
   Array<{ track: MediaStreamTrack; listener: () => void }>
@@ -941,6 +940,7 @@ const registerTrackEndedListener = (connectionId: string, track: MediaStreamTrac
     return;
   }
   const listener = (): void => {
+    // いずれか 1 track の ended でクライアントごと削除する（removetrack と同じ stream 単位の粒度）
     removeRemoteClientCleanup(connectionId);
   };
   track.addEventListener("ended", listener);
@@ -958,7 +958,7 @@ const unregisterTrackEndedListeners = (connectionId: string): void => {
   }
 };
 
-// リモートクライアントを track 停止・リスナー解除つきで削除する
+// リモートクライアントを track 停止・リスナー解除つきで個別に削除する
 const removeRemoteClientCleanup = (connectionId: string): void => {
   unregisterTrackEndedListeners(connectionId);
   const remoteClientsValue = signals.remoteClients.value;
@@ -971,17 +971,20 @@ const removeRemoteClientCleanup = (connectionId: string): void => {
   }
 };
 
-// リモートクライアントの全トラックを停止し signal を空にする
+// リモートクライアント全件の track 停止・ended リスナー解除後に signal を一括クリアする
 const clearRemoteMediaClients = (): void => {
-  const remoteClientsValue = signals.remoteClients.value;
-  for (const client of remoteClientsValue) {
-    removeRemoteClientCleanup(client.connectionId);
+  for (const client of signals.remoteClients.value) {
+    unregisterTrackEndedListeners(client.connectionId);
+    for (const track of client.mediaStream.getTracks()) {
+      track.stop();
+    }
   }
+  signals.removeAllRemoteClients();
 };
 
 // Sora 切断時の完全なメディア掃除
 // リモート・ローカル両方のメディアリソースを解放する
-// 冪等（ null ・空で再呼び出ししても安全）
+// 冪等（null・空で再呼び出ししても安全）
 const cleanupSoraMediaState = (): void => {
   clearRemoteMediaClients();
   const localMediaStreamValue = signals.localMediaStream.value;
@@ -1021,6 +1024,13 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
   soraConnection.on("notify", (message: SoraNotifyMessage, transportType: TransportType) => {
     handleSpotlightEvent(message);
     handleConnectionCreatedNotify(message);
+    // 他参加者が退出したらリモートクライアントを削除する
+    if (
+      message.event_type === "connection.destroyed" &&
+      typeof message.connection_id === "string"
+    ) {
+      removeRemoteClientCleanup(message.connection_id);
+    }
     signals.setNotifyMessages({
       timestamp: Date.now(),
       message,
@@ -1490,11 +1500,12 @@ export const connectSora = async (): Promise<void> => {
   } catch (error) {
     // 先に setSora で state を参照できるようにした state の参照を削除
     signals.setSora(null);
-    clearRemoteMediaClients();
     if (error instanceof Error) {
       signals.setSoraErrorAlertMessage(`failed to connect Sora: ${error.message}`);
     }
     cleanupMediaStreamOnError(state, mediaStream);
+    // 残留した remoteClients と localMediaStream を掃除し、接続失敗後も UI に映像が残らないようにする
+    cleanupSoraMediaState();
     signals.setSoraConnectionStatus("disconnected");
     throw error;
   }
@@ -1634,6 +1645,7 @@ export const disconnectSora = async (): Promise<void> => {
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
   // disconnected 状態でも残留メディアを掃除する
+  // connected 時は SDK への切断通知前にローカル track を止めるが、UI を即座に消すための意図的な順序であり冪等で安全
   cleanupSoraMediaState();
   // statsReport タイマーは状態に関わらず即時停止する
   stopStatsReportTimer();
