@@ -9,7 +9,8 @@ export function ConnectButton() {
   const disabled =
     connectionStatus.value === "disconnecting" ||
     connectionStatus.value === "connecting" ||
-    connectionStatus.value === "initializing";
+    connectionStatus.value === "initializing" ||
+    connectionStatus.value === "preparing";
 
   return (
     <div className="col-auto mb-1 mr-2">

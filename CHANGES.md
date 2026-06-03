@@ -175,6 +175,12 @@
 - [FIX] MutedVisualizer の height 変更時にキャンバスが再描画されない問題を修正する
   - useEffect の依存配列に props.height を追加する
   - @voluntas
+- [FIX] 切断後もリモート / ローカル映像が UI に残る問題を修正する
+  - cleanupSoraMediaState / clearRemoteMediaClients を抽出し、disconnect ハンドラ / disconnectSora / connectSora 冒頭・catch / reconnectSora の各経路から呼ぶ
+  - connection.destroyed notify でリモートクライアントを削除する
+  - disconnected 状態で Disconnect を押した場合も残留メディアを掃除する
+  - ConnectButton の preparing 中の二重押下を防止する
+  - @voluntas
 
 ### misc
 

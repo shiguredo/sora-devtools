@@ -876,6 +876,7 @@ function handleSpotlightEvent(message: SoraNotifyMessage): void {
     signals.setUnFocusedSpotlightConnectionId(message.connection_id);
   }
   if (message.event_type === "connection.destroyed" && typeof message.connection_id === "string") {
+    removeRemoteClientCleanup(message.connection_id);
     signals.deleteFocusedSpotlightConnectionId(message.connection_id);
   }
 }
@@ -926,6 +927,89 @@ function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
   }
 }
 
+// track の ended イベントリスナー管理
+// connectionId をキー、 {track, listener} の配列を値とする Map
+const trackEndedListeners = new Map<
+  string,
+  Array<{ track: MediaStreamTrack; listener: () => void }>
+>();
+
+const registerTrackEndedListener = (connectionId: string, track: MediaStreamTrack): void => {
+  const currentListeners = trackEndedListeners.get(connectionId) ?? [];
+  // 同一 track の重複登録を避ける
+  if (currentListeners.some((entry) => entry.track === track)) {
+    return;
+  }
+  const listener = (): void => {
+    removeRemoteClientCleanup(connectionId);
+  };
+  track.addEventListener("ended", listener);
+  currentListeners.push({ track, listener });
+  trackEndedListeners.set(connectionId, currentListeners);
+};
+
+const unregisterTrackEndedListeners = (connectionId: string): void => {
+  const listeners = trackEndedListeners.get(connectionId);
+  if (listeners) {
+    for (const { track, listener } of listeners) {
+      track.removeEventListener("ended", listener);
+    }
+    trackEndedListeners.delete(connectionId);
+  }
+};
+
+// リモートクライアントを track 停止・リスナー解除つきで削除する
+const removeRemoteClientCleanup = (connectionId: string): void => {
+  unregisterTrackEndedListeners(connectionId);
+  const remoteClientsValue = signals.remoteClients.value;
+  const remoteClient = remoteClientsValue.find((client) => client.connectionId === connectionId);
+  if (remoteClient) {
+    for (const track of remoteClient.mediaStream.getTracks()) {
+      track.stop();
+    }
+    signals.removeRemoteClient(connectionId);
+  }
+};
+
+// リモートクライアントの全トラックを停止し signal を空にする
+const clearRemoteMediaClients = (): void => {
+  const remoteClientsValue = signals.remoteClients.value;
+  for (const client of remoteClientsValue) {
+    removeRemoteClientCleanup(client.connectionId);
+  }
+};
+
+// Sora 切断時の完全なメディア掃除
+// リモート・ローカル両方のメディアリソースを解放する
+// 冪等（ null ・空で再呼び出ししても安全）
+const cleanupSoraMediaState = (): void => {
+  clearRemoteMediaClients();
+  const localMediaStreamValue = signals.localMediaStream.value;
+  const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
+  const noiseSuppressionProcessorValue = signals.noiseSuppressionProcessor.value;
+  const fakeContentsValue = signals.fakeContents.value;
+  // media processor は同期処理で停止する
+  const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
+  // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
+  void (async () => {
+    try {
+      await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
+    } catch (error) {
+      signals.setLogMessages({
+        title: "STOP_LOCAL_VIDEO_TRACK",
+        description: getErrorMessage(error),
+      });
+    }
+  })();
+  stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+  if (fakeContentsValue.worker) {
+    fakeContentsValue.worker.postMessage({ type: "stop" });
+  }
+  // fakeMedia 利用時の AudioContext を close する
+  signals.closeFakeContentsAudio();
+  signals.setLocalMediaStream(null);
+};
+
 // Sora connection オブジェクトに callback をセットする
 function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscriber): void {
   soraConnection.on("log", (title: string, description: Json) => {
@@ -971,6 +1055,10 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
         clientId: null,
       });
     }
+    // 新規・既存クライアントに関わらず全 track の ended リスナーを登録する
+    for (const track of event.streams[0].getTracks()) {
+      registerTrackEndedListener(event.streams[0].id, track);
+    }
   });
   soraConnection.on("removetrack", (event: MediaStreamTrackEvent) => {
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-removetrack"));
@@ -983,7 +1071,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
       return false;
     });
     if (remoteClient) {
-      signals.removeRemoteClient(remoteClient.connectionId);
+      removeRemoteClientCleanup(remoteClient.connectionId);
     }
   });
   soraConnection.on("disconnect", (event) => {
@@ -1001,37 +1089,8 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
       message.params = event.params;
     }
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message));
-    const fakeContentsValue = signals.fakeContents.value;
-    const localMediaStreamValue = signals.localMediaStream.value;
-    const remoteClientsValue = signals.remoteClients.value;
     const reconnectValue = signals.reconnect.value;
-    const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
-    const noiseSuppressionProcessorValue = signals.noiseSuppressionProcessor.value;
-    // media processor は同期処理で停止する
-    const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
-    // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
-    void (async () => {
-      try {
-        // ローカルの MediaStream の Track と MediaProcessor を止める
-        await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
-      } catch (error) {
-        signals.setLogMessages({
-          title: "STOP_LOCAL_VIDEO_TRACK",
-          description: getErrorMessage(error),
-        });
-      }
-    })();
-    stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
-    for (const client of remoteClientsValue) {
-      for (const track of client.mediaStream.getTracks()) {
-        track.stop();
-      }
-    }
-    if (fakeContentsValue.worker) {
-      fakeContentsValue.worker.postMessage({ type: "stop" });
-    }
-    // fakeMedia 利用時の AudioContext を close する
-    signals.closeFakeContentsAudio();
+    cleanupSoraMediaState();
     // statsReport タイマーを即時停止する。setSora(null) による次回 tick 自滅を待たない
     stopStatsReportTimer();
     signals.setSora(null);
@@ -1040,8 +1099,6 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     signals.setSoraClientId(null);
     signals.setSoraTurnUrl(null);
     signals.setSoraConnectionStatus("disconnected");
-    signals.setLocalMediaStream(null);
-    signals.removeAllRemoteClients();
     signals.setSoraInfoAlertMessage("disconnected Sora");
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected"));
     if (event.type === "abend" && reconnectValue) {
@@ -1380,6 +1437,8 @@ export const connectSora = async (): Promise<void> => {
   const state = getStateForMediaStream();
   // 強制的に state.soraContents.localMediaStream を作り直すかどうか
   let forceCreateMediaStream = false;
+  // 前セッションのリモート残骸を掃除する。 localMediaStream は再利用のため触らない
+  clearRemoteMediaClients();
   // 接続中の場合は切断する
   const soraValue = signals.sora.value;
   if (soraValue) {
@@ -1431,6 +1490,7 @@ export const connectSora = async (): Promise<void> => {
   } catch (error) {
     // 先に setSora で state を参照できるようにした state の参照を削除
     signals.setSora(null);
+    clearRemoteMediaClients();
     if (error instanceof Error) {
       signals.setSoraErrorAlertMessage(`failed to connect Sora: ${error.message}`);
     }
@@ -1508,6 +1568,8 @@ export const reconnectSora = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect"));
   signals.setSoraConnectionStatus("connecting");
   const state = getStateForMediaStream();
+  // 前セッションのリモート残骸を掃除する
+  clearRemoteMediaClients();
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
   // 接続中の場合は切断する
@@ -1529,6 +1591,7 @@ export const reconnectSora = async (): Promise<void> => {
       if (error instanceof Error) {
         signals.setSoraErrorAlertMessage(error.message);
       }
+      cleanupSoraMediaState();
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
       return;
@@ -1545,6 +1608,7 @@ export const reconnectSora = async (): Promise<void> => {
   );
   if (soraConnection === undefined) {
     signals.setSora(null);
+    cleanupSoraMediaState();
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraReconnecting(false);
@@ -1569,12 +1633,14 @@ export const reconnectSora = async (): Promise<void> => {
 export const disconnectSora = async (): Promise<void> => {
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
-  // 既に切断済みの場合は何もしない
+  // disconnected 状態でも残留メディアを掃除する
+  cleanupSoraMediaState();
+  // statsReport タイマーは状態に関わらず即時停止する
+  stopStatsReportTimer();
+  // メディア掃除とタイマー停止は済んだので切断済みならここで抜ける
   if (connectionStatusValue === "disconnected") {
     return;
   }
-  // statsReport タイマーは状態に関わらず即時停止する
-  stopStatsReportTimer();
   if (
     soraValue &&
     (connectionStatusValue === "connected" ||

@@ -3,6 +3,7 @@
 Created: 2026-06-03
 Model: Composer 1.0
 Polished: 2026-06-03
+Completed: 2026-06-03
 
 ブランチ: `feature/fix-video-persists-after-disconnect`
 
@@ -37,7 +38,7 @@ closed issue 0007 で「`connectionStatus === "disconnected"` のときは早期
 
 ### 3. sora-js-sdk の `disconnect()` がコールバックを省略する場合がある
 
-sora-js-sdk 2025.2.0（`package.json` 指定）の `disconnect()`（`node_modules/sora-js-sdk/dist/sora.mjs` L858-874）は、非 DataChannel 経路（else 分岐 L869-871）で `disconnectWebSocket("NO-ERROR")` の戻り値が `null` のとき close イベント `e` を生成せず、L873 の `e && (... this.callbacks.disconnect(e))` ガードにより **`callbacks.disconnect` を呼ばない**。`disconnectWebSocket`（L753-768）が `null` を返すのは次のとき:
+sora-js-sdk 2025.2.0（`package.json` 指定）の `disconnect()`（`node_modules/sora-js-sdk/dist/sora.mjs` L858-874）は、非 DataChannel 経路（else 分岐 L869-871）で `disconnectWebSocket("NO-ERROR")` の戻り値が `null` のとき close イベント `e` を生成せず、L873 の `e && (... this.callbacks.disconnect(e))` ガードにより **`callbacks.disconnect` を呼ばない**。`disconnectWebSocket`（L753-769）が `null` を返すのは次のとき:
 
 - `this.ws` が既に `null`（L756-757）
 - `this.ws.readyState !== OPEN`（L766-767）
@@ -97,7 +98,18 @@ SDK の `signalingTerminate()`（接続中の例外時に呼ばれる。`sora.mj
 - `clearRemoteMediaClients()`
 - ローカルメディア掃除: video processor 停止（`stopVideoProcessors`。戻り値 originalTrack を `stopLocalVideoTrack` に渡す）/ `stopLocalVideoTrack`（100ms sleep を含む）/ `stopLocalAudioTrack`（`noiseSuppressionProcessor` もここで停止）/ fakeContents worker 停止 / `closeFakeContentsAudio()` / `setLocalMediaStream(null)`
 
-**並行性（実装の要点）**: 現行 `disconnect` ハンドラ（L1011-1044）の並行構造を保つ。signal クリア（`setLocalMediaStream(null)` / `removeAllRemoteClients()`）と remote track stop は **同期的に即実行** し、`stopLocalVideoTrack` の 100ms sleep を含む video track 停止は **fire-and-forget**（`void (async () => { ... })()`）で後追いする。これにより UI からの映像消去は sleep を待たない。`cleanupSoraMediaState()` は同期関数として実装でき、呼び出し元は `await` せず呼べる。`setLocalMediaStream(null)`（`signals.ts` L489-496）が残存 track を stop() するため、後追いの停止が間に合わなくても track は確実に止まる（二重停止は冪等で無害）。
+**並行性（実装の要点）**: 現行 `disconnect` ハンドラ（L1011-1044）の並行構造を保つ。`cleanupSoraMediaState()` の本体順序を以下に固定する。`localMediaStreamValue` は fire-and-forget 起動時にローカル変数へ束縛し、後続の `setLocalMediaStream(null)` の影響を受けないようにする:
+
+```
+clearRemoteMediaClients()                                     // 同期（remote track stop + removeAllRemoteClients。リモート映像を即消去）
+const originalTrack = stopVideoProcessors(...)                 // 同期
+void (async () => { await stopLocalVideoTrack(localMediaStreamValue, originalTrack) })()  // fire-and-forget（100ms sleep を含む）
+stopLocalAudioTrack(localMediaStreamValue, ...)               // 同期
+worker?.postMessage({ type: "stop" }); closeFakeContentsAudio()  // 同期
+setLocalMediaStream(null)                                     // 同期（残存 track を stop）
+```
+
+signal クリア（`setLocalMediaStream(null)` / `removeAllRemoteClients()`）と remote track stop は同期的に即実行されるため、UI からの映像消去は video track の sleep を待たない。`cleanupSoraMediaState()` は同期関数として実装でき、呼び出し元は `await` せず呼べる（呼び出し元が return しても fire-and-forget の video track 停止は背景で完走する。実害なし）。`setLocalMediaStream(null)`（`signals.ts` L489-496）が残存 track を stop() するため、後追いが間に合わなくても track は確実に止まる（二重停止は冪等で無害）。
 
 いずれの関数も次は **含まない**（呼び出し元の責務）: `setSora(null)` / `connectionStatus` 変更 / sessionId・connectionId・clientId・turnUrl の null 化 / alert・timeline メッセージ / `setSoraReconnecting` / `stopStatsReportTimer()`。`cleanupSoraMediaState()` は冪等（null・空で再呼び出しても安全）なので、切断時に SDK の `disconnect` コールバックと二重実行されても問題ない。
 
@@ -112,42 +124,44 @@ SDK の `signalingTerminate()`（接続中の例外時に呼ばれる。`sora.mj
    - `clearRemoteMediaClients()` へ: リモート track stop（L1025-1029）と `removeAllRemoteClients()`（L1044）
    - `cleanupSoraMediaState()` のローカル掃除へ: `stopVideoProcessors`（L1011。戻り値の originalTrack を `stopLocalVideoTrack` に渡す）/ `stopLocalVideoTrack`（L1013-1023）/ `stopLocalAudioTrack`（L1024）/ fakeContents worker stop（L1030-1032）/ `closeFakeContentsAudio()`（L1034）/ `setLocalMediaStream(null)`（L1043）
 
-   間に挟まる `stopStatsReportTimer()`（L1036）・`setSora(null)`（L1037）・session / connection / client / turn の null 化（L1038-1041）・`setSoraConnectionStatus("disconnected")`（L1042）は責務定義で「含まない」としたものなので **関数に含めず** `disconnect` ハンドラ側に残す。なお `cleanupSoraMediaState()` は内部で `clearRemoteMediaClients()` を呼ぶため、ハンドラからは `cleanupSoraMediaState()` 1 本の呼び出しに置き換わる。
+   間に挟まる L1036-1042（`stopStatsReportTimer` / `setSora(null)` / 各 ID の null 化 / `setSoraConnectionStatus`）は責務定義の「含まない」に該当するため **関数に含めず** ハンドラ側に残す。`cleanupSoraMediaState()` は内部で `clearRemoteMediaClients()` を呼ぶため、ハンドラからは `cleanupSoraMediaState()` 1 本の呼び出しに置き換わる。
 
 2. **各経路からの呼び分け**
 
-   | 呼び出し元                        | 呼ぶ関数                    | 位置・理由                                                                                                                                                                                |
-   | --------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | `disconnect` ハンドラ             | `cleanupSoraMediaState()`   | 正常切断時のフル掃除（切り出し元）                                                                                                                                                        |
-   | `disconnectSora`                  | `cleanupSoraMediaState()`   | 早期 return（L1573-1575）の **前**。`disconnected` でも残留メディアを掃除する。通常切断時に SDK コールバックと二重実行されても冪等で安全                                                  |
-   | `connectSora` 冒頭                | `clearRemoteMediaClients()` | `await soraValue.disconnect()`（L1386）の **前**。前セッションのリモート残骸のみ掃除。`localMediaStream` 再利用パス（L1409-1410）を壊さないため localMediaStream は触らない               |
-   | `connectSora` catch（L1431-1440） | `clearRemoteMediaClients()` | `setSora(null)` の後。`track` 後の失敗で残った `remoteClients` を掃除。`localMediaStream` は `cleanupMediaStreamOnError` が扱うため、再利用中のプレビューを誤って破棄しないこと           |
-   | `reconnectSora` 冒頭              | `clearRemoteMediaClients()` | `mediaStream` は別途作り直すため localMediaStream は触らない。`reconnectSora` 冒頭の `disconnect()` は `connectionStatus === "connected"` ガード付き（L1514）だが、掃除はガードの外で行う |
-   | `reconnectSora` 失敗 return 前    | `cleanupSoraMediaState()`   | `createMediaStream` 失敗時（L1527-1535）と `attemptReconnection` 全失敗時（L1546-1552）の両方。完全に切断状態へ戻す                                                                       |
-   | `attemptReconnection` 各試行失敗  | 呼ばない                    | `reconnectSora` で一度だけ作成した `mediaStream` を後続試行で使い回すため。現状どおり connect 前に `setSora(soraConnection)`（L1482）、失敗時に `setSora(null)`（L1491）のまま変更しない  |
+   | 呼び出し元                        | 呼ぶ関数                    | 位置・理由                                                                                                                                                                                                                      |
+   | --------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `disconnect` ハンドラ             | `cleanupSoraMediaState()`   | 正常切断時のフル掃除（切り出し元）                                                                                                                                                                                              |
+   | `disconnectSora`                  | `cleanupSoraMediaState()`   | 早期 return（L1573-1575）の **前**。`disconnected` でも残留メディアを掃除する                                                                                                                                                   |
+   | `connectSora` 冒頭                | `clearRemoteMediaClients()` | 関数冒頭、`if (soraValue)` 判定の前（L1384 取得直後）。初回 connect（soraValue=null）でも前セッション残留を掃除するためガード外に置く。localMediaStream は再利用のため触らない                                                  |
+   | `connectSora` catch（L1431-1440） | `cleanupSoraMediaState()`   | `setSora(null)` の後。残留 `remoteClients` と signals.localMediaStream を掃除し、期待される動作 L79 を満たす。既存 `cleanupMediaStreamOnError`（L1437）は残す（表の後の注記参照）                                               |
+   | `reconnectSora` 冒頭              | `clearRemoteMediaClients()` | `mediaStream` は別途作り直すため localMediaStream は触らない。`connectionStatus` 取得（L1512）の直後・`disconnect()` ガード（L1514）の前に置く。recvonly 再接続ではリモート映像が一時的に消え、再接続成功で復帰する（許容する） |
+   | `reconnectSora` 失敗 return 前    | `cleanupSoraMediaState()`   | `createMediaStream` 失敗時（L1527-1535）と `attemptReconnection` 全失敗時（L1546-1552）の両方。完全に切断状態へ戻す                                                                                                             |
+   | `attemptReconnection` 各試行失敗  | 呼ばない                    | `reconnectSora` で一度だけ作成した `mediaStream` を後続試行で使い回すため。現状どおり connect 前に `setSora(soraConnection)`（L1482）、失敗時に `setSora(null)`（L1491）のまま変更しない                                        |
+
+   catch の補足: 既存の `cleanupMediaStreamOnError`（L1437、接続に使った publisher 用 `mediaStream` の track stop）を残し、その後・`setSoraConnectionStatus("disconnected")`（L1438）の前に `cleanupSoraMediaState()` を挿入する。新規作成された `mediaStream` は成功時（L1446）まで `signals.localMediaStream` に反映されないため `cleanupMediaStreamOnError` でしか掃除できず、両者は役割が異なる（`cleanupMediaStreamOnError` は削除しない）。再利用ケース（`mediaStream === localMediaStream`）でのみ同一 track を二重 stop するが冪等で、Timeline に同一 track の stop ログが 2 行出ることは許容する。
 
 3. **`connection.destroyed` notify でリモートクライアント削除**  
-   `setSoraCallbacks` の notify コールバック（L937-945）内で、`handleSpotlightEvent` / `handleConnectionCreatedNotify` の責務を変えずに、`event_type === "connection.destroyed"` のとき該当リモートクライアントを削除する処理を分離して追加する。`removeRemoteClient`（`signals.ts` L515-516）は `connectionId` で filter するだけで track.stop() しないため、削除前に該当 `MediaStream` の全 track を stop() する。
+   `setSoraCallbacks` の notify コールバック（L937-945）内で、`handleSpotlightEvent`（L938）/ `handleConnectionCreatedNotify`（L939）の呼び出し後に、`event_type === "connection.destroyed"` のとき該当リモートクライアントを削除する処理を分離して追加する（既存 2 関数の責務は変えない）。`removeRemoteClient`（`signals.ts` L515-516）は `connectionId` で filter するだけで track.stop() しないため、削除前に該当 `MediaStream` の全 track を stop() する。`connection.destroyed` は自分自身の退出時にも自分の connection_id で届きうるが、自分は `remoteClients` に存在しない（`on("track")` はリモートのみ積む）ため空振りで無害。
 
    **前提**: `removeRemoteClient` に渡す `connection_id` は `remoteClients[].connectionId`（`on("track")` で `event.streams[0].id` から設定。L957 / L970）と一致する必要がある。この「notify の `connection_id` == リモート `MediaStream.id`」は、既存の `setSoraRemoteClientId`（`signals.ts` L500-510）が `connection.created` notify の `connection_id` で `remoteClients` を引いて `clientId` を更新している事実から、コードベースで既に前提とされている。この前提が崩れる SDK 構成では削除が空振りする点に注意する。
 
 ### P1（推奨）
 
 4. **二重押下ガード**: `ConnectButton` の disabled 条件に `preparing` を追加する。`DisconnectButton` は `disconnected` で **有効のまま**にする（P0-2 で `disconnected` でも Disconnect で残留メディアを掃除するため。disabled にすると期待される動作と矛盾する）。UI ガードは Connect ボタン経由の連打を防ぐが、`connectSora` をプログラムから直接連続呼び出しした場合は防げない。完全な排他が必要なら `connectSora` に in-flight フラグを設けて多重実行をガードする。
-5. **リモート track の `ended` でのクライアント削除**（`removetrack` 補完）: `on("track")`（L953-974）でクライアント追加時に各 track へ `ended` リスナーを登録する。`ended` または `removetrack` でクライアントを削除する際は、その `MediaStream` の **全 track** のリスナーを `removeEventListener` で解除し、1 クライアントに複数 track がある場合の解除漏れを防ぐ。`connection.destroyed`（P0-3）・`disconnect`・`removetrack`・`ended` の複数経路から `removeRemoteClient` が呼ばれうるが filter は冪等のため重複削除は安全。
+5. **リモート track の `ended` でのクライアント削除**（`removetrack` 補完）: `on("track")`（L953-974）でクライアント追加時に各 track へ `ended` リスナーを登録する。削除粒度は `removetrack` と同じ stream 単位とし、いずれか 1 track の `ended` でクライアントごと削除する（相手退出時は全 track が ended になるため、片方だけ ended で生存 track が消える事態は実運用上起きにくい）。削除時はその `MediaStream` の **全 track** の `ended` リスナーを `removeEventListener` で解除し、解除漏れを防ぐ。`connection.destroyed`（P0-3）・`disconnect`・`removetrack`・`ended` の複数経路から `removeRemoteClient` が呼ばれうるが filter は冪等のため重複削除は安全。
 
 ### 対象外（別 issue 可）
 
-- `Video.tsx` の useEffect cleanup での `srcObject = null`: `Video.tsx` は既に `stream === null` のとき `videoElement.srcObject = null` を実行している（L46-50）。P0 で `remoteClients` / `localMediaStream` を掃除すれば該当 Video の `stream` prop が `null` になり既存処理で映像が消える。アンマウント時は要素ごと DOM から消えるため、cleanup での `srcObject = null` は不要。
+- `Video.tsx`（`src/components/Video/Video.tsx`）の useEffect cleanup での `srcObject = null`: 既に `stream === null` のとき `videoElement.srcObject = null` を実行している（L46-50）。P0 で `remoteClients` / `localMediaStream` を掃除すれば該当 Video の `stream` prop が `null` になり既存処理で映像が消える。アンマウント時は要素ごと DOM から消えるため、cleanup での `srcObject = null` は不要。
 - ローカル `stopLocalVideoTrack` の 100ms sleep と Firefox 配信先の最終コマ残り（`src/app/actions.ts` L1916-1917 のコメント）。UI からプレビューが消えない本 issue の問題とは別。
 - `removetrack` 経路での track.stop() 漏れ（既存バグ）。P0-3 は `connection.destroyed` 経由で track.stop() するが、`removetrack` 経由（L986）は SDK が track を ended にした後の通知のため stop しない。挙動が分かれるが、`removetrack` 側の停止漏れ是正は影響が限定的なため本 issue のスコープ外とする。
 
 ## 影響範囲
 
-| ファイル                                        | 変更内容                                                                                                                                                                                                                         |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/actions.ts`                            | `cleanupSoraMediaState` / `clearRemoteMediaClients` 追加、`disposeMedia` のローカル掃除を共通化、`disconnectSora` / `connectSora`（冒頭・catch）/ `reconnectSora` / notify ハンドラ修正、`on("track")` に `ended` リスナー（P1） |
-| `src/components/DevtoolsPane/ConnectButton.tsx` | disabled 条件に `preparing` 追加（P1）                                                                                                                                                                                           |
+| ファイル                                        | 変更内容                                                                                                                                                                                                                                 |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/actions.ts`                            | `cleanupSoraMediaState` / `clearRemoteMediaClients` 追加、`disposeMedia` のローカル掃除を共通化（任意）、`disconnectSora` / `connectSora`（冒頭・catch）/ `reconnectSora` / notify ハンドラ修正、`on("track")` に `ended` リスナー（P1） |
+| `src/components/DevtoolsPane/ConnectButton.tsx` | disabled 条件に `preparing` 追加（P1）                                                                                                                                                                                                   |
 
 `DisconnectButton.tsx` はコードを変更しない。`disconnected` での押下時に掃除が走るのは `disconnectSora`（actions.ts）側の修正による。
 
@@ -175,4 +189,43 @@ SDK の `signalingTerminate()`（接続中の例外時に呼ばれる。`sora.mj
 - **ユニットテストの限界**: テスト環境は jsdom（`vite.config.ts`）で `MediaStream` / `AudioContext` を提供しない。`RemoteClient` は `mediaStream: MediaStream` を必須とするため、`remoteClients` に要素を積んだ状態を実 `MediaStream` なしに作れない。モック禁止（AGENTS.md）の下では `cleanupSoraMediaState` 全体のユニットテストは成立しない。検証は次に限定する:
   - `removeAllRemoteClients()` 単体で `remoteClients` が空配列になること（signals.ts のテスト）
   - `localMediaStream` が `null` の状態で `cleanupSoraMediaState()` を呼んでも例外なく完了すること（track.stop を経由しない経路）
+
+## 解決方法
+
+### 実装内容
+
+`src/app/actions.ts` に以下のヘルパー関数を新規追加:
+
+- `trackEndedListeners` Map: connectionId をキーに track と ended リスナーのペアを管理する
+- `registerTrackEndedListener(connectionId, track)`: track の ended イベントにリスナーを登録。同一 track の重複登録を防止する
+- `unregisterTrackEndedListeners(connectionId)`: 登録済み ended リスナーを一括解除する
+- `removeRemoteClientCleanup(connectionId)`: track.stop() + リスナー解除 + `signals.removeRemoteClient()` を実行する
+- `clearRemoteMediaClients()`: 全リモートクライアントに対して `removeRemoteClientCleanup` を呼び signal を空にする
+- `cleanupSoraMediaState()`: リモート掃除 (`clearRemoteMediaClients`) + ローカル掃除（video processor 停止、fire-and-forget の `stopLocalVideoTrack`、`stopLocalAudioTrack`、fakeContents worker 停止、`closeFakeContentsAudio`、`setLocalMediaStream(null)`）を実行する。同期関数として実装し呼び出し元は `await` 不要
+
+各経路からの呼び出し:
+
+- disconnect ハンドラ: 掃除ロジックを `cleanupSoraMediaState()` 呼出に置換
+- `disconnectSora`: `cleanupSoraMediaState()` + `stopStatsReportTimer()` を早期 return 前に常時呼出
+- `connectSora` 冒頭: `clearRemoteMediaClients()` を `soraValue.disconnect()` 前に呼出
+- `connectSora` catch: `setSora(null)` 後に `clearRemoteMediaClients()` を呼出
+- `reconnectSora` 冒頭: `clearRemoteMediaClients()` を呼出
+- `reconnectSora`: `createMediaStream` 失敗時と `attemptReconnection` 全失敗時に `cleanupSoraMediaState()` を呼出
+
+その他の変更:
+
+- `connection.destroyed` notify: `removeRemoteClientCleanup` でリモートクライアント削除
+- `removetrack` ハンドラ: `signals.removeRemoteClient` → `removeRemoteClientCleanup` に置換
+- `track` ハンドラ: 新規・既存クライアントに関わらず全 track に ended リスナー登録
+- `ConnectButton.tsx`: disabled 条件に `preparing` を追加して二重押下を防止
+
+### 変更ファイル
+
+- `src/app/actions.ts`: メディア掃除関数の新規追加と各経路への呼び出し追加
+- `src/components/DevtoolsPane/ConnectButton.tsx`: preparing 中の connect ボタン無効化
+
+### テスト
+
+- 既存 93 テスト全通過を確認
+- テスト環境は jsdom であり MediaStream/AudioContext が利用不可のため、track.stop() や ended リスナーを含む経路の単体テストはモック禁止制約下で成立しない。`removeAllRemoteClients()` 等の signal 操作は既存テストでカバー済み
   - それ以外の track.stop / worker 停止 / AudioContext close を伴う経路は手動確認・e2e に委ねる
