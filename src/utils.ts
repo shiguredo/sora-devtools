@@ -54,7 +54,7 @@ export function getErrorMessage(error: unknown): string {
 // OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す
 export async function copyToClipboard(text: string): Promise<boolean> {
   // navigator.clipboard は HTTPS / localhost 以外では undefined になり得る
-  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (!navigator.clipboard) {
     return false;
   }
@@ -277,7 +277,7 @@ export function createSignalingURL(
 }
 
 // 解像度に対応する width と height を返す
-const videoResolutionPattern = /^(\d+)x(\d+)$/;
+const videoResolutionPattern = /^(\d+)x(\d+)$/u;
 
 export function getVideoSizeByResolution(resolution: string): {
   width: number;
@@ -329,8 +329,8 @@ export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): n
       return 15;
     }
     default: {
-      const _exhaustiveCheck: never = blurRadius;
-      throw new Error(`unexpected blurRadius value: ${_exhaustiveCheck as string}`);
+      const exhaustiveCheck: never = blurRadius;
+      throw new Error(`unexpected blurRadius value: ${exhaustiveCheck as string}`);
     }
   }
 }
@@ -604,9 +604,9 @@ export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
     const { webkitAudioContext } = globalThis as unknown as {
       webkitAudioContext: typeof globalThis.AudioContext;
     };
-    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     const AudioContextConstructor = globalThis.AudioContext || webkitAudioContext;
-    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     if (!AudioContextConstructor) {
       return {
         offscreenCanvas,
@@ -664,7 +664,7 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
 
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
   // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
-  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (!globalThis.RTCRtpSender || !RTCRtpSender.getCapabilities) {
     return "VP9";
   }
@@ -694,7 +694,7 @@ export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
 
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
   // https じゃない場合などで mediaDevices が undefined になる可能性がある
-  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (navigator.mediaDevices === undefined) {
     return [];
   }
@@ -741,7 +741,7 @@ export function getMediaStreamTrackProperties(
     contentHint: track.contentHint,
     getConstraints: track.getConstraints(),
     // 古いブラウザでは getCapabilities が未定義
-    // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
     getSettings: track.getSettings(),
   };

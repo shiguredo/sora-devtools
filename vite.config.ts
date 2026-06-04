@@ -3,7 +3,7 @@ import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite-plus";
 
-const __dirname = import.meta.dirname;
+const rootDir = import.meta.dirname;
 
 export default defineConfig({
   plugins: [preactPlugin(), tailwindcss()],
@@ -12,7 +12,7 @@ export default defineConfig({
     target: "esnext",
     rolldownOptions: {
       input: {
-        index: path.resolve(__dirname, "./index.html"),
+        index: path.resolve(rootDir, "./index.html"),
       },
       output: {
         manualChunks(moduleId) {
@@ -33,7 +33,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(rootDir, "./src"),
     },
   },
   test: {
@@ -427,8 +427,6 @@ export default defineConfig({
       "unicorn/consistent-empty-array-spread": "error",
       // 存在チェックのインデックス一貫性
       "unicorn/consistent-existence-index-check": "error",
-      // 関数スコープの一貫性
-      "unicorn/consistent-function-scoping": "error",
       // Date クローンの一貫性
       "unicorn/consistent-date-clone": "error",
       // Error メッセージを必須
@@ -741,8 +739,10 @@ export default defineConfig({
       "vitest/require-mock-type-parameters": "off",
       // テストファイル名の一貫性
       "vitest/consistent-test-filename": "error",
-      // require-hook を強制
-      "vitest/require-hook": "error",
+      // require-hook はトップレベルの副作用に反応し、 main.tsx の render や Worker の
+      // モジュール初期化など非テストファイルで誤検知するため、ベースでは無効化して
+      // テストファイルの override でのみ error にする
+      "vitest/require-hook": "off",
       // test.only の commit を防止
       "vitest/no-focused-tests": "error",
       // test.skip の commit を防止
@@ -905,6 +905,12 @@ export default defineConfig({
       // ===== unicorn: プロジェクトに不適なルール =====
       // postMessage の target origin は WebRTC で不要な場合がある
       "unicorn/require-post-message-target-origin": "off",
+      // 否定条件は eslint 版 (no-negated-condition) と同様に可読性へ影響しない場合が多いため無効化
+      "unicorn/no-negated-condition": "off",
+      // 依存のないハンドラのモジュール外移動を求めるが、 Preact コンポーネント内の
+      // ハンドラ再生成コストは無視でき、外出しはハンドラとフォームの対応を分断して
+      // 可読性を下げるため無効化
+      "unicorn/consistent-function-scoping": "off",
 
       // ===== vitest/jest: プロジェクトに不適なルール =====
       // vite-plus/test や @playwright/test 経由で import しており globals は不要
@@ -918,6 +924,9 @@ export default defineConfig({
       "vitest/prefer-lowercase-title": "off",
       // テストは Chai API の assert を利用しており expect() を呼ばないため無効化
       "vitest/expect-expect": "off",
+      // expect.assertions()/hasAssertions() を要求するルール。 expect-expect と同じく
+      // Chai API の assert を利用し expect() を呼ばないため無効化
+      "vitest/prefer-expect-assertions": "off",
       // jest ルールはプロジェクトで使用しない
       "jest/require-hook": "off",
       "jest/require-top-level-describe": "off",
@@ -951,6 +960,13 @@ export default defineConfig({
           "typescript/no-unsafe-member-access": "off",
           "typescript/no-unsafe-return": "off",
           "typescript/no-unsafe-type-assertion": "off",
+        },
+      },
+      {
+        // require-hook はテストの setup/teardown 規律なのでテストファイルでのみ有効にする
+        files: ["**/*.test.ts", "**/*.prop.ts", "**/*.ct.tsx"],
+        rules: {
+          "vitest/require-hook": "error",
         },
       },
     ],

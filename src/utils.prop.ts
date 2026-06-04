@@ -377,7 +377,7 @@ test.prop([fc.integer({ min: 0, max: 4_102_444_800_000 })])(
   "formatUnixtime は YYYY-M-D HH:MM:SS.mmm 形式の文字列を返す",
   (time) => {
     const result = formatUnixtime(time);
-    assert.match(result, /^\d{4}-\d{1,2}-\d{1,2} \d{2}:\d{2}:\d{2}\.\d{3}$/);
+    assert.match(result, /^\d{4}-\d{1,2}-\d{1,2} \d{2}:\d{2}:\d{2}\.\d{3}$/u);
   },
 );
 
@@ -416,7 +416,7 @@ test.prop([fc.integer({ min: 1, max: 7680 }), fc.integer({ min: 1, max: 4320 })]
   },
 );
 
-test.prop([fc.string().filter((s) => !/^\d+x\d+$/.test(s))])(
+test.prop([fc.string().filter((s) => !/^\d+x\d+$/u.test(s))])(
   "getVideoSizeByResolution: 不正な形式は { width: 0, height: 0 } を返す",
   (invalidResolution) => {
     const result = getVideoSizeByResolution(invalidResolution);

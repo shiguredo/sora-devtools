@@ -43,6 +43,10 @@
   - vite.config.ts の test.include を `src/**/*.test.ts` / `src/**/*.prop.ts` に変更する
   - `parseBooleanString` / `formatUnixtime` / `parseMetadata` / `getVideoSizeByResolution` の PBT テストを追加する
   - @voluntas
+- [ADD] connection.destroyed 判定とメディア掃除のテストを追加する
+  - connection.destroyed 判定を `isConnectionDestroyedNotify` 型ガードに切り出して export する
+  - `cleanupSoraMediaState` を export し初期状態の冪等性をテストする
+  - @voluntas
 
 - [CHANGE] Fake Video を Worker ベースに書き換える
   - OffscreenCanvas を使用して Worker 内で描画
@@ -175,6 +179,13 @@
 - [FIX] MutedVisualizer の height 変更時にキャンバスが再描画されない問題を修正する
   - useEffect の依存配列に props.height を追加する
   - @voluntas
+- [FIX] 切断後もリモート / ローカル映像が UI に残る問題を修正する
+  - cleanupSoraMediaState / clearRemoteMediaClients を抽出し、disconnect ハンドラ / disconnectSora / connectSora 冒頭・catch / reconnectSora の各経路から呼ぶ
+  - connection.destroyed notify でリモートクライアントを削除する
+  - リモート track の ended イベントでクライアントを削除し removetrack を補完する
+  - disconnected 状態で Disconnect を押した場合も残留メディアを掃除する
+  - ConnectButton の preparing 中の二重押下を防止する
+  - @voluntas
 
 ### misc
 
@@ -187,6 +198,27 @@
   - typescript/prefer-optional-chain
   - unicorn/require-module-attributes
   - vitest/consistent-each-for, hoisted-apis-on-top, no-unneeded-async-expect-function, prefer-called-once, prefer-describe-function-title
+  - @voluntas
+- [UPDATE] package を更新する
+  - preact: 10.29.1 -> 10.29.2
+  - @preact/signals: 2.9.0 -> 2.9.1
+  - @preact/signals-agent-vite: 0.1.1 -> 0.1.2
+  - @playwright/test: 1.59.1 -> 1.60.0
+  - @tailwindcss/vite: 4.2.4 -> 4.3.0
+  - tailwindcss: 4.2.4 -> 4.3.0
+  - @types/node: 25.6.0 -> 25.9.1
+  - @vitest/browser / @vitest/browser-playwright / @vitest/browser-preview: 4.1.5 -> 4.1.8
+  - fast-check: 4.7.0 -> 4.8.0
+  - @voluntas
+- [UPDATE] vite-plus を 0.1.24 に更新し oxlint 強化で検出された lint に対応する
+  - vite / vite-plus / vitest を 0.1.20 から 0.1.24 に更新する
+  - Chai API の assert を使い expect を呼ばない方針のため vitest/prefer-expect-assertions を無効化する
+  - 否定条件を許可する方針のため unicorn/no-negated-condition を無効化する
+  - コンポーネント内ハンドラの再生成コストは無視でき外出しは可読性を下げるため unicorn/consistent-function-scoping を無効化する
+  - 非テストファイルでの誤検知を防ぐため vitest/require-hook をテストファイル限定にする
+  - 0.1.24 で効かなくなった oxlint-disable の形式を typescript/no-unnecessary-condition と react/button-has-type に修正する
+  - require-unicode-regexp 対応で正規表現に u フラグを追加する
+  - no-underscore-dangle 対応で `_exhaustiveCheck` と `__dirname` をリネームする
   - @voluntas
 - [ADD] prek に builtin フックを追加してセキュリティと設定ファイルの構文検証を行う
   - check-merge-conflict / detect-private-key / check-added-large-files
