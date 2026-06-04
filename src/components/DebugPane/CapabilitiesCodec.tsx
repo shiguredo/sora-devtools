@@ -28,7 +28,7 @@ const getCapabilitiesCodec = (
 
 export function CapabilitiesCodec() {
   // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
-  // oxlint-disable-next-line typescript-eslint(no-unnecessary-condition)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (!globalThis.RTCRtpSender || !RTCRtpSender.getCapabilities) {
     return null;
   }

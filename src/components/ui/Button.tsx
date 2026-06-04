@@ -42,7 +42,9 @@ export function Button({
 
   return (
     <button
-      // oxlint-disable-next-line eslint-plugin-react(button-has-type)
+      // type は ButtonProps で "button" | "submit" | "reset" に限定され型安全だが、
+      // oxlint は JSX に渡る変数を静的に追えず button-has-type が誤検知するため無効化
+      // oxlint-disable-next-line react/button-has-type
       type={type}
       name={name}
       disabled={disabled}

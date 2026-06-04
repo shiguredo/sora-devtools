@@ -210,6 +210,16 @@
   - @vitest/browser / @vitest/browser-playwright / @vitest/browser-preview: 4.1.5 -> 4.1.8
   - fast-check: 4.7.0 -> 4.8.0
   - @voluntas
+- [UPDATE] vite-plus を 0.1.24 に更新し oxlint 強化で検出された lint に対応する
+  - vite / vite-plus / vitest を 0.1.20 から 0.1.24 に更新する
+  - Chai API の assert を使い expect を呼ばない方針のため vitest/prefer-expect-assertions を無効化する
+  - 否定条件を許可する方針のため unicorn/no-negated-condition を無効化する
+  - コンポーネント内ハンドラの再生成コストは無視でき外出しは可読性を下げるため unicorn/consistent-function-scoping を無効化する
+  - 非テストファイルでの誤検知を防ぐため vitest/require-hook をテストファイル限定にする
+  - 0.1.24 で効かなくなった oxlint-disable の形式を typescript/no-unnecessary-condition と react/button-has-type に修正する
+  - require-unicode-regexp 対応で正規表現に u フラグを追加する
+  - no-underscore-dangle 対応で `_exhaustiveCheck` と `__dirname` をリネームする
+  - @voluntas
 - [ADD] prek に builtin フックを追加してセキュリティと設定ファイルの構文検証を行う
   - check-merge-conflict / detect-private-key / check-added-large-files
   - check-toml / check-yaml / check-json5 (`.json` / `.json5` / `.jsonc` を対象)
