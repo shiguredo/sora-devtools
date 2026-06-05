@@ -1,20 +1,36 @@
 {
   "compilerOptions": {
+    // import 文で .ts / .tsx 拡張子を明示できるようにする
     "allowImportingTsExtensions": true,
+    // default export を持たないモジュールからの default import を許可する
     "allowSyntheticDefaultImports": true,
+    // JSX を react-jsx（自動ランタイム）形式で変換する
     "jsx": "react-jsx",
+    // JSX ランタイムの import 元を preact にする
     "jsxImportSource": "preact",
+    // 生成するモジュールコードを ESNext 形式にする
     "module": "esnext",
+    // 出力する ECMAScript のバージョンを ESNext にする
     "target": "esnext",
+    // モジュール解決の方式を bundler にする
     "moduleResolution": "bundler",
+    // 出力ファイルを生成せず型チェックのみ行う
     "noEmit": true,
+    // ソースマップを生成する
     "sourceMap": true,
+    // すべての厳格な型チェックオプションを有効にする
     "strict": true,
+    // JavaScript ファイルをコンパイル対象に含める
     "allowJs": true,
+    // 宣言ファイル（.d.ts）の型チェックをスキップする
     "skipLibCheck": true,
+    // import 時のファイル名の大文字小文字の不一致をエラーにする
     "forceConsistentCasingInFileNames": true,
+    // CommonJS モジュールを ES Modules として import できるようにする
     "esModuleInterop": true,
+    // JSON ファイルの import を許可する
     "resolveJsonModule": true,
+    // 各ファイルを単独でトランスパイルできる形に制約する
     "isolatedModules": true,
     // 未使用のローカル変数をエラーにする
     "noUnusedLocals": true,
@@ -24,13 +40,20 @@
     "strictFunctionTypes": true,
     // プロパティの初期化を厳密にチェックする
     "strictPropertyInitialization": true,
+    // グローバルに取り込む型定義を指定する
     "types": ["vitest/globals"],
+    // モジュールのパスエイリアスを定義する
     "paths": {
+      // @/ で始まる import を ./src/ に解決する
       "@/*": ["./src/*"]
     },
+    // コンパイルに含める標準ライブラリの型定義を指定する
     "lib": ["dom", "dom.iterable", "esnext"],
+    // 前回のビルド情報を再利用するインクリメンタルビルドを有効にする
     "incremental": true
   },
+  // コンパイル対象から除外するパスを指定する
   "exclude": ["node_modules"],
+  // コンパイル対象に含めるパスを指定する
   "include": ["global.d.ts", "**/*.ts", "**/*.tsx", "vitest.config.ts"]
 }
