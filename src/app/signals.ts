@@ -1,5 +1,5 @@
 import type { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
-import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import { batch, computed, signal } from "@preact/signals";
 import type {
@@ -27,6 +27,7 @@ import type {
   TimelineMessage,
 } from "../types";
 import { setTrackContentHint } from "../utils.ts";
+import { preloadNoiseSuppressionModule } from "./../noiseSuppression.ts";
 
 // --- Audio 関連 ---
 export const audio = signal<boolean>(true);
@@ -696,9 +697,8 @@ export const setBlurRadius = (value: SoraDevtoolsState["blurRadius"]): void => {
   blurRadius.value = value;
 };
 export const setMediaProcessorsNoiseSuppression = (value: boolean): void => {
-  if (value && noiseSuppressionProcessor.value === null) {
-    const processor = new NoiseSuppressionProcessor();
-    noiseSuppressionProcessor.value = processor;
+  if (value) {
+    preloadNoiseSuppressionModule();
   }
   mediaProcessorsNoiseSuppression.value = value;
 };
