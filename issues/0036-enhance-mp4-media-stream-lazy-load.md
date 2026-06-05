@@ -50,14 +50,14 @@ let mp4MediaStreamModulePromise: Promise<Mp4MediaStreamModule> | null = null;
 
 #### noiseSuppression.ts との差異
 
-| 要素 | noise-suppression | mp4-media-stream |
-|------|------------------|-----------------|
-| モジュール Promise キャッシュ | あり | あり |
-| 失敗時のキャッシュクリア | あり | あり（import 失敗時のみ、`load()` 失敗時は非クリア） |
-| インスタンスキャッシュ | あり（`noiseSuppressionProcessorPromise`） | なし（毎回 `load()` で新規） |
-| lock | あり（`startProcessing` / `stopProcessing` の直列化） | 不要 |
-| preload | あり（`mediaProcessorsNoiseSuppression` 有効化時） | 不要（ファイル選択時のみ読み込み） |
-| `resetForTesting()` | あり | あり |
+| 要素                          | noise-suppression                                     | mp4-media-stream                                     |
+| ----------------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
+| モジュール Promise キャッシュ | あり                                                  | あり                                                 |
+| 失敗時のキャッシュクリア      | あり                                                  | あり（import 失敗時のみ、`load()` 失敗時は非クリア） |
+| インスタンスキャッシュ        | あり（`noiseSuppressionProcessorPromise`）            | なし（毎回 `load()` で新規）                         |
+| lock                          | あり（`startProcessing` / `stopProcessing` の直列化） | 不要                                                 |
+| preload                       | あり（`mediaProcessorsNoiseSuppression` 有効化時）    | 不要（ファイル選択時のみ読み込み）                   |
+| `resetForTesting()`           | あり                                                  | あり                                                 |
 
 ### 2. コンポーネントの value import を削除し動的 import に置き換える
 
