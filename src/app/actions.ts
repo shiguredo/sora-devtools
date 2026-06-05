@@ -1,4 +1,4 @@
-import { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
+import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 import { VirtualBackgroundProcessor } from "@shiguredo/virtual-background";
 import type { ConnectionPublisher, ConnectionSubscriber, TransportType } from "sora-js-sdk";
 import Sora from "sora-js-sdk";
@@ -32,6 +32,11 @@ import {
   parseQueryString,
   setTrackContentHint,
 } from "./../utils.ts";
+import {
+  getOrCreateNoiseSuppressionProcessor,
+  isNoiseSuppressionSupported,
+  runWithNoiseSuppressionProcessorLock,
+} from "./../noiseSuppression.ts";
 import { loadUrlEntries } from "./../opfs.ts";
 import * as signals from "./signals.ts";
 
@@ -760,11 +765,64 @@ function createFakeMediaStreamFromState(
   return [mediaStream, gainNode, audioContext];
 }
 
+// getUserMedia で取得した音声トラックにノイズ抑制とタイムライン記録を行う
+async function processAudioTrack(
+  audioTrack: MediaStreamTrack,
+  state: createMediaStreamPickedState,
+  noiseSuppressionProcessorEnabled: boolean,
+): Promise<MediaStreamTrack> {
+  signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", audioTrack));
+  if (!noiseSuppressionProcessorEnabled) {
+    return audioTrack;
+  }
+  const processor = await getOrCreateNoiseSuppressionProcessor(state.noiseSuppressionProcessor);
+  const processedTrack = await runWithNoiseSuppressionProcessorLock(async () => {
+    // 未初期化プロセッサの stopProcessing() は冪等であることが期待されているが
+    // 安全のため isProcessing() でガードする
+    if (processor.isProcessing()) {
+      processor.stopProcessing();
+    }
+    // getAudioTracks() の実行時型は MediaStreamAudioTrack
+    return processor.startProcessing(audioTrack as MediaStreamAudioTrack);
+  });
+  // startProcessing 成功後に signal を更新する
+  // 失敗した場合に失敗済みプロセッサが signal に残り次回再利用されるのを防ぐ
+  signals.noiseSuppressionProcessor.value = processor;
+  return processedTrack;
+}
+
+// getUserMedia で取得した映像トラックに仮想背景とタイムライン記録を行う
+async function processVideoTrack(
+  videoTrack: MediaStreamTrack,
+  state: createMediaStreamPickedState,
+  virtualBackgroundProcessorEnabled: boolean,
+): Promise<MediaStreamTrack> {
+  signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack));
+  if (!virtualBackgroundProcessorEnabled) {
+    return videoTrack;
+  }
+  if (state.virtualBackgroundProcessor === null) {
+    throw new Error("failed to start VirtualBackgroundProcessor, processor is null");
+  }
+  const options = {
+    blurRadius: getBlurRadiusNumber(state.blurRadius),
+  };
+  state.virtualBackgroundProcessor.stopProcessing();
+  return state.virtualBackgroundProcessor.startProcessing(
+    videoTrack as MediaStreamVideoTrack,
+    options,
+  );
+}
+
 // getUserMedia を使用して MediaStream を生成する
 async function createUserMediaStream(
   state: createMediaStreamPickedState,
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
+  const noiseSuppressionProcessorEnabled =
+    state.mediaProcessorsNoiseSuppression && isNoiseSuppressionSupported();
+  const virtualBackgroundProcessorEnabled =
+    state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported();
   // navigator.mediaDevices は HTTPS / localhost 以外では undefined になり得る
   // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (navigator.mediaDevices === undefined) {
@@ -788,59 +846,63 @@ async function createUserMediaStream(
     videoInput: state.videoInput,
     facingMode: state.facingMode,
   });
-  if (audioConstraints || videoConstraints) {
-    const mediaStreamConstraints: MediaStreamConstraints = {};
+  if (!audioConstraints && !videoConstraints) {
+    applyTrackSettings(mediaStream, state);
+    return [mediaStream, null, null];
+  }
+  const mediaStreamConstraints: MediaStreamConstraints = {};
+  if (audioConstraints) {
+    mediaStreamConstraints.audio = audioConstraints;
+  }
+  if (videoConstraints) {
+    mediaStreamConstraints.video = videoConstraints;
+  }
+  signals.setLogMessages({
+    title: LOG_TITLE,
+    description: JSON.stringify(mediaStreamConstraints),
+  });
+  signals.setTimelineMessage(
+    createSoraDevtoolsTimelineMessage("media-constraints", mediaStreamConstraints),
+  );
+  const gumMediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
+  let audioTrackAdded = false;
+  let videoTrackAdded = false;
+  try {
     if (audioConstraints) {
-      mediaStreamConstraints.audio = audioConstraints;
-    }
-    if (videoConstraints) {
-      mediaStreamConstraints.video = videoConstraints;
-    }
-    signals.setLogMessages({
-      title: LOG_TITLE,
-      description: JSON.stringify(mediaStreamConstraints),
-    });
-    signals.setTimelineMessage(
-      createSoraDevtoolsTimelineMessage("media-constraints", mediaStreamConstraints),
-    );
-    const gumMediaStream = await navigator.mediaDevices
-      .getUserMedia(mediaStreamConstraints)
-      .catch((error) => {
-        // video track の getUserMedia が失敗した場合には audio track が存在している可能性があるので止める
-        for (const track of mediaStream.getTracks()) {
-          track.stop();
-        }
-        throw error;
-      });
-    if (audioConstraints) {
-      let [audioTrack] = gumMediaStream.getAudioTracks();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", audioTrack));
-      if (state.mediaProcessorsNoiseSuppression && NoiseSuppressionProcessor.isSupported()) {
-        if (state.noiseSuppressionProcessor === null) {
-          throw new Error("failed to start NoiseSuppressionProcessor, processor is null");
-        }
-        state.noiseSuppressionProcessor.stopProcessing();
-        audioTrack = await state.noiseSuppressionProcessor.startProcessing(audioTrack);
-      }
+      const [audioTrack] = gumMediaStream.getAudioTracks();
+      const processedTrack = await processAudioTrack(
+        audioTrack,
+        state,
+        noiseSuppressionProcessorEnabled,
+      );
       signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media"));
-      mediaStream.addTrack(audioTrack);
+      mediaStream.addTrack(processedTrack);
+      audioTrackAdded = true;
     }
     if (videoConstraints) {
-      let [videoTrack] = gumMediaStream.getVideoTracks();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack));
-      if (state.blurRadius !== "" && VirtualBackgroundProcessor.isSupported()) {
-        if (state.virtualBackgroundProcessor === null) {
-          throw new Error("failed to start VirtualBackgroundProcessor, processor is null");
-        }
-        const options = {
-          blurRadius: getBlurRadiusNumber(state.blurRadius),
-        };
-        state.virtualBackgroundProcessor.stopProcessing();
-        videoTrack = await state.virtualBackgroundProcessor.startProcessing(videoTrack, options);
-      }
+      const [videoTrack] = gumMediaStream.getVideoTracks();
+      const processedTrack = await processVideoTrack(
+        videoTrack,
+        state,
+        virtualBackgroundProcessorEnabled,
+      );
       signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media"));
-      mediaStream.addTrack(videoTrack);
+      mediaStream.addTrack(processedTrack);
+      videoTrackAdded = true;
     }
+  } catch (error) {
+    // mediaStream に追加済みの track は呼び出し元で管理されるため停止しない
+    if (!audioTrackAdded) {
+      for (const track of gumMediaStream.getAudioTracks()) {
+        track.stop();
+      }
+    }
+    if (!videoTrackAdded) {
+      for (const track of gumMediaStream.getVideoTracks()) {
+        track.stop();
+      }
+    }
+    throw error;
   }
   applyTrackSettings(mediaStream, state);
   return [mediaStream, null, null];
@@ -1010,7 +1072,7 @@ export const cleanupSoraMediaState = (): void => {
       });
     }
   })();
-  stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+  void stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
   if (fakeContentsValue.worker) {
     fakeContentsValue.worker.postMessage({ type: "stop" });
   }
@@ -1268,7 +1330,7 @@ export const requestMedia = async (): Promise<void> => {
       });
       signals.setAPIErrorAlertMessage(`failed to get user devices: ${error.message}`);
     }
-    cleanupMediaStreamOnError(state, mediaStream);
+    await cleanupMediaStreamOnError(state, mediaStream);
     throw error;
   }
   signals.setFakeContentsAudio(audioContext, gainNode);
@@ -1297,21 +1359,7 @@ export const disposeMedia = async (): Promise<void> => {
     }
   }
 
-  if (noiseSuppressionProcessorValue?.isProcessing()) {
-    const originalTrack = noiseSuppressionProcessorValue.getOriginalTrack();
-    if (originalTrack) {
-      originalTrack.stop();
-      localMediaStreamValue?.removeTrack(originalTrack);
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
-    }
-    noiseSuppressionProcessorValue.stopProcessing();
-  } else if (localMediaStreamValue) {
-    for (const track of localMediaStreamValue.getAudioTracks()) {
-      track.stop();
-      localMediaStreamValue.removeTrack(track);
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
-    }
-  }
+  await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
   if (fakeContentsValue.worker) {
     fakeContentsValue.worker.postMessage({ type: "stop" });
   }
@@ -1373,10 +1421,10 @@ function prepareSignalingConnection(): {
 }
 
 // MediaStream 生成エラー時にプロセッサとトラックを停止する
-function cleanupMediaStreamOnError(
+async function cleanupMediaStreamOnError(
   state: createMediaStreamPickedState,
   mediaStream: MediaStream | undefined,
-): void {
+): Promise<void> {
   let originalTrack: MediaStreamVideoTrack | undefined;
   if (state.virtualBackgroundProcessor?.isProcessing()) {
     originalTrack ??= state.virtualBackgroundProcessor.getOriginalTrack();
@@ -1385,26 +1433,15 @@ function cleanupMediaStreamOnError(
   if (originalTrack) {
     originalTrack.stop();
     signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
-  } else if (mediaStream) {
+  }
+  if (mediaStream) {
     for (const track of mediaStream.getVideoTracks()) {
       track.stop();
       signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
     }
   }
 
-  if (state.noiseSuppressionProcessor?.isProcessing()) {
-    const originalAudioTrack = state.noiseSuppressionProcessor.getOriginalTrack();
-    if (originalAudioTrack) {
-      originalAudioTrack.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalAudioTrack));
-    }
-    state.noiseSuppressionProcessor.stopProcessing();
-  } else if (mediaStream) {
-    for (const track of mediaStream.getAudioTracks()) {
-      track.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
-    }
-  }
+  await stopLocalAudioTrack(mediaStream ?? null, state.noiseSuppressionProcessor);
 }
 
 // statsReport の定期更新タイマー
@@ -1506,7 +1543,7 @@ export const connectSora = async (): Promise<void> => {
     if (error instanceof Error) {
       signals.setSoraErrorAlertMessage(`failed to connect Sora: ${error.message}`);
     }
-    cleanupMediaStreamOnError(state, mediaStream);
+    await cleanupMediaStreamOnError(state, mediaStream);
     // 残留した remoteClients と localMediaStream を掃除し、接続失敗後も UI に映像が残らないようにする
     cleanupSoraMediaState();
     signals.setSoraConnectionStatus("disconnected");
@@ -1730,20 +1767,7 @@ export const updateMediaStream = async (): Promise<void> => {
     }
   }
 
-  if (noiseSuppressionProcessorValue?.isProcessing()) {
-    const originalTrack = noiseSuppressionProcessorValue.getOriginalTrack();
-    if (originalTrack) {
-      originalTrack.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
-    }
-    noiseSuppressionProcessorValue.stopProcessing();
-    // 関数先頭の if (!localMediaStreamValue) return によりここでは localMediaStreamValue は non-null
-  } else {
-    for (const track of localMediaStreamValue.getAudioTracks()) {
-      track.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
-    }
-  }
+  await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
   const [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
     (error: unknown) => {
       const message = getErrorMessage(error);
@@ -1856,7 +1880,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
     }
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
-    stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
     signals.closeFakeContentsAudio();
     try {
       await soraValue.removeAudioTrack(localMediaStreamValue);
@@ -1869,7 +1893,7 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
   } else if (localMediaStreamValue) {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
-    stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
     signals.closeFakeContentsAudio();
   }
   signals.setMicDevice(micDevice);
@@ -2030,26 +2054,28 @@ const stopLocalVideoTrack = async (
  * 映像処理を行っている MediaProcessor の停止を行う関数
  * MediaStream から Track の削除も行う
  */
-const stopLocalAudioTrack = (
+const stopLocalAudioTrack = async (
   localMediaStreamValue: MediaStream | null,
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null,
-): void => {
-  if (noiseSuppressionProcessor?.isProcessing()) {
-    const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
-    if (originalTrack) {
-      originalTrack.stop();
-      localMediaStreamValue?.removeTrack(originalTrack);
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+): Promise<void> =>
+  runWithNoiseSuppressionProcessorLock(async () => {
+    if (noiseSuppressionProcessor?.isProcessing()) {
+      const originalTrack = noiseSuppressionProcessor.getOriginalTrack();
+      if (originalTrack) {
+        originalTrack.stop();
+        localMediaStreamValue?.removeTrack(originalTrack);
+        signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+      }
+      noiseSuppressionProcessor.stopProcessing();
     }
-    noiseSuppressionProcessor.stopProcessing();
-  } else if (localMediaStreamValue) {
-    for (const track of localMediaStreamValue.getAudioTracks()) {
-      track.stop();
-      localMediaStreamValue.removeTrack(track);
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+    if (localMediaStreamValue) {
+      for (const track of localMediaStreamValue.getAudioTracks()) {
+        track.stop();
+        localMediaStreamValue.removeTrack(track);
+        signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      }
     }
-  }
-};
+  });
 
 // Re-export all actions from signals for backward compatibility
 export {

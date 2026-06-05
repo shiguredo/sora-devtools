@@ -76,9 +76,24 @@
   - `connection.destroyed` 判定を `isConnectionDestroyedNotify` 型ガードに切り出して `export` する
   - `cleanupSoraMediaState` を `export` し初期状態の冪等性をテストする
   - @voluntas
+- [ADD] noise-suppression の遅延読み込みを Playwright e2e テストで検証する
+  - @voluntas
 - [UPDATE] `switch` フォームのラベルクリックで `switch` を切り替え可能にする
   - @voluntas
+- [UPDATE] `@shiguredo/noise-suppression` JS チャンクを `mediaProcessorsNoiseSuppression` 有効化時に動的ダウンロードする
+  - 動的 import に切り替え `import("@shiguredo/noise-suppression")` で遅延ロードする
+  - `mediaProcessorsNoiseSuppression` チェック ON でモジュールの事前読み込みを開始する
+  - プロセッサの生成は `getUserMedia` 時に遅延実行する
+  - `startProcessing` / `stopProcessing` をロックで直列化し並行実行を防止する
+  - @voluntas
 - [UPDATE] `tooltip` 付きフォームラベルのカーソルを `?` マークから通常カーソルに変更する
+  - @voluntas
+- [FIX] `noise-suppression` の処理を直列化し、失敗時のトラックリークを防止する
+  - `NoiseSuppressionProcessor` の開始・停止をロックで直列化する
+  - `getUserMedia()` 後の失敗時に取得済みトラックを確実に停止する
+  - 処理済みの音声トラックを `dispose` / `disconnect` / デバイス更新でも停止する
+  - PBT でロック機構の直列化保証を検証する (`src/noiseSuppression.prop.ts`)
+  - `createUserMediaStream` から `processAudioTrack` / `processVideoTrack` を抽出し複雑度を低減する
   - @voluntas
 - [FIX] `stopLocalVideoTrack` の `getVideoTracks()` の `live collection` 反復で待機中に新規トラックが巻き込まれる問題を修正する
   - `getVideoTracks()` の戻り値を最初に配列にコピーしてからループするように変更する

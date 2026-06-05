@@ -969,6 +969,13 @@ export default defineConfig({
           "vitest/require-hook": "error",
         },
       },
+      {
+        // Playwright e2e テストでは Vitest のテスト構造ルールを適用しない
+        files: ["tests/**/*.test.ts"],
+        rules: {
+          "vitest/no-conditional-in-test": "off",
+        },
+      },
     ],
     ignorePatterns: ["dist/**", "node_modules/**", ".pnpmfile.cjs"],
   },
