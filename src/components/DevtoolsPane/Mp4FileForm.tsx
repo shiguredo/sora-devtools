@@ -1,4 +1,4 @@
-import { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
+import { loadMp4MediaStream } from "@/mp4MediaStream";
 
 import { isFormDisabled, localMediaStream, mediaType, setMp4MediaStream } from "@/app/signals";
 import { FormGroup, FormInput } from "@/components/ui";
@@ -16,7 +16,7 @@ export function Mp4FileForm() {
 
     // MP4 ファイルをロードする
     try {
-      const mp4MediaStream = await Mp4MediaStream.load(files[0]);
+      const mp4MediaStream = await loadMp4MediaStream(files[0]);
       setMp4MediaStream(mp4MediaStream);
     } catch (error) {
       // ロードに失敗したらファイル選択をクリアする

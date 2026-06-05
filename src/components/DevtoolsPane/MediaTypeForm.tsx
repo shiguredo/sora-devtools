@@ -8,7 +8,7 @@ import { isFormDisabled, localMediaStream, mediaType } from "@/app/signals";
 import { MEDIA_TYPES } from "@/constants";
 import { checkFormValue } from "@/utils";
 
-import { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
+import { isMp4MediaStreamSupported } from "@/mp4MediaStream";
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 interface FormRadioProps {
@@ -44,7 +44,7 @@ export function MediaTypeForm() {
   // mount してから表示するハックを入れる
   const mountClient = useSignal(false);
   const disabled = localMediaStream.value !== null || isFormDisabled.value;
-  const enabledMp4Media = Mp4MediaStream.isSupported();
+  const isMp4MediaAvailable = isMp4MediaStreamSupported();
   const onChange = (event: Event): void => {
     const target = event.target as HTMLInputElement;
     if (checkFormValue(target.value, MEDIA_TYPES)) {
@@ -79,7 +79,7 @@ export function MediaTypeForm() {
         <FormRadio
           label="mp4Media"
           mediaTypeValue={mediaType.value}
-          disabled={disabled || !enabledMp4Media}
+          disabled={disabled || !isMp4MediaAvailable}
           onChange={onChange}
         />
       )}

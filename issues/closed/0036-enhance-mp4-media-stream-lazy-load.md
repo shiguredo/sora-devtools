@@ -4,6 +4,8 @@ Created: 2026-06-05
 Priority: Medium
 Model: DeepSeek V4 Pro
 Polished: 2026-06-05
+Completed: 2026-06-05
+Branch: feature/add-mp4-media-stream-lazy-load
 
 ## 背景
 
@@ -112,3 +114,31 @@ let mp4MediaStreamModulePromise: Promise<Mp4MediaStreamModule> | null = null;
 - `cleanupSoraMediaState` での `mp4MediaStream.stop()` 呼び出しの追加（MP4 dispose 時のクリーンアップ改善は別 issue）
 - `Mp4FileForm.tsx:28` の `throw error` による unhandled promise rejection（既存バグ、別 issue で対応）
 - `virtual-background` の遅延読み込み（別 issue）
+
+## 解決方法
+
+### 新規ファイル
+
+- `src/mp4MediaStream.ts` — `@shiguredo/mp4-media-stream` の動的 import ラッパーモジュール
+  - `isMp4MediaStreamSupported()`: `AudioDecoder` / `VideoDecoder` の有無でサポート判定（動的 import 不要）
+  - `loadMp4MediaStream(file)`: 動的 import 後に `Mp4MediaStream.load()` を呼び出す
+  - `resetForTesting()`: テスト間でモジュールキャッシュをリセット
+  - モジュールキャッシュは `??=` で 1 回だけ import、失敗時のみキャッシュをクリア
+- `src/mp4MediaStream.test.ts` — 単体テスト（`isMp4MediaStreamSupported` の 4 ケース、`loadMp4MediaStream` の同時呼び出しとキャッシュ再呼び出し）
+- `tests/mp4-media-stream-lazy-load.test.ts` — Playwright e2e テスト（初回ロード・mediaType 変更時・ファイル選択時のリクエスト確認）
+- `tests/fixtures/test.mp4` — テスト用の最小限 H.264 + Opus MP4 ファイル
+
+### 変更ファイル
+
+- `src/components/DevtoolsPane/MediaTypeForm.tsx`: `import { Mp4MediaStream }` → `import { isMp4MediaStreamSupported }`, `Mp4MediaStream.isSupported()` → `isMp4MediaStreamSupported()`, 変数名 `enabledMp4Media` → `isMp4MediaAvailable`
+- `src/components/DevtoolsPane/Mp4FileForm.tsx`: `import { Mp4MediaStream }` → `import { loadMp4MediaStream }`, `Mp4MediaStream.load()` → `loadMp4MediaStream()`
+- `CHANGES.md`: `[UPDATE]` エントリを追加
+
+### レビュー指摘反映
+
+- Boolean 変数名を `is` プレフィックスに統一
+- インターフェースパラメータ名 `mp4` → `file` に統一
+- `isMp4MediaStreamSupported` の境界値テスト追加（両方あり/両方なし/片方のみの 4 ケース）
+- 誤解を招くコメントの修正（「異なる Blob」→「同一 Blob」、「空の Blob ではエラーになる」→ 削除）
+- テスト名を実態に合わせて修正
+- e2e テストの冗長な正規表現チェックを簡略化

@@ -78,6 +78,10 @@
   - @voluntas
 - [ADD] noise-suppression の遅延読み込みを Playwright e2e テストで検証する
   - @voluntas
+- [UPDATE] `@shiguredo/mp4-media-stream` JS チャンクを MP4 ファイル選択時に動的ダウンロードする
+  - 動的 import に切り替え `import("@shiguredo/mp4-media-stream")` で遅延ロードする
+  - `AudioDecoder` / `VideoDecoder` の有無でサポート判定する
+  - @voluntas
 - [UPDATE] `switch` フォームのラベルクリックで `switch` を切り替え可能にする
   - @voluntas
 - [UPDATE] `@shiguredo/noise-suppression` JS チャンクを `mediaProcessorsNoiseSuppression` 有効化時に動的ダウンロードする
