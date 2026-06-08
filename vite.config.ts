@@ -45,6 +45,8 @@ export default defineConfig({
     options: {
       typeAware: true,
       typeCheck: true,
+      // 不要なディレクティブを報告
+      reportUnusedDisableDirectives: "error",
     },
     plugins: ["typescript", "oxc", "unicorn", "import", "promise", "react", "vitest"],
     categories: {
@@ -419,6 +421,12 @@ export default defineConfig({
       "oxc/uninvoked-array-callback": "error",
       // Map のスプレッドを禁止 (パフォーマンス)
       "oxc/no-map-spread": "error",
+      // 重複コード分岐を検出
+      "oxc/branches-sharing-code": "error",
+      // エクスポート関数内の this 使用を禁止
+      "oxc/no-this-in-exported-function": "error",
+      // async エンドポイントハンドラは本プロジェクトでは未使用のため無効化
+      "oxc/no-async-endpoint-handlers": "off",
 
       // ===== unicorn: エラー処理 =====
       // catch の error 変数名を統一
@@ -441,7 +449,7 @@ export default defineConfig({
       "unicorn/new-for-builtins": "error",
 
       // ===== unicorn: 禁止パターン =====
-      // eslint-disable の乱用を禁止
+      // eslint の disable コメントの乱用を禁止
       "unicorn/no-abusive-eslint-disable": "error",
       // アクセサの再帰を禁止
       "unicorn/no-accessor-recursion": "error",
@@ -463,8 +471,10 @@ export default defineConfig({
       "unicorn/no-hex-escape": "error",
       // 即座の変更を禁止
       "unicorn/no-immediate-mutation": "error",
-      // ビルトインの instanceof を禁止 (Array を含むため no-instanceof-array は不要)
+      // ビルトインの instanceof を禁止
       "unicorn/no-instanceof-builtins": "error",
+      // no-instanceof-builtins が Array を含むため無効化
+      "unicorn/no-instanceof-array": "off",
       // 無効な fetch オプションを禁止
       "unicorn/no-invalid-fetch-options": "error",
       // slice の終端に length を禁止

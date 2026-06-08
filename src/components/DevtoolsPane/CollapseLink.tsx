@@ -15,13 +15,13 @@ export function CollapseLink({ collapsed, enabled = false, onClick, children }: 
   const arrowRotation = collapsed ? "" : "rotate-180";
 
   return (
-    // biome-ignore lint/a11y/useValidAnchor: This anchor acts as a button for toggling section visibility
-    <a
-      href="#"
+    <button
+      type="button"
       onClick={onClick}
       className={`
         underline flex items-center w-full
         text-bs-dark border-0 rounded-none
+        bg-transparent p-0 cursor-pointer [font-family:inherit] [font-size:inherit]
         ${fontWeight}
       `}
     >
@@ -36,6 +36,6 @@ export function CollapseLink({ collapsed, enabled = false, onClick, children }: 
           d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
         />
       </svg>
-    </a>
+    </button>
   );
 }

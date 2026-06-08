@@ -10,7 +10,7 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
-// eslint-disable-next-line import/default -- vite の `?worker` は default export を提供する仮想モジュールで eslint-plugin-import が解釈できない
+// oxlint-disable-next-line import/default -- vite の `?worker` は default export を提供する仮想モジュールで解釈できない
 import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {
   AlertMessage,

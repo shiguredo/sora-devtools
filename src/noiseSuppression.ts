@@ -50,9 +50,8 @@ async function createNoiseSuppressionProcessor(): Promise<NoiseSuppressionProces
  * 前のロック保持者の成否に関わらず待機し、callback 実行後にロックを解放する
  * これにより startProcessing / stopProcessing の並行実行を防止する
  */
-// oxlint-disable-next-line promise/prefer-await-to-callbacks -- ロック機構の API として callback パターンが意図的
 export async function runWithNoiseSuppressionProcessorLock<T>(
-  // oxlint-disable-next-line promise/prefer-await-to-callbacks -- 同上
+  // oxlint-disable-next-line promise/prefer-await-to-callbacks -- ロック機構の API として callback パターンが意図的
   callback: () => Promise<T> | T,
 ): Promise<T> {
   let resolveLock: () => void = () => {};
