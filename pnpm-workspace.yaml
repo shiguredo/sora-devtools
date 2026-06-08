@@ -1,16 +1,27 @@
+# パッケージ公開から最低限経過させる分数
+# サプライチェーン攻撃のリスク軽減のため、公開直後のパッケージのインストールを遅延させる
+# 悪意のあるリリースのほとんどは公開後 1 時間以内に発見・削除される
+# デフォルト: 1440 (1 日), pnpm v11 から有効
 minimumReleaseAge: 10080
+# minimumReleaseAge の対象外とするパッケージ
+# 自社管理パッケージおよびコアツールチェーンは即時インストールを許可する
 minimumReleaseAgeExclude:
-  # shiguredo
+  # 自社パッケージ (Shiguredo)
   - sora-js-sdk
   - "@shiguredo/*"
-  # voidzero
+  # ビルドツールチェーン (Voidzero)
+  # vite-plus / vitest は活発に更新されるため制限対象外とする
   - "@voidzero-dev/*"
   - "@vitest/*"
   - "vite-plus"
 
+# ビルド時に pre/post install スクリプトを実行するパッケージ
 onlyBuiltDependencies:
   - esbuild
 
+# ピア依存関係のバージョン互換性ルール
+# vite/vitest は @voidzero-dev のエイリアスであり、パッケージが期待する semver 範囲を満たさないため上書きする
+# typescript は 6.x 系を使用しているが、依存パッケージの peer dep が ^5.0.0 等で失敗するため上書きする
 peerDependencyRules:
   allowedVersions:
     vite: ">=0.1.0"
