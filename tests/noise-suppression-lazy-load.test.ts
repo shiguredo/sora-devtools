@@ -27,7 +27,7 @@ test("mediaProcessorsNoiseSuppression を有効にした時点で noise-suppress
   expect(filterNoiseSuppressionRequestUrls(requestUrls)).toHaveLength(0);
 
   // Media options を展開して mediaProcessorsNoiseSuppression を有効にする
-  await page.getByRole("link", { name: "Media options" }).click();
+  await page.getByRole("button", { name: "Media options" }).click();
 
   // チェック ON で noise-suppression の動的 import が走る
   const noiseSuppressionResponsePromise = page.waitForResponse(
