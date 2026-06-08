@@ -1,4 +1,12 @@
 minimumReleaseAge: 10080
+minimumReleaseAgeExclude:
+  # shiguredo
+  - sora-js-sdk
+  - "@shiguredo/*"
+  # voidzero
+  - "@voidzero-dev/*"
+  - "@vitest/*"
+  - "vite-plus"
 
 onlyBuiltDependencies:
   - esbuild
