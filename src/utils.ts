@@ -848,10 +848,14 @@ function applySignalingMetadataOptions(
     );
   }
   if (connectionOptionsState.enabledForwardingFilters) {
-    connectionOptions.forwardingFilters = parseMetadata(
-      true,
-      connectionOptionsState.forwardingFilters,
-    ) as ForwardingFilter[];
+    const parsedForwardingFilters = parseMetadata(true, connectionOptionsState.forwardingFilters);
+    // 配列のみ受理する。非配列を SDK 経由でサーバに送ると connect.failed になる
+    // 配列要素 (rules / action / version 等) の構造検証はサーバ側に委ねる
+    // Array.isArray の標準型ガードは Json[] までしか narrow しないため as キャストは残す
+    if (Array.isArray(parsedForwardingFilters)) {
+      connectionOptions.forwardingFilters =
+        parsedForwardingFilters as unknown as ForwardingFilter[];
+    }
   }
   if (connectionOptionsState.enabledBundleId) {
     connectionOptions.bundleId = connectionOptionsState.bundleId;

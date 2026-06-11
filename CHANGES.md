@@ -92,6 +92,8 @@
   - @voluntas
 - [UPDATE] `tooltip` 付きフォームラベルのカーソルを `?` マークから通常カーソルに変更する
   - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2026.1.0 に上げる
+  - @voluntas
 - [FIX] `noise-suppression` の処理を直列化し、失敗時のトラックリークを防止する
   - `NoiseSuppressionProcessor` の開始・停止をロックで直列化する
   - `getUserMedia()` 後の失敗時に取得済みトラックを確実に停止する

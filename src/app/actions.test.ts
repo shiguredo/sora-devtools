@@ -15,7 +15,7 @@ test("isConnectionDestroyedNotify は connection.destroyed かつ connection_id 
     type: "notify",
     event_type: "connection.destroyed",
     connection_id: "abc",
-  } satisfies SoraNotifyMessage;
+  } as SoraNotifyMessage;
   assert.equal(isConnectionDestroyedNotify(message), true);
 });
 
@@ -23,7 +23,7 @@ test("isConnectionDestroyedNotify は connection_id が無いとき false を返
   const message = {
     type: "notify",
     event_type: "connection.destroyed",
-  } satisfies SoraNotifyMessage;
+  } as SoraNotifyMessage;
   assert.equal(isConnectionDestroyedNotify(message), false);
 });
 
@@ -32,7 +32,7 @@ test("isConnectionDestroyedNotify は connection_id が string でないとき f
     type: "notify",
     event_type: "connection.destroyed",
     connection_id: 123,
-  } satisfies SoraNotifyMessage;
+  } as unknown as SoraNotifyMessage;
   assert.equal(isConnectionDestroyedNotify(message), false);
 });
 
@@ -41,7 +41,7 @@ test("isConnectionDestroyedNotify は別の event_type のとき false を返す
     type: "notify",
     event_type: "connection.created",
     connection_id: "abc",
-  } satisfies SoraNotifyMessage;
+  } as SoraNotifyMessage;
   assert.equal(isConnectionDestroyedNotify(message), false);
 });
 

@@ -29,7 +29,7 @@ function CollapseNotify(props: CollapseNotifyProps) {
     <Message
       title={notify.message.event_type}
       timestamp={notify.timestamp}
-      description={notify.message}
+      description={notify.message as unknown as Record<string, unknown>}
       label={label}
     />
   );

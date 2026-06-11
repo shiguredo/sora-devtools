@@ -28,7 +28,7 @@
   "dependencies": {
     "@preact/signals": "2.9.1",
     "preact": "10.29.2",
-    "sora-js-sdk": "2025.2.0"
+    "sora-js-sdk": "2026.1.0-canary.1"
   },
   "devDependencies": {
     "@fast-check/vitest": "0.4.1",

@@ -966,14 +966,8 @@ function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
       signals.setSoraClientId(message.client_id);
     }
     // 接続時点で存在する remote client の client_id を保存する
-    // message.data は [x: string]: unknown のため Array.isArray で unknown[] に絞り込む
-    // 要素は unknown 型なので object チェック後にプロパティアクセスする
     if (Array.isArray(message.data)) {
-      for (const item of message.data) {
-        if (typeof item !== "object" || item === null) {
-          continue;
-        }
-        const remoteClient = item as Record<string, unknown>;
+      for (const remoteClient of message.data) {
         if (
           typeof remoteClient.connection_id === "string" &&
           typeof remoteClient.client_id === "string"

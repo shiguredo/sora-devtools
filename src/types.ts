@@ -6,6 +6,7 @@ import type {
   ConnectionSubscriber,
   DataChannelConfiguration,
   Role,
+  SignalingNotifyMessage,
   TimelineEventLogType,
   TransportType,
 } from "sora-js-sdk";
@@ -290,11 +291,7 @@ export interface LogMessage {
 }
 
 // Sora on notify callback の引数 Type
-export interface SoraNotifyMessage {
-  type: "notify";
-  event_type: string;
-  [x: string]: unknown;
-}
+export type SoraNotifyMessage = SignalingNotifyMessage;
 
 // Debug notify message の Type
 export interface NotifyMessage {
