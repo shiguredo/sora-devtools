@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-12
 - Model: Opus 4.7
 - Branch: feature/fix-vite-env-node-env-key
 - Polished: 2026-06-09
@@ -63,3 +63,13 @@ if (import.meta.env.NODE_ENV === "development" && import.meta.env.VITE_SORA_SIGN
 - `import.meta.env.NODE_ENV` の参照がコードベースに残っていないこと（grep で 0 件）。
 - `CHANGES.md` の `## develop` の `[FIX]` に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト (`vp test`) が通ること。
+
+## 解決方法
+
+`src/utils.ts` の `createSignalingURL` 関数内の dev 用フォールバック分岐の条件式を `import.meta.env.NODE_ENV === "development"` から `import.meta.env.DEV` に置き換えた。
+
+- 変更ファイル: `src/utils.ts` 1 行 (271 行目)
+- `import.meta.env.NODE_ENV` のコードベース参照は 0 件 (grep 確認)
+- `src/vite-env.d.ts` は設計方針どおり変更なし
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追記
+- `vp test` (114 件) と `vp check` (228 ファイル) が通過することを確認
