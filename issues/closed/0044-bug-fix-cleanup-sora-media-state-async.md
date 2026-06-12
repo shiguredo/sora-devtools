@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-12
 - Model: Opus 4.7
 - Branch: feature/fix-cleanup-sora-media-state-async
 - Polished: 2026-06-09
@@ -175,3 +175,17 @@ export const cleanupSoraMediaState = async (): Promise<void> => {
 - 検証手順 5: UI 反応の体感劣化がないこと。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト (`vp test`) および既存 Playwright e2e が通ること。
+
+## 解決方法
+
+`src/app/actions.ts` の `cleanupSoraMediaState` を `async` 関数化し、戻り値を `Promise<void>` に変更した。内部の `void (async () => { await stopLocalVideoTrack(...) })()` の fire-and-forget を撤去し、`stopLocalVideoTrack` / `stopLocalAudioTrack` を `Promise.allSettled` で並列に待つ形に統一した。`signals.setLocalMediaStream(null)` は `await` の前に置き、closed/0030 の「signal 即時 null 化で UI から映像を即座に消す」設計を維持している。
+
+`Promise.allSettled` の結果を `const [videoResult, audioResult] = ...` で分割代入し、それぞれの `rejection` を `STOP_LOCAL_VIDEO_TRACK` / `STOP_LOCAL_AUDIO_TRACK` ラベルで `setLogMessages` に渡す。旧コードでは audio 側の rejection を握り潰していたが、本対応で audio 側もログに残るようになった。
+
+呼び出し 5 箇所のうち disconnect コールバック (`soraConnection.on("disconnect", ...)`) のみ `async (event) => { ... }` 化したうえで末尾で `try { await cleanupSoraMediaState(); } catch (error) { ... }` でログ化し、SDK が戻り値 `Promise` を待たない契約に合わせて fire-and-forget となるよう構成した。残り 4 箇所（`connectSora` の `catch`、`reconnectSora` の `createMediaStream` 失敗パス、`reconnectSora` の `attemptReconnection` 全失敗パス、`disconnectSora` 冒頭）はすべて `await cleanupSoraMediaState();` に変更している。
+
+`src/app/actions.test.ts` の冪等性テストを `async` 化し、`await` 完了後に `localMediaStream` が null である / `await` 完了後に `remoteClients` が空である / 2 回連続で `await` しても例外を投げない、の新規アサーション 3 件を追加した。
+
+`CHANGES.md` の `## develop` の `[FIX]` セクション末尾に対応エントリを追記した。
+
+SDK 主導切断（`abend` / サーバ主導切断 / ネットワーク断）経路は、本 issue の方針通りスコープ外として残しており、関連 issue 0047 / 0048 で補完予定。
