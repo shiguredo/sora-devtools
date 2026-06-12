@@ -3,6 +3,13 @@
 Created: 2026-05-10
 Model: deepseek-v4-pro
 
+## pending 理由
+
+- `issues/pending/0018-enhance-actions-deduplicate.md` の「重複 2: setMicDeviceAction / setCameraDeviceAction」セクションと内容が重複しており、0018 のフェーズ 3 として統合する方が整理しやすい
+- 0027 単独 (30 行) では「`buildPickedState(base, overrides)` ヘルパー」「単一の関数に統一」というレベルの曖昧な記述しかなく、具体的な設計案 (`type DeviceKind = "audio" | "video"`、signal map など) は pending 0018 にしか書かれていない
+- 0018 のフェーズ分割計画 (フェーズ 1: 差分最小化、フェーズ 2: ガード条件先行修正、フェーズ 3: 統合) と整理が宙に浮かないよう、0018 と一緒に取り扱う
+- Polished 日付・Priority・Completed フィールドがいずれも未設定で、AGENTS.md の issue 規約を満たしていない
+
 ## 背景
 
 `feature/vite-plus-migrate` ブランチの review-diff-code 2 周目で検出。
