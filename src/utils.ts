@@ -268,7 +268,7 @@ export function createSignalingURL(
     // 空文字列は取り除く
     return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== "");
   }
-  if (import.meta.env.NODE_ENV === "development" && import.meta.env.VITE_SORA_SIGNALING_URL) {
+  if (import.meta.env.DEV && import.meta.env.VITE_SORA_SIGNALING_URL) {
     return import.meta.env.VITE_SORA_SIGNALING_URL;
   }
   const wsProtocol = globalThis.location.protocol === "https:" ? "wss://" : "ws://";

@@ -202,6 +202,10 @@
   - `disconnected` 状態で `Disconnect` を押した場合も残留メディアを掃除する
   - `ConnectButton` の `preparing` 中の二重押下を防止する
   - @voluntas
+- [FIX] dev 環境で `.env` の `VITE_SORA_SIGNALING_URL` が反映されなかった問題を修正する
+  - `createSignalingURL` の dev 用フォールバック分岐で参照していた `import.meta.env.NODE_ENV` を `import.meta.env.DEV` に置き換える
+  - `import.meta.env.NODE_ENV` は Vite がクライアントに注入しないキーであり常に `undefined` を返すため `.env` の上書きが無効化されていた
+  - @voluntas
 
 ### misc
 
