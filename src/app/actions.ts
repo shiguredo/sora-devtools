@@ -1047,7 +1047,7 @@ const clearRemoteMediaClients = (): void => {
 // Sora 切断時の完全なメディア掃除
 // リモート・ローカル両方のメディアリソースを解放する
 // 冪等（null・空で再呼び出ししても安全）
-export const cleanupSoraMediaState = (): void => {
+export const cleanupSoraMediaState = async (): Promise<void> => {
   clearRemoteMediaClients();
   const localMediaStreamValue = signals.localMediaStream.value;
   const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
@@ -1055,24 +1055,32 @@ export const cleanupSoraMediaState = (): void => {
   const fakeContentsValue = signals.fakeContents.value;
   // media processor は同期処理で停止する
   const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
-  // video track は停止の際に非同期処理が必要なため、最小限の処理に絞って非同期処理にする
-  void (async () => {
-    try {
-      await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
-    } catch (error) {
-      signals.setLogMessages({
-        title: "STOP_LOCAL_VIDEO_TRACK",
-        description: getErrorMessage(error),
-      });
-    }
-  })();
-  void stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+  // fakeMedia の worker を停止する
   if (fakeContentsValue.worker) {
     fakeContentsValue.worker.postMessage({ type: "stop" });
   }
   // fakeMedia 利用時の AudioContext を close する
   signals.closeFakeContentsAudio();
+  // closed/0030 の安全網: signal を先に null にして UI から映像を即座に消す（同期）
   signals.setLocalMediaStream(null);
+  // 後追いで video / audio track stop を並列に待つ
+  // 旧コードでは audio 側の rejection を握り潰していたが Promise.allSettled で video / audio 双方の rejection をログに残す
+  const [videoResult, audioResult] = await Promise.allSettled([
+    stopLocalVideoTrack(localMediaStreamValue, originalTrack),
+    stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue),
+  ]);
+  if (videoResult.status === "rejected") {
+    signals.setLogMessages({
+      title: "STOP_LOCAL_VIDEO_TRACK",
+      description: getErrorMessage(videoResult.reason),
+    });
+  }
+  if (audioResult.status === "rejected") {
+    signals.setLogMessages({
+      title: "STOP_LOCAL_AUDIO_TRACK",
+      description: getErrorMessage(audioResult.reason),
+    });
+  }
 };
 
 // Sora connection オブジェクトに callback をセットする
@@ -1143,7 +1151,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
       removeRemoteClientCleanup(remoteClient.connectionId);
     }
   });
-  soraConnection.on("disconnect", (event) => {
+  soraConnection.on("disconnect", async (event) => {
     const message: Record<string, unknown> = {
       type: event.type,
       title: event.title,
@@ -1159,7 +1167,6 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     }
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message));
     const reconnectValue = signals.reconnect.value;
-    cleanupSoraMediaState();
     // statsReport タイマーを即時停止する。setSora(null) による次回 tick 自滅を待たない
     stopStatsReportTimer();
     signals.setSora(null);
@@ -1173,6 +1180,17 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     if (event.type === "abend" && reconnectValue) {
       // 再接続処理開始フラグ
       signals.setSoraReconnecting(true);
+    }
+    // SDK は本コールバックの戻り値 Promise を待たないため、cleanup は実質 fire-and-forget となる
+    // SDK 主導切断 (abend / サーバ主導切断 / ネットワーク断) 経路では古い stop ログ混入を完全には解消できない（混入抑制は 0047 / 0048 で補完予定）
+    // cleanup が reject した場合は unhandled rejection を起こさないよう try / catch でログ化する
+    try {
+      await cleanupSoraMediaState();
+    } catch (error) {
+      signals.setLogMessages({
+        title: "CLEANUP_SORA_MEDIA_STATE",
+        description: getErrorMessage(error),
+      });
     }
   });
   soraConnection.on("timeline", (event) => {
@@ -1539,7 +1557,7 @@ export const connectSora = async (): Promise<void> => {
     }
     await cleanupMediaStreamOnError(state, mediaStream);
     // 残留した remoteClients と localMediaStream を掃除し、接続失敗後も UI に映像が残らないようにする
-    cleanupSoraMediaState();
+    await cleanupSoraMediaState();
     signals.setSoraConnectionStatus("disconnected");
     throw error;
   }
@@ -1636,7 +1654,7 @@ export const reconnectSora = async (): Promise<void> => {
       if (error instanceof Error) {
         signals.setSoraErrorAlertMessage(error.message);
       }
-      cleanupSoraMediaState();
+      await cleanupSoraMediaState();
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
       return;
@@ -1653,7 +1671,7 @@ export const reconnectSora = async (): Promise<void> => {
   );
   if (soraConnection === undefined) {
     signals.setSora(null);
-    cleanupSoraMediaState();
+    await cleanupSoraMediaState();
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraReconnecting(false);
@@ -1681,7 +1699,8 @@ export const disconnectSora = async (): Promise<void> => {
   // disconnected 状態でも残留メディアを掃除する
   // connected / connecting / preparing 時は SDK への切断通知前にローカル track を止めるが、UI を即座に消すための意図的な順序であり冪等で安全
   // sora-js-sdk の disconnect() は WebSocket / PeerConnection を close するだけでローカル track を停止しないため、切断通知前に止めても例外や ICE エラーは起きない
-  cleanupSoraMediaState();
+  // cleanup の完了 (track stop 含む) を待ってから SDK の disconnect 通知を呼ぶことで、切断完了通知前にローカル track stop が完了することを保証する
+  await cleanupSoraMediaState();
   // statsReport タイマーは状態に関わらず即時停止する
   stopStatsReportTimer();
   // メディア掃除とタイマー停止は済んだので切断済みならここで抜ける

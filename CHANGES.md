@@ -206,6 +206,10 @@
   - `createSignalingURL` の dev 用フォールバック分岐で参照していた `import.meta.env.NODE_ENV` を `import.meta.env.DEV` に置き換える
   - `import.meta.env.NODE_ENV` は Vite がクライアントに注入しないキーであり常に `undefined` を返すため `.env` の上書きが無効化されていた
   - @voluntas
+- [FIX] `cleanupSoraMediaState` を async 化して呼び出し元が完了を待てる形にする
+  - `Disconnect` 操作・再接続失敗・`connectSora` 失敗時の各経路でタイムラインに古い `stop` ログが混入する問題を解消する
+  - `stopLocalAudioTrack` の rejection もログに残す（旧来は audio 側のみ無視）
+  - @voluntas
 
 ### misc
 
