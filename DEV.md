@@ -2,22 +2,12 @@
 
 **この資料は sora-devtools 開発者向けです**
 
-## corepack
-
-```bash
-brew uninstall pnpm npm yarn
-brew install corepack
-corepack enable pnpm
-```
-
-`package.json` の `packageManager` フィールドで pnpm のバージョンが固定されているため、`corepack` はそのバージョンを自動的に利用します。
-
 ## 開発環境
 
 - nodejs
   - package.json でバージョンを確認すること
 - pnpm
-  - package.json でバージョンを確認すること
+  - package.json の `packageManager` フィールドでバージョンが固定されている
 - pnpm install
   - これで事前に利用するライブラリをインストールする
 
