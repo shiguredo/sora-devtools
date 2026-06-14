@@ -4,19 +4,18 @@
 
 ## 開発環境
 
-- nodejs
-  - package.json と `.node-version` でバージョンを確認すること
-  - vp インストール後は `vp env install` でプロジェクトのバージョンをインストールできる
 - vp
   - Vite+ のグローバル CLI。プロジェクトには `vite-plus` パッケージがインストールされている
   - macOS / Linux: `curl -fsSL https://vite.plus | bash` を実行する
   - Windows: `irm https://vite.plus/ps1 | iex` を実行する、または `vp-setup.exe` をダウンロードして実行する
   - インストール後、新しいシェルを開いて `vp help` を実行する
+  - `vp env install` で Node.js も自動的にインストールされるため、Node.js は個別にインストールしない
   - `vp install` は `package.json` の `packageManager` フィールドからパッケージマネージャを自動検出し、必要に応じてダウンロードして利用するため、個別に pnpm をインストールする必要はない
 
 ## 開発準備
 
 - `vp env install` を実行して Node.js をインストールする
+  - `package.json` と `.node-version` でバージョンを確認できる
 - `vp install` を実行
 
 ## .env ファイルのコピー
