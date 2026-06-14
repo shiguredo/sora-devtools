@@ -8,6 +8,7 @@
   - package.json でバージョンを確認すること
 - pnpm
   - package.json の `packageManager` フィールドでバージョンが固定されている
+  - vp は内部で pnpm を利用するため必要
 - vp
   - `npm install -g vite-plus` などでインストールする
   - インストールせず `npx vp <command>` や `pnpm dlx vp <command>` でも実行できる
