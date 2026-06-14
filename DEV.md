@@ -5,7 +5,8 @@
 ## 開発環境
 
 - nodejs
-  - package.json でバージョンを確認すること
+  - package.json と `.node-version` でバージョンを確認すること
+  - vp インストール後は `vp env install` でプロジェクトのバージョンをインストールできる
 - pnpm
   - package.json の `packageManager` フィールドでバージョンが固定されている
   - vp は内部で pnpm を利用するため必要
@@ -15,6 +16,7 @@
 
 ## 開発準備
 
+- `vp env install` を実行して Node.js をインストールする
 - `vp install` を実行
 
 ## .env ファイルのコピー
