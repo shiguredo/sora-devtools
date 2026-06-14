@@ -14,8 +14,8 @@ minimumReleaseAgeExclude:
   - "vite-plus"
 
 # ビルド時に pre/post install スクリプトを実行するパッケージ
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: true
 
 # ピア依存関係のバージョン互換性ルール
 # vite/vitest は @voidzero-dev のエイリアスであり、パッケージが期待する semver 範囲を満たさないため上書きする
