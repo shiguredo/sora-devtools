@@ -42,7 +42,6 @@
     "@types/node": "25.9.1",
     "@vitest/browser": "4.1.8",
     "@vitest/browser-playwright": "4.1.8",
-    "@vitest/browser-preview": "4.1.8",
     "dotenv": "17.4.2",
     "fast-check": "4.8.0",
     "jsdom": "29.1.1",
