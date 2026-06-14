@@ -11,6 +11,15 @@ importers:
       '@preact/signals':
         specifier: 2.9.1
         version: 2.9.1(preact@10.29.2)
+      '@shiguredo/mp4-media-stream':
+        specifier: 2024.3.0
+        version: 2024.3.0
+      '@shiguredo/noise-suppression':
+        specifier: 2025.1.0
+        version: 2025.1.0
+      '@shiguredo/virtual-background':
+        specifier: 2023.2.0
+        version: 2023.2.0
       preact:
         specifier: 10.29.2
         version: 10.29.2
@@ -30,24 +39,12 @@ importers:
       '@preact/signals-agent-vite':
         specifier: 0.1.2
         version: 0.1.2(@preact/signals-core@1.14.2)(@preact/signals@2.9.1(preact@10.29.2))(@voidzero-dev/vite-plus-core@0.1.24(@types/node@25.9.1)(jiti@2.7.0)(typescript@6.0.3))
-      '@shiguredo/mp4-media-stream':
-        specifier: 2024.3.0
-        version: 2024.3.0
-      '@shiguredo/noise-suppression':
-        specifier: 2025.1.0
-        version: 2025.1.0
-      '@shiguredo/virtual-background':
-        specifier: 2023.2.0
-        version: 2023.2.0
       '@tailwindcss/vite':
         specifier: 4.3.0
         version: 4.3.0(@voidzero-dev/vite-plus-core@0.1.24(@types/node@25.9.1)(jiti@2.7.0)(typescript@6.0.3))
       '@types/node':
         specifier: 25.9.1
         version: 25.9.1
-      dotenv:
-        specifier: 17.4.2
-        version: 17.4.2
       fast-check:
         specifier: 4.8.0
         version: 4.8.0
@@ -958,10 +955,6 @@ packages:
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
-
-  dotenv@17.4.2:
-    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
-    engines: {node: '>=12'}
 
   electron-to-chromium@1.5.367:
     resolution: {integrity: sha512-4Mk/mrynCNQ+atY40D3UpmhLWB6AHMbYMlIrPhHcMF6x0L7O0b052FCAsxw1LlaR++UFuNg3D/A6XCuGDa0guQ==}
@@ -2074,8 +2067,6 @@ snapshots:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
-
-  dotenv@17.4.2: {}
 
   electron-to-chromium@1.5.367: {}
 
