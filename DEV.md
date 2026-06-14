@@ -10,7 +10,7 @@
 - vp
   - `npm install -g vite-plus` などでインストールする
   - インストールせず `npx vp <command>` や `pnpm dlx vp <command>` でも実行できる
-  - vp は内部で pnpm を自動的にダウンロードして利用するため、個別に pnpm をインストールする必要はない
+  - `vp install` は `package.json` の `packageManager` フィールドからパッケージマネージャを自動検出し、必要に応じてダウンロードして利用するため、個別に pnpm をインストールする必要はない
 
 ## 開発準備
 
