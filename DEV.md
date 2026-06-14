@@ -7,12 +7,10 @@
 - nodejs
   - package.json と `.node-version` でバージョンを確認すること
   - vp インストール後は `vp env install` でプロジェクトのバージョンをインストールできる
-- pnpm
-  - package.json の `packageManager` フィールドでバージョンが固定されている
-  - vp は内部で pnpm を利用するため必要
 - vp
   - `npm install -g vite-plus` などでインストールする
   - インストールせず `npx vp <command>` や `pnpm dlx vp <command>` でも実行できる
+  - vp は内部で pnpm を自動的にダウンロードして利用するため、個別に pnpm をインストールする必要はない
 
 ## 開発準備
 
