@@ -210,6 +210,9 @@
   - `Disconnect` 操作・再接続失敗・`connectSora` 失敗時の各経路でタイムラインに古い `stop` ログが混入する問題を解消する
   - `stopLocalAudioTrack` の rejection もログに残す（旧来は audio 側のみ無視）
   - @voluntas
+- [FIX] Log タブの `description` の `JSON.parse` 失敗で `DebugPane` が壊れる問題を修正する
+  - デバイス切替・接続切断時にエラーメッセージ素文字列が `description` に入り render が落ちていた経路を `parseLogDescription` の `try` / `catch` で防御する
+  - @voluntas
 
 ### misc
 

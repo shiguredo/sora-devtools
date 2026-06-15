@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-15
 - Model: Opus 4.7
 - Branch: feature/fix-log-messages-json-parse-crash
 - Polished: 2026-06-15
@@ -145,3 +145,13 @@ null / boolean fallback の検証は固定入力で 1. のユニットテスト�
 - `description` の中身が `getErrorMessage` 由来の素文字列であっても `Message` コンポーネントが既存の `<pre>` 分岐で表示すること。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e（`pnpm test:e2e`）が通ること。
+
+## 解決方法
+
+- `src/components/DebugPane/parseLogDescription.ts` を新規追加し、`JSON.parse` の `SyntaxError` を `try` / `catch` で受けて raw 文字列に fallback する純関数 `parseLogDescription` と戻り値型 `LogDescription` (`string | number | Record<string, unknown> | unknown[]`) を export する。`JSON.parse` 成功時も `null` / `boolean` は raw 文字列に落として `Message` 側の `<pre>` 表示の崩れを防ぐ。
+- `src/components/DebugPane/LogMessages.tsx` の `Collapse` 関数で `JSON.parse(message.description)` を `parseLogDescription(message.description)` に差し替え、Log タブ受け側 1 箇所で防御する。`description` 経路の呼び出し側 (`actions.ts` / `signals.ts`) は変更しない。
+- `src/components/DebugPane/Message.tsx` の `DescriptionProps.description` と `Props.description` の型 union に `unknown[]` を追加し、`parseLogDescription` が返す配列を受けられるようにする。
+- `src/components/DebugPane/parseLogDescription.test.ts` (新規) で issue 設計方針 1 の 9 ケース (`{"a":1}` / `42` / `"foo"` / `failed to do X` / `''` / `null` / `true` / `false` / `[1,2]`) のユニットテストを追加する。
+- `src/components/DebugPane/parseLogDescription.prop.ts` (新規) で「例外を投げず必ず値を返す」「戻り値型が `string | number | object | array` に限定される」の 2 つの不変条件を PBT で検証する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾 (`### misc` の直前) に [FIX] エントリを追記する。
+- `/review-diff-code` のレビューを 1 周回し、PBT 1 件目に戻り値の存在確認 `assert.notEqual(result, undefined)` を追加、PBT 2 件目の `assert.ok` 失敗メッセージを日本語化する修正を反映した。

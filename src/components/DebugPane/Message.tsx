@@ -10,7 +10,7 @@ import { CopyLogButton } from "./CopyLogButton.tsx";
 import { JsonTree } from "./JsonTree.tsx";
 
 interface DescriptionProps {
-  description: string | number | Record<string, unknown> | undefined;
+  description: string | number | Record<string, unknown> | unknown[] | undefined;
   prevDescription?: unknown;
   wordBreak?: boolean;
 }
@@ -56,7 +56,7 @@ function Description(props: DescriptionProps) {
 interface Props {
   timestamp: number | null;
   title: string;
-  description: string | number | Record<string, unknown> | undefined;
+  description: string | number | Record<string, unknown> | unknown[] | undefined;
   prevDescription?: unknown;
   defaultShow?: boolean;
   label?: ComponentChild;
