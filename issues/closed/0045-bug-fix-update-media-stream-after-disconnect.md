@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-15
 - Model: Opus 4.7
 - Branch: feature/fix-update-media-stream-after-disconnect
 - Polished: 2026-06-15
@@ -175,3 +175,16 @@ signals.setFakeContentsAudio(audioContext, gainNode);
 - 再接続成功直後（`updateMediaStream` 実行中に reconnect が完了したケース）でも誤動作しないこと（ガード条件で捕捉される）。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e（`pnpm test:e2e`）が通ること。
+
+## 解決方法
+
+- `src/app/actions.ts` の `updateMediaStream` 末尾、`signals.setLocalMediaStream(mediaStream)` と `signals.setFakeContentsAudio(audioContext, gainNode)` の直前にガード条件を追加する。中断と判定できる場合は新規生成した `mediaStream` の全 track を `stop()` し、`audioContext !== null` なら `void audioContext.close()` してから return する。
+- ガード条件は以下の 4 つの OR で構成する。
+  - `signals.sora.value !== soraValue`（関数開始時の sora と現在の sora が違う = 切断後の再接続で新セッションに移行）
+  - `signals.localMediaStream.value === null`（`disconnectSora` 内の `await cleanupSoraMediaState()` を跨いだ時間窓を捕捉）
+  - `signals.connectionStatus.value === "disconnecting"`（ユーザー操作の disconnect が走行中）
+  - `signals.connectionStatus.value === "disconnected"`（disconnect 完了済みの過渡状態）
+- レビュー指摘を踏まえ、issue 設計方針の `soraValue === null` 条件は採用しない。理由: `requestMedia` プレビュー後 connect 前の `updateMediaStream` 経路（preview 中のデバイス切替）を「異常系」として弾くと、UI の新デバイス切替が機能しなくなるため。本ガード（`signals.sora.value !== soraValue`）は `soraValue === null` のとき参照比較が `null !== null` で false となり、preview 経路は素通りする。
+- ガード経路で停止した track もタイムラインに記録するため、`signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track))` を併記する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾（`### misc` の直前）に `[FIX]` エントリを追記する。
+- `/review-diff-code` のレビューを 1 周回し、重要 1 件（`soraValue === null` ガードと preview 経路の干渉）と改善 1・2・4（条件ごとの 1 行コメント / ガード経路のタイムラインログ / コメント表現修正）を反映した。改善 3（`void audioContext.close()` の rejection 握り潰し）は既存 `closeFakeContentsAudio` と同パターンで一貫性を優先し見送った。

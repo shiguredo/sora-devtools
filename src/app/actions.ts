@@ -1812,6 +1812,31 @@ export const updateMediaStream = async (): Promise<void> => {
       `failed to replace ${failures.length} track(s) of ${replaceResults.length}`,
     );
   }
+  // 関数内の await を跨いだ後に切断が走ると、ここで signal を上書きして UI に新規メディアが復活し
+  // AudioContext がどこからも参照されないままリークする。末尾の signal 更新前に状態を検査し、
+  // 中断と判定できる場合はローカル変数として持っている新規リソースを直接解放して return する。
+  // requestMedia プレビュー後 connect 前の経路では soraValue / signals.sora.value がともに null で
+  // 参照比較が false になり、preview 中の updateMediaStream は素通りする。
+  if (
+    // 関数開始時の sora と現在の sora が異なる場合は切断後の再接続で新セッションに移行している
+    signals.sora.value !== soraValue ||
+    // disconnectSora 内の await cleanupSoraMediaState() を跨いだ時間窓を捕捉する
+    signals.localMediaStream.value === null ||
+    // ユーザー操作の disconnect が走行中 / 完了済みの過渡状態を捕捉する
+    signals.connectionStatus.value === "disconnecting" ||
+    signals.connectionStatus.value === "disconnected"
+  ) {
+    for (const track of mediaStream.getTracks()) {
+      track.stop();
+      // 中断時に破棄した track もタイムラインに記録してデバッグ時に追えるようにする
+      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+    }
+    if (audioContext !== null) {
+      // 既存の closeFakeContentsAudio と同じ void パターンで AudioContext を解放する
+      void audioContext.close();
+    }
+    return;
+  }
   signals.setLocalMediaStream(mediaStream);
   signals.setFakeContentsAudio(audioContext, gainNode);
 };
