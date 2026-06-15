@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-15
 - Model: Opus 4.7
 - Branch: feature/fix-reconnect-double-launch
 - Polished: 2026-06-15
@@ -187,3 +187,12 @@ const reconnectSoraImpl = async (): Promise<void> => {
 - 正常な再接続シーケンスで UI のメディア表示が連続性を保つこと（既存 Playwright e2e で確認）。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e（`pnpm test:e2e`）が通ること。
+
+## 解決方法
+
+- `src/components/AlertMessages.tsx` の `<Reconnect />` から `useEffect` を撤廃し、`reconnectSora` の起動責務を呼び出し側 (abend ハンドラ) に集約する。あわせて `useEffect` および `reconnectSora` の import を削除する。
+- `src/app/actions.ts` の `setSoraCallbacks` 内 `disconnect` ハンドラの abend 経路 (`event.type === "abend" && reconnectValue`) で、`signals.setSoraReconnecting(true)` の直後に `void reconnectSora()` を直接呼ぶ。
+- `src/app/actions.ts` の `reconnectSora` を `reconnectSoraImpl` (本体実装) と `reconnectSora` (wrapper) に分割し、wrapper 側でモジュールローカルな `reconnectInFlight: Promise<void> | null` で in-flight ガードを行う。先発が走行中なら同じ Promise を返し、`reconnectSoraImpl` の signal 副作用が二重に走るのを防ぐ。`finally` で `reconnectInFlight` を確実に null に戻す。
+- `reconnectSoraImpl` は `export` せず、モジュール内部 API として扱う。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾 (`### misc` の直前) に `[FIX]` エントリを追記する。
+- `/review-diff-code` のレビューを 1 周回し、致命的 0 件 / 重要 3 件 / 改善 4 件を集約した。重要 R1 (cleanup と並走) と重要 R2 (キャンセル時の in-flight 残存と最大 5.5 秒の合流ウィンドウ) はいずれも issue 設計方針 (95 行) の意図的トレードオフであり、`actions.ts` の disconnect ハンドラと `reconnectInFlight` 宣言箇所にそれぞれ根拠コメントを追加して将来の読み手に意図を伝える形で反映した。改善 I3 (SDK fire-and-forget) も同コメント内で「SDK は本ハンドラの戻り値 Promise を待たないため void で起動する」を併記した。改善 I1 (`async` 修飾子) は `promise-function-async` lint で必要なので維持、改善 I2 (テスト不可性) と重要 R3 (宣言位置の物理的距離) は本 issue のスコープ外で見送った。

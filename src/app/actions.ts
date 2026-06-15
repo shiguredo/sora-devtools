@@ -1211,6 +1211,13 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     if (event.type === "abend" && reconnectValue) {
       // 再接続処理開始フラグ
       signals.setSoraReconnecting(true);
+      // reconnectSora の起動責務を <Reconnect /> の useEffect から本ハンドラに集約する。
+      // <Reconnect /> の再 mount による二重起動を撲滅する目的で、本 issue の修正で
+      // useEffect 経由の起動は廃止し、本箇所で直接呼び出す形に切り替えた。
+      // SDK は本ハンドラの戻り値 Promise を待たないため reconnectSora は void で起動する。
+      // 後続の await cleanupSoraMediaState と reconnectSora の同期前処理が並走するが、
+      // 双方 clearRemoteMediaClients / closeFakeContentsAudio は冪等で実害は無い。
+      void reconnectSora();
     }
     // SDK は本コールバックの戻り値 Promise を待たないため、cleanup は実質 fire-and-forget となる
     // cleanup が reject した場合は unhandled rejection を起こさないよう try / catch でログ化する
@@ -1675,7 +1682,8 @@ async function attemptReconnection(
   return undefined;
 }
 
-export const reconnectSora = async (): Promise<void> => {
+// reconnectSora の本体実装。in-flight ガードはこの関数の外側 wrapper で行う
+const reconnectSoraImpl = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect"));
   signals.setSoraConnectionStatus("connecting");
   const state = getStateForMediaStream();
@@ -1754,6 +1762,28 @@ export const reconnectSora = async (): Promise<void> => {
   signals.setSoraConnectionStatus("connected");
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected"));
   signals.setSoraReconnecting(false);
+};
+
+// reconnectSora の二重起動を防ぐためのモジュールローカルな in-flight Promise。
+// 後発呼び出しは既存の in-flight Promise を返し、reconnectSoraImpl の signal 副作用が
+// 二重に走るのを防ぐ。Promise は finally で確実に null に戻す。
+// Toast 手動クローズ後 (setSoraReconnecting(false)) でも、attemptReconnection のループ内
+// setTimeout で待機中は in-flight が pending のまま残るため、その期間に別経路の abend が
+// 起きても新規 reconnect は走らず既存の in-flight に合流する。最大残存時間は
+// attemptReconnection の最終 sleep (i=10 で 5500ms) で、それ以降は finally で解放される。
+let reconnectInFlight: Promise<void> | null = null;
+export const reconnectSora = async (): Promise<void> => {
+  if (reconnectInFlight) {
+    return reconnectInFlight;
+  }
+  reconnectInFlight = (async () => {
+    try {
+      await reconnectSoraImpl();
+    } finally {
+      reconnectInFlight = null;
+    }
+  })();
+  return reconnectInFlight;
 };
 
 // Sora との切断処理
