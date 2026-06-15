@@ -213,6 +213,10 @@
 - [FIX] Log タブの `description` の `JSON.parse` 失敗で `DebugPane` が壊れる問題を修正する
   - デバイス切替・接続切断時にエラーメッセージ素文字列が `description` に入り render が落ちていた経路を `parseLogDescription` の `try` / `catch` で防御する
   - @voluntas
+- [FIX] `updateMediaStream` の `await` 中に切断された場合に signal を上書きしてリソースリークする問題を修正する
+  - 末尾の signal 更新前にガードを追加し、`soraValue` の同一性 / `localMediaStream` / `connectionStatus` から中断を検出する
+  - 中断時は新規生成した `MediaStream` の全 track を `stop()` し、`AudioContext` があれば `close()` してから return する
+  - @voluntas
 
 ### misc
 
