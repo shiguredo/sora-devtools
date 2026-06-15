@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-download-report-blob-leak
-- Polished: 2026-06-09
+- Polished: 2026-06-15
 
 ## 目的
 
@@ -21,11 +21,11 @@
 
 ## 現状の問題
 
-実装時に行番号がずれている可能性があるため、コンポーネント名（`DownloadReportButton`）および関数名（`createDownloadReport` / `onClick`）を基準に特定すること。Polished 時点は 2026-06-09。
+行番号は陳腐化するため記載しない。各箇所はコンポーネント名（`DownloadReportButton`）および関数名（`createDownloadReport` / `onClick`）で特定する。
 
 ### 該当コード
 
-`src/components/Header/DownloadReportButton.tsx` の `DownloadReportButton.onClick` 内（188 行付近）:
+`src/components/Header/DownloadReportButton.tsx` の `DownloadReportButton.onClick` 内:
 
 ```ts
 anchorRef.current.href = globalThis.URL.createObjectURL(blob);
@@ -46,7 +46,7 @@ W3C File API §6.7 の `revokeObjectURL` のステップ: Blob URL Store のエ�
 
 ## 設計方針
 
-### 1. `useRef<string | null>` で前回 URL を保持
+### `useRef<string | null>` で前回 URL を保持
 
 採用理由:
 
@@ -56,7 +56,7 @@ W3C File API §6.7 の `revokeObjectURL` のステップ: Blob URL Store のエ�
 
 修正後コード:
 
-**before**（`src/components/Header/DownloadReportButton.tsx:178-195` 付近、`createObjectURL` 呼び出しは 188 行）:
+**before**:
 
 ```tsx
 export function DownloadReportButton() {
@@ -133,7 +133,7 @@ export function DownloadReportButton() {
 
 `import { useRef } from "preact/hooks";` を `import { useEffect, useRef } from "preact/hooks";` に変更する。
 
-### 2. エッジケース一覧
+### エッジケース一覧
 
 | 状態                                | `previousBlobUrlRef.current` | 挙動                                                                |
 | ----------------------------------- | ---------------------------- | ------------------------------------------------------------------- |
@@ -143,16 +143,16 @@ export function DownloadReportButton() {
 | アンマウント時（一度も click 無し） | `null`                       | cleanup は skip（`null` チェック）                                  |
 | `anchorRef.current` が null         | 変化なし                     | `onClick` 冒頭の `if` で早期 return、`createObjectURL` も呼ばれない |
 
-### 3. テスト戦略
+## テスト戦略
 
-- 単体テスト追加なし: Preact コンポーネントの click ハンドラの副作用を読み取る単体テスト基盤は本リポジトリに無い（0053 / 0054 / 0056 と同様の判断）。`URL.createObjectURL` / `revokeObjectURL` は jsdom 環境で `vi.fn()` でモック化されている (`src/app/app.test.ts:99-103`) が、CLAUDE.md「モックやスタブは絶対に利用しないこと」と両立しない（既存モックは別 issue で取り除く方針があれば順次対応）。本 issue では追加しない。
+- 単体テスト追加なし: Preact コンポーネントの click ハンドラの副作用を読み取る単体テスト基盤は本リポジトリに無い（0053 / 0054 / 0056 と同様の判断）。`URL.createObjectURL` / `revokeObjectURL` は jsdom 環境で `vi.fn()` でモック化されているが、CLAUDE.md「モックやスタブは絶対に利用しないこと」と両立しない（既存モックは別 issue で取り除く方針）。本 issue では追加しない。
 - PBT 追加なし: `createObjectURL` / `revokeObjectURL` の振る舞いは property 化に向かない。
 - e2e (Playwright) 追加なし: 既存 e2e は `DownloadReportButton` を踏むシナリオを持たず、Playwright で連続 download を発火させてメモリ使用量を検証するのはオーバー。
 - 手動検証（後述「検証手順」）で DevTools Memory タブ + console での Blob 数確認に委ねる。
 
-### 4. CHANGES.md エントリ
+## CHANGES.md エントリ
 
-`CHANGES.md` の `## develop` の `[FIX]` セクション末尾（`### misc` サブセクションの直前）に以下を追記する。担当者行を忘れないこと。
+`CHANGES.md` の `## develop` 内 `[FIX]` セクション末尾（`### misc` セクションの直前）に以下を追記する。担当者行を忘れないこと。
 
 ```
 - [FIX] `DownloadReportButton` の `Blob URL` がリークする問題を修正する
@@ -161,30 +161,30 @@ export function DownloadReportButton() {
   - @voluntas
 ```
 
-### 5. スコープ外
+## スコープ外
 
 下記は本 issue では扱わない:
 
 - **Blob の MIME type 不整合**: `new Blob([data], { type: "text/plain" })` で生成しているが、ダウンロードファイル名は `.json` 拡張子。MIME と拡張子が一致していないがブラウザはファイル名の拡張子を優先するため実害は無い。`type: "application/json"` への修正は別 issue で扱う。
-- **`createObjectURL` 呼び出しの監査**: 現状本リポジトリで `globalThis.URL.createObjectURL` 呼び出しは `DownloadReportButton.tsx:188` の 1 箇所のみ（grep 確認）。新規追加時の規約化や監査は別 issue。
+- **`createObjectURL` 呼び出しの監査**: 現状本リポジトリで `globalThis.URL.createObjectURL` 呼び出しは `DownloadReportButton.tsx` の 1 箇所のみ（grep 確認）。新規追加時の規約化や監査は別 issue。
 - **`createDownloadReport` の戻り値サイズ削減 / 増分書き込み / StreamSaver 化**: 大規模リファクタのため別 issue。
 - **Header 全体の `useEffect` cleanup 監査**: 他コンポーネントも同様の leak がないか確認するのは別 issue。
-- **既存 `URL.createObjectURL` モック (`src/app/app.test.ts:99-103`) の除去**: 「モック禁止」規約との両立は別 issue で扱う。
+- **既存 `URL.createObjectURL` モックの除去**: 「モック禁止」規約との両立は別 issue で扱う。
 
-### 6. 関連 issue
+## 関連 issue
 
 - 直接関連する既存 issue は無い（Blob URL ライフサイクル系は本 issue が初）。
 - DevTools Memory タブを使った検証パターンは [[0050-bug-fix-fake-video-worker-busy-loop]] の Worker CPU 計測手順と類似。
-- `useEffect` cleanup の参考実装パターン: `src/components/Header/SignalingUrlModal.tsx` の addEventListener / removeEventListener パターン、`src/components/Video.tsx` の loadedmetadata cleanup。
+- `useEffect` cleanup の参考実装パターン: `src/components/Header/SignalingUrlModal.tsx` の addEventListener / removeEventListener パターン、`src/components/Video/Video.tsx` の loadedmetadata cleanup。
 
 ## 検証手順
 
 ### A. 修正前の Blob URL 残留の再現（develop ブランチで実施）
 
-1. `vp dev` で起動。
+1. `pnpm dev` で起動。
 2. Chrome DevTools を開き、Performance タブで Heap snapshot を撮影。
 3. Header 右上の Download report ボタンを 50 回連打する（毎クリックでブラウザ download dialog が出るので、ダウンロード先を「指定なし」/「自動保存」設定にしておくと連打しやすい）。
-4. devtools console で `Array.from(document.querySelectorAll("a")).map((a) => a.href).filter((href) => href.startsWith("blob:"))` を実行し、anchor の href は最後に発行された 1 つだけが blob URL になっていることを確認する（href の上書きで anchor は 1 つしか持たない）。
+4. DevTools console で `Array.from(document.querySelectorAll("a")).map((a) => a.href).filter((href) => href.startsWith("blob:"))` を実行し、anchor の href は最後に発行された 1 つだけが blob URL になっていることを確認する（href の上書きで anchor は 1 つしか持たない）。
 5. Memory タブで Heap snapshot を再度撮影し、`Constructor: Blob` の件数差分が 50 件あること（revoke せず leak している）を確認する。
 
 ### B. 修正後の確認
@@ -199,15 +199,14 @@ export function DownloadReportButton() {
 
 ### D. テスト
 
-10. `vp test` が pass すること（既存テストのリグレッション確認）。
-11. 既存 Playwright e2e が pass すること。
+10. `pnpm test` が pass すること（既存テストのリグレッション確認）。
+11. 既存 Playwright e2e（`pnpm test:e2e`）が pass すること。
 
 ## 完了条件
 
 - 検証手順 A-D すべてが通過すること。
-- 修正後コード（設計方針 1 の after）と一致して実装されていること。
+- 修正後コード（設計方針 after）と一致して実装されていること。
 - `previousBlobUrlRef` の初期値が `null` で、初回 click 時に `revokeObjectURL(null)` が呼ばれないこと（エッジケース一覧の通り）。
 - `useEffect` cleanup が登録され、アンマウント時に最終 URL が revoke されること。
-- `CHANGES.md` の `## develop` の `[FIX]` 末尾に「4. CHANGES.md エントリ」のエントリが追記され、担当者行が付いていること。
-- 既存テスト (`vp test`) および既存 Playwright e2e が pass すること。
-- 新規テストは追加しない（理由は設計方針 3 に記載）。
+- `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
+- 既存テスト（`pnpm test`）および既存 Playwright e2e が pass すること。

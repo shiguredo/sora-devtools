@@ -5,34 +5,32 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-track-event-streams-null-check
-- Polished: 2026-06-09
+- Polished: 2026-06-15
 
 ## 目的
 
-`soraConnection.on("track", ...)` ハンドラは `event.streams[0]` を 6 箇所で参照しているが、空配列チェックが一切ない。現行 `sora-js-sdk` 2025.2.0 は publisher 系の `ontrack` で空配列を SDK 内で弾いており、subscriber 系では空配列の場合に SDK 側で先に throw するため、現状アプリ層には実害は到達しない。ただし SDK の防御が変わったときに即座に画面が壊れる経路を残さないよう、アプリ層にも明示的な早期 return を追加して防御層を二重化する。
+`soraConnection.on("track", ...)` ハンドラは `event.streams[0]` を計 6 箇所で参照しているが、空配列チェックが一切ない。現行 `sora-js-sdk` (`package.json` 上 `2026.1.0-canary.1`) では publisher 系 (sendrecv / sendonly を返す `ConnectionPublisher` クラス) の `ontrack` で空配列を明示ガードしており、subscriber 系 (recvonly を返す `ConnectionSubscriber` クラス) は明示ガードを持たないが空配列時は SDK 内で `streams[0].id` 参照により `TypeError` が発生してハンドラが抜けるため、結果として本アプリ層の `track` コールバックには空配列イベントが到達しない。アプリ層にも `length === 0` の早期 return を追加して、SDK の防御挙動が変わった場合に備える。
+
+（ファイル名は `null-check` と表記しているが、本質は `event.streams.length === 0` の空配列ガードである。`RTCTrackEvent.streams` プロパティ自体は必ず存在するため、null/undefined チェックではなく要素数チェックで判定する。）
 
 ## 優先度根拠
 
-現行 SDK との組み合わせで実害は観測されないため Medium。SDK ソース (`node_modules/sora-js-sdk/dist/sora.mjs` の publisher 系 `ontrack`) で `const o = t.streams[0]; if (!o) return;` の空配列ガードが入っていることを確認し、現実害がない予防修正と判定。
+現状アプリ層へ空配列イベントが到達する経路は確認できずユーザー影響を再現する手段がないため Medium。subscriber 側は明示防御ではなく SDK 内 throw による偶発的回避なので、SDK の比較順や `default` / `connectionId` 判定が変わると即座に空配列イベントが到達しうる。本 issue はその防御層を追加する。
 
 ## 現状の問題
 
-`src/app/actions.ts` の `setSoraCallbacks` 内 `soraConnection.on("track", ...)` ハンドラは Polished 時点 (2026-06-09) で 1112-1137 行付近にある。実装時に行番号がずれている可能性があるため、関数名 `setSoraCallbacks` 内の `"track"` リスナーを基準に特定すること。`event.streams[0]` の参照は以下の 6 箇所で、いずれも空配列チェックが無い。
+`src/app/actions.ts` の `setSoraCallbacks` 内 `soraConnection.on("track", (event) => { ... })` ハンドラは `event.streams[0]` を以下の計 6 箇所で参照している（行番号は陳腐化するため記載しない。関数名と用途で特定する）。
 
-| 行（Polished 時点） | 参照                           | 用途                                     |
-| ------------------- | ------------------------------ | ---------------------------------------- |
-| 1116                | `event.streams[0].id`          | `remoteClientsValue.find` の検索キー     |
-| 1119                | `event.streams[0].getTracks()` | 新規時の timeline ログ生成ループ         |
-| 1128                | `event.streams[0]`             | `setRemoteClient.mediaStream` の値       |
-| 1129                | `event.streams[0].id`          | `setRemoteClient.connectionId` の値      |
-| 1134                | `event.streams[0].getTracks()` | 無条件の ended リスナー登録ループ        |
-| 1135                | `event.streams[0].id`          | `registerTrackEndedListener` の第 1 引数 |
+- `remoteClientsValue.find` の検索キーとしての `event.streams[0].id`
+- 新規 remoteClient 分岐内のループでの `event.streams[0].getTracks()`
+- `signals.setRemoteClient` の `mediaStream` の値としての `event.streams[0]`
+- `signals.setRemoteClient` の `connectionId` の値としての `event.streams[0].id`
+- 末尾ループ（新規 / 既存どちらの分岐でも実行）での `event.streams[0].getTracks()`
+- 同末尾ループ内 `registerTrackEndedListener` 第 1 引数の `event.streams[0].id`
 
-1134 / 1135 は新規・既存どちらの分岐でも実行される無条件参照のため、早期 return が無いと空配列到達時に必ず `TypeError`。標準の `addEventListener` 系は単発例外でハンドラを解除しないため、ハンドラ全体が機能停止する事は無いが、その回のイベント分の `remoteClient` 追加・ended リスナー登録が取りこぼされ、後段のメディア表示が壊れる。
+末尾ループは無条件参照のため、早期 return が無いと空配列到達時に必ず `TypeError`。標準の `addEventListener` 系は単発例外でハンドラを解除しないため、その回のイベント分の `remoteClient` 追加・ended リスナー登録が取りこぼされる。
 
-`removetrack` ハンドラ内（1141 行付近）に「sora-js-sdk の "track" イベントは常に RTCTrackEvent を渡すため event は non-null」という古いコメントが紛れ込んでいるが、本 issue とは別の話なのでスコープ外（コメント整理は別途）。
-
-`tsconfig.json` には `noUncheckedIndexedAccess` が設定されていないことを確認済み。`event.streams[0]` の参照は型上 `MediaStream` として扱われる。
+`tsconfig.json` に `noUncheckedIndexedAccess` は設定されていない。`event.streams[0]` の参照は型上 `MediaStream`（非 undefined）として扱われる。`RTCTrackEvent.streams` (lib.dom.d.ts 上 `ReadonlyArray<MediaStream>`) はプロパティ自体が必ず存在し空配列はあり得るため、`event.streams.length === 0` で判定できる。
 
 ## 設計方針
 
@@ -51,14 +49,17 @@
   }
   ```
 
-  既存の timeline type は `event-on-{SDK イベント名}` の 1 トークン形式（`event-on-track` / `event-on-removetrack` / `event-on-disconnect` 等）で統一されている。新規 type は作らず既存 `event-on-track` を流用し、空配列ケースは `createSoraDevtoolsTimelineMessage(type, data?)` の `data` で識別する（`actions.ts:700, 734, 865` ほかで既に 2 引数呼び出しが使われている先例に揃える）。
+  新規 type は作らず既存 `event-on-track` を流用し、空配列ケースは `createSoraDevtoolsTimelineMessage(type, data?)` の `data` で識別する（同モジュール内に 2 引数呼び出しの先例が複数あり、それに揃える）。
 
-- 既存の `event.streams[0]` 参照（6 箇所）は **そのまま残す**。`length === 0` ガード追加以外の書き換え（分解代入・`?.` 化・ローカル定数化など）は行わない。`tsconfig.json` の `noUncheckedIndexedAccess` 未設定を確認済みのため、型エラーも起きない。
-- 1119 / 1134 で `event.streams[0].getTracks()` を 2 回回している既存構造（1119 は新規 remoteClient のときだけ timeline ログ、1134 は新規/既存どちらでも ended リスナー登録）は意図的なものとしてスコープ外、リファクタしない。
-- `removetrack` ハンドラは本 issue のスコープ外。
-- 同じ `setSoraCallbacks` 内の `"disconnect"` ハンドラを触る [[0047-bug-fix-disconnect-listener-self-check]] と修正範囲が物理的に近接するため、両者を並行で進める場合はマージ衝突に注意する。
+- 既存の `event.streams[0]` 参照（6 箇所）は **そのまま残す**。`length === 0` ガード追加以外の書き換え（分解代入・ローカル定数化など）は行わない。レビューでの差分を最小化して本 issue の主旨（防御層追加）から外れる変更を入れないため。
 
-- `CHANGES.md` の `## develop` の `[FIX]` セクションは既に存在する。`[FIX]` セクション末尾（Polished 時点で 200 行台付近、`## 26.1.0` の手前まで）に以下を追記する。担当者行を忘れないこと。
+- 空配列イベントの場合、`event.track` 単独でリモートクライアントを生成・保持する経路は無く、`removeRemoteClientCleanup` / `clearRemoteMediaClients` が参照する `connectionId` キーも `streams[0].id` 由来のため、早期 return で迷子 state は発生しない。
+
+- 現在 `setSoraCallbacks` 内のクロージャに置かれている `"track"` リスナー本体を、`actions.ts` のトップレベル `export const handleTrackEvent = (event: RTCTrackEvent): void => { ... }` として切り出す。`actions.ts` の既存 export はすべて `export const ... = (...) => ...` の arrow 形式（`isConnectionDestroyedNotify` / `cleanupSoraMediaState` / `requestMedia` / `connectSora` 等）であり、それに合わせる。`setSoraCallbacks` 側は `soraConnection.on("track", handleTrackEvent)` に差し替える。`handleTrackEvent` は `event` のみ受け取り、内部では `signals.*` と `registerTrackEndedListener` を `actions.ts` のモジュールスコープから直接参照する。`registerTrackEndedListener` 自体は本 issue では export しない。
+  - 既存 `"track"` リスナー本体は `this` / `soraConnection` を参照しておらず、トップレベル化で挙動差は発生しない。
+  - この切り出しは「テスト到達のための構造変更」であり、CLAUDE.md「モックやスタブは絶対に利用しないこと」を守りつつ単体テストを書くために必要な前提。先例として closed/0033 で `cleanupSoraMediaState` が同じ理由（テスト到達）で `export` 化されたパターンに揃える。
+
+- `CHANGES.md` の `## develop` 内 `[FIX]` セクション末尾（`### misc` セクションの直前）に以下を追記する。担当者行を忘れないこと。
 
   ```
   - [FIX] `track` イベントで `event.streams` が空配列のときの防御を追加する
@@ -67,21 +68,24 @@
 
 ## 検証手順
 
-`src/app/actions.test.ts` に空配列ケースの観察テストを追加する。先例 `cleanupSoraMediaState` (`actions.ts:1056-1082`, `actions.test.ts:48-57`) に倣い、`signals` モジュールを直接読み書きする「非純粋な切り出し」とする（モック禁止規約と両立させるため）。
+`src/app/actions.test.ts` に空配列ケースの観察テストを追加する。
 
-1. `setSoraCallbacks` の `"track"` リスナー本体を `handleTrackEvent(event: RTCTrackEvent): void` として `actions.ts` のトップレベルに切り出し `export` する。`event` のみ受け取り、内部では `signals.*` と `registerTrackEndedListener` を `actions.ts` のモジュールスコープから直接参照する（純粋関数化はしない）。
-2. 現在 module-local const の `registerTrackEndedListener` (`actions.ts:1004` 付近) も同じ方針でテスト到達可能にするため `export` する。
-3. `setSoraCallbacks` 側は `soraConnection.on("track", handleTrackEvent)` に差し替える。
-4. テストでは事前に `signals.remoteClients.value = []` のように signal を初期化してから `handleTrackEvent({ streams: [], track: { id: "t1", kind: "audio" } } as unknown as RTCTrackEvent)` で呼び、signal の変化を観察する。
-5. 正常系（`streams[0]` が `MediaStream` を含むケース）のテストは追加しない。jsdom 29.x は `MediaStream` クラスを提供しないため、モック禁止規約と両立する形では正常系を `vp test` で書けない。正常系は既存の Playwright e2e (`tests/sendrecv.test.ts` 等) でカバーされる。
-6. 追加するテストケース（テストメッセージは日本語、`test` / `assert` を使う）:
+1. `actions.test.ts` の named import に `handleTrackEvent` を `./actions.ts` から、`timelineMessages` を `./signals.ts` から追加する（既存テストの中括弧付き import スタイルに揃える）。
+2. テスト本体では事前に `remoteClients.value = []` と `timelineMessages.value = []` で関連 signal を初期化する。signal への直接代入は `actions.test.ts` の既存テストおよび `signals.ts` の `resetMessagesState` 内パターンに倣う。
+3. 入力は `handleTrackEvent({ streams: [], track: { id: "t1", kind: "audio" } } as unknown as RTCTrackEvent)` のリテラル。`RTCTrackEvent` は jsdom に存在しないコンストラクタなので、必須プロパティのみを持つリテラルを型キャストして渡す。
+4. 正常系（`streams[0]` が `MediaStream` を含むケース）は追加しない。jsdom には `MediaStream` のコンストラクタが無く `new MediaStream()` が実行できないため、本リポジトリの規約と両立する形では書けない。
+5. 追加するテストケース（テストメッセージは日本語、`test` / `assert` を使う）:
    - 「`handleTrackEvent` は `streams` が空配列のとき例外を投げない」
    - 「`handleTrackEvent` は `streams` が空配列のとき `remoteClients` を変更しない」
-   - 「`handleTrackEvent` は `streams` が空配列のとき `event-on-track` の timeline メッセージを 2 件（無条件 1 件 + ガード 1 件）追加する」
+   - 「`handleTrackEvent` は `streams` が空配列のとき `event-on-track` の timeline メッセージを 2 件（冒頭の無条件 1 件 + 空配列ガード 1 件）追加する」
+     - 呼び出し前後の `timelineMessages.value` を比較し、差分 2 件であることを確認する（既存メッセージの長さに依存しない）。
+     - 1 件目: `type === "event-on-track"` かつ `data === undefined`
+     - 2 件目: `type === "event-on-track"` かつ `data` がオブジェクトで、`data.emptyStreams === true` かつ `data.trackId === "t1"` かつ `data.kind === "audio"`
+     - `TimelineMessage.data` は `Record<string, unknown> | undefined` 型なので、2 件目の `data` 内プロパティをアサートする前に `assert(typeof data === "object" && data !== null)` で narrow してから個別キーを `assert.equal` で確認する。
 
 ## 完了条件
 
-- 上記 3 テストが `vp test` で pass すること。
+- 上記 3 テストおよび既存テストが `pnpm test` で全件 pass すること。
 - 空配列イベント到達時に `TypeError` が発生せず、`remoteClients` も書き換えられないこと（テストで確認）。
 - `CHANGES.md` の `## develop` の `[FIX]` セクション末尾に上記エントリが追記され、担当者行が付いていること。
-- 既存テスト (`vp test`) および既存 Playwright e2e が通ること。
+- 既存 Playwright e2e（`pnpm test:e2e`）が通ること。
