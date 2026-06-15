@@ -217,6 +217,11 @@
   - 末尾の signal 更新前にガードを追加し、`soraValue` の同一性 / `localMediaStream` / `connectionStatus` から中断を検出する
   - 中断時は新規生成した `MediaStream` の全 track を `stop()` し、`AudioContext` があれば `close()` してから return する
   - @voluntas
+- [FIX] `reconnectSora` の `attemptReconnection` 全失敗パスで新規 `MediaStream` / `AudioContext` がリークする問題を修正する
+  - 失敗 return 直前で新規生成した `mediaStream` の全 track を `stop()` し `audioContext` を `close()` する
+  - キャンセル経路（Reconnect Toast を閉じる）でも同じガードに入りリークしない
+  - 失敗 / キャンセル時に停止した track はタイムラインに記録してデバッグ時に追えるようにする
+  - @voluntas
 
 ### misc
 
