@@ -33,7 +33,7 @@ export default defineConfig({
   ],
   webServer: {
     // vite で起動している
-    command: "vp dev",
+    command: "vp dev --port 3333",
     url: "http://localhost:3333/",
     reuseExistingServer: !process.env.CI,
     stdout: "pipe",
