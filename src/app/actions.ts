@@ -1670,6 +1670,22 @@ export const reconnectSora = async (): Promise<void> => {
     mediaStream,
   );
   if (soraConnection === undefined) {
+    // 新規生成した mediaStream / audioContext は signal にセットされていないため、
+    // cleanupSoraMediaState では解放されない。ローカル変数として直接解放してリークを防ぐ。
+    // キャンセル経路 (Reconnect Toast を閉じる) でも attemptReconnection は undefined を返すため
+    // 本ブロックを通り、同じ解放処理でリソースが回収される。
+    if (mediaStream) {
+      for (const track of mediaStream.getTracks()) {
+        track.stop();
+        // 失敗 / キャンセル時に停止した track もタイムラインに記録してデバッグ時に追えるようにする
+        signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      }
+    }
+    // audioContext は undefined / null / AudioContext の 3 状態。truthy チェックで一括捕捉する
+    if (audioContext) {
+      // 既存の closeFakeContentsAudio と同じ void パターンで AudioContext を解放する
+      void audioContext.close();
+    }
     signals.setSora(null);
     await cleanupSoraMediaState();
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");

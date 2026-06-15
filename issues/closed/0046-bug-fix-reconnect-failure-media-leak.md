@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-15
 - Model: Opus 4.7
 - Branch: feature/fix-reconnect-failure-media-leak
 - Polished: 2026-06-15
@@ -172,3 +172,12 @@ if (soraConnection === undefined) {
 - 検証手順 D の 16-17 で成功パス（再接続成功）の挙動が変わらないこと。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e（`pnpm test:e2e`）が通ること。
+
+## 解決方法
+
+- `src/app/actions.ts` の `reconnectSora` の失敗 return ブロック（`soraConnection === undefined` 直後）に、ローカル変数として持っている新規 `mediaStream` の全 track を `stop()` し、`audioContext` を `close()` する処理を追加する。
+- ガード位置は `signals.setSora(null)` の直前。`updateMediaStream`（0045）の中断ガードと同じ「signal 更新前にローカル変数で stop/close」パターンに揃える。
+- `audioContext` は `let audioContext: undefined | AudioContext | null` で `sendonly` / `sendrecv` 以外の roleValue では `try` 自体がスキップされて `undefined` のまま残るため、`if (audioContext)` の truthy チェックで 3 状態（`undefined` / `null` / `AudioContext`）を一括捕捉する。
+- ガード経路で停止した track もタイムラインに記録するため、`signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track))` を併記する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾（`### misc` の直前）に `[FIX]` エントリを追記する。タイムラインログ追加もサブ箇条で明示する。
+- `/review-diff-code` のレビューを 1 周回し、改善 3（CHANGES.md にタイムラインログ追加を記載）を反映した。改善 1・2（コメント追記）は既存コメントで意図が読めるため見送り、改善 4（既存挙動指摘のみ）は対応不要。
