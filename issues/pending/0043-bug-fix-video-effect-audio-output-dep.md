@@ -7,6 +7,15 @@
 - Branch: feature/fix-video-effect-audio-output-dep
 - Polished: 2026-06-15
 
+## pending 理由 (2026-06-15)
+
+本 issue の本体実装 (`Video.tsx` の `useEffect` 分割、cleanup の `originalEnabled` 復元廃止、`setSinkId` の async / try-catch 化と `setAPIErrorAlertMessage` 通知) は技術的に問題なく実装できる一方、issue の検証手順 / 完了条件で必須とされている Playwright e2e シナリオが、現状のコードベースの設計と噛み合わず原理的に実行不能と判明した。具体的には次の 2 点。
+
+1. 「無効な `audioOutput` 値を URL パラメータで指定して `setSinkId failed:` の AlertMessages 出現を待ち受ける」シナリオが成立しない。`src/app/actions.ts` の `applyMediaAndDeviceParameters` が `enumerateDevices()` の結果に存在する `deviceId` のみを `signals.setAudioOutput` に書き込むため、`non-existent-device-id` のような URL パラメータは弾かれて `audioOutput.value` は空文字列のまま。本 issue で分割する setSinkId effect は `if (!audioOutput) return;` で即抜けし、`setSinkId failed:` が永久に発火しない。`actions.ts` の find ガードを緩める / バイパスするのは本 issue のスコープ外で別途設計判断が必要。
+2. AlertMessages 用 `Toast` には `autohide delay={5000}` が付与されているため、Alert は 5 秒で自動消滅する。Playwright で `toBeVisible({ timeout: 5000 })` 検出する戦略では、`#local-video-connection-id` 待機 (5 秒) + Alert 検出 (5 秒) のタイミング都合で Toast が検出ポーリング中に消える flaky テストになる。e2e の捕捉戦略を `logMessages` (永続) 経由に切り替える等の設計変更が必要。
+
+本体実装のみを別 issue として切り出すか、上記 2 点を踏まえて検証手順 / e2e 戦略を再設計するかの判断が必要なため、本 issue を `issues/pending/` に退避する。
+
 ## 目的
 
 `src/components/Video/Video.tsx` の stream 設定 effect が `audioOutput` を依存配列に含むため、出力デバイス変更だけで `srcObject` が再代入され Chrome 黒画面回避用の `track.enabled = false → true` ワークアラウンドが毎回再走する。さらに cleanup が effect 進入時の `originalEnabled` を強制復元するため、特定の操作順序で「映像 ON にしたつもりが track.enabled が false に戻る」経路がある。effect を機能ごとに分割し、`originalEnabled` 復元自体をやめて根本的に絶つ。あわせて、現状 `void` で投げ捨てている `setSinkId` の Promise を `.catch` で受け、失敗時にユーザーへ AlertMessages で通知する（effect 分割と密接で別 issue に切り出すと旧コードが新 effect 内に残り不自然になるため、本 issue で同時に実施）。
