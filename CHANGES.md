@@ -226,6 +226,10 @@
   - `sora-js-sdk` にリスナー解除 API が無いため、ハンドラ側で `signals.sora.value === soraConnection` を判定する
   - `disconnect` / `notify` / `track` / `removetrack` の状態破壊リスクのあるハンドラを必須でガードし、`log` / `push` / `signaling` / `timeline` / `message` / `datachannel` / `switched` / `connected` も整合性のため同パターンを適用する
   - @voluntas
+- [FIX] `reconnectSora` の二重起動を防止する
+  - `<Reconnect />` の `useEffect` 起動を撤廃し、abend ハンドラから直接 `reconnectSora` を呼び出すように集約する
+  - `reconnectSora` 自体にもモジュールローカルな in-flight `Promise` によるガードを追加する
+  - @voluntas
 
 ### misc
 

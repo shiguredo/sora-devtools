@@ -1,18 +1,16 @@
-import { useEffect } from "preact/hooks";
-
-import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from "@/app/actions";
+import { deleteAlertMessage, setSoraReconnecting } from "@/app/actions";
 import { alertMessages, reconnecting, reconnectingTrials } from "@/app/signals";
 import { Toast, ToastBody, ToastHeader } from "@/components/ui";
 import type { AlertMessage } from "@/types";
 import { formatUnixtime } from "@/utils";
 
+// reconnectSora の起動責務は本コンポーネントから外し、abend ハンドラ側に集約する。
+// 本コンポーネントは Toast 表示専用とし、Toast の手動クローズ後に再 mount しても
+// reconnectSora が二重起動しない。
 function Reconnect() {
   const onClose = (): void => {
     setSoraReconnecting(false);
   };
-  useEffect(() => {
-    void reconnectSora();
-  }, []);
   return (
     <Toast delay={5000} onClose={onClose}>
       <ToastHeader className="bg-bs-yellow text-bs-dark" onClose={onClose}>
