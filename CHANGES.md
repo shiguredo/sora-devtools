@@ -222,6 +222,10 @@
   - キャンセル経路（Reconnect Toast を閉じる）でも同じガードに入りリークしない
   - 失敗 / キャンセル時に停止した track はタイムラインに記録してデバッグ時に追えるようにする
   - @voluntas
+- [FIX] `setSoraCallbacks` の各リスナーに自己同一性チェックを追加し、古い接続からの遅延発火が新セッションを破壊する問題を修正する
+  - `sora-js-sdk` にリスナー解除 API が無いため、ハンドラ側で `signals.sora.value === soraConnection` を判定する
+  - `disconnect` / `notify` / `track` / `removetrack` の状態破壊リスクのあるハンドラを必須でガードし、`log` / `push` / `signaling` / `timeline` / `message` / `datachannel` / `switched` / `connected` も整合性のため同パターンを適用する
+  - @voluntas
 
 ### misc
 

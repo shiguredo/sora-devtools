@@ -1085,13 +1085,25 @@ export const cleanupSoraMediaState = async (): Promise<void> => {
 
 // Sora connection オブジェクトに callback をセットする
 function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscriber): void {
+  // sora-js-sdk にはリスナー解除 API (off / removeAllListeners) が無く、reconnectSora で
+  // 旧接続が破棄されても本関数で登録したリスナーは残り続ける。各ハンドラ先頭で
+  // 「自分が現在の signals.sora.value か」を判定し、新セッションの state を破壊しうる
+  // 処理を旧接続のリスナーからは skip する。
+  const isCurrent = (): boolean => signals.sora.value === soraConnection;
   soraConnection.on("log", (title: string, description: Json) => {
+    if (!isCurrent()) {
+      return;
+    }
     signals.setLogMessages({
       title,
       description: JSON.stringify(description),
     });
   });
   soraConnection.on("notify", (message: SoraNotifyMessage, transportType: TransportType) => {
+    // 旧接続からの notify が新セッションの remoteClients を破壊するのを防ぐ
+    if (!isCurrent()) {
+      return;
+    }
     handleSpotlightEvent(message);
     handleConnectionCreatedNotify(message);
     // 他参加者が退出したらリモートクライアントを削除する
@@ -1105,6 +1117,9 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     });
   });
   soraConnection.on("push", (message: SoraPushMessage, transportType: TransportType) => {
+    if (!isCurrent()) {
+      return;
+    }
     signals.setPushMessages({
       timestamp: Date.now(),
       message,
@@ -1112,6 +1127,11 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     });
   });
   soraConnection.on("track", (event: RTCTrackEvent) => {
+    // 旧接続からの track が新セッションの remoteClients に混入するのを防ぐため
+    // timeline 記録も含めて完全に skip する
+    if (!isCurrent()) {
+      return;
+    }
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-track"));
     const remoteClientsValue = signals.remoteClients.value;
     const mediaStream = remoteClientsValue.find(
@@ -1138,7 +1158,12 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     }
   });
   soraConnection.on("removetrack", (event: MediaStreamTrackEvent) => {
+    // SDK イベント発火そのものは古い接続でも timeline に残す（append-only で state 破壊なし）
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-removetrack"));
+    // remoteClients 書き換えは新セッションのみ
+    if (!isCurrent()) {
+      return;
+    }
     const remoteClientsValue = signals.remoteClients.value;
     // sora-js-sdk の "track" イベントは常に RTCTrackEvent を渡すため event は non-null
     const remoteClient = remoteClientsValue.find((client) => {
@@ -1165,7 +1190,12 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     if (event.params !== undefined) {
       message.params = event.params;
     }
+    // 記録 1: SDK イベントの発火そのものを記録する。古い接続でも timeline に残す
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message));
+    // 以降の state 操作は新セッションのみ
+    if (!isCurrent()) {
+      return;
+    }
     const reconnectValue = signals.reconnect.value;
     // statsReport タイマーを即時停止する。setSora(null) による次回 tick 自滅を待たない
     stopStatsReportTimer();
@@ -1176,13 +1206,13 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     signals.setSoraTurnUrl(null);
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraInfoAlertMessage("disconnected Sora");
+    // 記録 2: アプリ側の状態遷移として記録する。古い接続では skip 済みのためここには来ない
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected"));
     if (event.type === "abend" && reconnectValue) {
       // 再接続処理開始フラグ
       signals.setSoraReconnecting(true);
     }
     // SDK は本コールバックの戻り値 Promise を待たないため、cleanup は実質 fire-and-forget となる
-    // SDK 主導切断 (abend / サーバ主導切断 / ネットワーク断) 経路では古い stop ログ混入を完全には解消できない（混入抑制は 0047 / 0048 で補完予定）
     // cleanup が reject した場合は unhandled rejection を起こさないよう try / catch でログ化する
     try {
       await cleanupSoraMediaState();
@@ -1194,6 +1224,9 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     }
   });
   soraConnection.on("timeline", (event) => {
+    if (!isCurrent()) {
+      return;
+    }
     const message: TimelineMessage = {
       timestamp: Date.now(),
       type: event.type,
@@ -1210,6 +1243,9 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     }
   });
   soraConnection.on("signaling", (event) => {
+    if (!isCurrent()) {
+      return;
+    }
     const message: SignalingMessage = {
       timestamp: Date.now(),
       transportType: event.transportType,
@@ -1219,6 +1255,9 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     signals.setSignalingMessage(message);
   });
   soraConnection.on("message", (event) => {
+    if (!isCurrent()) {
+      return;
+    }
     signals.setDataChannelMessage({
       timestamp: Date.now(),
       label: event.label,
@@ -1226,12 +1265,21 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     });
   });
   soraConnection.on("datachannel", (event) => {
+    if (!isCurrent()) {
+      return;
+    }
     signals.setSoraDataChannels(event.datachannel);
   });
   soraConnection.on("switched", (message) => {
+    if (!isCurrent()) {
+      return;
+    }
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-switched", message));
   });
   soraConnection.on("connected", (message) => {
+    if (!isCurrent()) {
+      return;
+    }
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-connected", message));
   });
 }

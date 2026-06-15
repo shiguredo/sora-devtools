@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-15
 - Model: Opus 4.7
 - Branch: feature/fix-disconnect-listener-self-check
 - Polished: 2026-06-15
@@ -189,3 +189,16 @@ disconnect ハンドラ内の `setSoraReconnecting(true)`（abend + reconnect �
 - disconnect ハンドラの `setSoraReconnecting(true)`（abend + reconnect 有効時）が古い接続からは発火しないこと（検証手順 5 で確認）。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e（`pnpm test:e2e`）が通ること。
+
+## 解決方法
+
+- `src/app/actions.ts` の `setSoraCallbacks` 関数冒頭に `const isCurrent = (): boolean => signals.sora.value === soraConnection;` ヘルパーを追加する。
+- 必須 4 ハンドラ（`disconnect` / `notify` / `track` / `removetrack`）にガードを入れる:
+  - `disconnect`: SDK イベント発火そのものの timeline 記録 1 の直後で `if (!isCurrent()) return;`（state 操作と記録 2 を skip）
+  - `notify`: ハンドラ先頭で skip（timeline 記録なし）
+  - `track`: ハンドラ先頭で skip（issue 0041 マージ後の thin wrapper 化を見据え、`remoteClients` 破壊リスクが大きいため timeline 含めて完全に skip）
+  - `removetrack`: SDK イベント発火の timeline 記録の直後で skip（`remoteClients` 書き換えを保護）
+- 推奨 8 ハンドラ（`log` / `push` / `signaling` / `timeline` / `message` / `datachannel` / `switched` / `connected`）にも整合性のため同じ `if (!isCurrent()) return;` ガードを追加する。
+- 旧 `disconnect` ハンドラ内の「混入抑制は 0047 / 0048 で補完予定」という issue 番号参照コメント（`shiguredo-issues` 規約違反）を削除する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾（`### misc` の直前）に `[FIX]` エントリを追記する。
+- `/review-diff-code` のレビューを 1 周回し、致命的 / 重要 / 改善 / 削除候補すべて 0 件で早期終了した。
