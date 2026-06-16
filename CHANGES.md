@@ -243,6 +243,10 @@
   - `parseQueryString` で `Array.isArray` に加えて `every((item) => typeof item === "string")` を要求する
   - 不正要素を含む場合は `undefined` に落とし、SDK 側 `new WebSocket(_)` の `SyntaxError` を回避する
   - @voluntas
+- [FIX] `loadUrlEntries` の OPFS 読み込みで要素の型検証が漏れていた問題を修正する
+  - `{ url: string; enabled: boolean }` の構造を `every` で検証し、不正な要素を含む場合は空配列を返す
+  - `JSON.parse` + 型検証を `parseUrlEntriesFromText` に切り出してユニットテスト可能にする
+  - @voluntas
 
 ### misc
 

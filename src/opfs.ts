@@ -14,6 +14,44 @@ export interface SignalingUrlCandidatesSettings {
   urlEntries: UrlEntry[];
 }
 
+// UrlEntry の構造 ({ url: string; enabled: boolean }) を実行時に検証する型ガード。
+// JSON.parse 経由で取得した任意形状の値に対し、url が string・enabled が boolean であることを確認する。
+export function isUrlEntry(value: unknown): value is UrlEntry {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "url" in value &&
+    typeof value.url === "string" &&
+    "enabled" in value &&
+    typeof value.enabled === "boolean"
+  );
+}
+
+// OPFS から読んだテキストを UrlEntry[] にパース・検証する純粋関数。
+// JSON.parse の戻り値は実行時には任意の形状を取り得るため、SignalingUrlCandidatesSettings キャストは
+// 型上の偽装に過ぎない。urlEntries の各要素の url / enabled 構造を isUrlEntry で実行時に検証し、
+// 不正な要素を 1 つでも含む場合は全体を空配列に落とす。
+// 部分救済しない理由は、ユーザーが「自分の登録した URL が消えた」状態を SignalingUrlModal の
+// 未登録状態として明確に観測できるようにするため。
+export function parseUrlEntriesFromText(text: string): UrlEntry[] {
+  let settings: unknown;
+  try {
+    settings = JSON.parse(text);
+  } catch {
+    return [];
+  }
+  if (
+    typeof settings === "object" &&
+    settings !== null &&
+    "urlEntries" in settings &&
+    Array.isArray(settings.urlEntries) &&
+    settings.urlEntries.every(isUrlEntry)
+  ) {
+    return settings.urlEntries;
+  }
+  return [];
+}
+
 // OPFS から URL エントリを読み込む
 export async function loadUrlEntries(): Promise<UrlEntry[]> {
   try {
@@ -27,15 +65,10 @@ export async function loadUrlEntries(): Promise<UrlEntry[]> {
     const fileHandle = await root.getFileHandle(SETTINGS_FILE_NAME, { create: false });
     const file = await fileHandle.getFile();
     const text = await file.text();
-    const settings = JSON.parse(text) as SignalingUrlCandidatesSettings;
-
-    if (Array.isArray(settings.urlEntries)) {
-      return settings.urlEntries;
-    }
-
-    return [];
+    return parseUrlEntriesFromText(text);
   } catch {
-    // ファイルが存在しない場合やパースエラーの場合は空配列を返す
+    // OPFS API 呼び出しでファイルが存在しない / ハンドル取得失敗等の例外を握りつぶす
+    // (パースエラーは parseUrlEntriesFromText 内で吸収済み)
     return [];
   }
 }
