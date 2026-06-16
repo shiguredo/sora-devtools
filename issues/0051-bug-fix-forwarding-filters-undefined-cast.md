@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-forwarding-filters-undefined-cast
-- Polished: 2026-06-15
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -14,7 +14,9 @@
 - `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` (`applyVideoCodecOptions` 内): object（非 null・非 array）のみ受理する。
 - `signalingNotifyMetadata` (`applySignalingMetadataOptions` 内): 同上。
 
-`forwardingFilters` は `applySignalingMetadataOptions` 内で **既に `Array.isArray` ガード実装済み**（develop ブランチに先行マージ済み）。本 issue では参考パターンとして引用するのみで、再修正は行わない。タイトル / ブランチ名に `forwarding-filters` を残しているのは git 履歴を切らないためで、実作業は上記 5 箇所が対象。
+`forwardingFilters` は `applySignalingMetadataOptions` 内で **既に `Array.isArray` ガード実装済み**（develop ブランチに先行マージ済み）。本 issue では参考パターンとして引用するのみで、再修正は行わない。
+
+タイトル / ブランチ名は `forwarding-filters` を含むままにしているが、実作業の中心は `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` / `signalingNotifyMetadata` の 5 箇所であり、ファイル名と実作業が乖離している。マージ前にユーザー判断で `0051-bug-fix-parse-metadata-return-type-guard.md` 等にリネーム ( `git mv` で履歴は引き継がれるためリネーム自体は安全) するのが望ましい。リネームの是非と新名称はユーザーが決める。
 
 `parseMetadata` 自体は変更しない（`actions.ts` の `connectSora` 内 `metadata` 引数は SDK 型 `JSONType` で任意値を許容するため、関数を絞ると現行挙動を壊す）。
 
@@ -68,11 +70,23 @@ export type Json = null | boolean | number | string | Json[] | { [prop: string]:
 
 ### SDK の挙動
 
-`node_modules/sora-js-sdk/dist/sora.js`（minified bundle）の signaling メッセージ構築箇所は、`forwardingFilters` / `signalingNotifyMetadata` / `videoVP9Params` 等のプロパティを **`undefined` だけ** ガードして他の値（`null` / `false` / `42` / `"foo"` / `{}` / `[1,2,3]`）はそのまま signaling JSON に乗せる。よって:
+`node_modules/sora-js-sdk/dist/sora.js` (minified bundle) の signaling メッセージ構築箇所の挙動は、プロパティのカテゴリで以下の 2 種類に分かれる。
 
-- `parseMetadata` が `undefined` を返した場合: 現状の `connectionOptions.X = undefined` でも SDK 側ガードで signaling 送信時にプロパティが落ちる（実害は「ユーザー設定が silent に無視される」のみ）。
-- `parseMetadata` が `null` / `42` / `"foo"` 等を返した場合: SDK 側ガードを通過し signaling JSON に不正値が乗る。Sora サーバ側で `connect.failed` を返す。
-- `parseMetadata` が `[1,2,3]` を返した場合（forwardingFilters の参考パターンで対応済）: `Array.isArray` を通すと SDK 経由でサーバに送られる。
+**カテゴリ 1: `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` (codec params 系)**
+
+`undefined` に加えて `null` もガードされて signaling から削除される。よって `parseMetadata` が `null` を返した場合は signaling に乗らない (修正前後でサーバ受理は同じ)。 `false` / `42` / `"foo"` / `[]` 等の非配列・非 object 値はガードを通過し signaling JSON に乗ってサーバが reject する。
+
+**カテゴリ 2: `signalingNotifyMetadata` / `forwardingFilters` (任意 JSON 系)**
+
+`undefined` のみガードされて削除される。 `null` / `false` / `42` / `"foo"` / `[]` 等はすべて signaling JSON に乗ってサーバ reject する。
+
+`parseMetadata` 戻り値別の振る舞いまとめ:
+
+- `parseMetadata` が `undefined` を返した場合: 両カテゴリとも SDK 側ガードで signaling 送信時にプロパティが落ちる (実害は「ユーザー設定が silent に無視される」のみ)。
+- `parseMetadata` が `null` を返した場合: カテゴリ 1 は SDK 側で削除されて signaling に乗らない、カテゴリ 2 は signaling に乗ってサーバ reject。
+- `parseMetadata` が `42` / `"foo"` / `false` / `[]` 等を返した場合: 両カテゴリとも SDK 側ガードを通過し signaling JSON に乗ってサーバ reject。
+- `parseMetadata` が object (非 null / 非 array) を返した場合: 両カテゴリとも正常に SDK 経由でサーバに送られる。
+- `parseMetadata` が `[1,2,3]` を返した場合: カテゴリ 1 はサーバ reject、カテゴリ 2 のうち `forwardingFilters` の参考パターンは `Array.isArray` を通して SDK 経由でサーバに送られる、 `signalingNotifyMetadata` は本 issue の修正で未代入になる。
 
 ### 既存の参考ガードパターン
 
@@ -150,21 +164,29 @@ if (connectionOptionsState.enabledSignalingNotifyMetadata) {
 
 `actions.ts` の `connectSora` 内 `metadata = parseMetadata(...)` 経路は SDK 型 `JSONType`（`null | boolean | number | string | array | object`）を許容しており、Sora 仕様でも `metadata` フィールドは任意の JSON 値を受理する。`parseMetadata` を絞ると `metadata: "string-value"` や `metadata: 42` の現行ユースケースを壊す。既存 PBT（`src/utils.prop.ts` の `parseMetadata` 不変条件「任意文字列で常に undefined または有効値を返す（生文字列は返さない）」）も壊す。呼び出し側で個別に絞る方が責務分担として妥当。
 
-### エッジケース一覧（videoVP9Params を例示）
+### エッジケース一覧
 
-| 入力 string   | `parseMetadata` 戻り値 | 修正前 `videoVP9Params`                       | 修正後 `videoVP9Params` |
-| ------------- | ---------------------- | --------------------------------------------- | ----------------------- |
-| `""`          | `undefined`            | `undefined`（SDK 側 `void 0` で送信から除外） | 未代入                  |
-| `"{invalid}"` | `undefined`            | 同上                                          | 未代入                  |
-| `"null"`      | `null`                 | `null`（SDK 透過、サーバ reject）             | 未代入                  |
-| `"true"`      | `true`                 | `true`（同上）                                | 未代入                  |
-| `"42"`        | `42`                   | `42`（同上）                                  | 未代入                  |
-| `"\"foo\""`   | `"foo"`                | `"foo"`（同上）                               | 未代入                  |
-| `"[]"`        | `[]`                   | `[]`（同上、object 期待のためサーバ reject）  | 未代入                  |
-| `"{}"`        | `{}`                   | `{}`（SDK 透過、正常）                        | `{}`（正常）            |
-| `"{\"a\":1}"` | `{a:1}`                | `{a:1}`（正常）                               | `{a:1}`（正常）         |
+カテゴリ 1 ( `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` ) の挙動:
 
-`signalingNotifyMetadata` も同じ表で挙動が一致する（object のみ受理）。
+| 入力 string   | `parseMetadata` 戻り値 | 修正前 `videoVP9Params` の signaling 送信                     | 修正後 `videoVP9Params` の signaling 送信 |
+| ------------- | ---------------------- | ------------------------------------------------------------- | ----------------------------------------- |
+| `""`          | `undefined`            | 未送信 ( SDK 側 `void 0` ガード)                              | 未送信                                    |
+| `"{invalid}"` | `undefined`            | 同上                                                          | 同上                                      |
+| `"null"`      | `null`                 | 未送信 ( SDK 側 `null` ガード。 signaling に乗らずサーバ受理) | 未送信                                    |
+| `"true"`      | `true`                 | `true` ( SDK 透過、サーバ reject)                             | 未送信                                    |
+| `"42"`        | `42`                   | `42` ( 同上)                                                  | 未送信                                    |
+| `"\"foo\""`   | `"foo"`                | `"foo"` ( 同上)                                               | 未送信                                    |
+| `"[]"`        | `[]`                   | `[]` ( 同上、 object 期待のためサーバ reject)                 | 未送信                                    |
+| `"{}"`        | `{}`                   | `{}` ( SDK 透過、正常)                                        | `{}` ( 正常)                              |
+| `"{\"a\":1}"` | `{a:1}`                | `{a:1}` ( 正常)                                               | `{a:1}` ( 正常)                           |
+
+カテゴリ 2 ( `signalingNotifyMetadata` ) の挙動 (カテゴリ 1 との差異は `"null"` 行のみ):
+
+| 入力 string | `parseMetadata` 戻り値 | 修正前 `signalingNotifyMetadata` の signaling 送信  | 修正後 |
+| ----------- | ---------------------- | --------------------------------------------------- | ------ |
+| `"null"`    | `null`                 | `null` ( SDK は `void 0` のみガード、サーバ reject) | 未送信 |
+
+他の入力行 ( `""` / `"{invalid}"` / `"true"` / `"42"` / `"\"foo\""` / `"[]"` / `"{}"` / `"{\"a\":1}"` ) は同じ表に従う。
 
 ### 影響範囲と後方互換
 
@@ -176,9 +198,16 @@ if (connectionOptionsState.enabledSignalingNotifyMetadata) {
 
 ### `src/utils.test.ts` への単体テスト追加
 
-`createConnectOptions` を `src/utils.test.ts` の named import に追加する（現状は `getValueByAspectRatio`, `parseMetadata`, `parseQueryString` のみ）。テスト用に最低限の `ConnectionOptionsState` を組み立てるヘルパー（`createTestConnectionOptionsState`）を同ファイル先頭に定義する。
+`createConnectOptions` を `src/utils.test.ts` の named import に追加する (現状は `getValueByAspectRatio`, `parseMetadata`, `parseQueryString` のみ)。テスト用に最低限の `ConnectionOptionsState` を組み立てるヘルパー `createTestConnectionOptionsState` を同ファイル内に定義する。
 
-代表的なテスト 5 件:
+`createTestConnectionOptionsState` の仕様:
+
+- シグネチャ: `function createTestConnectionOptionsState(overrides: Partial<ConnectionOptionsState> = {}): ConnectionOptionsState`
+- デフォルト値の供給元: `src/app/signals.ts` の各 signal の初期値 (例えば `enabledVideoVP9Params` のデフォルトは false、`videoVP9Params` のデフォルトは空文字)。 `signals.ts` の初期値を直接 import するのではなく、テストファイル内で「すべての enabled\* フラグを false、 string 系フィールドを空文字、 boolean 系フィールドを `signals.ts` 既定値と同じ」で書き下す ( `signals.ts` 初期値の変更が本テストに直接影響しないようにする)。
+- `overrides` を受け取って `{ ...defaults, ...overrides }` の形でマージする。
+- 戻り値は `ConnectionOptionsState` 全 37 フィールドを満たす完全な object。
+
+代表的なテスト 8 件 (VP9 / AV1 / H264 / H265 各 1 件の smoke + signalingNotifyMetadata 2 件 + VP9 の正常系 1 件 + VP9 の `null` ケース 1 件):
 
 ```ts
 test("createConnectOptions: videoVP9Params が '42' + enable=true なら未代入", () => {
@@ -191,34 +220,47 @@ test("createConnectOptions: videoVP9Params が '42' + enable=true なら未代�
 });
 ```
 
-- 「`videoVP9Params` が `'{\"a\":1}'` + enable=true なら `{a:1}` を代入」
+- 「`videoVP9Params` が `'{\"a\":1}'` + enable=true なら `{a:1}` を代入」 (正常系)
 - 「`videoVP9Params` が `'null'` + enable=true なら未代入」
+- 「`videoAV1Params` が `'42'` + enable=true なら未代入」 (smoke、コピペミス検出)
+- 「`videoH264Params` が `'42'` + enable=true なら未代入」 (smoke)
+- 「`videoH265Params` が `'42'` + enable=true なら未代入」 (smoke)
 - 「`signalingNotifyMetadata` が `'null'` + enable=true なら未代入」
-- 「`signalingNotifyMetadata` が `'{\"user\":\"x\"}'` + enable=true なら object を代入」
+- 「`signalingNotifyMetadata` が `'{\"user\":\"x\"}'` + enable=true なら object を代入」 (正常系)
 
-各テストは `result` の他フィールドではなく対象フィールドのみを検証する。
+各テストは `result` の他フィールドではなく対象フィールドのみを検証する。 AV1 / H264 / H265 の smoke テストは「`applyVideoCodecOptions` 内で各 codec に対する分岐がコピペミスで他フィールドを上書きしていないか」を検出する目的で必要。
 
 ### `src/utils.prop.ts` への PBT 追加
 
-`createConnectOptions` を named import に追加し、不変条件を property test で網羅する。
+`createConnectOptions` を named import に追加し、不変条件を property test で網羅する。 PBT は `utils.prop.ts` 既存パターンに揃えて `test.prop([...])` API ( `@fast-check/vitest` 由来) で書く ( `fc.assert` + 裸の `test` 形式は使わない)。
+
+入力は `fc.oneof(fc.string(), fc.json())` で文字列と valid JSON 文字列を混在生成する ( `fc.json()` は既存 `parseMetadata` PBT (utils.prop.ts L385) で使われている前例と整合し、 valid JSON 文字列を直接生成するため別途 `JSON.stringify` の合成は不要)。 `fc.string()` 単独だと生成物の大半が JSON.parse 失敗 → undefined ブランチに落ち、 object を代入する側の不変条件を検証できないため `fc.oneof` で混在させる。
+
+`videoVP9Params` と `signalingNotifyMetadata` は同形の object 判定を行うため、 PBT は 1 件にまとめて key を `fc.constantFrom` で切り替える形にする。
 
 ```ts
-test("createConnectOptions の videoVP9Params は常に undefined または object（非 null・非 array）", () => {
-  fc.assert(
-    fc.property(fc.string(), (raw) => {
-      const state = createTestConnectionOptionsState({
-        enabledVideoVP9Params: true,
-        videoVP9Params: raw,
-      });
-      const result = createConnectOptions(state);
-      const v = result.videoVP9Params;
-      assert.isTrue(v === undefined || (typeof v === "object" && v !== null && !Array.isArray(v)));
-    }),
-  );
-});
+test.prop([
+  fc.constantFrom("videoVP9Params" as const, "signalingNotifyMetadata" as const),
+  fc.oneof(fc.string(), fc.json()),
+])(
+  "createConnectOptions の videoVP9Params / signalingNotifyMetadata は常に undefined または object (非 null・非 array)",
+  (key, raw) => {
+    // key 別に overrides を作り createTestConnectionOptionsState で完全な state を作る
+    const overrides =
+      key === "videoVP9Params"
+        ? { enabledVideoVP9Params: true, videoVP9Params: raw }
+        : { enabledSignalingNotifyMetadata: true, signalingNotifyMetadata: raw };
+    const state = createTestConnectionOptionsState(overrides);
+    const result = createConnectOptions(state);
+    // result[key] の TypeScript 型は ConnectionOptions のフィールド型で正確に絞れないため
+    // unknown 経由で受けて typeof / Array.isArray で判定する
+    const v: unknown = result[key];
+    assert.isTrue(v === undefined || (typeof v === "object" && v !== null && !Array.isArray(v)));
+  },
+);
 ```
 
-`signalingNotifyMetadata` についても同形の PBT を追加する（計 2 件）。`videoAV1Params` / `videoH264Params` / `videoH265Params` は `videoVP9Params` と同コードパスのため PBT 追加は省略する（単体テストでカバー）。
+`videoAV1Params` / `videoH264Params` / `videoH265Params` は `videoVP9Params` と同コードパスのため PBT 追加は省略する (単体 smoke テストでカバー)。
 
 ### worker 単体テストはなし
 
@@ -281,12 +323,12 @@ CLAUDE.md「後方互換性は考慮しないこと」方針により、`?videoV
 
 ### E. テスト
 
-14. `pnpm test` が pass すること（追加した単体テスト 5 件 + PBT 2 件含む）。
+14. `pnpm test` が pass すること（追加した単体テスト 8 件 + PBT 1 件含む）。
 15. 既存 Playwright e2e（`pnpm test:e2e`）が pass すること。
 
 ## 完了条件
 
 - 検証手順 A-E すべてが通過すること。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
-- 追加した単体テスト 5 件 + PBT 2 件が pass すること。
+- 追加した単体テスト 8 件 + PBT 1 件が pass すること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が通ること。

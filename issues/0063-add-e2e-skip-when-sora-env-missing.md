@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/add-e2e-skip-when-sora-env-missing
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -53,18 +53,24 @@ import { getSoraConnectionEnv, type SoraConnectionEnv } from "./env.ts";
 export function requireSoraConnectionEnv(): SoraConnectionEnv;
 ```
 
-設計上の注意:
+「未設定」の判定: 0037 が確立した `getSoraConnectionEnv()` の API ( `signalingUrl === undefined || signalingUrl === ""` のときに `undefined` を返す) をそのまま使う。本 issue で skip するのは「`getSoraConnectionEnv()` が `undefined` を返す = `E2E_TEST_SORA_SIGNALING_URL` が未設定」の場合のみ。 `channelIdPrefix` / `accessToken` の未設定は `getSoraConnectionEnv()` 側で空文字を既定値とするため skip 条件には含めない。
+
+### 呼び出し位置規約 (本 issue で確立)
+
+本 issue で `requireSoraConnectionEnv()` の呼び出し位置規約を以下のとおり確立する。後続 issue ( #0039 等) はこの規約を継承する。
 
 - 必ず `test()` コールバック内 (または `test.beforeEach` 内) の先頭で呼ぶ。モジュールのトップレベルや test ファイルのトップレベル ( `test()` 外) で呼ぶと、Playwright runner 外で `test.skip()` を呼ぶことになり実行時エラーになる
 - skip 判定は `test.skip(condition, reason)` を使う方式に統一する ( `test.describe.skip` は静的 skip にしか使えないため不採用)
 - TypeScript の制御フロー解析では `test.skip(condition)` の戻り値が `void` のため自動 narrow されない。早期 throw による narrow パターンを採用する。non-null assertion ( `!` ) や `as` キャストは使わない
+
+skip 理由 ( `reason` 引数) は CLAUDE.md / AGENTS.md 「テストのログメッセージは全て日本語にすること」に従い日本語で書く。 ただし環境変数名は ASCII 識別子のため英語のまま記載する ( 例: `"E2E_TEST_SORA_SIGNALING_URL が未設定です"` )。
 
 ```typescript
 // 早期 throw による narrow パターン (採用案)
 export function requireSoraConnectionEnv(): SoraConnectionEnv {
   const env = getSoraConnectionEnv();
   if (env === undefined) {
-    const reason = "E2E_TEST_SORA_SIGNALING_URL is not set";
+    const reason = "E2E_TEST_SORA_SIGNALING_URL が未設定です";
     // Playwright runner はこの行で abort するが TypeScript の型 narrow のため throw も書く
     test.skip(true, reason);
     throw new Error(`unreachable: test.skip should abort before this throw (reason: ${reason})`);
@@ -73,15 +79,17 @@ export function requireSoraConnectionEnv(): SoraConnectionEnv {
 }
 ```
 
+`throw new Error(...)` のエラーメッセージは英語のままにする ( CODEBASE.md「エラーメッセージは英語にすること」に従う)。 実行時には `test.skip` で必ず abort するため到達不能なエラーメッセージだが、 万一到達した場合の trace 用に技術的なメッセージを残す。
+
 ### テストファイルの差し替え
 
-3 テストファイルの import 文と env 取得行を以下のように置き換える。
+3 テストファイルの import 文と env 取得行を以下のように置き換える。 テスト名は 0037 で確立した「単一 ASCII 文字列」規約 ( `"sendrecv"` / `"sendonly"` / `"recvonly"` ) を維持し、 本 issue ではテスト名自体は変更しない。
 
 ```typescript
 // 置き換え前 (#0037 の状態)
 import { getSoraConnectionEnv } from "./helpers/env.ts";
 
-test("sendrecv: Sora に接続し connection ID が表示される", async ({ page }) => {
+test("sendrecv", async ({ page }) => {
   const env = getSoraConnectionEnv() ?? {
     signalingUrl: "",
     channelIdPrefix: "",
@@ -95,7 +103,7 @@ test("sendrecv: Sora に接続し connection ID が表示される", async ({ pa
 // 置き換え後 (本 issue 完了時の状態)
 import { requireSoraConnectionEnv } from "./helpers/env.ts";
 
-test("sendrecv: Sora に接続し connection ID が表示される", async ({ page }) => {
+test("sendrecv", async ({ page }) => {
   // 必須環境変数を取得する。未設定なら test.skip() でこのテストを skip する
   const env = requireSoraConnectionEnv();
   ...
@@ -104,7 +112,9 @@ test("sendrecv: Sora に接続し connection ID が表示される", async ({ pa
 
 ### lint 対応
 
-`tests/helpers/env.ts` 内で動的 `test.skip(condition, reason)` を呼ぶため、oxlint の `vitest/no-disabled-tests` ルールが発火する可能性がある (動的 skip でルールが発火するかは oxlint のバージョン依存)。実装時に `pnpm check` を実行して発火を確認し、発火する場合は `vite.config.ts` の lint override に以下のエントリを追加する。
+`tests/helpers/env.ts` 内で動的 `test.skip(condition, reason)` を呼ぶことになるが、現行 oxlint の `vitest/no-disabled-tests` ルールは静的 skip prefix ( `test.skip("title", () => {})` 形式) のみを検出し、 動的 skip ( `test.skip(true, "reason")` 形式) は検出しない。 また `vite.config.ts` の既存 lint override は `files: ["tests/**/*.test.ts"]` で `*.test.ts` のみを対象としており、 `tests/helpers/env.ts` のような非 `*.test.ts` ファイルは vitest プラグインのチェック対象外。
+
+よって本 issue では vite.config.ts の lint override 追加は **不要** と判断し、 実装に含めない。 実装時に `pnpm check` を実行し、 万一 `vitest/no-disabled-tests` が `tests/helpers/env.ts` で発火した場合のみ、 以下の override を追加する ( 追加した場合は CHANGES.md エントリにも記載する):
 
 ```typescript
 {
@@ -115,14 +125,14 @@ test("sendrecv: Sora に接続し connection ID が表示される", async ({ pa
 },
 ```
 
-ファイル先頭の `// oxlint-disable vitest/no-disabled-tests` ディレクティブ方式ではなく `vite.config.ts` の override を採用する理由は、`vite.config.ts` の overrides セクションには既にテストファイル群への型安全緩和等の override が集約されており、本変更も同じレイヤに揃えることで lint 設定全体の一貫性が保てるため。
+ファイル先頭の `// oxlint-disable vitest/no-disabled-tests` ディレクティブ方式は採用しない ( `vite.config.ts` の overrides セクションに集約することで lint 設定全体の一貫性が保てるため)。
 
 ## 影響範囲
 
 - 修正: `tests/helpers/env.ts` ( `requireSoraConnectionEnv()` の追加)
 - 修正: `tests/sendrecv.test.ts` / `tests/sendonly.test.ts` / `tests/recvonly.test.ts` (import と env 取得行の置き換え)
-- 修正: `vite.config.ts` (lint 発火時のみ override 追加)
-- `CHANGES.md` の `## develop` セクションに `[ADD] e2e テストで E2E_TEST_SORA_SIGNALING_URL 未設定時に Sora 依存テストを skip する仕組みを追加する` を追記
+- 修正: `vite.config.ts` ( `pnpm check` 実行時に lint 発火を確認した場合のみ override 追加。通常は不要)
+- `CHANGES.md` の `## develop` 配下の `### misc` サブセクション内に、 #0037 が追加する `[ADD] e2e テストに Page Object Model と環境変数読み込みヘルパーを導入する` の直後に `[ADD] e2e テストで E2E_TEST_SORA_SIGNALING_URL 未設定時に Sora 依存テストを skip する仕組みを追加する` を追記する ( #0037 が先行マージされる前提。 種別順 CHANGE → ADD → UPDATE → FIX を守り、 `### misc` 内の `[ADD]` 群末尾に挿入する。 `shiguredo-changelog` スキル参照)
 
 ## 完了条件
 
@@ -137,7 +147,7 @@ test("sendrecv: Sora に接続し connection ID が表示される", async ({ pa
 ### 動的検証
 
 - `.env.local` が存在しない、または `E2E_TEST_SORA_SIGNALING_URL` が未設定の状態で `pnpm test:e2e` を実行したとき、Sora 依存テスト 3 件が skip され `noise-suppression-lazy-load.test.ts` と `mp4-media-stream-lazy-load.test.ts` は通過すること
-- skip 理由として `E2E_TEST_SORA_SIGNALING_URL is not set` が CLI 出力と HTML レポート ( `pnpm exec playwright show-report` ) の双方に表示されること
+- skip 理由として `E2E_TEST_SORA_SIGNALING_URL が未設定です` が CLI 出力と HTML レポート ( `pnpm exec playwright show-report` ) の双方に表示されること
 - `.env.local` に `E2E_TEST_SORA_SIGNALING_URL` を設定した状態で `pnpm test:e2e` を実行したとき、Sora 依存テスト 3 件が通過すること
 
 ## エッジケース

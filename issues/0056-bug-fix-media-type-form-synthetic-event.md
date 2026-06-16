@@ -5,13 +5,24 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-media-type-form-synthetic-event
-- Polished: 2026-06-15
+- Polished: 2026-06-16
+
+## カテゴリ・命名の補足
+
+本 issue の実作業は「内部実装の置き換え + 型 narrowing 移行」で挙動不変のリファクタリングであり、 `shiguredo-git` 規約に照らすと bug-fix カテゴリと branch prefix `feature/fix-` の選択は実態と矛盾している。マージ前にユーザー判断で以下のリネーム作業を行うのが望ましい (リネームの是非はユーザーが決める)。リネームを採用する場合は次の 4 ステップを必ず実施する:
+
+1. `git mv issues/0056-bug-fix-media-type-form-synthetic-event.md issues/0056-refactor-media-type-form-synthetic-event.md` (履歴は引き継がれる)
+2. リネーム後の issue ファイル冒頭 H1 を `# 0056-refactor-media-type-form-synthetic-event` に書き換える
+3. リネーム後の issue ファイルの `Branch:` 行を `feature/refactor-media-type-form-synthetic-event` に書き換える
+4. 関連 issue (0053 / 0054 / その他) からの `[[0056-bug-fix-media-type-form-synthetic-event]]` 参照リンクを `[[0056-refactor-media-type-form-synthetic-event]]` に書き換える ( `grep -rln 'bug-fix-media-type-form-synthetic-event' issues/` で対象を特定する)
 
 ## 目的
 
-`MediaTypeForm` (`src/components/DevtoolsPane/MediaTypeForm.tsx`) は radio クリック時に `new Event("change")` を生成して `Object.defineProperty(syntheticEvent, "target", { value: { value: label } })` で「偽の `target.value`」を貼り、その合成イベントを `onChange` に渡すという DOM 仕様の意図から外れた経路で動かしている。`Event.target` の上書きは現状全モダンブラウザで動作するが、`new Event` + `Object.defineProperty` + `as HTMLInputElement` キャストの 3 段重ねで読みづらく、将来 `FormCheck` の API 変更や型強化が入ると即座に壊れる脆い設計。
+`MediaTypeForm` (`src/components/DevtoolsPane/MediaTypeForm.tsx`) は radio クリック時に `new Event("change")` を生成して `Object.defineProperty(syntheticEvent, "target", { value: { value: label } })` で「偽の `target.value`」を貼り、その合成イベントを `onChange` に渡すという DOM 仕様の意図から外れた経路で動かしている。 `Event.target` の上書きは現状全モダンブラウザで動作するが、「合成 Event の生成」と「偽の `target.value` を貼る」の 2 段重ねで読みづらく、将来 `FormCheck` の API 変更や型強化が入ると即座に壊れる脆い設計。
 
-合成 Event の生成は撤廃し、`FormRadio` の `onChange` シグネチャを `(value: (typeof MEDIA_TYPES)[number]) => void` に変えて `MEDIA_TYPES` のリテラル値を直接渡す形に統一する。型 narrowing で `checkFormValue` 経由のランタイム検証も不要になるため一緒に削除する。
+合成 Event の生成と偽の `target.value` 注入は撤廃し、`FormRadio` の `onChange` シグネチャを `(value: (typeof MEDIA_TYPES)[number]) => void` に変えて `MEDIA_TYPES` のリテラル値を直接渡す形に統一する。型 narrowing で `checkFormValue` 経由のランタイム検証も不要になるため一緒に削除する。
+
+なお、上記の 2 段とは別軸として「 `FormCheck` の `onChange` シグネチャが `(event: Event) => void` のため、 子の `onChange` 内で `target.checked` を判定するための `event.target as HTMLInputElement` キャスト 1 段」は本 issue でも残る。これは修正前から存在するキャストで、合成 Event 撤廃と直交した別の課題 ( `FormCheck` の API 拡張) で扱うべきため本 issue のスコープ外。
 
 ## 優先度根拠
 
@@ -26,7 +37,7 @@
 
 ### `FormCheck` の `<input>` に `value` 属性が無い（真の根本原因）
 
-`src/components/ui/FormCheck.tsx` の `<input type="radio">` / `<input type="checkbox">` は `value` props を受け取らず `<input>` にも `value` 属性を伝搬しない。HTML Living Standard §4.10.5.1.16 で `<input>` の `value` IDL 属性は未指定時 `"on"` を返すと規定されており、Chromium / Gecko / WebKit すべてでこの挙動。よって `event.target.value` を読むと常に `"on"` が返り、`MEDIA_TYPES` (`"getUserMedia" | "getDisplayMedia" | "fakeMedia" | "mp4Media"`) のいずれともマッチしない。
+`src/components/ui/FormCheck.tsx` の `<input type="radio">` / `<input type="checkbox">` は `value` props を受け取らず `<input>` にも `value` 属性を伝搬しない。 HTML Living Standard の「The input element」節配下では、 `value` IDL 属性の挙動は「Common input element APIs」節の `value` IDL アルゴリズムで mode 別に分岐する。 `type=checkbox` / `type=radio` は `default/on` モードに該当し、 Checkbox state / Radio Button state の各 type 別 state 節で `value` content attribute の missing value default が `"on"` と規定されている (節番号は HTML Living Standard の版で変動するため引用しない)。 結果として `value` content attribute が無いラジオ要素の `value` IDL は `"on"` を返し、 Chromium / Gecko / WebKit すべてでこの挙動。 よって `event.target.value` を読むと常に `"on"` が返り、 `MEDIA_TYPES` ( `"getUserMedia" | "getDisplayMedia" | "fakeMedia" | "mp4Media"` ) のいずれともマッチしない。
 
 ### `FormRadio` の合成 Event 偽装
 
@@ -61,7 +72,7 @@ function FormRadio(props: FormRadioProps) {
 }
 ```
 
-`new Event("change")` を生成 → `Object.defineProperty` で偽の `target.value` を貼る → 親の `onChange` に渡す。DOM Standard §2.7 で `Event.target` の `[[Configurable]]` は true のためどのブラウザでも上書きは成功する。
+`new Event("change")` を生成 → `Object.defineProperty` で偽の `target.value` を貼る → 親の `onChange` に渡す。 DOM Standard の `Event` interface には `[Unforgeable]` 拡張属性が付かないため、 WebIDL の Attributes 規定 ( `[Unforgeable]` 非適用の attribute は対応する accessor property の `[[Configurable]]` が true となる) により `target` accessor property の `[[Configurable]]` は true となり、 どのブラウザでも `Object.defineProperty` による上書きは成功する (節番号は WebIDL Living Standard の版で変動するため引用しない)。
 
 ### `MediaTypeForm` 親側の `onChange`
 
@@ -192,13 +203,11 @@ const onChange = (value: (typeof MEDIA_TYPES)[number]): void => {
 
 ## CHANGES.md エントリ
 
-本修正は現状クロスブラウザで動作している既存挙動の **リファクタリング** であり、ユーザーから見える挙動は変わらない。CLAUDE.md「機能に直接影響しない変更（ドキュメント追加、リファクタリング等）は `### misc` サブセクションに記載すること」に従い `[FIX]` ではなく `### misc` セクションに追記する。
-
-既存 `### misc` エントリは `[CHANGE]` / `[ADD]` / `[UPDATE]` の種別タグを付ける慣習に従う。本修正は内部実装の置き換えで挙動変更を伴わないが、`### misc` 内の前例（Preact / Tailwind / Vite+ 移行など内部実装の変更）に倣って `[CHANGE]` を付ける。
+本修正は現状クロスブラウザで動作している既存挙動の **リファクタリング** であり、ユーザーから見える挙動は変わらない。 `MediaTypeForm` というプロダクトコード本体の挙動 (内部実装) 変更であり、 `### misc` の前例 ( Preact / Tailwind / Vite+ 移行などツール・ビルド基盤の入れ替え) と性質が異なる。 `CHANGES.md` の `## develop` 直下に並ぶ `[CHANGE] connectSora の soraConnection.stream = null ハックを削除する` のような「プロダクトコード本体の内部実装変更」と同じ位置付けが妥当と判断し、 本 issue は `## develop` 直下の `[CHANGE]` 群末尾に追記する ( `### misc` には入れない)。
 
 ```
 - [CHANGE] `MediaTypeForm` の `FormRadio` から `new Event` + `Object.defineProperty` の合成イベント生成を撤廃する
-  - `onChange` シグネチャを `(value: (typeof MEDIA_TYPES)[number]) => void` に変更し、`checkFormValue` 経由のランタイム検証も型 narrowing で代替する
+  - `onChange` シグネチャを `(value: (typeof MEDIA_TYPES)[number]) => void` に変更し、 `checkFormValue` 経由のランタイム検証も型 narrowing で代替する
   - @voluntas
 ```
 
@@ -247,5 +256,5 @@ const onChange = (value: (typeof MEDIA_TYPES)[number]): void => {
 - 検証手順 A-D すべてが通過すること。
 - `MediaTypeForm.tsx` から `new Event` / `Object.defineProperty` / `checkFormValue` の呼び出しがすべて削除されていること（grep で確認）。
 - `FormRadioProps.label` および `onChange` が `(typeof MEDIA_TYPES)[number]` で型付けされていること。
-- `CHANGES.md` の `## develop` の `### misc` セクション末尾に上記エントリが追記され、担当者行が付いていること。
+- `CHANGES.md` の `## develop` 直下の `[CHANGE]` 群末尾に上記エントリが追記され、担当者行が付いていること ( `### misc` ではなく `## develop` 直下に配置する)。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が pass すること。

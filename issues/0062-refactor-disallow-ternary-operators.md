@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/refactor-disallow-ternary
-- Polished: 2026-06-11
+- Polished: 2026-06-16
 - Reporter: @voluntas
 
 ## 目的
@@ -67,11 +67,12 @@ Medium。
 | `useMemo(() => cond ? a : b, [deps])` / `arr.map((x) => cond ? a : b)` / `arr.filter((x) => cond ? a : b)` 等のアロー関数式 + 暗黙 return 内の三項                 | アロー関数を block 化し、`(...) => { let value; if (cond) value = a; else value = b; return value; }` の形に置換する。`useMemo` 自体は維持し、新規 `useMemo` 等の hooks は導入しない                                                                                      |
 | オブジェクトリテラルのキー値 `{ key: cond ? value : undefined }` (空文字判定 + 単一 enabled の同型パターン)                                                        | 後述の `enabledOrUndefined` で吸収する。吸収できない例外パターン (配列 `length > 0` 判定、モード判定 `=== "X"`、否定 enabled、boolean 値、特定文字列との比較) は `return` の前で `let key: T \| undefined; if (cond) key = value;` 形に展開する                           |
 | オブジェクトリテラルのキー値 `{ key: cond ? true : undefined }` / `{ key: cond ? false : undefined }` (boolean トグル)                                             | `return` の前で `let key: boolean \| undefined; if (cond) key = true;` (または `if (cond) key = false;`) 形に展開する。型は `boolean \| undefined` でよい                                                                                                                 |
-| オブジェクトリテラルのキー値 `{ key: cond ? value : "" }` (空文字フォールバック型、`pickConnectionOptionsState:1231` の `dataChannels` 等)                         | フィールド型が `string` (空文字を取りうる) のため `undefined` 吸収不可。`return` の前で `let dataChannels = ""; if (cond) dataChannels = value;` 形で展開し、`return { ..., dataChannels, ... }` で含める                                                                 |
+| オブジェクトリテラルのキー値 `{ key: cond ? value : "" }` (空文字フォールバック型、`pickConnectionOptionsState:1304` の `dataChannels` 等)                         | フィールド型が `string` (空文字を取りうる) のため `undefined` 吸収不可。`return` の前で `let dataChannels = ""; if (cond) dataChannels = value;` 形で展開し、`return { ..., dataChannels, ... }` で含める                                                                 |
 | 関数呼び出しの引数値 `cond ? expr(x) : undefined` (条件式の対象と返値式の対象が同じで返値側に加工が入る)                                                           | 式の前で `let value: T \| undefined; if (cond) value = expr(x);` 形に展開する                                                                                                                                                                                             |
 | `cond ? value : ""` または `cond ? "" : value` (空文字フォールバックの両方向)                                                                                      | `if/else` で組み立てる。`undefined` フォールバックとは挙動が異なるため、置き換え時に既存挙動を変えないこと                                                                                                                                                                |
 | `x !== null ? x : y` / `x !== undefined ? x : y`                                                                                                                   | `x ?? y`                                                                                                                                                                                                                                                                  |
 | ネスト三項 (`cond1 ? a : cond2 ? b : c`)                                                                                                                           | 早期 return か `switch` で分割する。置き換え時にネスト形を新たに作らない                                                                                                                                                                                                  |
+| `bool ? "true" : "false"` (両方が `String(bool)` と等価な文字列リテラル)                                                                                           | `String(bool)` に置換する。 `*.prop.ts` の URL クエリ値生成や、 boolean を URL 文字列化する箇所で発生する ( 例: `utils.prop.ts:224-225` の `audio ? "true" : "false"` )。 `let` 展開で冗長に書き換えない                                                                  |
 
 複数パターンが同時に該当する場合は、JSX 子要素 → JSX 属性値 → 高階関数コールバック内のアロー暗黙 return → オブジェクトリテラル → JSX 外 `const` 代入 → 関数本体・式 の順で適用判定する (`const bracketOpen = isArray(data) ? "[" : "{";` のような型ガード + const 代入は「JSX 外 const 代入」行の方針に従い、「型ガードの値 / 代替値」行は関数本体・式系に限定する)。JSX 系のパターンは `enabledOrUndefined` の対象外 (値返却専用ヘルパーのため)。
 
@@ -132,7 +133,7 @@ Medium。
 
    `!== ""` 判定はヘルパー側に任せ、それ以外の AND 条件は呼び出し側で合成する
 
-4. `enabledOrUndefined` の適用対象は `actions.ts` の `buildBitrateCodecUrlParameters` (361-388) / `buildVideoCodecParamsUrlParameters` (391-420) / `buildConnectionUrlParameters` (454-494) 内の上記同型パターン。同関数内の例外 (配列長判定 `signalingUrlCandidates`、`null` 取りうる `apiUrl`、否定 enabled、boolean トグル) は対象外として個別 `let` 展開する
+4. `enabledOrUndefined` の適用対象は `actions.ts` の `buildBitrateCodecUrlParameters` (361-388) / `buildVideoCodecParamsUrlParameters` (391-420) / `buildConnectionUrlParameters` (454-494) 内の上記同型パターン。同関数内の例外 (配列長判定 `signalingUrlCandidates`、`null` 取りうる `apiUrl`、否定 enabled、boolean トグル) は対象外として個別 `let` 展開する。 `buildDeviceUrlParameters` (497-514) は `audioInput` / `videoInput` の mode 判定 + 空文字フォールバック、 `fakeVolume` の mode 判定、 `fakeVideoShowChannelId` の `mediaType === "fakeMedia" && !signals.fakeVideoShowChannelId.value ? false : undefined` のような mode 判定 + 否定 boolean トグルが主で、 `enabledOrUndefined` の適用対象ではない (mode 判定は文字列等値比較で空文字フォールバックと結合しないため、 シグネチャに合わない)。 `buildDeviceUrlParameters` 内の三項はすべて `let` 展開対象として個別に処置する
 5. `DevtoolsPane/*Form.tsx` 系の `enabled<X>.value ? <JSX> : null` は JSX 条件レンダリングで `enabledOrUndefined` の対象外。置き換えパターン表の `cond ? <X /> : null` 行に従う
 
 ### `copyURL` 内の三項 12 件の扱い
@@ -176,7 +177,7 @@ Medium。
 
 本 issue 作成時点の上位ファイル (件数の多い順、5 件以上):
 
-- `src/app/actions.ts`: 35 件 (`buildBitrateCodecUrlParameters` / `buildVideoCodecParamsUrlParameters` / `buildConnectionUrlParameters` / `buildDeviceUrlParameters` / `copyURL` に集中。`pickConnectionOptionsState:1231` は 1 件 (`dataChannels: ... ? value : ""` の空文字フォールバック))
+- `src/app/actions.ts`: 35 件 (`buildBitrateCodecUrlParameters` / `buildVideoCodecParamsUrlParameters` / `buildConnectionUrlParameters` / `buildDeviceUrlParameters` / `copyURL` に集中。`pickConnectionOptionsState:1304` は 1 件 (`dataChannels: ... ? value : ""` の空文字フォールバック))
 - `src/components/Video/LocalVideo.tsx`: 7 件
 - `src/utils.ts`: 6 件 (関数本体 1 行 return / `Array.isArray` 型ガード / 関数呼び出しフォールバック / 数値フォールバック / JSX 外 const 代入が混在)
 - `src/components/ui/FormCheck.tsx`: 6 件

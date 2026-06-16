@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-signaling-url-candidates-validation
-- Polished: 2026-06-15
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -66,23 +66,29 @@ signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
 - `{}` → `"[object Object]"` → 同上
 - `["wss://...", 1]` 混在: 複数候補分岐に入り 1 要素ずつ並列接続を試みるため、1 番目が成功すれば見えにくいが、2 番目で同種 `SyntaxError`
 
-`createSignalingURL`（`src/utils.ts`）は `enabledSignalingUrlCandidates && length > 0` 時（呼び出し側の `applySignalingUrlCandidates` でガード）に `=== ""` 空文字列のみ filter する。非 string 要素は filter されないため、本 issue が `parseQueryString` 段階で防がない限り SDK まで届く。
+`createSignalingURL`（`src/utils.ts` L263-277）は `enabledSignalingUrlCandidates` が true のときに `=== ""` 空文字列のみ filter する。非 string 要素は filter されないため、本 issue が `parseQueryString` 段階で防がない限り SDK まで届く。
+
+「`[]` 受理時の挙動」については次のとおり ( `applySignalingUrlCandidates` 自体は length チェックを持たないが、別箇所のガードで SDK には届かない):
+
+- `applySignalingUrlCandidates` (`src/app/actions.ts` L263-275) は `qsParams.signalingUrlCandidates !== undefined` のチェックのみで `[]` を `signals.setSignalingUrlCandidates([])` に流す。
+- `activateEnabledFlags` (`src/app/actions.ts` L303-305) で `if (signals.signalingUrlCandidates.value.length > 0)` の判定によって `enabledSignalingUrlCandidates` を true 化するか決まる。 `[]` のときは false のまま。
+- 結果として `createSignalingURL(false, [])` 呼び出しになり、 dev では `VITE_SORA_SIGNALING_URL`、本番では `${location.protocol}//${location.hostname}:${port}/signaling` にフォールバックする。 SDK には空配列ではなくフォールバック URL が渡る。
 
 ### エッジケース一覧
 
-| 入力 URL string                                     | `JSON.parse` 結果              | 修正前 `signalingUrlCandidates`                                                            | 修正後 `signalingUrlCandidates`                                   | 備考                                                           |
-| --------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------- |
-| `?signalingUrlCandidates=` (空)                     | `undefined` (parse 試行されず) | `undefined`                                                                                | `undefined`                                                       | 変化なし                                                       |
-| `?signalingUrlCandidates={invalid}`                 | `JSON.parse` 例外              | `undefined`                                                                                | `undefined`                                                       | 変化なし                                                       |
-| `?signalingUrlCandidates={"a":1}`                   | `{a:1}`                        | `undefined` (`Array.isArray` false)                                                        | `undefined`                                                       | 変化なし                                                       |
-| `?signalingUrlCandidates=[]`                        | `[]`                           | `[]` (受理)                                                                                | `[]` (受理)                                                       | 空配列は `every` で true、呼び出し側 ガードで SDK には届かない |
-| `?signalingUrlCandidates=[1,2,3]`                   | `[1,2,3]`                      | `[1,2,3]` (受理、SDK で SyntaxError)                                                       | `undefined`                                                       | **本丸**                                                       |
-| `?signalingUrlCandidates=[null]`                    | `[null]`                       | `[null]` (同上)                                                                            | `undefined`                                                       | 本丸                                                           |
-| `?signalingUrlCandidates=[true]`                    | `[true]`                       | `[true]` (同上)                                                                            | `undefined`                                                       | 本丸                                                           |
-| `?signalingUrlCandidates=[{}]`                      | `[{}]`                         | `[{}]` (同上)                                                                              | `undefined`                                                       | 本丸                                                           |
-| `?signalingUrlCandidates=[""]`                      | `[""]`                         | `[""]` (受理、`createSignalingURL` で filter されて空配列、SDK で「array is empty」エラー) | `[""]` (同左、要素は string なので受理。空文字列の挙動は既存通り) | 変化なし                                                       |
-| `?signalingUrlCandidates=["wss://...","wss://..."]` | `["wss://...", "wss://..."]`   | 正常                                                                                       | 正常                                                              | 変化なし                                                       |
-| `?signalingUrlCandidates=["wss://...",1]`           | `["wss://...", 1]`             | 受理（混在、2 要素目で SDK SyntaxError）                                                   | `undefined`                                                       | 混在も全弾き                                                   |
+| 入力 URL string                                     | `JSON.parse` 結果              | 修正前 `signalingUrlCandidates`                                                            | 修正後 `signalingUrlCandidates`                                   | 備考                                                                                                                                                                                                |
+| --------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `?signalingUrlCandidates=` (空)                     | `undefined` (parse 試行されず) | `undefined`                                                                                | `undefined`                                                       | 変化なし                                                                                                                                                                                            |
+| `?signalingUrlCandidates={invalid}`                 | `JSON.parse` 例外              | `undefined`                                                                                | `undefined`                                                       | 変化なし                                                                                                                                                                                            |
+| `?signalingUrlCandidates={"a":1}`                   | `{a:1}`                        | `undefined` (`Array.isArray` false)                                                        | `undefined`                                                       | 変化なし                                                                                                                                                                                            |
+| `?signalingUrlCandidates=[]`                        | `[]`                           | `[]` (受理)                                                                                | `[]` (受理)                                                       | 空配列は `every` で true。`activateEnabledFlags` の length > 0 判定で `enabledSignalingUrlCandidates` が true 化されず、`createSignalingURL` がフォールバック URL を返すため SDK に空配列は届かない |
+| `?signalingUrlCandidates=[1,2,3]`                   | `[1,2,3]`                      | `[1,2,3]` (受理、SDK で SyntaxError)                                                       | `undefined`                                                       | **本丸**                                                                                                                                                                                            |
+| `?signalingUrlCandidates=[null]`                    | `[null]`                       | `[null]` (同上)                                                                            | `undefined`                                                       | 本丸                                                                                                                                                                                                |
+| `?signalingUrlCandidates=[true]`                    | `[true]`                       | `[true]` (同上)                                                                            | `undefined`                                                       | 本丸                                                                                                                                                                                                |
+| `?signalingUrlCandidates=[{}]`                      | `[{}]`                         | `[{}]` (同上)                                                                              | `undefined`                                                       | 本丸                                                                                                                                                                                                |
+| `?signalingUrlCandidates=[""]`                      | `[""]`                         | `[""]` (受理、`createSignalingURL` で filter されて空配列、SDK で「array is empty」エラー) | `[""]` (同左、要素は string なので受理。空文字列の挙動は既存通り) | 変化なし                                                                                                                                                                                            |
+| `?signalingUrlCandidates=["wss://...","wss://..."]` | `["wss://...", "wss://..."]`   | 正常                                                                                       | 正常                                                              | 変化なし                                                                                                                                                                                            |
+| `?signalingUrlCandidates=["wss://...",1]`           | `["wss://...", 1]`             | 受理（混在、2 要素目で SDK SyntaxError）                                                   | `undefined`                                                       | 混在も全弾き                                                                                                                                                                                        |
 
 ## 設計方針
 
@@ -100,19 +106,26 @@ signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
 
 **after**:
 
+`parseQueryString` 直前 (またはモジュールトップレベル) に型ガード関数を定義する。
+
 ```ts
-// 配列性 + 要素 string 性を両方検証する。
+// signalingUrlCandidates の配列性 + 要素 string 性を両方検証する型ガード関数。
 // 要素に number / null / boolean / object が混在すると SDK 内部の new WebSocket(_) が
 // USVString 変換後 URL パースに失敗して SyntaxError (DOMException) を投げるため、境界で undefined に落とす。
-// every は空配列で true を返すため `[]` は受理されるが、呼び出し側 ガード
-// (enabledSignalingUrlCandidates && length > 0) で SDK には届かない。
-// Array.isArray の標準型ガードは unknown[] までしか narrow しないため as string[] キャストは残す。
-signalingUrlCandidates:
-  Array.isArray(signalingUrlCandidates) &&
-  signalingUrlCandidates.every((item) => typeof item === "string")
-    ? (signalingUrlCandidates as string[])
-    : undefined,
+// every は空配列で true を返すため `[]` は受理されるが、`activateEnabledFlags` の length > 0 判定で
+// `enabledSignalingUrlCandidates` が true 化されず、`createSignalingURL` がフォールバック URL を返すため SDK に空配列は届かない。
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
 ```
+
+結果オブジェクトの代入は次のとおり ( `as` キャストは型ガード関数で narrow するため不要)。
+
+```ts
+signalingUrlCandidates: isStringArray(signalingUrlCandidates) ? signalingUrlCandidates : undefined,
+```
+
+`as string[]` キャストではなく型ガード関数を採用する理由は、「型で解決を優先、disable は型/リンターの誤検知に限定」とするプロジェクト方針に合わせるため。 0051 で `as` キャストを残置している判断とは別経路の方針だが、`Array.isArray + every` の組み合わせは型ガード関数として再利用しやすい形状のため本 issue では型ガード関数化を採用する。
 
 ### 他経路への防御を本 issue に入れない理由
 
@@ -174,36 +187,31 @@ test("signalingUrlCandidates が空配列 [] の場合は空配列として受�
 
 ### `src/utils.prop.ts` への PBT 追加
 
-`parseQueryString` は既に `src/utils.prop.ts` の named import に含まれている。次の不変条件を property test で網羅する。`fc.string()` を `oneof` に残しているのは、正常系（全要素 string）も混ぜて不変条件の境界を広く確認するため。
+`parseQueryString` は既に `src/utils.prop.ts` の named import に含まれている。 PBT は `utils.prop.ts` 既存パターンに揃えて `test.prop([...])` API ( `@fast-check/vitest` 由来) で書く ( `fc.assert` + 裸の `test` 形式は使わない)。
+
+異常系を含む arbitrary は既存の `signalingUrlCandidatesArb` (`fc.array(fc.webUrl())`、正常系のみ) と混同しないよう `signalingUrlCandidatesWithInvalidArb` のような明示的な命名で別建てに定義する。要素は `fc.oneof` で文字列・整数・null・boolean・JSON 値を混在生成する。 `fc.dictionary(fc.string(), fc.anything())` は `fc.anything()` が `BigInt` / `Function` / 循環参照を含み得て `JSON.stringify` が TypeError を投げるため使わず、 `fc.jsonValue()` を採用する。
 
 ```ts
-test("signalingUrlCandidates のパース結果は常に undefined または string[] になる", () => {
-  fc.assert(
-    fc.property(
-      fc.array(
-        fc.oneof(
-          fc.webUrl(),
-          fc.integer(),
-          fc.constant(null),
-          fc.boolean(),
-          fc.dictionary(fc.string(), fc.anything()),
-          fc.string(),
-        ),
-        { minLength: 1 },
-      ),
-      (arr) => {
-        const searchParams = new URLSearchParams();
-        searchParams.set("signalingUrlCandidates", JSON.stringify(arr));
-        const result = parseQueryString(searchParams);
-        const v = result.signalingUrlCandidates;
-        assert.isTrue(
-          v === undefined || (Array.isArray(v) && v.every((item) => typeof item === "string")),
-        );
-      },
-    ),
-  );
-});
+const signalingUrlCandidatesWithInvalidArb = fc.array(
+  fc.oneof(fc.webUrl(), fc.integer(), fc.constant(null), fc.boolean(), fc.jsonValue(), fc.string()),
+  { minLength: 1 },
+);
+
+test.prop([signalingUrlCandidatesWithInvalidArb])(
+  "signalingUrlCandidates のパース結果は常に undefined または string[] になる",
+  (arr) => {
+    const searchParams = new URLSearchParams();
+    searchParams.set("signalingUrlCandidates", JSON.stringify(arr));
+    const result = parseQueryString(searchParams);
+    const v = result.signalingUrlCandidates;
+    assert.isTrue(
+      v === undefined || (Array.isArray(v) && v.every((item) => typeof item === "string")),
+    );
+  },
+);
 ```
+
+本 PBT は「正常 / 異常 どちらの配列でも不変条件 (undefined または string[]) を満たす」ことのみ検証する。「異常系入力が undefined に落ちる」ことの確認は単体テスト 6 件 (本 issue の異常系 5 件) でカバーする。
 
 ## 影響範囲と後方互換
 

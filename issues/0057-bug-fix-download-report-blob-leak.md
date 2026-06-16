@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-download-report-blob-leak
-- Polished: 2026-06-15
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -15,7 +15,7 @@
 
 - 即時の致命ではないため High ではない。
 - `createDownloadReport` の戻り値は `timelineMessages` / `notifyMessages` / `statsReport` の JSON シリアライズ。長セッションで `timelineMessages` 数千 〜 数万件 (数 MB 〜 数十 MB)、`statsReport` は WebRTC stats フルダンプで毎秒更新の累計で数 MB に達する。1 回 click で生成される Blob は数 MB 〜 数十 MB 規模。
-- W3C File API §6 の Blob URL Store: `URL.createObjectURL(blob)` は Blob 本体への strong reference を持つエントリを生成し、`revokeObjectURL` を呼ぶまでエントリは削除されず Blob は GC されない。`<a>.href` を上書きしても Blob URL Store のエントリは独立に残る。
+- W3C File API の Blob URL Store 仕様: `URL.createObjectURL(blob)` は Blob 本体への strong reference を持つエントリを生成し、`revokeObjectURL` を呼ぶまでエントリは削除されず Blob は GC されない。`<a>.href` を上書きしても Blob URL Store のエントリは独立に残る (節番号は W3C File API 仕様の版で変動するため引用しない)。
 - ユーザーがレポート確認のために連続でボタンを押すデバッグセッション（5 〜 10 回 / 数十分単位）で容易に踏める。即時クラッシュではないため Low で確定する。
 - 修正は数行で完結し、影響範囲は `DownloadReportButton.tsx` 1 ファイル限定。
 
@@ -36,13 +36,17 @@ anchorRef.current.click();
 
 ### Blob URL のライフサイクル
 
-W3C File API §6.7 で `URL.createObjectURL(blob)` は内部の Blob URL Store エントリを作成し、Blob 本体への参照を保持すると規定。`URL.revokeObjectURL(url)` を呼ぶまでエントリは削除されず Blob 本体は GC されない。
+W3C File API では `URL.createObjectURL(blob)` は内部の Blob URL Store エントリを作成し、Blob 本体への参照を保持すると規定。 `URL.revokeObjectURL(url)` を呼ぶまでエントリは削除されず Blob 本体は GC されない。
 
-`anchorRef.current.href = newUrl` で href を上書きしても、これは HTMLAnchorElement の DOM 属性の置き換えに過ぎず、Blob URL Store のエントリは独立。古い URL は internal store に残り続け、対応する Blob 本体もメモリに留まる。
+`anchorRef.current.href = newUrl` で href を上書きしても、これは HTMLAnchorElement の DOM 属性の置き換えに過ぎず、 Blob URL Store のエントリは独立。古い URL は internal store に残り続け、対応する Blob 本体もメモリに留まる。
 
-### `revokeObjectURL` の安全性（次回 click タイミングでの解放）
+### `revokeObjectURL` の安全性 (次回 click タイミングでの解放)
 
-W3C File API §6.7 の `revokeObjectURL` のステップ: Blob URL Store のエントリを削除するが、**既に進行中の fetch（`anchor.click()` で発火した download fetch を含む）には影響しない**。よって「次回 click で新 URL を生成 → 直前 URL を `revokeObjectURL`」の順は、先発 click の download fetch を中断しない。
+W3C File API の `createObjectURL` / `revokeObjectURL` 節の Note は次のとおり規定する:
+
+> Requests that were started before the url was revoked should still succeed.
+
+つまり「`anchor.click()` で発火した download fetch が `revokeObjectURL` 呼び出し前に開始されていれば、 fetch は成功すべきである」と仕様で保証されている。よって「次回 click で新 URL を生成 → 直前 URL を `revokeObjectURL`」の順は、先発 click の download fetch を成功させた状態を維持する。
 
 ## 設計方針
 
@@ -52,7 +56,7 @@ W3C File API §6.7 の `revokeObjectURL` のステップ: Blob URL Store のエ�
 
 - `DownloadReportButton.tsx` は既に `anchorRef = useRef<HTMLAnchorElement>(null)` を持っており、同パターンの第 2 ref を追加するだけで設計の対称性が高い。
 - `setTimeout(0)` 案は、コンポーネントアンマウント時の `clearTimeout` 漏れリスク / 連続 click 時の競合（先発 setTimeout の前に後発 createObjectURL）/ 不必要な microtask 経由などの副次問題を抱える。
-- W3C File API §6.7 で「`revokeObjectURL` は進行中 fetch を中断しない」と規定されており、「click 直後の `revokeObjectURL` でダウンロードキャンセル」のリスクは仕様上存在しない。次回 click タイミングで前回 URL を revoke する設計で十分。
+- W3C File API の仕様 Note (前節「`revokeObjectURL` の安全性」で引用) で「revoke 前に開始した requests は成功すべき」と規定されており、 「click 直後の `revokeObjectURL` でダウンロードキャンセル」のリスクは仕様上存在しない。次回 click タイミングで前回 URL を revoke する設計で十分。
 
 修正後コード:
 
@@ -86,7 +90,7 @@ import { useEffect, useRef } from "preact/hooks";
 export function DownloadReportButton() {
   const anchorRef = useRef<HTMLAnchorElement>(null);
   // 直前に発行した Blob URL を保持する。次回 click 時に revokeObjectURL で解放する。
-  // W3C File API §6.7: createObjectURL は Blob URL Store にエントリを生成し Blob 本体への
+  // W3C File API: createObjectURL は Blob URL Store にエントリを生成し Blob 本体への
   // 参照を保持する。revokeObjectURL を呼ばないと Blob は GC されない。
   const previousBlobUrlRef = useRef<string | null>(null);
   const onClick = (): void => {
@@ -101,8 +105,9 @@ export function DownloadReportButton() {
       anchorRef.current.href = blobUrl;
       anchorRef.current.click();
       // 直前の URL を revoke する。
-      // W3C File API §6.7: revokeObjectURL は Blob URL Store のエントリを削除するが、
-      // anchor.click() で開始した download fetch には影響しない（fetch は独立に参照を持つ）。
+      // W3C File API: revokeObjectURL は Blob URL Store のエントリを削除するが、
+      // 仕様 Note 「Requests that were started before the url was revoked should still succeed」
+      // により、 anchor.click() で開始した download fetch は revoke 後も成功する。
       // 初回 click 時は previousBlobUrlRef.current が null のため no-op。
       if (previousBlobUrlRef.current !== null) {
         globalThis.URL.revokeObjectURL(previousBlobUrlRef.current);

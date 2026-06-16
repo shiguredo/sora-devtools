@@ -5,14 +5,19 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-request-media-button-disabled
-- Polished: 2026-06-15
+- Polished: 2026-06-16
 
 ## 目的
 
 `RequestMediaButton` (`src/components/DevtoolsPane/RequestMediaButton.tsx`) と `DisposeMediaButton` (`src/components/DevtoolsPane/DisposeMediaButton.tsx`) は **同一の `disabled` 条件をコピペ流用** していて、それぞれのボタンの責務（メディア取得 / 破棄）に合っていない。`localMediaStream` の有無を反映していないため:
 
 - `RequestMediaButton`: `localMediaStream !== null` でも押せて、`requestMedia` が再度 `getUserMedia` を呼び出して権限プロンプトが再表示される（または同種デバイス取得で UX 体感劣化）。
-- `DisposeMediaButton`: `localMediaStream === null` でも押せて、`disposeMedia` が空打ちで `closeFakeContentsAudio` / worker `postMessage({type:"stop"})` を実行する（無意味）。
+- `DisposeMediaButton`: `localMediaStream === null` でも押せて、`disposeMedia` が空打ちで以下の副作用を持つ:
+  - `virtualBackgroundProcessor` が `isProcessing()` を返すなら `getOriginalTrack` + `stopProcessing` が走り、 processor が不本意に停止する可能性がある (通常は `localMediaStream === null` なら processor も active でないが、外部経路で残存する可能性は捨てきれない)
+  - `stopLocalAudioTrack(null, noiseSuppressionProcessor)` が必ず呼ばれる。 noiseSuppressionProcessor が以前に active 化されてから明示停止されていない場合、この呼び出しで processor が不本意に停止する可能性がある
+  - `fakeContents.worker` が非 null なら `postMessage({type:"stop"})` で worker を停止する
+  - `closeFakeContentsAudio` で AudioContext を解放する (AudioContext が無ければ no-op)
+  - `setLocalMediaStream(null)` は既に null のため track stop は走らず冪等
 
 両ボタンの `disabled` に `localMediaStream` の状態を反映させて UI 状態の整合性を取る。
 
@@ -43,9 +48,9 @@ const disabled = role.value === "recvonly" || sora.value !== null || isFormDisab
 
 両ボタンが `localMediaStream` の有無を見ない。
 
-### `setLocalMediaStream` の冒頭 stop ロジック（track leak の不在）
+### `setLocalMediaStream` の冒頭 stop ロジック (track leak の不在)
 
-`src/app/signals.ts` の `setLocalMediaStream`:
+`src/app/signals.ts` の `setLocalMediaStream` (関数名で特定する。行番号は陳腐化するため省略する):
 
 ```ts
 export const setLocalMediaStream = (mediaStream: MediaStream | null): void => {
@@ -152,11 +157,13 @@ const disabled =
 
 ## テスト戦略
 
-本修正は純粋な JSX prop の式変更で、Preact コンポーネントの render 結果から disabled を読み取る単体テスト基盤は現状本リポジトリには無い。本 issue のためにテスト基盤を立ち上げるコストは修正範囲に対して過大。
+本修正は純粋な JSX prop の式変更で、 disabled の検証には `RequestMediaButton` / `DisposeMediaButton` の render 結果からボタンの `disabled` 属性を読み取るテストが必要だが、これを書くには次の制約がある:
 
-Playwright e2e (`tests/sendrecv.test.ts` 等) も現状 `RequestMediaButton` / `DisposeMediaButton` を踏むシナリオを持たない（既存 e2e は ConnectButton → 3 秒 → DisconnectButton の最小フロー）。
+- vitest の `environment: "jsdom"` で `MediaStream` / `MediaStreamTrack` / `AudioContext` が未提供のため、`localMediaStream` を実値で生成できない
+- CLAUDE.md「モックやスタブは絶対に利用しないこと」によりダミー `MediaStream` を作って `signals.localMediaStream.value` にセットできない
+- Playwright e2e (`tests/sendrecv.test.ts` 等) は現状 `RequestMediaButton` / `DisposeMediaButton` を踏むシナリオを持たない (既存 e2e は ConnectButton → 3 秒 → DisconnectButton の最小フロー)
 
-方針: 単体テスト追加なし、e2e 追加なし。手動検証（後述「検証手順」）で状態遷移マトリクスを網羅する。Preact コンポーネントの単体テスト基盤導入と DevtoolsPane の disabled マトリクス e2e は別 issue で扱う。
+closed/0033 で同じ「`MediaStream` 系を要するロジックは jsdom + モック禁止と両立しない」結論が確立されているため、本 issue でも単体テスト追加なし・e2e 追加なしの判断を維持する。手動検証 (後述「検証手順」) で状態遷移マトリクスを網羅する。 Preact コンポーネントの単体テスト基盤導入と DevtoolsPane の disabled マトリクス e2e は別 issue ( #0038 の系列) で扱う。
 
 ## CHANGES.md エントリ
 
@@ -173,6 +180,8 @@ Playwright e2e (`tests/sendrecv.test.ts` 等) も現状 `RequestMediaButton` / `
 
 下記は本 issue では扱わない:
 
+- **`disconnected` 状態で `localMediaStream !== null` のときデバイスを変更したいケース**: 本 issue の修正後は Request Media が disable になるため、 Dispose Media → Request Media の 2 ステップ操作が必要になる ( `UpdateMediaStreamButton` は `updateMediaStream` の `connectionStatus === "disconnected"` 早期 return により実質的に no-op になるため動線として使えない)。本 issue では「重複 `getUserMedia` 呼び出し抑止」を優先し、デバイス変更動線の 1 ステップ化は別 issue で扱う。
+- **`role` 動的切替後の `localMediaStream` 残留**: `RoleForm` で `sendrecv` → `recvonly` に切り替えた場合、本 issue の修正後も `role === "recvonly"` 短絡で両ボタンとも disable のまま `localMediaStream` が残る。残留した stream をクリアする UI 動線追加 (例: role 切替時の自動 dispose) は別 issue で扱う。本 issue の修正後挙動には影響しない。
 - [[0054-bug-fix-update-media-stream-button-disabled]]: `UpdateMediaStreamButton` の disabled 欠落と in-flight ガード。本 issue の `localMediaStream` 状態反映の方針と同じ系列。
 - [[0056-bug-fix-media-type-form-synthetic-event]]: `MediaTypeForm` の合成 Event 問題。disabled 整合性とは別系統の UI 不具合。
 - [[closed/0055-bug-fix-disconnect-button-preparing]]: closed（実装せず）。当初 `DisconnectButton` に `preparing` を追加する案だったが、`preparing` 中も Disconnect を許可する既存設計（closed/0007 で確立）を維持する判断で close された。本 issue の `isFormDisabled` 利用アプローチとは独立。
@@ -210,7 +219,7 @@ Playwright e2e (`tests/sendrecv.test.ts` 等) も現状 `RequestMediaButton` / `
 ### D. 接続中の確認
 
 8. `?role=sendrecv` で Request Media → Connect → 両ボタンが disable（`sora !== null` でカバー、既存挙動の維持）。
-9. Connect 中の `preparing` / `connecting` フェーズで両ボタンが disable（`isFormDisabled` で `preparing` / `connecting` がカバー）。
+9. `preparing` / `connecting` フェーズは時間窓が短く手動で押下確認は現実的でないため、 コードレビューで `isFormDisabled` が `preparing` / `connecting` / `connected` を含むこと ( `signals.ts` の `isFormDisabled` 定義) を確認するか、 ブラウザ DevTools の Elements パネルで Connect 押下直後の `RequestMediaButton` / `DisposeMediaButton` の `disabled` 属性が true になっていることを確認する ( `signals` モジュールはグローバル公開されていないため console から `signals.connectionStatus.value` を直接読み取ることはできない)。
 10. Disconnect 後、`localMediaStream` が null になることを `cleanupSoraMediaState` 経由で確認 → Request Media が enable、Dispose Media が disable。
 
 ### E. テスト

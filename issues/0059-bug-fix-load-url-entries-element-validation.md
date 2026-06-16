@@ -1,11 +1,11 @@
 # 0059-bug-fix-load-url-entries-element-validation
 
-- Priority: Low
+- Priority: Medium
 - Created: 2026-06-09
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-load-url-entries-element-validation
-- Polished: 2026-06-15
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -248,7 +248,7 @@ test("parseUrlEntriesFromText は正常な要素のみの JSON を渡された�
 
 ### PBT 追加
 
-`src/opfs.prop.ts`（新規）で property test を追加する:
+`src/opfs.prop.ts` (新規) で property test を追加する。 PBT は `utils.prop.ts` 既存パターンに揃えて `test.prop([...])` API ( `@fast-check/vitest` 由来) で書く ( `fc.assert` + 裸の `test` 形式は使わない)。
 
 ```ts
 import { fc, test } from "@fast-check/vitest";
@@ -256,27 +256,28 @@ import { assert } from "vite-plus/test";
 
 import { parseUrlEntriesFromText } from "./opfs.ts";
 
-test("parseUrlEntriesFromText は任意の文字列入力で例外を投げない", () => {
-  fc.assert(
-    fc.property(fc.string(), (text) => {
-      parseUrlEntriesFromText(text);
-    }),
-  );
+test.prop([fc.string()])("parseUrlEntriesFromText は任意の文字列入力で例外を投げない", (text) => {
+  parseUrlEntriesFromText(text);
 });
 
-test("parseUrlEntriesFromText の戻り値は常に UrlEntry[] になる", () => {
-  fc.assert(
-    fc.property(fc.string(), (text) => {
-      const result = parseUrlEntriesFromText(text);
-      assert.isTrue(
-        Array.isArray(result) &&
-          result.every(
-            (entry) => typeof entry.url === "string" && typeof entry.enabled === "boolean",
-          ),
-      );
-    }),
-  );
-});
+test.prop([fc.string()])(
+  "parseUrlEntriesFromText の戻り値は常に UrlEntry[] の形状を持つ",
+  (text) => {
+    // 戻り値型 UrlEntry[] を unknown 経由で受けて narrow を解除し、 実行時形状を再検査する。
+    // 戻り値型のまま `entry.url` / `entry.enabled` を `typeof` で検査すると型情報そのままのトートロジーになり、
+    // 「実装が `as UrlEntry[]` 等で型を偽装したまま実行時形状が崩れた場合」を捕捉できない。
+    const result: unknown = parseUrlEntriesFromText(text);
+    assert.isTrue(Array.isArray(result));
+    if (!Array.isArray(result)) {
+      return;
+    }
+    for (const entry of result) {
+      assert.isTrue(typeof entry === "object" && entry !== null);
+      assert.isTrue(typeof (entry as { url?: unknown }).url === "string");
+      assert.isTrue(typeof (entry as { enabled?: unknown }).enabled === "boolean");
+    }
+  },
+);
 ```
 
 ### e2e
@@ -285,7 +286,7 @@ test("parseUrlEntriesFromText の戻り値は常に UrlEntry[] になる", () =>
 
 ## CHANGES.md エントリ
 
-`CHANGES.md` の `## develop` 内 `[FIX]` セクション末尾（`### misc` セクションの直前）に以下を追記する。担当者行を忘れないこと。
+`CHANGES.md` の `## develop` 内 `[FIX]` セクション末尾 ( `### misc` セクションの直前) に以下を追記する。担当者行を忘れないこと。 0052 (URL クエリ経路の同種検証) とセットでマージする想定 (マージ順は不問) で、 両者は `[FIX]` 末尾の隣接位置に並ぶ。先にマージされた方が上、後の方が下になる ( `shiguredo-changelog` 規約「種別順 + 末尾追記」に従う)。
 
 ```
 - [FIX] `loadUrlEntries` の OPFS 読み込みで要素の型検証が漏れていた問題を修正する

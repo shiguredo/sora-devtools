@@ -5,7 +5,10 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-update-media-stream-button-disabled
-- Polished: 2026-06-15
+
+ブランチ名は `disabled` 修正のみを表しているが、実作業は `UpdateMediaStreamButton` の disabled 追加と `updateMediaStream` の in-flight ガード追加の両方を含む。マージ前にユーザー判断で `feature/fix-update-media-stream-button-and-in-flight-guard` 等にリネームするのが望ましい (`git mv` で履歴は引き継がれる)。リネームの是非と新名称はユーザーが決める。
+
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -61,35 +64,19 @@ grep で確認:
 
 UpdateMediaStreamButton 連打 + 入力デバイス切替の併発で 3 経路すべてが並列発火する可能性がある。
 
-### `updateMediaStream` 本体（抜粋）
+### `updateMediaStream` 本体の構造
 
-`src/app/actions.ts`:
+`src/app/actions.ts` の `updateMediaStream` 本体は以下のフェーズで構成される (関数名で特定する。 0045 マージ後の実コードを正として把握する)。
 
-```ts
-export const updateMediaStream = async (): Promise<void> => {
-  const state = getStateForMediaStream();
-  const localMediaStreamValue = signals.localMediaStream.value;
-  const soraValue = signals.sora.value;
-  const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
-  const noiseSuppressionProcessorValue = signals.noiseSuppressionProcessor.value;
-  if (!localMediaStreamValue) {
-    return;
-  }
-  // ... 旧 video track の stop（virtualBackground / 直接）
-  await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
-  const [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(...);
-  const replaceResults = await Promise.allSettled(
-    mediaStream.getTracks().map(async (track) => {
-      if (!soraValue?.pc) return;
-      const sender = soraValue.pc.getSenders().find((s) => s.track?.kind === track.kind);
-      if (sender) await sender.replaceTrack(track);
-    }),
-  );
-  // ...失敗時のアラート発火
-  signals.setLocalMediaStream(mediaStream);
-  signals.setFakeContentsAudio(audioContext, gainNode);
-};
-```
+1. signal 値の取得と早期 return: `localMediaStream.value` が null なら即 return
+2. 旧 video track の stop (virtualBackground 経路または else 経路で 1 個ずつ stop して timeline ログを吐く)
+3. `stopLocalAudioTrack` 呼び出し ( noiseSuppressionProcessor 込みで audio track を停止)
+4. `createMediaStream(state)` で新規 stream を作成 (失敗時は `setSoraErrorAlertMessage` + `setSoraConnectionStatus("disconnected")` + throw)
+5. `Promise.allSettled` で各 track の `replaceTrack` を並列実行 (失敗をまとめてアラート通知)
+6. 0045 で追加された中断検出ガード: `signals.sora.value !== soraValue || signals.localMediaStream.value === null || connectionStatus === "disconnecting" || connectionStatus === "disconnected"` のいずれかが真なら、新規 stream の全 track を stop してから return ( AudioContext が非 null なら `void audioContext.close()`、各 track の stop は timeline に記録)
+7. `signals.setLocalMediaStream(mediaStream)` + `signals.setFakeContentsAudio(audioContext, gainNode)` で signal を更新
+
+並列起動時の競合機序は次節で論じるが、本セクションは「実コードを抜粋しない」方針に従い概要のみ示す (実コードは 0045 のマージ結果に逐次追従するため、 issue 内で抜粋を再現すると陳腐化リスクが高い)。
 
 ### 並列起動時の競合機序
 
@@ -98,7 +85,7 @@ export const updateMediaStream = async (): Promise<void> => {
 1. **A の `stopLocalAudioTrack` → A の `createMediaStream` (gum 取得中、await)** の間に B が起動。
 2. B 冒頭で `localMediaStream.value` は **A 起動時点の旧 stream** を読み取り、`stopLocalAudioTrack` を呼ぶ（A も同じ stream の audio track を stop しているが、B 側で再呼び出しは no-op）。
 3. B の `createMediaStream` (gum 取得中、await) の間に A が `Promise.allSettled` の `replaceTrack` を実行。A の末尾 `signals.setLocalMediaStream(streamA)` が走る。
-4. `setLocalMediaStream` は **冒頭で旧 stream の全 track を stop** する:
+4. `src/app/signals.ts` の `setLocalMediaStream` は **冒頭で旧 stream の全 track を stop** する (関数名で特定する。行番号は陳腐化するため省略する):
    ```ts
    if (localMediaStream.value) {
      for (const track of localMediaStream.value.getTracks()) {
@@ -138,13 +125,23 @@ export const updateMediaStream = async (): Promise<void> => {
 
 **after**:
 
+`reconnectSora` (0048 で追加された wrapper、 `actions.ts` L1775-1786) と同形のパターンを採用する。 wrapper は `async` 修飾子を維持する ( `promise-function-async` lint 対応のため。 0048 のレビューで「`async` 修飾子は `promise-function-async` lint で必要なので維持」と判断された経緯と整合)。
+
 ```ts
-// updateMediaStream の in-flight Promise（同時起動防止）
+// updateMediaStream の本体実装。in-flight ガードはこの関数の外側 wrapper で行う
+const updateMediaStreamImpl = async (): Promise<void> => {
+  // 既存の updateMediaStream 本体をそのまま移植する
+  // 0045 で追加された中断検出ガード (signal.sora 比較等) もそのまま残す (マージ順は 0045 → 0054 を推奨)
+  const state = getStateForMediaStream();
+  const localMediaStreamValue = signals.localMediaStream.value;
+  // ... 以下既存ロジック (旧 video track stop / stopLocalAudioTrack / createMediaStream / replaceTrack / 中断検出ガード / setLocalMediaStream / setFakeContentsAudio)
+};
+
+// updateMediaStream の二重起動を防ぐためのモジュールローカルな in-flight Promise。
 // AudioInputForm / VideoInputForm の onChange と UpdateMediaStreamButton 押下が並列発火しても
 // 同じ Promise を共有して signal 上書きと AudioContext 重複生成を防ぐ
 let updateMediaStreamInFlight: Promise<void> | null = null;
-
-export const updateMediaStream = (): Promise<void> => {
+export const updateMediaStream = async (): Promise<void> => {
   if (updateMediaStreamInFlight) {
     return updateMediaStreamInFlight;
   }
@@ -157,20 +154,21 @@ export const updateMediaStream = (): Promise<void> => {
   })();
   return updateMediaStreamInFlight;
 };
-
-const updateMediaStreamImpl = async (): Promise<void> => {
-  // 既存の updateMediaStream 本体をここに移植する
-  // [[0045]] が末尾 2 行直前に追加するガードもここに残る（マージ順は 0045 → 0054）
-  const state = getStateForMediaStream();
-  const localMediaStreamValue = signals.localMediaStream.value;
-  // ... 以下既存ロジック
-};
 ```
 
 理由:
 
 - 後発呼び出しに in-flight Promise を返すのは、`AudioInputForm.onChange` / `VideoInputForm.onChange` が `void updateMediaStream()` で発火するため返値の差は実害なし。将来 `await updateMediaStream()` を別 caller が書いた場合の整合性を維持する。
-- wrapper を `export const` にすることで既存の呼び出し元（3 経路）は何も変更しなくて良い（インターフェース互換）。
+- wrapper を `export const` にすることで既存の呼び出し元 (3 経路) は何も変更しなくて良い (インターフェース互換)。
+- 0048 と同様に `async` 修飾子を維持する ( `promise-function-async` lint への対応として必須)。
+
+0045 → 0054 の rebase 手順 (0045 が先行マージされる前提):
+
+1. `updateMediaStream` 本体 (現状の actions.ts:1853-1936) を `updateMediaStreamImpl` という名前に変更する (`export` 修飾子を外し、関数名のみ変更。関数本体は触らない)
+2. 0045 で追加された「中断検出ガード」(L1909-1933 のコメントブロック含む) は `updateMediaStreamImpl` 内にそのまま保持する。コメント内の「`updateMediaStream`」という関数名は **書き換えない** ( wrapper としての呼び出し時の挙動は実 caller から見て不変なため、コメントが指す機能名は外部 API 名のままで正しい)
+3. `updateMediaStreamImpl` の直後にモジュールローカル変数 `let updateMediaStreamInFlight: Promise<void> | null = null;` を宣言する
+4. `export const updateMediaStream = async (): Promise<void> => { ... }` の wrapper を追加する (前述のコード例どおり)
+5. caller 側 ( `UpdateMediaStreamButton.tsx` / `AudioInputForm.tsx` / `VideoInputForm.tsx` ) の `void updateMediaStream()` 呼び出しはインターフェース互換のため変更なし
 
 ### `UpdateMediaStreamButton` の `disabled` 追加
 
@@ -256,12 +254,12 @@ export function UpdateMediaStreamButton() {
 
 関数側 in-flight ガードがあれば onChange 並列発火は in-flight Promise を共有して無害化される。ただし以下の挙動は許容する:
 
-- onChange ハンドラは `setAudioInput(target.value); void updateMediaStream();` の順で動く。先発 A の `updateMediaStream` が in-flight 中に B の onChange が走ると、`setAudioInput` で signal だけ書き換わって、`void updateMediaStream()` は in-flight Promise を共有して **A の中身を実行するだけ**（B の `audioInput` 反映なし）。`updateMediaStreamImpl` 冒頭の `getStateForMediaStream()` は **先発が走った瞬間** の signal を読み取るため、後発呼び出しが signal を書き換えても反映されない。
-- ユーザーが先発完了を待たずに連続デバイス選択した場合、最新 selection が反映されないケースがある。
+- onChange ハンドラは `setAudioInput(target.value); void updateMediaStream();` の順で動く。先発 A の `updateMediaStream` が in-flight 中に B の onChange が走ると、`setAudioInput` で signal だけ書き換わって、`void updateMediaStream()` は in-flight Promise を共有して **A の中身を実行するだけ** (B の `audioInput` 反映なし)。 `updateMediaStreamImpl` は wrapper が起動した時点で IIFE のマイクロタスク境界に乗り、 マイクロタスクキューが flush された時点で `getStateForMediaStream()` を実行して signal を読む。 ユーザー UI イベントは通常マイクロタスクより後の同期タスクとして実行されるため、先発 IIFE が `getStateForMediaStream()` を読み終える前に後発 onChange が割り込むケースはほぼ起きない。
+- 先発 IIFE が `createMediaStream` の `await` 中に停止している間に後発 onChange が来た場合、後発の `setAudioInput(targetB)` は signal だけ書き換え、後発の `void updateMediaStream()` は wrapper でゲートされて in-flight Promise を返すだけで `updateMediaStreamImpl` は再実行されない。先発は `targetA` の `mediaStream` を作り続けて完走し、 stream には `targetA` が反映される一方、 `audioInput` signal は `targetB` のまま残る。 **UI 表示 (select の選択値) と実 stream のデバイスが乖離する** ことになる。
 - 同じ value への onChange は React/Preact の標準セマンティクスで再発火しないため、「ユーザーが同じデバイスを再度選択する」では復旧しない。復旧手順は次のいずれか:
-  - 一度別のデバイスを経由してから戻す（onChange が 2 回発火する）。
-  - 先発完了を待って `UpdateMediaStreamButton` を手動押下する（本 issue で `disabled` が `connected` 中も enable のため可能）。
-- 「最新 selection を保留して再実行する」キューイング機構は別 issue で扱う。
+  - 一度別のデバイスを経由してから戻す (onChange が 2 回発火する)。
+  - 先発完了を待って `UpdateMediaStreamButton` を手動押下する (本 issue で `disabled` が `connected` 中も enable のため可能)。
+- 「最新 selection を保留して再実行する」キューイング機構と「 UI signal と実 stream の乖離を検出する仕組み」は別 issue で扱う。
 
 ## テスト戦略
 
@@ -301,46 +299,46 @@ export function UpdateMediaStreamButton() {
 
 ## 検証手順
 
-### A. 連打レースの修正前再現（fakeMedia 経路）
+### A. 連打レースの修正前再現 ( fakeMedia 経路)
 
-1. `pnpm dev` で起動し `?role=sendrecv&mediaType=fakeMedia` で Connect する。
-2. DevTools console で `signals.fakeContents.value.audioContext` の参照を控える。
-3. `UpdateMediaStreamButton` を素早く 3-4 回連打する。
-4. 修正前: DevTools console で `signals.fakeContents.value.audioContext` の参照が連打前と異なるオブジェクトに何度も置き換わり、旧 AudioContext が close されないまま参照消失していることを Performance プロファイルや `audioContext.state` の変化で確認する（リーク。`NotAllowedError: The number of hardware contexts ...` は 6 回未満では出ないため判定には使わない）。`?mediaType=getUserMedia` の場合は AudioContext は生成されないため判定はローカル映像が一瞬切れる現象（`setLocalMediaStream` の冒頭 stop で先発の新規 stream の track が後発によって誤 stop される）の目視確認のみ。
+1. `pnpm dev` で起動し `?role=sendrecv&mediaType=fakeMedia&debug=true&debugType=timeline` で Connect する。
+2. DebugPane の Timeline タブを開いた状態で `UpdateMediaStreamButton` を素早く 3-4 回連打する。
+3. 修正前: Timeline タブに `stop-audio-mediastream-track` / `stop-video-mediastream-track` 等の track stop ログが連打回数分繰り返し追加される。これは並列起動した先発・後発の `updateMediaStream` がそれぞれ track stop を吐くため。 DevTools の Memory タブで heap snapshot を取り、 `BaseAudioContext` でフィルタしてインスタンス数を数えると、 連打回数分の `AudioContext` が生成・残存していることが確認できる ( `NotAllowedError: The number of hardware contexts ...` は Chrome の制限である 6 個前後で発生するが、 修正前再現としては heap snapshot の `BaseAudioContext` インスタンス数で判定する方が再現性が高い)。 `?mediaType=getUserMedia` の場合は `AudioContext` は生成されないため、 Timeline タブの track stop ログの繰り返しを確認するか、 ローカル映像が一瞬切れる現象 ( `setLocalMediaStream` の冒頭 stop で先発の新規 stream の track が後発によって誤 stop される) を目視確認する。
 
 ### B. 連打レースの修正後確認
 
-5. 修正後: 同じ操作で `UpdateMediaStreamButton` を連打しても、後発呼び出しは in-flight Promise を共有して 1 回しか実行されない（DevTools console で `signals.fakeContents.value.audioContext` の参照が 1 回だけ置き換わることで確認）。
-6. fakeMedia 経路で AudioContext の重複生成が起きないこと（連打 6 ラウンドを繰り返しても `NotAllowedError` が出ない）を確認する。
-7. getUserMedia 経路でローカル映像が一瞬切れる現象が起きないことを目視確認する。
+4. 修正後: 同じ操作で `UpdateMediaStreamButton` を連打しても、 Timeline タブの track stop ログは 1 ラウンド分 (fakeMedia 経路で virtualBackground 無効の場合、 `stop-video-mediastream-track` 1 件 + `stop-audio-mediastream-track` 1 件 = 計 2 件) のみ追加される ( wrapper が in-flight Promise を共有して `updateMediaStreamImpl` は 1 回だけ走るため)。
+5. fakeMedia 経路で `AudioContext` の重複生成が起きないこと ( DevTools Memory タブの heap snapshot で `BaseAudioContext` インスタンス数が連打回数によらず 1 のままであること) を確認する。
+6. getUserMedia 経路でローカル映像が一瞬切れる現象が起きないことを目視確認する。
 
 ### C. AudioInputForm / VideoInputForm との並列
 
-8. Connect 中に `AudioInputForm` でデバイスを変更すると同時に `UpdateMediaStreamButton` を押下する。
-9. 修正後: 2 経路の `updateMediaStream` が in-flight Promise を共有して 1 回しか実行されない。「AudioInputForm / VideoInputForm との整合性」で許容した「最新 selection が反映されないケース」を確認する。復旧手順:
-   - 一度別のデバイスを経由してから元のデバイスに戻す（onChange が 2 回発火する）。
-   - または先発完了を待って `UpdateMediaStreamButton` を手動押下する（本 issue で `disabled` が `connected` 中も enable のため可能）。
+7. Chrome DevTools の Performance タブで CPU throttling を 6x slowdown に設定する ( JS 実行を引き伸ばし、 onChange と Button click の間で並列起動を誘発しやすくする)。
+8. Connect 中に `AudioInputForm` でデバイスを変更し、 直後 ( 1 秒以内) に `UpdateMediaStreamButton` を押下する。
+9. 修正後: 2 経路の `updateMediaStream` が in-flight Promise を共有して 1 回しか実行されない ( Timeline タブで track stop ログが 1 ラウンド分のみ追加されることを確認する)。 「AudioInputForm / VideoInputForm との整合性」で許容した「最新 selection が反映されないケース」「UI signal と実 stream の乖離」も同手順で確認できる ( select の表示値が `targetB`、 実 stream が `targetA` のままになる)。復旧手順:
+   - 一度別のデバイスを経由してから元のデバイスに戻す (onChange が 2 回発火する)。
+   - または先発完了を待って `UpdateMediaStreamButton` を手動押下する (本 issue で `disabled` が `connected` 中も enable のため可能)。
 
 ### D. disabled 状態の確認
 
-10. `?role=sendrecv` で起動直後（`localMediaStream === null`）: `UpdateMediaStreamButton` が disable。
-11. Request Media 後（`localMediaStream != null`、`connectionStatus === "initializing"`）: enable。
-12. Connect 押下中（`connectionStatus === "preparing"` → `"connecting"`）: disable。
-13. **Connect 完了（`connectionStatus === "connected"`）: enable**（本来の主用途、デバイス切替を許可）。
-14. Disconnect 押下中（`connectionStatus === "disconnecting"`）: disable。
-15. Disconnect 後（`localMediaStream === null`, `connectionStatus === "disconnected"`）: disable。
-16. Disconnect 後に Request Media したとき（`localMediaStream != null`, `connectionStatus === "disconnected"`）: enable。
+10. `?role=sendrecv` で起動直後 ( `localMediaStream === null` ): `UpdateMediaStreamButton` が disable。
+11. Request Media 後 ( `localMediaStream != null` 、 `connectionStatus === "initializing"` ): enable。
+12. Connect 押下中 ( `connectionStatus === "preparing"` → `"connecting"` ): disable。
+13. **Connect 完了 ( `connectionStatus === "connected"` ): enable** (本来の主用途、デバイス切替を許可)。
+14. Disconnect 押下中 ( `connectionStatus === "disconnecting"` ): disable。
+15. Disconnect 後 ( `localMediaStream === null` 、 `connectionStatus === "disconnected"` ): disable。
+16. Disconnect 後に Request Media したとき ( `localMediaStream != null` 、 `connectionStatus === "disconnected"` ): enable。
 
 ### E. テスト
 
 17. `pnpm test` が pass すること。
-18. 既存 Playwright e2e（`pnpm test:e2e`）が pass すること。
+18. 既存 Playwright e2e ( `pnpm test:e2e` ) が pass すること。
 
 ## 完了条件
 
 - 検証手順 A-E すべてが通過すること。
 - 状態遷移マトリクスの「修正」セルすべてが期待通り disable になること。
-- 連打しても `updateMediaStreamImpl` が同時に複数走らないこと（in-flight Promise 共有を DevTools console で確認）。
-- 連打 6 ラウンドを繰り返しても `NotAllowedError: The number of hardware contexts ...` 相当のエラーが出ないこと（fakeMedia 経路）。
+- 連打しても `updateMediaStreamImpl` が同時に複数走らないこと ( DebugPane Timeline タブで track stop ログが 1 ラウンド分のみ追加されること。 fakeMedia 経路 + virtualBackground 無効 + noiseSuppressionProcessor 無効の前提下では `stop-video-mediastream-track` 1 件 + `stop-audio-mediastream-track` 1 件 = 計 2 件。 他の組み合わせでは件数が変わるため、 検証手順 B / C で確認した内訳のとおり「連打しても 1 ラウンド分のみ追加される」ことを確認する)。
+- fakeMedia 経路で `AudioContext` の重複生成が起きないこと ( DevTools Memory タブの heap snapshot で `BaseAudioContext` インスタンス数が連打回数によらず 1 のままであること)。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
-- 既存テスト（`pnpm test`）および既存 Playwright e2e が pass すること。
+- 既存テスト ( `pnpm test` ) および既存 Playwright e2e が pass すること。

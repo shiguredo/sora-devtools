@@ -5,7 +5,7 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-fake-video-worker-busy-loop
-- Polished: 2026-06-15
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -71,10 +71,10 @@ function animate(): void {
 }
 ```
 
-- `frameRate = 0`: `1000 / 0 = +Infinity`、`Math.floor(+Infinity) = +Infinity`。`setTimeout` の `delay` 引数は WebIDL `long`（32 bit signed integer）に変換され、`+Infinity` は `+0` になる（ECMA-262 `ToInt32` の仕様 §7.1.6 で `+Infinity` / `-Infinity` / `NaN` は `+0` を返す）。
+- `frameRate = 0`: `1000 / 0 = +Infinity`、`Math.floor(+Infinity) = +Infinity`。`setTimeout` の `delay` 引数は WebIDL `long`（32 bit signed integer）に変換される (WebIDL §3.10.8 の "JavaScript values to long" アルゴリズム、拡張属性なし)。同アルゴリズムは `+Infinity` / `-Infinity` / `NaN` を 0 に変換するため `delay = 0` になる。
 - `frameRate = -1`: `1000 / -1 = -1000`、`Math.floor = -1000`。HTML Living Standard "Timers" の "run steps after a timeout" 算法（HTML §8.6 Timers）で「If `timeout` is less than 0, set `timeout` to 0」のステップにより 0 にされる。
 
-両ケースとも `delay = 0` が要求されるが、同仕様の「nesting level >= 5 のときは 4 ms に clamp」が適用され、実効 ~250 fps の過剰再帰描画になる（純粋な「busy-loop」=同期スレッドブロックではないが、Worker スレッドが 1 コアを飽和させる）。
+両ケースとも `delay = 0` が要求されるが、同仕様の「nesting level greater than 5 のときは 4 ms に clamp」(HTML Living Standard §8.6.1 "If nesting level is greater than 5, and timeout is less than 4, then set timeout to 4") が適用され、実効 ~250 fps の過剰再帰描画になる（純粋な「busy-loop」=同期スレッドブロックではないが、Worker スレッドが 1 コアを飽和させる）。
 
 ## 設計方針
 
@@ -123,18 +123,21 @@ if (data.frameRate !== undefined) {
 ```ts
 if (data.frameRate !== undefined) {
   // 二重防御: utils.ts 側で [1, 60] にクランプ済みでも、構造化クローン経由で
-  // 不正値 (NaN / Infinity / 負数) が届く可能性に備えて worker 側でも検査する。
+  // 不正値 (NaN / Infinity / 負数 / 小数) が届く可能性に備えて worker 側でも検査する。
+  // 整数化を先に行い、その結果が > 0 でなければ 30 にフォールバックする
+  // (incoming = 0.5 の場合 Math.floor で 0 になるため、Math.floor の後で > 0 判定を行う必要がある)
   const incoming = data.frameRate;
-  frameRate = Number.isFinite(incoming) && incoming > 0 ? Math.min(60, Math.floor(incoming)) : 30;
+  const floored = Math.floor(incoming);
+  frameRate = Number.isFinite(floored) && floored > 0 ? Math.min(60, floored) : 30;
 }
 ```
 
 責務分担:
 
 - `createFakeMediaConstraints`: string → integer 変換 + `[1, 60]` 範囲保証
-- `fakeVideo.worker.ts`: 受信した number の `isFinite && > 0` 検査 + `[1, 60]` 再クランプ + 整数化
+- `fakeVideo.worker.ts`: 受信した number の `Math.floor → isFinite && > 0` 検査 + `[1, 60]` 再クランプ
 
-worker 側で `Math.floor` を追加するのは、将来 utils を経由しない別経路から小数（例: `0.5`）が届いた場合の整数化を担保するため。
+worker 側で `Math.floor` を先に適用するのは、将来 utils を経由しない別経路から小数（例: `0.5`）が届いた場合の整数化を担保するため。 `Math.floor` の結果に対して `> 0` 判定を行うことで、 `0.5 → 0` を 30 にフォールバックさせる。
 
 ## テスト戦略
 
@@ -163,7 +166,7 @@ test("createFakeMediaConstraints は frameRate に '0' を渡すと parsedFrameR
 - 「`'60'` を渡すと 60 になる（上限境界）」
 - 「`'99999'` を渡すと 60 にクランプされる」
 
-`-1` / `0.5` / `0xFF` / `1e5` / `Infinity` / `NaN` / 空文字等のケースは PBT で網羅するため単体テストには含めない。本テストは `result.frameRate` のみを検証し、`width` / `height` / `volume` 等の他フィールドは本 issue のスコープ外。`volume: "0"` で固定する。
+`-1` / `0.5` / `0xFF` / `1e5` / `Infinity` / `NaN` / 空文字等のケースは PBT で網羅するため単体テストには含めない。本テストは `result.frameRate` のみを検証し、`width` / `height` / `volume` 等の他フィールドは本 issue のスコープ外。 `volume: "0"` で固定するのは、`volume: ""` だと `createFakeMediaConstraints` 内の `Number.parseFloat("")` が `NaN` を返して `volume` フィールドに `NaN` が混入し、本 issue 外の問題でテストが flaky になる可能性があるため。
 
 ### `src/utils.prop.ts` への PBT 追加
 
@@ -235,7 +238,7 @@ test("createFakeMediaConstraints の frameRate は常に [1, 60] の整数にな
   - @voluntas
 ```
 
-CLAUDE.md「後方互換性は考慮しないこと」方針により、後方互換のない挙動変更（`N > 60` の 60 クランプ、`N <= 0` の 30 フォールバック）はバグ修正の結果として `[FIX]` に分類する（`[CHANGE]` 区分にはしない）。
+CLAUDE.md「後方互換性は考慮しないこと」方針により、後方互換のない挙動変更（`N > 60` の 60 クランプ、`N <= 0` の 30 フォールバック）はバグ修正の結果として `[FIX]` に分類する（`[CHANGE]` 区分にはしない）。 `N <= 0` フォールバックは worker 暴走描画の直接的バグ修正、 `N > 60` クランプは「同じ入力検証パスで上下限を対称的に保証する」付随的な範囲制約であり、両者を分離せず 1 つの `[FIX]` エントリにまとめる。
 
 ## 検証手順
 

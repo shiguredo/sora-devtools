@@ -5,7 +5,17 @@
 - Completed: {YYYY-MM-DD}
 - Model: Opus 4.7
 - Branch: feature/fix-vite-manual-chunks-include-check
-- Polished: 2026-06-15
+
+## カテゴリ・命名の補足
+
+本 issue は「現状の依存グラフでは発火していない予防的修正」(下の「目的」セクションで明言) であり、 `shiguredo-git` 規約に照らすと bug-fix カテゴリと branch prefix `feature/fix-` の選択は実態と矛盾する可能性がある。マージ前にユーザー判断で以下のリネーム作業を行うのが望ましい (リネームの是非はユーザーが決める)。リネームを採用する場合は次の 4 ステップを実施する:
+
+1. `git mv issues/0058-bug-fix-vite-manual-chunks-include-check.md issues/0058-refactor-vite-manual-chunks-include-check.md`
+2. リネーム後の issue ファイル冒頭 H1 を `# 0058-refactor-vite-manual-chunks-include-check` に書き換える
+3. リネーム後の issue ファイルの `Branch:` 行を `feature/refactor-vite-manual-chunks-include-check` に書き換える
+4. 関連 issue からの参照リンク ( `grep -rln 'bug-fix-vite-manual-chunks-include-check' issues/` で対象を特定する) を書き換える
+
+- Polished: 2026-06-16
 
 ## 目的
 
@@ -122,7 +132,9 @@ output: {
 },
 ```
 
-`startsWith` ヘルパー案は不採用（pnpm の絶対パス先頭が `.pnpm/<resolved>` で `startsWith` 不可、`includes` で十分）。
+`startsWith` ヘルパー案は不採用 (pnpm の絶対パス先頭が `.pnpm/<resolved>` で `startsWith` 不可、 `includes` で十分)。
+
+先頭 `/` を含める判断根拠: `node_modules-foo/` のように `node_modules` を prefix に持つ偽ディレクトリ名 (実在の脅威ではないが将来の地雷) を弾くため、 `/node_modules/${mod}/` のように前後を `/` で挟んで真のディレクトリ境界を要求する。 `node_modules` 単独 (prefix 無し) のディレクトリも稀に作られる可能性があり、 そのときに `node_modules/${mod}/` だけで判定すると path 上の文字列偶然一致を許容してしまう。
 
 ## テスト戦略
 
@@ -166,14 +178,18 @@ output: {
 1. develop ブランチで `pnpm install && pnpm build` を実行し、`dist/assets/*.js` のファイル名一覧（hash 部分は無視）を控える（現状: `preact-*.js` / `mp4-media-stream-*.js` / `noise-suppression-*.js` / `virtual-background-*.js` / `sora-js-sdk-*.js` / `index-*.js` / `fakeVideo.worker-*.js` 等）。
 2. 本修正を入れた後、再度 `pnpm install && pnpm build` を実行し、ファイル名一覧（hash 部分は無視）が変わらないことを確認する。
 
-### B. `preact-render-to-string` 追加時の誤マッチ防止の確認（修正の本質確認）
+### B. `preact-render-to-string` 追加時の誤マッチ防止の確認 (修正の本質確認)
 
-3. 一時的に `pnpm add -D preact-render-to-string` を実行する。`pnpm-workspace.yaml` の `minimumReleaseAge: 10080`（7 日）制約で失敗する場合は `pnpm add -D preact-render-to-string --config.minimumReleaseAge=0` を付けて再実行する。
-4. `src/main.tsx` 等で **side-effect import** (`import "preact-render-to-string";`) を追加するか、named import + 実際の参照 (`import { renderToString } from "preact-render-to-string"; console.log(renderToString);`) でバンドル対象に含める。未使用の named import は tree-shaking で取り除かれてバンドルに残らないため不十分。
+3. 一時的に `preact-render-to-string` を依存追加する。 `pnpm-workspace.yaml` の `minimumReleaseAge: 10080` (7 日) 制約があるため、以下のいずれかの方法で確実に追加する:
+   - 方法 a: `pnpm-workspace.yaml` の `minimumReleaseAgeExclude` に `preact-render-to-string` を一時追加 → `pnpm add -D preact-render-to-string` → 検証完了後に元に戻す (確実に動く方法、推奨)
+   - 方法 b: `pnpm add -D preact-render-to-string --config.minimumReleaseAge=0` を試す ( pnpm 11.5.1 のフラグ挙動で確実に効くかは要検証。失敗する場合は方法 a に切り替える)
+4. `src/main.tsx` 等で **side-effect import** (`import "preact-render-to-string";`) を追加するか、 named import + 実際の参照 ( `import { renderToString } from "preact-render-to-string"; console.log(renderToString);` ) でバンドル対象に含める。未使用の named import は tree-shaking で取り除かれてバンドルに残らないため不十分。
 5. `pnpm build` を実行。
-6. 修正前: `preact-*.js` 内に `preact-render-to-string` のコードが含まれていることを確認する（`grep -l "preact-render-to-string" dist/assets/preact-*.js` で 1 件以上ヒット、または `dist/assets/preact-*.js` のファイルサイズが本修正前後で増加）。
-7. 修正後: `preact-render-to-string` は `preact` chunk に巻き込まれず、`index-*.js` または別 chunk に同梱されることを確認する（`grep -l "preact-render-to-string" dist/assets/preact-*.js` で 0 件）。
-8. 検証完了後、`pnpm remove preact-render-to-string` と import 削除でリバートする。
+6. 修正前後で `dist/assets/preact-*.js` のファイルサイズを比較する ( `ls -la dist/assets/preact-*.js` の数値出力)。 `vite.config.ts` で `minify: "oxc"` が指定されているため module 名 `preact-render-to-string` 等の識別子文字列は minify で消える可能性があり、 grep による文字列確認は不正確な判定になりうる。ファイルサイズ差分による判定を主とする:
+   - 修正前: `preact-*.js` のファイルサイズが `preact-render-to-string` 追加によって数十 KB 規模で増加する ( `preact-render-to-string` が `preact` chunk に巻き込まれている = 誤マッチ発生)
+   - 修正後: `preact-*.js` のファイルサイズが `preact-render-to-string` 追加前後で変わらない ( `preact-render-to-string` が `preact` chunk に巻き込まれない = 誤マッチ解消)
+   - 同時に `dist/assets/index-*.js` または別 chunk のサイズが `preact-render-to-string` 分増加していることも確認する
+7. 検証完了後、 `pnpm remove preact-render-to-string` と import 削除、 および方法 a を採用した場合は `pnpm-workspace.yaml` の `minimumReleaseAgeExclude` の一時追加もリバートする。
 
 ### C. 遅延ロード e2e の非退行
 
