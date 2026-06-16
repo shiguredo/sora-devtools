@@ -667,6 +667,14 @@ export function parseMetadata(enabledMetadata: boolean, metadata: string): Json 
   }
 }
 
+// parseMetadata の戻り値が Sora 仕様で期待する JSON object (非 null・非 array) かを判定する。
+// typeof === "object" は null と array も真になるため明示的に除外する。
+// codec params (videoVP9Params / videoAV1Params / videoH264Params / videoH265Params) と
+// signalingNotifyMetadata の代入前ガードに利用する。
+export function isJsonObject(value: Json | undefined): value is Record<string, Json | undefined> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
   // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
   // oxlint-disable-next-line typescript/no-unnecessary-condition
@@ -783,16 +791,28 @@ function applyVideoCodecOptions(
     connectionOptions.videoBitRate = parsedVideoBitRate;
   }
   if (connectionOptionsState.enabledVideoVP9Params) {
-    connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params);
+    const parsed = parseMetadata(true, connectionOptionsState.videoVP9Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoVP9Params = parsed;
+    }
   }
   if (connectionOptionsState.enabledVideoAV1Params) {
-    connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params);
+    const parsed = parseMetadata(true, connectionOptionsState.videoAV1Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoAV1Params = parsed;
+    }
   }
   if (connectionOptionsState.enabledVideoH264Params) {
-    connectionOptions.videoH264Params = parseMetadata(true, connectionOptionsState.videoH264Params);
+    const parsed = parseMetadata(true, connectionOptionsState.videoH264Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoH264Params = parsed;
+    }
   }
   if (connectionOptionsState.enabledVideoH265Params) {
-    connectionOptions.videoH265Params = parseMetadata(true, connectionOptionsState.videoH265Params);
+    const parsed = parseMetadata(true, connectionOptionsState.videoH265Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoH265Params = parsed;
+    }
   }
 }
 
@@ -847,10 +867,10 @@ function applySignalingMetadataOptions(
   connectionOptionsState: ConnectionOptionsState,
 ): void {
   if (connectionOptionsState.enabledSignalingNotifyMetadata) {
-    connectionOptions.signalingNotifyMetadata = parseMetadata(
-      true,
-      connectionOptionsState.signalingNotifyMetadata,
-    );
+    const parsed = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
+    if (isJsonObject(parsed)) {
+      connectionOptions.signalingNotifyMetadata = parsed;
+    }
   }
   if (connectionOptionsState.enabledForwardingFilters) {
     const parsedForwardingFilters = parseMetadata(true, connectionOptionsState.forwardingFilters);

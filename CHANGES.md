@@ -235,6 +235,10 @@
   - 0 / 負数 / 小数 / 16 進数表記は 30 にフォールバックし、60 超は 60 にクランプする
   - `fakeVideo.worker.ts` の `init` ハンドラでも `[1, 60]` にクランプして二重防御する
   - @voluntas
+- [FIX] `createConnectOptions` で `parseMetadata` 戻り値の型検証が漏れていた問題を修正する
+  - `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` / `signalingNotifyMetadata` は object（非 null・非 array）のみ受理する
+  - object 以外を SDK 経由でサーバに送って `connect.failed` を引き起こすのを防ぐ
+  - @voluntas
 
 ### misc
 
