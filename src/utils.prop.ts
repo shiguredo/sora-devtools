@@ -88,6 +88,16 @@ const blurRadiusArb = fc.constantFrom(...BLUR_RADIUS);
 // signalingUrlCandidates 用の文字列配列の Arbitrary
 const signalingUrlCandidatesArb = fc.array(fc.webUrl());
 
+// signalingUrlCandidates の異常系検証用 Arbitrary。
+// 文字列 / 整数 / null / boolean / JSON 値を fc.oneof で混在させ、要素型検証が常に [string[] | undefined] を返すことを保証する。
+// fc.anything() は BigInt / Function / 循環参照を含み JSON.stringify が TypeError を投げるため利用せず、fc.jsonValue() を採用する。
+// fc.integer() / fc.constant(null) / fc.boolean() / fc.string() は fc.jsonValue() に包含されるが、shrink 時に代表値を明示的に踏ませるため別個に列挙する。
+// 空配列入力は単体テスト側でカバーするため minLength: 1 で除外する。
+const signalingUrlCandidatesWithInvalidArb = fc.array(
+  fc.oneof(fc.webUrl(), fc.integer(), fc.constant(null), fc.boolean(), fc.jsonValue(), fc.string()),
+  { minLength: 1 },
+);
+
 // 解像度の Arbitrary（形式: "幅 x 高さ"）
 const resolutionArb = fc
   .tuple(fc.integer({ min: 1, max: 3840 }), fc.integer({ min: 1, max: 2160 }))
@@ -278,6 +288,24 @@ test.prop([fc.array(fc.webUrl(), { minLength: 1, maxLength: 5 })])(
     const result = parseQueryString(searchParams);
 
     assert.deepEqual(result.signalingUrlCandidates, candidates);
+  },
+);
+
+// signalingUrlCandidates の要素型検証 PBT。
+// 正常 / 異常 のどちらの配列でも結果が undefined または string[] のいずれかに収まることを保証する。
+// 異常系入力が undefined に落ちる具体的なホワイトリスト確認は単体テスト 5 件 (number / null / boolean / object / 混在) と
+// 空配列回帰防止 1 件でカバーする。
+test.prop([signalingUrlCandidatesWithInvalidArb])(
+  "signalingUrlCandidates のパース結果は常に undefined または string[] になる",
+  (arr) => {
+    const searchParams = new URLSearchParams();
+    searchParams.set("signalingUrlCandidates", JSON.stringify(arr));
+    const result = parseQueryString(searchParams);
+    const value = result.signalingUrlCandidates;
+    assert.isTrue(
+      value === undefined ||
+        (Array.isArray(value) && value.every((item) => typeof item === "string")),
+    );
   },
 );
 
