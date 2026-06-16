@@ -239,6 +239,10 @@
   - `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` / `signalingNotifyMetadata` は object（非 null・非 array）のみ受理する
   - object 以外を SDK 経由でサーバに送って `connect.failed` を引き起こすのを防ぐ
   - @voluntas
+- [FIX] `signalingUrlCandidates` の URL クエリ経路で配列要素の型検証が漏れていた問題を修正する
+  - `parseQueryString` で `Array.isArray` に加えて `every((item) => typeof item === "string")` を要求する
+  - 不正要素を含む場合は `undefined` に落とし、SDK 側 `new WebSocket(_)` の `SyntaxError` を回避する
+  - @voluntas
 
 ### misc
 

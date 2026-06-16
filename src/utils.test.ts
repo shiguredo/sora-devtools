@@ -213,6 +213,51 @@ test("signalingUrlCandidates が配列でない場合は undefined になる", (
   assert.deepEqual(result, {});
 });
 
+// signalingUrlCandidates の要素型検証テスト
+// 非 string 要素は SDK 内部の new WebSocket(_) で SyntaxError を引き起こすため、境界で undefined に落とす
+test("signalingUrlCandidates の要素が全て number の場合は undefined になる", () => {
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", JSON.stringify([1, 2, 3]));
+  const result = parseQueryString(searchParams);
+  assert.equal(result.signalingUrlCandidates, undefined);
+});
+
+test("signalingUrlCandidates の要素が全て null の場合は undefined になる", () => {
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", JSON.stringify([null, null]));
+  const result = parseQueryString(searchParams);
+  assert.equal(result.signalingUrlCandidates, undefined);
+});
+
+test("signalingUrlCandidates の要素が全て boolean の場合は undefined になる", () => {
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", JSON.stringify([true, false]));
+  const result = parseQueryString(searchParams);
+  assert.equal(result.signalingUrlCandidates, undefined);
+});
+
+test("signalingUrlCandidates の要素が全て object の場合は undefined になる", () => {
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", JSON.stringify([{ url: "wss://x" }]));
+  const result = parseQueryString(searchParams);
+  assert.equal(result.signalingUrlCandidates, undefined);
+});
+
+test("signalingUrlCandidates に文字列と非文字列が混在する配列は undefined になる", () => {
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", JSON.stringify(["wss://example.com/signaling", 1]));
+  const result = parseQueryString(searchParams);
+  assert.equal(result.signalingUrlCandidates, undefined);
+});
+
+test("signalingUrlCandidates が空配列 [] の場合は空配列として受理される（既存挙動の回帰防止）", () => {
+  // every は空配列で true を返すため、空配列は型ガードを通過して維持される
+  const searchParams = new URLSearchParams();
+  searchParams.set("signalingUrlCandidates", JSON.stringify([]));
+  const result = parseQueryString(searchParams);
+  assert.deepEqual(result.signalingUrlCandidates, []);
+});
+
 test("undefined の項目は削除される", () => {
   const searchParams = createSearchParams({
     channelId: "test-channel",

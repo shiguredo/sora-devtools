@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-signaling-url-candidates-validation
 - Polished: 2026-06-16
@@ -278,3 +278,11 @@ test.prop([signalingUrlCandidatesWithInvalidArb])(
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 追加した単体テスト 6 件 + PBT 1 件が pass すること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が通ること。
+
+## 解決方法
+
+- `src/utils.ts` に `isStringArray` 型ガード関数（`value is string[]`）を `parseQueryString` の直前に追加し、`Array.isArray` に加えて要素の `typeof === "string"` も検証する。0051 で追加した `isJsonObject` と同じく `export` してプロジェクト内の再利用に備える。
+- `parseQueryString` 内の `signalingUrlCandidates` 代入部で `Array.isArray(_)` を `isStringArray(_)` に置き換え、非 string 要素を含む配列は `undefined` に落ちるようにした。`?signalingUrlCandidates=[1,2,3]` などの不正値が SDK 内部の `new WebSocket(_)` で `SyntaxError` を起こす経路を境界で遮断した。
+- `src/utils.test.ts` に異常系 5 件（全 number / 全 null / 全 boolean / 全 object / 混在）と空配列の回帰防止 1 件を追加した。
+- `src/utils.prop.ts` に `signalingUrlCandidatesWithInvalidArb` を追加し、`fc.oneof` で webUrl / integer / null / boolean / jsonValue / string を混在生成して PBT 1 件「結果は常に undefined または string[]」を検証する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。

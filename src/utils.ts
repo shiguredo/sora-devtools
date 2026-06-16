@@ -86,6 +86,14 @@ function parseStringParameter(searchParams: URLSearchParams, key: string): strin
   return undefined;
 }
 
+// 配列性 + 要素 string 性を両方検証する型ガード関数。
+// 要素に number / null / boolean / object が混在すると SDK 内部の new WebSocket(_) が
+// USVString 変換後 URL パースに失敗して SyntaxError (DOMException) を投げるため、境界で undefined に落とす。
+// every は空配列で true を返すため `[]` は受理されるが、空配列が下流の SDK に届かない保証は呼び出し側のガードに委ねる。
+export function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
 // クエリ文字列パーサー
 export function parseQueryString(searchParams: URLSearchParams): Partial<QueryStringParameters> {
   // URLSearchParams から値を取得して boolean | undefined を返す
@@ -169,7 +177,7 @@ export function parseQueryString(searchParams: URLSearchParams): Partial<QuerySt
     metadata: parseStringParameter(searchParams, "metadata"),
     showStats: parseBooleanParameter(searchParams, "showStats"),
     signalingNotifyMetadata: parseStringParameter(searchParams, "signalingNotifyMetadata"),
-    signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
+    signalingUrlCandidates: isStringArray(signalingUrlCandidates)
       ? signalingUrlCandidates
       : undefined,
     forwardingFilters: parseStringParameter(searchParams, "forwardingFilters"),
