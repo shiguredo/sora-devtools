@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-load-url-entries-element-validation
 - Polished: 2026-06-16
@@ -348,3 +348,12 @@ test.prop([fc.string()])(
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 追加したユニットテスト 8 件 + PBT 2 件が pass すること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が pass すること。
+
+## 解決方法
+
+- `src/opfs.ts` に `isUrlEntry` 型ガード関数（`value is UrlEntry`）を追加し、`url: string` と `enabled: boolean` の構造を実行時に検証できるようにした。0051/0052 で追加した `isJsonObject` / `isStringArray` と並列に `export` する。
+- `parseUrlEntriesFromText` を新規追加し、`JSON.parse` + ルートオブジェクト形状検証 + `every(isUrlEntry)` で `UrlEntry[]` を返す純粋関数として切り出した。不正な要素が 1 件でもあれば全体を空配列に落とす（部分救済しない）。
+- `loadUrlEntries` を薄いラッパーに変更し、`parseUrlEntriesFromText` を呼ぶ形にした。`catch` ブロックのコメントを「OPFS API 呼び出しの例外を握りつぶす」に更新した（パースエラーは parser 内で吸収済み）。
+- `src/opfs.test.ts` を新規作成し、ユニットテスト 10 件（異常系 7 件 + null 要素 + 正常/不正混在 + 回帰防止 1 件）を追加した。
+- `src/opfs.prop.ts` を新規作成し、PBT 2 件（任意入力で例外を投げない / 戻り値が常に `UrlEntry[]` の形状）を追加した。入力 Arbitrary は `fc.oneof(fc.string(), fc.json())` で JSON.parse 失敗と構造検証の両ブランチを踏ませる。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。
