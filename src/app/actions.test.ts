@@ -1,12 +1,13 @@
 import { assert, test } from "vite-plus/test";
 
 import type { SoraNotifyMessage } from "../types.ts";
-import { cleanupSoraMediaState, isConnectionDestroyedNotify } from "./actions.ts";
+import { cleanupSoraMediaState, handleTrackEvent, isConnectionDestroyedNotify } from "./actions.ts";
 import {
   fakeContents,
   localMediaStream,
   noiseSuppressionProcessor,
   remoteClients,
+  timelineMessages,
   virtualBackgroundProcessor,
 } from "./signals.ts";
 
@@ -91,4 +92,55 @@ test("cleanupSoraMediaState を 2 回連続で await しても例外を投げな
   await cleanupSoraMediaState();
   assert.equal(localMediaStream.value, null);
   assert.equal(remoteClients.value.length, 0);
+});
+
+// handleTrackEvent の空配列ガードのテスト
+// RTCTrackEvent は jsdom にコンストラクタが無いため、必須プロパティのみのリテラルを型キャストして渡す
+test("handleTrackEvent は streams が空配列のとき例外を投げない", () => {
+  remoteClients.value = [];
+  timelineMessages.value = [];
+  const emptyEvent = {
+    streams: [],
+    track: { id: "t1", kind: "audio" },
+  } as unknown as RTCTrackEvent;
+  // assert.doesNotThrow で「例外を投げない」契約を直接表現する
+  assert.doesNotThrow(() => {
+    handleTrackEvent(emptyEvent);
+  });
+});
+
+test("handleTrackEvent は streams が空配列のとき remoteClients を変更しない", () => {
+  remoteClients.value = [];
+  timelineMessages.value = [];
+  const emptyEvent = {
+    streams: [],
+    track: { id: "t1", kind: "audio" },
+  } as unknown as RTCTrackEvent;
+  handleTrackEvent(emptyEvent);
+  assert.equal(remoteClients.value.length, 0);
+});
+
+test("handleTrackEvent は streams が空配列のとき event-on-track の timeline メッセージを 2 件追加する", () => {
+  remoteClients.value = [];
+  timelineMessages.value = [];
+  const beforeLength = timelineMessages.value.length;
+  const emptyEvent = {
+    streams: [],
+    track: { id: "t1", kind: "audio" },
+  } as unknown as RTCTrackEvent;
+  handleTrackEvent(emptyEvent);
+  const after = timelineMessages.value.slice(beforeLength);
+  // 差分 2 件: 冒頭の無条件 event-on-track と空配列ガード時の event-on-track (data 付き)
+  assert.equal(after.length, 2);
+  // 1 件目: type === "event-on-track" かつ data === undefined
+  assert.equal(after[0].type, "event-on-track");
+  assert.equal(after[0].data, undefined);
+  // 2 件目: type === "event-on-track" かつ data オブジェクトで emptyStreams / trackId / kind を持つ
+  assert.equal(after[1].type, "event-on-track");
+  const secondData = after[1].data;
+  // TimelineMessage.data は Record<string, unknown> | undefined のため、まず undefined でないことを確認してから個別キーをアサートする
+  assert.exists(secondData);
+  assert.equal(secondData.emptyStreams, true);
+  assert.equal(secondData.trackId, "t1");
+  assert.equal(secondData.kind, "audio");
 });
