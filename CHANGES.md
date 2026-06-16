@@ -247,6 +247,10 @@
   - `{ url: string; enabled: boolean }` の構造を `every` で検証し、不正な要素を含む場合は空配列を返す
   - `JSON.parse` + 型検証を `parseUrlEntriesFromText` に切り出してユニットテスト可能にする
   - @voluntas
+- [FIX] `RequestMediaButton` / `DisposeMediaButton` の `disabled` 条件に `localMediaStream` の状態を反映する
+  - `RequestMediaButton` は `localMediaStream` が取得済みのとき無効化し、重複した `getUserMedia` 呼び出しによる権限プロンプト再表示を防ぐ
+  - `DisposeMediaButton` は `localMediaStream` が null のとき無効化し、無意味な空打ちを防ぐ
+  - @voluntas
 
 ### misc
 
