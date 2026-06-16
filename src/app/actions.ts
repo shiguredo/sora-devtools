@@ -1548,6 +1548,43 @@ function startStatsReportTimer(): void {
   void schedule();
 }
 
+// connectSora のキャンセル時にローカル変数として生成済みの資源を解放する。
+// disconnectSora の cleanupSoraMediaState は signal 経由でしか解放できないため、
+// まだ signal に積まれていない mediaStream / audioContext / soraConnection はここで直接解放する。
+function abortConnectSoraResources(args: {
+  mediaStream: MediaStream | undefined;
+  audioContext: AudioContext | null | undefined;
+  soraConnection: ConnectionPublisher | ConnectionSubscriber | undefined;
+  forceCreateMediaStream: boolean;
+  localMediaStreamValue: MediaStream | null;
+}): void {
+  const {
+    mediaStream,
+    audioContext,
+    soraConnection,
+    forceCreateMediaStream,
+    localMediaStreamValue,
+  } = args;
+  // 既存 localMediaStream を再利用したパスでは mediaStream は signal がまだ保持しているため stop しない。
+  // それ以外のパス (新規取得 / forceCreateMediaStream) では本ヘルパーで track を stop する。
+  if (mediaStream && (forceCreateMediaStream || localMediaStreamValue !== mediaStream)) {
+    for (const track of mediaStream.getTracks()) {
+      track.stop();
+    }
+  }
+  if (audioContext) {
+    void audioContext.close();
+  }
+  if (soraConnection && signals.sora.value === soraConnection) {
+    // 0047 の isCurrent() ガードで disconnect ハンドラは skip されるが、SDK 側の WebSocket
+    // / PeerConnection を確実に close するため disconnect() は呼ぶ。失敗は無視する。
+    signals.setSora(null);
+    void soraConnection.disconnect();
+  }
+  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-connect-cancelled"));
+}
+
+// oxlint-disable-next-line eslint/max-statements -- 5 箇所のキャンセル検知ポイントとローカル変数の closure 捕捉のため外部関数化せず連結する
 export const connectSora = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-connection"));
   signals.setSoraConnectionStatus("preparing");
@@ -1560,6 +1597,13 @@ export const connectSora = async (): Promise<void> => {
   const soraValue = signals.sora.value;
   if (soraValue) {
     await soraValue.disconnect();
+    // 検知ポイント 1: 既存接続あり時の await 直後に Disconnect が押された場合の専用ガード。
+    // この時点ではローカル変数 mediaStream / audioContext / soraConnection が未代入のため
+    // 解放処理は不要で、event-connect-cancelled だけ記録して新接続を作らずに return する。
+    if (signals.connectionStatus.value === "disconnected") {
+      signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-connect-cancelled"));
+      return;
+    }
     // 接続中の再接続の場合は、MediaStream を作り直し、state.soraContents.localMediaStream を更新する
     forceCreateMediaStream = true;
   }
@@ -1572,6 +1616,23 @@ export const connectSora = async (): Promise<void> => {
   const channelIdValue = signals.channelId.value;
   const googCpuOveruseDetectionValue = signals.googCpuOveruseDetection.value;
   const localMediaStreamValue = signals.localMediaStream.value;
+  // preparing / connecting 中にユーザーが Disconnect を押すと disconnectSora は soraValue == null
+  // でも setSoraConnectionStatus("disconnected") を立てる (0007 で確立した意図的サポート)。
+  // connectSora 側は各 await 直後に本ヘルパーで disconnected を検知し、ローカル変数の資源を
+  // abortConnectSoraResources で直接解放する。
+  const abortIfCancelled = (): boolean => {
+    if (signals.connectionStatus.value !== "disconnected") {
+      return false;
+    }
+    abortConnectSoraResources({
+      mediaStream,
+      audioContext,
+      soraConnection,
+      forceCreateMediaStream,
+      localMediaStreamValue,
+    });
+    return true;
+  };
   try {
     soraConnection = createSoraConnectionByRole(
       connection,
@@ -1594,6 +1655,10 @@ export const connectSora = async (): Promise<void> => {
           },
         );
       }
+      // 検知ポイント 2: 新規取得パスと再利用パス両方の後で 1 回検知する
+      if (abortIfCancelled()) {
+        return;
+      }
       signals.setSoraConnectionStatus("connecting");
       // 先に setSora で state を参照できるようにしておかないと connection.created の notify が来た時に処理に困るため
       signals.setSora(soraConnection);
@@ -1603,6 +1668,10 @@ export const connectSora = async (): Promise<void> => {
       // 先に setSora で state を参照できるようにしておかないと connection.created の notify が来た時に処理に困るため
       signals.setSora(soraConnection);
       await (soraConnection as ConnectionSubscriber).connect();
+    }
+    // 検知ポイント 3 / 4: connect 直後の共通検知 (sendrecv / sendonly / recvonly いずれも)
+    if (abortIfCancelled()) {
+      return;
     }
   } catch (error) {
     // 先に setSora で state を参照できるようにした state の参照を削除
@@ -1619,6 +1688,11 @@ export const connectSora = async (): Promise<void> => {
   // createSoraConnectionByRole は常に ConnectionPublisher | ConnectionSubscriber を返すため soraConnection は non-null
   signals.setSoraInfoAlertMessage("succeeded to connect Sora");
   await setStatsReportInternal(soraConnection);
+  // 検知ポイント 5: setStatsReportInternal の await 中にも Disconnect が押されうるため、
+  // setSoraConnectionStatus("connected") を立てる前に最終チェックする
+  if (abortIfCancelled()) {
+    return;
+  }
   startStatsReportTimer();
   if (mediaStream && (localMediaStreamValue === null || forceCreateMediaStream)) {
     signals.setLocalMediaStream(mediaStream);

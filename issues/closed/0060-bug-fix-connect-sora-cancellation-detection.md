@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-connect-sora-cancellation-detection
 - Polished: 2026-06-16
@@ -293,3 +293,12 @@ signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected"));
 - closed/0007 の「`preparing` 中の Disconnect も意図的にサポート」設計が維持されていること (`DisconnectButton` の `disabled` に `preparing` を追加するアプローチは採用しない)。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト ( `pnpm test` ) および既存 Playwright e2e が pass すること。
+
+## 解決方法
+
+- `src/app/actions.ts` に `abortConnectSoraResources` ヘルパー関数を新設し、キャンセル時の `mediaStream` 全 track stop、`audioContext.close`、`signals.setSora(null) + void soraConnection.disconnect()` をまとめた。既存 `localMediaStream` 再利用パスでは track を stop しない判定 (`forceCreateMediaStream || localMediaStreamValue !== mediaStream`) も含む。
+- `connectSora` 内にローカルアロー `abortIfCancelled` を導入し、`connectionStatus === "disconnected"` を検知したら `abortConnectSoraResources` を呼んで `event-connect-cancelled` を timeline に記録、`true` を返す。`mediaStream` / `audioContext` / `soraConnection` などのローカル変数は call site でオブジェクトとして渡し、let 束縛の最新値を反映する。
+- 5 箇所の検知ポイントを追加した。検知ポイント 1（既存接続あり時の `await soraValue.disconnect()` 直後）は専用ガードで `event-connect-cancelled` を記録して return。検知ポイント 2（`mediaStream` 取得後）、検知ポイント 3 / 4（`await connect(...)` 後を共通化して 1 箇所に集約）、検知ポイント 5（`await setStatsReportInternal` 直後）は `abortIfCancelled` を経由する。
+- `connectSora` の statement 数が 50 を超えるため `// oxlint-disable-next-line eslint/max-statements` を理由付きで付与した（ローカル変数の closure 捕捉のため外部関数化せず連結する設計判断）。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。
+- テスト追加なし（`navigator.mediaDevices.getUserMedia` と Sora 接続を jsdom + モック禁止規約で再現不能）。状態遷移は手動検証で網羅する。
