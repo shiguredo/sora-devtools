@@ -251,6 +251,10 @@
   - `RequestMediaButton` は `localMediaStream` が取得済みのとき無効化し、重複した `getUserMedia` 呼び出しによる権限プロンプト再表示を防ぐ
   - `DisposeMediaButton` は `localMediaStream` が null のとき無効化し、無意味な空打ちを防ぐ
   - @voluntas
+- [FIX] `UpdateMediaStreamButton` の `disabled` と `updateMediaStream` の in-flight ガードを追加する
+  - `updateMediaStream` をモジュールローカルな in-flight Promise でガードし、連打 / `AudioInputForm` / `VideoInputForm` の onChange と重なっても同時に複数走らないようにする
+  - `UpdateMediaStreamButton` の `disabled` に `localMediaStream === null` および `preparing` / `connecting` / `disconnecting` の過渡状態を反映し、対象が無い / 過渡状態での押下を防ぐ（`connected` 中はデバイス切替が主用途のため enable のまま）
+  - @voluntas
 
 ### misc
 
