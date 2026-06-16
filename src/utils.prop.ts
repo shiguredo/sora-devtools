@@ -25,6 +25,7 @@ import {
   VIDEO_CONTENT_HINTS,
 } from "./constants.ts";
 import {
+  createFakeMediaConstraints,
   formatUnixtime,
   getVideoSizeByResolution,
   parseBooleanString,
@@ -424,3 +425,48 @@ test.prop([fc.string().filter((s) => !/^\d+x\d+$/u.test(s))])(
     assert.equal(result.height, 0);
   },
 );
+
+// createFakeMediaConstraints の frameRate 不変条件 PBT。
+// Number.parseInt(_, 10) は "e" 以降や "x" 以降を読まないため、文字列の見た目と評価値は乖離する。
+// 30 フォールバック経路: "0" / "-1" / "-0" / "0.5" / "0xFF" (parseInt で 0) / "Infinity" / "-Infinity" / "NaN" / "abc" / ""
+// 1 のまま通過する経路: "1e5" / "1e308" (parseInt で 1)
+// 60 クランプ経路: WebIDL long 全域整数列の極端値 (61 以上の生成値)
+// 正常範囲経路: 1..60 の整数列
+// IEEE 754 の極端値 ("-0" / "5e-324" / "1e308" / "-Infinity") は parseInt の e 不読仕様の境界を踏むが、
+// 結果は先頭整数部 (5 / 1 / NaN) を経て [1, 60] 不変条件を満たす。
+// fc.string() は "60abc" のような部分整数文字列も生成するが、parseInt は先頭整数部 60 を抽出して同じく不変条件を満たす。
+// volume: "0" 固定は Number.parseFloat("") === NaN を避け、frameRate 検証に集中させるため。
+test.prop([
+  fc.oneof(
+    fc.constant("0"),
+    fc.constant("-0"),
+    fc.constant("-1"),
+    fc.constant("0.5"),
+    fc.constant("0xFF"),
+    fc.constant("1e5"),
+    fc.constant("1e308"),
+    fc.constant("5e-324"),
+    fc.constant("Infinity"),
+    fc.constant("-Infinity"),
+    fc.constant("NaN"),
+    fc.constant("abc"),
+    fc.constant(""),
+    fc.integer({ min: 1, max: 60 }).map(String),
+    fc.integer({ min: -2_147_483_648, max: 2_147_483_647 }).map(String),
+    fc.float({ noNaN: true, noDefaultInfinity: true }).map(String),
+    fc.string(),
+  ),
+])("createFakeMediaConstraints の frameRate は常に [1, 60] の整数になる", (raw) => {
+  const result = createFakeMediaConstraints({
+    audio: false,
+    video: true,
+    frameRate: raw,
+    resolution: "",
+    volume: "0",
+    aspectRatio: "",
+    resizeMode: "",
+  });
+  assert.isTrue(Number.isInteger(result.frameRate));
+  assert.isAtLeast(result.frameRate, 1);
+  assert.isAtMost(result.frameRate, 60);
+});

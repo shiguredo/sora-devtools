@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-fake-video-worker-busy-loop
 - Polished: 2026-06-16
@@ -279,3 +279,11 @@ CLAUDE.md「後方互換性は考慮しないこと」方針により、後方�
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 追加した単体テスト 4 件 + PBT 1 件が pass すること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が通ること。
+
+## 解決方法
+
+- `src/utils.ts` の `createFakeMediaConstraints` を修正し、`parsedFrameRate` を `Number.isFinite(fps) && fps > 0 ? Math.min(fps, 60) : 30` で算出するように厳格化した。これにより `0` / 負数 / `0.5` / `0xN` プレフィックス値は 30 にフォールバックし、60 を超える値は 60 にクランプされる。戻り値 `frameRate` は常に `[1, 60]` の整数になる不変条件をコメントで明示した。
+- `src/workers/fakeVideo.worker.ts` の `init` ハンドラに二重防御を追加した。受信した `data.frameRate` を `Math.floor` で整数化したうえで `> 0` 判定を行い、`Number.isFinite && > 0` を満たすときのみ `[1, 60]` に再クランプする。構造化クローン経由で `NaN` / `Infinity` / 負数 / 小数が届いた場合も 30 にフォールバックする。
+- `src/utils.test.ts` に `createFakeMediaConstraints` の単体テスト 4 件を追加した。`"0"` → 30、`"1"` → 1、`"60"` → 60、`"99999"` → 60 の境界値挙動を確認する。
+- `src/utils.prop.ts` に PBT 1 件を追加した。`"0"` / `"-1"` / `"0.5"` / `"0xFF"` / `"1e5"` / `"Infinity"` / `"NaN"` / `"abc"` / `""` などの代表値と整数・浮動小数・任意文字列を含む `oneof` 入力に対して、戻り値 `frameRate` が常に `[1, 60]` の整数になる不変条件を検証する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾に `fakeVideo` Worker 過剰再帰描画修正のエントリを追加した。
