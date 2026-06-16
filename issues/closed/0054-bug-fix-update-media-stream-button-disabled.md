@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-update-media-stream-button-disabled
 
@@ -342,3 +342,12 @@ export function UpdateMediaStreamButton() {
 - fakeMedia 経路で `AudioContext` の重複生成が起きないこと ( DevTools Memory タブの heap snapshot で `BaseAudioContext` インスタンス数が連打回数によらず 1 のままであること)。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト ( `pnpm test` ) および既存 Playwright e2e が pass すること。
+
+## 解決方法
+
+- `src/app/actions.ts` の `updateMediaStream` 本体を `updateMediaStreamImpl` にリネーム（`export` を外す）し、0045 で追加された中断検出ガードもそのまま内部に保持した。
+- 同ファイルにモジュールローカルな in-flight Promise `updateMediaStreamInFlight` を宣言し、新しい `export const updateMediaStream = async (): Promise<void> => { ... }` の wrapper を追加した。0048 の `reconnectSora` と同形で、後発呼び出しは既存の in-flight Promise を返し、`try/finally` で確実に null に戻す。
+- `src/components/DevtoolsPane/UpdateMediaStreamButton.tsx` の `<Button>` に `disabled` を追加した。`localMediaStream === null`、`preparing` / `connecting` / `disconnecting` の過渡状態で無効化し、`connected` 中はデバイス切替が主用途のため enable のまま保つ。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。
+- caller (`UpdateMediaStreamButton` / `AudioInputForm` / `VideoInputForm`) はインターフェース互換のため無変更。
+- テスト追加なし（`MediaStream` を jsdom で生成不可かつモック禁止規約のため）。状態遷移マトリクスと連打レースは手動検証で網羅する。

@@ -1849,8 +1849,9 @@ export const unregisterServiceWorker = async (): Promise<void> => {
   }
 };
 
-// デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新
-export const updateMediaStream = async (): Promise<void> => {
+// updateMediaStream の本体実装。in-flight ガードはこの関数の外側 wrapper で行う。
+// デバイスの変更時などに Sora との接続を維持したまま MediaStream のみ更新する。
+const updateMediaStreamImpl = async (): Promise<void> => {
   const state = getStateForMediaStream();
   const localMediaStreamValue = signals.localMediaStream.value;
   const soraValue = signals.sora.value;
@@ -1933,6 +1934,25 @@ export const updateMediaStream = async (): Promise<void> => {
   }
   signals.setLocalMediaStream(mediaStream);
   signals.setFakeContentsAudio(audioContext, gainNode);
+};
+
+// updateMediaStream の二重起動を防ぐためのモジュールローカルな in-flight Promise。
+// UpdateMediaStreamButton 連打と AudioInputForm / VideoInputForm の onChange が並列発火しても
+// 後発は既存の in-flight Promise を共有し、updateMediaStreamImpl の signal 上書きと
+// AudioContext 重複生成を防ぐ。Promise は finally で確実に null に戻す。
+let updateMediaStreamInFlight: Promise<void> | null = null;
+export const updateMediaStream = async (): Promise<void> => {
+  if (updateMediaStreamInFlight) {
+    return updateMediaStreamInFlight;
+  }
+  updateMediaStreamInFlight = (async () => {
+    try {
+      await updateMediaStreamImpl();
+    } finally {
+      updateMediaStreamInFlight = null;
+    }
+  })();
+  return updateMediaStreamInFlight;
 };
 
 export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
