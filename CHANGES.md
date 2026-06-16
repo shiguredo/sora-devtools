@@ -255,6 +255,11 @@
   - `updateMediaStream` をモジュールローカルな in-flight Promise でガードし、連打 / `AudioInputForm` / `VideoInputForm` の onChange と重なっても同時に複数走らないようにする
   - `UpdateMediaStreamButton` の `disabled` に `localMediaStream === null` および `preparing` / `connecting` / `disconnecting` の過渡状態を反映し、対象が無い / 過渡状態での押下を防ぐ（`connected` 中はデバイス切替が主用途のため enable のまま）
   - @voluntas
+- [FIX] `connectSora` の `preparing` / `connecting` 中に Disconnect を押されたときに接続が確立してしまう問題を修正する
+  - `connectSora` 内の 5 箇所の `await` 直後で `connectionStatus === "disconnected"` を検知し、放棄時にローカル変数の `mediaStream` / `audioContext` / `soraConnection` を解放する
+  - 検知時に `event-connect-cancelled` の timeline メッセージを記録する
+  - `preparing` / `connecting` 中の Disconnect を意図的にサポートする既存設計は維持する
+  - @voluntas
 
 ### misc
 
