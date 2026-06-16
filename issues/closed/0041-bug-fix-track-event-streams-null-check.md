@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-track-event-streams-null-check
 - Polished: 2026-06-16
@@ -124,3 +124,10 @@ export const handleTrackEvent = (event: RTCTrackEvent): void => {
 - 空配列イベント到達時に `TypeError` が発生せず、`remoteClients` も書き換えられないこと（テストで確認）。
 - `CHANGES.md` の `## develop` の `[FIX]` セクション末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存 Playwright e2e（`pnpm test:e2e`）が通ること。
+
+## 解決方法
+
+- `src/app/actions.ts` の `setSoraCallbacks` 内 `"track"` リスナー本体を `handleTrackEvent` として export 関数に切り出した。`isCurrent()` 判定は `setSoraCallbacks` 側のラッパに残し、`handleTrackEvent` 本体はテスト時に `signals.sora.value` の設定を要しない形にした。
+- `handleTrackEvent` 冒頭に `event.streams.length === 0` の早期 return を追加した。空配列のときは `remoteClients` を変更せず、`event-on-track` の timeline メッセージを 2 件（無条件 + `emptyStreams / trackId / kind` 付き）追加して return する。既存の `event.streams[0]` 参照 6 箇所はそのまま残した。
+- `src/app/actions.test.ts` に `handleTrackEvent` の空配列ガードのテスト 3 件を追加した。`assert.doesNotThrow` で例外を投げない契約を表明し、`remoteClients` が変更されないこと、timeline メッセージが 2 件追加されることを検証する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。

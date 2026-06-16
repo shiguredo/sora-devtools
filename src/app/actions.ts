@@ -1083,6 +1083,48 @@ export const cleanupSoraMediaState = async (): Promise<void> => {
   }
 };
 
+// track イベントの本体処理を切り出す。setSoraCallbacks 側のラッパで isCurrent() 判定を通過した後に呼ばれる。
+// 0047 の isCurrent ガードを setSoraCallbacks 側で適用済みのため本関数では再判定しない (テスト時に signals.sora を設定する必要が無くなる)。
+// event.streams が空配列の場合は remoteClients を変更せず timeline メッセージのみ追加して return する。
+// 現行 sora-js-sdk は publisher 系で明示ガードしており subscriber 系も TypeError 経由で空配列イベントが到達しない設計だが、
+// SDK の比較順や connectionId 判定が変わると即座に空配列イベントが到達しうるためアプリ層にも防御層を入れる。
+export const handleTrackEvent = (event: RTCTrackEvent): void => {
+  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-track"));
+  if (event.streams.length === 0) {
+    signals.setTimelineMessage(
+      createSoraDevtoolsTimelineMessage("event-on-track", {
+        emptyStreams: true,
+        trackId: event.track.id,
+        kind: event.track.kind,
+      }),
+    );
+    return;
+  }
+  const remoteClientsValue = signals.remoteClients.value;
+  const mediaStream = remoteClientsValue.find(
+    (client) => client.connectionId === event.streams[0].id,
+  );
+  if (!mediaStream) {
+    for (const track of event.streams[0].getTracks()) {
+      signals.setTimelineMessage(
+        createSoraDevtoolsTimelineMessage(
+          `remote-${track.kind}-mediastream-track`,
+          getMediaStreamTrackProperties(track),
+        ),
+      );
+    }
+    signals.setRemoteClient({
+      mediaStream: event.streams[0],
+      connectionId: event.streams[0].id,
+      clientId: null,
+    });
+  }
+  // 新規・既存クライアントに関わらず全 track の ended リスナーを登録する
+  for (const track of event.streams[0].getTracks()) {
+    registerTrackEndedListener(event.streams[0].id, track);
+  }
+};
+
 // Sora connection オブジェクトに callback をセットする
 function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscriber): void {
   // sora-js-sdk にはリスナー解除 API (off / removeAllListeners) が無く、reconnectSora で
@@ -1132,30 +1174,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     if (!isCurrent()) {
       return;
     }
-    signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-track"));
-    const remoteClientsValue = signals.remoteClients.value;
-    const mediaStream = remoteClientsValue.find(
-      (client) => client.connectionId === event.streams[0].id,
-    );
-    if (!mediaStream) {
-      for (const track of event.streams[0].getTracks()) {
-        signals.setTimelineMessage(
-          createSoraDevtoolsTimelineMessage(
-            `remote-${track.kind}-mediastream-track`,
-            getMediaStreamTrackProperties(track),
-          ),
-        );
-      }
-      signals.setRemoteClient({
-        mediaStream: event.streams[0],
-        connectionId: event.streams[0].id,
-        clientId: null,
-      });
-    }
-    // 新規・既存クライアントに関わらず全 track の ended リスナーを登録する
-    for (const track of event.streams[0].getTracks()) {
-      registerTrackEndedListener(event.streams[0].id, track);
-    }
+    handleTrackEvent(event);
   });
   soraConnection.on("removetrack", (event: MediaStreamTrackEvent) => {
     // SDK イベント発火そのものは古い接続でも timeline に残す（append-only で state 破壊なし）

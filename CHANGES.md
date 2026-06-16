@@ -260,6 +260,8 @@
   - 検知時に `event-connect-cancelled` の timeline メッセージを記録する
   - `preparing` / `connecting` 中の Disconnect を意図的にサポートする既存設計は維持する
   - @voluntas
+- [FIX] `track` イベントで `event.streams` が空配列のときの防御を追加する
+  - @voluntas
 
 ### misc
 
