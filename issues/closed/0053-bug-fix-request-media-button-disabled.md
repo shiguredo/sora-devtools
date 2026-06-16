@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-request-media-button-disabled
 - Polished: 2026-06-16
@@ -233,3 +233,11 @@ closed/0033 で同じ「`MediaStream` 系を要するロジックは jsdom + モ
 - 状態遷移マトリクスの「修正」セルすべてが期待通り disable になること。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が pass すること。
+
+## 解決方法
+
+- `src/components/DevtoolsPane/RequestMediaButton.tsx` の `disabled` 式に `localMediaStream.value !== null` を追加し、メディア取得済みのときボタンを無効化した。重複した `getUserMedia` 呼び出しによる権限プロンプト再表示や processor の不本意停止を防ぐ。
+- `src/components/DevtoolsPane/DisposeMediaButton.tsx` の `disabled` 式に `localMediaStream.value === null` を追加し、破棄対象が無いときボタンを無効化した。無意味な空打ちと付随する副作用（`closeFakeContentsAudio` / worker stop など）を防ぐ。
+- 両ボタンの `import` に `localMediaStream` を追加し、各 disabled 条件の意図をコメントで明示した。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。
+- テスト追加なし（`MediaStream` を jsdom で生成不可かつモック禁止規約のため）。状態遷移マトリクスは手動検証で網羅する。
