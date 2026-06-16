@@ -2,7 +2,7 @@
 
 - Priority: Low
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-download-report-blob-leak
 - Polished: 2026-06-16
@@ -215,3 +215,12 @@ export function DownloadReportButton() {
 - `useEffect` cleanup が登録され、アンマウント時に最終 URL が revoke されること。
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が pass すること。
+
+## 解決方法
+
+- `src/components/Header/DownloadReportButton.tsx` に `useRef<string | null>(null)` の `previousBlobUrlRef` を追加し、直前に発行した Blob URL を保持する。次回 click 時に `revokeObjectURL` で解放する。
+- `onClick` 内で `globalThis.URL.createObjectURL(blob)` の戻り値をローカル変数 `blobUrl` に格納し、`anchor.href` に代入してから `previousBlobUrlRef.current` が非 null の場合のみ `revokeObjectURL` を呼ぶ。直後に `previousBlobUrlRef.current = blobUrl` で更新する。初回 click 時は previousBlobUrlRef.current が null なので revoke は skip される。
+- `useEffect(() => () => { ... }, [])` で cleanup を登録し、アンマウント時に最終 Blob URL を `revokeObjectURL` で解放して `previousBlobUrlRef.current = null` にする。issue サンプルの明示 return 形式は oxlint の `arrow-body-style` 制約により暗黙 return 形式に変更したが、機能的には完全同等。
+- `import { useRef } from "preact/hooks";` を `import { useEffect, useRef } from "preact/hooks";` に変更した。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。
+- テスト追加なし（Preact コンポーネントの click ハンドラの副作用を読み取る単体テスト基盤が無く、モック禁止規約と両立しないため）。手動検証で確認する。
