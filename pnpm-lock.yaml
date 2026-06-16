@@ -24,8 +24,8 @@ importers:
         specifier: 10.29.2
         version: 10.29.2
       sora-js-sdk:
-        specifier: 2026.1.0-canary.2
-        version: 2026.1.0-canary.2
+        specifier: 2026.1.0-canary.3
+        version: 2026.1.0-canary.3
     devDependencies:
       '@fast-check/vitest':
         specifier: 0.4.1
@@ -1259,9 +1259,9 @@ packages:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
 
-  sora-js-sdk@2026.1.0-canary.2:
-    resolution: {integrity: sha512-dNDqLPcOfzG3vwlSzr6VBOC0isAIt2QApbH4fqFgbVLAThHFb0waubbCV4VXCn7dPWe5OV/dgrCVvzwbSck9xA==}
-    engines: {node: '>=22', pnpm: '>=11'}
+  sora-js-sdk@2026.1.0-canary.3:
+    resolution: {integrity: sha512-L0wtab+dhNiWwv5+Fu6kbBOxt8A6huWIZ+rp4vOzN4yulSzSMldMS6zPaCqgU4avv/vKAvOs/XHQFWSIpnVPYA==}
+    engines: {node: '>=22.18.0', pnpm: '>=11'}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2342,7 +2342,7 @@ snapshots:
       mrmime: 2.0.1
       totalist: 3.0.1
 
-  sora-js-sdk@2026.1.0-canary.2: {}
+  sora-js-sdk@2026.1.0-canary.3: {}
 
   source-map-js@1.2.1: {}
 
