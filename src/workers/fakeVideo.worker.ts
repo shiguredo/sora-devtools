@@ -134,7 +134,15 @@ self.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) =
 
       // フレームレートを設定
       if (data.frameRate !== undefined) {
-        ({ frameRate } = data);
+        // 二重防御: utils.ts 側で [1, 60] の整数にクランプ済みのため通常は素通しで足りるが、
+        // 将来 utils を経由しない別経路から呼ばれた場合や構造化クローン経由で
+        // NaN / Infinity / 負数 / 小数が紛れ込んだ場合に setTimeout の遅延計算が暴走しないよう、
+        // worker 側でも独立に検査する。
+        // Math.floor で先に整数化するのは 0.5 のような正の小数を一度 0 にして後段の > 0 判定で弾くため。
+        // Number.isFinite で Infinity / -Infinity / NaN を弾き、> 0 で 0 以下を弾く。
+        // どちらも満たさない値は 30 にフォールバックし、満たす値は上限 60 にクランプする。
+        const floored = Math.floor(data.frameRate);
+        frameRate = Number.isFinite(floored) && floored > 0 ? Math.min(floored, 60) : 30;
       }
 
       // channel_id を設定

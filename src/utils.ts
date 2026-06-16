@@ -468,9 +468,14 @@ export function createFakeMediaConstraints(
   parameters: CreateFakeMediaConstraintsParameters,
 ): FakeMediaStreamConstraints {
   const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters;
-  // fake の default frameRate は 30 fps
+  // frameRate は URL パラメータ / UI のテキスト入力由来の string。
+  // 0 / 負数 / 0.5 / 0xN プレフィックスを素通しすると下流 worker の setTimeout が
+  // HTML Living Standard の "Timers" セクションにあるネストレベル clamp ルール
+  // (nesting level > 5 かつ timeout < 4 で 4 ms に揃える) によって 4 ms に丸められ、
+  // 実効 ~250 fps の過剰スケジューリングに陥るため、有限正数のみ受理して UI 上限 60 にクランプする。
+  // 本関数の戻り値 frameRate は常に [1, 60] の整数になる。
   const fps = Number.parseInt(frameRate, 10);
-  const parsedFrameRate = Number.isNaN(fps) ? 30 : fps;
+  const parsedFrameRate = Number.isFinite(fps) && fps > 0 ? Math.min(fps, 60) : 30;
   // width, height の default はそれぞれ 240 / 160
   const resolutionSize = getVideoSizeByResolution(resolution);
   const width = resolutionSize.width || 240;

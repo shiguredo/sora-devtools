@@ -230,6 +230,11 @@
   - `<Reconnect />` の `useEffect` 起動を撤廃し、abend ハンドラから直接 `reconnectSora` を呼び出すように集約する
   - `reconnectSora` 自体にもモジュールローカルな in-flight `Promise` によるガードを追加する
   - @voluntas
+- [FIX] `fakeVideo` Worker の描画ループが `frameRate` 0 / 負数 / 小数で過剰再帰描画に陥る問題を修正する
+  - `createFakeMediaConstraints` で `parsedFrameRate` を「有限正数のみ受理、上限 60 にクランプ」に厳格化する
+  - 0 / 負数 / 小数 / 16 進数表記は 30 にフォールバックし、60 超は 60 にクランプする
+  - `fakeVideo.worker.ts` の `init` ハンドラでも `[1, 60]` にクランプして二重防御する
+  - @voluntas
 
 ### misc
 

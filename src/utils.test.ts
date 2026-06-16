@@ -22,7 +22,12 @@ import {
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from "./constants.ts";
-import { getValueByAspectRatio, parseMetadata, parseQueryString } from "./utils.ts";
+import {
+  createFakeMediaConstraints,
+  getValueByAspectRatio,
+  parseMetadata,
+  parseQueryString,
+} from "./utils.ts";
 
 // テスト用のヘルパー関数
 function createSearchParams(parameters: Record<string, unknown>): URLSearchParams {
@@ -260,4 +265,58 @@ test("parseMetadata: 無効な JSON は undefined を返す", () => {
 
 test("parseMetadata: 空文字列も undefined を返す", () => {
   assert.equal(parseMetadata(true, ""), undefined);
+});
+
+// createFakeMediaConstraints の frameRate 境界値テスト
+// 0 / 負数 / 上限超過は worker の暴走描画につながるため utils 側でクランプする責務を確認する
+test("createFakeMediaConstraints は frameRate に '0' を渡すと parsedFrameRate を 30 に補正する", () => {
+  const result = createFakeMediaConstraints({
+    audio: false,
+    video: true,
+    frameRate: "0",
+    resolution: "",
+    volume: "0",
+    aspectRatio: "",
+    resizeMode: "",
+  });
+  assert.equal(result.frameRate, 30);
+});
+
+test("createFakeMediaConstraints は frameRate に '1' を渡すと parsedFrameRate を 1 に保つ (下限境界)", () => {
+  const result = createFakeMediaConstraints({
+    audio: false,
+    video: true,
+    frameRate: "1",
+    resolution: "",
+    volume: "0",
+    aspectRatio: "",
+    resizeMode: "",
+  });
+  assert.equal(result.frameRate, 1);
+});
+
+test("createFakeMediaConstraints は frameRate に '60' を渡すと parsedFrameRate を 60 に保つ (上限境界)", () => {
+  const result = createFakeMediaConstraints({
+    audio: false,
+    video: true,
+    frameRate: "60",
+    resolution: "",
+    volume: "0",
+    aspectRatio: "",
+    resizeMode: "",
+  });
+  assert.equal(result.frameRate, 60);
+});
+
+test("createFakeMediaConstraints は frameRate に '99999' を渡すと parsedFrameRate を 60 にクランプする", () => {
+  const result = createFakeMediaConstraints({
+    audio: false,
+    video: true,
+    frameRate: "99999",
+    resolution: "",
+    volume: "0",
+    aspectRatio: "",
+    resizeMode: "",
+  });
+  assert.equal(result.frameRate, 60);
 });
