@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-09
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-06-16
 - Model: Opus 4.7
 - Branch: feature/fix-forwarding-filters-undefined-cast
 - Polished: 2026-06-16
@@ -332,3 +332,11 @@ CLAUDE.md「後方互換性は考慮しないこと」方針により、`?videoV
 - `CHANGES.md` の `## develop` の `[FIX]` 末尾に上記エントリが追記され、担当者行が付いていること。
 - 追加した単体テスト 8 件 + PBT 1 件が pass すること。
 - 既存テスト（`pnpm test`）および既存 Playwright e2e が通ること。
+
+## 解決方法
+
+- `src/utils.ts` に `isJsonObject` 型ガードを追加し、`parseMetadata` 戻り値が JSON object（非 null・非 array）であることを判定できるようにした。戻り値型 `Record<string, Json | undefined>` で narrow させて代入時の型安全を確保した。
+- `applyVideoCodecOptions` の `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` の 4 箇所、`applySignalingMetadataOptions` の `signalingNotifyMetadata` の計 5 箇所を `isJsonObject` 経由のガード代入に変更した。object 以外（`null` / `boolean` / `number` / `string` / `array`）は silent に未代入になり、SDK 経由で Sora サーバに送られて `connect.failed` を引き起こす経路を遮断した。
+- `src/utils.test.ts` に `createTestConnectionOptionsState` ヘルパー（`ConnectionOptionsState` 37 フィールドの defaults を返す）を追加し、`createConnectOptions` の単体テスト 8 件を追加した。VP9 の `"42"` / `"{\"a\":1}"` / `"null"` 各経路、AV1 / H264 / H265 の `"42"` smoke、`signalingNotifyMetadata` の `"null"` と `"{\"user\":\"x\"}"` を検証する。
+- `src/utils.prop.ts` から `createTestConnectionOptionsState` を utils.test.ts から import し、二重定義を避けた。PBT 1 件を追加して `videoVP9Params` と `signalingNotifyMetadata` の不変条件「結果は常に `undefined` または object（非 null・非 array）」を検証する。
+- `CHANGES.md` の `## develop` の `[FIX]` セクション末尾にエントリを追加した。

@@ -24,7 +24,10 @@ import {
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
 } from "./constants.ts";
+import type { ConnectionOptionsState } from "./types.ts";
+import { createTestConnectionOptionsState } from "./utils.test.ts";
 import {
+  createConnectOptions,
   createFakeMediaConstraints,
   formatUnixtime,
   getVideoSizeByResolution,
@@ -470,3 +473,30 @@ test.prop([
   assert.isAtLeast(result.frameRate, 1);
   assert.isAtMost(result.frameRate, 60);
 });
+
+// createConnectOptions の videoVP9Params / signalingNotifyMetadata 不変条件 PBT。
+// 任意の string と任意の valid JSON 文字列を混在生成し、結果が undefined または
+// object (非 null・非 array) のいずれかに収まることを保証する。
+// fc.oneof で fc.string() と fc.json() を混在させるのは、fc.string() 単独だと生成物の大半が
+// JSON.parse 失敗 → undefined ブランチに落ち、object 代入経路の不変条件を検証できないため。
+// videoAV1Params / videoH264Params / videoH265Params は VP9 と同コードパスのため省略する。
+test.prop([
+  fc.constantFrom("videoVP9Params" as const, "signalingNotifyMetadata" as const),
+  fc.oneof(fc.string(), fc.json()),
+])(
+  "createConnectOptions: videoVP9Params / signalingNotifyMetadata は常に undefined または object (非 null・非 array)",
+  (key, raw) => {
+    const overrides: Partial<ConnectionOptionsState> =
+      key === "videoVP9Params"
+        ? { enabledVideoVP9Params: true, videoVP9Params: raw }
+        : { enabledSignalingNotifyMetadata: true, signalingNotifyMetadata: raw };
+    const state = createTestConnectionOptionsState(overrides);
+    const result = createConnectOptions(state);
+    // result[key] の TypeScript 型は ConnectionOptions のフィールド型で正確に絞れないため
+    // unknown 経由で受けて typeof / Array.isArray で判定する
+    const value: unknown = result[key];
+    assert.isTrue(
+      value === undefined || (typeof value === "object" && value !== null && !Array.isArray(value)),
+    );
+  },
+);
