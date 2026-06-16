@@ -262,6 +262,10 @@
   - @voluntas
 - [FIX] `track` イベントで `event.streams` が空配列のときの防御を追加する
   - @voluntas
+- [FIX] `DownloadReportButton` の `Blob URL` がリークする問題を修正する
+  - `URL.createObjectURL` で発行した `Blob URL` を `useRef` で保持し、次回押下時に `URL.revokeObjectURL` で解放する
+  - `useEffect` cleanup でアンマウント時の最終 `Blob URL` も解放する
+  - @voluntas
 
 ### misc
 

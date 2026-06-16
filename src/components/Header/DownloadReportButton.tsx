@@ -1,4 +1,4 @@
-import { useRef } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import Sora from "sora-js-sdk";
 
 import { Button } from "@/components/ui";
@@ -177,6 +177,10 @@ function createDownloadReport(): DownloadReport {
 
 export function DownloadReportButton() {
   const anchorRef = useRef<HTMLAnchorElement>(null);
+  // 直前に発行した Blob URL を保持する。次回 click 時に revokeObjectURL で解放する。
+  // W3C File API: createObjectURL は Blob URL Store にエントリを生成し Blob 本体への
+  // 参照を保持する。revokeObjectURL を呼ばないと Blob は GC されない。
+  const previousBlobUrlRef = useRef<string | null>(null);
   const onClick = (): void => {
     const report = createDownloadReport();
     const data = JSON.stringify(report);
@@ -185,10 +189,29 @@ export function DownloadReportButton() {
     if (anchorRef.current) {
       const datetimeString = new Date().toISOString().replaceAll(":", "_").replaceAll(".", "_");
       anchorRef.current.download = `sora-devtools-report-${datetimeString}.json`;
-      anchorRef.current.href = globalThis.URL.createObjectURL(blob);
+      const blobUrl = globalThis.URL.createObjectURL(blob);
+      anchorRef.current.href = blobUrl;
       anchorRef.current.click();
+      // 直前の URL を revoke する。W3C File API 仕様 Note
+      // 「Requests that were started before the url was revoked should still succeed」
+      // により、anchor.click() で開始した download fetch は revoke 後も成功する。
+      // 初回 click 時は previousBlobUrlRef.current が null のため no-op。
+      if (previousBlobUrlRef.current !== null) {
+        globalThis.URL.revokeObjectURL(previousBlobUrlRef.current);
+      }
+      previousBlobUrlRef.current = blobUrl;
     }
   };
+  // アンマウント時に最終 URL を解放する。Header は通常永続だが leak を完全に閉じるため明示する。
+  useEffect(
+    () => () => {
+      if (previousBlobUrlRef.current !== null) {
+        globalThis.URL.revokeObjectURL(previousBlobUrlRef.current);
+        previousBlobUrlRef.current = null;
+      }
+    },
+    [],
+  );
   return (
     <>
       <Button variant="light" size="sm" className="ml-1" onClick={onClick}>
