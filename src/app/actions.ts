@@ -1020,17 +1020,20 @@ const unregisterTrackEndedListeners = (connectionId: string): void => {
   }
 };
 
-// リモートクライアントを track 停止・リスナー解除つきで個別に削除する
+// リモートクライアントを ended リスナーを解除しつつ個別に削除する
+//
+// 他参加者が channel から退出した場合に、remoteClients signal から該当クライアントを
+// 削除し、登録済みの track ended リスナーを解除する。
+//
+// 注意: ここでは remote track を stop() しない。
+// 接続継続中のマルチストリーム session で他参加者が退出・再接続する re-offer 時に、
+// Firefox では stop() 済みの remote track と同一 transceiver に紐づく後続 track イベントが
+// 正しく処理されず、再接続後の映像が真っ白になる問題が発生する。
+// そのため signal からの削除のみ行い、track の停止は sora-js-sdk 側の re-offer 処理に任せる。
+// フル切断時の一括掃除（clearRemoteMediaClients）では、リソース解放のため引き続き track.stop() を行う。
 const removeRemoteClientCleanup = (connectionId: string): void => {
   unregisterTrackEndedListeners(connectionId);
-  const remoteClientsValue = signals.remoteClients.value;
-  const remoteClient = remoteClientsValue.find((client) => client.connectionId === connectionId);
-  if (remoteClient) {
-    for (const track of remoteClient.mediaStream.getTracks()) {
-      track.stop();
-    }
-    signals.removeRemoteClient(connectionId);
-  }
+  signals.removeRemoteClient(connectionId);
 };
 
 // リモートクライアント全件の track 停止・ended リスナー解除後に signal を一括クリアする
