@@ -94,11 +94,13 @@ r2: 通常の解像度のままエンコード
 
 ## signalingUrlCandidates
 
-シグナリングをするURLを複数指定します。
+シグナリングをする URL を複数指定します。
+URL パラメータで指定するほか、設定モーダルで OPFS に永続化した設定を利用できます。
+設定モーダルでは各 URL の有効/無効を切り替えることができます。
 
-## forwardingFilter
+## forwardingFilters
 
-デフォルトの転送フィルターを指定します。
+転送フィルターを指定します。
 
 ## dataChannels
 
@@ -128,16 +130,30 @@ r2: 通常の解像度のままエンコード
 
 映像のコーデックタイプに AV1 を指定した場合の設定を指定します。
 
+## videoH265Params
+
+映像のコーデックタイプに H265 を指定した場合の設定を指定します。
+
 ## mediaType
 
 メディアタイプを指定します。
 getUserMedia: デバイスに接続されているカメラ/マイクをメディアとして使用します。
 getDisplayMedia: ディスプレイまたはその一部(ウィンドウ等)をメディアとして使用します。
-fakeMedia: 生成した映像と音声をメディアとして使用します
+fakeMedia: 生成した映像と音声をメディアとして使用します。
+mp4Media: MP4 ファイルから映像と音声をメディアとして使用します。
 
 ## fakeVolume
 
 mediaType に fakeMedia を選択した際の音量を指定します。
+
+## fakeVideoShowChannelId
+
+Fake Video 上に channel_id を表示するかどうかを指定します。
+
+## maxNotifyMessages
+
+デバッグパネルの Notify タブに保持するメッセージの最大件数を指定します。
+100 / 500 / 1000 / 5000 から指定できます。未指定時のデフォルトは 1000 です。
 
 ## audioContentHint
 

@@ -53,10 +53,11 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 ## 特徴
 
-### フェイクメディア機能
+### Fake Video 機能
 
-getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
+getUserMedia や getDisplayMedia ではなく、Worker 内で OffscreenCanvas を利用して描画した映像をメディアとして使用できます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
+Chrome / Edge / Safari で動作します（Firefox 非対応）。
 
 [![Image from Gyazo](https://i.gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51.jpg)](https://gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51)
 
