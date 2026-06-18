@@ -3,7 +3,7 @@ import type { NoiseSuppressionProcessor } from "@shiguredo/noise-suppression";
 interface NoiseSuppressionModule {
   NoiseSuppressionProcessor: {
     new (): NoiseSuppressionProcessor;
-    isSupported(): boolean;
+    isSupported: () => boolean;
   };
 }
 
