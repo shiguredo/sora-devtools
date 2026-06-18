@@ -2,7 +2,7 @@ import type { Mp4MediaStream } from "@shiguredo/mp4-media-stream";
 
 interface Mp4MediaStreamModule {
   Mp4MediaStream: {
-    load(file: Blob): Promise<Mp4MediaStream>;
+    load: (file: Blob) => Promise<Mp4MediaStream>;
   };
 }
 

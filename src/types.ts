@@ -227,7 +227,7 @@ export type Json =
 
 // HTMLVideoElement interface に setSinkId を追加
 export interface CustomHTMLVideoElement extends HTMLVideoElement {
-  setSinkId(audioId: string): Promise<void>;
+  setSinkId: (audioId: string) => Promise<void>;
 }
 
 // RTCMediaStreamTrackStats に jitterBuffer 関連を追加
