@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2026.1.0
+
+**リリース日**: 2026-06-18
+
 - [CHANGE] Fake Video を `Worker` ベースに書き換える
   - `OffscreenCanvas` を使用して `Worker` 内で描画
   - `Chrome` / `Edge` / `Safari` 対応（`Firefox` 非対応）
