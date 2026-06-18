@@ -285,7 +285,7 @@ export function createSignalingURL(
 }
 
 // 解像度に対応する width と height を返す
-const videoResolutionPattern = /^(\d+)x(\d+)$/u;
+const videoResolutionPattern = /^(?<width>\d+)x(?<height>\d+)$/u;
 
 export function getVideoSizeByResolution(resolution: string): {
   width: number;
@@ -293,10 +293,10 @@ export function getVideoSizeByResolution(resolution: string): {
 } {
   if (videoResolutionPattern.test(resolution)) {
     const match = videoResolutionPattern.exec(resolution);
-    if (match) {
+    if (match?.groups) {
       return {
-        width: Number.parseInt(match[1], 10),
-        height: Number.parseInt(match[2], 10),
+        width: Number.parseInt(match.groups.width, 10),
+        height: Number.parseInt(match.groups.height, 10),
       };
     }
   }
