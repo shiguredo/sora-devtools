@@ -1,6 +1,6 @@
 {
   "name": "sora-devtools",
-  "version": "2026.1.0-canary.5",
+  "version": "2026.1.0",
   "private": true,
   "description": "WebRTC SFU Sora DevTools",
   "homepage": "https://github.com/shiguredo/sora-devtools#readme",
@@ -52,5 +52,5 @@
   "engines": {
     "node": ">=26"
   },
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.7.0"
 }
