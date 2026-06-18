@@ -1,52 +1,51 @@
-import type React from 'react'
-import { Tab, Tabs } from 'react-bootstrap'
+import { Tab, Tabs } from "@/components/ui";
 
-import { setDebugType } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setDebugType } from "@/app/actions";
+import { debug, debugType } from "@/app/signals";
+import styles from "./DebugPane.module.css";
 
-// import { Api } from './Api.tsx'
-import { CapabilitiesCodec } from './CapabilitiesCodec.tsx'
-import { DataChannelMessagingMessages } from './DataChannelMessagingMessages.tsx'
-import { DebugFilter } from './Filter.tsx'
-import { LogMessages } from './LogMessages.tsx'
-import { NotifyMessages } from './NotifyMessages.tsx'
-import { PushMessages } from './PushMessages.tsx'
-import { Rpc } from './Rpc.tsx'
-import { SendDataChannelMessagingMessage } from './SendDataChannelMessagingMessage.tsx'
-import { SignalingMessages } from './SignalingMessages.tsx'
-import { Stats } from './Stats.tsx'
-import { TimelineMessages } from './TimelineMessages.tsx'
+import { CapabilitiesCodec } from "./CapabilitiesCodec.tsx";
+import { DataChannelMessagingMessages } from "./DataChannelMessagingMessages.tsx";
+import { DebugFilter } from "./Filter.tsx";
+import { LogMessages } from "./LogMessages.tsx";
+import { NotifyMaxMessages } from "./NotifyMaxMessages.tsx";
+import { NotifyMessages } from "./NotifyMessages.tsx";
+import { PushMessages } from "./PushMessages.tsx";
+import { Rpc } from "./Rpc.tsx";
+import { SendDataChannelMessagingMessage } from "./SendDataChannelMessagingMessage.tsx";
+import { SignalingMessages } from "./SignalingMessages.tsx";
+import { Stats } from "./Stats.tsx";
+import { TimelineMessages } from "./TimelineMessages.tsx";
 
-export const DebugPane: React.FC = () => {
-  const debug = useSoraDevtoolsStore((state) => state.debug)
-  const debugType = useSoraDevtoolsStore((state) => state.debugType)
-  if (!debug) {
-    return null
+export function DebugPane() {
+  const debugValue = debug.value;
+  const debugTypeValue = debugType.value;
+  if (!debugValue) {
+    return null;
   }
   const onSelect = (key: string | null): void => {
     if (
-      key === 'log' ||
-      key === 'notify' ||
-      key === 'push' ||
-      key === 'stats' ||
-      key === 'timeline' ||
-      key === 'signaling' ||
-      key === 'messaging' ||
-      // key === 'api' ||
-      key === 'rpc' ||
-      key === 'codec'
+      key === "log" ||
+      key === "notify" ||
+      key === "push" ||
+      key === "stats" ||
+      key === "timeline" ||
+      key === "signaling" ||
+      key === "messaging" ||
+      key === "rpc" ||
+      key === "codec"
     ) {
-      setDebugType(key)
+      setDebugType(key);
       // URL の query string を更新
-      const searchParams = new URLSearchParams(location.search)
-      searchParams.set('debugType', key)
-      const newUrl = `${location.pathname}?${searchParams.toString()}`
-      window.history.replaceState(null, '', newUrl)
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("debugType", key);
+      const newUrl = `${location.pathname}?${searchParams.toString()}`;
+      globalThis.history.replaceState(null, "", newUrl);
     }
-  }
+  };
   return (
-    <div className="col-debug col-6">
-      <Tabs id="debug-tab" activeKey={debugType} defaultActiveKey={'timeline'} onSelect={onSelect}>
+    <div className={`${styles.container} col-6`}>
+      <Tabs activeKey={debugTypeValue} onSelect={onSelect}>
         <Tab eventKey="timeline" title="Timeline">
           <DebugFilter />
           <TimelineMessages />
@@ -55,8 +54,11 @@ export const DebugPane: React.FC = () => {
           <DebugFilter />
           <SignalingMessages />
         </Tab>
-        <Tab eventKey="notify" title="Notfiy">
-          <DebugFilter />
+        <Tab eventKey="notify" title="Notify">
+          <div className="flex items-center gap-4">
+            <DebugFilter />
+            <NotifyMaxMessages />
+          </div>
           <NotifyMessages />
         </Tab>
         <Tab eventKey="push" title="Push">
@@ -75,11 +77,6 @@ export const DebugPane: React.FC = () => {
           <SendDataChannelMessagingMessage />
           <DataChannelMessagingMessages />
         </Tab>
-        {/*
-        <Tab eventKey="api" title="API">
-          <Api />
-        </Tab>
-*/}
         <Tab eventKey="rpc" title="RPC">
           <Rpc />
         </Tab>
@@ -88,5 +85,5 @@ export const DebugPane: React.FC = () => {
         </Tab>
       </Tabs>
     </div>
-  )
+  );
 }

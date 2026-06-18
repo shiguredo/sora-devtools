@@ -1,54 +1,85 @@
-import type React from 'react'
-import { Container, Nav, Navbar } from 'react-bootstrap'
+import { useSignal } from "@preact/signals";
+import { useRef } from "preact/hooks";
 
-import { useSoraDevtoolsStore } from '@/app/store'
+import { connectionStatus, signalingUrlCandidates, sora, turnUrl } from "@/app/signals";
+import { Navbar, NavbarBrand, NavbarCollapse, NavbarText, NavbarToggle } from "@/components/ui";
 
-import { CopyUrlButton } from './CopyUrlButton.tsx'
-import { DebugButton } from './DebugButton.tsx'
-import { DownloadReportButton } from './DownloadReportButton.tsx'
+import { CopyUrlButton } from "./CopyUrlButton.tsx";
+import { DebugButton } from "./DebugButton.tsx";
+import { DownloadReportButton } from "./DownloadReportButton.tsx";
+import { SignalingUrlModal } from "./SignalingUrlModal.tsx";
 
-export const Header: React.FC = () => {
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const turnUrl = useSoraDevtoolsStore((state) => state.soraContents.turnUrl)
-  const sora = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const turnUrlLabel = (() => {
-    if (sora && connectionStatus === 'connected') {
-      return turnUrl !== null ? turnUrl : '不明'
+export function Header() {
+  const showModal = useSignal(false);
+  const signalingUrlRef = useRef<HTMLButtonElement>(null);
+
+  const signalingUrlLabel = (() => {
+    // 接続中は接続先の URL を表示
+    if (sora.value && connectionStatus.value === "connected") {
+      return sora.value.connectedSignalingUrl;
     }
-    return 'TURN URL'
-  })()
+    // 設定されていれば最初の URL を表示
+    if (signalingUrlCandidates.value.length > 0) {
+      return signalingUrlCandidates.value[0];
+    }
+    return "Signaling URL";
+  })();
+
+  const turnUrlLabel = (() => {
+    if (sora.value && connectionStatus.value === "connected") {
+      return turnUrl.value ?? "不明";
+    }
+    return "TURN URL";
+  })();
+
+  const handleSignalingUrlClick = () => {
+    showModal.value = true;
+  };
+
   return (
     <header>
       <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
-        <Container>
-          <Navbar.Brand href="/">Sora DevTools</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-collapse" />
-          <Navbar.Collapse id="navbar-collapse">
-            <Nav className="me-auto" />
-            <Nav>
-              <Navbar.Text className="py-0 my-1 mx-1">
-                <p className="navbar-signaling-url border rounded">
-                  {sora && connectionStatus === 'connected'
-                    ? sora.connectedSignalingUrl
-                    : 'Signaling URL'}
+        <div className="container flex items-center flex-nowrap justify-between px-3">
+          <NavbarBrand href="/">Sora DevTools</NavbarBrand>
+          <NavbarToggle />
+          <NavbarCollapse>
+            <div className="mr-auto" />
+            <div className="flex items-center flex-wrap">
+              <NavbarText className="py-0 my-1 mx-1">
+                <button
+                  ref={signalingUrlRef}
+                  type="button"
+                  className="min-w-[250px] text-sm px-2 py-1 m-0 whitespace-nowrap border border-white/50 rounded text-left text-white bg-transparent hover:bg-white/10 transition-colors"
+                  onClick={handleSignalingUrlClick}
+                >
+                  {signalingUrlLabel}
+                </button>
+              </NavbarText>
+              <SignalingUrlModal
+                show={showModal.value}
+                onClose={() => {
+                  showModal.value = false;
+                }}
+                buttonRef={signalingUrlRef}
+              />
+              <NavbarText className="py-0 my-1 mx-1">
+                <p className="min-w-[250px] text-sm px-2 py-1 m-0 whitespace-nowrap border rounded">
+                  {turnUrlLabel}
                 </p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
-                <p className="navbar-turn-url border rounded">{turnUrlLabel}</p>
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 mx-1">
                 <DebugButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 mx-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 mx-1">
                 <DownloadReportButton />
-              </Navbar.Text>
-              <Navbar.Text className="py-0 my-1 ms-1">
+              </NavbarText>
+              <NavbarText className="py-0 my-1 ml-1">
                 <CopyUrlButton />
-              </Navbar.Text>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
+              </NavbarText>
+            </div>
+          </NavbarCollapse>
+        </div>
       </Navbar>
     </header>
-  )
+  );
 }

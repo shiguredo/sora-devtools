@@ -1,8 +1,7 @@
-import type React from 'react'
-import DevTools from './DevTools.tsx'
+import DevTools from "./DevTools.tsx";
 
-const App = (): React.JSX.Element => {
-  return <DevTools />
+function App() {
+  return <DevTools />;
 }
 
-export default App
+export default App;

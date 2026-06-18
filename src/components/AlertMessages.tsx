@@ -1,61 +1,53 @@
-import type React from 'react'
-import { useEffect } from 'react'
-import { Toast } from 'react-bootstrap'
+import { deleteAlertMessage, setSoraReconnecting } from "@/app/actions";
+import { alertMessages, reconnecting, reconnectingTrials } from "@/app/signals";
+import { Toast, ToastBody, ToastHeader } from "@/components/ui";
+import type { AlertMessage } from "@/types";
+import { formatUnixtime } from "@/utils";
 
-import { deleteAlertMessage, reconnectSora, setSoraReconnecting } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { AlertMessage } from '@/types'
-import { formatUnixtime } from '@/utils'
-
-const Reconnect: React.FC = () => {
-  const reconnectingTrials = useSoraDevtoolsStore((state) => state.soraContents.reconnectingTrials)
+// reconnectSora の起動責務は本コンポーネントから外し、abend ハンドラ側に集約する。
+// 本コンポーネントは Toast 表示専用とし、Toast の手動クローズ後に再 mount しても
+// reconnectSora が二重起動しない。
+function Reconnect() {
   const onClose = (): void => {
-    setSoraReconnecting(false)
-  }
-  useEffect(() => {
-    reconnectSora()
-  }, [])
+    setSoraReconnecting(false);
+  };
   return (
-    <Toast delay={20000} onClose={onClose}>
-      <Toast.Header className={'bg-warning text-white'}>
+    <Toast delay={5000} onClose={onClose}>
+      <ToastHeader className="bg-bs-yellow text-bs-dark" onClose={onClose}>
         <strong className="me-auto">Reconnect</strong>
-      </Toast.Header>
-      <Toast.Body className="bg-light">
-        <p className="text-break font-weight-bold mb-0">
-          Reconnecting... (trials {reconnectingTrials})
-        </p>
-      </Toast.Body>
+      </ToastHeader>
+      <ToastBody>
+        <p className="break-words mb-0">Reconnecting... (trials {reconnectingTrials.value})</p>
+      </ToastBody>
     </Toast>
-  )
+  );
 }
 
-const Alert: React.FC<AlertMessage> = (props) => {
+function Alert(props: AlertMessage) {
   const onClose = (): void => {
-    deleteAlertMessage(props.timestamp)
-  }
-  const bgClassName = props.type === 'error' ? 'bg-danger' : 'bg-info'
+    deleteAlertMessage(props.timestamp);
+  };
+  const bgClassName = props.type === "error" ? "bg-bs-red" : "bg-bs-primary";
   return (
-    <Toast autohide={true} delay={20000} onClose={onClose}>
-      <Toast.Header className={`${bgClassName} text-white`}>
+    <Toast autohide delay={5000} onClose={onClose}>
+      <ToastHeader className={`${bgClassName} text-white`} onClose={onClose}>
         <strong className="me-auto">{props.title}</strong>
-        <span>{formatUnixtime(props.timestamp)}</span>
-      </Toast.Header>
-      <Toast.Body className="bg-light">
-        <p className="text-break font-weight-bold mb-0">{props.message}</p>
-      </Toast.Body>
+        <span className="text-sm opacity-80">{formatUnixtime(props.timestamp)}</span>
+      </ToastHeader>
+      <ToastBody>
+        <p className="break-words mb-0">{props.message}</p>
+      </ToastBody>
     </Toast>
-  )
+  );
 }
 
-export const AlertMessages: React.FC = () => {
-  const alertMessages = useSoraDevtoolsStore((state) => state.alertMessages)
-  const reconnecting = useSoraDevtoolsStore((state) => state.soraContents.reconnecting)
+export function AlertMessages() {
   return (
-    <div className="alert-messages">
-      {reconnecting ? <Reconnect /> : null}
-      {alertMessages.map((alertMessage) => {
-        return <Alert key={alertMessage.timestamp} {...alertMessage} />
-      })}
+    <div className="absolute top-[50px] right-5 z-[1001]">
+      {reconnecting.value ? <Reconnect /> : null}
+      {alertMessages.value.map((alertMessage) => (
+        <Alert key={alertMessage.timestamp} {...alertMessage} />
+      ))}
     </div>
-  )
+  );
 }

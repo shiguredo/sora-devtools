@@ -1,58 +1,63 @@
-import type React from 'react'
+import type { TargetedMouseEvent } from "preact";
 
-import { ClipboardIcon } from '@/components/ClipboardIcon'
-import { copy2clipboard } from '@/utils'
+import { Button } from "@/components/ui";
+import { ClipboardIcon } from "@/components/ClipboardIcon";
+import { copyToClipboard } from "@/utils";
+import * as signals from "@/app/signals";
 
-type TextBoxProps = {
-  id?: string
-  label?: string
-  text: string
+interface TextBoxProps {
+  id?: string;
+  label?: string;
+  text: string;
 }
-const TextBox: React.FC<TextBoxProps> = (props) => {
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    copy2clipboard(props.text)
-    event.currentTarget.blur()
-  }
+function TextBox(props: TextBoxProps) {
+  const onClick = async (event: TargetedMouseEvent<HTMLButtonElement>): Promise<void> => {
+    event.currentTarget.blur();
+    const success = await copyToClipboard(props.text);
+    if (!success) {
+      signals.setAPIErrorAlertMessage("failed to copy text to clipboard");
+    }
+  };
   return (
-    <div className="d-flex align-items-center">
+    <div className="flex items-center">
       {props.label ? <p>{props.label}</p> : null}
-      <div className="d-flex align-items-center border border-secondary rounded mx-1">
+      <div className="flex items-center border border-secondary rounded mx-1">
         <p id={props.id} className="mx-2 p-1">
           {props.text}
         </p>
         <div className="border-left border-secondary">
-          <button type="button" className="btn btn-sm btn-light" onClick={onClick}>
+          <Button variant="light" size="sm" onClick={onClick}>
             <ClipboardIcon />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-type Props = {
-  localVideo?: boolean
-  connectionId: string | null
-  clientId?: string | null
+interface Props {
+  localVideo?: boolean;
+  connectionId: string | null;
+  clientId?: string | null;
 }
-export const ConnectionStatusBar: React.FC<Props> = (props) => {
-  const { localVideo, connectionId, clientId } = props
+export function ConnectionStatusBar(props: Props) {
+  const { localVideo, connectionId, clientId } = props;
   return (
     <>
       {connectionId ? (
         <TextBox
-          id={localVideo ? 'local-video-connection-id' : undefined}
+          id={localVideo ? "local-video-connection-id" : undefined}
           label="connectionID:"
           text={connectionId}
         />
       ) : null}
       {clientId !== null && clientId !== undefined && connectionId !== clientId ? (
         <TextBox
-          id={localVideo ? 'local-video-client-id' : undefined}
+          id={localVideo ? "local-video-client-id" : undefined}
           label="clientID:"
           text={clientId}
         />
       ) : null}
     </>
-  )
+  );
 }

@@ -1,99 +1,104 @@
-import type React from 'react'
-
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { RTCInboundRtpStreamStats } from '@/types'
+import { prevStatsReport, statsReport } from "@/app/signals";
+import type { RTCInboundRtpStreamStats } from "@/types";
 
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
   mediaStream: MediaStream | null,
-  type: 'video' | 'audio',
+  type: "video" | "audio",
 ): RTCInboundRtpStreamStats | undefined {
   if (mediaStream === null) {
-    return undefined
+    return undefined;
   }
-  let trackIds: string[] = []
-  if (type === 'video') {
-    trackIds = mediaStream.getVideoTracks().map((t) => {
-      return t.id
-    })
-  } else if (type === 'audio') {
-    trackIds = mediaStream.getAudioTracks().map((t) => {
-      return t.id
-    })
+  // type が "video" 以外の場合の意図を明確にするため if/else を使用する
+  let trackIds: string[];
+  if (type === "video") {
+    trackIds = mediaStream.getVideoTracks().map((t) => t.id);
+  } else {
+    trackIds = mediaStream.getAudioTracks().map((t) => t.id);
   }
   const targetStats = statsReport.find((stats) => {
-    if (stats.type !== 'inbound-rtp') {
-      return false
+    if (stats.type !== "inbound-rtp") {
+      return false;
     }
-    if (!('kind' in stats) || !('trackIdentifier' in stats)) {
-      return false
+    if (!("kind" in stats) || !("trackIdentifier" in stats)) {
+      return false;
     }
-    const inboundRtpStats = stats as RTCInboundRtpStreamStats
+    const inboundRtpStats = stats as RTCInboundRtpStreamStats;
     if (inboundRtpStats.kind !== type) {
-      return false
+      return false;
     }
     if (!trackIds.includes(inboundRtpStats.trackIdentifier)) {
-      return false
+      return false;
     }
-    return true
-  })
-  return targetStats as RTCInboundRtpStreamStats
+    return true;
+  });
+  return targetStats as RTCInboundRtpStreamStats;
 }
 
-type Props = {
-  stream: MediaStream
-  type: 'video' | 'audio'
+interface Props {
+  stream: MediaStream;
+  type: "video" | "audio";
 }
-export const JitterButter: React.FC<Props> = (props) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
-  const prevStatsReport = useSoraDevtoolsStore((state) => state.soraContents.prevStatsReport)
+export function JitterButter(props: Props) {
   const currentInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
-    statsReport,
+    statsReport.value,
     props.stream,
     props.type,
-  )
+  );
   const prevInboundRtpStreamStatsReport = mediaStreamStatsReportFilter(
-    prevStatsReport,
+    prevStatsReport.value,
     props.stream,
     props.type,
-  )
+  );
   if (currentInboundRtpStreamStatsReport === undefined) {
-    return null
+    return null;
   }
   if (
     currentInboundRtpStreamStatsReport.jitterBufferDelay === undefined ||
     currentInboundRtpStreamStatsReport.jitterBufferEmittedCount === undefined
   ) {
-    return null
+    return null;
   }
-  let jitterBufferDelay = currentInboundRtpStreamStatsReport.jitterBufferDelay
-  let jitterBufferEmittedCount = currentInboundRtpStreamStatsReport.jitterBufferEmittedCount
+  let { jitterBufferDelay } = currentInboundRtpStreamStatsReport;
+  let { jitterBufferEmittedCount } = currentInboundRtpStreamStatsReport;
   if (
-    prevInboundRtpStreamStatsReport !== undefined &&
-    prevInboundRtpStreamStatsReport.jitterBufferDelay !== undefined &&
+    prevInboundRtpStreamStatsReport?.jitterBufferDelay !== undefined &&
     prevInboundRtpStreamStatsReport.jitterBufferEmittedCount !== undefined
   ) {
     jitterBufferDelay =
       currentInboundRtpStreamStatsReport.jitterBufferDelay -
-      prevInboundRtpStreamStatsReport.jitterBufferDelay
+      prevInboundRtpStreamStatsReport.jitterBufferDelay;
     jitterBufferEmittedCount =
       currentInboundRtpStreamStatsReport.jitterBufferEmittedCount -
-      prevInboundRtpStreamStatsReport.jitterBufferEmittedCount
+      prevInboundRtpStreamStatsReport.jitterBufferEmittedCount;
   }
-  const currentJitterBufferDelay = Math.floor((jitterBufferDelay / jitterBufferEmittedCount) * 1000)
-  let borderClassName = 'normal-jitter-buffer'
+  // ポーリング間隔の間に新規パケットが到着しなかった場合 (差分が 0)、
+  // または受信開始直後で累計パケット数が 0 の場合はゼロ除算で NaN になるため描画しない
+  if (jitterBufferEmittedCount === 0) {
+    return null;
+  }
+  const currentJitterBufferDelay = Math.floor(
+    (jitterBufferDelay / jitterBufferEmittedCount) * 1000,
+  );
+  // Tailwind classes for jitter buffer status
+  const baseClasses = `
+    inline-block font-normal leading-normal text-center
+    px-2 py-1 text-sm rounded-md mx-1
+    min-w-[90px] border-2 cursor-default
+  `;
+  let statusClasses = "border-bs-dark";
   if (currentJitterBufferDelay > 500) {
-    borderClassName = 'critical-jitter-buffer'
+    statusClasses = "border-bs-red bg-bs-red text-bs-light";
   } else if (currentJitterBufferDelay > 300) {
-    borderClassName = 'danger-jitter-buffer'
+    statusClasses = "border-bs-orange bg-bs-orange text-bs-light";
   } else if (currentJitterBufferDelay > 100) {
-    borderClassName = 'warning-jitter-buffer'
+    statusClasses = "border-bs-yellow";
   }
   return (
-    <div className={`btn btn-sm mx-1 ${borderClassName}`}>
+    <div className={`${baseClasses} ${statusClasses}`}>
       <span>
         {props.type}: {currentJitterBufferDelay}
       </span>
     </div>
-  )
+  );
 }

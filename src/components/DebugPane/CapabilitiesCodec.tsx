@@ -1,68 +1,79 @@
-import type React from 'react'
+import { Message } from "./Message.tsx";
 
-import { Message } from './Message.tsx'
+type RTCRtpCapabilitiesCodecWithIndexSignature = Record<string, string | number | undefined>;
 
-interface RTCRtpCapabilitiesCodecWithIndexSignature extends RTCRtpCodec {
-  [x: string]: string | number | undefined
+interface LogProps {
+  title: string;
+  codecs: RTCRtpCapabilitiesCodecWithIndexSignature[];
 }
 
-type LogProps = {
-  title: string
-  codecs: RTCRtpCapabilitiesCodecWithIndexSignature[]
+function Collapse({ title, codecs }: LogProps) {
+  return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />;
 }
 
-const Collapse: React.FC<LogProps> = ({ title, codecs }) => {
-  return <Message title={title} timestamp={null} description={JSON.stringify(codecs, null, 2)} />
-}
-
-const Log: React.FC<LogProps> = (props) => {
-  return <Collapse {...props} />
+function Log(props: LogProps) {
+  return <Collapse {...props} />;
 }
 
 const getCapabilitiesCodec = (
-  getCapabilities: (kind: string) => RTCRtpCapabilities | null,
+  getCapabilities: ((kind: string) => RTCRtpCapabilities | null) | undefined,
   kind: string,
 ): RTCRtpCodec[] => {
   if (!getCapabilities) {
-    return []
+    return [];
   }
-  const capabilities = getCapabilities(kind)
-  if (!capabilities || !capabilities.codecs) {
-    return []
+  const capabilities = getCapabilities(kind);
+  return capabilities?.codecs ?? [];
+};
+
+export function CapabilitiesCodec() {
+  // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
+  if (!globalThis.RTCRtpSender || !RTCRtpSender.getCapabilities) {
+    return null;
   }
-
-  return capabilities.codecs
-}
-
-export const CapabilitiesCodec: React.FC = () => {
-  const senderAudioCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'audio')
-  const senderVideoCapabilitiesCodec = getCapabilitiesCodec(RTCRtpSender.getCapabilities, 'video')
+  const senderAudioCapabilitiesCodec = getCapabilitiesCodec(
+    (kind) => RTCRtpSender.getCapabilities(kind),
+    "audio",
+  );
+  const senderVideoCapabilitiesCodec = getCapabilitiesCodec(
+    (kind) => RTCRtpSender.getCapabilities(kind),
+    "video",
+  );
   const receiverAudioCapabilitiesCodec = getCapabilitiesCodec(
-    RTCRtpReceiver.getCapabilities,
-    'audio',
-  )
+    (kind) => RTCRtpReceiver.getCapabilities(kind),
+    "audio",
+  );
   const receiverVideoCapabilitiesCodec = getCapabilitiesCodec(
-    RTCRtpReceiver.getCapabilities,
-    'video',
-  )
+    (kind) => RTCRtpReceiver.getCapabilities(kind),
+    "video",
+  );
   return (
     <div className="capabilities-codec">
       <Log
         title="Audio RTCRtpSender CapabilitiesCodec"
-        codecs={senderAudioCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          senderAudioCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
       <Log
         title="Video RTCRtpSender CapabilitiesCodec"
-        codecs={senderVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          senderVideoCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
       <Log
         title="Audio RTCRtpReceiver CapabilitiesCodec"
-        codecs={receiverAudioCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          receiverAudioCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
       <Log
         title="Video RTCRtpReceiver CapabilitiesCodec"
-        codecs={receiverVideoCapabilitiesCodec as RTCRtpCapabilitiesCodecWithIndexSignature[]}
+        codecs={
+          receiverVideoCapabilitiesCodec as unknown as RTCRtpCapabilitiesCodecWithIndexSignature[]
+        }
       />
     </div>
-  )
+  );
 }

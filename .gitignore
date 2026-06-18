@@ -17,8 +17,15 @@ next-env.d.ts
 /blob-report/
 /playwright/.cache/
 
+# vitest browser
+**/__screenshots__/
+
 # dist
 dist/
 
-# claude
+# Agents
 .claude/
+.codex/
+
+# mcp
+*.png

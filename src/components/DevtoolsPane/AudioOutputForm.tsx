@@ -1,35 +1,31 @@
-import type React from 'react'
-import { FormGroup, FormSelect } from 'react-bootstrap'
+import { FormGroup, FormSelect } from "@/components/ui";
 
-import { setAudioOutput } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import { setAudioOutput } from "@/app/actions";
+import { audioOutput, audioOutputDevices } from "@/app/signals";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-export const AudioOutputForm: React.FC = () => {
-  const audioOutput = useSoraDevtoolsStore((state) => state.audioOutput)
-  const audioOutputDevices = useSoraDevtoolsStore((state) => state.audioOutputDevices)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setAudioOutput(event.target.value)
-  }
+export function AudioOutputForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    setAudioOutput(target.value);
+  };
   return (
-    <FormGroup className="form-inline" controlId="audioOutput">
+    <FormGroup className="flex items-center gap-2" controlId="audioOutput">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
       <FormSelect
         name="audioOutput"
-        value={audioOutput}
+        value={audioOutput.value}
         onChange={onChange}
-        disabled={audioOutputDevices.length === 0}
+        disabled={audioOutputDevices.value.length === 0}
       >
         <option value="">未指定</option>
-        {audioOutputDevices.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          )
-        })}
+        {audioOutputDevices.value.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
-  )
+  );
 }

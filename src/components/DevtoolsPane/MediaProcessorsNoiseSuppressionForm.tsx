@@ -1,30 +1,29 @@
-import type React from 'react'
-import { FormGroup } from 'react-bootstrap'
+import { FormGroup } from "@/components/ui";
 
-import { setMediaProcessorsNoiseSuppression } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
+import {
+  mediaProcessorsNoiseSuppression,
+  mediaType,
+  setMediaProcessorsNoiseSuppression,
+} from "@/app/signals";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const MediaProcessorsNoiseSuppressionForm: React.FC = () => {
-  const mediaProcessorsNoiseSuppression = useSoraDevtoolsStore(
-    (state) => state.mediaProcessorsNoiseSuppression,
-  )
-  const mediaType = useSoraDevtoolsStore((state) => state.mediaType)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setMediaProcessorsNoiseSuppression(event.target.checked)
-  }
-  const disabled = mediaType !== 'getUserMedia'
+export function MediaProcessorsNoiseSuppressionForm() {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setMediaProcessorsNoiseSuppression(target.checked);
+  };
+  const disabled = mediaType.value !== "getUserMedia";
   return (
-    <FormGroup className="form-inline" controlId="mediaProcessorsNoiseSuppression">
+    <FormGroup className="flex items-center gap-2" controlId="mediaProcessorsNoiseSuppression">
       <TooltipFormCheck
         kind="mediaProcessorsNoiseSuppression"
-        checked={mediaProcessorsNoiseSuppression}
+        checked={mediaProcessorsNoiseSuppression.value}
         onChange={onChange}
         disabled={disabled}
       >
         mediaProcessorsNoiseSuppression
       </TooltipFormCheck>
     </FormGroup>
-  )
+  );
 }

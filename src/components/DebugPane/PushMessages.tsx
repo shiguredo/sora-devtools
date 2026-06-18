@@ -1,59 +1,58 @@
-import type React from 'react'
+import { debugFilterText, pushMessages } from "@/app/signals";
+import type { PushMessage } from "@/types";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { PushMessage } from '@/types'
+import { Message } from "./Message.tsx";
 
-import { Message } from './Message.tsx'
+const SIGNALING_COLORS: Record<string, string> = {
+  websocket: "#00ff00",
+  datachannel: "#ff00ff",
+};
 
-const SIGNALING_COLORS: { [key: string]: string } = {
-  websocket: '#00ff00',
-  datachannel: '#ff00ff',
+function Label(props: { text: string }) {
+  const { text } = props;
+  const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
+  return <span style={color ? { color } : {}}>[{text}]</span>;
 }
 
-const Label: React.FC<{ text: string }> = (props) => {
-  const { text } = props
-  const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined
-  return <span style={color ? { color: color } : {}}>[{text}]</span>
+interface CollapsePushProps {
+  push: PushMessage;
+  ariaControls: string;
 }
-
-type CollapsePushProps = {
-  push: PushMessage
-  ariaControls: string
-}
-const Collapse: React.FC<CollapsePushProps> = (props) => {
-  const { push } = props
-  const label = push.transportType ? <Label text={push.transportType} /> : null
+function Collapse(props: CollapsePushProps) {
+  const { push } = props;
+  // transportType は型定義上必須 (TransportType) のため常に truthy
+  const label = <Label text={push.transportType} />;
   return (
     <Message
       title={push.message.type}
       timestamp={push.timestamp}
-      description={push.message}
+      description={push.message as unknown as Record<string, unknown>}
       label={label}
     />
-  )
+  );
 }
 
-const Log: React.FC<CollapsePushProps> = (props) => {
-  return <Collapse {...props} />
+function Log(props: CollapsePushProps) {
+  return <Collapse {...props} />;
 }
 
-export const PushMessages: React.FC = () => {
-  const pushMessages = useSoraDevtoolsStore((state) => state.pushMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = pushMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
-      if (filterText === '') {
-        return true
+export function PushMessages() {
+  const pushMessagesValue = pushMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = pushMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
-    })
-  })
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
-    <div className="debug-messages">
+    <div className="overflow-y-auto h-full">
       {filteredMessages.map((pushMessage, index) => {
-        const key = `${pushMessage.timestamp}-${index}`
-        return <Log key={key} ariaControls={key} push={pushMessage} />
+        const key = `${pushMessage.timestamp}-${index}`;
+        return <Log key={key} ariaControls={key} push={pushMessage} />;
       })}
     </div>
-  )
+  );
 }

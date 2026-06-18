@@ -1,122 +1,134 @@
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { RTCStatsCodec } from '@/types'
-import { useEffect, useState } from 'react'
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
+
+import { sora, statsReport } from "@/app/signals";
+import type { RTCStatsCodec } from "@/types";
 
 const useVideoTrackStats = (stream: MediaStream) => {
-  const statsReport = useSoraDevtoolsStore((state) => state.soraContents.statsReport)
-  const soraContents = useSoraDevtoolsStore((state) => state.soraContents)
-  const [trackStats, setTrackStats] = useState<{
-    codec: RTCStatsCodec
+  const currentStatsReport = statsReport.value;
+  const currentSora = sora.value;
+  const trackStats = useSignal<{
+    codec: RTCStatsCodec;
     videoTrackStats: {
-      width?: number
-      height?: number
-      frameRate?: number
-    }
-  } | null>(null)
+      width?: number;
+      height?: number;
+      frameRate?: number;
+      decoderImplementation?: string;
+    };
+  } | null>(null);
   useEffect(() => {
-    ;(async () => {
-      if (!soraContents.sora?.pc) {
-        return
+    void (async () => {
+      if (!currentSora?.pc) {
+        return;
       }
       // 現在の VideoTrack を取得
-      const track = stream.getVideoTracks().find((track) => {
-        return track
-      })
+      const track = stream.getVideoTracks().find(Boolean);
       if (track === undefined) {
-        return
+        return;
       }
 
       // track の RTCRtpReceiver を取得
-      const receiver = await soraContents.sora.pc
+      const receiver = currentSora.pc
         .getReceivers()
-        .find((receiver) => receiver.track.id === track.id)
+        .find((receiver) => receiver.track.id === track.id);
       if (receiver === undefined) {
-        return
+        return;
       }
 
-      // RTCRtpReceiver の getStats から codecId を取得
-      let codecId: string | undefined
-      const receiverStatsReport = await receiver.getStats()
-      for (const stats of receiverStatsReport) {
-        const [_key, value] = stats
-        if (value.codecId) {
-          codecId = value.codecId
-          break
+      // RTCRtpReceiver の getStats から codecId と decoderImplementation を取得
+      let codecId: string | undefined;
+      let decoderImplementation: string | undefined;
+      const receiverStatsReport = await receiver.getStats();
+      // RTCStatsReport は Map 互換だが lib.dom の型定義の generic が合わないためキャストする
+      for (const [, value] of receiverStatsReport as ReadonlyMap<string, RTCStats>) {
+        if (value.type === "inbound-rtp") {
+          const inboundRtp = value as RTCInboundRtpStreamStats;
+          if (inboundRtp.kind === "video") {
+            ({ codecId, decoderImplementation } = inboundRtp);
+            break;
+          }
         }
       }
       if (codecId === undefined) {
-        return
+        return;
       }
 
       // RTCStatsReport から codecId が一致する codec の情報を取得
-      let codec: RTCStatsCodec | undefined
-      for (const stats of statsReport) {
-        if (stats.type === 'codec') {
-          const castedStats = stats as RTCStatsCodec
+      let codec: RTCStatsCodec | undefined;
+      for (const stats of currentStatsReport) {
+        if (stats.type === "codec") {
+          const castedStats = stats as RTCStatsCodec;
           if (codecId === castedStats.id) {
-            codec = castedStats
+            codec = castedStats;
           }
         }
       }
       if (codec) {
-        setTrackStats({
+        trackStats.value = {
           codec,
           videoTrackStats: {
             width: track.getSettings().width,
             height: track.getSettings().height,
             frameRate:
               track.getSettings().frameRate !== undefined
-                ? Math.floor(track.getSettings().frameRate || 0)
+                ? Math.floor(track.getSettings().frameRate ?? 0)
                 : undefined,
+            decoderImplementation,
           },
-        })
+        };
       }
-    })()
-  }, [statsReport, stream, soraContents])
+    })();
+  }, [currentStatsReport, stream, currentSora, trackStats]);
   return {
     trackStats,
-  }
-}
+  };
+};
 
 export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
-  const { trackStats } = useVideoTrackStats(stream)
+  const { trackStats } = useVideoTrackStats(stream);
   return (
-    <div className="video-overlay">
-      {trackStats === null ? (
+    <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
+      {trackStats.value === null ? (
         <p>loading...</p>
       ) : (
-        <table className="table-video-capabilities">
-          <tr>
-            <th>mimeType</th>
-            <td>{trackStats.codec.mimeType}</td>
-          </tr>
-          <tr>
-            <th>payloadType</th>
-            <td>{trackStats.codec.payloadType}</td>
-          </tr>
-          <tr>
-            <th>sdpFmtpLine</th>
-            <td>{trackStats.codec.sdpFmtpLine}</td>
-          </tr>
-          <tr>
-            <th>resolution</th>
-            <td>
-              {trackStats.videoTrackStats.width === undefined ||
-              trackStats.videoTrackStats.height === undefined
-                ? 'undefined'
-                : `${trackStats.videoTrackStats.width}x${trackStats.videoTrackStats.height}`}
-            </td>
-          </tr>
-          <tr>
-            <th>fps</th>
-            <td>
-              {trackStats.videoTrackStats.frameRate === undefined
-                ? 'undefined'
-                : trackStats.videoTrackStats.frameRate}
-            </td>
-          </tr>
+        <table className="text-sm">
+          <tbody>
+            <tr>
+              <th className="text-left pr-3 py-0.5">mimeType</th>
+              <td className="py-0.5">{trackStats.value.codec.mimeType}</td>
+            </tr>
+            <tr>
+              <th className="text-left pr-3 py-0.5">payloadType</th>
+              <td className="py-0.5">{trackStats.value.codec.payloadType}</td>
+            </tr>
+            <tr>
+              <th className="text-left pr-3 py-0.5">sdpFmtpLine</th>
+              <td className="py-0.5">{trackStats.value.codec.sdpFmtpLine}</td>
+            </tr>
+            <tr>
+              <th className="text-left pr-3 py-0.5">resolution</th>
+              <td className="py-0.5">
+                {trackStats.value.videoTrackStats.width === undefined ||
+                trackStats.value.videoTrackStats.height === undefined
+                  ? "undefined"
+                  : `${trackStats.value.videoTrackStats.width}x${trackStats.value.videoTrackStats.height}`}
+              </td>
+            </tr>
+            <tr>
+              <th className="text-left pr-3 py-0.5">fps</th>
+              <td className="py-0.5">
+                {trackStats.value.videoTrackStats.frameRate ?? "undefined"}
+              </td>
+            </tr>
+            {trackStats.value.videoTrackStats.decoderImplementation && (
+              <tr>
+                <th className="text-left pr-3 py-0.5">decoder</th>
+                <td className="py-0.5">{trackStats.value.videoTrackStats.decoderImplementation}</td>
+              </tr>
+            )}
+          </tbody>
         </table>
       )}
     </div>
-  )
-}
+  );
+};

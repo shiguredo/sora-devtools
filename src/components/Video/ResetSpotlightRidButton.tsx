@@ -1,34 +1,28 @@
-import type React from 'react'
+import { Button } from "@/components/ui";
+import { connectionStatus, sora } from "@/app/signals";
+import { rpc } from "@/rpc";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import { rpc } from '@/rpc'
-
-export const ResetSpotlightRidButton: React.FC = () => {
-  const conn = useSoraDevtoolsStore((state) => state.soraContents.sora)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
+export function ResetSpotlightRidButton() {
+  const conn = sora.value;
 
   const onClick = async (): Promise<void> => {
-    if (!conn || connectionStatus !== 'connected') {
-      return
+    if (!conn || connectionStatus.value !== "connected") {
+      return;
     }
 
     await rpc(
       conn,
-      '2025.2.0/ResetSpotlightRid',
+      "2025.2.0/ResetSpotlightRid",
       {},
       { notification: false, showMethodAlert: true },
-    )
-  }
+    );
+  };
 
   return (
     <div className="mx-1">
-      <input
-        className="btn btn-secondary"
-        type="button"
-        name="resetAllSpotlightRid"
-        defaultValue="resetSpotlightRid"
-        onClick={onClick}
-      />
+      <Button variant="secondary" onClick={onClick}>
+        resetSpotlightRid
+      </Button>
     </div>
-  )
+  );
 }

@@ -1,55 +1,52 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { FormGroup, FormInput } from "@/components/ui";
 
-import { setBundleId, setEnabledBundleId } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setBundleId, setEnabledBundleId } from "@/app/actions";
+import { bundleId, enabledBundleId, isFormDisabled } from "@/app/signals";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const BundleIdForm: React.FC = () => {
-  const enabledBundleId = useSoraDevtoolsStore((state) => state.enabledBundleId)
-  const bundleId = useSoraDevtoolsStore((state) => state.bundleId)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledBundleId(event.target.checked)
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setBundleId(event.target.value)
-  }
+export function BundleIdForm() {
+  const disabled = isFormDisabled.value;
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledBundleId(target.checked);
+  };
+  const onChangeText = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setBundleId(target.value);
+  };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledBundleId">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledBundleId">
             <TooltipFormCheck
               kind="bundleId"
-              checked={enabledBundleId}
+              checked={enabledBundleId.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
               bundleId
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
-      {enabledBundleId ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="bundleId">
-              <FormControl
+        </div>
+      </div>
+      {enabledBundleId.value ? (
+        <div className="form-row">
+          <div className="col-auto">
+            <FormGroup className="flex items-center gap-2" controlId="bundleId">
+              <FormInput
                 className="flex-fill w-500"
                 type="text"
                 placeholder="bundleIdを指定"
-                value={bundleId}
+                value={bundleId.value}
                 onChange={onChangeText}
                 disabled={disabled}
               />
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
-  )
+  );
 }

@@ -1,64 +1,61 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/app/actions";
+import { FormGroup, FormTextarea } from "@/components/ui";
+import {
+  enabledSignalingUrlCandidates,
+  isFormDisabled,
+  signalingUrlCandidates,
+} from "@/app/signals";
 
-import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
-
-export const SignalingUrlCandidatesForm: React.FC = () => {
-  const enabledSignalingUrlCandidates = useSoraDevtoolsStore(
-    (state) => state.enabledSignalingUrlCandidates,
-  )
-  const signalingUrlCandidates = useSoraDevtoolsStore((state) => state.signalingUrlCandidates)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledSignalingUrlCandidates(event.target.checked)
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setSignalingUrlCandidates(event.target.value.split('\n'))
-  }
+export function SignalingUrlCandidatesForm() {
+  const disabled = isFormDisabled.value;
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledSignalingUrlCandidates(target.checked);
+  };
+  const onChangeText = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setSignalingUrlCandidates(target.value.split("\n"));
+  };
   const textareaPlaceholder = `signalingUrlCandidatesを指定
 (例)
 wss://sora0.example.com/signaling
 wss://sora1.example.com/signaling
-`
+`;
   return (
     <>
-      <Row className="form-row" xs="auto">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledSignalingUrlCandidates">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledSignalingUrlCandidates">
             <TooltipFormCheck
               kind="signalingUrlCandidates"
-              checked={enabledSignalingUrlCandidates}
+              checked={enabledSignalingUrlCandidates.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
               signalingUrlCandidates
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
-      {enabledSignalingUrlCandidates ? (
-        <Row className="form-row" xs="auto">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="signalingNotifyMetadata">
-              <FormControl
+        </div>
+      </div>
+      {enabledSignalingUrlCandidates.value ? (
+        <div className="form-row">
+          <div className="col-auto">
+            <FormGroup className="flex items-center gap-2" controlId="signalingNotifyMetadata">
+              <FormTextarea
                 className="flex-fill"
-                as="textarea"
                 placeholder={textareaPlaceholder}
-                value={signalingUrlCandidates.join('\n')}
+                value={signalingUrlCandidates.value.join("\n")}
                 onChange={onChangeText}
                 rows={5}
                 cols={100}
                 disabled={disabled}
               />
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
-  )
+  );
 }

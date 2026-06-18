@@ -1,4 +1,4 @@
-import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from 'sora-js-sdk'
+import type { ConnectionOptions, DataChannelConfiguration, ForwardingFilter } from "sora-js-sdk";
 
 import {
   ASPECT_RATIO_TYPES,
@@ -17,42 +17,53 @@ import {
   RESIZE_MODE_TYPES,
   ROLES,
   SIMULCAST,
-  SIMULCAST_RID,
   SIMULCAST_REQUEST_RID,
+  SIMULCAST_RID,
   SPOTLIGHT,
   SPOTLIGHT_FOCUS_RIDS,
   SPOTLIGHT_NUMBERS,
   VIDEO_CODEC_TYPES,
   VIDEO_CONTENT_HINTS,
-} from './constants.ts'
+} from "./constants.ts";
 import type {
   ConnectionOptionsState,
-  CustomHTMLCanvasElement,
   Json,
   QueryStringParameters,
   SoraDevtoolsMediaTrackConstraints,
   SoraDevtoolsState,
-} from './types.ts'
+} from "./types.ts";
 
 // UNIX time を 年-月-日 時:分:秒.ミリ秒 形式に変換
 export function formatUnixtime(time: number): string {
-  const date = new Date(time)
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours().toString().padStart(2, '0')
-  const minute = date.getMinutes().toString().padStart(2, '0')
-  const second = date.getSeconds().toString().padStart(2, '0')
-  const millisecond = date.getMilliseconds().toString().padStart(3, '0')
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`
+  const date = new Date(time);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours().toString().padStart(2, "0");
+  const minute = date.getMinutes().toString().padStart(2, "0");
+  const second = date.getSeconds().toString().padStart(2, "0");
+  const millisecond = date.getMilliseconds().toString().padStart(3, "0");
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
-// OS の Clipboard にテキストを書き込む
-export function copy2clipboard(text: string): Promise<void> {
-  if (navigator.clipboard) {
-    return navigator.clipboard.writeText(text)
+// catch で受け取った unknown 値からエラーメッセージを取り出す
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+// OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す
+export async function copyToClipboard(text: string): Promise<boolean> {
+  // navigator.clipboard は HTTPS / localhost 以外では undefined になり得る
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
+  if (!navigator.clipboard) {
+    return false;
   }
-  return Promise.resolve()
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // Form の Type Guard
@@ -60,191 +71,200 @@ export function checkFormValue<T extends readonly string[]>(
   value: unknown,
   candidates: T,
 ): value is (typeof candidates)[number] {
-  if (typeof value === 'string') {
-    return candidates.indexOf(value) >= 0
+  if (typeof value === "string") {
+    return candidates.includes(value);
   }
-  return false
+  return false;
+}
+
+// URLSearchParams から値を取得して string | undefined を返す
+function parseStringParameter(searchParams: URLSearchParams, key: string): string | undefined {
+  const value = searchParams.get(key);
+  if (value !== null) {
+    return value;
+  }
+  return undefined;
+}
+
+// 配列性 + 要素 string 性を両方検証する型ガード関数。
+// 要素に number / null / boolean / object が混在すると SDK 内部の new WebSocket(_) が
+// USVString 変換後 URL パースに失敗して SyntaxError (DOMException) を投げるため、境界で undefined に落とす。
+// every は空配列で true を返すため `[]` は受理されるが、空配列が下流の SDK に届かない保証は呼び出し側のガードに委ねる。
+export function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
 
 // クエリ文字列パーサー
 export function parseQueryString(searchParams: URLSearchParams): Partial<QueryStringParameters> {
-  // URLSearchParams から値を取得して string | undefined を返す
-  const parseStringParameter = (searchParams: URLSearchParams, key: string): string | undefined => {
-    const value = searchParams.get(key)
-    if (value !== null) {
-      return value
-    }
-    return
-  }
   // URLSearchParams から値を取得して boolean | undefined を返す
   const parseBooleanParameter = (
     searchParams: URLSearchParams,
     key: string,
   ): boolean | undefined => {
-    const value = searchParams.get(key)
+    const value = searchParams.get(key);
     if (value !== null) {
-      return parseBooleanString(value)
+      return parseBooleanString(value);
     }
-    return
-  }
+    return undefined;
+  };
   // URLSearchParams から値を取得して特定の文字列かどうかを判定して string | undefined を返す
   const parseSpecifiedStringParameter = <T extends readonly string[]>(
     searchParams: URLSearchParams,
     key: string,
     candidates: T,
   ): (typeof candidates)[number] | undefined => {
-    const value = searchParams.get(key)
+    const value = searchParams.get(key);
     if (value !== null && checkFormValue(value, candidates)) {
-      return value
+      return value;
     }
-    return
-  }
+    return undefined;
+  };
 
   // signalingUrlCandidates のパース
-  let signalingUrlCandidates: any
-  const signalingUrlCandidatesValue = searchParams.get('signalingUrlCandidates')
+  let signalingUrlCandidates: unknown;
+  const signalingUrlCandidatesValue = searchParams.get("signalingUrlCandidates");
   if (signalingUrlCandidatesValue !== null) {
     try {
-      signalingUrlCandidates = JSON.parse(signalingUrlCandidatesValue)
-    } catch (_) {
+      signalingUrlCandidates = JSON.parse(signalingUrlCandidatesValue);
+    } catch {
       // 例外の場合は何もしない
     }
   }
 
   const result: Partial<QueryStringParameters> = {
-    apiUrl: parseStringParameter(searchParams, 'apiUrl'),
-    audio: parseBooleanParameter(searchParams, 'audio'),
-    audioBitRate: parseStringParameter(searchParams, 'audioBitRate'),
+    apiUrl: parseStringParameter(searchParams, "apiUrl"),
+    audio: parseBooleanParameter(searchParams, "audio"),
+    audioBitRate: parseStringParameter(searchParams, "audioBitRate"),
     audioCodecType: parseSpecifiedStringParameter(
       searchParams,
-      'audioCodecType',
+      "audioCodecType",
       AUDIO_CODEC_TYPES,
     ),
-    audioStreamingLanguageCode: parseStringParameter(searchParams, 'audioStreamingLanguageCode'),
+    audioStreamingLanguageCode: parseStringParameter(searchParams, "audioStreamingLanguageCode"),
     autoGainControl: parseSpecifiedStringParameter(
       searchParams,
-      'autoGainControl',
+      "autoGainControl",
       AUTO_GAIN_CONTROLS,
     ),
-    bundleId: parseStringParameter(searchParams, 'bundleId'),
-    channelId: parseStringParameter(searchParams, 'channelId'),
-    clientId: parseStringParameter(searchParams, 'clientId'),
-    googCpuOveruseDetection: parseBooleanParameter(searchParams, 'googCpuOveruseDetection'),
-    debug: parseBooleanParameter(searchParams, 'debug'),
-    debugType: parseSpecifiedStringParameter(searchParams, 'debugType', DEBUG_TYPES),
-    debugApiUrl: parseStringParameter(searchParams, 'debugApiUrl'),
-    displayResolution: parseStringParameter(searchParams, 'displayResolution'),
+    bundleId: parseStringParameter(searchParams, "bundleId"),
+    channelId: parseStringParameter(searchParams, "channelId"),
+    clientId: parseStringParameter(searchParams, "clientId"),
+    googCpuOveruseDetection: parseBooleanParameter(searchParams, "googCpuOveruseDetection"),
+    debug: parseBooleanParameter(searchParams, "debug"),
+    debugType: parseSpecifiedStringParameter(searchParams, "debugType", DEBUG_TYPES),
+    debugApiUrl: parseStringParameter(searchParams, "debugApiUrl"),
+    displayResolution: parseStringParameter(searchParams, "displayResolution"),
     echoCancellation: parseSpecifiedStringParameter(
       searchParams,
-      'echoCancellation',
+      "echoCancellation",
       ECHO_CANCELLATIONS,
     ),
     echoCancellationType: parseSpecifiedStringParameter(
       searchParams,
-      'echoCancellationType',
+      "echoCancellationType",
       ECHO_CANCELLATION_TYPES,
     ),
     noiseSuppression: parseSpecifiedStringParameter(
       searchParams,
-      'noiseSuppression',
+      "noiseSuppression",
       NOISE_SUPPRESSIONS,
     ),
-    facingMode: parseSpecifiedStringParameter(searchParams, 'facingMode', FACING_MODES),
-    fakeVolume: parseStringParameter(searchParams, 'fakeVolume'),
-    frameRate: parseStringParameter(searchParams, 'frameRate'),
-    mediaStats: parseBooleanParameter(searchParams, 'mediaStats'),
-    mediaType: parseSpecifiedStringParameter(searchParams, 'mediaType', MEDIA_TYPES),
-    metadata: parseStringParameter(searchParams, 'metadata'),
-    showStats: parseBooleanParameter(searchParams, 'showStats'),
-    signalingNotifyMetadata: parseStringParameter(searchParams, 'signalingNotifyMetadata'),
-    signalingUrlCandidates: Array.isArray(signalingUrlCandidates)
+    facingMode: parseSpecifiedStringParameter(searchParams, "facingMode", FACING_MODES),
+    fakeVolume: parseStringParameter(searchParams, "fakeVolume"),
+    frameRate: parseStringParameter(searchParams, "frameRate"),
+    mediaStats: parseBooleanParameter(searchParams, "mediaStats"),
+    mediaType: parseSpecifiedStringParameter(searchParams, "mediaType", MEDIA_TYPES),
+    metadata: parseStringParameter(searchParams, "metadata"),
+    showStats: parseBooleanParameter(searchParams, "showStats"),
+    signalingNotifyMetadata: parseStringParameter(searchParams, "signalingNotifyMetadata"),
+    signalingUrlCandidates: isStringArray(signalingUrlCandidates)
       ? signalingUrlCandidates
       : undefined,
-    forwardingFilters: parseStringParameter(searchParams, 'forwardingFilters'),
-    forwardingFilter: parseStringParameter(searchParams, 'forwardingFilter'),
-    simulcast: parseSpecifiedStringParameter(searchParams, 'simulcast', SIMULCAST),
-    simulcastRid: parseSpecifiedStringParameter(searchParams, 'simulcastRid', SIMULCAST_RID),
+    forwardingFilters: parseStringParameter(searchParams, "forwardingFilters"),
+    simulcast: parseSpecifiedStringParameter(searchParams, "simulcast", SIMULCAST),
+    simulcastRid: parseSpecifiedStringParameter(searchParams, "simulcastRid", SIMULCAST_RID),
     simulcastRequestRid: parseSpecifiedStringParameter(
       searchParams,
-      'simulcastRequestRid',
+      "simulcastRequestRid",
       SIMULCAST_REQUEST_RID,
     ),
-    spotlight: parseSpecifiedStringParameter(searchParams, 'spotlight', SPOTLIGHT),
+    spotlight: parseSpecifiedStringParameter(searchParams, "spotlight", SPOTLIGHT),
     spotlightNumber: parseSpecifiedStringParameter(
       searchParams,
-      'spotlightNumber',
+      "spotlightNumber",
       SPOTLIGHT_NUMBERS,
     ),
     spotlightFocusRid: parseSpecifiedStringParameter(
       searchParams,
-      'spotlightFocusRid',
+      "spotlightFocusRid",
       SPOTLIGHT_FOCUS_RIDS,
     ),
     spotlightUnfocusRid: parseSpecifiedStringParameter(
       searchParams,
-      'spotlightUnfocusRid',
+      "spotlightUnfocusRid",
       SPOTLIGHT_FOCUS_RIDS,
     ),
-    resolution: parseStringParameter(searchParams, 'resolution'),
-    video: parseBooleanParameter(searchParams, 'video'),
-    videoBitRate: parseStringParameter(searchParams, 'videoBitRate'),
+    resolution: parseStringParameter(searchParams, "resolution"),
+    video: parseBooleanParameter(searchParams, "video"),
+    videoBitRate: parseStringParameter(searchParams, "videoBitRate"),
     videoCodecType: parseSpecifiedStringParameter(
       searchParams,
-      'videoCodecType',
+      "videoCodecType",
       VIDEO_CODEC_TYPES,
     ),
-    videoVP9Params: parseStringParameter(searchParams, 'videoVP9Params'),
-    videoH264Params: parseStringParameter(searchParams, 'videoH264Params'),
-    videoH265Params: parseStringParameter(searchParams, 'videoH265Params'),
-    videoAV1Params: parseStringParameter(searchParams, 'videoAV1Params'),
-    forceStereoOutput: parseBooleanParameter(searchParams, 'forceStereoOutput'),
-    audioInput: parseStringParameter(searchParams, 'audioInput'),
-    videoInput: parseStringParameter(searchParams, 'videoInput'),
-    audioOutput: parseStringParameter(searchParams, 'audioOutput'),
-    mute: parseBooleanParameter(searchParams, 'mute'),
+    videoVP9Params: parseStringParameter(searchParams, "videoVP9Params"),
+    videoH264Params: parseStringParameter(searchParams, "videoH264Params"),
+    videoH265Params: parseStringParameter(searchParams, "videoH265Params"),
+    videoAV1Params: parseStringParameter(searchParams, "videoAV1Params"),
+    forceStereoOutput: parseBooleanParameter(searchParams, "forceStereoOutput"),
+    audioInput: parseStringParameter(searchParams, "audioInput"),
+    videoInput: parseStringParameter(searchParams, "videoInput"),
+    audioOutput: parseStringParameter(searchParams, "audioOutput"),
+    mute: parseBooleanParameter(searchParams, "mute"),
     dataChannelSignaling: parseSpecifiedStringParameter(
       searchParams,
-      'dataChannelSignaling',
+      "dataChannelSignaling",
       DATA_CHANNEL_SIGNALING,
     ),
     ignoreDisconnectWebSocket: parseSpecifiedStringParameter(
       searchParams,
-      'ignoreDisconnectWebSocket',
+      "ignoreDisconnectWebSocket",
       IGNORE_DISCONNECT_WEBSOCKET,
     ),
-    micDevice: parseBooleanParameter(searchParams, 'micDevice'),
-    cameraDevice: parseBooleanParameter(searchParams, 'cameraDevice'),
-    audioTrack: parseBooleanParameter(searchParams, 'audioTrack'),
-    videoTrack: parseBooleanParameter(searchParams, 'videoTrack'),
-    dataChannels: parseStringParameter(searchParams, 'dataChannels'),
-    reconnect: parseBooleanParameter(searchParams, 'reconnect'),
+    micDevice: parseBooleanParameter(searchParams, "micDevice"),
+    cameraDevice: parseBooleanParameter(searchParams, "cameraDevice"),
+    audioTrack: parseBooleanParameter(searchParams, "audioTrack"),
+    videoTrack: parseBooleanParameter(searchParams, "videoTrack"),
+    dataChannels: parseStringParameter(searchParams, "dataChannels"),
+    reconnect: parseBooleanParameter(searchParams, "reconnect"),
     audioContentHint: parseSpecifiedStringParameter(
       searchParams,
-      'audioContentHint',
+      "audioContentHint",
       AUDIO_CONTENT_HINTS,
     ),
     videoContentHint: parseSpecifiedStringParameter(
       searchParams,
-      'videoContentHint',
+      "videoContentHint",
       VIDEO_CONTENT_HINTS,
     ),
-    aspectRatio: parseSpecifiedStringParameter(searchParams, 'aspectRatio', ASPECT_RATIO_TYPES),
-    resizeMode: parseSpecifiedStringParameter(searchParams, 'resizeMode', RESIZE_MODE_TYPES),
-    blurRadius: parseSpecifiedStringParameter(searchParams, 'blurRadius', BLUR_RADIUS),
+    aspectRatio: parseSpecifiedStringParameter(searchParams, "aspectRatio", ASPECT_RATIO_TYPES),
+    resizeMode: parseSpecifiedStringParameter(searchParams, "resizeMode", RESIZE_MODE_TYPES),
+    blurRadius: parseSpecifiedStringParameter(searchParams, "blurRadius", BLUR_RADIUS),
     mediaProcessorsNoiseSuppression: parseBooleanParameter(
       searchParams,
-      'mediaProcessorsNoiseSuppression',
+      "mediaProcessorsNoiseSuppression",
     ),
-    role: parseSpecifiedStringParameter(searchParams, 'role', ROLES),
-  }
+    role: parseSpecifiedStringParameter(searchParams, "role", ROLES),
+  };
 
-  // undefined の項目を削除する
-  ;(Object.keys(result) as (keyof Partial<QueryStringParameters>)[]).forEach((key) => {
-    if (result[key] === undefined) {
-      delete result[key]
+  // undefined の項目を除外した新しいオブジェクトを作成する
+  const filteredResult: Partial<QueryStringParameters> = {};
+  for (const key of Object.keys(result) as Array<keyof Partial<QueryStringParameters>>) {
+    if (result[key] !== undefined) {
+      (filteredResult as Record<string, unknown>)[key] = result[key];
     }
-  })
-  return result
+  }
+  return filteredResult;
 }
 
 // Sora のシグナリングURLを生成
@@ -254,69 +274,83 @@ export function createSignalingURL(
 ): string | string[] {
   if (enabledSignalingUrlCandidates) {
     // 空文字列は取り除く
-    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== '')
+    return signalingUrlCandidates.filter((signalingUrlCandidate) => signalingUrlCandidate !== "");
   }
-  if (import.meta.env.NODE_ENV === 'development' && import.meta.env.VITE_SORA_SIGNALING_URL) {
-    return import.meta.env.VITE_SORA_SIGNALING_URL
+  if (import.meta.env.DEV && import.meta.env.VITE_SORA_SIGNALING_URL) {
+    return import.meta.env.VITE_SORA_SIGNALING_URL;
   }
-  const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
-  const port = window.location.port ? `:${window.location.port}` : ''
-  return `${wsProtocol + window.location.hostname + port}/signaling`
+  const wsProtocol = globalThis.location.protocol === "https:" ? "wss://" : "ws://";
+  const port = globalThis.location.port ? `:${globalThis.location.port}` : "";
+  return `${wsProtocol + globalThis.location.hostname + port}/signaling`;
 }
 
 // 解像度に対応する width と height を返す
-const videoResolutionPattern = /^(\d+)x(\d+)$/
+const videoResolutionPattern = /^(?<width>\d+)x(?<height>\d+)$/u;
 
-export function testVideoResolutionPattern(resolution: string): boolean {
-  return videoResolutionPattern.test(resolution)
-}
-
-export function getVideoSizeByResolution(resolution: string): { width: number; height: number } {
+export function getVideoSizeByResolution(resolution: string): {
+  width: number;
+  height: number;
+} {
   if (videoResolutionPattern.test(resolution)) {
-    const match = resolution.match(videoResolutionPattern)
-    if (match) {
-      return { width: Number.parseInt(match[1], 10), height: Number.parseInt(match[2], 10) }
+    const match = videoResolutionPattern.exec(resolution);
+    if (match?.groups) {
+      return {
+        width: Number.parseInt(match.groups.width, 10),
+        height: Number.parseInt(match.groups.height, 10),
+      };
     }
   }
-  return { width: 0, height: 0 }
+  return { width: 0, height: 0 };
 }
 
 // アスペクト比に対応する数値を返す
 export function getValueByAspectRatio(aspectRatio: string): number {
   switch (aspectRatio) {
-    case '4:3':
-      return 4 / 3
-    case '16:9':
-      return 16 / 9
-    case '21:9':
-      return 20 / 9
-    default:
-      return Number.NaN
+    case "4:3": {
+      return 4 / 3;
+    }
+    case "16:9": {
+      return 16 / 9;
+    }
+    case "21:9": {
+      return 21 / 9;
+    }
+    default: {
+      return Number.NaN;
+    }
   }
 }
 
 // devtools の blurRadius 文字列に対する数値を返す
 export function getBlurRadiusNumber(blurRadius: (typeof BLUR_RADIUS)[number]): number {
   switch (blurRadius) {
-    case 'weak':
-      return 5
-    case 'medium':
-      return 10
-    case 'strong':
-      return 15
-    default:
-      return 0
+    case "": {
+      return 0;
+    }
+    case "weak": {
+      return 5;
+    }
+    case "medium": {
+      return 10;
+    }
+    case "strong": {
+      return 15;
+    }
+    default: {
+      const exhaustiveCheck: never = blurRadius;
+      throw new Error(`unexpected blurRadius value: ${exhaustiveCheck as string}`);
+    }
   }
 }
 
 // getUserMedia の audio constraints を生成
-type CreateAudioConstraintsParameters = {
-  audio: boolean
-  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
-  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
-  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
-  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
-  audioInput: string
+interface CreateAudioConstraintsParameters {
+  audio: boolean;
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number];
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number];
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number];
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number];
+  audioInput: string;
 }
 export function createAudioConstraints(
   parameters: CreateAudioConstraintsParameters,
@@ -328,9 +362,9 @@ export function createAudioConstraints(
     echoCancellation,
     echoCancellationType,
     audioInput,
-  } = parameters
+  } = parameters;
   if (!audio) {
-    return false
+    return false;
   }
   if (
     !autoGainControl &&
@@ -339,367 +373,382 @@ export function createAudioConstraints(
     !echoCancellationType &&
     !audioInput
   ) {
-    return audio
+    return audio;
   }
-  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (audioInput) {
-    audioConstraints.deviceId = { exact: audioInput }
+    audioConstraints.deviceId = { exact: audioInput };
   }
-  const parsedAutoGainControl = parseBooleanString(autoGainControl)
+  const parsedAutoGainControl = parseBooleanString(autoGainControl);
   if (parsedAutoGainControl !== undefined) {
-    audioConstraints.autoGainControl = parsedAutoGainControl
+    audioConstraints.autoGainControl = parsedAutoGainControl;
   }
-  const parsedNoiseSuppression = parseBooleanString(noiseSuppression)
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression);
   if (parsedNoiseSuppression !== undefined) {
-    audioConstraints.noiseSuppression = parsedNoiseSuppression
+    audioConstraints.noiseSuppression = parsedNoiseSuppression;
   }
-  const parsedEchoCancellation = parseBooleanString(echoCancellation)
+  const parsedEchoCancellation = parseBooleanString(echoCancellation);
   if (parsedEchoCancellation !== undefined) {
-    audioConstraints.echoCancellation = parsedEchoCancellation
+    audioConstraints.echoCancellation = parsedEchoCancellation;
   }
   if (echoCancellationType) {
-    audioConstraints.echoCancellationType = echoCancellationType
+    audioConstraints.echoCancellationType = echoCancellationType;
   }
-  return audioConstraints
+  return audioConstraints;
 }
 
 // getUserMedia の video constraints を生成
-type CreateVideoConstraintsParameters = {
-  aspectRatio: SoraDevtoolsState['aspectRatio']
-  frameRate: SoraDevtoolsState['frameRate']
-  resizeMode: SoraDevtoolsState['resizeMode']
-  resolution: SoraDevtoolsState['resolution']
-  video: SoraDevtoolsState['video']
-  videoInput: SoraDevtoolsState['videoInput']
-  facingMode: SoraDevtoolsState['facingMode']
+interface CreateVideoConstraintsParameters {
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  frameRate: SoraDevtoolsState["frameRate"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
+  resolution: SoraDevtoolsState["resolution"];
+  video: SoraDevtoolsState["video"];
+  videoInput: SoraDevtoolsState["videoInput"];
+  facingMode: SoraDevtoolsState["facingMode"];
 }
 export function createVideoConstraints(
   parameters: CreateVideoConstraintsParameters,
 ): boolean | MediaTrackConstraints {
   const { video, frameRate, resolution, videoInput, aspectRatio, resizeMode, facingMode } =
-    parameters
+    parameters;
   if (!video) {
-    return false
+    return false;
   }
   if (!frameRate && !resolution && !videoInput && !aspectRatio && !resizeMode && !facingMode) {
-    return video
+    return video;
   }
-  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
-    const fps = Number.parseInt(frameRate, 10)
+    const fps = Number.parseInt(frameRate, 10);
     if (!Number.isNaN(fps)) {
       videoConstraints.frameRate = {
         min: fps,
         max: fps,
-      }
+      };
     }
   }
   if (resolution) {
-    const { width, height } = getVideoSizeByResolution(resolution)
+    const { width, height } = getVideoSizeByResolution(resolution);
     if (width > 0 && height > 0) {
-      videoConstraints.width = { exact: width }
-      videoConstraints.height = { exact: height }
+      videoConstraints.width = { exact: width };
+      videoConstraints.height = { exact: height };
     }
   }
   if (videoInput) {
-    videoConstraints.deviceId = { exact: videoInput }
+    videoConstraints.deviceId = { exact: videoInput };
   }
   if (aspectRatio) {
-    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio)
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
   }
   if (resizeMode) {
-    videoConstraints.resizeMode = resizeMode
+    videoConstraints.resizeMode = resizeMode;
   }
-  if (facingMode === 'front') {
-    videoConstraints.facingMode = 'user'
-  } else if (facingMode === 'back') {
-    videoConstraints.facingMode = { exact: 'environment' }
+  if (facingMode === "front") {
+    videoConstraints.facingMode = "user";
+  } else if (facingMode === "back") {
+    videoConstraints.facingMode = { exact: "environment" };
   }
-  return videoConstraints
+  return videoConstraints;
 }
 
 // Fake 用の constraints を生成
-type CreateFakeMediaConstraintsParameters = {
-  audio: SoraDevtoolsState['audio']
-  video: SoraDevtoolsState['video']
-  frameRate: SoraDevtoolsState['frameRate']
-  resolution: SoraDevtoolsState['resolution']
-  volume: SoraDevtoolsState['fakeVolume']
-  aspectRatio: SoraDevtoolsState['aspectRatio']
-  resizeMode: SoraDevtoolsState['resizeMode']
+interface CreateFakeMediaConstraintsParameters {
+  audio: SoraDevtoolsState["audio"];
+  video: SoraDevtoolsState["video"];
+  frameRate: SoraDevtoolsState["frameRate"];
+  resolution: SoraDevtoolsState["resolution"];
+  volume: SoraDevtoolsState["fakeVolume"];
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
 }
-type FakeMediaStreamConstraints = {
-  audio: boolean
-  video: boolean
-  frameRate: number
-  width: number
-  height: number
-  fontSize: number
-  volume: number
-  videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints
+interface FakeMediaStreamConstraints {
+  audio: boolean;
+  video: boolean;
+  frameRate: number;
+  width: number;
+  height: number;
+  fontSize: number;
+  volume: number;
+  videoTrackConstraints?: SoraDevtoolsMediaTrackConstraints;
 }
 export function createFakeMediaConstraints(
   parameters: CreateFakeMediaConstraintsParameters,
 ): FakeMediaStreamConstraints {
-  const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters
-  // fake の default frameRate は 30 fps
-  const fps = Number.parseInt(frameRate, 10)
-  const parsedFrameRate = Number.isNaN(fps) ? 30 : fps
+  const { audio, video, frameRate, resolution, volume, aspectRatio, resizeMode } = parameters;
+  // frameRate は URL パラメータ / UI のテキスト入力由来の string。
+  // 0 / 負数 / 0.5 / 0xN プレフィックスを素通しすると下流 worker の setTimeout が
+  // HTML Living Standard の "Timers" セクションにあるネストレベル clamp ルール
+  // (nesting level > 5 かつ timeout < 4 で 4 ms に揃える) によって 4 ms に丸められ、
+  // 実効 ~250 fps の過剰スケジューリングに陥るため、有限正数のみ受理して UI 上限 60 にクランプする。
+  // 本関数の戻り値 frameRate は常に [1, 60] の整数になる。
+  const fps = Number.parseInt(frameRate, 10);
+  const parsedFrameRate = Number.isFinite(fps) && fps > 0 ? Math.min(fps, 60) : 30;
   // width, height の default はそれぞれ 240 / 160
-  const resolutionSize = getVideoSizeByResolution(resolution)
-  const width = resolutionSize.width || 240
-  const height = resolutionSize.height || 160
-  const fontSize = Math.floor(width / 5)
+  const resolutionSize = getVideoSizeByResolution(resolution);
+  const width = resolutionSize.width || 240;
+  const height = resolutionSize.height || 160;
+  const fontSize = Math.floor(width / 5);
   const constraints: FakeMediaStreamConstraints = {
-    audio: audio,
-    video: video,
+    audio,
+    video,
     frameRate: parsedFrameRate,
-    width: width,
-    height: height,
-    fontSize: fontSize,
+    width,
+    height,
+    fontSize,
     volume: Number.parseFloat(volume),
-  }
+  };
   if (video && (aspectRatio || resizeMode)) {
-    constraints.videoTrackConstraints = {}
+    constraints.videoTrackConstraints = {};
     if (aspectRatio) {
-      constraints.videoTrackConstraints.aspectRatio = getValueByAspectRatio(aspectRatio)
+      constraints.videoTrackConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
     }
     if (resizeMode) {
-      constraints.videoTrackConstraints.resizeMode = resizeMode
+      constraints.videoTrackConstraints.resizeMode = resizeMode;
     }
   }
-  return constraints
+  return constraints;
 }
 
 // getDisplayMedia の audio constraints を生成
-type CreateGetDisplayMediaAudioConstraintsParameters = {
-  audio: SoraDevtoolsState['audio']
-  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number]
-  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number]
-  echoCancellation: (typeof ECHO_CANCELLATIONS)[number]
-  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number]
+interface CreateGetDisplayMediaAudioConstraintsParameters {
+  audio: SoraDevtoolsState["audio"];
+  autoGainControl: (typeof AUTO_GAIN_CONTROLS)[number];
+  noiseSuppression: (typeof NOISE_SUPPRESSIONS)[number];
+  echoCancellation: (typeof ECHO_CANCELLATIONS)[number];
+  echoCancellationType: (typeof ECHO_CANCELLATION_TYPES)[number];
 }
 export function createGetDisplayMediaAudioConstraints(
   parameters: CreateGetDisplayMediaAudioConstraintsParameters,
 ): boolean | MediaTrackConstraints {
   const { audio, autoGainControl, noiseSuppression, echoCancellation, echoCancellationType } =
-    parameters
+    parameters;
   if (!audio) {
-    return false
+    return false;
   }
   if (!autoGainControl && !noiseSuppression && !echoCancellation && !echoCancellationType) {
-    return true
+    return true;
   }
-  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {}
-  const parsedAutoGainControl = parseBooleanString(autoGainControl)
+  const audioConstraints: SoraDevtoolsMediaTrackConstraints = {};
+  const parsedAutoGainControl = parseBooleanString(autoGainControl);
   if (parsedAutoGainControl !== undefined) {
-    audioConstraints.autoGainControl = parsedAutoGainControl
+    audioConstraints.autoGainControl = parsedAutoGainControl;
   }
-  const parsedNoiseSuppression = parseBooleanString(noiseSuppression)
+  const parsedNoiseSuppression = parseBooleanString(noiseSuppression);
   if (parsedNoiseSuppression !== undefined) {
-    audioConstraints.noiseSuppression = parsedNoiseSuppression
+    audioConstraints.noiseSuppression = parsedNoiseSuppression;
   }
-  const parsedEchoCancellation = parseBooleanString(echoCancellation)
+  const parsedEchoCancellation = parseBooleanString(echoCancellation);
   if (parsedEchoCancellation !== undefined) {
-    audioConstraints.echoCancellation = parsedEchoCancellation
+    audioConstraints.echoCancellation = parsedEchoCancellation;
   }
   if (echoCancellationType) {
-    audioConstraints.echoCancellationType = echoCancellationType
+    audioConstraints.echoCancellationType = echoCancellationType;
   }
-  return audioConstraints
+  return audioConstraints;
 }
 
 // getDisplayMedia の video constraints を生成
-type CreateGetDisplayMediaVideoConstraintsParameters = {
-  frameRate: SoraDevtoolsState['frameRate']
-  resolution: SoraDevtoolsState['resolution']
-  aspectRatio: SoraDevtoolsState['aspectRatio']
-  resizeMode: SoraDevtoolsState['resizeMode']
+interface CreateGetDisplayMediaVideoConstraintsParameters {
+  frameRate: SoraDevtoolsState["frameRate"];
+  resolution: SoraDevtoolsState["resolution"];
+  aspectRatio: SoraDevtoolsState["aspectRatio"];
+  resizeMode: SoraDevtoolsState["resizeMode"];
 }
 export function createGetDisplayMediaVideoConstraints(
   parameters: CreateGetDisplayMediaVideoConstraintsParameters,
 ): boolean | SoraDevtoolsMediaTrackConstraints {
-  const { aspectRatio, frameRate, resizeMode, resolution } = parameters
+  const { aspectRatio, frameRate, resizeMode, resolution } = parameters;
   if (!frameRate && !resolution && !aspectRatio && !resizeMode) {
-    return true
+    return true;
   }
-  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {}
+  const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
-    const fps = Number.parseInt(frameRate, 10)
+    const fps = Number.parseInt(frameRate, 10);
     if (!Number.isNaN(fps)) {
-      videoConstraints.frameRate = fps
+      videoConstraints.frameRate = fps;
     }
   }
   if (resolution) {
-    const { width, height } = getVideoSizeByResolution(resolution)
+    const { width, height } = getVideoSizeByResolution(resolution);
     if (width > 0 && height > 0) {
-      videoConstraints.width = width
-      videoConstraints.height = height
+      videoConstraints.width = width;
+      videoConstraints.height = height;
     }
   }
   if (aspectRatio) {
-    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio)
+    videoConstraints.aspectRatio = getValueByAspectRatio(aspectRatio);
   }
   if (resizeMode) {
-    videoConstraints.resizeMode = resizeMode
+    videoConstraints.resizeMode = resizeMode;
   }
-  return videoConstraints
+  return videoConstraints;
 }
 
 // Fake 用の MediaStream を生成
+// Chrome/Edge/Safari 向け。Firefox は非対応。
 export function createFakeMediaStream(parameters: FakeMediaStreamConstraints): {
-  canvas: CustomHTMLCanvasElement | null
-  mediaStream: MediaStream
-  gainNode: GainNode | null
+  offscreenCanvas: OffscreenCanvas | null;
+  mediaStream: MediaStream;
+  gainNode: GainNode | null;
+  audioContext: AudioContext | null;
+  frameRate: number;
 } {
-  const mediaStream = new MediaStream()
-  let canvas: HTMLCanvasElement | null = null
+  const mediaStream = new MediaStream();
+  let offscreenCanvas: OffscreenCanvas | null = null;
   if (parameters.video) {
-    canvas = document.createElement('canvas') as CustomHTMLCanvasElement
-    // Firefox では getContext を呼ばないと captureStream が失敗する
-    canvas.getContext('2d')
-    canvas.width = parameters.width
-    canvas.height = parameters.height
-    const cancasStream = canvas.captureStream(parameters.frameRate)
-    const videoTrack = cancasStream.getTracks()[0]
+    const canvas = document.createElement("canvas");
+    canvas.width = parameters.width;
+    canvas.height = parameters.height;
+    // captureStream を先に呼ぶ（transferControlToOffscreen の前に呼ぶ必要がある）
+    const canvasStream = canvas.captureStream(parameters.frameRate);
+    const [videoTrack] = canvasStream.getTracks();
     if (parameters.videoTrackConstraints) {
-      videoTrack.applyConstraints(parameters.videoTrackConstraints)
+      void videoTrack.applyConstraints(parameters.videoTrackConstraints);
     }
-    mediaStream.addTrack(videoTrack)
+    mediaStream.addTrack(videoTrack);
+    // OffscreenCanvas に制御を移す（Worker で描画）
+    offscreenCanvas = canvas.transferControlToOffscreen();
   }
-  let gainNode: GainNode | null = null
+  let gainNode: GainNode | null = null;
+  let audioContext: AudioContext | null = null;
   if (parameters.audio) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext
-    const audioContext = new AudioContext()
-    const oscillator = audioContext.createOscillator()
-    const selectedOscillatorType = 'sine'
-    oscillator.type = selectedOscillatorType
-    gainNode = audioContext.createGain()
-    oscillator.connect(gainNode)
-    oscillator.start(0)
-    const mediaStreamDestination = audioContext.createMediaStreamDestination()
-    gainNode.connect(mediaStreamDestination)
-    const audioTracks = mediaStreamDestination.stream.getTracks()
-    mediaStream.addTrack(audioTracks[0])
-    gainNode.gain.setValueAtTime(parameters.volume, 0)
+    // Safari 等で globalThis.AudioContext が未定義な環境では webkitAudioContext を使用する
+    const { webkitAudioContext } = globalThis as unknown as {
+      webkitAudioContext: typeof globalThis.AudioContext;
+    };
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
+    const AudioContextConstructor = globalThis.AudioContext || webkitAudioContext;
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
+    if (!AudioContextConstructor) {
+      return {
+        offscreenCanvas,
+        mediaStream,
+        gainNode: null,
+        audioContext: null,
+        frameRate: parameters.frameRate,
+      };
+    }
+    audioContext = new AudioContextConstructor();
+    const oscillator = audioContext.createOscillator();
+    const selectedOscillatorType = "sine";
+    oscillator.type = selectedOscillatorType;
+    gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    oscillator.start(0);
+    const mediaStreamDestination = audioContext.createMediaStreamDestination();
+    gainNode.connect(mediaStreamDestination);
+    const audioTracks = mediaStreamDestination.stream.getTracks();
+    mediaStream.addTrack(audioTracks[0]);
+    gainNode.gain.setValueAtTime(parameters.volume, 0);
   }
-  return { canvas, mediaStream, gainNode }
-}
-
-// Fake mediastream を生成するための canvas に書き込みをする
-export function drawFakeCanvas(
-  canvas: CustomHTMLCanvasElement | null,
-  colorCode: number,
-  fontSize: number,
-  text: string,
-): void {
-  if (canvas === null) {
-    return
-  }
-  const context = canvas.getContext('2d')
-  if (!context) {
-    return
-  }
-  context.globalCompositeOperation = 'source-over'
-  context.clearRect(0, 0, canvas.width, canvas.height)
-  context.fillStyle = `#${('0'.repeat(6) + colorCode.toString(16)).slice(-6)}`
-  context.fillRect(0, 0, canvas.width, canvas.height)
-  context.fillStyle = `#${('0'.repeat(6) + (0xffffff - colorCode).toString(16)).slice(-6)}`
-  context.font = `${fontSize}px Arial`
-  const x = canvas.width / 2 - fontSize / 2
-  const margin = (fontSize / 4) * (text.length - 1)
-  const y = canvas.height / 2 + fontSize / 2.5
-  context.fillText(text, x - margin, y)
+  return {
+    offscreenCanvas,
+    mediaStream,
+    gainNode,
+    audioContext,
+    frameRate: parameters.frameRate,
+  };
 }
 
 export function parseBooleanString(value: string): boolean | undefined {
-  if (value === 'true') {
-    return true
+  if (value === "true") {
+    return true;
   }
-  if (value === 'false') {
-    return false
+  if (value === "false") {
+    return false;
   }
-  return
+  return undefined;
 }
 
 export function parseMetadata(enabledMetadata: boolean, metadata: string): Json | undefined {
   if (!enabledMetadata) {
-    return undefined
+    return undefined;
   }
   try {
-    return JSON.parse(metadata)
-  } catch (_e) {
-    // JSON parse に失敗しても何もしない
+    // JSON.parse は any を返すが Json | undefined に縮約する
+    return JSON.parse(metadata) as Json;
+  } catch {
+    // JSON パースに失敗した場合は undefined を返す
+    // 生文字列を返すと SDK へ意図しない値が渡るため
+    return undefined;
   }
-  return metadata
+}
+
+// parseMetadata の戻り値が Sora 仕様で期待する JSON object (非 null・非 array) かを判定する。
+// typeof === "object" は null と array も真になるため明示的に除外する。
+// codec params (videoVP9Params / videoAV1Params / videoH264Params / videoH265Params) と
+// signalingNotifyMetadata の代入前ガードに利用する。
+export function isJsonObject(value: Json | undefined): value is Record<string, Json | undefined> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 export function getDefaultVideoCodecType(): (typeof VIDEO_CODEC_TYPES)[number] {
-  // getCapabilities API が存在しない場合
-  if (!window.RTCRtpSender || !RTCRtpSender.getCapabilities) {
-    return 'VP9'
+  // getCapabilities API が存在しない場合 (古いブラウザでは undefined になる)
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
+  if (!globalThis.RTCRtpSender || !RTCRtpSender.getCapabilities) {
+    return "VP9";
   }
   // getCapabilities APIから codec 一覧が取れない場合
-  const capabilities = RTCRtpSender.getCapabilities('video')
-  if (!capabilities || !capabilities.codecs) {
-    return 'VP9'
+  const capabilities = RTCRtpSender.getCapabilities("video");
+  if (!capabilities?.codecs) {
+    return "VP9";
   }
-  const codecs = capabilities.codecs.map((c) => c.mimeType.replace('video/', ''))
-  if (codecs.includes('VP9')) {
-    return 'VP9'
+  const codecs = new Set(capabilities.codecs.map((c) => c.mimeType.replace("video/", "")));
+  if (codecs.has("VP9")) {
+    return "VP9";
   }
-  if (codecs.includes('VP8')) {
-    return 'VP8'
+  if (codecs.has("VP8")) {
+    return "VP8";
   }
-  if (codecs.includes('H264')) {
-    return 'H264'
+  if (codecs.has("H264")) {
+    return "H264";
   }
-  if (codecs.includes('AV1')) {
-    return 'AV1'
+  if (codecs.has("AV1")) {
+    return "AV1";
   }
-  if (codecs.includes('H265')) {
-    return 'H265'
+  if (codecs.has("H265")) {
+    return "H265";
   }
-  return 'VP9'
+  return "VP9";
 }
 
 export async function getDevices(): Promise<MediaDeviceInfo[]> {
   // https じゃない場合などで mediaDevices が undefined になる可能性がある
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   if (navigator.mediaDevices === undefined) {
-    return []
+    return [];
   }
   try {
-    return await navigator.mediaDevices.enumerateDevices()
-  } catch (_) {
+    return await navigator.mediaDevices.enumerateDevices();
+  } catch {
     // 例外が起きた場合は何もしない
   }
-  return []
-}
-
-// Sora との接続状態に応じて特定の Form を表示するかしないかを返す
-export function isFormDisabled(
-  connectionStatus: SoraDevtoolsState['soraContents']['connectionStatus'],
-): boolean {
-  return (
-    connectionStatus === 'preparing' ||
-    connectionStatus === 'connected' ||
-    connectionStatus === 'connecting'
-  )
+  return [];
 }
 
 // track の設定情報を返す
-type GetMediaStreamTrackProperties = {
-  id: MediaStreamTrack['id']
-  label: MediaStreamTrack['label']
-  kind: MediaStreamTrack['kind']
-  enabled: MediaStreamTrack['enabled']
-  muted: MediaStreamTrack['muted']
-  readyState: MediaStreamTrack['readyState']
-  contentHint: MediaStreamTrack['contentHint']
-  getConstraints: MediaTrackConstraints
-  getCapabilities: MediaTrackCapabilities | null
-  getSettings: MediaTrackSettings
+interface GetMediaStreamTrackProperties {
+  id: MediaStreamTrack["id"];
+  label: MediaStreamTrack["label"];
+  kind: MediaStreamTrack["kind"];
+  enabled: MediaStreamTrack["enabled"];
+  muted: MediaStreamTrack["muted"];
+  readyState: MediaStreamTrack["readyState"];
+  contentHint: MediaStreamTrack["contentHint"];
+  getConstraints: MediaTrackConstraints;
+  getCapabilities: MediaTrackCapabilities | null;
+  getSettings: MediaTrackSettings;
 }
+// MediaStreamTrack に contentHint を設定する
+// contentHint は Firefox が未対応のため "contentHint" in track で機能検出する
+// 参照: https://caniuse.com/mdn-api_mediastreamtrack_contenthint
+export function setTrackContentHint(track: MediaStreamTrack, hint: string): void {
+  if ("contentHint" in track) {
+    track.contentHint = hint;
+  }
+}
+
 export function getMediaStreamTrackProperties(
   track: MediaStreamTrack,
 ): GetMediaStreamTrackProperties {
@@ -712,8 +761,172 @@ export function getMediaStreamTrackProperties(
     readyState: track.readyState,
     contentHint: track.contentHint,
     getConstraints: track.getConstraints(),
+    // 古いブラウザでは getCapabilities が未定義
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     getCapabilities: track.getCapabilities ? track.getCapabilities() : null,
     getSettings: track.getSettings(),
+  };
+}
+
+// 音声コーデックとビットレートのオプションを設定する
+function applyAudioCodecOptions(
+  connectionOptions: ConnectionOptions,
+  connectionOptionsState: ConnectionOptionsState,
+): void {
+  if (connectionOptionsState.audioCodecType) {
+    connectionOptions.audioCodecType = connectionOptionsState.audioCodecType;
+  }
+  const parsedAudioBitRate = Number.parseInt(connectionOptionsState.audioBitRate, 10);
+  if (parsedAudioBitRate) {
+    connectionOptions.audioBitRate = parsedAudioBitRate;
+  }
+  if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
+    connectionOptions.audioStreamingLanguageCode =
+      connectionOptionsState.audioStreamingLanguageCode;
+  }
+}
+
+// 映像コーデック、ビットレート、コーデックパラメータのオプションを設定する
+function applyVideoCodecOptions(
+  connectionOptions: ConnectionOptions,
+  connectionOptionsState: ConnectionOptionsState,
+): void {
+  if (connectionOptionsState.videoCodecType) {
+    connectionOptions.videoCodecType = connectionOptionsState.videoCodecType;
+  }
+  const parsedVideoBitRate = Number.parseInt(connectionOptionsState.videoBitRate, 10);
+  if (parsedVideoBitRate) {
+    connectionOptions.videoBitRate = parsedVideoBitRate;
+  }
+  if (connectionOptionsState.enabledVideoVP9Params) {
+    const parsed = parseMetadata(true, connectionOptionsState.videoVP9Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoVP9Params = parsed;
+    }
+  }
+  if (connectionOptionsState.enabledVideoAV1Params) {
+    const parsed = parseMetadata(true, connectionOptionsState.videoAV1Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoAV1Params = parsed;
+    }
+  }
+  if (connectionOptionsState.enabledVideoH264Params) {
+    const parsed = parseMetadata(true, connectionOptionsState.videoH264Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoH264Params = parsed;
+    }
+  }
+  if (connectionOptionsState.enabledVideoH265Params) {
+    const parsed = parseMetadata(true, connectionOptionsState.videoH265Params);
+    if (isJsonObject(parsed)) {
+      connectionOptions.videoH265Params = parsed;
+    }
+  }
+}
+
+// spotlight 関連のオプションを設定する
+function applySpotlightOptions(
+  connectionOptions: ConnectionOptions,
+  connectionOptionsState: ConnectionOptionsState,
+): void {
+  const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight);
+  if (parsedSpotlight === undefined) {
+    return;
+  }
+  connectionOptions.spotlight = parsedSpotlight;
+  if (!parsedSpotlight) {
+    return;
+  }
+  if (connectionOptionsState.spotlightNumber) {
+    connectionOptions.spotlightNumber = Number.parseInt(connectionOptionsState.spotlightNumber, 10);
+  }
+  if (connectionOptionsState.spotlightFocusRid) {
+    connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid;
+  }
+  if (connectionOptionsState.spotlightUnfocusRid) {
+    connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid;
+  }
+}
+
+// simulcast 関連のオプションを設定する
+function applySimulcastOptions(
+  connectionOptions: ConnectionOptions,
+  connectionOptionsState: ConnectionOptionsState,
+): void {
+  const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast);
+  if (parsedSimulcast === undefined) {
+    return;
+  }
+  connectionOptions.simulcast = parsedSimulcast;
+  if (!parsedSimulcast) {
+    return;
+  }
+  if (connectionOptionsState.simulcastRid) {
+    connectionOptions.simulcastRid = connectionOptionsState.simulcastRid;
+  }
+  if (connectionOptionsState.simulcastRequestRid) {
+    connectionOptions.simulcastRequestRid = connectionOptionsState.simulcastRequestRid;
+  }
+}
+
+// シグナリング関連のメタデータとフィルターのオプションを設定する
+function applySignalingMetadataOptions(
+  connectionOptions: ConnectionOptions,
+  connectionOptionsState: ConnectionOptionsState,
+): void {
+  if (connectionOptionsState.enabledSignalingNotifyMetadata) {
+    const parsed = parseMetadata(true, connectionOptionsState.signalingNotifyMetadata);
+    if (isJsonObject(parsed)) {
+      connectionOptions.signalingNotifyMetadata = parsed;
+    }
+  }
+  if (connectionOptionsState.enabledForwardingFilters) {
+    const parsedForwardingFilters = parseMetadata(true, connectionOptionsState.forwardingFilters);
+    // 配列のみ受理する。非配列を SDK 経由でサーバに送ると connect.failed になる
+    // 配列要素 (rules / action / version 等) の構造検証はサーバ側に委ねる
+    // Array.isArray の標準型ガードは Json[] までしか narrow しないため as キャストは残す
+    if (Array.isArray(parsedForwardingFilters)) {
+      connectionOptions.forwardingFilters =
+        parsedForwardingFilters as unknown as ForwardingFilter[];
+    }
+  }
+  if (connectionOptionsState.enabledBundleId) {
+    connectionOptions.bundleId = connectionOptionsState.bundleId;
+  }
+  if (connectionOptionsState.enabledClientId) {
+    connectionOptions.clientId = connectionOptionsState.clientId;
+  }
+}
+
+// データチャネル関連のオプションを設定する
+function applyDataChannelOptions(
+  connectionOptions: ConnectionOptions,
+  connectionOptionsState: ConnectionOptionsState,
+): void {
+  if (connectionOptionsState.enabledDataChannel) {
+    const parsedDataChannelSignaling = parseBooleanString(
+      connectionOptionsState.dataChannelSignaling,
+    );
+    if (parsedDataChannelSignaling !== undefined) {
+      connectionOptions.dataChannelSignaling = parsedDataChannelSignaling;
+    }
+    const parsedIgnoreDisconnectWebSocket = parseBooleanString(
+      connectionOptionsState.ignoreDisconnectWebSocket,
+    );
+    if (parsedIgnoreDisconnectWebSocket !== undefined) {
+      connectionOptions.ignoreDisconnectWebSocket = parsedIgnoreDisconnectWebSocket;
+    }
+  }
+  if (connectionOptionsState.dataChannels !== "") {
+    let dataChannels: DataChannelConfiguration[] = [];
+    try {
+      dataChannels = JSON.parse(connectionOptionsState.dataChannels) as DataChannelConfiguration[];
+    } catch {
+      // 例外が起きた場合は何もしない
+    }
+    if (Array.isArray(dataChannels)) {
+      connectionOptions.dataChannels = dataChannels;
+    }
   }
 }
 
@@ -724,148 +937,19 @@ export function createConnectOptions(
   const connectionOptions: ConnectionOptions = {
     audio: connectionOptionsState.audio,
     video: connectionOptionsState.video,
-  }
+  };
   // recvonly の時は audio/video のパラメータを送らない
-  const sendAudioVideoParams = !(connectionOptionsState.role === 'recvonly')
-  if (sendAudioVideoParams) {
-    // audioCodecType
-    if (connectionOptionsState.audioCodecType) {
-      connectionOptions.audioCodecType = connectionOptionsState.audioCodecType
-    }
-    // audioBitRate
-    const parsedAudioBitRate = Number.parseInt(connectionOptionsState.audioBitRate, 10)
-    if (parsedAudioBitRate) {
-      connectionOptions.audioBitRate = parsedAudioBitRate
-    }
-    // videoCodecType
-    if (connectionOptionsState.videoCodecType) {
-      connectionOptions.videoCodecType = connectionOptionsState.videoCodecType
-    }
-    // videoBitRate
-    const parsedVideoBitRate = Number.parseInt(connectionOptionsState.videoBitRate, 10)
-    if (parsedVideoBitRate) {
-      connectionOptions.videoBitRate = parsedVideoBitRate
-    }
-    // videoVP9Params
-    if (connectionOptionsState.enabledVideoVP9Params) {
-      connectionOptions.videoVP9Params = parseMetadata(true, connectionOptionsState.videoVP9Params)
-    }
-    // videoAV1Params
-    if (connectionOptionsState.enabledVideoAV1Params) {
-      connectionOptions.videoAV1Params = parseMetadata(true, connectionOptionsState.videoAV1Params)
-    }
-    // videoH264Params
-    if (connectionOptionsState.enabledVideoH264Params) {
-      connectionOptions.videoH264Params = parseMetadata(
-        true,
-        connectionOptionsState.videoH264Params,
-      )
-    }
-    // videoH265Params
-    if (connectionOptionsState.enabledVideoH265Params) {
-      connectionOptions.videoH265Params = parseMetadata(
-        true,
-        connectionOptionsState.videoH265Params,
-      )
-    }
-    // audioStreamingLanguageCode
-    if (connectionOptionsState.enabledAudioStreamingLanguageCode) {
-      connectionOptions.audioStreamingLanguageCode =
-        connectionOptionsState.audioStreamingLanguageCode
-    }
+  if (connectionOptionsState.role !== "recvonly") {
+    applyAudioCodecOptions(connectionOptions, connectionOptionsState);
+    applyVideoCodecOptions(connectionOptions, connectionOptionsState);
   }
-  // forceStereoOutput
   // role が sendrecv か recvonly の場合は forceStereoOutput の設定を反映する
-  if (connectionOptionsState.role !== 'sendonly' && connectionOptionsState.forceStereoOutput) {
-    connectionOptions.forceStereoOutput = connectionOptionsState.forceStereoOutput
+  if (connectionOptionsState.role !== "sendonly" && connectionOptionsState.forceStereoOutput) {
+    connectionOptions.forceStereoOutput = connectionOptionsState.forceStereoOutput;
   }
-  // spotlight
-  const parsedSpotlight = parseBooleanString(connectionOptionsState.spotlight)
-  if (parsedSpotlight !== undefined) {
-    connectionOptions.spotlight = parsedSpotlight
-    if (parsedSpotlight === true) {
-      if (connectionOptionsState.spotlightNumber) {
-        connectionOptions.spotlightNumber = Number.parseInt(
-          connectionOptionsState.spotlightNumber,
-          10,
-        )
-      }
-      if (connectionOptionsState.spotlightFocusRid) {
-        connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid
-      }
-      if (connectionOptionsState.spotlightUnfocusRid) {
-        connectionOptions.spotlightUnfocusRid = connectionOptionsState.spotlightUnfocusRid
-      }
-    }
-  }
-  // simulcast
-  const parsedSimulcast = parseBooleanString(connectionOptionsState.simulcast)
-  if (parsedSimulcast !== undefined) {
-    connectionOptions.simulcast = parsedSimulcast
-    if (parsedSimulcast === true) {
-      if (connectionOptionsState.simulcastRid) {
-        connectionOptions.simulcastRid = connectionOptionsState.simulcastRid
-      }
-      if (connectionOptionsState.simulcastRequestRid) {
-        connectionOptions.simulcastRequestRid = connectionOptionsState.simulcastRequestRid
-      }
-    }
-  }
-  // signalingNotifyMetadata
-  if (connectionOptionsState.enabledSignalingNotifyMetadata) {
-    connectionOptions.signalingNotifyMetadata = parseMetadata(
-      true,
-      connectionOptionsState.signalingNotifyMetadata,
-    )
-  }
-  // forwardingFilters
-  if (connectionOptionsState.enabledForwardingFilters) {
-    connectionOptions.forwardingFilters = parseMetadata(
-      true,
-      connectionOptionsState.forwardingFilters,
-    ) as ForwardingFilter[]
-  }
-  // forwardingFilter
-  if (connectionOptionsState.enabledForwardingFilter) {
-    connectionOptions.forwardingFilter = parseMetadata(
-      true,
-      connectionOptionsState.forwardingFilter,
-    ) as ForwardingFilter
-  }
-  // bundleId
-  if (connectionOptionsState.enabledBundleId) {
-    connectionOptions.bundleId = connectionOptionsState.bundleId
-  }
-  // clientId
-  if (connectionOptionsState.enabledClientId) {
-    connectionOptions.clientId = connectionOptionsState.clientId
-  }
-  // dataChannelSignaling, ignoreDisconnectWebSocket
-  if (connectionOptionsState.enabledDataChannel) {
-    const parsedDataChannelSignaling = parseBooleanString(
-      connectionOptionsState.dataChannelSignaling,
-    )
-    if (parsedDataChannelSignaling !== undefined) {
-      connectionOptions.dataChannelSignaling = parsedDataChannelSignaling
-    }
-    const parsedIgnoreDisconnectWebSocket = parseBooleanString(
-      connectionOptionsState.ignoreDisconnectWebSocket,
-    )
-    if (parsedIgnoreDisconnectWebSocket !== undefined) {
-      connectionOptions.ignoreDisconnectWebSocket = parsedIgnoreDisconnectWebSocket
-    }
-  }
-  // dataChannels
-  if (connectionOptionsState.dataChannels !== '') {
-    let dataChannels: DataChannelConfiguration[] = []
-    try {
-      dataChannels = JSON.parse(connectionOptionsState.dataChannels) as DataChannelConfiguration[]
-    } catch (_) {
-      // 例外が起きた場合は何もしない
-    }
-    if (Array.isArray(dataChannels)) {
-      connectionOptions.dataChannels = dataChannels
-    }
-  }
-  return connectionOptions
+  applySpotlightOptions(connectionOptions, connectionOptionsState);
+  applySimulcastOptions(connectionOptions, connectionOptionsState);
+  applySignalingMetadataOptions(connectionOptions, connectionOptionsState);
+  applyDataChannelOptions(connectionOptions, connectionOptionsState);
+  return connectionOptions;
 }

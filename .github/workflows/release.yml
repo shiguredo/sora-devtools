@@ -11,33 +11,28 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: voidzero-dev/setup-vp@ca1c46663915d6c1042ae23bd39ab85718bfb0fa # v1.10.0
         with:
-          node-version: 24
-          
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          
+          node-version: "26"
+
       - name: Install dependencies
-        run: pnpm install
-        
+        run: vp install
+
       - name: Build
-        run: pnpm run build
-        
+        run: vp build
+
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-        
+
       - name: Create release archive
         run: |
           mkdir -p sora-devtools-${{ steps.get_version.outputs.VERSION }}
           cp -r dist/* sora-devtools-${{ steps.get_version.outputs.VERSION }}/
           tar -czf sora-devtools-${{ steps.get_version.outputs.VERSION }}.tar.gz sora-devtools-${{ steps.get_version.outputs.VERSION }}
-          
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ github.token }}

@@ -1,6 +1,5 @@
 # Sora DevTools
 
-![Static Badge](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/shiguredo/sora-devtools.svg)](https://github.com/shiguredo/sora-devtools)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -16,7 +15,7 @@ Please read <https://github.com/shiguredo/oss/blob/master/README.en.md> before u
 
 ## 概要
 
-これは WebRTC SFU Sora に開発者ツールとして組み込まれている機能のオープンソース版です。
+これは WebRTC SFU Sora に開発者ツールです。
 
 Sora の配信、視聴機能が一通り確認できるようになっています。
 また何か問題あった場合の切り分けのための調査にも利用できるよう、レポート機能やデバッグ機能を搭載しています。
@@ -38,27 +37,27 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
 
 - [WebRTC SFU Sora JavaScript SDK](https://github.com/shiguredo/sora-js-sdk)
 - [Node\.js](https://nodejs.org/en)
-- [Vite](https://vite.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [React](https://reactjs.org/)
-- [Zustand](https://zustand-demo.pmnd.rs/)
-- [Bootstrap](https://getbootstrap.com/)
-  - [React Bootstrap](https://react-bootstrap.github.io/)
+- [Preact](https://preactjs.com/)
+  - [Signals](https://preactjs.com/guide/v10/signals/)
+- [Vite+](https://viteplus.dev/)
+  - [Rolldown](https://rolldown.rs/)
+  - [Vitest](https://vitest.dev/)
+  - [Oxc](https://oxc.rs/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Playwright](https://playwright.dev/)
 - [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
   - [@shiguredo/noise\-suppression \- npm](https://www.npmjs.com/package/@shiguredo/noise-suppression)
   - [@shiguredo/mp4\-media\-stream \- npm](https://www.npmjs.com/package/@shiguredo/mp4-media-stream)
-- [Playwright](https://playwright.dev/)
-- [Vitest](https://vitest.dev/)
-- [pnpm](https://pnpm.io/)
-- [Biome](https://biomejs.dev/)
 
 ## 特徴
 
-### フェイクメディア機能
+### Fake Video 機能
 
-getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイクメディアを有効にできます。
+getUserMedia や getDisplayMedia ではなく、Worker 内で OffscreenCanvas を利用して描画した映像をメディアとして使用できます。
 この機能を使うことでカメラやマイクがなくても検証が可能です。
+Chrome / Edge / Safari で動作します（Firefox 非対応）。
 
 [![Image from Gyazo](https://i.gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51.jpg)](https://gyazo.com/b76bdaeb6bc7eb1a44090a9180ee6d51)
 
@@ -73,7 +72,6 @@ getUserMedia や getDisplayMedia ではなく Canvas を利用したフェイク
 デバッグを有効にすると、ログ、通知、統計や各種イベントを確認することができます。またリアルタイムメッセージングや RPC を利用することもできます。
 
 [![Image from Gyazo](https://i.gyazo.com/c15b137e3d99d235845af5da0405ef4a.png)](https://gyazo.com/c15b137e3d99d235845af5da0405ef4a)
-
 
 ### コピー URL 機能
 
@@ -146,7 +144,7 @@ Sora ではマルチストリームが前提となります。
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ```text
-Copyright 2017-2025, Shiguredo Inc.
+Copyright 2017-2026, Shiguredo Inc.
 Copyright 2017-2022, Yuki Ito (Original Author)
 
 Licensed under the Apache License, Version 2.0 (the "License");

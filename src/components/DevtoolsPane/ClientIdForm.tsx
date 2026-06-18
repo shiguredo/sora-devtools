@@ -1,55 +1,52 @@
-import type React from 'react'
-import { Col, FormControl, FormGroup, Row } from 'react-bootstrap'
+import { FormGroup, FormInput } from "@/components/ui";
 
-import { setClientId, setEnabledClientId } from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { isFormDisabled } from '@/utils'
+import { setClientId, setEnabledClientId } from "@/app/actions";
+import { clientId, enabledClientId, isFormDisabled } from "@/app/signals";
 
-import { TooltipFormCheck } from './TooltipFormCheck.tsx'
+import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
-export const ClientIdForm: React.FC = () => {
-  const enabledClientId = useSoraDevtoolsStore((state) => state.enabledClientId)
-  const clientId = useSoraDevtoolsStore((state) => state.clientId)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledClientId(event.target.checked)
-  }
-  const onChangeText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setClientId(event.target.value)
-  }
+export function ClientIdForm() {
+  const disabled = isFormDisabled.value;
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledClientId(target.checked);
+  };
+  const onChangeText = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setClientId(target.value);
+  };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledClientId">
+      <div className="form-row">
+        <div className="col-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledClientId">
             <TooltipFormCheck
               kind="clientId"
-              checked={enabledClientId}
+              checked={enabledClientId.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             >
               clientId
             </TooltipFormCheck>
           </FormGroup>
-        </Col>
-      </Row>
-      {enabledClientId ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <FormGroup className="form-inline" controlId="clientId">
-              <FormControl
+        </div>
+      </div>
+      {enabledClientId.value ? (
+        <div className="form-row">
+          <div className="col-auto">
+            <FormGroup className="flex items-center gap-2" controlId="clientId">
+              <FormInput
                 className="flex-fill w-500"
                 type="text"
                 placeholder="ClientIdを指定"
-                value={clientId}
+                value={clientId.value}
                 onChange={onChangeText}
                 disabled={disabled}
               />
             </FormGroup>
-          </Col>
-        </Row>
+          </div>
+        </div>
       ) : null}
     </>
-  )
+  );
 }

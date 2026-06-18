@@ -11,6 +11,303 @@
 
 ## develop
 
+## 2026.1.0
+
+**リリース日**: 2026-06-18
+
+- [CHANGE] Fake Video を `Worker` ベースに書き換える
+  - `OffscreenCanvas` を使用して `Worker` 内で描画
+  - `Chrome` / `Edge` / `Safari` 対応（`Firefox` 非対応）
+  - @voluntas
+- [CHANGE] Fake Video の表示を改善する
+  - 経過時間を `mmmm:ss.SSS` 形式（ストップウォッチ形式）で表示
+  - 開始日時を上部に表示
+  - `channel_id` / `session_id` / `connection_id` を下部に表示
+  - `channel_id` は 10 文字を超える場合は先頭 10 文字 + `"..."` で省略
+  - 解像度に応じてフォントサイズを動的に調整
+  - @voluntas
+- [CHANGE] デバッグパネルで長い文字列を折り返し表示にする
+  - @voluntas
+- [CHANGE] `DebugPane` の `API` タブを削除する
+  - `DEBUG_TYPES` から `api` を削除する。`debugType=api` は無効になる
+  - 未使用の `Api.tsx` を削除する
+  - @voluntas
+- [CHANGE] `forwardingFilter`（単数形）を削除し `forwardingFilters`（複数形）に統一する
+  - 2024.2.0 で追加した単数形の `forwardingFilter` を削除するため後方互換のない変更になる
+  - @voluntas
+- [CHANGE] `connectSora` の `soraConnection.stream = null` ハックを削除する
+  - `sora-js-sdk` 2025.2.0 では `disconnect` で `stream` を停止しないため不要
+  - @voluntas
+- [CHANGE] 未使用コード・コメント・`lint` ディレクティブを削除する
+  - `CustomHTMLCanvasElement` / `testVideoResolutionPattern` / `utils` 版 `isFormDisabled` を削除
+  - `SoraDevtoolsState` の `Omit` から存在しない `localTestMediaStream` を削除
+  - 不要な `eslint-disable` / `biome-ignore` ディレクティブを削除
+  - `RTCInboundRtpStreamStats` の口語コメントを削除
+  - `utils.pbt.test.ts` の `Cline` 自動生成コメントを削除
+  - @voluntas
+- [CHANGE] 到達不能な `switch` の `default` 節を整理する
+  - `TimelineMessages.tsx` の `logType` `switch` の到達不能な `default` 節を削除し、`sora-js-sdk` が新しい `logType` を追加した際に `exhaustiveness-check` で検出できるようにする
+  - `utils.ts` の `getBlurRadiusNumber` の `default` 節を `const _exhaustiveCheck: never = blurRadius;` パターンに置き換え、新しい `blur radius` が追加された際にコンパイル時に検出できるようにする
+  - @voluntas
+- [ADD] `fakeVideoShowChannelId` オプションを追加する
+  - Fake Video 上の `channel_id` 表示を切り替え可能にする
+  - `URL` パラメータ対応
+  - @voluntas
+- [ADD] `signalingUrlCandidates` の設定モーダルを追加する
+  - `OPFS` を使用してブラウザに `URL` 設定を永続化
+  - 複数 URL の有効/無効を切り替え可能
+  - @voluntas
+- [ADD] デバッグパネルのタイムラインに全開/全閉トグルボタンを追加する
+  - @voluntas
+- [ADD] デバッグパネルの `notify` メッセージの最大保持件数を設定可能にする
+  - デフォルト 1000 件、100/500/1000/5000 から選択可能
+  - `URL` パラメータ `maxNotifyMessages` に対応
+  - @voluntas
+- [ADD] `getErrorMessage` ユーティリティを追加して `error instanceof Error ? error.message : String(error)` を一元化する
+  - `src/utils.ts` に `getErrorMessage(error: unknown): string` を追加する
+  - `actions.ts` 9 箇所と `Rpc.tsx` 1 箇所をこの関数の呼び出しに置き換える
+  - @voluntas
+- [ADD] `setTrackContentHint` ユーティリティを追加して `contentHint` の機能検出を一元化する
+  - `src/utils.ts` に `setTrackContentHint(track, hint)` を追加する
+  - `actions.ts` の `applyTrackSettings` / `createDisplayMediaStream`、`signals.ts` の `setAudioContentHint` / `setVideoContentHint` から重複した `"contentHint" in track` の機能検出と `Firefox` 非対応コメントを削除して同関数に置き換える
+  - @voluntas
+- [ADD] テストカバレッジを拡充する
+  - `utils.pbt.test.ts` を `utils.prop.ts` にリネームし命名規約に揃える
+  - `vite.config.ts` の `test.include` を `src/**/*.test.ts` / `src/**/*.prop.ts` に変更する
+  - `parseBooleanString` / `formatUnixtime` / `parseMetadata` / `getVideoSizeByResolution` の `PBT` テストを追加する
+  - @voluntas
+- [ADD] `connection.destroyed` 判定とメディア掃除のテストを追加する
+  - `connection.destroyed` 判定を `isConnectionDestroyedNotify` 型ガードに切り出して `export` する
+  - `cleanupSoraMediaState` を `export` し初期状態の冪等性をテストする
+  - @voluntas
+- [ADD] noise-suppression の遅延読み込みを Playwright e2e テストで検証する
+  - @voluntas
+- [UPDATE] `@shiguredo/mp4-media-stream` JS チャンクを MP4 ファイル選択時に動的ダウンロードする
+  - 動的 import に切り替え `import("@shiguredo/mp4-media-stream")` で遅延ロードする
+  - `AudioDecoder` / `VideoDecoder` の有無でサポート判定する
+  - @voluntas
+- [UPDATE] `switch` フォームのラベルクリックで `switch` を切り替え可能にする
+  - @voluntas
+- [UPDATE] `@shiguredo/noise-suppression` JS チャンクを `mediaProcessorsNoiseSuppression` 有効化時に動的ダウンロードする
+  - 動的 import に切り替え `import("@shiguredo/noise-suppression")` で遅延ロードする
+  - `mediaProcessorsNoiseSuppression` チェック ON でモジュールの事前読み込みを開始する
+  - プロセッサの生成は `getUserMedia` 時に遅延実行する
+  - `startProcessing` / `stopProcessing` をロックで直列化し並行実行を防止する
+  - @voluntas
+- [UPDATE] `tooltip` 付きフォームラベルのカーソルを `?` マークから通常カーソルに変更する
+  - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2026.1.0 に上げる
+  - @voluntas
+- [FIX] `noise-suppression` の処理を直列化し、失敗時のトラックリークを防止する
+  - `NoiseSuppressionProcessor` の開始・停止をロックで直列化する
+  - `getUserMedia()` 後の失敗時に取得済みトラックを確実に停止する
+  - 処理済みの音声トラックを `dispose` / `disconnect` / デバイス更新でも停止する
+  - PBT でロック機構の直列化保証を検証する (`src/noiseSuppression.prop.ts`)
+  - `createUserMediaStream` から `processAudioTrack` / `processVideoTrack` を抽出し複雑度を低減する
+  - @voluntas
+- [FIX] `stopLocalVideoTrack` の `getVideoTracks()` の `live collection` 反復で待機中に新規トラックが巻き込まれる問題を修正する
+  - `getVideoTracks()` の戻り値を最初に配列にコピーしてからループするように変更する
+  - 100ms 待機中に `updateMediaStream` などが新規トラックを追加した場合でも対象が固定されるようにする
+  - @voluntas
+- [FIX] `Video.tsx` の `setSinkId` が複数箇所で重複呼び出しされる問題を修正する
+  - `render` 時・`ResizeObserver` 用 `useEffect` からの `setSinkId` 呼び出しを削除する
+  - `setSinkId` は `srcObject` 設定後の `useEffect` 1 箇所に集約する
+  - @voluntas
+- [FIX] `requestMedia` の `no-op` `catch` を削除する
+  - `createMediaStream(state).catch((error) => { throw error; })` の `catch` ハンドラがエラーをそのまま再スローしているだけで実質何もしていなかったため削除する
+  - 直後の `try`/`catch` が同じエラーを捕捉するため挙動は変わらない
+  - @voluntas
+- [FIX] アラートメッセージが `RPC` メソッドのボタンより背面に表示される問題を修正する
+  - @voluntas
+- [FIX] `DebugPane` の `Notify` タブのタイポ (`Notfiy`) を修正する
+  - @voluntas
+- [FIX] `Rpc.tsx` の `console.error` を `setRPCErrorAlertMessage` によるアラート通知に置き換える
+  - @voluntas
+- [FIX] エラーメッセージとアラートメッセージを規約に準拠させる
+  - 小文字始まり、末尾ピリオドなし、英語に統一する
+  - `SignalingUrlModal` の日本語メッセージを英語化する
+  - @voluntas
+- [FIX] `rpc.ts` の `conn.rpcMethods` への型安全でないアクセスを修正する
+  - `Array.isArray` による型ガードで `rpcMethods` が `undefined` のときも安全に処理する
+  - @voluntas
+- [FIX] `copy2clipboard` 失敗時にユーザーへ通知されない問題を修正する
+  - `copyToClipboard` にリネームし戻り値を `Promise<boolean>` に変更する
+  - 失敗時に `setAPIErrorAlertMessage` で通知する
+  - `copyURL` を `async` 関数に変更しコピー完了を待ってから `history` を更新する
+  - @voluntas
+- [FIX] `parseMetadata` が `JSON` パース失敗時に生文字列を返していた問題を修正する
+  - `JSON` パース失敗時は `undefined` を返すようにする
+  - `parseMetadata` の単体テストを追加する
+  - @voluntas
+- [FIX] `updateMediaStream` の `replaceTrack` のエラーが捕捉されない問題を修正する
+  - `Promise.allSettled` で並列実行し失敗件数をアラートで通知する
+  - @voluntas
+- [FIX] `connecting` / `preparing` 状態で `disconnectSora` が無視される問題を修正する
+  - `connected` 以外の連結中状態でも切断と状態リセットを行うようにする
+  - `sora` が `null` の場合でも `disconnected` に戻し `reconnecting` フラグも解除する
+  - @voluntas
+- [FIX] `aspectRatio` 21:9 で 20/9 (≈2.222) の誤った値を返していた問題を修正する
+  - 21:9 を選んだ際に 21/9 (≈2.333) を返すよう修正する
+  - `getValueByAspectRatio` の 4:3 / 16:9 / 21:9 / 未対応値の単体テストを追加する
+  - @voluntas
+- [FIX] アラートメッセージの配列トリミングロジックの不具合を修正する
+  - ループ条件が変動する `length` に依存していたため期待件数より残るバグを修正する
+  - `MAX_ALERT_MESSAGES` 定数で最大保持件数を明示し `slice` で確実にトリミングする
+  - @voluntas
+- [FIX] `reconnectSora` と `disconnect` コールバックでの `unhandled promise rejection` を修正する
+  - `reconnectSora` 内の `createMediaStream` 失敗時に `try`/`catch` で捕捉して `disconnected` 状態へ戻す
+  - `disconnect` コールバック内の `stopLocalVideoTrack` に `try`/`catch` を追加する
+  - `setMicDeviceAction` / `setCameraDeviceAction` の `void` 呼び出しに `catch` ハンドラを追加する
+  - @voluntas
+- [FIX] `getDisplayMedia` 利用時に `cameraDevice=false` で画面共有が行われない問題を修正する
+  - `createDisplayMediaStream` のガード条件から `cameraDevice` チェックを除外する
+  - @voluntas
+- [FIX] `StatsReport` タイマーの並行呼び出し蓄積・二重起動・即時停止できない問題を修正する
+  - `setInterval` から `setTimeout` チェーンに変更し `getStats` 完了後に次回をスケジュールする
+  - `stopStatsReportTimer` を新設し `disconnect` / `disconnect` コールバックで即時停止する
+  - `startStatsReportTimer` の先頭で既存タイマーを停止し再接続時のタイマー増殖を防ぐ
+  - @voluntas
+- [FIX] `fakeMedia` 利用時に `AudioContext` がリークしてハードウェアコンテキスト上限に達する問題を修正する
+  - `createFakeMediaStream` の戻り値に `audioContext` を追加し `signal` で保持する
+  - 解像度変更や再接続などで `MediaStream` を作り直す際に旧 `AudioContext` を `close` する
+  - `disposeMedia` / `disconnect` / `resetState` で確実に `close` する
+  - @voluntas
+- [FIX] `JitterBuffer` の `jitterBufferEmittedCount` が 0 の場合のゼロ除算で `NaN` が表示される問題を修正する
+  - ガードを追加し `jitterBufferEmittedCount === 0` の場合は描画しない
+  - @voluntas
+- [FIX] `replaceAudioTrack` / `removeAudioTrack` / `removeVideoTrack` のエラーハンドリングを `try`/`catch` に統一する
+  - `setMicDeviceAction` の `replaceAudioTrack` に `try`/`catch` を追加する
+  - `removeAudioTrack` / `removeVideoTrack` の `.catch()` を `try`/`await`/`catch` に変更する
+  - `error.toString()` を `error.message` に統一する
+  - @voluntas
+- [FIX] `AudioContext` コンストラクタが未定義の環境でクラッシュする問題を修正する
+  - `VolumeVisualizer` / `createFakeMediaStream` に `undefined` ガードを追加する
+  - 変数名を `AudioContextCtor` から `AudioContextConstructor` に変更する
+  - @voluntas
+- [FIX] `Video.tsx` の `loadedmetadata` リスナーがアンマウント時に解除されず蓄積する問題を修正する
+  - `useEffect` の `cleanup` に `removeEventListener` を追加する
+  - 名前付き関数化して参照の一貫性を確保する
+  - @voluntas
+- [FIX] `attemptReconnection` で `signals.sora` が `connect()` 前に更新されず再接続時のクライアント誤認識を引き起こす問題を修正する
+  - `connect()` の前に `signals.setSora()` を追加する
+  - 失敗時に `signals.setSora(null)` でリセットする
+  - @voluntas
+- [FIX] `setMicDeviceAction` / `setCameraDeviceAction` でトラックが生成されなかった場合の `AudioContext` リークを修正する
+  - `mediaStream.getTracks().length === 0` 時に `audioContext.close()` する
+  - `micDevice=false` 時に `closeFakeContentsAudio()` を追加する
+  - @voluntas
+- [FIX] `MutedVisualizer` の `height` 変更時にキャンバスが再描画されない問題を修正する
+  - `useEffect` の依存配列に `props.height` を追加する
+  - @voluntas
+- [FIX] 切断後もリモート / ローカル映像が `UI` に残る問題を修正する
+  - `cleanupSoraMediaState` / `clearRemoteMediaClients` を抽出し、`disconnect` ハンドラ / `disconnectSora` / `connectSora` 冒頭・`catch` / `reconnectSora` の各経路から呼ぶ
+  - `connection.destroyed` `notify` でリモートクライアントを削除する
+  - リモート `track` の `ended` イベントでクライアントを削除し `removetrack` を補完する
+  - `disconnected` 状態で `Disconnect` を押した場合も残留メディアを掃除する
+  - `ConnectButton` の `preparing` 中の二重押下を防止する
+  - @voluntas
+- [FIX] dev 環境で `.env` の `VITE_SORA_SIGNALING_URL` が反映されなかった問題を修正する
+  - `createSignalingURL` の dev 用フォールバック分岐で参照していた `import.meta.env.NODE_ENV` を `import.meta.env.DEV` に置き換える
+  - `import.meta.env.NODE_ENV` は Vite がクライアントに注入しないキーであり常に `undefined` を返すため `.env` の上書きが無効化されていた
+  - @voluntas
+- [FIX] `cleanupSoraMediaState` を async 化して呼び出し元が完了を待てる形にする
+  - `Disconnect` 操作・再接続失敗・`connectSora` 失敗時の各経路でタイムラインに古い `stop` ログが混入する問題を解消する
+  - `stopLocalAudioTrack` の rejection もログに残す（旧来は audio 側のみ無視）
+  - @voluntas
+- [FIX] Log タブの `description` の `JSON.parse` 失敗で `DebugPane` が壊れる問題を修正する
+  - デバイス切替・接続切断時にエラーメッセージ素文字列が `description` に入り render が落ちていた経路を `parseLogDescription` の `try` / `catch` で防御する
+  - @voluntas
+- [FIX] `updateMediaStream` の `await` 中に切断された場合に signal を上書きしてリソースリークする問題を修正する
+  - 末尾の signal 更新前にガードを追加し、`soraValue` の同一性 / `localMediaStream` / `connectionStatus` から中断を検出する
+  - 中断時は新規生成した `MediaStream` の全 track を `stop()` し、`AudioContext` があれば `close()` してから return する
+  - @voluntas
+- [FIX] `reconnectSora` の `attemptReconnection` 全失敗パスで新規 `MediaStream` / `AudioContext` がリークする問題を修正する
+  - 失敗 return 直前で新規生成した `mediaStream` の全 track を `stop()` し `audioContext` を `close()` する
+  - キャンセル経路（Reconnect Toast を閉じる）でも同じガードに入りリークしない
+  - 失敗 / キャンセル時に停止した track はタイムラインに記録してデバッグ時に追えるようにする
+  - @voluntas
+- [FIX] `setSoraCallbacks` の各リスナーに自己同一性チェックを追加し、古い接続からの遅延発火が新セッションを破壊する問題を修正する
+  - `sora-js-sdk` にリスナー解除 API が無いため、ハンドラ側で `signals.sora.value === soraConnection` を判定する
+  - `disconnect` / `notify` / `track` / `removetrack` の状態破壊リスクのあるハンドラを必須でガードし、`log` / `push` / `signaling` / `timeline` / `message` / `datachannel` / `switched` / `connected` も整合性のため同パターンを適用する
+  - @voluntas
+- [FIX] `reconnectSora` の二重起動を防止する
+  - `<Reconnect />` の `useEffect` 起動を撤廃し、abend ハンドラから直接 `reconnectSora` を呼び出すように集約する
+  - `reconnectSora` 自体にもモジュールローカルな in-flight `Promise` によるガードを追加する
+  - @voluntas
+- [FIX] `fakeVideo` Worker の描画ループが `frameRate` 0 / 負数 / 小数で過剰再帰描画に陥る問題を修正する
+  - `createFakeMediaConstraints` で `parsedFrameRate` を「有限正数のみ受理、上限 60 にクランプ」に厳格化する
+  - 0 / 負数 / 小数 / 16 進数表記は 30 にフォールバックし、60 超は 60 にクランプする
+  - `fakeVideo.worker.ts` の `init` ハンドラでも `[1, 60]` にクランプして二重防御する
+  - @voluntas
+- [FIX] `createConnectOptions` で `parseMetadata` 戻り値の型検証が漏れていた問題を修正する
+  - `videoVP9Params` / `videoAV1Params` / `videoH264Params` / `videoH265Params` / `signalingNotifyMetadata` は object（非 null・非 array）のみ受理する
+  - object 以外を SDK 経由でサーバに送って `connect.failed` を引き起こすのを防ぐ
+  - @voluntas
+- [FIX] `signalingUrlCandidates` の URL クエリ経路で配列要素の型検証が漏れていた問題を修正する
+  - `parseQueryString` で `Array.isArray` に加えて `every((item) => typeof item === "string")` を要求する
+  - 不正要素を含む場合は `undefined` に落とし、SDK 側 `new WebSocket(_)` の `SyntaxError` を回避する
+  - @voluntas
+- [FIX] `loadUrlEntries` の OPFS 読み込みで要素の型検証が漏れていた問題を修正する
+  - `{ url: string; enabled: boolean }` の構造を `every` で検証し、不正な要素を含む場合は空配列を返す
+  - `JSON.parse` + 型検証を `parseUrlEntriesFromText` に切り出してユニットテスト可能にする
+  - @voluntas
+- [FIX] `RequestMediaButton` / `DisposeMediaButton` の `disabled` 条件に `localMediaStream` の状態を反映する
+  - `RequestMediaButton` は `localMediaStream` が取得済みのとき無効化し、重複した `getUserMedia` 呼び出しによる権限プロンプト再表示を防ぐ
+  - `DisposeMediaButton` は `localMediaStream` が null のとき無効化し、無意味な空打ちを防ぐ
+  - @voluntas
+- [FIX] `UpdateMediaStreamButton` の `disabled` と `updateMediaStream` の in-flight ガードを追加する
+  - `updateMediaStream` をモジュールローカルな in-flight Promise でガードし、連打 / `AudioInputForm` / `VideoInputForm` の onChange と重なっても同時に複数走らないようにする
+  - `UpdateMediaStreamButton` の `disabled` に `localMediaStream === null` および `preparing` / `connecting` / `disconnecting` の過渡状態を反映し、対象が無い / 過渡状態での押下を防ぐ（`connected` 中はデバイス切替が主用途のため enable のまま）
+  - @voluntas
+- [FIX] `connectSora` の `preparing` / `connecting` 中に Disconnect を押されたときに接続が確立してしまう問題を修正する
+  - `connectSora` 内の 5 箇所の `await` 直後で `connectionStatus === "disconnected"` を検知し、放棄時にローカル変数の `mediaStream` / `audioContext` / `soraConnection` を解放する
+  - 検知時に `event-connect-cancelled` の timeline メッセージを記録する
+  - `preparing` / `connecting` 中の Disconnect を意図的にサポートする既存設計は維持する
+  - @voluntas
+- [FIX] `track` イベントで `event.streams` が空配列のときの防御を追加する
+  - @voluntas
+- [FIX] `DownloadReportButton` の `Blob URL` がリークする問題を修正する
+  - `URL.createObjectURL` で発行した `Blob URL` を `useRef` で保持し、次回押下時に `URL.revokeObjectURL` で解放する
+  - `useEffect` cleanup でアンマウント時の最終 `Blob URL` も解放する
+  - @voluntas
+
+### misc
+
+- [CHANGE] `CLAUDE.md` 違反を解消する
+  - `DownloadReportButton.tsx` / `Rpc.tsx` の英語 `JSX` コメントを日本語化する
+  - `fakeVideo.worker.ts` の末尾コメントを直前行のコメントに移動する
+  - `Video.tsx` の `c.f.` を `参照:` に置き換える
+  - @voluntas
+- [CHANGE] `React` から `Preact` に移行する
+  - @voluntas
+- [CHANGE] `Bootstrap` / `react-bootstrap` から `Tailwind CSS` に移行する
+  - @voluntas
+- [CHANGE] `Biome` から `Oxc` (`oxlint` / `oxfmt`) に移行する
+  - @voluntas
+- [CHANGE] `Vite` / `Vitest` / `oxlint` / `oxfmt` から `Vite+` に移行する
+  - `vite-plus` を導入し `vp` コマンドに統一する
+  - `vitest.config.ts` を `vite.config.ts` に統合する
+  - `GitHub Actions` を `setup-vp` に移行する
+  - `pre-commit` のコマンドを `vp` に変更する
+  - @voluntas
+- [CHANGE] `pnpm scripts` を `vp check` に統合する
+  - `fmt` / `lint` / `lint:fix` / `typecheck` を削除し `check` / `check:fix` に置き換える
+  - `CI` から `vp check` と重複する `tsc --noEmit` を削除する
+  - @voluntas
+- [CHANGE] `.oxlintrc.jsonc` / `.oxfmtrc.jsonc` を `vite.config.ts` に集約する
+  - `vite-plus` は `.oxlintrc.*` / `.oxfmtrc.*` を参照せず `vite.config.ts` の `lint` / `fmt` が唯一の設定源のため、設定本体を移植して旧ファイルを削除する
+  - @voluntas
+- [CHANGE] 対応 `Node.js` のバージョンを 26 以上にする
+  - @voluntas
+- [ADD] `prek` (`pre-commit` の `Rust` 実装) を導入してコミット前に検査を実行する
+  - `vp check` / `vp test run` をコミット前に実行する
+  - `builtin` フックでマージコンフリクト・秘密鍵・大型ファイルの追加を検証する
+  - `check-toml` / `check-yaml` / `check-json5` で設定ファイルの構文を検証する
+  - @voluntas
+- [UPDATE] `vite-plus` を 0.1.24 に更新し `oxlint` 強化への対応を行う
+  - プロジェクト方針と合わないルールを無効化または限定する
+  - @voluntas
+
 ## 2025.2.1
 
 **リリース日**: 2025-12-12

@@ -1,61 +1,60 @@
-import type React from 'react'
+import { debugFilterText, notifyMessages } from "@/app/signals";
+import type { NotifyMessage } from "@/types";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { NotifyMessage } from '@/types'
+import { Message } from "./Message.tsx";
 
-import { Message } from './Message.tsx'
+const SIGNALING_COLORS: Record<string, string> = {
+  websocket: "#00ff00",
+  datachannel: "#ff00ff",
+};
 
-const SIGNALING_COLORS: { [key: string]: string } = {
-  websocket: '#00ff00',
-  datachannel: '#ff00ff',
-}
-
-const Label: React.FC<{ text: string }> = (props) => {
-  const { text } = props
-  const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined
+function Label(props: { text: string }) {
+  const { text } = props;
+  const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
-    <span className="me-1" style={color ? { color: color } : {}}>
+    <span className="me-1" style={color ? { color } : {}}>
       [{text}]
     </span>
-  )
+  );
 }
 
-type CollapseNotifyProps = {
-  notify: NotifyMessage
+interface CollapseNotifyProps {
+  notify: NotifyMessage;
 }
-const CollapseNotify: React.FC<CollapseNotifyProps> = (props) => {
-  const { notify } = props
-  const label = notify.transportType ? <Label text={notify.transportType} /> : null
+function CollapseNotify(props: CollapseNotifyProps) {
+  const { notify } = props;
+  // transportType は型定義上必須 (TransportType) のため常に truthy
+  const label = <Label text={notify.transportType} />;
   return (
     <Message
       title={notify.message.event_type}
       timestamp={notify.timestamp}
-      description={notify.message}
+      description={notify.message as unknown as Record<string, unknown>}
       label={label}
     />
-  )
+  );
 }
 
-const Log: React.FC<CollapseNotifyProps> = (props) => {
-  return <CollapseNotify {...props} />
+function Log(props: CollapseNotifyProps) {
+  return <CollapseNotify {...props} />;
 }
 
-export const NotifyMessages: React.FC = () => {
-  const notifyMessages = useSoraDevtoolsStore((state) => state.notifyMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = notifyMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
-      if (filterText === '') {
-        return true
+export function NotifyMessages() {
+  const notifyMessagesValue = notifyMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = notifyMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
-    })
-  })
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
-    <div className="debug-messages">
-      {filteredMessages.map((notify) => {
-        return <Log key={notify.message.type + notify.timestamp} notify={notify} />
-      })}
+    <div className="overflow-y-auto h-full">
+      {filteredMessages.map((notify) => (
+        <Log key={notify.message.type + notify.timestamp} notify={notify} />
+      ))}
     </div>
-  )
+  );
 }

@@ -1,41 +1,37 @@
-import React from 'react'
+import { debugFilterText, logMessages } from "@/app/signals";
+import type { LogMessage } from "@/types";
 
-import { useSoraDevtoolsStore } from '@/app/store'
-import type { LogMessage } from '@/types'
+import { Message } from "./Message.tsx";
+import { parseLogDescription } from "./parseLogDescription.ts";
+import type { LogDescription } from "./parseLogDescription.ts";
 
-import { Message } from './Message.tsx'
+function Collapse(props: LogMessage) {
+  const { message, timestamp } = props;
+  // 異常系経路（getErrorMessage の素文字列）が混入しても render を落とさないよう受け側で防御する
+  const description: LogDescription = parseLogDescription(message.description);
+  return <Message title={message.title} timestamp={timestamp} description={description} />;
+}
 
-const Collapse = React.memo<LogMessage>((props) => {
-  const { message, timestamp } = props
-  return (
-    <Message
-      title={message.title}
-      timestamp={timestamp}
-      description={JSON.parse(message.description)}
-    />
-  )
-})
+function Log(props: LogMessage) {
+  return <Collapse {...props} />;
+}
 
-const Log = React.memo<LogMessage>((props) => {
-  return <Collapse {...props} />
-})
-
-export const LogMessages: React.FC = () => {
-  const logMessages = useSoraDevtoolsStore((state) => state.logMessages)
-  const debugFilterText = useSoraDevtoolsStore((state) => state.debugFilterText)
-  const filteredMessages = logMessages.filter((message) => {
-    return debugFilterText.split(' ').every((filterText) => {
-      if (filterText === '') {
-        return true
+export function LogMessages() {
+  const logMessagesValue = logMessages.value;
+  const debugFilterTextValue = debugFilterText.value;
+  const filteredMessages = logMessagesValue.filter((message) =>
+    debugFilterTextValue.split(" ").every((filterText) => {
+      if (filterText === "") {
+        return true;
       }
-      return JSON.stringify(message).indexOf(filterText) >= 0
-    })
-  })
+      return JSON.stringify(message).includes(filterText);
+    }),
+  );
   return (
-    <div className="debug-messages">
-      {filteredMessages.map((log, index) => {
-        return <Log key={log.message.title + String(index) + log.timestamp} {...log} />
-      })}
+    <div className="overflow-y-auto h-full">
+      {filteredMessages.map((log) => (
+        <Log key={`${log.timestamp}-${log.message.title}-${log.message.description}`} {...log} />
+      ))}
     </div>
-  )
+  );
 }

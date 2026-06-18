@@ -1,112 +1,113 @@
-import type React from 'react'
-import { Col, FormCheck, FormGroup, FormSelect, Row } from 'react-bootstrap'
+import { FormGroup, FormSelect, FormSwitch } from "@/components/ui";
 
 import {
   setDataChannelSignaling,
   setEnabledDataChannel,
   setIgnoreDisconnectWebSocket,
-} from '@/app/actions'
-import { useSoraDevtoolsStore } from '@/app/store'
-import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from '@/constants'
-import { checkFormValue, isFormDisabled } from '@/utils'
+} from "@/app/actions";
+import {
+  dataChannelSignaling,
+  enabledDataChannel,
+  ignoreDisconnectWebSocket,
+  isFormDisabled,
+} from "@/app/signals";
+import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
+import { checkFormValue } from "@/utils";
 
-import { TooltipFormLabel } from './TooltipFormLabel.tsx'
+import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
-const IgnoreDisconnectWebSocketForm: React.FC<{ disabled: boolean }> = (props) => {
-  const ignoreDisconnectWebSocket = useSoraDevtoolsStore((state) => state.ignoreDisconnectWebSocket)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
-      setIgnoreDisconnectWebSocket(event.target.value)
+function IgnoreDisconnectWebSocketForm(props: { disabled: boolean }) {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, IGNORE_DISCONNECT_WEBSOCKET)) {
+      setIgnoreDisconnectWebSocket(target.value);
     }
-  }
+  };
   return (
-    <FormGroup className="form-inline" controlId="ignoreDisconnectWebSocket">
+    <FormGroup className="flex items-center gap-2" controlId="ignoreDisconnectWebSocket">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
         ignoreDisconnectWebSocket:
       </TooltipFormLabel>
       <FormSelect
         name="ignoreDisconnectWebSocket"
-        value={ignoreDisconnectWebSocket}
+        value={ignoreDisconnectWebSocket.value}
         onChange={onChange}
         disabled={props.disabled}
       >
-        {IGNORE_DISCONNECT_WEBSOCKET.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
-            </option>
-          )
-        })}
+        {IGNORE_DISCONNECT_WEBSOCKET.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
-  )
+  );
 }
 
-const DataChannelSignalingForm: React.FC<{ disabled: boolean }> = (props) => {
-  const dataChannelSignaling = useSoraDevtoolsStore((state) => state.dataChannelSignaling)
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (checkFormValue(event.target.value, DATA_CHANNEL_SIGNALING)) {
-      setDataChannelSignaling(event.target.value)
+function DataChannelSignalingForm(props: { disabled: boolean }) {
+  const onChange = (event: Event): void => {
+    const target = event.target as HTMLSelectElement;
+    if (checkFormValue(target.value, DATA_CHANNEL_SIGNALING)) {
+      setDataChannelSignaling(target.value);
     }
-  }
+  };
   return (
-    <FormGroup className="form-inline" controlId="dataChannelSignaling">
+    <FormGroup className="flex items-center gap-2" controlId="dataChannelSignaling">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
       <FormSelect
         name="dataChannelSignaling"
-        value={dataChannelSignaling}
+        value={dataChannelSignaling.value}
         onChange={onChange}
         disabled={props.disabled}
       >
-        {DATA_CHANNEL_SIGNALING.map((value) => {
-          return (
-            <option key={value} value={value}>
-              {value === '' ? '未指定' : value}
-            </option>
-          )
-        })}
+        {DATA_CHANNEL_SIGNALING.map((value) => (
+          <option key={value} value={value}>
+            {value === "" ? "未指定" : value}
+          </option>
+        ))}
       </FormSelect>
     </FormGroup>
-  )
+  );
 }
 
-export const DataChannelForm: React.FC = () => {
-  const enabledDataChannel = useSoraDevtoolsStore((state) => state.enabledDataChannel)
-  const connectionStatus = useSoraDevtoolsStore((state) => state.soraContents.connectionStatus)
-  const disabled = isFormDisabled(connectionStatus)
-  const onChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEnabledDataChannel(event.target.checked)
-  }
+export function DataChannelForm() {
+  const disabled = isFormDisabled.value;
+  const onChangeSwitch = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    setEnabledDataChannel(target.checked);
+  };
   return (
     <>
-      <Row className="form-row">
-        <Col className="col-auto">
-          <FormGroup className="form-inline" controlId="enabledDataChannel">
-            <FormCheck
-              type="switch"
+      <div className="flex flex-wrap gap-2">
+        <div className="w-auto">
+          <FormGroup className="flex items-center gap-2" controlId="enabledDataChannel">
+            <FormSwitch
+              id="enabledDataChannel"
               name="enabledDataChannel"
-              label="dataChannel"
-              checked={enabledDataChannel}
+              checked={enabledDataChannel.value}
               onChange={onChangeSwitch}
               disabled={disabled}
             />
+            <label htmlFor="enabledDataChannel" className="cursor-pointer select-none">
+              dataChannel
+            </label>
           </FormGroup>
-        </Col>
-      </Row>
-      {enabledDataChannel ? (
-        <Row className="form-row">
-          <Col className="col-auto">
-            <Row xs="auto">
-              <Col>
+        </div>
+      </div>
+      {enabledDataChannel.value ? (
+        <div className="flex flex-wrap gap-2">
+          <div className="w-auto">
+            <div className="flex flex-wrap gap-4">
+              <div>
                 <DataChannelSignalingForm disabled={disabled} />
-              </Col>
-              <Col>
+              </div>
+              <div>
                 <IgnoreDisconnectWebSocketForm disabled={disabled} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : null}
     </>
-  )
+  );
 }

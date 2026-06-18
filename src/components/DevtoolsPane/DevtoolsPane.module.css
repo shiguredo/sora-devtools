@@ -1,0 +1,17 @@
+.container {
+  padding: 1rem 0.75rem 0;
+  overflow-x: auto;
+  height: calc(100vh - 56px - 56px);
+  overflow-y: scroll;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex: none;
+    max-width: none;
+  }
+
+  .container:global(.col-6) {
+    display: none;
+  }
+}
