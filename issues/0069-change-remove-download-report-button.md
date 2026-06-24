@@ -29,7 +29,7 @@ Medium。機能削除であり、既存の接続・デバッグ機能には影�
 - `src/components/Header/index.tsx` から DownloadReportButton の import と配置を削除する
 - `src/types.ts` から `DownloadReport` / `DownloadReportParameters` 型を削除する
 - `DownloadReportParameters` を使用している箇所は `src/components/Header/DownloadReportButton.tsx` のみであるため、ファイル削除と同時に整理する
-- Header の `DownloadReportButton` の位置に `SessionsButton` を配置する（#0066 と連携）
+- `SessionsButton` の配置は #0066 で実施する。本 issue では DownloadReportButton の削除のみを行う
 - CHANGES.md の次期リリース欄に `- [CHANGE] DownloadReportButton と DownloadReport 関連機能を削除する` を追加する
 - 2026.1.0 の FIX エントリは過去の修正履歴として残す
 
