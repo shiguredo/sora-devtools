@@ -149,13 +149,14 @@ Medium。過去セッションを識別・検索するための基盤であり�
 ## 解決方法
 
 1. `package.json` の `dependencies` に `@duckdb/duckdb-wasm` を追加する
-2. `pnpm-workspace.yaml` の `minimumReleaseAgeExclude` に `@duckdb/duckdb-wasm` / `apache-arrow` を追加する
-3. `.pnpmfile.cjs` で `@duckdb/duckdb-wasm` および `apache-arrow` の依存関係に問題がある場合は調整する
-   - `apache-arrow` の peer dependency / optional dependency で警告やインストール失敗が発生した場合、`packageExtensions` で補完する
-   - 具体的な調整内容は `pnpm install` 実行後のエラーメッセージを見て確定する
-4. `vite.config.ts` で DuckDB-Wasm の WASM / Worker ファイルを `?url` import できるように設定する
+   - `vp install @duckdb/duckdb-wasm` で `node_modules` を同期し、その後 `package.json` のバージョン指定を `^x.y.z` から `x.y.z` 形式に揃える
+   - 現状の最新版 (`1.32.0`) は十分にリリースから時間が経っており `minimumReleaseAge` の制約に引っかからない。`pnpm-workspace.yaml` の `minimumReleaseAgeExclude` への追記は不要
+2. `.pnpmfile.cjs` で `@duckdb/duckdb-wasm` および `apache-arrow` の依存関係に問題がある場合のみ調整する
+   - `@duckdb/duckdb-wasm@1.32.0` は `apache-arrow: ^17.0.0` を direct dependency として持つ。pnpm が自動的に `apache-arrow` をインストールするため、基本的に `.pnpmfile.cjs` への追記は不要
+   - 問題が発生した場合のみ `packageExtensions` で補完する。具体的な調整内容は `vp install` 実行後のエラーメッセージを見て確定する
+3. `vite.config.ts` で DuckDB-Wasm の WASM / Worker ファイルを `?url` import できるように設定する
    - `build.assetsInlineLimit: 0` を設定し、WASM / Worker ファイルが base64 インライン化されないようにする
-5. `src/sessionDatabase.ts` を作成し、DuckDB-Wasm + OPFS の初期化とクエリ実行 API を実装する
+4. `src/sessionDatabase.ts` を作成し、DuckDB-Wasm + OPFS の初期化とクエリ実行 API を実装する
    - `App.tsx` マウント時または `main.tsx` レンダリング後に非同期で `createSessionDatabase()` を呼び出す
    - `AsyncDuckDB` を `selectBundle()` で初期化する
    - `opfs://sora-devtools-sessions.db` に接続する
@@ -163,11 +164,12 @@ Medium。過去セッションを識別・検索するための基盤であり�
    - `CREATE TABLE IF NOT EXISTS` で `sessions` / `connections` テーブルを作成する
    - 初期化失敗時は console warn を出力し、以降の永続化フックは no-op とする
    - `close()` メソッドを提供し、`beforeunload` 時に DuckDB-Wasm の接続を close する
-6. `sessions` / `connections` テーブルのスキーマを定義する
-7. `src/app/actions.ts` の `connectSora()` / `handleConnectionCreatedNotify()` / `disconnect` コールバックで永続化フックを呼び出す
-8. `src/app/actions.ts` の `connectSora()` / `reconnectSoraImpl()` 内の `abortIfCancelled()` 各検知ポイントおよび `try/catch` の例外ハンドラで、`sessions.ended_at` を更新する
-9. `src/app/actions.ts` の `reconnectSoraImpl()` でも永続化フックを呼び出す
-10. `src/sessionDatabase.ts` に `maskSensitiveMetadata()` を実装する
+5. `sessions` / `connections` テーブルのスキーマを定義する
+6. `src/app/actions.ts` の `connectSora()` / `handleConnectionCreatedNotify()` / `disconnect` コールバックで永続化フックを呼び出す
+7. `src/app/actions.ts` の `connectSora()` / `reconnectSoraImpl()` 内の `abortIfCancelled()` 各検知ポイントおよび `try/catch` の例外ハンドラで、`sessions.ended_at` を更新する
+8. `src/app/actions.ts` の `reconnectSoraImpl()` でも永続化フックを呼び出す
+9. `src/sessionDatabase.ts` に `maskSensitiveMetadata()` を実装する
+10. #0066 で `DevTools.tsx` に設定した `beforeunload` の `handleBeforeUnload` に `void sessionDatabase.close()` を追加する
 11. Playwright E2E テストで OPFS 読み書きを検証する
 
 ## テスト方針
@@ -178,19 +180,18 @@ Medium。過去セッションを識別・検索するための基盤であり�
   - 接続確立後に `sessions` / `connections` レコードが保存されること
   - 切断後に `ended_at` が更新されること
   - ブラウザリロード後もデータが読み出せること
-  - Sora 接続が必要なテストでは既存テストと同様に `process.env.E2E_TEST_SORA_SIGNALING_URL` / `E2E_TEST_SORA_CHANNEL_ID_PREFIX` / `E2E_TEST_ACCESS_TOKEN` を直接使用し、未設定の場合は `test.skip()` する
+  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は `test.skip()` で skip する
 
 ## リスクと対策
 
-| リスク                                                                          | 対策                                                                                                                                                                                    |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@duckdb/duckdb-wasm` が `minimumReleaseAge` の制約で即座にインストールできない | `pnpm-workspace.yaml` の `minimumReleaseAgeExclude` に追加する                                                                                                                          |
-| DuckDB-Wasm 初期化失敗で既存機能が動かなくなる                                  | 初期化を非同期で行い、失敗時は永続化をスキップして既存機能を継続する                                                                                                                    |
-| OPFS quota 不足で書き込み失敗                                                   | エラーをキャッチし、UI 上でユーザーに通知する                                                                                                                                           |
-| 高頻度な stats 書き込みで UI がカクつく                                         | `AsyncDuckDB` の内部 Worker を使用し、#0068 でバッチ挿入を行う                                                                                                                          |
-| 複数タブから同時に OPFS の DB ファイルに書き込む                                | DuckDB-Wasm は単一プロセスを前提としており、複数タブでの同時書き込みはサポート外とする。UI 上で「複数タブで同時に開くとデータ破損のリスクがある」と警告する                             |
-| credentials / API キーが `metadata` に含まれる                                  | 保存前にマスクまたは除外する                                                                                                                                                            |
-| OPFS 上の DB ファイルが破損して開けなくなる                                     | 初期化時に開けない場合は DB ファイルを削除して再作成するフォールバックを実装する。正常終了時は `beforeunload` またはページ終了処理で close し、切断時・定期的に `CHECKPOINT` を実行する |
+| リスク                                           | 対策                                                                                                                                                                                    |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DuckDB-Wasm 初期化失敗で既存機能が動かなくなる   | 初期化を非同期で行い、失敗時は永続化をスキップして既存機能を継続する                                                                                                                    |
+| OPFS quota 不足で書き込み失敗                    | エラーをキャッチし、UI 上でユーザーに通知する                                                                                                                                           |
+| 高頻度な stats 書き込みで UI がカクつく          | `AsyncDuckDB` の内部 Worker を使用し、#0068 でバッチ挿入を行う                                                                                                                          |
+| 複数タブから同時に OPFS の DB ファイルに書き込む | DuckDB-Wasm は単一プロセスを前提としており、複数タブでの同時書き込みはサポート外とする。UI 上で「複数タブで同時に開くとデータ破損のリスクがある」と警告する                             |
+| credentials / API キーが `metadata` に含まれる   | 保存前にマスクまたは除外する                                                                                                                                                            |
+| OPFS 上の DB ファイルが破損して開けなくなる      | 初期化時に開けない場合は DB ファイルを削除して再作成するフォールバックを実装する。正常終了時は `beforeunload` またはページ終了処理で close し、切断時・定期的に `CHECKPOINT` を実行する |
 
 ## 未解決課題
 
