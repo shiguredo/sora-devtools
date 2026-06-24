@@ -1,11 +1,11 @@
 # DuckDB-Wasm + OPFS で過去セッションの stats / メタデータを永続化し /sessions ページで確認できるようにする
 
 - Priority: Medium
+- Branch: なし（エピック。実装作業は #0066 / #0067 / #0068 / #0069 / #0070 で行うため作業ブランチは切らない）
 - Created: 2026-06-24
 - Completed: YYYY-MM-DD
 - Model: GLM-5.2
 - Polished: 2026-06-24
-- 本 issue はエピック。実装作業は #0066 / #0067 / #0068 / #0069 / #0070 で行うため作業ブランチは切らない
 
 ## 目的
 
@@ -75,8 +75,9 @@ Medium。sora-devtools は開発・検証用ツールであり、過去の接続
 - `notify_messages` テーブル
 - `signaling_messages` テーブル
 - `log_messages` テーブル
+- `push_messages` テーブル
 
-第 1 段階で timeline / notify / signaling / log を除外する理由は、stats 永続化と UI の基盤を先に確立するためである。第 2 段階は別 issue で検討する。
+第 1 段階で timeline / notify / signaling / log / push を除外する理由は、stats 永続化と UI の基盤を先に確立するためである。第 2 段階は別 issue で検討する。
 
 ### セッション識別子の扱い
 
