@@ -159,7 +159,7 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
   - 接続中に `webrtc_stats` テーブルへ stats が保存されること
   - `sessionId` / `connectionId` / `stats_type` / `kind` で絞り込めること
   - ブラウザリロード後も stats が読み出せること
-  - Sora 接続が必要なテストでは既存テストと同様に `process.env.E2E_TEST_SORA_SIGNALING_URL` / `E2E_TEST_SORA_CHANNEL_ID_PREFIX` / `E2E_TEST_ACCESS_TOKEN` を直接使用し、未設定の場合は `test.skip()` する
+  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は `test.skip()` で skip する
 
 ## リスクと対策
 
