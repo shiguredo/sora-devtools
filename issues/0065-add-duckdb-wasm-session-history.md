@@ -4,8 +4,8 @@
 - Created: 2026-06-24
 - Completed: YYYY-MM-DD
 - Model: Kimi K2.7 Code
-- Branch: feature/add-duckdb-wasm-session-history（本 issue はエピック。実装作業は #0066 / #0067 / #0068 / #0069 で行う）
 - Polished: 2026-06-24
+- 本 issue はエピック。実装作業は #0066 / #0067 / #0068 / #0069 で行うため作業ブランチは切らない
 
 ## 目的
 
@@ -184,7 +184,7 @@ Medium。sora-devtools は開発・検証用ツールであり、過去の接続
 - `metadata` 内の機密情報がマスクされて保存されること
 - `build` / `test` / `check` が成功すること
 - `CHANGES.md` に本エピックに対応する変更履歴が記載されていること
-- Sora 接続が必要な E2E テストでは既存テストと同様に `process.env.E2E_TEST_SORA_SIGNALING_URL` / `E2E_TEST_SORA_CHANNEL_ID_PREFIX` / `E2E_TEST_ACCESS_TOKEN` を直接使用し、未設定の場合は `test.skip()` すること
+- Sora 接続が必要な E2E テストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は `test.skip()` で skip すること
 - E2E テスト間で OPFS 内の `sora-devtools-sessions.db` を削除してクリーンな状態を保つこと
 
 ## 解決方法
@@ -194,8 +194,10 @@ Medium。sora-devtools は開発・検証用ツールであり、過去の接続
 3. `src/app/actions.ts` / `src/app/signals.ts` のメッセージ追加・stats 更新箇所に永続化フックを追加する（詳細は #0067 / #0068）
 4. `src/routes/Sessions.tsx` と `src/components/Sessions/*` を作成し、一覧・詳細・フィルタ UI を実装する
 5. WebRTC stats 用の正規化スキーマを定義し、主要カラムを `webrtc_stats` テーブルに保存する（詳細は #0068）
-6. `.pnpmfile.cjs` / `vite.config.ts` / `package.json` / `pnpm-workspace.yaml` で新規外部依存（`@duckdb/duckdb-wasm`、`preact-iso`）に関する必要な設定を行う
+6. `vite.config.ts` / `package.json` で新規外部依存（`@duckdb/duckdb-wasm`、`preact-iso`）に関する必要な設定を行う
    - `vite.config.ts` では `build.assetsInlineLimit: 0` を設定し、DuckDB-Wasm の WASM / Worker ファイルが base64 インライン化されないようにする
+   - `.pnpmfile.cjs` は依存関係に問題が発生した場合のみ調整する（詳細は #0067）
+   - 現状の最新版はいずれも `minimumReleaseAge` の制約に引っかからないため、`pnpm-workspace.yaml` の `minimumReleaseAgeExclude` への追記は不要
 7. Playwright E2E テストで DuckDB-Wasm + OPFS の読み書きを検証する
 
 ## テスト方針
@@ -223,7 +225,7 @@ Medium。sora-devtools は開発・検証用ツールであり、過去の接続
 ## 未解決課題
 
 - `@duckdb/duckdb-wasm` / `apache-arrow` の `.pnpmfile.cjs` 調整内容は #0067 の PoC で確定する
-  - `@duckdb/duckdb-wasm@1.32.0` は `apache-arrow: ^17.0.0` を peer dependency として持つ。pnpm の自動解決で問題がなければ `.pnpmfile.cjs` への追記は不要だが、`strict-peer-dependencies` エラーやバージョン競合が発生した場合は `packageExtensions` で補完する
+  - `@duckdb/duckdb-wasm@1.32.0` は `apache-arrow: ^17.0.0` を direct dependency として持つ。pnpm が自動的に `apache-arrow` をインストールするため、基本的に `.pnpmfile.cjs` への追記は不要
 
 ## 関連 issue
 
