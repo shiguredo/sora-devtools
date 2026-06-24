@@ -26,6 +26,7 @@ dist/
 # Agents
 .claude/
 .codex/
+.kimi-code/
 
 # mcp
 *.png
