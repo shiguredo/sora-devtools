@@ -4,8 +4,9 @@ import { requireSoraConnectionEnv } from "./helpers/env.ts";
 import {
   awaitSessionDatabaseReady,
   cleanupSessionDatabase,
-  listConnectionRows,
   listSessionRows,
+  reopenAppSessionDatabase,
+  waitForEndedAt,
 } from "./helpers/sessionDatabase.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
 
@@ -45,33 +46,24 @@ test.describe("session database persistence", () => {
     await devtools.waitForConnection();
     const connectionId = await devtools.getConnectionId();
     expect(connectionId).toBeTruthy();
+    if (!connectionId) {
+      return;
+    }
 
     await page.waitForTimeout(1000);
     await devtools.disconnect();
-    // disconnect の fire-and-forget 永続化が完了する猶予
-    await page.waitForTimeout(2000);
 
-    const sessions = await listSessionRows(page);
-    const connections = await listConnectionRows(page);
+    // close が書き込みキューを待ってから読むため、ended_at 反映をポーリングする
+    const { session: latestSession, connection: latestConnection } = await waitForEndedAt(page, {
+      connectionId,
+    });
 
-    expect(sessions.length).toBeGreaterThanOrEqual(1);
-    const latestSession = sessions.at(-1);
-    expect(latestSession).toBeDefined();
-    if (latestSession === undefined) {
-      return;
-    }
     expect(latestSession.channel_id).toBe(channelId);
     expect(latestSession.role).toBe("sendrecv");
     expect(latestSession.session_id).toBeTruthy();
     expect(latestSession.connection_id).toBe(connectionId);
     expect(latestSession.ended_at).toBeTruthy();
 
-    expect(connections.length).toBeGreaterThanOrEqual(1);
-    const latestConnection = connections.at(-1);
-    expect(latestConnection).toBeDefined();
-    if (latestConnection === undefined) {
-      return;
-    }
     expect(latestConnection.session_db_id).toBe(latestSession.id);
     expect(latestConnection.connection_id).toBe(connectionId);
     expect(latestConnection.ended_at).toBeTruthy();
@@ -93,9 +85,13 @@ test.describe("session database persistence", () => {
     await devtools.connect();
     await devtools.waitForConnection();
     const connectionId = await devtools.getConnectionId();
+    expect(connectionId).toBeTruthy();
+    if (!connectionId) {
+      return;
+    }
     await page.waitForTimeout(1000);
     await devtools.disconnect();
-    await page.waitForTimeout(1000);
+    await waitForEndedAt(page, { connectionId });
 
     // リロード前に件数を控えるため一度読む（close される）
     const beforeReload = await listSessionRows(page);
@@ -133,15 +129,27 @@ test.describe("session database persistence", () => {
 
     await devtools.connect();
     await devtools.waitForConnection();
+    const firstConnectionId = await devtools.getConnectionId();
+    expect(firstConnectionId).toBeTruthy();
+    if (!firstConnectionId) {
+      return;
+    }
     await page.waitForTimeout(500);
     await devtools.disconnect();
-    await page.waitForTimeout(1000);
+    await waitForEndedAt(page, { connectionId: firstConnectionId });
+    // list / wait で close した DB をアプリ側で開き直す
+    await reopenAppSessionDatabase(page);
 
     await devtools.connect();
     await devtools.waitForConnection();
+    const secondConnectionId = await devtools.getConnectionId();
+    expect(secondConnectionId).toBeTruthy();
+    if (!secondConnectionId) {
+      return;
+    }
     await page.waitForTimeout(500);
     await devtools.disconnect();
-    await page.waitForTimeout(1000);
+    await waitForEndedAt(page, { connectionId: secondConnectionId });
 
     const sessions = await listSessionRows(page);
     const sameChannel = sessions.filter((row) => row.channel_id === channelId);
@@ -163,6 +171,11 @@ test.describe("session database persistence", () => {
     await awaitSessionDatabaseReady(page);
     await devtools.connect();
     await devtools.waitForConnection();
+    const connectionId = await devtools.getConnectionId();
+    expect(connectionId).toBeTruthy();
+    if (!connectionId) {
+      return;
+    }
     await page.waitForTimeout(1000);
 
     // リトライ中を模擬して disconnectSora 明示パスを検証する
@@ -180,16 +193,9 @@ test.describe("session database persistence", () => {
       signals.setSoraReconnecting(true);
       await actions.disconnectSora();
     });
-    await page.waitForTimeout(1000);
 
-    const sessions = await listSessionRows(page);
-    const matched = sessions.filter((row) => row.channel_id === channelId);
-    expect(matched.length).toBeGreaterThanOrEqual(1);
-    const latest = matched.at(-1);
-    expect(latest).toBeDefined();
-    if (latest === undefined) {
-      return;
-    }
+    const { session: latest } = await waitForEndedAt(page, { connectionId });
+    expect(latest.channel_id).toBe(channelId);
     expect(latest.ended_at).toBeTruthy();
   });
 });

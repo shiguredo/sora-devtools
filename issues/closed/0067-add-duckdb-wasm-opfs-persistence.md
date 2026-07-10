@@ -224,7 +224,7 @@ Medium。過去セッションを識別・検索するための基盤であり�
 
 1. `@duckdb/duckdb-wasm` 1.32.0 と `apache-arrow` 17.0.0 を dependencies にピン留め追加した
 2. `vite.config.ts` に `assetsInlineLimit: 0` と `manualChunks`（`duckdb-wasm` / `apache-arrow`）を追加した
-3. `src/sessionDatabase.ts` を新設し、動的 import で OPFS DB を初期化、sessions / connections API と `maskSensitiveMetadata` を実装した
+3. `src/sessionDatabase.ts` を新設し、動的 import で OPFS DB を初期化、sessions / connections API と `maskSensitiveMetadata` を実装した。AsyncDuckDBConnection への並行 query を避けるため書き込みを `enqueueWrite` で直列化し、`close()` はキュー排水後にハンドルを解放する
 4. `App.tsx` マウント時に `createSessionDatabase()` を呼ぶ。`beforeunload` には `close()` を追加しない
 5. `actions.ts` に接続試行ローカルの永続化コンテキストを渡し、INSERT / UPDATE / ended_at ルールどおりフックした。INSERT と disconnect のレースは connectionId 単位の pending Set で補完する
 6. Vitest（`sessionDatabase.test.ts` / `.prop.ts`）と Playwright E2E（`tests/session-database.test.ts` + helpers）を追加した。E2E の SQL は `querySessionDatabaseForE2e` を Vite 経由で呼ぶ

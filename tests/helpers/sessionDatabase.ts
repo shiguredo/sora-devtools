@@ -45,6 +45,19 @@ export async function closeAppSessionDatabase(page: Page): Promise<void> {
   }, SESSION_DATABASE_MODULE_URL);
 }
 
+// E2E の list / wait で close したあと、アプリ側シングルトンを再度開く
+export async function reopenAppSessionDatabase(page: Page): Promise<void> {
+  await page.evaluate(async (moduleUrl) => {
+    const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+    const mod = loaded as {
+      createSessionDatabase: () => Promise<void>;
+      whenReady: () => Promise<void>;
+    };
+    await mod.createSessionDatabase();
+    await mod.whenReady();
+  }, SESSION_DATABASE_MODULE_URL);
+}
+
 // OPFS 上のセッション DB ファイルを削除する（close 後に呼ぶ）
 export async function deleteSessionDatabaseFiles(page: Page): Promise<void> {
   await page.evaluate(async (moduleUrl) => {
@@ -96,5 +109,37 @@ export async function listConnectionRows(page: Page): Promise<ConnectionRow[]> {
   return querySessionDatabase<ConnectionRow>(
     page,
     "SELECT id, session_db_id, session_id, connection_id, channel_id, CAST(ended_at AS VARCHAR) AS ended_at FROM connections ORDER BY id",
+  );
+}
+
+// fire-and-forget の ended_at 更新が反映されるまで待つ
+export async function waitForEndedAt(
+  page: Page,
+  options: {
+    connectionId: string;
+    timeoutMs?: number;
+  },
+): Promise<{ session: SessionRow; connection: ConnectionRow }> {
+  const timeoutMs = options.timeoutMs ?? 10_000;
+  const deadline = Date.now() + timeoutMs;
+  let lastSession: SessionRow | undefined;
+  let lastConnection: ConnectionRow | undefined;
+
+  while (Date.now() < deadline) {
+    const sessions = await listSessionRows(page);
+    const connections = await listConnectionRows(page);
+    lastSession = sessions.find((row) => row.connection_id === options.connectionId);
+    lastConnection = connections.find((row) => row.connection_id === options.connectionId);
+    if (lastSession?.ended_at && lastConnection?.ended_at) {
+      return { session: lastSession, connection: lastConnection };
+    }
+    // list* は DB を close するため、次のポーリング前にアプリ側を再初期化する
+    await reopenAppSessionDatabase(page);
+    await page.waitForTimeout(200);
+  }
+
+  throw new Error(
+    `ended_at was not set within ${timeoutMs}ms ` +
+      `(session=${String(lastSession?.ended_at)}, connection=${String(lastConnection?.ended_at)})`,
   );
 }

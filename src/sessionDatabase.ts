@@ -39,6 +39,8 @@ let checkpointTimerId: ReturnType<typeof setInterval> | null = null;
 let lastAlertMessage: string | null = null;
 let lastAlertAt = 0;
 let initStarted = false;
+// AsyncDuckDBConnection は同一接続への並行 query を想定しないため、書き込みを直列化する
+let writeChain: Promise<void> = Promise.resolve();
 
 // whenReady() 用の共有 Promise。成功・失敗いずれでも settle する
 let readyResolve: (() => void) | null = null;
@@ -132,6 +134,23 @@ function warnUnavailable(action: string): void {
   console.warn(`Session database is unavailable; skipped ${action}`);
 }
 
+// 書き込み API / CHECKPOINT / close を 1 本のチェーンに載せて並行実行を防ぐ
+async function enqueueWrite<T>(fn: () => Promise<T>): Promise<T> {
+  const previous = writeChain;
+  let release!: () => void;
+  writeChain = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  return (async () => {
+    await previous;
+    try {
+      return await fn();
+    } finally {
+      release();
+    }
+  })();
+}
+
 function notifyPersistenceError(message: string): void {
   const now = Date.now();
   if (lastAlertMessage === message && now - lastAlertAt < ALERT_DEBOUNCE_MS) {
@@ -167,7 +186,7 @@ async function deleteOpfsDatabaseFile(): Promise<void> {
   }
 }
 
-async function runCheckpoint(): Promise<void> {
+async function runCheckpointUnlocked(): Promise<void> {
   if (duckdbConnection === null) {
     return;
   }
@@ -180,6 +199,13 @@ async function runCheckpoint(): Promise<void> {
         : "Failed to checkpoint session database";
     console.warn(message);
   }
+}
+
+// タイマーからの定期 CHECKPOINT もキュー経由にする
+async function runCheckpoint(): Promise<void> {
+  await enqueueWrite(async () => {
+    await runCheckpointUnlocked();
+  });
 }
 
 function startCheckpointTimer(): void {
@@ -370,43 +396,45 @@ export async function insertSession(
   role: string,
   metadata: Json | undefined,
 ): Promise<number | null> {
-  if (duckdbConnection === null) {
-    warnUnavailable("insertSession");
-    return null;
-  }
-  try {
-    const maskedMetadata = metadata === undefined ? null : maskSensitiveMetadata(metadata);
-    const metadataJson = maskedMetadata === null ? null : JSON.stringify(maskedMetadata);
-    const statement = await duckdbConnection.prepare(`
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      warnUnavailable("insertSession");
+      return null;
+    }
+    try {
+      const maskedMetadata = metadata === undefined ? null : maskSensitiveMetadata(metadata);
+      const metadataJson = maskedMetadata === null ? null : JSON.stringify(maskedMetadata);
+      const statement = await duckdbConnection.prepare(`
       INSERT INTO sessions (channel_id, role, started_at, metadata)
       VALUES (?, ?, CURRENT_TIMESTAMP, CASE WHEN ? IS NULL THEN NULL ELSE CAST(? AS JSON) END)
       RETURNING id
     `);
-    const table = await statement.query(channelId, role, metadataJson, metadataJson);
-    await statement.close();
-    const idColumn = table.getChildAt(0);
-    const rawId: unknown = idColumn === null ? undefined : idColumn.get(0);
-    let id: number | null = null;
-    if (typeof rawId === "bigint") {
-      id = Number(rawId);
-    } else if (typeof rawId === "number") {
-      id = rawId;
+      const table = await statement.query(channelId, role, metadataJson, metadataJson);
+      await statement.close();
+      const idColumn = table.getChildAt(0);
+      const rawId: unknown = idColumn === null ? undefined : idColumn.get(0);
+      let id: number | null = null;
+      if (typeof rawId === "bigint") {
+        id = Number(rawId);
+      } else if (typeof rawId === "number") {
+        id = rawId;
+      }
+      if (id === null || !Number.isFinite(id)) {
+        throw new Error(`insertSession RETURNING id is not a number: ${String(rawId)}`);
+      }
+      currentSessionDbId = id;
+      await runCheckpointUnlocked();
+      return id;
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Failed to insert session: ${error.message}`
+          : "Failed to insert session";
+      console.warn(message);
+      notifyPersistenceError(message);
+      return null;
     }
-    if (id === null || !Number.isFinite(id)) {
-      throw new Error(`insertSession RETURNING id is not a number: ${String(rawId)}`);
-    }
-    currentSessionDbId = id;
-    await runCheckpoint();
-    return id;
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? `Failed to insert session: ${error.message}`
-        : "Failed to insert session";
-    console.warn(message);
-    notifyPersistenceError(message);
-    return null;
-  }
+  });
 }
 
 export async function updateSessionIdAndConnectionId(
@@ -414,27 +442,29 @@ export async function updateSessionIdAndConnectionId(
   sessionId: string,
   connectionId: string,
 ): Promise<void> {
-  if (duckdbConnection === null) {
-    warnUnavailable("updateSessionIdAndConnectionId");
-    return;
-  }
-  try {
-    const statement = await duckdbConnection.prepare(`
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      warnUnavailable("updateSessionIdAndConnectionId");
+      return;
+    }
+    try {
+      const statement = await duckdbConnection.prepare(`
       UPDATE sessions
       SET session_id = ?, connection_id = ?
       WHERE id = ?
     `);
-    await statement.query(sessionId, connectionId, id);
-    await statement.close();
-    await runCheckpoint();
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? `Failed to update session identifiers: ${error.message}`
-        : "Failed to update session identifiers";
-    console.warn(message);
-    notifyPersistenceError(message);
-  }
+      await statement.query(sessionId, connectionId, id);
+      await statement.close();
+      await runCheckpointUnlocked();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Failed to update session identifiers: ${error.message}`
+          : "Failed to update session identifiers";
+      console.warn(message);
+      notifyPersistenceError(message);
+    }
+  });
 }
 
 export async function insertConnection(
@@ -445,151 +475,160 @@ export async function insertConnection(
   channelId: string,
   signalingUrl: string,
 ): Promise<boolean> {
-  if (duckdbConnection === null) {
-    warnUnavailable("insertConnection");
-    return false;
-  }
-  try {
-    const normalizedSignalingUrl = normalizeNullableString(signalingUrl);
-    const statement = await duckdbConnection.prepare(`
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      warnUnavailable("insertConnection");
+      return false;
+    }
+    try {
+      const normalizedSignalingUrl = normalizeNullableString(signalingUrl);
+      const statement = await duckdbConnection.prepare(`
       INSERT INTO connections (
         session_db_id, session_id, connection_id, sora_client_id,
         channel_id, signaling_url, started_at
       )
       VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     `);
-    await statement.query(
-      sessionDbId,
-      sessionId,
-      connectionId,
-      soraClientId,
-      channelId,
-      normalizedSignalingUrl,
-    );
-    await statement.close();
-    await runCheckpoint();
-    return true;
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? `Failed to insert connection: ${error.message}`
-        : "Failed to insert connection";
-    console.warn(message);
-    notifyPersistenceError(message);
-    return false;
-  }
+      await statement.query(
+        sessionDbId,
+        sessionId,
+        connectionId,
+        soraClientId,
+        channelId,
+        normalizedSignalingUrl,
+      );
+      await statement.close();
+      await runCheckpointUnlocked();
+      return true;
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Failed to insert connection: ${error.message}`
+          : "Failed to insert connection";
+      console.warn(message);
+      notifyPersistenceError(message);
+      return false;
+    }
+  });
 }
 
 export async function updateSessionEndedAt(id: number): Promise<void> {
-  if (duckdbConnection === null) {
-    warnUnavailable("updateSessionEndedAt");
-    return;
-  }
-  try {
-    const statement = await duckdbConnection.prepare(`
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      warnUnavailable("updateSessionEndedAt");
+      return;
+    }
+    try {
+      const statement = await duckdbConnection.prepare(`
       UPDATE sessions
       SET ended_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `);
-    await statement.query(id);
-    await statement.close();
-    // 成功時、当該 id が current と一致するときだけ clear する（無条件 clear 禁止）
-    if (currentSessionDbId === id) {
-      currentSessionDbId = null;
+      await statement.query(id);
+      await statement.close();
+      // 成功時、当該 id が current と一致するときだけ clear する（無条件 clear 禁止）
+      if (currentSessionDbId === id) {
+        currentSessionDbId = null;
+      }
+      await runCheckpointUnlocked();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Failed to update session ended_at: ${error.message}`
+          : "Failed to update session ended_at";
+      console.warn(message);
+      notifyPersistenceError(message);
     }
-    await runCheckpoint();
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? `Failed to update session ended_at: ${error.message}`
-        : "Failed to update session ended_at";
-    console.warn(message);
-    notifyPersistenceError(message);
-  }
+  });
 }
 
 export async function updateConnectionEndedAt(connectionId: string): Promise<void> {
   if (!connectionId) {
     return;
   }
-  if (duckdbConnection === null) {
-    warnUnavailable("updateConnectionEndedAt");
-    return;
-  }
-  try {
-    const statement = await duckdbConnection.prepare(`
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      warnUnavailable("updateConnectionEndedAt");
+      return;
+    }
+    try {
+      const statement = await duckdbConnection.prepare(`
       UPDATE connections
       SET ended_at = CURRENT_TIMESTAMP
       WHERE connection_id = ?
     `);
-    await statement.query(connectionId);
-    await statement.close();
-    await runCheckpoint();
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? `Failed to update connection ended_at: ${error.message}`
-        : "Failed to update connection ended_at";
-    console.warn(message);
-    notifyPersistenceError(message);
-  }
+      await statement.query(connectionId);
+      await statement.close();
+      await runCheckpointUnlocked();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Failed to update connection ended_at: ${error.message}`
+          : "Failed to update connection ended_at";
+      console.warn(message);
+      notifyPersistenceError(message);
+    }
+  });
 }
 
 // E2E クリーンアップおよび明示的 teardown 用。beforeunload では呼ばない
 // 公式 OPFS テストの close 手順に合わせ、再 open 可能な状態でハンドルを解放する
 export async function close(): Promise<void> {
   stopCheckpointTimer();
-  const connection = duckdbConnection;
-  const instance = duckdbInstance;
-  duckdbConnection = null;
-  duckdbInstance = null;
-  currentSessionDbId = null;
-  // 同一ドキュメントで再初期化できるようにする（whenReady は settle 済みのまま）
-  initStarted = false;
+  // 進行中の書き込みを待ってからハンドルを解放する
+  await enqueueWrite(async () => {
+    const connection = duckdbConnection;
+    const instance = duckdbInstance;
+    duckdbConnection = null;
+    duckdbInstance = null;
+    currentSessionDbId = null;
+    // 同一ドキュメントで再初期化できるようにする（whenReady は settle 済みのまま）
+    initStarted = false;
 
-  if (connection !== null) {
-    try {
-      await connection.query("CHECKPOINT");
-    } catch {
-      // close 前の CHECKPOINT 失敗は無視する
+    if (connection !== null) {
+      try {
+        await connection.query("CHECKPOINT");
+      } catch {
+        // close 前の CHECKPOINT 失敗は無視する
+      }
+      try {
+        await connection.close();
+      } catch (error) {
+        console.warn(
+          error instanceof Error
+            ? `Failed to close session database connection: ${error.message}`
+            : "Failed to close session database connection",
+        );
+      }
     }
-    try {
-      await connection.close();
-    } catch (error) {
-      console.warn(
-        error instanceof Error
-          ? `Failed to close session database connection: ${error.message}`
-          : "Failed to close session database connection",
-      );
-    }
-  }
 
-  if (instance !== null) {
-    try {
-      await instance.flushFiles();
-    } catch {
-      // flush 失敗は reset / dropFiles へ進む
+    if (instance !== null) {
+      try {
+        await instance.flushFiles();
+      } catch {
+        // flush 失敗は reset / dropFiles へ進む
+      }
+      try {
+        await instance.reset();
+      } catch {
+        // reset 失敗は dropFiles / terminate へ進む
+      }
+      try {
+        await instance.dropFiles();
+      } catch {
+        // dropFiles 失敗は terminate へ進む
+      }
+      try {
+        await instance.terminate();
+      } catch (error) {
+        console.warn(
+          error instanceof Error
+            ? `Failed to terminate session database: ${error.message}`
+            : "Failed to terminate session database",
+        );
+      }
     }
-    try {
-      await instance.reset();
-    } catch {
-      // reset 失敗は dropFiles / terminate へ進む
-    }
-    try {
-      await instance.dropFiles();
-    } catch {
-      // dropFiles 失敗は terminate へ進む
-    }
-    try {
-      await instance.terminate();
-    } catch (error) {
-      console.warn(
-        error instanceof Error
-          ? `Failed to terminate session database: ${error.message}`
-          : "Failed to terminate session database",
-      );
-    }
-  }
+  });
 }
 
 // E2E 専用: アプリ側 close 済み前提で OPFS DB を一時 open して SQL を実行する
