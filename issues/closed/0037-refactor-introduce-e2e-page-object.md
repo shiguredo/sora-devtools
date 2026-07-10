@@ -53,7 +53,7 @@ Playwright e2e テストに Page Object Model (POM) と環境変数読み込み�
 
 以下はスコープ外とする。
 
-- 未設定時の skip 機構の追加 (#0063 で扱う)
+- 未設定時の即座 fail 機構の追加 (#0063 で扱う)
 - `tests/noise-suppression-lazy-load.test.ts` / `tests/mp4-media-stream-lazy-load.test.ts` への Page Object 適用
 - `tests/global-setup.ts` の変更 (現状の `process.loadEnvFile(envPath)` + `fs.existsSync` ガードをそのまま使う)
 - `playwright.config.ts` の変更 ( `webServer` / `globalSetup` / `use.baseURL` / `fullyParallel` のいずれも本 issue では変更しない。現状 `use.baseURL` は未設定)
@@ -141,7 +141,7 @@ export class DevtoolsPage {
 
 ### `tests/helpers/env.ts` の API 仕様
 
-skip 機構を含まない、純粋な環境変数読み込みヘルパーを定義する。
+未設定時の fail / skip を含まない、純粋な環境変数読み込みヘルパーを定義する。
 
 ```typescript
 // Sora 接続テストに必要な環境変数を解決した結果
@@ -160,7 +160,7 @@ export function getSoraConnectionEnv(): SoraConnectionEnv | undefined;
 
 設計上の注意:
 
-- `getSoraConnectionEnv()` は副作用なしの純粋関数。`process.env` を読むのみで `test.skip()` 等の Playwright runner 副作用は持たない (副作用を持つ skip ヘルパーは #0063 で `requireSoraConnectionEnv()` として追加する)
+- `getSoraConnectionEnv()` は副作用なしの純粋関数。`process.env` を読むのみで throw / `test.skip()` 等の副作用は持たない (未設定時に Error を throw する `requireSoraConnectionEnv()` は #0063 で追加する)
 - 「未設定」の判定式は `signalingUrl === undefined || signalingUrl === ""` とし、空白文字のみの trim はしない (空白のみの文字列は「設定済み」扱いとなり、接続失敗する)
 - `tests/helpers/env.ts` 内では `process.loadEnvFile` を再度呼ばず `process.env` をそのまま読む (環境変数の読み込みは `tests/global-setup.ts` の責務)
 - `.env.template` の e2e 用変数名 ( `E2E_TEST_SORA_SIGNALING_URL` / `E2E_TEST_SORA_CHANNEL_ID_PREFIX` / `E2E_TEST_ACCESS_TOKEN` ) と本ヘルパーが読む環境変数名を一致させる
@@ -168,7 +168,7 @@ export function getSoraConnectionEnv(): SoraConnectionEnv | undefined;
 
 ### リファクタ後のテストファイルのテンプレート
 
-各ファイル ( `sendrecv.test.ts` / `sendonly.test.ts` / `recvonly.test.ts` ) は以下の構成で揃え、差分はテスト名 / `role` 文字列 / `channelId` の suffix のみとする。3 ファイル構成は維持する。本 issue では skip 機構を含めない。
+各ファイル ( `sendrecv.test.ts` / `sendonly.test.ts` / `recvonly.test.ts` ) は以下の構成で揃え、差分はテスト名 / `role` 文字列 / `channelId` の suffix のみとする。3 ファイル構成は維持する。本 issue では未設定時の fail / skip を含めない。
 
 ```typescript
 import { test } from "@playwright/test";
@@ -232,7 +232,7 @@ Sora 接続成功パス ( `E2E_TEST_SORA_SIGNALING_URL` 設定済み) は既存�
 ### 静的検証
 
 - `tests/pages/DevtoolsPage.ts` が上記 API 仕様に従って実装され、各メソッドに日本語コメントが付与されている
-- `tests/helpers/env.ts` が named export するのは `SoraConnectionEnv` 型と `getSoraConnectionEnv()` のみとする。`requireSoraConnectionEnv` / `test` / `test.skip` 等 Playwright runner の副作用を持つ API は export しない
+- `tests/helpers/env.ts` が named export するのは `SoraConnectionEnv` 型と `getSoraConnectionEnv()` のみとする。`requireSoraConnectionEnv` は #0063 で追加するため本 issue では export しない
 - `tests/helpers/env.ts` / `tests/pages/DevtoolsPage.ts` の実装で non-null assertion ( `!` ) や `as` キャストを使わない
 - `tests/` 配下から `src/` 配下への import を行っていない
   - `grep -rE "from ['\"](@/|(\\.\\./)+src/)" tests/pages/ tests/helpers/ tests/sendrecv.test.ts tests/sendonly.test.ts tests/recvonly.test.ts` が 0 件
@@ -266,4 +266,4 @@ Sora 接続成功パス ( `E2E_TEST_SORA_SIGNALING_URL` 設定済み) は既存�
 ## 依存
 
 - `@playwright/test` のバージョンは `package.json` を正とする (執筆時点で `1.61.1`)
-- skip 機構の追加は本 issue 完了後の #0063 で行う。#0063 で `tests/helpers/env.ts` に `requireSoraConnectionEnv()` を追加し、各テストファイルの `getSoraConnectionEnv() ?? {...}` を `requireSoraConnectionEnv()` 呼び出しに置き換える
+- 未設定時の即座 fail は本 issue 完了後の #0063 で行う。#0063 で `tests/helpers/env.ts` に `requireSoraConnectionEnv()` を追加し、各テストファイルの `getSoraConnectionEnv() ?? {...}` を `requireSoraConnectionEnv()` 呼び出しに置き換える。未設定時は skip せず Error を throw する

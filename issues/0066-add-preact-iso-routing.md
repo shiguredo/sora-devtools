@@ -174,5 +174,5 @@ LocationProvider          ← main.tsx（useLocation が有効になる境界）
 - #0058: `vite.config.ts` の `manualChunks` で `moduleId.includes()` の誤マッチを防ぐ（未完了なら本 issue 内で配置順ワークアラウンド）
 - #0062: 三項演算子を全面禁止する（マージ済みなら新規コードで遵守）
 - #0037: e2e テストに Page Object Model を導入する（接続維持 E2E のハード前提）
-- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に skip する仕組みを追加する（接続維持 E2E のハード前提）
+- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に即座に失敗させる（接続維持 E2E のハード前提）
 - #0071: /sessions では DevTools 専用 Header 操作を出さないようにする（本 issue の共有 Header 既知制限の切り出し）

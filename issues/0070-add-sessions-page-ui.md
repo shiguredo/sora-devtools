@@ -63,7 +63,7 @@ Medium。#0065 エピックの完了条件である「`/sessions` ページで�
   - `/sessions` ページで過去セッションの一覧が表示されること
   - セッション詳細で stats が表示されること
   - クエリストリングによる絞り込みが機能すること
-  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は `test.skip()` で skip する
+  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は Error を throw して即座に fail する
 
 ## 関連 issue
 

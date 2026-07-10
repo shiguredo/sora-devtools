@@ -222,7 +222,7 @@ export class DevtoolsPage {
 
 - `.env.local` に `E2E_TEST_SORA_SIGNALING_URL` を設定した状態で `pnpm test:e2e` を実行したとき、本 issue で追加する 3 ファイルが全件通過すること
 - `pnpm exec playwright test --list tests/e2e-*.test.ts` で 3 件 (3 ファイル × 各 1 test) のテストが列挙されること
-- `.env.local` に `E2E_TEST_SORA_SIGNALING_URL` が未設定の状態で `pnpm test:e2e` を実行したとき、 #0063 の `requireSoraConnectionEnv()` により本 issue 追加分 3 ファイルが skip されること
+- `.env.local` に `E2E_TEST_SORA_SIGNALING_URL` が未設定の状態で `pnpm test:e2e` を実行したとき、 #0063 の `requireSoraConnectionEnv()` により本 issue 追加分 3 ファイルが `E2E_TEST_SORA_SIGNALING_URL is not set` で即座に fail すること
 - `pnpm exec playwright test --grep lazy-load` で `noise-suppression-lazy-load.test.ts` / `mp4-media-stream-lazy-load.test.ts` の通過状態が追加前後で変わらないこと (回帰確認)
 
 ## エッジケース
@@ -234,6 +234,6 @@ export class DevtoolsPage {
 ## 依存
 
 - #0037 (Page Object と env helper の導入) が先行マージされている必要がある (本 issue は `DevtoolsPage` を拡張し、 0037 の `ConnectionParams` 型を `debug?` / `debugType?` で拡張するため)
-- #0063 (skip 機構 / `requireSoraConnectionEnv` ) が先行マージされている必要がある ( `requireSoraConnectionEnv` の呼び方は #0063 で確立された規約 = `test()` コールバック先頭または `test.beforeEach` 先頭での呼び出しを継承する)
+- #0063 (未設定時の即座 fail / `requireSoraConnectionEnv` ) が先行マージされている必要がある ( `requireSoraConnectionEnv` の呼び方は #0063 で確立された規約 = `test()` コールバック先頭または `test.beforeEach` 先頭での呼び出しを継承する。未設定時は skip せず Error を throw する)
 - #0038 (Page Object 拡張 / UI テスト) と本 issue は Page Object 拡張範囲が異なるため API 衝突しないが、編集競合を避けるため 0038 → 0039 の順で進める
 - `@playwright/test` 1.60.0 ( `package.json` 参照)
