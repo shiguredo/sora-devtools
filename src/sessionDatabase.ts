@@ -5,6 +5,8 @@ import type { AsyncDuckDB, AsyncDuckDBConnection } from "@duckdb/duckdb-wasm";
 
 import { setSoraErrorAlertMessage } from "@/app/signals";
 import type { Json } from "@/types";
+import { selectIdsToDeleteForSampling } from "@/webrtcStatsNormalizer";
+import type { NormalizedWebrtcStat } from "@/webrtcStatsNormalizer";
 
 // OPFS 上の DuckDB データベースパス（signaling-url-candidates.json と衝突しない名前）
 const OPFS_DB_PATH = "opfs://sora-devtools-sessions.db";
@@ -43,6 +45,21 @@ let lastAlertAt = 0;
 let initStarted = false;
 // AsyncDuckDBConnection は同一接続への並行 query を想定しないため、書き込みを直列化する
 let writeChain: Promise<void> = Promise.resolve();
+
+// webrtc_stats バッチ用。session_db_id 単位のバッファ
+const STATS_FLUSH_COUNT = 1000;
+const STATS_FLUSH_INTERVAL_MS = 5000;
+const STATS_SOFT_LIMIT = 10_000;
+const STATS_MAX_RETRIES = 3;
+
+interface StatsBufferState {
+  rows: NormalizedWebrtcStat[];
+  firstEnqueueAt: number | null;
+  flushTimerId: ReturnType<typeof setTimeout> | null;
+  retryCount: number;
+}
+
+const statsBuffers = new Map<number, StatsBufferState>();
 
 // whenReady() 用の共有 Promise。成功・失敗いずれでも settle する
 let readyResolve: (() => void) | null = null;
@@ -259,6 +276,55 @@ async function createSchema(connection: AsyncDuckDBConnection): Promise<void> {
       ended_at TIMESTAMP,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
+  `);
+  await connection.query("CREATE SEQUENCE IF NOT EXISTS seq_webrtc_stats_id");
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS webrtc_stats (
+      id BIGINT PRIMARY KEY DEFAULT nextval('seq_webrtc_stats_id'),
+      session_db_id INTEGER,
+      session_id VARCHAR,
+      connection_id VARCHAR,
+      channel_id VARCHAR,
+      timestamp_ms DOUBLE,
+      stats_type VARCHAR,
+      stats_id VARCHAR,
+      kind VARCHAR,
+      ssrc UBIGINT,
+      track_identifier VARCHAR,
+      transport_id VARCHAR,
+      codec_id VARCHAR,
+      mid VARCHAR,
+      remote_id VARCHAR,
+      packets_received BIGINT,
+      packets_lost BIGINT,
+      packets_sent BIGINT,
+      bytes_received BIGINT,
+      bytes_sent BIGINT,
+      header_bytes_sent BIGINT,
+      retransmitted_packets_sent BIGINT,
+      retransmitted_bytes_sent BIGINT,
+      total_packet_send_delay DOUBLE,
+      nack_count BIGINT,
+      frame_width INTEGER,
+      frame_height INTEGER,
+      frames_per_second DOUBLE,
+      frames_received BIGINT,
+      round_trip_time DOUBLE,
+      total_round_trip_time DOUBLE,
+      available_outgoing_bitrate DOUBLE,
+      available_incoming_bitrate DOUBLE,
+      local_candidate_id VARCHAR,
+      remote_candidate_id VARCHAR,
+      candidate_pair_state VARCHAR,
+      nominated BOOLEAN,
+      selected_candidate_pair_id VARCHAR,
+      raw_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await connection.query(`
+    CREATE INDEX IF NOT EXISTS idx_webrtc_stats_session_db_id
+    ON webrtc_stats(session_db_id)
   `);
 }
 
@@ -587,6 +653,8 @@ export async function updateConnectionEndedAt(connectionId: string): Promise<voi
 // 公式 OPFS テストの close 手順に合わせ、再 open 可能な状態でハンドルを解放する
 export async function close(): Promise<void> {
   stopCheckpointTimer();
+  // E2E の list 経路が close するため、未 flush の stats を先に書き出してから解放する
+  await flushStatsBuffer();
   // 進行中の書き込みを待ってからハンドルを解放する
   await enqueueWrite(async () => {
     const connection = duckdbConnection;
@@ -597,6 +665,12 @@ export async function close(): Promise<void> {
     currentConnectionId = null;
     // 同一ドキュメントで再初期化できるようにする（whenReady は settle 済みのまま）
     initStarted = false;
+    for (const buffer of statsBuffers.values()) {
+      if (buffer.flushTimerId !== null) {
+        clearTimeout(buffer.flushTimerId);
+      }
+    }
+    statsBuffers.clear();
 
     if (connection !== null) {
       try {
@@ -642,6 +716,276 @@ export async function close(): Promise<void> {
       }
     }
   });
+}
+
+function getOrCreateStatsBuffer(sessionDbId: number): StatsBufferState {
+  const existing = statsBuffers.get(sessionDbId);
+  if (existing !== undefined) {
+    return existing;
+  }
+  const created: StatsBufferState = {
+    rows: [],
+    firstEnqueueAt: null,
+    flushTimerId: null,
+    retryCount: 0,
+  };
+  statsBuffers.set(sessionDbId, created);
+  return created;
+}
+
+function scheduleStatsFlush(sessionDbId: number): void {
+  const buffer = statsBuffers.get(sessionDbId);
+  if (buffer === undefined || buffer.flushTimerId !== null) {
+    return;
+  }
+  buffer.flushTimerId = setTimeout(() => {
+    buffer.flushTimerId = null;
+    void flushStatsBuffer(sessionDbId);
+  }, STATS_FLUSH_INTERVAL_MS);
+}
+
+// 正規化済み stats を session_db_id 単位バッファへ追加する
+export function enqueueStats(
+  normalizedStats: NormalizedWebrtcStat[],
+  sessionDbId: number,
+  sessionId: string | null,
+  connectionId: string | null,
+  channelId: string,
+): void {
+  if (normalizedStats.length === 0) {
+    return;
+  }
+  if (duckdbConnection === null && !initStarted) {
+    warnUnavailable("enqueueStats");
+    return;
+  }
+  const buffer = getOrCreateStatsBuffer(sessionDbId);
+  for (const row of normalizedStats) {
+    buffer.rows.push({
+      ...row,
+      session_db_id: sessionDbId,
+      session_id: sessionId,
+      connection_id: connectionId,
+      channel_id: channelId,
+    });
+  }
+  if (buffer.firstEnqueueAt === null) {
+    buffer.firstEnqueueAt = Date.now();
+    scheduleStatsFlush(sessionDbId);
+  }
+  if (buffer.rows.length >= STATS_FLUSH_COUNT) {
+    void flushStatsBuffer(sessionDbId);
+  }
+}
+
+async function insertStatsRowsUnlocked(rows: NormalizedWebrtcStat[]): Promise<void> {
+  if (duckdbConnection === null || rows.length === 0) {
+    return;
+  }
+  const statement = await duckdbConnection.prepare(`
+    INSERT INTO webrtc_stats (
+      session_db_id, session_id, connection_id, channel_id, timestamp_ms,
+      stats_type, stats_id, kind, ssrc, track_identifier, transport_id, codec_id,
+      mid, remote_id, packets_received, packets_lost, packets_sent, bytes_received,
+      bytes_sent, header_bytes_sent, retransmitted_packets_sent, retransmitted_bytes_sent,
+      total_packet_send_delay, nack_count, frame_width, frame_height, frames_per_second,
+      frames_received, round_trip_time, total_round_trip_time, available_outgoing_bitrate,
+      available_incoming_bitrate, local_candidate_id, remote_candidate_id,
+      candidate_pair_state, nominated, selected_candidate_pair_id, raw_json
+    ) VALUES (
+      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?,
+      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?,
+      ?, ?, ?,
+      ?, ?, ?, CAST(? AS JSON)
+    )
+  `);
+  try {
+    for (const row of rows) {
+      await statement.query(
+        row.session_db_id,
+        row.session_id,
+        row.connection_id,
+        row.channel_id,
+        row.timestamp_ms,
+        row.stats_type,
+        row.stats_id,
+        row.kind,
+        row.ssrc,
+        row.track_identifier,
+        row.transport_id,
+        row.codec_id,
+        row.mid,
+        row.remote_id,
+        row.packets_received,
+        row.packets_lost,
+        row.packets_sent,
+        row.bytes_received,
+        row.bytes_sent,
+        row.header_bytes_sent,
+        row.retransmitted_packets_sent,
+        row.retransmitted_bytes_sent,
+        row.total_packet_send_delay,
+        row.nack_count,
+        row.frame_width,
+        row.frame_height,
+        row.frames_per_second,
+        row.frames_received,
+        row.round_trip_time,
+        row.total_round_trip_time,
+        row.available_outgoing_bitrate,
+        row.available_incoming_bitrate,
+        row.local_candidate_id,
+        row.remote_candidate_id,
+        row.candidate_pair_state,
+        row.nominated,
+        row.selected_candidate_pair_id,
+        JSON.stringify(row.raw_json),
+      );
+    }
+  } finally {
+    await statement.close();
+  }
+}
+
+function isPermanentStatsError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  const lower = message.toLowerCase();
+  return lower.includes("quota") || lower.includes("enospc") || lower.includes("quotaexceeded");
+}
+
+async function applyStatsSamplingUnlocked(sessionDbId: number): Promise<void> {
+  if (duckdbConnection === null) {
+    return;
+  }
+  const countTable = await duckdbConnection.query(
+    `SELECT COUNT(*) AS count FROM webrtc_stats WHERE session_db_id = ${sessionDbId}`,
+  );
+  const countColumn = countTable.getChildAt(0);
+  const rawCount: unknown = countColumn === null ? 0 : countColumn.get(0);
+  let count = 0;
+  if (typeof rawCount === "bigint") {
+    count = Number(rawCount);
+  } else if (typeof rawCount === "number") {
+    count = rawCount;
+  }
+  if (count <= STATS_SOFT_LIMIT) {
+    return;
+  }
+  const idTable = await duckdbConnection.query(
+    `SELECT id, timestamp_ms FROM webrtc_stats WHERE session_db_id = ${sessionDbId}`,
+  );
+  const idColumn = idTable.getChildAt(0);
+  const tsColumn = idTable.getChildAt(1);
+  if (idColumn === null || tsColumn === null) {
+    return;
+  }
+  const rows: Array<{ id: number; timestamp_ms: number }> = [];
+  for (let index = 0; index < idColumn.length; index += 1) {
+    const rawId: unknown = idColumn.get(index);
+    const rawTs: unknown = tsColumn.get(index);
+    let id = 0;
+    let timestampMs = 0;
+    if (typeof rawId === "bigint") {
+      id = Number(rawId);
+    } else if (typeof rawId === "number") {
+      id = rawId;
+    }
+    if (typeof rawTs === "number") {
+      timestampMs = rawTs;
+    }
+    rows.push({ id, timestamp_ms: timestampMs });
+  }
+  const toDelete = selectIdsToDeleteForSampling(rows, STATS_SOFT_LIMIT);
+  if (toDelete.length === 0) {
+    return;
+  }
+  // id リストを分割して DELETE する
+  const chunkSize = 500;
+  for (let offset = 0; offset < toDelete.length; offset += chunkSize) {
+    const chunk = toDelete.slice(offset, offset + chunkSize);
+    const list = chunk.join(",");
+    await duckdbConnection.query(`DELETE FROM webrtc_stats WHERE id IN (${list})`);
+  }
+}
+
+async function flushOneStatsBuffer(targetId: number, buffer: StatsBufferState): Promise<void> {
+  if (buffer.rows.length === 0) {
+    return;
+  }
+  if (buffer.flushTimerId !== null) {
+    clearTimeout(buffer.flushTimerId);
+    buffer.flushTimerId = null;
+  }
+  const { rows } = buffer;
+  buffer.rows = [];
+  buffer.firstEnqueueAt = null;
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      warnUnavailable("flushStatsBuffer");
+      // close 済みで map から外れている場合は orphan 復元しない
+      if (!statsBuffers.has(targetId)) {
+        return;
+      }
+      buffer.rows = [...rows, ...buffer.rows];
+      scheduleStatsFlush(targetId);
+      return;
+    }
+    try {
+      await insertStatsRowsUnlocked(rows);
+      await applyStatsSamplingUnlocked(targetId);
+      await runCheckpointUnlocked();
+      buffer.retryCount = 0;
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? `Failed to flush webrtc stats: ${error.message}`
+          : "Failed to flush webrtc stats";
+      console.warn(message);
+      notifyPersistenceError(message);
+      if (isPermanentStatsError(error) || buffer.retryCount >= STATS_MAX_RETRIES) {
+        buffer.retryCount = 0;
+        return;
+      }
+      buffer.retryCount += 1;
+      buffer.rows = [...rows, ...buffer.rows];
+      scheduleStatsFlush(targetId);
+    }
+  });
+}
+
+// バッファをバルク INSERT する。sessionDbId 省略時は全バッファ
+export async function flushStatsBuffer(sessionDbId?: number): Promise<void> {
+  let targets: number[];
+  if (sessionDbId === undefined) {
+    targets = [...statsBuffers.keys()];
+  } else if (statsBuffers.has(sessionDbId)) {
+    targets = [sessionDbId];
+  } else {
+    targets = [];
+  }
+  for (const targetId of targets) {
+    const buffer = statsBuffers.get(targetId);
+    if (buffer === undefined) {
+      continue;
+    }
+    await flushOneStatsBuffer(targetId, buffer);
+  }
+}
+
+// 指定 session_db_id のバッファを破棄する（flush せず捨ててよい場合のみ）
+export function clearStatsBuffers(sessionDbId: number): void {
+  const buffer = statsBuffers.get(sessionDbId);
+  if (buffer === undefined) {
+    return;
+  }
+  if (buffer.flushTimerId !== null) {
+    clearTimeout(buffer.flushTimerId);
+  }
+  statsBuffers.delete(sessionDbId);
 }
 
 // E2E 専用: アプリ側 close 済み前提で OPFS DB を一時 open して SQL を実行する

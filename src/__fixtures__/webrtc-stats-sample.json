@@ -1,0 +1,62 @@
+[
+  {
+    "id": "IT01",
+    "timestamp": 1000.5,
+    "type": "inbound-rtp",
+    "kind": "video",
+    "ssrc": 1234567890,
+    "packetsReceived": 100,
+    "packetsLost": 1,
+    "bytesReceived": 50000,
+    "framesReceived": 30,
+    "frameWidth": 640,
+    "frameHeight": 360,
+    "framesPerSecond": 30,
+    "googJitterBufferMs": 10
+  },
+  {
+    "id": "OT01",
+    "timestamp": 1000.5,
+    "type": "outbound-rtp",
+    "kind": "audio",
+    "ssrc": 987654321,
+    "packetsSent": 80,
+    "bytesSent": 12000,
+    "headerBytesSent": 400,
+    "retransmittedPacketsSent": 0,
+    "retransmittedBytesSent": 0,
+    "totalPacketSendDelay": 0.01,
+    "nackCount": 0
+  },
+  {
+    "id": "CP01",
+    "timestamp": 1000.5,
+    "type": "candidate-pair",
+    "state": "succeeded",
+    "nominated": true,
+    "roundTripTime": 0.02,
+    "totalRoundTripTime": 1.5,
+    "availableOutgoingBitrate": 1000000,
+    "availableIncomingBitrate": 900000,
+    "localCandidateId": "L1",
+    "remoteCandidateId": "R1",
+    "bytesSent": 1000,
+    "bytesReceived": 2000
+  },
+  {
+    "id": "T01",
+    "timestamp": 1000.5,
+    "type": "transport",
+    "selectedCandidatePairId": "CP01",
+    "bytesSent": 3000,
+    "bytesReceived": 4000
+  },
+  {
+    "id": "C01",
+    "timestamp": 1000.5,
+    "type": "codec",
+    "mimeType": "video/VP9",
+    "clockRate": 90000,
+    "payloadType": 98
+  }
+]

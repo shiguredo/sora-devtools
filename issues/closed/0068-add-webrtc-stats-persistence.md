@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-24
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-11
 - Model: GLM-5.2
 - Branch: feature/add-webrtc-stats-persistence
 - Polished: 2026-07-11
@@ -172,17 +172,16 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
 
 ## 解決方法
 
-1. `src/sessionDatabase.ts` の `createSchema` に `seq_webrtc_stats_id` / `webrtc_stats` / `session_db_id` INDEX を追加する
-2. `src/webrtcStatsNormalizer.ts` を作成し、正規化関数と `NormalizedWebrtcStat` を実装する
-3. `sessionDatabase` に `enqueueStats` / `flushStatsBuffer` / `clearStatsBuffers`（`sessionDbId` 必須）とバッチ・再試行・サンプリングを実装する。DuckDB 操作はすべて `enqueueWrite` 経由。失敗は `notifyPersistenceError`
-4. `SessionPersistenceState` に Sora `sessionId` を追加し、`connection.created` で同期セットする
-5. `setStatsReportInternal(soraConnection, persistence)` / `startStatsReportTimer(soraConnection, persistence)` に persistence を渡し、正規化 → `enqueueStats` を fire-and-forget する。`connectSora` / `reconnectSoraImpl` の呼び出し箇所を更新する
-6. `disconnect` フックでは `isCurrent()` **前**に `flushStatsBuffer(persistence.sessionDbId)` のみ（クロージャの id。`getCurrentSessionDbId()` 禁止）。`stopStatsReportTimer` は `isCurrent()` **後**のまま
-7. `disconnectSora` 先頭で `getCurrentSessionDbId()` をキャプチャして void flush する（`beforeunload` 経路）。`close()` は追加しない
-8. `abortConnectSoraResources` / 失敗明示パスでも当該 `persistence.sessionDbId` を flush する
-9. 新接続試行開始時に旧 id のバッファを clear しない（切断側 flush に任せる）
-10. Playwright E2E と Vitest / fixture を追加する（テスト方針どおり）
-11. `App.tsx` は変更対象外（`createSessionDatabase` は #0067 済み）
+1. `src/sessionDatabase.ts` の `createSchema` に `seq_webrtc_stats_id` / `webrtc_stats` / `session_db_id` INDEX を追加した
+2. `src/webrtcStatsNormalizer.ts` を作成し、正規化関数・`NormalizedWebrtcStat`・サンプリング選択を実装した
+3. `sessionDatabase` に `enqueueStats` / `flushStatsBuffer` / `clearStatsBuffers` とバッチ・再試行・サンプリングを実装した。DuckDB 操作は `enqueueWrite` 経由
+4. `SessionPersistenceState` に Sora `sessionId` を追加し、`connection.created` で同期セットした
+5. `setStatsReportInternal` / `startStatsReportTimer` に persistence を渡し、正規化 → `enqueueStats` を fire-and-forget した
+6. `disconnect` フックでは `isCurrent()` 前に `flushStatsBuffer(persistence.sessionDbId)`、`stopStatsReportTimer` は後のままにした
+7. `disconnectSora` 先頭で `getCurrentSessionDbId()` をキャプチャして void flush した。`beforeunload` では `close()` を呼ばない方針のまま。E2E 用 `close()` は未 flush の stats を先に書き出してからハンドルを解放する
+8. abort / 失敗明示パスでも当該 `sessionDbId` を flush した
+9. Vitest（fixture: inbound/outbound/candidate-pair/transport/codec）と Playwright E2E（`tests/webrtc-stats-persistence.test.ts`）を追加した
+10. `CHANGES.md` の `## develop` に `[ADD]` を追記した
 
 ## テスト方針
 

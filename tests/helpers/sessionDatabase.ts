@@ -146,3 +146,75 @@ export async function waitForEndedAt(
       `(session=${String(lastSession?.ended_at)}, connection=${String(lastConnection?.ended_at)})`,
   );
 }
+
+// webrtc_stats 行の最小形状
+export interface WebrtcStatsRow {
+  id: number;
+  session_db_id: number;
+  session_id: string | null;
+  connection_id: string | null;
+  channel_id: string | null;
+  stats_type: string | null;
+}
+
+// webrtc_stats 全行を取得する
+export async function listWebrtcStatsRows(page: Page): Promise<WebrtcStatsRow[]> {
+  return querySessionDatabase<WebrtcStatsRow>(
+    page,
+    "SELECT id, session_db_id, session_id, connection_id, channel_id, stats_type FROM webrtc_stats ORDER BY id",
+  );
+}
+
+// 切断後の flush 反映を待つ（DuckDB 上の件数）
+export async function waitForWebrtcStats(
+  page: Page,
+  options: {
+    connectionId?: string;
+    sessionDbId?: number;
+    channelId?: string;
+    minCount?: number;
+    timeoutMs?: number;
+  },
+): Promise<WebrtcStatsRow[]> {
+  if (options.connectionId === undefined && options.sessionDbId === undefined) {
+    throw new Error("waitForWebrtcStats requires connectionId or sessionDbId");
+  }
+  const minCount = options.minCount ?? 1;
+  const timeoutMs = options.timeoutMs ?? 10_000;
+  const deadline = Date.now() + timeoutMs;
+  let matched: WebrtcStatsRow[] = [];
+
+  while (Date.now() < deadline) {
+    // 明示 flush（切断フックの fire-and-forget を補完する）
+    await page.evaluate(async (moduleUrl) => {
+      const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+      const mod = loaded as {
+        flushStatsBuffer: () => Promise<void>;
+      };
+      await mod.flushStatsBuffer();
+    }, SESSION_DATABASE_MODULE_URL);
+    const rows = await listWebrtcStatsRows(page);
+    matched = rows.filter((row) => {
+      if (options.connectionId !== undefined && row.connection_id !== options.connectionId) {
+        return false;
+      }
+      if (options.sessionDbId !== undefined && row.session_db_id !== options.sessionDbId) {
+        return false;
+      }
+      if (options.channelId !== undefined && row.channel_id !== options.channelId) {
+        return false;
+      }
+      return true;
+    });
+    if (matched.length >= minCount) {
+      return matched;
+    }
+    await page.waitForTimeout(200);
+  }
+
+  throw new Error(
+    `webrtc_stats count was below ${minCount} within ${timeoutMs}ms ` +
+      `(got ${matched.length} for connectionId=${String(options.connectionId)} ` +
+      `sessionDbId=${String(options.sessionDbId)})`,
+  );
+}
