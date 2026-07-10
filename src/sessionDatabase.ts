@@ -35,6 +35,8 @@ const SENSITIVE_KEY_NORMALIZED = new Set([
 let duckdbInstance: AsyncDuckDB | null = null;
 let duckdbConnection: AsyncDuckDBConnection | null = null;
 let currentSessionDbId: number | null = null;
+// connections INSERT 成功時の connection_id。disconnect 明示パス用（SDK は callback 前に null 化する）
+let currentConnectionId: string | null = null;
 let checkpointTimerId: ReturnType<typeof setInterval> | null = null;
 let lastAlertMessage: string | null = null;
 let lastAlertAt = 0;
@@ -124,6 +126,12 @@ export function normalizeNullableString(value: string): string | null {
 
 export function getCurrentSessionDbId(): number | null {
   return currentSessionDbId;
+}
+
+// connections INSERT 成功時に保持する connection_id。SDK は disconnect コールバック前に
+// soraConnection.connectionId を null 化するため、明示パス・フックはこの値を使う
+export function getCurrentConnectionId(): string | null {
+  return currentConnectionId;
 }
 
 export async function whenReady(): Promise<void> {
@@ -499,6 +507,7 @@ export async function insertConnection(
       );
       await statement.close();
       await runCheckpointUnlocked();
+      currentConnectionId = connectionId;
       return true;
     } catch (error) {
       const message =
@@ -559,6 +568,9 @@ export async function updateConnectionEndedAt(connectionId: string): Promise<voi
     `);
       await statement.query(connectionId);
       await statement.close();
+      if (currentConnectionId === connectionId) {
+        currentConnectionId = null;
+      }
       await runCheckpointUnlocked();
     } catch (error) {
       const message =
@@ -582,6 +594,7 @@ export async function close(): Promise<void> {
     duckdbConnection = null;
     duckdbInstance = null;
     currentSessionDbId = null;
+    currentConnectionId = null;
     // 同一ドキュメントで再初期化できるようにする（whenReady は settle 済みのまま）
     initStarted = false;
 
