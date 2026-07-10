@@ -10,13 +10,18 @@ export default defineConfig({
   build: {
     minify: "oxc",
     target: "esnext",
+    // WASM / Worker の base64 インライン化を防ぎ、独立アセットとして出力する
+    assetsInlineLimit: 0,
     rolldownOptions: {
       input: {
         index: path.resolve(rootDir, "./index.html"),
       },
       output: {
         manualChunks(moduleId) {
+          // より長いパッケージ名を先に置き、moduleId.includes の誤マッチを防ぐ
           const chunks: Record<string, string[]> = {
+            "duckdb-wasm": ["@duckdb/duckdb-wasm"],
+            "apache-arrow": ["apache-arrow"],
             "preact-iso": ["preact-iso"],
             preact: ["preact"],
             "mp4-media-stream": ["@shiguredo/mp4-media-stream"],

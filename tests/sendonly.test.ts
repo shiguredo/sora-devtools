@@ -1,7 +1,12 @@
 import { test } from "@playwright/test";
 
 import { requireSoraConnectionEnv } from "./helpers/env.ts";
+import { cleanupSessionDatabase } from "./helpers/sessionDatabase.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
+
+test.afterEach(async ({ page }) => {
+  await cleanupSessionDatabase(page);
+});
 
 test("sendonly", async ({ page }) => {
   // 必須環境変数を取得する。未設定なら Error を throw してテストを失敗させる
