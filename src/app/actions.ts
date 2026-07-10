@@ -39,6 +39,8 @@ import {
 } from "./../noiseSuppression.ts";
 import { loadUrlEntries } from "./../opfs.ts";
 import {
+  enqueueStats,
+  flushStatsBuffer,
   getCurrentConnectionId,
   getCurrentSessionDbId,
   insertConnection,
@@ -47,6 +49,7 @@ import {
   updateSessionEndedAt,
   updateSessionIdAndConnectionId,
 } from "./../sessionDatabase.ts";
+import { normalizeWebrtcStats } from "./../webrtcStatsNormalizer.ts";
 import * as signals from "./signals.ts";
 
 // 接続試行単位の永続化コンテキスト。sessions.id はローカルで保持し、
@@ -57,6 +60,8 @@ interface SessionPersistenceState {
   // connection.created 時点の connectionId。SDK は disconnect コールバック前に
   // soraConnection.connectionId を null 化するため、フックではこの値を優先する
   observedConnectionId: string | null;
+  // connection.created 時点の Sora session_id（stats 行用。signals は読まない）
+  sessionId: string | null;
   // disconnect が INSERT より先に来た connectionId を記録し、INSERT 完了後に ended_at を書く
   connectionEndedPendingIds: Set<string>;
 }
@@ -101,6 +106,16 @@ function connectionIdFromPersistence(
     return null;
   }
   return persistence.persistedConnectionId ?? persistence.observedConnectionId;
+}
+
+// stats バッファを fire-and-forget で flush する（DuckDB への書き込み）
+function persistStatsFlush(sessionDbId: number | null | undefined): void {
+  if (sessionDbId === null || sessionDbId === undefined) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await flushStatsBuffer(sessionDbId);
+  });
 }
 
 // クエリストリングのパラメータを各 signal に設定する
@@ -1057,6 +1072,7 @@ function handleConnectionCreatedNotify(
       const connectionId = message.connection_id;
       // SDK が disconnect 前に connectionId を消す前に、同期で保持する
       persistence.observedConnectionId = connectionId;
+      persistence.sessionId = sessionId;
       const soraClientId = typeof message.client_id === "string" ? message.client_id : "";
       const channelId = signals.channelId.value;
       const signalingUrl = soraConnection.connectedSignalingUrl;
@@ -1339,6 +1355,8 @@ function setSoraCallbacks(
     if (current && !reconnecting) {
       persistSessionEndedAt(sessionDbIdForPersistence);
     }
+    // stats バッファは isCurrent 前に、クロージャの sessionDbId で flush する
+    persistStatsFlush(sessionDbIdForPersistence);
     // 以降の state 操作は新セッションのみ
     if (!current) {
       return;
@@ -1498,9 +1516,12 @@ function createSoraDevtoolsMediaStreamTrackLog(
   return createSoraDevtoolsTimelineMessage(`${action}-${track.kind}-mediastream-track`, properties);
 }
 
-// statsReport を更新
+// statsReport を更新し、永続化バッファへ正規化結果を積む
+// channelId を渡した場合は開始時キャプチャ値を使い、毎 tick の signals 参照を避ける
 async function setStatsReportInternal(
   soraConnection: ConnectionPublisher | ConnectionSubscriber,
+  persistence: SessionPersistenceState | null,
+  channelId?: string,
 ): Promise<void> {
   // 前行の soraConnection.pc && で null チェック済みのため ?. は冗長
   if (soraConnection.pc && soraConnection.pc.iceConnectionState !== "closed") {
@@ -1524,6 +1545,24 @@ async function setStatsReportInternal(
         signals.setSoraTurnUrl(localCandidate.url);
         break;
       }
+    }
+
+    if (persistence !== null) {
+      const resolvedChannelId = channelId ?? signals.channelId.value;
+      const normalized = normalizeWebrtcStats(
+        statsReportData,
+        persistence.sessionDbId,
+        persistence.sessionId,
+        persistence.observedConnectionId ?? persistence.persistedConnectionId,
+        resolvedChannelId,
+      );
+      enqueueStats(
+        normalized,
+        persistence.sessionDbId,
+        persistence.sessionId,
+        persistence.observedConnectionId ?? persistence.persistedConnectionId,
+        resolvedChannelId,
+      );
     }
   }
 }
@@ -1671,21 +1710,27 @@ function stopStatsReportTimer(): void {
   }
 }
 
-function startStatsReportTimer(): void {
+function startStatsReportTimer(
+  soraConnection: ConnectionPublisher | ConnectionSubscriber,
+  persistence: SessionPersistenceState | null,
+): void {
   // 既存タイマーがあれば停止してから起動する。再接続のたびにタイマーが増殖するのを防ぐ
   stopStatsReportTimer();
+  // 開始時に persistence / connection / channelId をキャプチャする（毎 tick の getCurrent は使わない）
+  const capturedPersistence = persistence;
+  const capturedConnection = soraConnection;
+  const capturedChannelId = signals.channelId.value;
   const schedule = async (): Promise<void> => {
-    const soraValue = signals.sora.value;
-    if (!soraValue) {
+    if (signals.sora.value !== capturedConnection) {
       statsReportTimerId = null;
       return;
     }
     try {
-      await setStatsReportInternal(soraValue);
+      await setStatsReportInternal(capturedConnection, capturedPersistence, capturedChannelId);
     } catch {
       // getStats のエラーはタイマーを停止させない
     }
-    if (signals.sora.value !== null) {
+    if (signals.sora.value === capturedConnection) {
       statsReportTimerId = setTimeout(() => {
         void schedule();
       }, 1000);
@@ -1766,6 +1811,7 @@ export const connectSora = async (): Promise<void> => {
           sessionDbId,
           persistedConnectionId: null,
           observedConnectionId: null,
+          sessionId: null,
           connectionEndedPendingIds: new Set(),
         };
   let soraConnection: undefined | ConnectionPublisher | ConnectionSubscriber;
@@ -1795,6 +1841,7 @@ export const connectSora = async (): Promise<void> => {
     // sessions / connections の ended_at は明示パスで更新する。
     persistSessionEndedAt(persistence?.sessionDbId);
     persistConnectionEndedAt(connectionIdFromPersistence(persistence));
+    persistStatsFlush(persistence?.sessionDbId);
     return true;
   };
   try {
@@ -1847,6 +1894,7 @@ export const connectSora = async (): Promise<void> => {
     // try/catch 失敗時は明示パスで ended_at を更新する
     persistSessionEndedAt(persistence?.sessionDbId);
     persistConnectionEndedAt(connectionIdFromPersistence(persistence));
+    persistStatsFlush(persistence?.sessionDbId);
     await cleanupMediaStreamOnError(state, mediaStream);
     // 残留した remoteClients と localMediaStream を掃除し、接続失敗後も UI に映像が残らないようにする
     await cleanupSoraMediaState();
@@ -1855,13 +1903,13 @@ export const connectSora = async (): Promise<void> => {
   }
   // createSoraConnectionByRole は常に ConnectionPublisher | ConnectionSubscriber を返すため soraConnection は non-null
   signals.setSoraInfoAlertMessage("succeeded to connect Sora");
-  await setStatsReportInternal(soraConnection);
+  await setStatsReportInternal(soraConnection, persistence);
   // 検知ポイント 5: setStatsReportInternal の await 中にも Disconnect が押されうるため、
   // setSoraConnectionStatus("connected") を立てる前に最終チェックする
   if (abortIfCancelled()) {
     return;
   }
-  startStatsReportTimer();
+  startStatsReportTimer(soraConnection, persistence);
   if (mediaStream && (localMediaStreamValue === null || forceCreateMediaStream)) {
     signals.setLocalMediaStream(mediaStream);
   }
@@ -1893,6 +1941,7 @@ async function attemptReconnection(
     if (persistence !== null) {
       persistence.persistedConnectionId = null;
       persistence.observedConnectionId = null;
+      persistence.sessionId = null;
     }
     let soraConnection: undefined | ConnectionPublisher | ConnectionSubscriber;
     try {
@@ -1923,6 +1972,7 @@ async function attemptReconnection(
       // リトライ途中の catch では sessions.ended_at は更新しない。
       // connections INSERT 済みならその connectionId で ended_at を更新する。
       persistConnectionEndedAt(connectionIdFromPersistence(persistence));
+      persistStatsFlush(persistence?.sessionDbId);
       soraConnection = undefined;
     }
     if (soraConnection !== undefined) {
@@ -1959,6 +2009,7 @@ const reconnectSoraImpl = async (): Promise<void> => {
           sessionDbId,
           persistedConnectionId: null,
           observedConnectionId: null,
+          sessionId: null,
           connectionEndedPendingIds: new Set(),
         };
   let mediaStream: undefined | MediaStream;
@@ -1977,6 +2028,7 @@ const reconnectSoraImpl = async (): Promise<void> => {
       }
       persistSessionEndedAt(persistence?.sessionDbId);
       persistConnectionEndedAt(connectionIdFromPersistence(persistence));
+      persistStatsFlush(persistence?.sessionDbId);
       await cleanupSoraMediaState();
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
@@ -2014,6 +2066,7 @@ const reconnectSoraImpl = async (): Promise<void> => {
     // 全リトライ枯渇 / reconnecting キャンセル時は明示パスで sessions.ended_at を更新する
     persistSessionEndedAt(persistence?.sessionDbId);
     persistConnectionEndedAt(connectionIdFromPersistence(persistence));
+    persistStatsFlush(persistence?.sessionDbId);
     await cleanupSoraMediaState();
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
@@ -2021,8 +2074,8 @@ const reconnectSoraImpl = async (): Promise<void> => {
     return;
   }
   signals.setSoraInfoAlertMessage("succeeded to reconnect Sora");
-  await setStatsReportInternal(soraConnection);
-  startStatsReportTimer();
+  await setStatsReportInternal(soraConnection, persistence);
+  startStatsReportTimer(soraConnection, persistence);
   signals.setSora(soraConnection);
   if (mediaStream) {
     signals.setLocalMediaStream(mediaStream);
@@ -2066,6 +2119,8 @@ export const disconnectSora = async (): Promise<void> => {
   const connectionIdToEnd = getCurrentConnectionId();
   persistSessionEndedAt(sessionDbIdToEnd);
   persistConnectionEndedAt(connectionIdToEnd);
+  // stats も先頭で flush する（beforeunload の fire-and-forget を空洞化しない）
+  persistStatsFlush(sessionDbIdToEnd);
   // (2) reconnecting 中ならリトライを止める（early return で setSoraReconnecting(false) に届かないため）
   if (signals.reconnecting.value) {
     signals.setSoraReconnecting(false);
