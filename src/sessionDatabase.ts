@@ -229,7 +229,12 @@ async function createSchema(connection: AsyncDuckDBConnection): Promise<void> {
 }
 
 async function openDatabase(db: AsyncDuckDB): Promise<AsyncDuckDBConnection> {
-  await db.open({ path: OPFS_DB_PATH });
+  const duckdb = await import("@duckdb/duckdb-wasm");
+  // OPFS では READ_WRITE を明示しないと不正な空ファイルが残ることがある
+  await db.open({
+    path: OPFS_DB_PATH,
+    accessMode: duckdb.DuckDBAccessMode.READ_WRITE,
+  });
   const connection = await db.connect();
   await createSchema(connection);
   return connection;
@@ -531,6 +536,7 @@ export async function updateConnectionEndedAt(connectionId: string): Promise<voi
 }
 
 // E2E クリーンアップおよび明示的 teardown 用。beforeunload では呼ばない
+// 公式 OPFS テストの close 手順に合わせ、再 open 可能な状態でハンドルを解放する
 export async function close(): Promise<void> {
   stopCheckpointTimer();
   const connection = duckdbConnection;
@@ -560,6 +566,21 @@ export async function close(): Promise<void> {
 
   if (instance !== null) {
     try {
+      await instance.flushFiles();
+    } catch {
+      // flush 失敗は reset / dropFiles へ進む
+    }
+    try {
+      await instance.reset();
+    } catch {
+      // reset 失敗は dropFiles / terminate へ進む
+    }
+    try {
+      await instance.dropFiles();
+    } catch {
+      // dropFiles 失敗は terminate へ進む
+    }
+    try {
       await instance.terminate();
     } catch (error) {
       console.warn(
@@ -578,9 +599,13 @@ export async function querySessionDatabaseForE2e(
   if (duckdbConnection !== null || duckdbInstance !== null) {
     throw new Error("Session database must be closed before E2E query");
   }
+  const duckdb = await import("@duckdb/duckdb-wasm");
   const db = await instantiateDuckDB();
   try {
-    await db.open({ path: OPFS_DB_PATH });
+    await db.open({
+      path: OPFS_DB_PATH,
+      accessMode: duckdb.DuckDBAccessMode.READ_WRITE,
+    });
     const connection = await db.connect();
     try {
       const table = await connection.query(sql);
@@ -597,9 +622,29 @@ export async function querySessionDatabaseForE2e(
         return row as Record<string, unknown>;
       });
     } finally {
+      try {
+        await connection.query("CHECKPOINT");
+      } catch {
+        // ignore
+      }
       await connection.close();
     }
   } finally {
+    try {
+      await db.flushFiles();
+    } catch {
+      // ignore
+    }
+    try {
+      await db.reset();
+    } catch {
+      // ignore
+    }
+    try {
+      await db.dropFiles();
+    } catch {
+      // ignore
+    }
     await db.terminate();
   }
 }
