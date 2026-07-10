@@ -5,7 +5,7 @@
 - Completed: YYYY-MM-DD
 - Model: GLM-5.2
 - Branch: feature/add-webrtc-stats-persistence
-- Polished: 2026-06-24
+- Polished: 2026-07-11
 
 ## 目的
 
@@ -17,10 +17,14 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
 
 ## 現状
 
-- WebRTC stats は `src/app/actions.ts` の `setStatsReportInternal()` で `soraConnection.pc.getStats()` から `RTCStatsReport` を取得し、`stats.values()` で `RTCStats[]` に変換して `signals.setStatsReport()` に保持される
-- `startStatsReportTimer()` で 1 秒間隔に取得され、切断時に `stopStatsReportTimer()` で停止される
-- `RTCStats` は type ごとにフィールドが異なり、ブラウザ間でも差分がある
-- `src/types.ts` に `RTCInboundRtpStreamStats` / `RTCMediaStreamTrackStats` / `RTCIceLocalCandidateStats` などの拡張型が定義されている
+- WebRTC stats は `src/app/actions.ts` の `setStatsReportInternal()` で `soraConnection.pc.getStats()` から `RTCStatsReport` を取得し、`stats.values()` で `RTCStats[]` に変換して `signals.setStatsReport()` に保持される。DuckDB への書き込みはまだ無い
+- `startStatsReportTimer()` は引数なしで 1 秒間隔に取得し、切断時に `stopStatsReportTimer()` で停止する。`stopStatsReportTimer()` は `disconnect` コールバックの `isCurrent()` **後**に置かれている（親 #0065 の制約どおり）
+- `#0067` 完了済み。`src/sessionDatabase.ts` に `sessions` / `connections`、書き込み直列化 `enqueueWrite`、`getCurrentSessionDbId()` / `getCurrentConnectionId()`、`notifyPersistenceError`（`setSoraErrorAlertMessage` 直呼び）がある。`createSchema` に `webrtc_stats` / `seq_webrtc_stats_id` は未追加
+- 接続試行ローカルの `SessionPersistenceState`（`sessionDbId` / `persistedConnectionId` / `observedConnectionId` / `connectionEndedPendingIds`）が `createSoraConnectionByRole` → `setSoraCallbacks` → `handleConnectionCreatedNotify` に渡されている
+- sora-js-sdk は `disconnect` コールバック前に `initializeConnection()` で `connectionId` を null 化する。識別子は `persistence.observedConnectionId` / `getCurrentConnectionId()` を使う（#0067）
+- `beforeunload` は `void disconnectSora()` のみ。`sessionDatabase.close()` は呼ばない（#0067 方針）
+- `RTCStats` は type ごとにフィールドが異なり、ブラウザ間でも差分がある。`src/types.ts` に拡張型がある
+- E2E は `requireSoraConnectionEnv()` ハード依存（#0063 / #0037 完了済み）。`playwright.config.ts` は OPFS 競合回避で `workers: 1`。`tests/session-database.test.ts` は `serial` + `cleanupSessionDatabase`
 
 ## 設計方針
 
@@ -33,16 +37,16 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
 
 ### テーブル構成
 
-`webrtc_stats` テーブル（第 1 段階）:
+`webrtc_stats` テーブル（第 1 段階）。`src/sessionDatabase.ts` の `createSchema` に `CREATE SEQUENCE IF NOT EXISTS seq_webrtc_stats_id` と `CREATE TABLE IF NOT EXISTS webrtc_stats` を追加する（既存 OPFS DB は IF NOT EXISTS で拡張。マイグレーション機構は第 1 段階では作らない）。
 
 | カラム                     | 型                                                        | 説明                                                                                                                                                                                                                                                                |
 | -------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | id                         | BIGINT PRIMARY KEY DEFAULT nextval('seq_webrtc_stats_id') | 自動採番                                                                                                                                                                                                                                                            |
-| session_db_id              | INTEGER                                                   | `sessions.id` への参照（外部キー）。同一 `session_id` で複数レコードが存在する場合の曖昧性を解消する                                                                                                                                                                |
-| session_id                 | VARCHAR                                                   | Sora session_id（未確定時は NULL）                                                                                                                                                                                                                                  |
-| connection_id              | VARCHAR                                                   | Sora connection_id（未確定時は NULL）                                                                                                                                                                                                                               |
+| session_db_id              | INTEGER                                                   | `sessions.id` への参照。同一 Sora `session_id` で複数接続試行がある場合の曖昧性を解消する                                                                                                                                                                           |
+| session_id                 | VARCHAR                                                   | Sora session_id（`connection.created` 前は NULL）                                                                                                                                                                                                                   |
+| connection_id              | VARCHAR                                                   | Sora connection_id（`connection.created` 前は NULL）                                                                                                                                                                                                                |
 | channel_id                 | VARCHAR                                                   | channelId                                                                                                                                                                                                                                                           |
-| timestamp_ms               | DOUBLE                                                    | `RTCStats.timestamp`（ms、小数点以下を保持）。stats の時系列分析にはこの値を使用する                                                                                                                                                                                |
+| timestamp_ms               | DOUBLE                                                    | `RTCStats.timestamp`（ms、小数点以下を保持）。時系列分析にはこの値を使う                                                                                                                                                                                            |
 | stats_type                 | VARCHAR                                                   | `RTCStatsType`                                                                                                                                                                                                                                                      |
 | stats_id                   | VARCHAR                                                   | `RTCStats.id`                                                                                                                                                                                                                                                       |
 | kind                       | VARCHAR                                                   | 'audio' / 'video' / NULL                                                                                                                                                                                                                                            |
@@ -76,7 +80,9 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
 | nominated                  | BOOLEAN                                                   | `candidate-pair.nominated`                                                                                                                                                                                                                                          |
 | selected_candidate_pair_id | VARCHAR                                                   | `transport.selectedCandidatePairId`                                                                                                                                                                                                                                 |
 | raw_json                   | JSON                                                      | 正規化カラムに含まれない残りのフィールド。正規化カラムに含まれるフィールドは `raw_json` から除外する。`codec` / `media-source` / `local-candidate` / `remote-candidate` / `peer-connection` / `data-channel` / `certificate` / `media-playout` 等のフィールドを含む |
-| created_at                 | TIMESTAMP DEFAULT CURRENT_TIMESTAMP                       | DuckDB へのバッチ INSERT 実行時刻。デバッグ用であり、時系列分析には `timestamp_ms` を使用する                                                                                                                                                                       |
+| created_at                 | TIMESTAMP DEFAULT CURRENT_TIMESTAMP                       | DuckDB へのバッチ INSERT 実行時刻。デバッグ用。時系列分析には `timestamp_ms` を使う                                                                                                                                                                                 |
+
+第 1 段階の INDEX: `session_db_id` に対する INDEX を 1 本作る（一覧・集計の前提。`stats_type` 複合 INDEX は第 1 段階では作らない）。
 
 ### 正規化方針
 
@@ -93,112 +99,136 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
   - `transport`: `selectedCandidatePairId` を正規化カラムに展開
 - 第 1 段階では `raw_json` に退避する type:
   - `codec`, `media-source`, `local-candidate`, `remote-candidate`, `peer-connection`, `data-channel`, `certificate`, `media-playout`
-  - `local-candidate` / `remote-candidate` に含まれる IP アドレス・ポートは機密情報の可能性があるため、第 1 段階では正規化せず `raw_json` に含める
-- 将来拡張: 第 2 段階以降で `codec` / `media-source` / `local-candidate` / `remote-candidate` 等の主要フィールドを追加検討する
+  - `local-candidate` / `remote-candidate` の IP・ポートは保存する（親 #0065 方針）が、正規化カラムには出さず `raw_json` に含める
+- `NormalizedWebrtcStat` は上表の正規化カラム（`id` / `created_at` を除く）と 1:1 のフィールドを持つ型として `webrtcStatsNormalizer.ts` で export する。`raw_json` には正規化カラム名と一致するキーを入れない
 
 ### 正規化関数の責務
 
-- `src/webrtcStatsNormalizer.ts` を作成し、`RTCStats[]` を受け取り、W3C 仕様に基づいて `webrtc_stats` テーブルのカラムにマッピングする
-- `stats_type` ごとに必要なフィールドを抽出し、存在しないカラムは `NULL` とする
+- `src/webrtcStatsNormalizer.ts` を作成し、`RTCStats[]` を受け取り `NormalizedWebrtcStat[]` を返す
+- `stats_type` ごとに必要なフィールドを抽出し、存在しないカラムは `null` とする
 - 正規化カラムに含まれるフィールドを `raw_json` から除外する
 - ブラウザ固有の拡張フィールドも `raw_json` に格納する
-- 正規化関数はメインスレッドで実行する。1 秒間隔で数百件の正規化をメインスレッドで行うが、`AsyncDuckDB` のバッチ INSERT は内部 Worker で行うため UI スレッドのブロックは最小限に抑える
+- 正規化はメインスレッドで実行する。バッチ INSERT 本体は `enqueueWrite` → DuckDB Worker 経由
 
 ### `sessionDatabase` の stats 永続化 API
 
-- `enqueueStats(normalizedStats: NormalizedWebrtcStat[], sessionDbId: number, sessionId: string | null, connectionId: string | null, channelId: string): void`: 正規化済み stats をバッファに追加する。`sessionDbId` は `sessions.id`（クロージャから渡される）
-- `flushStatsBuffer(): Promise<void>`: バッファの内容をバルク INSERT する
-- `flushTempStatsBuffer(sessionDbId: number, sessionId: string, connectionId: string): Promise<void>`: 識別子未確定時の一時バッファの内容に識別子を設定して通常バッファに移し、即座にフラッシュする
-- `clearStatsBuffers(): void`: 接続試行ごとに一時バッファ・通常バッファを初期化する
+すべて内部で `enqueueWrite` 経由の DuckDB 操作とする（#0067 の並行 query 禁止を崩さない）。バッファ操作自体は JS メモリ上で行い、INSERT / DELETE / CHECKPOINT だけをキューに載せる。
 
-### 容量上限・ローテーション方針
+- `enqueueStats(normalizedStats, sessionDbId, sessionId, connectionId, channelId): void`
+  - `sessionDbId` は接続試行開始時に確定済みの `sessions.id`（必須）
+  - `sessionId` / `connectionId` は Sora 識別子。未確定なら `null`（行は通常バッファに `session_db_id` 付きで溜め、識別子カラムだけ NULL）
+  - 一時バッファは「Sora 識別子待ち」ではなく、バッチ未 flush の通常バッファと同一構造でよい。識別子確定後に NULL だった行を UPDATE する必要はなく、**以降の enqueue から非 NULL を書く**。確定前に溜まった行の `session_id` / `connection_id` は NULL のまま残してよい（親モデル: `session_db_id` が主参照）
+- `flushStatsBuffer(sessionDbId?: number): Promise<void>`: バッファをバルク INSERT する。引数ありならその `session_db_id` 分だけ。省略時は全バッファ（切断明示パス用）
+- `clearStatsBuffers(sessionDbId: number): void`: **指定 `session_db_id` のバッファだけ**消す。引数なし全消しは禁止（旧接続の未 flush を新接続開始時に消さない）
+- 容量サンプリング用の DELETE も `enqueueWrite` 経由
 
-- 第 1 段階では以下を採用する
-  - 1 接続あたり 10,000 件を上限とし、超過分を 10 件ごとに 1 件の比率でサンプリングして保持する
-  - 例: 20,000 件の場合、古い 10,000 件を 1/10 サンプリングして 1,000 件に減らし、新しい 10,000 件は全件保持する
-  - サンプリングは `webrtc_stats.id` または `timestamp_ms` に基づいて行う
-  - 具体的な閾値・サンプリング方式は実装時に測定し、必要に応じて調整する。1 秒間隔で数十〜数百件の stats を取得するため、10,000 件は数分〜数十分で到達する可能性がある。長時間接続のデバッグでは初期値が低すぎる場合は実装時に調整すること
+### 容量上限・ローテーション方針（第 1 段階で固定）
+
+- 単位: `session_db_id` ごと
+- 発火: その `session_db_id` 向け `flushStatsBuffer` 成功直後に、DB 上の当該件数を数え、**10,000 件超**なら実行する
+- 方式: `timestamp_ms` 昇順で古い側から、超過分を **10 件に 1 件残す**（`id % 10 = 0` 相当ではなく、古い N 件を走査して 10 件ごとに 1 件残し他を DELETE）
+- 事後件数の厳密な硬上限は設けない（例: 20,000 → 古い 10,000 を約 1,000 に減らし新しい 10,000 と合わせて約 11,000）
+- 初期閾値 10,000 の変更は「未解決課題」。完了条件の必須検証対象外（Vitest でアルゴリズムを合成データ検証する）
 
 ### バッチ挿入
 
-- 1 秒間隔で取得される stats は 1 回の取得あたり数十〜数百件の `RTCStatsReport` エントリを含む
-- そのまま逐次 INSERT すると UI スレッドをブロックする可能性がある
-- メモリ上でバッファリングし、以下のいずれかの条件でバルク INSERT する
-  - バッファが一定件数（初期値: 1000 件）に達したとき
-  - 一定時間（初期値: 5 秒）経過したとき
-  - 切断時に残りをフラッシュするとき
-- 永続化フックは `setStatsReportInternal()` 内で `await` せず、`void` で非同期に投げる
-- `typescript/no-floating-promises` 対策として、`.catch((error) => { console.warn(...) })` でエラーを捕捉する
-- バッチ INSERT 失敗時は console warn を出力し、UI 上で永続化エラーを通知する（#0065 / #0067 の UI 通知方針と統一する）
-- 失敗したバッチは捨てず、キューの先頭に戻して次回のバッチ挿入時に再試行する。ただし恒久的エラー（OPFS quota 超過等）は再試行せず即座にバッチ破棄 + ユーザー通知する
-- 最大 3 回まで再試行し、それでも失敗した場合は console warn を出力して該当バッチを破棄する
-- DuckDB-Wasm 初期化失敗時は `enqueueStats()` を no-op とし、stats はメモリ上の `signals.statsReport` にのみ保持する
+- メモリ上でバッファリングし、次のいずれかでバルク INSERT する
+  - 当該 `session_db_id` のバッファが 1000 件に達したとき
+  - 当該バッファの先頭 enqueue から 5 秒経過したとき
+  - 切断・明示パスで `flushStatsBuffer` したとき
+- 永続化フックは `setStatsReportInternal()` 内で `await` せず、`void` + `.catch`（または既存 `runPersistenceTask`）で投げる
+- バッチ INSERT 失敗時は `sessionDatabase` 内の `notifyPersistenceError` 相当で通知する（英語・末尾ピリオドなし。`actions` 経由は循環依存禁止）
+- 再試行: 失敗バッチは最大 3 回まで同一 `enqueueWrite` チェーン上で再試行する。恒久エラー（メッセージに `QuotaExceeded` / `quota` / `ENOSPC` を含む、または OPFS 書き込み拒否）は即破棄 + 通知。一過性は再試行、3 回失敗で破棄 + warn
+- DuckDB 未初期化・初期化失敗時は `enqueueStats` を no-op とし、`signals.statsReport` のみ更新する
 
-### 識別子未確定時の扱い
+### 識別子・クロージャ・タイマー
 
-- `sessionId` / `connectionId` が未確定の場合は、stats をメモリ上の一時バッファに保持する
-- `connection.created` notify 受信後に `sessionId` / `connectionId` が確定したら、一時バッファの stats に識別子を設定して通常バッファに移し、即座にフラッシュする
-- 識別子確定後は通常通りバッチ INSERT する
-- 切断時には一時バッファ・通常バッファの両方をフラッシュする
-- 一時バッファは接続試行ごとに初期化する（`clearStatsBuffers()` を `connectSora()` / `reconnectSoraImpl()` 開始時に呼ぶ）
+- `session_db_id` は `connectSora` / `reconnectSoraImpl` の INSERT 直後から使える。stats は常にこの id に紐づける
+- Sora `session_id` / `connection_id` は `persistence` に保持する（`connection.created` で `observedConnectionId` と同様に `sessionId` を同期セット）。`signals.sessionId` / `signals.connectionId` を stats 永続化に使わない
+- `startStatsReportTimer(soraConnection, persistence)` のように、開始時に `persistence.sessionDbId` と channelId をクロージャキャプチャする。毎 tick `getCurrentSessionDbId()` を読まない（並走後勝ちで誤紐付けしうる）
+- `setStatsReportInternal(soraConnection, persistence)` も同様に persistence を受け取る
+- `attemptReconnection` のリトライは同一 `sessionDbId` を使い回す。リトライ中の stats も同一 `session_db_id` に蓄積する
+- **新接続試行の開始時に旧 `session_db_id` のバッファを `clear` しない**。旧バッファは切断フック / 明示パスの `flushStatsBuffer(旧 sessionDbId)` で排出する。`clearStatsBuffers(sessionDbId)` は「当該 id のバッファを破棄してよいと分かっているとき」（例: 永続化を諦めた失敗パスで flush せず捨てる）に限り使う。空の新 id に対する clear 呼び出しは不要
+
+### 切断・明示パスでの flush（親制約）
+
+| 経路                                                         | `flushStatsBuffer`                                                                                                                                                                                                            | `stopStatsReportTimer`                                       |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `disconnect` フック                                          | `isCurrent()` **前**に、クロージャの `persistence.sessionDbId` を同期キャプチャして `flushStatsBuffer(sessionDbId)` を void で投げる。`getCurrentSessionDbId()` は使わない（遅延 disconnect で新接続の id を誤 flush しない） | `isCurrent()` **後**（現行どおり。前に置かない）             |
+| `disconnectSora` / `beforeunload`                            | 関数先頭（最初の `await` より前）で `getCurrentSessionDbId()` をキャプチャし void flush                                                                                                                                       | 既存どおり cleanup 後でも可（beforeunload 完了は保証しない） |
+| `abortConnectSoraResources` / `abortIfCancelled` / try/catch | 明示パスで当該 `persistence.sessionDbId` を flush                                                                                                                                                                             | 既存どおり                                                   |
+| `beforeunload`                                               | 上記 `disconnectSora` 経由。**`close()` は呼ばない**                                                                                                                                                                          | —                                                            |
 
 ## 完了条件
 
-- 1 秒間隔で取得した `RTCStats` が DuckDB に保存されること
-- `webrtc_stats` テーブルから `session_db_id` / `sessionId` / `connectionId` / `channelId` / `stats_type` / `kind` / `ssrc` で絞り込み・集計できること
-- ブラウザを閉じて再度開いても、過去の stats が読み出せること
-- 主要な stats フィールドが正規化カラムとして保存され、DuckDB の集計関数で利用できること
-- 高頻度な stats 取得中も UI がカクつかないこと
-- `build` / `test` / `check` が成功すること
-- `CHANGES.md` の `## develop` に `- [ADD] WebRTC stats を DuckDB-Wasm + OPFS に永続化する` を記載すること
+- 1 秒間隔で取得した `RTCStats` が、切断後（または明示 flush 後）に `webrtc_stats` へ保存されていること（E2E で当該 `session_db_id` の `COUNT(*) >= 1`）
+- `webrtc_stats` を `session_db_id` / `session_id` / `connection_id` / `channel_id` / `stats_type` で SQL 絞り込みできること（E2E。`kind` は fake media 環境で欠けることがあるため必須断言にしない）
+- ブラウザリロード後も、flush 済み stats が読み出せること（E2E。`awaitSessionDatabaseReady` 後）
+- 正規化対象 type の主要フィールドが正規化カラムに入り、正規化カラム名が `raw_json` に重複しないこと（Vitest + fixture）
+- バッチ INSERT / 正規化をメインスレッドで `await` して UI を止めないこと（設計遵守。定量 FPS 計測は完了条件に含めない）
+- 容量サンプリングアルゴリズムが Vitest（合成 `NormalizedWebrtcStat[]`）で期待件数になること
+- `vp build` / `vp test run` / `vp check` が成功すること
+- `CHANGES.md` の `## develop` に `- [ADD] WebRTC stats を DuckDB-Wasm + OPFS に永続化する` と担当者行 `- @voluntas` を記載すること
 
 ## 解決方法
 
-1. `webrtc_stats` テーブルのスキーマを定義する（`session_db_id` カラムを含む）
-   - `CREATE SEQUENCE IF NOT EXISTS seq_webrtc_stats_id START 1` を作成し、`id` カラムの `DEFAULT nextval(...)` と組み合わせる（#0067 では `seq_webrtc_stats_id` を作成しないため、#0068 で作成する）
-2. `src/webrtcStatsNormalizer.ts` を作成し、`RTCStats[]` の正規化関数を実装する
-3. `setStatsReportInternal()` / `startStatsReportTimer()` のシグネチャに `sessions.id` を追加し、受け渡しパスを確保する（#0067 で `createSoraConnectionByRole()` / `setSoraCallbacks()` のシグネチャ変更を行うため、それと整合する）
-4. `src/app/actions.ts` の `setStatsReportInternal()` で正規化関数を呼び出し、`sessionDatabase.enqueueStats()` でバッファに追加する。`void` で非同期に投げ、`.catch()` でエラーを捕捉する
-5. `src/sessionDatabase.ts` に stats 用のバッチ挿入機構を実装する
-   - 一時バッファ（識別子未確定用）と通常バッファ（識別子確定後用）を持つ
-   - 接続試行ごとに `clearStatsBuffers()` で初期化する
-6. `src/app/actions.ts` の `handleConnectionCreatedNotify()` で識別子確定後、`sessionDatabase.flushTempStatsBuffer()` で一時バッファの内容に識別子を設定して通常バッファに移し、フラッシュする。`handleConnectionCreatedNotify()` に `sessions.id` を渡す経路を #0067 と協調して確保すること
-7. 切断時に `disconnect` コールバックの `isCurrent()` ガードの**前**に `stopStatsReportTimer()` と `sessionDatabase.flushStatsBuffer()` を配置する（#0067 の `ended_at` 更新フックと同じ位置）
-8. `connectSora()` の `abortConnectSoraResources()` 内でもバッファの残り stats をフラッシュする
-9. Playwright E2E テストで stats の保存・読み出しを検証する
+1. `src/sessionDatabase.ts` の `createSchema` に `seq_webrtc_stats_id` / `webrtc_stats` / `session_db_id` INDEX を追加する
+2. `src/webrtcStatsNormalizer.ts` を作成し、正規化関数と `NormalizedWebrtcStat` を実装する
+3. `sessionDatabase` に `enqueueStats` / `flushStatsBuffer` / `clearStatsBuffers`（`sessionDbId` 必須）とバッチ・再試行・サンプリングを実装する。DuckDB 操作はすべて `enqueueWrite` 経由。失敗は `notifyPersistenceError`
+4. `SessionPersistenceState` に Sora `sessionId` を追加し、`connection.created` で同期セットする
+5. `setStatsReportInternal(soraConnection, persistence)` / `startStatsReportTimer(soraConnection, persistence)` に persistence を渡し、正規化 → `enqueueStats` を fire-and-forget する。`connectSora` / `reconnectSoraImpl` の呼び出し箇所を更新する
+6. `disconnect` フックでは `isCurrent()` **前**に `flushStatsBuffer(persistence.sessionDbId)` のみ（クロージャの id。`getCurrentSessionDbId()` 禁止）。`stopStatsReportTimer` は `isCurrent()` **後**のまま
+7. `disconnectSora` 先頭で `getCurrentSessionDbId()` をキャプチャして void flush する（`beforeunload` 経路）。`close()` は追加しない
+8. `abortConnectSoraResources` / 失敗明示パスでも当該 `persistence.sessionDbId` を flush する
+9. 新接続試行開始時に旧 id のバッファを clear しない（切断側 flush に任せる）
+10. Playwright E2E と Vitest / fixture を追加する（テスト方針どおり）
+11. `App.tsx` は変更対象外（`createSessionDatabase` は #0067 済み）
 
 ## テスト方針
 
-- Vitest 単体テスト: `webrtcStatsNormalizer.ts` の正規化関数を対象とする。ブラウザから取得した実際の `RTCStats` オブジェクトに近いテスト fixture データを使用する（モックやスタブは使用しない）。fixture データは実際のブラウザから stats を JSON シリアライズして保存したものを `src/__fixtures__/` に配置する。手作り fixture は W3C 仕様に沿った構造の静的データであり、モックには該当しない
-- Playwright E2E テスト:
-  - 接続中に `webrtc_stats` テーブルへ stats が保存されること
-  - `session_db_id` / `sessionId` / `connectionId` / `stats_type` / `kind` で絞り込めること
-  - ブラウザリロード後も stats が読み出せること
-  - stats は 1 秒間隔で取得されるため、E2E テストでは最低 2〜3 秒の接続を維持する。timeout は CODEBASE.md に従い 10 秒以内に収めること
-  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は Error を throw して即座に fail する。#0063 / #0037 が未完了の場合は `process.env` 直接読み取り等のフォールバックを検討すること
-  - #0062（三項演算子禁止）がマージ済みの場合は新規追加コードで三項演算子を使用しないこと
+### Vitest（モック・スタブ禁止）
+
+- `src/webrtcStatsNormalizer.test.ts`: fixture（`src/__fixtures__/webrtc-stats-*.json`）を使う。許可は静的 JSON。禁止は `vi.mock` / 偽 `RTCPeerConnection` / 偽 `getStats`
+- 最低 type セット: `inbound-rtp`, `outbound-rtp`, `candidate-pair`, `transport` を 1 fixture に含める
+- 正規化カラムが `raw_json` に重複しないこと、欠落フィールドが `null` になることを断言する
+- サンプリング関数は合成配列で Vitest する（E2E では検証しない）
+- アサーションは `assert`（Chai）。Playwright の `expect` と混同しない
+- PBT は任意（第 1 段階では必須にしない）
+
+### Playwright E2E
+
+- ファイル: `tests/session-database.test.ts` に describe を足すか `tests/webrtc-stats-persistence.test.ts` を新設する。いずれでも `test.describe.configure({ mode: "serial" })` と `cleanupSessionDatabase` の before/after を必須とする（OPFS・`workers: 1`）
+- `requireSoraConnectionEnv()` ハード依存。`process.env` フォールバックは禁止
+- channelId suffix 例: `session-db-stats-persist`
+- ヘルパー: `tests/helpers/sessionDatabase.ts` に `listWebrtcStatsRows` / `waitForWebrtcStats({ sessionDbId or connectionId, minCount, timeoutMs<=10000 })` を追加する
+- **検証タイミング**: 原則「切断後に flush 完了を待ってから」読む。接続中断言する場合はバッファ 5 秒条件を満たすか、テストから明示 `flushStatsBuffer` を呼ぶ。固定 2〜3 秒待ちだけでは不足
+- 最低断言: 当該接続試行の `COUNT(*) >= 1`。`kind` 必須にしない（fake media）
+- リロード検証: disconnect → waitFor stats → 件数控え → navigate → `awaitSessionDatabaseReady` → 再読込（#0067 と同型）
+- 既存 sendrecv 等への cleanup 波及は本 issue スコープ外（必要なら別 issue）
 
 ## リスクと対策
 
-| リスク                                                       | 対策                                                                 |
-| ------------------------------------------------------------ | -------------------------------------------------------------------- |
-| 高頻度な stats 書き込みで UI スレッドがブロックする          | `AsyncDuckDB` の内部 Worker を使用し、バッチ挿入を行う               |
-| `webrtc_stats` テーブルが肥大化して OPFS quota を圧迫する    | 1 接続あたりの容量上限・サンプリング方針を採用する（設計方針で既述） |
-| ブラウザ間で `RTCStats` フィールドに差分があり正規化が漏れる | `raw_json` に退避し、必要に応じてカラムを追加する                    |
-| `ssrc` 等の符号なし整数がオーバーフローする                  | `UBIGINT` 等の適切な型を使用する                                     |
-| DuckDB-Wasm 初期化失敗で stats 永続化が動かなくなる          | `enqueueStats()` を no-op とし、stats はメモリ上にのみ保持する       |
-| 一時バッファが再接続のリトライ間で混線する                   | 接続試行ごとに `clearStatsBuffers()` で初期化する                    |
+| リスク                                                       | 対策                                                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| 高頻度な stats 書き込みで UI スレッドがブロックする          | 正規化以外の INSERT は `enqueueWrite` + DuckDB Worker。メインで await しない         |
+| `webrtc_stats` が OPFS quota を圧迫する                      | `session_db_id` 単位の 10,000 件超サンプリング（設計方針で固定）                     |
+| ブラウザ間で `RTCStats` フィールドに差分があり正規化が漏れる | `raw_json` に退避し、必要に応じてカラムを追加する                                    |
+| `ssrc` 等の符号なし整数がオーバーフローする                  | `UBIGINT` を使用する                                                                 |
+| DuckDB-Wasm 初期化失敗で stats 永続化が動かなくなる          | `enqueueStats` を no-op とし、stats はメモリ上にのみ保持する                         |
+| 旧接続の未 flush を新接続開始時に消す                        | 新接続開始時に旧 id を clear しない。切断フックで `persistence.sessionDbId` を flush |
+| 旧 disconnect が新接続の stats タイマーを止める              | `stopStatsReportTimer` は `isCurrent()` 後のみ                                       |
+| E2E が未 flush を読む / OPFS 競合                            | 切断後 wait + `serial` + cleanup + `workers: 1`                                      |
 
 ## 未解決課題
 
-- バッチ挿入のバッファサイズ・間隔の最適値は実装時に測定して調整する（初期値は 1000 件 / 5 秒）
-- 容量上限 10,000 件が長時間接続に対して低すぎる場合は実装時に調整する
+- バッチ挿入のバッファサイズ・間隔の最適値（初期値 1000 件 / 5 秒）。完了条件の必須検証対象外
+- 容量上限 10,000 件が長時間接続に対して低すぎる場合の調整。完了条件の必須検証対象外
 
 ## 関連 issue
 
-- #0065: DuckDB-Wasm + OPFS で過去セッションの stats / メタデータを永続化し /sessions ページで確認できるようにする（親 issue）
-- #0066: preact-iso を導入して `/sessions` ページへのルーティング基盤を追加する
-- #0067: DuckDB-Wasm + OPFS でセッション・接続メタデータを永続化する
-- #0069: DownloadReportButton と DownloadReport 関連機能を削除する
-- #0070: /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
-- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に即座に失敗させる（E2E テストが依存）
+- #0065: 親エピック（第 1 段階に本 issue を含む）
+- #0066: ルーティング基盤（完了済み）
+- #0067: sessions / connections 永続化（完了済み。本 issue の前提）
+- #0069: DownloadReportButton 削除（本エピック完了条件外。#0070 後推奨）
+- #0070: /sessions UI（stats 読み出し API の一覧面は #0070。本 issue は書き込みと E2E の SQL 検証まで）
+- #0063: `requireSoraConnectionEnv`（完了済み）
