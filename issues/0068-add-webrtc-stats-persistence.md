@@ -175,7 +175,7 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
   - `session_db_id` / `sessionId` / `connectionId` / `stats_type` / `kind` で絞り込めること
   - ブラウザリロード後も stats が読み出せること
   - stats は 1 秒間隔で取得されるため、E2E テストでは最低 2〜3 秒の接続を維持する。timeout は CODEBASE.md に従い 10 秒以内に収めること
-  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は `test.skip()` で skip する。#0063 / #0037 が未完了の場合は `process.env` 直接読み取り等のフォールバックを検討すること
+  - Sora 接続が必要なテストでは #0063 で導入される `requireSoraConnectionEnv()` を使用し、`E2E_TEST_SORA_SIGNALING_URL` 未設定時は Error を throw して即座に fail する。#0063 / #0037 が未完了の場合は `process.env` 直接読み取り等のフォールバックを検討すること
   - #0062（三項演算子禁止）がマージ済みの場合は新規追加コードで三項演算子を使用しないこと
 
 ## リスクと対策
@@ -201,4 +201,4 @@ Medium。接続品質や帯域・パケットロスなどの時系列変化を�
 - #0067: DuckDB-Wasm + OPFS でセッション・接続メタデータを永続化する
 - #0069: DownloadReportButton と DownloadReport 関連機能を削除する
 - #0070: /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
-- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に skip する仕組みを追加する（E2E テストが依存）
+- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に即座に失敗させる（E2E テストが依存）

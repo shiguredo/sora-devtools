@@ -25,3 +25,14 @@ export function getSoraConnectionEnv(): SoraConnectionEnv | undefined {
     accessToken,
   };
 }
+
+// Playwright の test コールバック (または beforeEach) の先頭で呼び出すと
+// 必須環境変数未設定時は Error を throw してテストを即座に失敗させる
+// 設定済みなら narrow 済みの SoraConnectionEnv を返す
+export function requireSoraConnectionEnv(): SoraConnectionEnv {
+  const env = getSoraConnectionEnv();
+  if (env === undefined) {
+    throw new Error("E2E_TEST_SORA_SIGNALING_URL is not set");
+  }
+  return env;
+}

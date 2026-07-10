@@ -322,7 +322,7 @@ INSERT 時点では Sora `session_id` / `connection_id` は未確定である。
 
 - Vitest 単体テスト: ブラウザ API に依存しない純粋関数（`RTCStats` 正規化、`maskSensitiveMetadata()` 等）。PBT を使う場合のファイル名は `*.prop.ts`（CODEBASE.md）
 - Playwright E2E: DuckDB-Wasm + OPFS の初期化、`sessions` / `connections` 作成、切断時の `ended_at`、stats の保存と読み出し、`/sessions` UI。詳細とクリーンアップヘルパーは各子 issue（主に #0067 / #0070）
-- Sora 接続が必要な E2E は #0037 → #0063 を前提とし、未設定時は skip する
+- Sora 接続が必要な E2E は #0037 → #0063 を前提とし、未設定時は `requireSoraConnectionEnv()` が Error を throw して即座に fail する
 
 ## リスクと対策
 
@@ -343,7 +343,7 @@ INSERT 時点では Sora `session_id` / `connection_id` は未確定である。
 - #0070: /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
 - #0069: DownloadReportButton と DownloadReport 関連機能を削除する（関連。本エピック完了条件外。#0070 後推奨）
 - #0037: e2e テストに Page Object Model を導入する（#0063 の前提）
-- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に skip する仕組みを追加する（#0067 / #0068 / #0070 の E2E が依存）
+- #0063: Sora 接続が必要な E2E テストで環境変数未設定時に即座に失敗させる（#0067 / #0068 / #0070 の E2E が依存）
 - #0058: `vite.config.ts` の `manualChunks` で `moduleId.includes()` の誤マッチを防ぐ（#0066 の `preact-iso` 追加と関連）
 - #0062: 三項演算子を全面禁止する（マージ済みなら新規コードで遵守）
 - #0038 / #0019: #0069 実施時に DownloadReport 言及を除去する必要あり

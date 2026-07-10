@@ -262,11 +262,11 @@ export class DevtoolsPage {
 - `pnpm exec playwright test --list tests/ui-*.test.ts` で **33 件** のテストが列挙されること (内訳: ui-url-params 7 + ui-role-visibility 10 + ui-collapse 7 + ui-copy-url 5 + ui-media-type 4)
 - 本 issue が触らない `tests/noise-suppression-lazy-load.test.ts` / `tests/mp4-media-stream-lazy-load.test.ts` の通過状態が追加前後で変わらないこと (回帰確認)
 - `.env.local` に `E2E_TEST_SORA_SIGNALING_URL` を設定した状態で `pnpm test:e2e` を実行したとき、 #0037 の Sora 依存テスト 3 件と本 issue 追加 5 系統 + lazy-load 2 件が全件通過すること
-- `.env.local` 未設定状態で `pnpm test:e2e` を実行すると Sora 依存テスト 3 件はタイムアウト失敗するが本 issue の `ui-*.test.ts` は green になる ( #0063 マージ前は全体としては赤になる。 #0063 マージ後は Sora 依存 3 件が skip され全体 green)。よって本 issue の動的検証は `tests/ui-*.test.ts` をファイル指定して実行する
+- `.env.local` 未設定状態で `pnpm test:e2e` を実行すると Sora 依存テスト 3 件は失敗するが本 issue の `ui-*.test.ts` は green になる ( #0063 マージ前はタイムアウト失敗、#0063 マージ後は `requireSoraConnectionEnv()` の即座 fail。いずれも全体としては赤)。よって本 issue の動的検証は `tests/ui-*.test.ts` をファイル指定して実行する
 
 ## 依存
 
 - #0037 (Page Object と env helper の導入) が先行マージされている必要がある (本 issue は `DevtoolsPage` を拡張するため)
-- #0063 (skip 機構) と本 issue は並列実装可能。本 issue のテストは env 不要のため #0063 完了前でも動作する
+- #0063 (未設定時の即座 fail / `requireSoraConnectionEnv`) と本 issue は並列実装可能。本 issue のテストは env 不要のため #0063 完了前でも動作する
 - #0039 とは `DevtoolsPage` の別メソッドを追加するため衝突しないが、編集競合を避けるため 0038 → 0039 の順で進める
 - `@playwright/test` 1.60.0 ( `package.json` 参照)
