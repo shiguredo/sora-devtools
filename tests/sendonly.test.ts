@@ -1,37 +1,31 @@
 import { test } from "@playwright/test";
 
+import { getSoraConnectionEnv } from "./helpers/env.ts";
+import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
+
 test("sendonly", async ({ page }) => {
-  // TODO: 複数に対応したい
-  const signalingUrl = process.env.E2E_TEST_SORA_SIGNALING_URL;
-  const channelIdPrefix = process.env.E2E_TEST_SORA_CHANNEL_ID_PREFIX;
-  const accessToken = process.env.E2E_TEST_ACCESS_TOKEN;
+  // 環境変数を取得する。未設定時は空文字を含む既定値となり、[""] 経路で接続が失敗する
+  const env = getSoraConnectionEnv() ?? {
+    signalingUrl: "",
+    channelIdPrefix: "",
+    accessToken: "",
+  };
 
-  const channelId = `${channelIdPrefix}sendonly`;
-
-  const params = new URLSearchParams({
-    channelId,
-    signalingUrlCandidates: JSON.stringify([signalingUrl]),
-    multistream: "true",
+  const devtools = new DevtoolsPage(page);
+  await devtools.navigate({
     role: "sendonly",
+    channelId: `${env.channelIdPrefix}sendonly`,
+    signalingUrlCandidates: [env.signalingUrl],
+    accessToken: env.accessToken,
     videoCodecType: "VP9",
-    metadata: JSON.stringify({ access_token: accessToken }),
   });
 
-  await page.goto(`http://localhost:3333/devtools/?${params.toString()}`);
+  await devtools.connect();
+  await devtools.waitForConnection();
 
-  await page.click('button[name="connect"]');
-
-  // '#local-video-connection-id' が表示されるまで待つ
-  await page.waitForSelector("#local-video-connection-id", { timeout: 5000 });
-
-  // '#local-video-connection-id' のテキストコンテンツを取得する
-  const connectionId = await page.textContent("#local-video-connection-id");
-
-  // 取得したテキストコンテンツをコンソールに出力する
+  const connectionId = await devtools.getConnectionId();
   console.log("Connection ID:", connectionId);
 
-  // 3 秒待つ
   await page.waitForTimeout(3000);
-
-  await page.click('button[name="disconnect"]');
+  await devtools.disconnect();
 });
