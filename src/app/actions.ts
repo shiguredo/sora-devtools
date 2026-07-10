@@ -38,7 +38,70 @@ import {
   runWithNoiseSuppressionProcessorLock,
 } from "./../noiseSuppression.ts";
 import { loadUrlEntries } from "./../opfs.ts";
+import {
+  getCurrentConnectionId,
+  getCurrentSessionDbId,
+  insertConnection,
+  insertSession,
+  updateConnectionEndedAt,
+  updateSessionEndedAt,
+  updateSessionIdAndConnectionId,
+} from "./../sessionDatabase.ts";
 import * as signals from "./signals.ts";
+
+// 接続試行単位の永続化コンテキスト。sessions.id はローカルで保持し、
+// connections INSERT 成功時の connectionId もここに記録する（明示パス用）
+interface SessionPersistenceState {
+  sessionDbId: number;
+  persistedConnectionId: string | null;
+  // connection.created 時点の connectionId。SDK は disconnect コールバック前に
+  // soraConnection.connectionId を null 化するため、フックではこの値を優先する
+  observedConnectionId: string | null;
+  // disconnect が INSERT より先に来た connectionId を記録し、INSERT 完了後に ended_at を書く
+  connectionEndedPendingIds: Set<string>;
+}
+
+// sessions.ended_at / connections.ended_at を fire-and-forget で更新する
+function runPersistenceTask(task: () => Promise<void>): void {
+  void (async () => {
+    try {
+      await task();
+    } catch (error: unknown) {
+      signals.setLogMessages({
+        title: "SESSION_DATABASE",
+        description: getErrorMessage(error),
+      });
+    }
+  })();
+}
+
+function persistSessionEndedAt(sessionDbId: number | null | undefined): void {
+  if (sessionDbId === null || sessionDbId === undefined) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await updateSessionEndedAt(sessionDbId);
+  });
+}
+
+function persistConnectionEndedAt(connectionId: string | null | undefined): void {
+  if (!connectionId) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await updateConnectionEndedAt(connectionId);
+  });
+}
+
+// persistence に保持した connectionId を優先して返す（SDK が callback 前に null 化するため）
+function connectionIdFromPersistence(
+  persistence: SessionPersistenceState | null | undefined,
+): string | null {
+  if (persistence === null || persistence === undefined) {
+    return null;
+  }
+  return persistence.persistedConnectionId ?? persistence.observedConnectionId;
+}
 
 // クエリストリングのパラメータを各 signal に設定する
 function applyAudioParameters(qsParams: Partial<QueryStringParameters>): void {
@@ -949,7 +1012,12 @@ function handleSpotlightEvent(message: SoraNotifyMessage): void {
 }
 
 // connection.created の notify を処理する
-function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
+// persistence がある場合は sessions UPDATE と connections INSERT も行う
+function handleConnectionCreatedNotify(
+  message: SoraNotifyMessage,
+  soraConnection: ConnectionPublisher | ConnectionSubscriber,
+  persistence: SessionPersistenceState | null,
+): void {
   if (message.event_type !== "connection.created" || typeof message.connection_id !== "string") {
     return;
   }
@@ -978,6 +1046,43 @@ function handleConnectionCreatedNotify(message: SoraNotifyMessage): void {
           });
         }
       }
+    }
+    // セッション永続化: session_id / connection_id を UPDATE し connections を INSERT する
+    if (
+      persistence !== null &&
+      typeof message.session_id === "string" &&
+      typeof message.connection_id === "string"
+    ) {
+      const sessionId = message.session_id;
+      const connectionId = message.connection_id;
+      // SDK が disconnect 前に connectionId を消す前に、同期で保持する
+      persistence.observedConnectionId = connectionId;
+      const soraClientId = typeof message.client_id === "string" ? message.client_id : "";
+      const channelId = signals.channelId.value;
+      const signalingUrl = soraConnection.connectedSignalingUrl;
+      const { sessionDbId } = persistence;
+      runPersistenceTask(async () => {
+        await updateSessionIdAndConnectionId(sessionDbId, sessionId, connectionId);
+      });
+      runPersistenceTask(async () => {
+        const inserted = await insertConnection(
+          sessionDbId,
+          sessionId,
+          connectionId,
+          soraClientId,
+          channelId,
+          signalingUrl,
+        );
+        // INSERT 成功時のみ明示パス用に connectionId を保持する
+        if (inserted) {
+          persistence.persistedConnectionId = connectionId;
+          // disconnect が INSERT より先に走っていた場合はここで ended_at を補完する
+          if (persistence.connectionEndedPendingIds.has(connectionId)) {
+            persistence.connectionEndedPendingIds.delete(connectionId);
+            await updateConnectionEndedAt(connectionId);
+          }
+        }
+      });
     }
   } else if (typeof message.client_id === "string") {
     // 自身以外の notify
@@ -1129,7 +1234,10 @@ export const handleTrackEvent = (event: RTCTrackEvent): void => {
 };
 
 // Sora connection オブジェクトに callback をセットする
-function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscriber): void {
+function setSoraCallbacks(
+  soraConnection: ConnectionPublisher | ConnectionSubscriber,
+  persistence: SessionPersistenceState | null,
+): void {
   // sora-js-sdk にはリスナー解除 API (off / removeAllListeners) が無く、reconnectSora で
   // 旧接続が破棄されても本関数で登録したリスナーは残り続ける。各ハンドラ先頭で
   // 「自分が現在の signals.sora.value か」を判定し、新セッションの state を破壊しうる
@@ -1150,7 +1258,7 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
       return;
     }
     handleSpotlightEvent(message);
-    handleConnectionCreatedNotify(message);
+    handleConnectionCreatedNotify(message, soraConnection, persistence);
     // 他参加者が退出したらリモートクライアントを削除する
     if (isConnectionDestroyedNotify(message)) {
       removeRemoteClientCleanup(message.connection_id);
@@ -1214,8 +1322,25 @@ function setSoraCallbacks(soraConnection: ConnectionPublisher | ConnectionSubscr
     }
     // 記録 1: SDK イベントの発火そのものを記録する。古い接続でも timeline に残す
     signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message));
+    // 永続化フックは isCurrent() ガードの前に置く。
+    // SDK は本コールバックの Promise を待たないため、識別子を同期キャプチャしてから void で投げる。
+    // SDK は callbacks.disconnect の前に initializeConnection() で connectionId を null 化するため、
+    // soraConnection.connectionId は使わず、connection.created 時点で保持した ID を使う。
+    const connectionIdForPersistence =
+      connectionIdFromPersistence(persistence) ?? getCurrentConnectionId();
+    const sessionDbIdForPersistence = persistence?.sessionDbId ?? null;
+    const current = isCurrent();
+    const reconnecting = signals.reconnecting.value;
+    // INSERT 未完了のレースに備え、当該 connectionId を pending に入れてから UPDATE を投げる
+    if (persistence !== null && connectionIdForPersistence) {
+      persistence.connectionEndedPendingIds.add(connectionIdForPersistence);
+    }
+    persistConnectionEndedAt(connectionIdForPersistence);
+    if (current && !reconnecting) {
+      persistSessionEndedAt(sessionDbIdForPersistence);
+    }
     // 以降の state 操作は新セッションのみ
-    if (!isCurrent()) {
+    if (!current) {
       return;
     }
     const reconnectValue = signals.reconnect.value;
@@ -1465,6 +1590,7 @@ function createSoraConnectionByRole(
   connectionOptions: ReturnType<typeof createConnectOptions>,
   metadata: ReturnType<typeof parseMetadata>,
   googCpuOveruseDetectionValue: boolean | null,
+  persistence: SessionPersistenceState | null,
 ): ConnectionPublisher | ConnectionSubscriber {
   let soraConnection: ConnectionPublisher | ConnectionSubscriber;
   if (roleValue === "sendonly") {
@@ -1484,7 +1610,7 @@ function createSoraConnectionByRole(
       optional: [{ googCpuOveruseDetection: googCpuOveruseDetectionValue }],
     };
   }
-  setSoraCallbacks(soraConnection);
+  setSoraCallbacks(soraConnection, persistence);
   return soraConnection;
 }
 
@@ -1630,6 +1756,18 @@ export const connectSora = async (): Promise<void> => {
     forceCreateMediaStream = true;
   }
   const { connection, connectionOptions, metadata } = prepareSignalingConnection();
+  // 検知ポイント 1 通過後・createSoraConnectionByRole 前に sessions を INSERT する
+  // metadata のマスクは insertSession 内で行う
+  const sessionDbId = await insertSession(signals.channelId.value, signals.role.value, metadata);
+  const persistence: SessionPersistenceState | null =
+    sessionDbId === null
+      ? null
+      : {
+          sessionDbId,
+          persistedConnectionId: null,
+          observedConnectionId: null,
+          connectionEndedPendingIds: new Set(),
+        };
   let soraConnection: undefined | ConnectionPublisher | ConnectionSubscriber;
   let mediaStream: undefined | MediaStream;
   let gainNode: undefined | GainNode | null;
@@ -1653,6 +1791,10 @@ export const connectSora = async (): Promise<void> => {
       forceCreateMediaStream,
       localMediaStreamValue,
     });
+    // abortConnectSoraResources は setSora(null) 後に disconnect するためフックは !isCurrent になる。
+    // sessions / connections の ended_at は明示パスで更新する。
+    persistSessionEndedAt(persistence?.sessionDbId);
+    persistConnectionEndedAt(connectionIdFromPersistence(persistence));
     return true;
   };
   try {
@@ -1663,6 +1805,7 @@ export const connectSora = async (): Promise<void> => {
       connectionOptions,
       metadata,
       googCpuOveruseDetectionValue,
+      persistence,
     );
     if (roleValue === "sendonly" || roleValue === "sendrecv") {
       if (!forceCreateMediaStream && localMediaStreamValue) {
@@ -1701,6 +1844,9 @@ export const connectSora = async (): Promise<void> => {
     if (error instanceof Error) {
       signals.setSoraErrorAlertMessage(`failed to connect Sora: ${error.message}`);
     }
+    // try/catch 失敗時は明示パスで ended_at を更新する
+    persistSessionEndedAt(persistence?.sessionDbId);
+    persistConnectionEndedAt(connectionIdFromPersistence(persistence));
     await cleanupMediaStreamOnError(state, mediaStream);
     // 残留した remoteClients と localMediaStream を掃除し、接続失敗後も UI に映像が残らないようにする
     await cleanupSoraMediaState();
@@ -1735,12 +1881,19 @@ async function attemptReconnection(
   channelIdValue: string,
   googCpuOveruseDetectionValue: boolean | null,
   mediaStream: MediaStream | undefined,
+  persistence: SessionPersistenceState | null,
 ): Promise<ConnectionPublisher | ConnectionSubscriber | undefined> {
   for (let i = 1; i <= 10; i++) {
     if (!signals.reconnecting.value) {
       break;
     }
     signals.setSoraReconnectingTrials(i);
+    // 試行ごとに connections INSERT 成功 ID をリセットする（同一 sessions 行を使い回す）
+    // pending IDs は他試行の connectionId を消さない（遅延 disconnect 補完のため）
+    if (persistence !== null) {
+      persistence.persistedConnectionId = null;
+      persistence.observedConnectionId = null;
+    }
     let soraConnection: undefined | ConnectionPublisher | ConnectionSubscriber;
     try {
       soraConnection = createSoraConnectionByRole(
@@ -1750,6 +1903,7 @@ async function attemptReconnection(
         connectionOptions,
         metadata,
         googCpuOveruseDetectionValue,
+        persistence,
       );
       // connectSora と同様に connect() の前に setSora で state を参照できるようにする
       // connection.created の notify が来た時に自分のコネクションと照合するため
@@ -1766,6 +1920,9 @@ async function attemptReconnection(
       if (error instanceof Error) {
         signals.setSoraErrorAlertMessage(`(trials ${i}) failed to connect Sora: ${error.message}`);
       }
+      // リトライ途中の catch では sessions.ended_at は更新しない。
+      // connections INSERT 済みならその connectionId で ended_at を更新する。
+      persistConnectionEndedAt(connectionIdFromPersistence(persistence));
       soraConnection = undefined;
     }
     if (soraConnection !== undefined) {
@@ -1779,6 +1936,7 @@ async function attemptReconnection(
 }
 
 // reconnectSora の本体実装。in-flight ガードはこの関数の外側 wrapper で行う
+// oxlint-disable-next-line eslint/max-statements -- 永続化フックと createMediaStream / attemptReconnection 失敗パスを同一関数に保持する
 const reconnectSoraImpl = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect"));
   signals.setSoraConnectionStatus("connecting");
@@ -1792,6 +1950,17 @@ const reconnectSoraImpl = async (): Promise<void> => {
     await soraValue.disconnect();
   }
   const { connection, connectionOptions, metadata } = prepareSignalingConnection();
+  // prepareSignalingConnection 後・createMediaStream 前に sessions を INSERT する
+  const sessionDbId = await insertSession(signals.channelId.value, signals.role.value, metadata);
+  const persistence: SessionPersistenceState | null =
+    sessionDbId === null
+      ? null
+      : {
+          sessionDbId,
+          persistedConnectionId: null,
+          observedConnectionId: null,
+          connectionEndedPendingIds: new Set(),
+        };
   let mediaStream: undefined | MediaStream;
   let gainNode: undefined | GainNode | null;
   let audioContext: undefined | AudioContext | null;
@@ -1806,6 +1975,8 @@ const reconnectSoraImpl = async (): Promise<void> => {
       if (error instanceof Error) {
         signals.setSoraErrorAlertMessage(error.message);
       }
+      persistSessionEndedAt(persistence?.sessionDbId);
+      persistConnectionEndedAt(connectionIdFromPersistence(persistence));
       await cleanupSoraMediaState();
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
@@ -1820,6 +1991,7 @@ const reconnectSoraImpl = async (): Promise<void> => {
     channelIdValue,
     googCpuOveruseDetectionValue,
     mediaStream,
+    persistence,
   );
   if (soraConnection === undefined) {
     // 新規生成した mediaStream / audioContext は signal にセットされていないため、
@@ -1839,6 +2011,9 @@ const reconnectSoraImpl = async (): Promise<void> => {
       void audioContext.close();
     }
     signals.setSora(null);
+    // 全リトライ枯渇 / reconnecting キャンセル時は明示パスで sessions.ended_at を更新する
+    persistSessionEndedAt(persistence?.sessionDbId);
+    persistConnectionEndedAt(connectionIdFromPersistence(persistence));
     await cleanupSoraMediaState();
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
@@ -1884,6 +2059,17 @@ export const reconnectSora = async (): Promise<void> => {
 
 // Sora との切断処理
 export const disconnectSora = async (): Promise<void> => {
+  // 永続化は最初の await より前に置く（beforeunload の fire-and-forget を空洞化しないため）
+  // (1) getCurrentSessionDbId / getCurrentConnectionId を同期キャプチャし、非 null なら ended_at を更新する
+  //     connections は SDK が disconnect コールバック前に connectionId を消すため、明示パスでも書く
+  const sessionDbIdToEnd = getCurrentSessionDbId();
+  const connectionIdToEnd = getCurrentConnectionId();
+  persistSessionEndedAt(sessionDbIdToEnd);
+  persistConnectionEndedAt(connectionIdToEnd);
+  // (2) reconnecting 中ならリトライを止める（early return で setSoraReconnecting(false) に届かないため）
+  if (signals.reconnecting.value) {
+    signals.setSoraReconnecting(false);
+  }
   const soraValue = signals.sora.value;
   const connectionStatusValue = signals.connectionStatus.value;
   // disconnected 状態でも残留メディアを掃除する

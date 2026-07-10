@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] DuckDB-Wasm + OPFS でセッション・接続メタデータを永続化する
+  - @voluntas
 - [ADD] preact-iso を導入して /sessions ページへのルーティング基盤を追加する
   - @voluntas
 

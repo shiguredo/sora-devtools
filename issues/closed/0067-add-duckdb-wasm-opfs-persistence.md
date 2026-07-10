@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-24
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-11
 - Model: GLM-5.2
 - Branch: feature/add-duckdb-wasm-opfs-persistence
 - Polished: 2026-07-10
@@ -222,33 +222,14 @@ Medium。過去セッションを識別・検索するための基盤であり�
 
 ## 解決方法
 
-1. `package.json` の `dependencies` に `@duckdb/duckdb-wasm` と `apache-arrow` をピン留め追加する
-   - `vp install @duckdb/duckdb-wasm` で同期し、バージョン指定を `x.y.z` 形式に揃える
-   - `apache-arrow` も同様にピン留めする（`manualChunks` 分離のため）
-2. `vite.config.ts` で `build.assetsInlineLimit: 0` を設定し、`manualChunks` に `@duckdb/duckdb-wasm` / `apache-arrow` を追加する（長いパッケージ名を先にマッチ）
-3. `src/sessionDatabase.ts` を作成する
-   - 動的 import で `AsyncDuckDB` を初期化し、`opfs://sora-devtools-sessions.db` に接続する
-   - `CREATE SEQUENCE IF NOT EXISTS` で `seq_sessions_id` / `seq_connections_id` を作成する（`seq_webrtc_stats_id` は #0068）
-   - `CREATE TABLE IF NOT EXISTS` で `sessions` / `connections` を作成する
-   - 上記 API（`getCurrentSessionDbId` / `insertSession` / … / `close`）と `maskSensitiveMetadata()` を実装する
-   - 初期化失敗時は console warn + no-op。書き込み失敗時は `setSoraErrorAlertMessage` で通知する
-4. `src/App.tsx` マウント時に `void createSessionDatabase()` を呼ぶ。`beforeunload` ハンドラには何も追記しない（`close()` も追加しない。上記安全性方針 2）
-5. `src/app/actions.ts` に永続化フックを入れる
-   - `connectSora`: 検知ポイント 1 通過後・`prepareSignalingConnection` 後・`createSoraConnectionByRole` 前に INSERT。ローカル変数で `sessions.id` を保持
-   - `reconnectSoraImpl`: `prepareSignalingConnection` 後・`createMediaStream` 前に INSERT。id を `attemptReconnection` に渡す
-   - `createSoraConnectionByRole` / `setSoraCallbacks` / `handleConnectionCreatedNotify`（または同経路）に `sessions.id` を受け渡す
-   - `connection.created` で sessions UPDATE + connections INSERT。INSERT 成功時に接続試行ローカルへ `connectionId` を保持する
-   - `disconnect` フックを `isCurrent()` 前に置き、上表どおり分岐（`void` + `.catch()`）
-   - `abortIfCancelled` / `try/catch` / `createMediaStream` 失敗 / reconnecting キャンセル / 全リトライ枯渇の明示パスで `updateSessionEndedAt` を呼ぶ（`attemptReconnection` の `catch` では `sessions.ended_at` を更新しない）
-   - `disconnectSora`: 現行実装は冒頭で `await cleanupSoraMediaState()` するため、永続化は **最初の `await` より前**（関数先頭）に置く。手順: (1) `getCurrentSessionDbId()` を同期キャプチャし、非 null なら `void updateSessionEndedAt(id)`（`.catch()` 付き）。(2) `signals.reconnecting.value === true` なら `setSoraReconnecting(false)`。(3) その後に既存の cleanup / early return / `disconnect()` へ進む。根拠: リトライ待機中は disconnect フックが既に status を `disconnected` にしており、early return では `setSoraReconnecting(false)` に到達しない。sessions を終了するならリトライも止めないと、cleanup 待ち中に次リトライが始まり終了済み行へ書き込む不整合が起きる。`beforeunload` の fire-and-forget を空洞化しないためにも、最初の `await` より前が必須。フックとの二重 `ended_at` 書き込みは idempotent な UPDATE で許容する
-6. Vitest: `maskSensitiveMetadata` 等の純粋関数を `src/sessionDatabase.test.ts` / `src/sessionDatabase.prop.ts` で検証する（DuckDB I/O は単体テストしない。モック禁止）
-7. Playwright E2E:
-   - `requireSoraConnectionEnv()` をハード依存する
-   - connect 前に `whenReady()` を await する（未初期化 no-op によるフレーク防止）
-   - 接続確立後の `sessions` / `connections` 保存、切断後の `ended_at`、リロード後の残存、再接続での複数行区別を検証する
-   - **検証手段（固定）**: 本番用 `listSessions` は #0070 の担当であり本 issue では追加しない。E2E の SQL assert は、アプリ側シングルトンが OPFS を握ったままだと再 open が排他で失敗しうるため、次のいずれか一方に固定する: **(A) assert 直前にアプリ側 `close()` してから `page.evaluate` 内で同一 `opfs://sora-devtools-sessions.db` を再 open して SQL する**（採用）。(B) 開いたままのシングルトン経由で SQL する案は、本番読み取り API を本 issue に持ち込むため不採用。`close()` の呼び出しは `page.evaluate` 内から `sessionDatabase` の export を import して行う（`globalThis` への本番露出はしない）。Node プロセスから OPFS は読めない。`navigator.storage.getDirectory()` だけでは行内容を検証できない
-   - OPFS クリーンアップヘルパーを `tests/helpers/` に置き、新規永続化テストおよび必要に応じて既存 E2E（`sendrecv` / `sendonly` / `recvonly`）の teardown からも使えるようにする（ヘルパー内で `close()` してから DB ファイルを削除）
-8. #0062（三項演算子禁止）がマージ済みの場合は新規コードで三項演算子を使わない。未マージなら現状の lint 設定に従う
+1. `@duckdb/duckdb-wasm` 1.32.0 と `apache-arrow` 17.0.0 を dependencies にピン留め追加した
+2. `vite.config.ts` に `assetsInlineLimit: 0` と `manualChunks`（`duckdb-wasm` / `apache-arrow`）を追加した
+3. `src/sessionDatabase.ts` を新設し、動的 import で OPFS DB を初期化、sessions / connections API と `maskSensitiveMetadata` を実装した。AsyncDuckDBConnection への並行 query を避けるため書き込みを `enqueueWrite` で直列化し、`close()` はキュー排水後にハンドルを解放する
+4. `App.tsx` マウント時に `createSessionDatabase()` を呼ぶ。`beforeunload` には `close()` を追加しない
+5. `actions.ts` に接続試行ローカルの永続化コンテキストを渡し、INSERT / UPDATE / ended_at ルールどおりフックした。INSERT と disconnect のレースは connectionId 単位の pending Set で補完する。sora-js-sdk は `disconnect` コールバック前に `initializeConnection()` で `connectionId` を null 化するため、フックでは `observedConnectionId` / `persistedConnectionId` / `getCurrentConnectionId()` を使い、`disconnectSora` 明示パスでも connections.ended_at を更新する
+6. Vitest（`sessionDatabase.test.ts` / `.prop.ts`）と Playwright E2E（`tests/session-database.test.ts` + helpers）を追加した。E2E の SQL は `querySessionDatabaseForE2e` を Vite 経由で呼ぶ
+7. `CHANGES.md` の `## develop` に `[ADD]` を追記した
+8. `vp check` / `vp test run` / `vp build` で確認した
 
 ## テスト方針
 

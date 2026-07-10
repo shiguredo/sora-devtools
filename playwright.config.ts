@@ -4,6 +4,8 @@ export default defineConfig({
   // 環境変数 .env.local が読み込まれる
   globalSetup: "./tests/global-setup.ts",
   testDir: "tests",
+  // OPFS 上のセッション DB はオリジン共有のため、複数 worker だと永続化テストが競合する
+  workers: 1,
   // fullyParallel: true,
   reporter: "html",
   use: {

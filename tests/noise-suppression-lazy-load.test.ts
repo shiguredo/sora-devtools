@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 // noise-suppression 関連のリクエスト URL かどうかを判定する
+// DuckDB-Wasm など他用途の .wasm は除外し、パッケージ名で判定する
 function isNoiseSuppressionRequestUrl(url: string): boolean {
-  return /noise-suppression|rnnoise|\.wasm/iu.test(url);
+  return /noise-suppression|rnnoise/iu.test(url);
 }
 
 // 収集したリクエスト URL から noise-suppression 関連のみを抽出する
