@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-24
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-10
 - Model: GLM-5.2
 - Branch: feature/add-preact-iso-routing
 - Polished: 2026-07-10
@@ -135,35 +135,12 @@ LocationProvider          ← main.tsx（useLocation が有効になる境界）
 
 ## 解決方法
 
-1. 失敗するテストを先に追加する（`CODEBASE.md` の「テストを先に修正すること」）
-   - `vitest.ct.config.ts` を次のように更新する
-     - `vite.config.ts` と同じ `resolve.alias["@"]` を追加する
-     - `provider: playwright({ contextOptions: { permissions: ["clipboard-read", "clipboard-write"] } })` を設定する（ct はブラウザ内実行のため E2E の `context.grantPermissions` は使えない。#0038 の E2E 先例を ct に流用しない）
-   - ct 共通: 各ファイルの `afterEach`（または同等）で `setDebug(false)` / `setDebugType("timeline")`（`@/app/actions` または `@/app/signals`）と、必要なら `@/app/signals` の `resetState()`、および `history.replaceState(null, "", "/")` による pathname 復元を行い、同一 page 上の後続テスト汚染を防ぐ
-   - `src/components/Header/SessionsButton.ct.tsx`: 本番と同じ境界（`LocationProvider` 配下・ボタンは `Router` 外、`Sessions` は `Router` 内）でラップし、クリック後に `window.location.pathname === "/sessions"` かつ `getByRole("heading", { name: "Sessions" })` が出ることを検証する。history のモックは使わない
-   - LocationProvider 同期用プローブ: 各 `*.ct.tsx` 内のローカルコンポーネントとし、本番コードには残さない。`data-testid="location-probe"` で `useLocation().url` をテキスト表示する
-   - `src/components/Header/CopyUrlButton.ct.tsx`: 上記 clipboard 権限のもと Copy 成功後にプローブ URL が `pathname + search` と一致することを検証する
-   - `src/components/DebugPane/DebugPane.ct.tsx`: 描画前に本番 API の `setDebug(true)` を呼ぶ（モック禁止。`DebugButton` クリックでも可）。タブを `timeline` から `signaling` へ切り替え、プローブ URL に `debugType=signaling` が反映されることを検証する
-   - `tests/routing.test.ts`（Playwright。ルーティング遷移と接続維持の両方をこのファイルに置く）:
-     - `/` / `/devtools/` / `/devtools` で `button[name="connect"]` が見えること
-     - `getByRole("button", { name: "Sessions" })` クリックで `/sessions` に遷移し、`getByRole("heading", { name: "Sessions" })` が見えること
-     - `/sessions` 直アクセスで仮ページが表示されること
-     - 既存 query（`channelId` 等）が `/` で復元されること
-     - 接続維持（`#0037` → `#0063` ハード前提。`requireSoraConnectionEnv()` + `#0037` の `DevtoolsPage` で接続・connectionId 取得。`process.env` フォールバック禁止。Sessions 遷移は POM に未実装なら `page` の locator を併用し、必要なら `DevtoolsPage` にメソッドを足す）:
-       1. `DevtoolsPage` の起点 URL（`/devtools/`）で接続し、`#local-video-connection-id` のテキストをキャプチャする
-       2. Header の TURN URL（`page.locator("header p")`。現状 Header 内の `<p>` は TURN のみ）が `"TURN URL"` 以外になるまで待つ（`connectionStatus === "connected"` 到達。connection-id 出現時点ではまだ `"connecting"` のことがある）
-       3. `getByRole("button", { name: "Sessions" })` で `/sessions` へ遷移する（`#local-video-connection-id` は DevTools アンマウントにより消える。消えること自体は切断を意味しない）
-       4. `/sessions` 滞在中も `header p` が `"TURN URL"` ではないことを確認する（接続中は `turnUrl` または `"不明"`。Signaling URL は未接続でも candidates 表示のため使わない）
-       5. `getByRole("link", { name: "Sora DevTools" })`（NavbarBrand）で戻り、address bar の pathname が `/` であること（`/devtools/` 起点でも Brand は `href="/"` 固定。`href` を `/devtools/` に変更しない）、かつ `#local-video-connection-id` がキャプチャと一致することを確認する
-2. `package.json` の `dependencies` に `preact-iso` を追加する（`vp install` → `x.y.z` ピン留め。peer の `preact-render-to-string` が自動導入されたら同様にピン留め）
-3. `vite.config.ts` の `manualChunks` に `preact-iso` を追加する（`#0058` 未マージ時は `preact-iso` を `preact` より先に配置）
-4. `src/main.tsx` を `render(<LocationProvider><App /></LocationProvider>, rootElement)` に変更する
-5. `src/App.tsx` を上記ツリーどおりに変更する（`import { ErrorBoundary, Router, Route, lazy } from "preact-iso"`。`beforeunload` の登録と `removeEventListener` 対称）
-6. `src/routes/Sessions.tsx` に仮ページ（`<h1>Sessions</h1>`）を作成する
-7. `SessionsButton.tsx` を作成し `Header/index.tsx` に `NavbarText` 付きで配置する
-8. `CopyUrlButton.tsx` / `DebugPane/index.tsx` で先頭 `useLocation` + ハンドラ内 `route(..., true)` を入れる
-9. `DevTools.tsx` から `Header` / `Footer` と初期化 / cleanup の `disconnectSora` を削除する
-10. `CHANGES.md` の `## develop` に ADD エントリを追記する（`shiguredo-changelog` に従い、エントリ直後に `- @username` を付ける）
+1. `preact-iso` 2.12.0 を導入し、`main.tsx` に `LocationProvider`、`App.tsx` に `Router` / `Route` / `lazy(Sessions)` / `ErrorBoundary` と `beforeunload` による切断ライフサイクルを実装した
+2. `DevTools.tsx` から `Header` / `Footer` と初期化・`disconnectSora` cleanup を除去し、`SessionsButton` と `src/routes/Sessions.tsx` 仮ページを追加した
+3. `CopyUrlButton` / `DebugPane` で `history.replaceState` 後に `route(..., true)` を呼び、`LocationProvider` と address bar を同期した
+4. `vite.config.ts` の `manualChunks` に `preact-iso` を `preact` より先に追加した
+5. ct テスト 3 件 (`SessionsButton` / `CopyUrlButton` / `DebugPane`) と E2E `tests/routing.test.ts` を追加した
+6. `vp check` / `vp test run` / `pnpm test:ct` / `pnpm test:e2e` / `vp build` で確認した
 
 ## 関連 issue
 

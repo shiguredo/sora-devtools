@@ -17,6 +17,7 @@ export default defineConfig({
       output: {
         manualChunks(moduleId) {
           const chunks: Record<string, string[]> = {
+            "preact-iso": ["preact-iso"],
             preact: ["preact"],
             "mp4-media-stream": ["@shiguredo/mp4-media-stream"],
             "noise-suppression": ["@shiguredo/noise-suppression"],
