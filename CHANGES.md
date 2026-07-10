@@ -11,6 +11,11 @@
 
 ## develop
 
+### misc
+
+- [ADD] e2e テストに Page Object Model と環境変数読み込みヘルパーを導入する
+  - @voluntas
+
 ## 2026.1.0
 
 **リリース日**: 2026-06-18

@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-08
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-07-10
 - Model: DeepSeek V4 Pro
 - Branch: feature/refactor-introduce-e2e-page-object
 - Polished: 2026-07-10
@@ -252,11 +252,11 @@ Sora 接続成功パス ( `E2E_TEST_SORA_SIGNALING_URL` 設定済み) は既存�
 
 ## 解決方法
 
-1. `tests/helpers/env.ts` を新規作成し、上記 API 仕様どおり `getSoraConnectionEnv()` を実装する
-2. `tests/pages/DevtoolsPage.ts` を新規作成し、上記 API 仕様どおり `navigate` / `connect` / `disconnect` / `waitForConnection` / `getConnectionId` を実装する。`navigate` は `page.goto` を使う
-3. `tests/sendrecv.test.ts` / `tests/sendonly.test.ts` / `tests/recvonly.test.ts` を上記テンプレートに置き換える (差分はテスト名 / `role` / `channelId` suffix のみ)
-4. `CHANGES.md` の `## develop` に `### misc` を新設し、`[ADD]` エントリと担当者行を追記する
-5. `vp check` / `vp test run` / `pnpm test:e2e` (設定あり・なし) で完了条件を確認する
+1. `tests/helpers/env.ts` を新規作成し、`getSoraConnectionEnv()` を実装した。`E2E_TEST_SORA_SIGNALING_URL` が未設定または空文字のとき `undefined` を返し、それ以外は `channelIdPrefix` / `accessToken` を空文字既定で正規化して返す
+2. `tests/pages/DevtoolsPage.ts` を新規作成し、`navigate` / `connect` / `disconnect` / `waitForConnection` / `getConnectionId` を実装した。セレクタとベース URL をクラス内に集約し、空配列の `signalingUrlCandidates` は Error を throw する
+3. `tests/sendrecv.test.ts` / `tests/sendonly.test.ts` / `tests/recvonly.test.ts` を Page Object テンプレートに置き換え、`multistream: "true"` と `// TODO: 複数に対応したい` を削除した
+4. `CHANGES.md` の `## develop` に `### misc` と `[ADD]` エントリを追記した
+5. `vp check` / `vp test run` / `pnpm test:e2e` (設定あり・ `E2E_TEST_SORA_SIGNALING_URL=` 未設定) で完了条件を確認した
 
 ## エッジケース
 
