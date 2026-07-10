@@ -1,5 +1,3 @@
-import { test } from "@playwright/test";
-
 // Sora 接続テストに必要な環境変数を解決した結果
 export interface SoraConnectionEnv {
   signalingUrl: string;
@@ -29,17 +27,12 @@ export function getSoraConnectionEnv(): SoraConnectionEnv | undefined {
 }
 
 // Playwright の test コールバック (または beforeEach) の先頭で呼び出すと
-// 必須環境変数未設定時は test.skip() で当該テストを skip し
+// 必須環境変数未設定時は Error を throw してテストを即座に失敗させる
 // 設定済みなら narrow 済みの SoraConnectionEnv を返す
-// skip 理由として未設定の環境変数名を含むメッセージを Playwright のレポートに残す
 export function requireSoraConnectionEnv(): SoraConnectionEnv {
   const env = getSoraConnectionEnv();
   if (env === undefined) {
-    const reason = "E2E_TEST_SORA_SIGNALING_URL が未設定です";
-    // Playwright runner はこの行で abort するが TypeScript の型 narrow のため throw も書く
-    test.skip(true, reason);
-    // CODEBASE.md「エラーメッセージは英語」。日本語の reason は埋め込まない
-    throw new Error("unreachable: test.skip should abort before this throw");
+    throw new Error("E2E_TEST_SORA_SIGNALING_URL is not set");
   }
   return env;
 }

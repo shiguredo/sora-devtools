@@ -4,7 +4,7 @@ import { requireSoraConnectionEnv } from "./helpers/env.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
 
 test("sendrecv", async ({ page }) => {
-  // 必須環境変数を取得する。未設定なら test.skip() でこのテストを skip する
+  // 必須環境変数を取得する。未設定なら Error を throw してテストを失敗させる
   const env = requireSoraConnectionEnv();
 
   const devtools = new DevtoolsPage(page);

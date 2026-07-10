@@ -15,7 +15,7 @@
 
 - [ADD] e2e テストに Page Object Model と環境変数読み込みヘルパーを導入する
   - @voluntas
-- [ADD] e2e テストで E2E_TEST_SORA_SIGNALING_URL 未設定時に Sora 依存テストを skip する仕組みを追加する
+- [ADD] e2e テストで E2E_TEST_SORA_SIGNALING_URL 未設定時に即座に失敗させる requireSoraConnectionEnv を追加する
   - @voluntas
 
 ## 2026.1.0

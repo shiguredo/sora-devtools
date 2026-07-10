@@ -172,10 +172,10 @@ test("sendrecv", async ({ page }) => {
 
 ## 解決方法
 
-1. `tests/helpers/env.ts` に `requireSoraConnectionEnv()` を追加した。`getSoraConnectionEnv()` が `undefined` のとき `test.skip(true, reason)` で skip し、TypeScript narrow 用に到達不能な `throw` を続ける
+1. `tests/helpers/env.ts` に `requireSoraConnectionEnv()` を追加した。`getSoraConnectionEnv()` が `undefined` のとき `Error` を throw し、テストを即座に失敗させる (skip は採用しない。未設定を見逃さないため)
 2. `tests/sendrecv.test.ts` / `tests/sendonly.test.ts` / `tests/recvonly.test.ts` の import と env 取得行を `requireSoraConnectionEnv()` に置き換えた
 3. `CHANGES.md` の `## develop` → `### misc` に `[ADD]` エントリを追記した
-4. `vp check` / `vp test run` / `pnpm test:e2e` (設定あり・ `E2E_TEST_SORA_SIGNALING_URL=` 未設定) で完了条件を確認した。未設定時は Sora 依存 3 件が skip、lazy-load 2 件が通過する
+4. `vp check` / `vp test run` / `pnpm test:e2e` (設定あり・ `E2E_TEST_SORA_SIGNALING_URL=` 未設定) で確認した。未設定時は Sora 依存 3 件が即座に fail、lazy-load 2 件は通過する
 
 ## エッジケース
 
