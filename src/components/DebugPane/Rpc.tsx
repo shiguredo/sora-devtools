@@ -87,7 +87,7 @@ function RpcForm() {
     }
 
     const options: { timeout?: number; notification?: boolean } = {};
-    const timeoutValue = Number.parseInt(timeoutRef.current.value, 10);
+    const timeoutValue = Math.trunc(Number(timeoutRef.current.value));
     if (!Number.isNaN(timeoutValue) && timeoutValue > 0) {
       options.timeout = timeoutValue;
     }

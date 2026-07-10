@@ -295,8 +295,8 @@ export function getVideoSizeByResolution(resolution: string): {
     const match = videoResolutionPattern.exec(resolution);
     if (match?.groups) {
       return {
-        width: Number.parseInt(match.groups.width, 10),
-        height: Number.parseInt(match.groups.height, 10),
+        width: Math.trunc(Number(match.groups.width)),
+        height: Math.trunc(Number(match.groups.height)),
       };
     }
   }
@@ -420,7 +420,7 @@ export function createVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
-    const fps = Number.parseInt(frameRate, 10);
+    const fps = Math.trunc(Number(frameRate));
     if (!Number.isNaN(fps)) {
       videoConstraints.frameRate = {
         min: fps,
@@ -482,7 +482,7 @@ export function createFakeMediaConstraints(
   // (nesting level > 5 かつ timeout < 4 で 4 ms に揃える) によって 4 ms に丸められ、
   // 実効 ~250 fps の過剰スケジューリングに陥るため、有限正数のみ受理して UI 上限 60 にクランプする。
   // 本関数の戻り値 frameRate は常に [1, 60] の整数になる。
-  const fps = Number.parseInt(frameRate, 10);
+  const fps = Math.trunc(Number(frameRate));
   const parsedFrameRate = Number.isFinite(fps) && fps > 0 ? Math.min(fps, 60) : 30;
   // width, height の default はそれぞれ 240 / 160
   const resolutionSize = getVideoSizeByResolution(resolution);
@@ -496,7 +496,7 @@ export function createFakeMediaConstraints(
     width,
     height,
     fontSize,
-    volume: Number.parseFloat(volume),
+    volume: Number(volume),
   };
   if (video && (aspectRatio || resizeMode)) {
     constraints.videoTrackConstraints = {};
@@ -564,7 +564,7 @@ export function createGetDisplayMediaVideoConstraints(
   }
   const videoConstraints: SoraDevtoolsMediaTrackConstraints = {};
   if (frameRate) {
-    const fps = Number.parseInt(frameRate, 10);
+    const fps = Math.trunc(Number(frameRate));
     if (!Number.isNaN(fps)) {
       videoConstraints.frameRate = fps;
     }
@@ -776,7 +776,7 @@ function applyAudioCodecOptions(
   if (connectionOptionsState.audioCodecType) {
     connectionOptions.audioCodecType = connectionOptionsState.audioCodecType;
   }
-  const parsedAudioBitRate = Number.parseInt(connectionOptionsState.audioBitRate, 10);
+  const parsedAudioBitRate = Math.trunc(Number(connectionOptionsState.audioBitRate));
   if (parsedAudioBitRate) {
     connectionOptions.audioBitRate = parsedAudioBitRate;
   }
@@ -794,7 +794,7 @@ function applyVideoCodecOptions(
   if (connectionOptionsState.videoCodecType) {
     connectionOptions.videoCodecType = connectionOptionsState.videoCodecType;
   }
-  const parsedVideoBitRate = Number.parseInt(connectionOptionsState.videoBitRate, 10);
+  const parsedVideoBitRate = Math.trunc(Number(connectionOptionsState.videoBitRate));
   if (parsedVideoBitRate) {
     connectionOptions.videoBitRate = parsedVideoBitRate;
   }
@@ -838,7 +838,7 @@ function applySpotlightOptions(
     return;
   }
   if (connectionOptionsState.spotlightNumber) {
-    connectionOptions.spotlightNumber = Number.parseInt(connectionOptionsState.spotlightNumber, 10);
+    connectionOptions.spotlightNumber = Math.trunc(Number(connectionOptionsState.spotlightNumber));
   }
   if (connectionOptionsState.spotlightFocusRid) {
     connectionOptions.spotlightFocusRid = connectionOptionsState.spotlightFocusRid;

@@ -87,15 +87,12 @@ test.prop([fc.nat({ max: 5 })])(
 );
 
 // runWithNoiseSuppressionProcessorLock は同期コールバックも直列化する
-test.prop([
-  fc.array(
-    fc.record({
-      value: fc.string({ minLength: 1, maxLength: 5 }),
-      shouldThrow: fc.boolean(),
-    }),
-    { minLength: 2, maxLength: 10 },
-  ),
-])(
+const noiseSuppressionOperationArb = fc.record({
+  value: fc.string({ minLength: 1, maxLength: 5 }),
+  shouldThrow: fc.boolean(),
+});
+
+test.prop([fc.array(noiseSuppressionOperationArb, { minLength: 2, maxLength: 10 })])(
   "runWithNoiseSuppressionProcessorLock は任意の同期コールバックの並びを直列化し結果を正しく返す",
   async (operations) => {
     resetModuleState();

@@ -166,11 +166,7 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
       return <span style={highlightStyle}>{value.toString()}</span>;
     }
     // unknown 型の値を安全に文字列化
-    return (
-      <span style={highlightStyle}>
-        {typeof value === "object" ? JSON.stringify(value) : String(value as string | number)}
-      </span>
-    );
+    return <span style={highlightStyle}>{JSON.stringify(value)}</span>;
   };
 
   if (isPrimitive(data)) {

@@ -41,7 +41,7 @@
     // プロパティの初期化を厳密にチェックする
     "strictPropertyInitialization": true,
     // グローバルに取り込む型定義を指定する
-    "types": ["vitest/globals"],
+    "types": ["vite-plus/test/globals"],
     // モジュールのパスエイリアスを定義する
     "paths": {
       // @/ で始まる import を ./src/ に解決する

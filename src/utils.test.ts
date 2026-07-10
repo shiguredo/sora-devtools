@@ -88,9 +88,13 @@ function createSearchParams(parameters: Record<string, unknown>): URLSearchParam
       if (typeof value === "object") {
         // オブジェクトや配列の場合は JSON 文字列に変換
         searchParams.set(key, JSON.stringify(value));
-      } else {
-        // それ以外の場合は文字列に変換
-        searchParams.set(key, String(value as string | number | boolean));
+      } else if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+      ) {
+        // プリミティブ値を文字列に変換
+        searchParams.set(key, String(value));
       }
     }
   }

@@ -44,9 +44,13 @@ function createSearchParams(parameters: Record<string, unknown>): URLSearchParam
       if (typeof value === "object") {
         // オブジェクトや配列を JSON 文字列に変換
         searchParams.set(key, JSON.stringify(value));
-      } else {
-        // その他の値を文字列に変換
-        searchParams.set(key, String(value as string | number | boolean));
+      } else if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+      ) {
+        // プリミティブ値を文字列に変換
+        searchParams.set(key, String(value));
       }
     }
   }
@@ -355,7 +359,7 @@ test.prop([parametersArb])("parseQueryString は有効な入力に対して冪�
   const result1 = parseQueryString(searchParams);
 
   // 結果から新しい searchParams を作成して再度解析
-  const searchParams2 = createSearchParams(result1 as Record<string, unknown>);
+  const searchParams2 = createSearchParams(result1);
   const result2 = parseQueryString(searchParams2);
 
   // 結果は同じであるべき

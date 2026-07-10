@@ -315,7 +315,7 @@ export const setEnabledVideoAV1Params = (value: boolean): void => {
   enabledVideoAV1Params.value = value;
 };
 export const setFakeVolume = (value: string): void => {
-  const volume = Number.parseFloat(value);
+  const volume = Number(value);
   let newVolume: string;
   if (Number.isNaN(volume)) {
     newVolume = "0";
@@ -326,7 +326,7 @@ export const setFakeVolume = (value: string): void => {
   }
   fakeVolume.value = newVolume;
   if (fakeContents.value.gainNode) {
-    fakeContents.value.gainNode.gain.setValueAtTime(Number.parseFloat(newVolume), 0);
+    fakeContents.value.gainNode.gain.setValueAtTime(Number(newVolume), 0);
   }
 };
 export const setFakeContentsAudio = (

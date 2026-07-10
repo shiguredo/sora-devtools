@@ -1386,7 +1386,7 @@ async function setStatsReportInternal(
       const stat = s as RTCStats;
       statsReportData.push(stat);
       if (stat.type === "local-candidate") {
-        localCandidateStats.push(stat as RTCIceLocalCandidateStats);
+        localCandidateStats.push(stat);
       }
     }
 
