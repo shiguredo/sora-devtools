@@ -7,6 +7,7 @@ import { Navbar, NavbarBrand, NavbarCollapse, NavbarText, NavbarToggle } from "@
 import { CopyUrlButton } from "./CopyUrlButton.tsx";
 import { DebugButton } from "./DebugButton.tsx";
 import { DownloadReportButton } from "./DownloadReportButton.tsx";
+import { SessionsButton } from "./SessionsButton.tsx";
 import { SignalingUrlModal } from "./SignalingUrlModal.tsx";
 
 export function Header() {
@@ -72,6 +73,9 @@ export function Header() {
               </NavbarText>
               <NavbarText className="py-0 my-1 mx-1">
                 <DownloadReportButton />
+              </NavbarText>
+              <NavbarText className="py-0 my-1 mx-1">
+                <SessionsButton />
               </NavbarText>
               <NavbarText className="py-0 my-1 ml-1">
                 <CopyUrlButton />

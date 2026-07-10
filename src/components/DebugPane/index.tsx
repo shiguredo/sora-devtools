@@ -1,3 +1,4 @@
+import { useLocation } from "preact-iso";
 import { Tab, Tabs } from "@/components/ui";
 
 import { setDebugType } from "@/app/actions";
@@ -18,6 +19,7 @@ import { Stats } from "./Stats.tsx";
 import { TimelineMessages } from "./TimelineMessages.tsx";
 
 export function DebugPane() {
+  const { route } = useLocation();
   const debugValue = debug.value;
   const debugTypeValue = debugType.value;
   if (!debugValue) {
@@ -41,6 +43,7 @@ export function DebugPane() {
       searchParams.set("debugType", key);
       const newUrl = `${location.pathname}?${searchParams.toString()}`;
       globalThis.history.replaceState(null, "", newUrl);
+      route(`${location.pathname}?${searchParams.toString()}`, true);
     }
   };
   return (

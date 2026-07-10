@@ -1,10 +1,18 @@
+import path from "node:path";
 import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "vite-plus/test/browser/providers/playwright";
 import { defineConfig } from "vite-plus/test/config";
 
+const rootDir = import.meta.dirname;
+
 export default defineConfig({
   plugins: [preactPlugin(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(rootDir, "./src"),
+    },
+  },
   optimizeDeps: {
     include: ["vitest-browser-preact"],
   },
@@ -15,7 +23,11 @@ export default defineConfig({
     setupFiles: ["vitest-browser-preact"],
     browser: {
       enabled: true,
-      provider: playwright(),
+      provider: playwright({
+        contextOptions: {
+          permissions: ["clipboard-read", "clipboard-write"],
+        },
+      }),
       headless: true,
       instances: [{ browser: "chromium", headless: true }],
     },

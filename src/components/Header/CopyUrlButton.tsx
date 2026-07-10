@@ -1,15 +1,18 @@
 import { useSignal } from "@preact/signals";
+import { useLocation } from "preact-iso";
 
 import { copyURL } from "@/app/actions";
 
 export function CopyUrlButton() {
   const copied = useSignal(false);
+  const { route } = useLocation();
 
   const onClick = async (): Promise<void> => {
     const success = await copyURL();
     if (!success) {
       return;
     }
+    route(`${globalThis.location.pathname}${globalThis.location.search}`, true);
     copied.value = true;
     setTimeout(() => {
       copied.value = false;

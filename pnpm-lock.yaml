@@ -23,6 +23,9 @@ importers:
       preact:
         specifier: 10.29.3
         version: 10.29.3
+      preact-iso:
+        specifier: 2.12.0
+        version: 2.12.0(preact-render-to-string@6.7.0(preact@10.29.3))(preact@10.29.3)
       sora-js-sdk:
         specifier: 2026.1.0
         version: 2026.1.0
@@ -1410,6 +1413,17 @@ packages:
     resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact-iso@2.12.0:
+    resolution: {integrity: sha512-k0Y44UONBJ1zBXXCBhJRAa5O4ww8a5FHdLD6l21IxcnsTmDBto4n7KPQAH6xqegsKDMX4SuJ02qItiUlciIlZQ==}
+    peerDependencies:
+      preact: '>=10 || >= 11.0.0-0'
+      preact-render-to-string: '>=6.4.0'
+
+  preact-render-to-string@6.7.0:
+    resolution: {integrity: sha512-Z4WR8fmLMRpdYqJ9i7vrlXSsSrxVJydwrkEXHapexfARbWfGb7vGcnvNQnIzN0cXciMVOlz/XLoiMCi9gUsy9Q==}
+    peerDependencies:
+      preact: '>=10 || >= 11.0.0-0'
+
   preact@10.29.3:
     resolution: {integrity: sha512-D9NL1GAnJZhc3RndVs4gDdxEeU9TcHgywMrhhOsnpdlvFjdbx0gAsLUnH6JEhlJH5giL7Tx5biWPUSEXE/HPzw==}
 
@@ -2711,6 +2725,15 @@ snapshots:
       nanoid: 3.3.15
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  preact-iso@2.12.0(preact-render-to-string@6.7.0(preact@10.29.3))(preact@10.29.3):
+    dependencies:
+      preact: 10.29.3
+      preact-render-to-string: 6.7.0(preact@10.29.3)
+
+  preact-render-to-string@6.7.0(preact@10.29.3):
+    dependencies:
+      preact: 10.29.3
 
   preact@10.29.3: {}
 

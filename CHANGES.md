@@ -11,6 +11,9 @@
 
 ## develop
 
+- [ADD] preact-iso を導入して /sessions ページへのルーティング基盤を追加する
+  - @voluntas
+
 ### misc
 
 - [ADD] e2e テストに Page Object Model と環境変数読み込みヘルパーを導入する
