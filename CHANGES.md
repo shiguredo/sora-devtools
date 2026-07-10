@@ -11,6 +11,8 @@
 
 ## develop
 
+- [ADD] /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
+  - @voluntas
 - [ADD] WebRTC stats を DuckDB-Wasm + OPFS に永続化する
   - @voluntas
 - [ADD] DuckDB-Wasm + OPFS でセッション・接続メタデータを永続化する

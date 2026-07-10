@@ -4,9 +4,75 @@
 import type { AsyncDuckDB, AsyncDuckDBConnection } from "@duckdb/duckdb-wasm";
 
 import { setSoraErrorAlertMessage } from "@/app/signals";
+import { computeStatsAggregates, computeStatsTimeseries } from "@/statsQuery";
+import type { StatsAggregates, StatsSourceRow, StatsTimeseriesPoint } from "@/statsQuery";
 import type { Json } from "@/types";
 import { selectIdsToDeleteForSampling } from "@/webrtcStatsNormalizer";
 import type { NormalizedWebrtcStat } from "@/webrtcStatsNormalizer";
+
+// 読み取り API の戻り型（時刻は ISO 相当の文字列）
+export interface SessionListRow {
+  id: number;
+  session_id: string | null;
+  channel_id: string | null;
+  role: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+}
+
+export interface ConnectionListRow {
+  id: number;
+  session_db_id: number;
+  session_id: string | null;
+  connection_id: string | null;
+  sora_client_id: string | null;
+  channel_id: string | null;
+  signaling_url: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+}
+
+export interface SessionDetail {
+  session: SessionListRow;
+  connections: ConnectionListRow[];
+}
+
+export interface SessionListFilter {
+  sessionId?: string;
+  connectionId?: string;
+  channelId?: string;
+  from?: string;
+  to?: string;
+}
+
+export interface StatsPageRow {
+  id: number;
+  timestamp_ms: number;
+  stats_type: string | null;
+  stats_id: string | null;
+  kind: string | null;
+  packets_received: number | null;
+  packets_sent: number | null;
+  bytes_received: number | null;
+  bytes_sent: number | null;
+  round_trip_time: number | null;
+}
+
+export interface StatsPageResult {
+  rows: StatsPageRow[];
+  totalCount: number;
+}
+
+export interface StatsTimeseriesOptions {
+  intervalSec?: number;
+}
+
+export interface StatsPageOptions {
+  limit?: number;
+  offset?: number;
+}
+
+export type { StatsAggregates, StatsTimeseriesPoint } from "@/statsQuery";
 
 // OPFS 上の DuckDB データベースパス（signaling-url-candidates.json と衝突しない名前）
 const OPFS_DB_PATH = "opfs://sora-devtools-sessions.db";
@@ -1048,4 +1114,360 @@ export async function querySessionDatabaseForE2e(
 // E2E ヘルパーから OPFS 上の DB ファイルを削除するために export する
 export async function deleteSessionDatabaseFiles(): Promise<void> {
   await deleteOpfsDatabaseFile();
+}
+
+// --- 読み取り API（書き込みと同じ直列化キュー経由） ---
+
+function toFiniteNumber(value: unknown): number | null {
+  if (typeof value === "bigint") {
+    const asNumber = Number(value);
+    if (!Number.isFinite(asNumber)) {
+      return null;
+    }
+    return asNumber;
+  }
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  return null;
+}
+
+function toNullableString(value: unknown): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  // DuckDB TIMESTAMP が Date で返る場合
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  if (typeof value === "number" || typeof value === "boolean" || typeof value === "bigint") {
+    return String(value);
+  }
+  return null;
+}
+
+function requireNumber(value: unknown, label: string): number {
+  const numberValue = toFiniteNumber(value);
+  if (numberValue === null) {
+    throw new Error(`${label} is not a finite number: ${JSON.stringify(value)}`);
+  }
+  return numberValue;
+}
+
+function arrowTableToRecords(table: { toArray: () => unknown[] }): Array<Record<string, unknown>> {
+  return table.toArray().map((row) => {
+    if (typeof row !== "object" || row === null) {
+      return {};
+    }
+    if ("toJSON" in row && typeof (row as { toJSON?: unknown }).toJSON === "function") {
+      const json: unknown = (row as { toJSON: () => unknown }).toJSON();
+      if (typeof json === "object" && json !== null) {
+        return json as Record<string, unknown>;
+      }
+    }
+    return row as Record<string, unknown>;
+  });
+}
+
+function mapSessionListRow(record: Record<string, unknown>): SessionListRow {
+  return {
+    id: requireNumber(record.id, "sessions.id"),
+    session_id: toNullableString(record.session_id),
+    channel_id: toNullableString(record.channel_id),
+    role: toNullableString(record.role),
+    started_at: toNullableString(record.started_at),
+    ended_at: toNullableString(record.ended_at),
+  };
+}
+
+function mapConnectionListRow(record: Record<string, unknown>): ConnectionListRow {
+  return {
+    id: requireNumber(record.id, "connections.id"),
+    session_db_id: requireNumber(record.session_db_id, "connections.session_db_id"),
+    session_id: toNullableString(record.session_id),
+    connection_id: toNullableString(record.connection_id),
+    sora_client_id: toNullableString(record.sora_client_id),
+    channel_id: toNullableString(record.channel_id),
+    signaling_url: toNullableString(record.signaling_url),
+    started_at: toNullableString(record.started_at),
+    ended_at: toNullableString(record.ended_at),
+  };
+}
+
+// YYYY-MM-DD を UTC 当日 00:00:00 の TIMESTAMP 文字列にする
+function dateOnlyToUtcTimestamp(dateOnly: string): string {
+  return `${dateOnly} 00:00:00`;
+}
+
+// YYYY-MM-DD の翌日 00:00:00 UTC（to の exclusive end）
+function dateOnlyToExclusiveEndTimestamp(dateOnly: string): string {
+  const match = /^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$/u.exec(dateOnly);
+  if (match?.groups === undefined) {
+    throw new Error(`Invalid date-only value: ${dateOnly}`);
+  }
+  const year = Number(match.groups.year);
+  const month = Number(match.groups.month);
+  const day = Number(match.groups.day);
+  const next = new Date(Date.UTC(year, month - 1, day + 1));
+  const yyyy = String(next.getUTCFullYear()).padStart(4, "0");
+  const mm = String(next.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(next.getUTCDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd} 00:00:00`;
+}
+
+const SESSION_LIST_SELECT = `
+  SELECT
+    id,
+    session_id,
+    channel_id,
+    role,
+    CAST(started_at AS VARCHAR) AS started_at,
+    CAST(ended_at AS VARCHAR) AS ended_at
+  FROM sessions
+`;
+
+// 一覧（session 行単位）。未初期化時は空配列
+export async function listSessions(filter: SessionListFilter = {}): Promise<SessionListRow[]> {
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    const conditions: string[] = [];
+    const params: unknown[] = [];
+    if (filter.sessionId !== undefined) {
+      conditions.push("session_id = ?");
+      params.push(filter.sessionId);
+    }
+    if (filter.channelId !== undefined) {
+      conditions.push("channel_id = ?");
+      params.push(filter.channelId);
+    }
+    if (filter.from !== undefined) {
+      conditions.push("started_at >= CAST(? AS TIMESTAMP)");
+      params.push(dateOnlyToUtcTimestamp(filter.from));
+    }
+    if (filter.to !== undefined) {
+      conditions.push("started_at < CAST(? AS TIMESTAMP)");
+      params.push(dateOnlyToExclusiveEndTimestamp(filter.to));
+    }
+    if (filter.connectionId !== undefined) {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM connections c
+        WHERE c.session_db_id = sessions.id AND c.connection_id = ?
+      )`);
+      params.push(filter.connectionId);
+    }
+    let sql = SESSION_LIST_SELECT;
+    if (conditions.length > 0) {
+      sql += ` WHERE ${conditions.join(" AND ")}`;
+    }
+    sql += " ORDER BY started_at DESC NULLS LAST, id DESC";
+    const statement = await duckdbConnection.prepare(sql);
+    try {
+      const table = await statement.query(...params);
+      return arrowTableToRecords(table).map((record) => mapSessionListRow(record));
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// 詳細（session + connections）。無ければ null。未初期化時も null
+export async function getSession(sessionDbId: number): Promise<SessionDetail | null> {
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return null;
+    }
+    const sessionStatement = await duckdbConnection.prepare(`
+      ${SESSION_LIST_SELECT}
+      WHERE id = ?
+    `);
+    let sessionRow: SessionListRow | null = null;
+    try {
+      const sessionTable = await sessionStatement.query(sessionDbId);
+      const sessionRecords = arrowTableToRecords(sessionTable);
+      if (sessionRecords.length === 0) {
+        return null;
+      }
+      const [first] = sessionRecords;
+      sessionRow = mapSessionListRow(first);
+    } finally {
+      await sessionStatement.close();
+    }
+
+    const connectionStatement = await duckdbConnection.prepare(`
+      SELECT
+        id,
+        session_db_id,
+        session_id,
+        connection_id,
+        sora_client_id,
+        channel_id,
+        signaling_url,
+        CAST(started_at AS VARCHAR) AS started_at,
+        CAST(ended_at AS VARCHAR) AS ended_at
+      FROM connections
+      WHERE session_db_id = ?
+      ORDER BY started_at ASC NULLS LAST, id ASC
+    `);
+    try {
+      const connectionTable = await connectionStatement.query(sessionDbId);
+      const connections = arrowTableToRecords(connectionTable).map((record) =>
+        mapConnectionListRow(record),
+      );
+      return { session: sessionRow, connections };
+    } finally {
+      await connectionStatement.close();
+    }
+  });
+}
+
+async function loadStatsSourceRowsUnlocked(sessionDbId: number): Promise<StatsSourceRow[]> {
+  if (duckdbConnection === null) {
+    return [];
+  }
+  const statement = await duckdbConnection.prepare(`
+    SELECT
+      id,
+      timestamp_ms,
+      stats_type,
+      stats_id,
+      packets_received,
+      packets_lost,
+      packets_sent,
+      bytes_received,
+      bytes_sent,
+      round_trip_time
+    FROM webrtc_stats
+    WHERE session_db_id = ?
+    ORDER BY timestamp_ms ASC, id ASC
+  `);
+  try {
+    const table = await statement.query(sessionDbId);
+    return arrowTableToRecords(table).map((record) => {
+      const statsType = toNullableString(record.stats_type);
+      const statsId = toNullableString(record.stats_id);
+      return {
+        id: requireNumber(record.id, "webrtc_stats.id"),
+        timestamp_ms: requireNumber(record.timestamp_ms, "webrtc_stats.timestamp_ms"),
+        stats_type: statsType ?? "",
+        stats_id: statsId ?? "",
+        packets_received: toFiniteNumber(record.packets_received),
+        packets_lost: toFiniteNumber(record.packets_lost),
+        packets_sent: toFiniteNumber(record.packets_sent),
+        bytes_received: toFiniteNumber(record.bytes_received),
+        bytes_sent: toFiniteNumber(record.bytes_sent),
+        round_trip_time: toFiniteNumber(record.round_trip_time),
+      };
+    });
+  } finally {
+    await statement.close();
+  }
+}
+
+// 集計値。未初期化時は全フィールド null
+export async function queryStatsAggregates(sessionDbId: number): Promise<StatsAggregates> {
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return computeStatsAggregates([]);
+    }
+    const rows = await loadStatsSourceRowsUnlocked(sessionDbId);
+    return computeStatsAggregates(rows);
+  });
+}
+
+// 時系列サンプリング。intervalSec は 10 または 60（省略時 10）
+export async function queryStatsTimeseries(
+  sessionDbId: number,
+  options: StatsTimeseriesOptions = {},
+): Promise<StatsTimeseriesPoint[]> {
+  const intervalSec = options.intervalSec ?? 10;
+  if (intervalSec !== 10 && intervalSec !== 60) {
+    throw new Error(`intervalSec must be 10 or 60, got ${String(intervalSec)}`);
+  }
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    const rows = await loadStatsSourceRowsUnlocked(sessionDbId);
+    return computeStatsTimeseries(rows, intervalSec);
+  });
+}
+
+// ページネーション付き生データ
+export async function queryStatsPage(
+  sessionDbId: number,
+  options: StatsPageOptions = {},
+): Promise<StatsPageResult> {
+  const limit = options.limit ?? 50;
+  const offset = options.offset ?? 0;
+  if (!Number.isInteger(limit) || limit < 1 || limit > 200) {
+    throw new Error(`limit must be an integer in 1..200, got ${String(limit)}`);
+  }
+  if (!Number.isInteger(offset) || offset < 0) {
+    throw new Error(`offset must be a non-negative integer, got ${String(offset)}`);
+  }
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return { rows: [], totalCount: 0 };
+    }
+    const countStatement = await duckdbConnection.prepare(`
+      SELECT COUNT(*) AS total_count
+      FROM webrtc_stats
+      WHERE session_db_id = ?
+    `);
+    let totalCount = 0;
+    try {
+      const countTable = await countStatement.query(sessionDbId);
+      const countRecords = arrowTableToRecords(countTable);
+      if (countRecords.length > 0) {
+        const [first] = countRecords;
+        totalCount = requireNumber(first.total_count, "webrtc_stats total_count");
+      }
+    } finally {
+      await countStatement.close();
+    }
+
+    const pageStatement = await duckdbConnection.prepare(`
+      SELECT
+        id,
+        timestamp_ms,
+        stats_type,
+        stats_id,
+        kind,
+        packets_received,
+        packets_sent,
+        bytes_received,
+        bytes_sent,
+        round_trip_time
+      FROM webrtc_stats
+      WHERE session_db_id = ?
+      ORDER BY timestamp_ms ASC, id ASC
+      LIMIT ?
+      OFFSET ?
+    `);
+    try {
+      const pageTable = await pageStatement.query(sessionDbId, limit, offset);
+      const rows = arrowTableToRecords(pageTable).map(
+        (record): StatsPageRow => ({
+          id: requireNumber(record.id, "webrtc_stats.id"),
+          timestamp_ms: requireNumber(record.timestamp_ms, "webrtc_stats.timestamp_ms"),
+          stats_type: toNullableString(record.stats_type),
+          stats_id: toNullableString(record.stats_id),
+          kind: toNullableString(record.kind),
+          packets_received: toFiniteNumber(record.packets_received),
+          packets_sent: toFiniteNumber(record.packets_sent),
+          bytes_received: toFiniteNumber(record.bytes_received),
+          bytes_sent: toFiniteNumber(record.bytes_sent),
+          round_trip_time: toFiniteNumber(record.round_trip_time),
+        }),
+      );
+      return { rows, totalCount };
+    } finally {
+      await pageStatement.close();
+    }
+  });
 }

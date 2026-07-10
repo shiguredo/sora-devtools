@@ -30,7 +30,7 @@ afterEach(() => {
   globalThis.history.replaceState(null, "", "/");
 });
 
-test("SessionsButton: クリックで /sessions に遷移し仮ページを表示する", async () => {
+test("SessionsButton: クリックで /sessions に遷移し Sessions ページを表示する", async () => {
   const screen = render(<RoutingHarness />);
 
   await screen.getByRole("button", { name: "Sessions" }).click();
@@ -39,7 +39,8 @@ test("SessionsButton: クリックで /sessions に遷移し仮ページを表�
 
   await vi.waitFor(
     () => {
-      assert.isNotNull(screen.getByRole("heading", { name: "Sessions" }).element());
+      assert.isNotNull(screen.getByRole("heading", { name: "Sessions", exact: true }).element());
+      assert.isNotNull(screen.getByTestId("sessions-privacy-notice").element());
     },
     { timeout: 5000 },
   );

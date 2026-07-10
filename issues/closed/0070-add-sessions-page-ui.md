@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-06-24
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-11
 - Model: GLM-5.2
 - Branch: feature/add-sessions-page-ui
 - Polished: 2026-07-11
@@ -247,14 +247,12 @@ WebRTC のパケット / バイト系は **累積カウンタのスナップシ�
 
 ## 解決方法
 
-1. 失敗するテストを先に追加する（`CODEBASE.md`）。モック・スタブは使わない
-   - Vitest: `deriveSessionStatus`、`parseSessionsSearchParams` / `buildSessionsSearchParams`、時系列間引き等の純粋関数
-   - Playwright: `tests/sessions-page.test.ts`（仮）を `serial` + `cleanupSessionDatabase` + `requireSoraConnectionEnv()` で追加。一覧・フィルタ・詳細・再接続区別をカバーする
-2. `sessionDatabase.ts` に `listSessions` / `getSession` / `queryStatsAggregates` / `queryStatsTimeseries` / `queryStatsPage` を実装する（読み取りも直列化キュー経由）
-3. `src/components/Sessions/` に List / Detail / Filter / StatsChart を実装する
-4. `src/routes/Sessions.tsx` を仮ページから実 UI に書き換える（`whenReady`・プライバシー文言・エラー表示を含む）
-5. 仮ページ依存の `SessionsButton.ct.tsx` / `tests/routing.test.ts` を更新する
-6. `CHANGES.md` に `[ADD]` と `- @voluntas` を追記する
+- `src/sessionDatabase.ts` に `listSessions` / `getSession` / `queryStatsAggregates` / `queryStatsTimeseries` / `queryStatsPage` を追加し、読み取りも `enqueueWrite` 経由で直列化した
+- 集計・時系列の純粋計算を `src/statsQuery.ts` に切り出し、バケット内は `stats_id` 単位の last を合算 / 平均する契約にした
+- `src/sessionStatus.ts` / `src/sessionsSearchParams.ts` で 3 状態判定と QS 読み書きを実装し Vitest した
+- `src/components/Sessions/` に Filter / List / Detail / StatsChart（SVG 自前）を追加し、`src/routes/Sessions.tsx` を実 UI に置き換えた（プライバシー文言・ページ内エラー・`whenReady` 待ちを含む）
+- `tests/sessions-page.test.ts` を追加し、一覧・フィルタ・詳細・同一 channelId の複数行区別を E2E で確認した
+- 仮ページ前提の `SessionsButton.ct.tsx` / `tests/routing.test.ts` を新 UI に追従し、`CHANGES.md` に `[ADD]` を追記した
 
 ## テスト方針
 
