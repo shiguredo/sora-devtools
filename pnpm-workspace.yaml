@@ -9,6 +9,7 @@ minimumReleaseAgeExclude:
   - "@shiguredo/*"
   # Microsoft
   - typescript
+  - "@typescript/*"
   # ビルドツールチェーン (Voidzero / Oxc)
   # vite-plus / vitest / oxfmt / oxlint は活発に更新されるため制限対象外とする
   - "@voidzero-dev/*"
@@ -28,9 +29,9 @@ allowBuilds:
 
 # ピア依存関係のバージョン互換性ルール
 # vite/vitest は @voidzero-dev のエイリアスであり、パッケージが期待する semver 範囲を満たさないため上書きする
-# typescript は 6.x 系を使用しているが、依存パッケージの peer dep が ^5.0.0 等で失敗するため上書きする
+# typescript は 7.x 系を使用しているが、依存パッケージの peer dep が ^5.0.0 等で失敗するため上書きする
 peerDependencyRules:
   allowedVersions:
     vite: ">=0.1.0"
     vitest: ">=0.1.0"
-    typescript: ">=6.0.0"
+    typescript: ">=7.0.0"

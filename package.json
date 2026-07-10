@@ -44,7 +44,7 @@
     "fast-check": "4.8.0",
     "jsdom": "29.1.1",
     "tailwindcss": "4.3.2",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.4",
     "vite-plus": "0.2.4",
     "vitest-browser-preact": "1.0.0"
