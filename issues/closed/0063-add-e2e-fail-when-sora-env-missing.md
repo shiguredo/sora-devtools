@@ -4,7 +4,7 @@
 - Created: 2026-06-12
 - Completed: 2026-07-10
 - Model: Opus 4.7
-- Branch: feature/add-e2e-skip-when-sora-env-missing
+- Branch: feature/add-e2e-fail-when-sora-env-missing
 - Polished: 2026-07-10
 
 ## 目的
