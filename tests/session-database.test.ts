@@ -9,9 +9,16 @@ import {
 } from "./helpers/sessionDatabase.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
 
+// OPFS 上の DB ファイルはオリジン共有のため、永続化テスト同士の並列実行を禁止する
+test.describe.configure({ mode: "serial" });
+
 test.describe("session database persistence", () => {
+  test.beforeEach(async ({ page }) => {
+    // 前テストの残骸を消してから開始する
+    await cleanupSessionDatabase(page);
+  });
+
   test.afterEach(async ({ page }) => {
-    // 他テストへの OPFS 汚染を防ぐ
     await cleanupSessionDatabase(page);
   });
 
@@ -42,7 +49,7 @@ test.describe("session database persistence", () => {
     await page.waitForTimeout(1000);
     await devtools.disconnect();
     // disconnect の fire-and-forget 永続化が完了する猶予
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
     const sessions = await listSessionRows(page);
     const connections = await listConnectionRows(page);
