@@ -80,20 +80,25 @@ export async function cleanupSessionDatabase(page: Page): Promise<void> {
   await deleteSessionDatabaseFiles(page);
 }
 
+// アプリ DB を一時 close して SQL を実行し、必ずアプリ側を reopen する
+// （close したままにすると遅延 disconnect の ended_at 更新が no-op になる）
 async function querySessionDatabase<T>(page: Page, sql: string): Promise<T[]> {
   await closeAppSessionDatabase(page);
-  // Vite 配信モジュール経由で再 open + SQL する（page.evaluate に duckdb 初期化を埋め込まない）
-  const rows = await page.evaluate(
-    async ({ moduleUrl, query }) => {
-      const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
-      const mod = loaded as {
-        querySessionDatabaseForE2e: (sql: string) => Promise<Array<Record<string, unknown>>>;
-      };
-      return mod.querySessionDatabaseForE2e(query);
-    },
-    { moduleUrl: SESSION_DATABASE_MODULE_URL, query: sql },
-  );
-  return rows as T[];
+  try {
+    const rows = await page.evaluate(
+      async ({ moduleUrl, query }) => {
+        const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+        const mod = loaded as {
+          querySessionDatabaseForE2e: (sql: string) => Promise<Array<Record<string, unknown>>>;
+        };
+        return mod.querySessionDatabaseForE2e(query);
+      },
+      { moduleUrl: SESSION_DATABASE_MODULE_URL, query: sql },
+    );
+    return rows as T[];
+  } finally {
+    await reopenAppSessionDatabase(page);
+  }
 }
 
 // sessions 全行を取得する
@@ -133,8 +138,6 @@ export async function waitForEndedAt(
     if (lastSession?.ended_at && lastConnection?.ended_at) {
       return { session: lastSession, connection: lastConnection };
     }
-    // list* は DB を close するため、次のポーリング前にアプリ側を再初期化する
-    await reopenAppSessionDatabase(page);
     await page.waitForTimeout(200);
   }
 

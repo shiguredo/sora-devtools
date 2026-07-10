@@ -5,7 +5,6 @@ import {
   awaitSessionDatabaseReady,
   cleanupSessionDatabase,
   listSessionRows,
-  reopenAppSessionDatabase,
   waitForEndedAt,
 } from "./helpers/sessionDatabase.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
@@ -137,8 +136,6 @@ test.describe("session database persistence", () => {
     await page.waitForTimeout(500);
     await devtools.disconnect();
     await waitForEndedAt(page, { connectionId: firstConnectionId });
-    // list / wait で close した DB をアプリ側で開き直す
-    await reopenAppSessionDatabase(page);
 
     await devtools.connect();
     await devtools.waitForConnection();
