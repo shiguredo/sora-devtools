@@ -58,6 +58,11 @@ export async function deleteSessionDatabaseFiles(page: Page): Promise<void> {
 
 // アプリ側 close → OPFS ファイル削除。既存 E2E の teardown からも利用する
 export async function cleanupSessionDatabase(page: Page): Promise<void> {
+  // Vite の /src/* を解決できるよう、アプリオリジンへ遷移してから操作する
+  const currentUrl = page.url();
+  if (!currentUrl.startsWith("http://localhost:3333")) {
+    await page.goto("http://localhost:3333/devtools/");
+  }
   await closeAppSessionDatabase(page);
   await deleteSessionDatabaseFiles(page);
 }
