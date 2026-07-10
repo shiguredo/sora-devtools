@@ -1,11 +1,28 @@
 import path from "node:path";
 import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite-plus";
+import { createLogger, defineConfig } from "vite-plus";
 
 const rootDir = import.meta.dirname;
 
+// @duckdb/duckdb-wasm の worker sourcemap がパッケージ外の apache-arrow を指すため
+// Vite が出す警告は無害だがノイズになるので抑止する
+const logger = createLogger();
+const warnOnce = logger.warnOnce.bind(logger);
+logger.warnOnce = (msg, options) => {
+  if (
+    msg.includes("@duckdb/duckdb-wasm") &&
+    msg.includes("Sourcemap for") &&
+    (msg.includes("points to a source file outside its package") ||
+      msg.includes("points to missing source files"))
+  ) {
+    return;
+  }
+  warnOnce(msg, options);
+};
+
 export default defineConfig({
+  customLogger: logger,
   plugins: [preactPlugin(), tailwindcss()],
   build: {
     minify: "oxc",
