@@ -1,15 +1,11 @@
 import { test } from "@playwright/test";
 
-import { getSoraConnectionEnv } from "./helpers/env.ts";
+import { requireSoraConnectionEnv } from "./helpers/env.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
 
 test("sendrecv", async ({ page }) => {
-  // 環境変数を取得する。未設定時は空文字を含む既定値となり、[""] 経路で接続が失敗する
-  const env = getSoraConnectionEnv() ?? {
-    signalingUrl: "",
-    channelIdPrefix: "",
-    accessToken: "",
-  };
+  // 必須環境変数を取得する。未設定なら test.skip() でこのテストを skip する
+  const env = requireSoraConnectionEnv();
 
   const devtools = new DevtoolsPage(page);
   await devtools.navigate({

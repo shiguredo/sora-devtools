@@ -2,7 +2,7 @@
 
 - Priority: High
 - Created: 2026-06-12
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-07-10
 - Model: Opus 4.7
 - Branch: feature/add-e2e-skip-when-sora-env-missing
 - Polished: 2026-07-10
@@ -172,11 +172,10 @@ test("sendrecv", async ({ page }) => {
 
 ## 解決方法
 
-1. #0037 がマージ済みであることを確認する (`tests/helpers/env.ts` と 3 テストの `getSoraConnectionEnv() ?? {...}` テンプレが存在する)
-2. `tests/helpers/env.ts` に上記実装どおり `requireSoraConnectionEnv()` を追加し、named export する
-3. 3 テストファイルの import と `const env = ...` を `requireSoraConnectionEnv()` に置き換える
-4. `CHANGES.md` の `## develop` → `### misc` に `[ADD]` エントリと `- @voluntas` を追記する
-5. `vp check` / `vp test run` / 上記の未設定・設定あり `pnpm test:e2e` で完了条件を確認する
+1. `tests/helpers/env.ts` に `requireSoraConnectionEnv()` を追加した。`getSoraConnectionEnv()` が `undefined` のとき `test.skip(true, reason)` で skip し、TypeScript narrow 用に到達不能な `throw` を続ける
+2. `tests/sendrecv.test.ts` / `tests/sendonly.test.ts` / `tests/recvonly.test.ts` の import と env 取得行を `requireSoraConnectionEnv()` に置き換えた
+3. `CHANGES.md` の `## develop` → `### misc` に `[ADD]` エントリを追記した
+4. `vp check` / `vp test run` / `pnpm test:e2e` (設定あり・ `E2E_TEST_SORA_SIGNALING_URL=` 未設定) で完了条件を確認した。未設定時は Sora 依存 3 件が skip、lazy-load 2 件が通過する
 
 ## エッジケース
 
