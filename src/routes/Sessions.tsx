@@ -5,7 +5,12 @@ import { useLocation } from "preact-iso";
 import { SessionDetail } from "@/components/Sessions/SessionDetail";
 import { SessionFilter } from "@/components/Sessions/SessionFilter";
 import { SessionList } from "@/components/Sessions/SessionList";
-import { getCurrentSessionDbId, listSessions, whenReady } from "@/sessionDatabase";
+import {
+  getCurrentSessionDbId,
+  isSessionDatabaseAvailable,
+  listSessions,
+  whenReady,
+} from "@/sessionDatabase";
 import type { SessionListRow } from "@/sessionDatabase";
 import { buildSessionsPath, parseSessionsSearchParams } from "@/sessionsSearchParams";
 import type { SessionsSearchParams } from "@/sessionsSearchParams";
@@ -56,16 +61,14 @@ const Sessions: FunctionComponent = () => {
   const [sessions, setSessions] = useState<SessionListRow[]>([]);
   const [currentSessionDbId, setCurrentSessionDbId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [databaseAvailable, setDatabaseAvailable] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // URL 変更に追従してフィルタ状態を同期し、不正値は正規化する
   useEffect(() => {
+    // preact-iso の url だけを見る（location.search フォールバックは DevTools QS 混入の原因になる）
     const searchIndex = url.indexOf("?");
-    const { search: locationSearch } = globalThis.location;
-    let search = locationSearch;
-    if (searchIndex !== -1) {
-      search = url.slice(searchIndex);
-    }
+    const search = searchIndex === -1 ? "" : url.slice(searchIndex);
     const parsed = parseSessionsSearchParams(search);
     setSearchParams(parsed);
 
@@ -84,6 +87,14 @@ const Sessions: FunctionComponent = () => {
       try {
         await whenReady();
         if (active.cancelled) {
+          return;
+        }
+        const available = isSessionDatabaseAvailable();
+        setDatabaseAvailable(available);
+        if (!available) {
+          setSessions([]);
+          setCurrentSessionDbId(null);
+          setLoading(false);
           return;
         }
         const filter = {
@@ -158,14 +169,21 @@ const Sessions: FunctionComponent = () => {
           <p className="text-bs-secondary" data-testid="session-list-loading">
             読み込み中…
           </p>
-        ) : (
+        ) : null}
+        {!loading && !databaseAvailable ? (
+          <p className="text-bs-secondary" data-testid="session-database-unavailable">
+            セッション永続化が利用できません（OPFS
+            非対応、またはデータベース初期化に失敗しています）
+          </p>
+        ) : null}
+        {!loading && databaseAvailable ? (
           <SessionList
             sessions={sessions}
             currentSessionDbId={currentSessionDbId}
             selectedSessionDbId={searchParams.sessionDbId}
             onSelect={handleSelect}
           />
-        )}
+        ) : null}
       </section>
 
       <section>

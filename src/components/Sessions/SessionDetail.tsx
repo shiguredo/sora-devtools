@@ -2,11 +2,11 @@ import type { FunctionComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { StatsChart } from "@/components/Sessions/StatsChart";
+import { StatsRawPanel } from "@/components/Sessions/StatsRawPanel";
 import {
   getCurrentSessionDbId,
   getSession,
   queryStatsAggregates,
-  queryStatsPage,
   queryStatsTimeseries,
   whenReady,
 } from "@/sessionDatabase";
@@ -14,7 +14,6 @@ import type {
   ConnectionListRow,
   SessionDetail as SessionDetailData,
   StatsAggregates,
-  StatsPageResult,
   StatsTimeseriesPoint,
 } from "@/sessionDatabase";
 import { deriveSessionStatus, sessionStatusLabel } from "@/sessionStatus";
@@ -42,19 +41,15 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
   const [detail, setDetail] = useState<SessionDetailData | null>(null);
   const [aggregates, setAggregates] = useState<StatsAggregates | null>(null);
   const [timeseries, setTimeseries] = useState<StatsTimeseriesPoint[]>([]);
-  const [statsPage, setStatsPage] = useState<StatsPageResult>({ rows: [], totalCount: 0 });
-  const [intervalSec, setIntervalSec] = useState<10 | 60>(10);
-  const [pageOffset, setPageOffset] = useState(0);
+  const [intervalSec, setIntervalSec] = useState<1 | 10 | 60>(1);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const pageLimit = 50;
 
   useEffect(() => {
     if (sessionDbId === undefined) {
       setDetail(null);
       setAggregates(null);
       setTimeseries([]);
-      setStatsPage({ rows: [], totalCount: 0 });
       setErrorMessage(null);
       return;
     }
@@ -79,14 +74,12 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
           setDetail(null);
           setAggregates(null);
           setTimeseries([]);
-          setStatsPage({ rows: [], totalCount: 0 });
           setLoading(false);
           return;
         }
-        const [agg, series, page] = await Promise.all([
+        const [agg, series] = await Promise.all([
           queryStatsAggregates(sessionDbId),
           queryStatsTimeseries(sessionDbId, { intervalSec }),
-          queryStatsPage(sessionDbId, { limit: pageLimit, offset: pageOffset }),
         ]);
         // await 中に cleanup で cancelled が立つ可能性がある
         // oxlint-disable-next-line typescript/no-unnecessary-condition
@@ -96,7 +89,6 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
         setDetail(loaded);
         setAggregates(agg);
         setTimeseries(series);
-        setStatsPage(page);
         setLoading(false);
       } catch (error) {
         if (active.cancelled) {
@@ -112,7 +104,7 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
     return () => {
       active.cancelled = true;
     };
-  }, [sessionDbId, intervalSec, pageOffset]);
+  }, [sessionDbId, intervalSec]);
 
   if (sessionDbId === undefined) {
     return (
@@ -156,7 +148,6 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
     detail.session.id,
     currentSessionDbId,
   );
-  const maxOffset = Math.max(0, statsPage.totalCount - pageLimit);
 
   return (
     <div data-testid="session-detail" data-session-db-id={String(detail.session.id)}>
@@ -238,61 +229,39 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
         </dl>
       )}
 
-      <div className="mb-2 flex items-center gap-2">
-        <h3 className="text-base font-semibold">時系列</h3>
-        <label className="text-sm">
-          間隔
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h3 className="text-base font-semibold">時系列</h3>
+          <p className="mt-0.5 text-xs text-bs-secondary">
+            getStats は 1 秒間隔。横軸は JST の実時刻
+          </p>
+        </div>
+        <label className="text-sm text-bs-secondary">
+          表示間隔
           <select
-            className="ml-2 rounded border border-bs-secondary px-2 py-1"
+            className="ml-2 rounded border border-bs-secondary bg-white px-2 py-1 text-bs-body"
             value={String(intervalSec)}
             data-testid="timeseries-interval"
             onChange={(event) => {
               const next = Number(event.currentTarget.value);
-              if (next === 10 || next === 60) {
+              if (next === 1 || next === 10 || next === 60) {
                 setIntervalSec(next);
               }
             }}
           >
+            <option value="1">1 秒</option>
             <option value="10">10 秒</option>
             <option value="60">1 分</option>
           </select>
         </label>
       </div>
-      <div data-testid="stats-timeseries">
-        <StatsChart points={timeseries} metric="bitrate_send_bps" title="送信ビットレート (bps)" />
-        <StatsChart points={timeseries} metric="bitrate_recv_bps" title="受信ビットレート (bps)" />
-        <StatsChart points={timeseries} metric="round_trip_time" title="RTT (秒)" />
+      <div className="flex flex-col gap-4" data-testid="stats-timeseries">
+        <StatsChart points={timeseries} metric="bitrate_send_bps" title="送信ビットレート" />
+        <StatsChart points={timeseries} metric="bitrate_recv_bps" title="受信ビットレート" />
+        <StatsChart points={timeseries} metric="round_trip_time" title="RTT" />
       </div>
 
-      <h3 className="mb-2 mt-4 text-base font-semibold">生データ</h3>
-      <p className="mb-2 text-sm text-bs-secondary" data-testid="stats-page-count">
-        全 {statsPage.totalCount} 件（offset {pageOffset}）
-      </p>
-      <div className="mb-2 flex gap-2">
-        <button
-          type="button"
-          className="rounded border border-bs-secondary px-2 py-1 text-sm disabled:opacity-50"
-          disabled={pageOffset <= 0}
-          data-testid="stats-page-prev"
-          onClick={() => {
-            setPageOffset(Math.max(0, pageOffset - pageLimit));
-          }}
-        >
-          前へ
-        </button>
-        <button
-          type="button"
-          className="rounded border border-bs-secondary px-2 py-1 text-sm disabled:opacity-50"
-          disabled={pageOffset >= maxOffset}
-          data-testid="stats-page-next"
-          onClick={() => {
-            setPageOffset(Math.min(maxOffset, pageOffset + pageLimit));
-          }}
-        >
-          次へ
-        </button>
-      </div>
-      <StatsRawTable page={statsPage} />
+      <StatsRawPanel sessionDbId={detail.session.id} />
     </div>
   );
 };
@@ -331,50 +300,6 @@ const ConnectionsTable: FunctionComponent<{ connections: ConnectionListRow[] }> 
                 {displayOrDash(connection.started_at)}
               </td>
               <td className="px-2 py-1 font-mono text-xs">{displayOrDash(connection.ended_at)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-const StatsRawTable: FunctionComponent<{ page: StatsPageResult }> = ({ page }) => {
-  if (page.rows.length === 0) {
-    return (
-      <p className="text-sm text-bs-secondary" data-testid="stats-raw-empty">
-        生データはありません
-      </p>
-    );
-  }
-  return (
-    <div className="overflow-x-auto" data-testid="stats-raw-table">
-      <table className="w-full border-collapse text-left text-xs">
-        <thead>
-          <tr className="border-b border-bs-secondary">
-            <th className="px-2 py-1">timestamp_ms</th>
-            <th className="px-2 py-1">stats_type</th>
-            <th className="px-2 py-1">stats_id</th>
-            <th className="px-2 py-1">kind</th>
-            <th className="px-2 py-1">packets_received</th>
-            <th className="px-2 py-1">packets_sent</th>
-            <th className="px-2 py-1">bytes_received</th>
-            <th className="px-2 py-1">bytes_sent</th>
-            <th className="px-2 py-1">round_trip_time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {page.rows.map((row) => (
-            <tr key={row.id} className="border-b border-bs-light">
-              <td className="px-2 py-1 font-mono">{displayOrDash(row.timestamp_ms)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.stats_type)}</td>
-              <td className="px-2 py-1 font-mono">{displayOrDash(row.stats_id)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.kind)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.packets_received)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.packets_sent)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.bytes_received)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.bytes_sent)}</td>
-              <td className="px-2 py-1">{displayOrDash(row.round_trip_time)}</td>
             </tr>
           ))}
         </tbody>

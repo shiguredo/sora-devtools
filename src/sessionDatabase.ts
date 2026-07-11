@@ -6,6 +6,12 @@ import type { AsyncDuckDB, AsyncDuckDBConnection } from "@duckdb/duckdb-wasm";
 import { setSoraErrorAlertMessage } from "@/app/signals";
 import { computeStatsAggregates, computeStatsTimeseries } from "@/statsQuery";
 import type { StatsAggregates, StatsSourceRow, StatsTimeseriesPoint } from "@/statsQuery";
+import { computeStreamTimeseriesForId, listStatsStreams } from "@/statsStreamQuery";
+import type {
+  StatsStreamSummary,
+  StatsStreamTimeseriesPoint,
+  StreamSourceRow,
+} from "@/statsStreamQuery";
 import type { Json } from "@/types";
 import { selectIdsToDeleteForSampling } from "@/webrtcStatsNormalizer";
 import type { NormalizedWebrtcStat } from "@/webrtcStatsNormalizer";
@@ -70,9 +76,38 @@ export interface StatsTimeseriesOptions {
 export interface StatsPageOptions {
   limit?: number;
   offset?: number;
+  // 指定時は stats_type で絞り込む
+  statsType?: string;
+  // 指定時は stats_id で絞り込む（statsType と併用可）
+  statsId?: string;
+}
+
+export type StatsRawMetric =
+  | "bytes_sent"
+  | "bytes_received"
+  | "packets_sent"
+  | "packets_received"
+  | "round_trip_time";
+
+export interface StatsRawSeriesOptions {
+  metric: StatsRawMetric;
+  statsType: string;
+  // 省略時は当該 type の全 stats_id（描画側で上限あり）
+  statsId?: string;
+}
+
+export interface StatsRawSeriesPoint {
+  timestamp_ms: number;
+  stats_id: string;
+  value: number;
 }
 
 export type { StatsAggregates, StatsTimeseriesPoint } from "@/statsQuery";
+export type {
+  StatsStreamSummary,
+  StatsStreamTimeseriesPoint,
+  StatsStreamType,
+} from "@/statsStreamQuery";
 
 // OPFS 上の DuckDB データベースパス（signaling-url-candidates.json と衝突しない名前）
 const OPFS_DB_PATH = "opfs://sora-devtools-sessions.db";
@@ -219,6 +254,11 @@ export function getCurrentConnectionId(): string | null {
 
 export async function whenReady(): Promise<void> {
   return readyPromise;
+}
+
+// 初期化試行後に DuckDB 接続が利用可能か。whenReady() 後に呼ぶこと
+export function isSessionDatabaseAvailable(): boolean {
+  return duckdbConnection !== null;
 }
 
 function warnUnavailable(action: string): void {
@@ -536,6 +576,8 @@ export async function insertSession(
   role: string,
   metadata: Json | undefined,
 ): Promise<number | null> {
+  // 初期化完了前の Connect で no-op にならないよう、書き込み前に初期化を待つ
+  await whenReady();
   return enqueueWrite(async () => {
     if (duckdbConnection === null) {
       warnUnavailable("insertSession");
@@ -582,6 +624,7 @@ export async function updateSessionIdAndConnectionId(
   sessionId: string,
   connectionId: string,
 ): Promise<void> {
+  await whenReady();
   await enqueueWrite(async () => {
     if (duckdbConnection === null) {
       warnUnavailable("updateSessionIdAndConnectionId");
@@ -615,6 +658,7 @@ export async function insertConnection(
   channelId: string,
   signalingUrl: string,
 ): Promise<boolean> {
+  await whenReady();
   return enqueueWrite(async () => {
     if (duckdbConnection === null) {
       warnUnavailable("insertConnection");
@@ -654,6 +698,7 @@ export async function insertConnection(
 }
 
 export async function updateSessionEndedAt(id: number): Promise<void> {
+  await whenReady();
   await enqueueWrite(async () => {
     if (duckdbConnection === null) {
       warnUnavailable("updateSessionEndedAt");
@@ -687,6 +732,7 @@ export async function updateConnectionEndedAt(connectionId: string): Promise<voi
   if (!connectionId) {
     return;
   }
+  await whenReady();
   await enqueueWrite(async () => {
     if (duckdbConnection === null) {
       warnUnavailable("updateConnectionEndedAt");
@@ -1379,14 +1425,14 @@ export async function queryStatsAggregates(sessionDbId: number): Promise<StatsAg
   });
 }
 
-// 時系列サンプリング。intervalSec は 10 または 60（省略時 10）
+// 時系列サンプリング。intervalSec は 1 / 10 / 60（省略時 1。収集間隔に合わせた 1 秒が既定）
 export async function queryStatsTimeseries(
   sessionDbId: number,
   options: StatsTimeseriesOptions = {},
 ): Promise<StatsTimeseriesPoint[]> {
-  const intervalSec = options.intervalSec ?? 10;
-  if (intervalSec !== 10 && intervalSec !== 60) {
-    throw new Error(`intervalSec must be 10 or 60, got ${String(intervalSec)}`);
+  const intervalSec = options.intervalSec ?? 1;
+  if (intervalSec !== 1 && intervalSec !== 10 && intervalSec !== 60) {
+    throw new Error(`intervalSec must be 1, 10, or 60, got ${String(intervalSec)}`);
   }
   return enqueueWrite(async () => {
     if (duckdbConnection === null) {
@@ -1404,24 +1450,45 @@ export async function queryStatsPage(
 ): Promise<StatsPageResult> {
   const limit = options.limit ?? 50;
   const offset = options.offset ?? 0;
+  const { statsType } = options;
+  const { statsId } = options;
   if (!Number.isInteger(limit) || limit < 1 || limit > 200) {
     throw new Error(`limit must be an integer in 1..200, got ${String(limit)}`);
   }
   if (!Number.isInteger(offset) || offset < 0) {
     throw new Error(`offset must be a non-negative integer, got ${String(offset)}`);
   }
+  if (statsType !== undefined && statsType === "") {
+    throw new Error("statsType must be a non-empty string when provided");
+  }
+  if (statsId !== undefined && statsId === "") {
+    throw new Error("statsId must be a non-empty string when provided");
+  }
   return enqueueWrite(async () => {
     if (duckdbConnection === null) {
       return { rows: [], totalCount: 0 };
     }
+
+    const filters: string[] = ["session_db_id = ?"];
+    const filterParams: Array<number | string> = [sessionDbId];
+    if (statsType !== undefined) {
+      filters.push("stats_type = ?");
+      filterParams.push(statsType);
+    }
+    if (statsId !== undefined) {
+      filters.push("stats_id = ?");
+      filterParams.push(statsId);
+    }
+    const whereClause = filters.join(" AND ");
+
     const countStatement = await duckdbConnection.prepare(`
       SELECT COUNT(*) AS total_count
       FROM webrtc_stats
-      WHERE session_db_id = ?
+      WHERE ${whereClause}
     `);
     let totalCount = 0;
     try {
-      const countTable = await countStatement.query(sessionDbId);
+      const countTable = await countStatement.query(...filterParams);
       const countRecords = arrowTableToRecords(countTable);
       if (countRecords.length > 0) {
         const [first] = countRecords;
@@ -1444,13 +1511,13 @@ export async function queryStatsPage(
         bytes_sent,
         round_trip_time
       FROM webrtc_stats
-      WHERE session_db_id = ?
+      WHERE ${whereClause}
       ORDER BY timestamp_ms ASC, id ASC
       LIMIT ?
       OFFSET ?
     `);
     try {
-      const pageTable = await pageStatement.query(sessionDbId, limit, offset);
+      const pageTable = await pageStatement.query(...filterParams, limit, offset);
       const rows = arrowTableToRecords(pageTable).map(
         (record): StatsPageRow => ({
           id: requireNumber(record.id, "webrtc_stats.id"),
@@ -1469,5 +1536,210 @@ export async function queryStatsPage(
     } finally {
       await pageStatement.close();
     }
+  });
+}
+
+const RAW_METRIC_COLUMNS: Record<StatsRawMetric, string> = {
+  bytes_sent: "bytes_sent",
+  bytes_received: "bytes_received",
+  packets_sent: "packets_sent",
+  packets_received: "packets_received",
+  round_trip_time: "round_trip_time",
+};
+
+// 生データグラフ用: 指定 type / metric の時系列（最大 20000 点）
+export async function queryStatsRawSeries(
+  sessionDbId: number,
+  options: StatsRawSeriesOptions,
+): Promise<StatsRawSeriesPoint[]> {
+  const column = RAW_METRIC_COLUMNS[options.metric];
+  if (options.statsType === "") {
+    throw new Error("statsType must be a non-empty string");
+  }
+  if (options.statsId !== undefined && options.statsId === "") {
+    throw new Error("statsId must be a non-empty string when provided");
+  }
+  const hasStatsId = options.statsId !== undefined;
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    // カラム名はホワイトリスト済み。プレースホルダには入れられない
+    const sql = hasStatsId
+      ? `
+      SELECT timestamp_ms, stats_id, ${column} AS value
+      FROM webrtc_stats
+      WHERE session_db_id = ?
+        AND stats_type = ?
+        AND stats_id = ?
+        AND ${column} IS NOT NULL
+      ORDER BY timestamp_ms ASC, id ASC
+      LIMIT 20000
+    `
+      : `
+      SELECT timestamp_ms, stats_id, ${column} AS value
+      FROM webrtc_stats
+      WHERE session_db_id = ?
+        AND stats_type = ?
+        AND ${column} IS NOT NULL
+      ORDER BY timestamp_ms ASC, id ASC
+      LIMIT 20000
+    `;
+    const statement = await duckdbConnection.prepare(sql);
+    try {
+      const table = hasStatsId
+        ? await statement.query(sessionDbId, options.statsType, options.statsId)
+        : await statement.query(sessionDbId, options.statsType);
+      const points: StatsRawSeriesPoint[] = [];
+      for (const record of arrowTableToRecords(table)) {
+        const statsId = toNullableString(record.stats_id);
+        const value = toFiniteNumber(record.value);
+        if (statsId === null || value === null) {
+          continue;
+        }
+        points.push({
+          timestamp_ms: requireNumber(record.timestamp_ms, "webrtc_stats.timestamp_ms"),
+          stats_id: statsId,
+          value,
+        });
+      }
+      return points;
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// セッション内の stats_type 一覧（生データ絞り込み用）
+export async function listStatsTypes(sessionDbId: number): Promise<string[]> {
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    const statement = await duckdbConnection.prepare(`
+      SELECT DISTINCT stats_type
+      FROM webrtc_stats
+      WHERE session_db_id = ?
+        AND stats_type IS NOT NULL
+      ORDER BY stats_type ASC
+    `);
+    try {
+      const table = await statement.query(sessionDbId);
+      const types: string[] = [];
+      for (const record of arrowTableToRecords(table)) {
+        const statsType = toNullableString(record.stats_type);
+        if (statsType !== null) {
+          types.push(statsType);
+        }
+      }
+      return types;
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// 指定 stats_type 内の stats_id 一覧
+export async function listStatsIds(sessionDbId: number, statsType: string): Promise<string[]> {
+  if (statsType === "") {
+    throw new Error("statsType must be a non-empty string");
+  }
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    const statement = await duckdbConnection.prepare(`
+      SELECT DISTINCT stats_id
+      FROM webrtc_stats
+      WHERE session_db_id = ?
+        AND stats_type = ?
+        AND stats_id IS NOT NULL
+      ORDER BY stats_id ASC
+    `);
+    try {
+      const table = await statement.query(sessionDbId, statsType);
+      const ids: string[] = [];
+      for (const record of arrowTableToRecords(table)) {
+        const statsId = toNullableString(record.stats_id);
+        if (statsId !== null) {
+          ids.push(statsId);
+        }
+      }
+      return ids;
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+async function loadStreamSourceRowsUnlocked(sessionDbId: number): Promise<StreamSourceRow[]> {
+  if (duckdbConnection === null) {
+    return [];
+  }
+  const statement = await duckdbConnection.prepare(`
+    SELECT
+      id,
+      timestamp_ms,
+      stats_type,
+      stats_id,
+      kind,
+      packets_received,
+      packets_sent,
+      bytes_received,
+      bytes_sent,
+      round_trip_time
+    FROM webrtc_stats
+    WHERE session_db_id = ?
+      AND stats_type IN ('outbound-rtp', 'inbound-rtp', 'candidate-pair')
+    ORDER BY timestamp_ms ASC, id ASC
+  `);
+  try {
+    const table = await statement.query(sessionDbId);
+    return arrowTableToRecords(table).map((record) => {
+      const statsType = toNullableString(record.stats_type);
+      const statsId = toNullableString(record.stats_id);
+      return {
+        id: requireNumber(record.id, "webrtc_stats.id"),
+        timestamp_ms: requireNumber(record.timestamp_ms, "webrtc_stats.timestamp_ms"),
+        stats_type: statsType ?? "",
+        stats_id: statsId ?? "",
+        kind: toNullableString(record.kind),
+        packets_received: toFiniteNumber(record.packets_received),
+        packets_sent: toFiniteNumber(record.packets_sent),
+        bytes_received: toFiniteNumber(record.bytes_received),
+        bytes_sent: toFiniteNumber(record.bytes_sent),
+        round_trip_time: toFiniteNumber(record.round_trip_time),
+      };
+    });
+  } finally {
+    await statement.close();
+  }
+}
+
+// ストリーム一覧（outbound / inbound / candidate-pair）
+export async function queryStatsStreams(sessionDbId: number): Promise<StatsStreamSummary[]> {
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    const rows = await loadStreamSourceRowsUnlocked(sessionDbId);
+    return listStatsStreams(rows);
+  });
+}
+
+// 1 ストリームの差分時系列
+export async function queryStatsStreamTimeseries(
+  sessionDbId: number,
+  statsId: string,
+): Promise<StatsStreamTimeseriesPoint[]> {
+  if (statsId === "") {
+    throw new Error("statsId must be a non-empty string");
+  }
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return [];
+    }
+    const rows = await loadStreamSourceRowsUnlocked(sessionDbId);
+    return computeStreamTimeseriesForId(rows, statsId);
   });
 }

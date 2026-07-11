@@ -45,6 +45,7 @@ export default defineConfig({
             "noise-suppression": ["@shiguredo/noise-suppression"],
             "virtual-background": ["@shiguredo/virtual-background"],
             "sora-js-sdk": ["sora-js-sdk"],
+            uplot: ["uplot"],
           };
           const matched = Object.entries(chunks).find(([, modules]) =>
             modules.some((mod) => moduleId.includes(`node_modules/${mod}`)),

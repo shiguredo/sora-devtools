@@ -13,11 +13,21 @@
 
 - [ADD] /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
   - @voluntas
+- [ADD] uPlot を導入して Sessions の時系列チャートを 1 秒単位で描画する
+  - @voluntas
+- [ADD] Sessions の生データを stats_type 別にグラフ表示できるようにする
+  - @voluntas
+- [UPDATE] Sessions の生データ表示をストリーム選択 + 差分メトリクスに試行変更する
+  - @voluntas
 - [ADD] WebRTC stats を DuckDB-Wasm + OPFS に永続化する
   - @voluntas
 - [ADD] DuckDB-Wasm + OPFS でセッション・接続メタデータを永続化する
   - @voluntas
 - [ADD] preact-iso を導入して /sessions ページへのルーティング基盤を追加する
+  - @voluntas
+- [UPDATE] Sessions ボタンをトグルにして /sessions と DevTools を往復できるようにする
+  - @voluntas
+- [FIX] DuckDB 初期化完了前の接続でセッションが永続化されない競合を修正する
   - @voluntas
 
 ### misc

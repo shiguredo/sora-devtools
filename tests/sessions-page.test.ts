@@ -101,10 +101,10 @@ test.describe("sessions page UI", () => {
     // 集計または時系列に実データが見えること（厳密な数値一致は求めない）
     await page.getByTestId("stats-aggregates").waitFor({ timeout: 10_000 });
     await page.getByTestId("stats-timeseries").waitFor({ timeout: 10_000 });
-    const rawTable = page.getByTestId("stats-raw-table");
+    const rawPanel = page.getByTestId("stats-raw-panel");
     const aggregatesText = await page.getByTestId("stats-aggregates").textContent();
     const hasAggregateValue = aggregatesText !== null && /\d/u.test(aggregatesText);
-    const hasRawRows = await rawTable.isVisible().catch(() => false);
-    expect(hasAggregateValue || hasRawRows).toBe(true);
+    const hasRawPanel = await rawPanel.isVisible().catch(() => false);
+    expect(hasAggregateValue || hasRawPanel).toBe(true);
   });
 });

@@ -1,0 +1,28 @@
+.chart {
+  width: 100%;
+}
+
+.chart :global(.uplot) {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+.chart :global(.u-legend) {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #495057;
+}
+
+.chart :global(.u-legend .u-series) {
+  margin-right: 0.75rem;
+}
+
+.chart :global(.u-legend .u-value) {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #212529;
+}

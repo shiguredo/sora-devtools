@@ -35,6 +35,9 @@ importers:
       sora-js-sdk:
         specifier: 2026.1.0
         version: 2026.1.0
+      uplot:
+        specifier: 1.6.32
+        version: 1.6.32
     devDependencies:
       '@fast-check/vitest':
         specifier: 0.4.1
@@ -1651,6 +1654,9 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
+  uplot@1.6.32:
+    resolution: {integrity: sha512-KIMVnG68zvu5XXUbC4LQEPnhwOxBuLyW1AHtpm6IKTXImkbLgkMy+jabjLgSLMasNuGGzQm/ep3tOkyTxpiQIw==}
+
   vite-plus@0.2.4:
     resolution: {integrity: sha512-gaBBjOXIq9lLRU44oAYdIr99p+JBLX1kxs+l/6LqGgSXwcVKAdDa1boSrOTELqYCkQQ0fpppXUGWi9o6JDT5zw==}
     engines: {node: ^20.19.0 || ^22.18.0 || >=24.11.0}
@@ -3046,6 +3052,8 @@ snapshots:
       browserslist: 4.28.4
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  uplot@1.6.32: {}
 
   vite-plus@0.2.4(@types/node@26.1.0)(@vitest/browser-playwright@4.1.10)(@voidzero-dev/vite-plus-core@0.2.4(@types/node@26.1.0)(jiti@2.7.0)(typescript@7.0.2))(jiti@2.7.0)(jsdom@29.1.1)(typescript@7.0.2):
     dependencies:
