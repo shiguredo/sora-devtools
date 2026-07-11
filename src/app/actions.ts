@@ -1377,8 +1377,8 @@ function setSoraCallbacks(
       // 再接続処理開始フラグ
       signals.setSoraReconnecting(true);
       // reconnectSora の起動責務を <Reconnect /> の useEffect から本ハンドラに集約する。
-      // <Reconnect /> の再 mount による二重起動を撲滅する目的で、本 issue の修正で
-      // useEffect 経由の起動は廃止し、本箇所で直接呼び出す形に切り替えた。
+      // <Reconnect /> の再 mount による二重起動を防ぐため、useEffect 経由の起動は
+      // 廃止し、本箇所で直接呼び出す形にしている。
       // SDK は本ハンドラの戻り値 Promise を待たないため reconnectSora は void で起動する。
       // 後続の await cleanupSoraMediaState と reconnectSora の同期前処理が並走するが、
       // 双方 clearRemoteMediaClients / closeFakeContentsAudio は冪等で実害は無い。
