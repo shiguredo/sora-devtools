@@ -1,7 +1,7 @@
 import path from "node:path";
 import preactPlugin from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
-import { createLogger, defineConfig } from "vite-plus";
+import { createLogger, defineConfig, loadEnv } from "vite-plus";
 
 const rootDir = import.meta.dirname;
 
@@ -21,7 +21,7 @@ logger.warnOnce = (msg, options) => {
   warnOnce(msg, options);
 };
 
-export default defineConfig({
+const baseConfig = defineConfig({
   customLogger: logger,
   plugins: [preactPlugin(), tailwindcss()],
   build: {
@@ -113,6 +113,8 @@ export default defineConfig({
       curly: "error",
       // for-in ループで hasOwnProperty チェックを強制
       "guard-for-in": "error",
+      // ビルド時定数の __NAME__ 形式を許可
+      "no-underscore-dangle": ["error", { allow: ["__SESSIONS_ENABLED__"] }],
 
       // ===== eslint: 非推奨機能の禁止 =====
       // arguments.caller/callee の使用を禁止
@@ -1016,4 +1018,21 @@ export default defineConfig({
   fmt: {
     ignorePatterns: ["dist/**"],
   },
+});
+
+// Sessions 機能のビルド時切り替え。VITE_ENABLE_SESSIONS=true のビルドでのみ有効化する
+export default defineConfig(({ mode }) => {
+  // .env ファイルから VITE_ プレフィックスの環境変数を読み込む
+  const env = loadEnv(mode, rootDir, "VITE_");
+  // CI / ワークフローで渡される環境変数を .env ファイルの値より優先する
+  if (process.env.VITE_ENABLE_SESSIONS !== undefined) {
+    env.VITE_ENABLE_SESSIONS = process.env.VITE_ENABLE_SESSIONS;
+  }
+  return {
+    ...baseConfig,
+    define: {
+      // 実行時には boolean リテラルとして埋め込まれる
+      __SESSIONS_ENABLED__: JSON.stringify(env.VITE_ENABLE_SESSIONS === "true"),
+    },
+  };
 });

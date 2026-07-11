@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-07-11
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-12
 - Model: Kimi Code CLI
 - Branch: feature/change-build-time-disable-sessions
 - Polished: 2026-07-11
@@ -67,3 +67,33 @@ Medium。必須機能ではない Sessions をデフォルト無効化し、必�
 - CI / E2E / unit test は `VITE_ENABLE_SESSIONS=true` で実行され、既存の Sessions 関連テストが通る
 - CI に無効ビルド用のビルド検証ステップを追加し、無効ビルドが成功することを確認する
 - 変更履歴を `CHANGES.md` に追記する（例：`- [CHANGE] Sessions 機能をビルド時にデフォルト無効化し、環境変数で有効化できるようにする`）
+
+## 解決方法
+
+設計方針どおり、Vite の `define` で埋め込むビルド時定数 `__SESSIONS_ENABLED__` による切り替えを実装した。
+
+- `vite.config.ts` をコールバック形式に変更し、`loadEnv(mode, rootDir, "VITE_")` + `process.env.VITE_ENABLE_SESSIONS` の優先マージで `define: { __SESSIONS_ENABLED__ }` を設定した
+- 新規 `src/sessionDatabaseLoader.ts` に `sessionDatabase.ts` への全アクセスを集約し、動的 import + no-op フォールバックを実装した
+  - 無効ビルドでは全 API が no-op（`null` / `false` / `void`）になる
+  - 動的 import が失敗した場合はキャッシュをリセットして再試行可能にし、各 API は no-op にフォールバックする（永続化失敗でも接続は継続する従来の契約を維持）
+  - モジュールのロード成功時に実モジュールの `createSessionDatabase()` を冪等に呼び、`whenReady()` が必ず settle するようにした
+- `src/app/actions.ts` の import 元を `sessionDatabase.ts` から `sessionDatabaseLoader.ts` に切り替えた
+- `src/App.tsx` の `/sessions` ルートと `createSessionDatabase()` 呼び出しをガードし、`src/components/Header/index.tsx` の Sessions ボタン表示を `SESSIONS_ENABLED` で切り替えた
+- 新規 `src/sessionDatabaseLoader.test.ts` でラッパーの no-op 契約を検証した（無効ビルド時のみ実行、有効ビルドでは `test.skipIf` で skip）
+- `playwright.config.ts` の `webServer.env` に `VITE_ENABLE_SESSIONS: "true"` を追加し、ローカル E2E でも Sessions が有効になるようにした
+- CI に無効ビルドの検証ステップ（アセット不在チェック + 無効モードでの unit test）を追加し、CI / E2E / デプロイの各ワークフローで `VITE_ENABLE_SESSIONS=true` を設定した
+
+設計方針からの主な乖離と理由:
+
+- 動的 import のガードは `SESSIONS_ENABLED`（`src/constants.ts` 経由）ではなく `__SESSIONS_ENABLED__` の直接参照とした。クロスモジュールの定数経由だとバンドラのデッドコード除去が効かず、無効ビルドにも Sessions 関連 chunk が出力されてしまうため。`SESSIONS_ENABLED` は UI の表示切り替え専用とした
+- `/sessions` の `Route` は `&&` による条件描画ではなく配列での分岐とした。preact-iso の `Router` の children 型が `NestedArray<VNode>` であり、`false | Element` では型エラーになるため
+- `src/App.tsx` から `createSessionDatabase` の import は除去せず、loader への静的 import + `__SESSIONS_ENABLED__` ガードとした。loader 自体が no-op を持つため簡潔になり、無効ビルドでは実モジュールへの動的 import が到達不能になる
+- `src/vite-env.d.ts` の `ImportMetaEnv` への `VITE_ENABLE_SESSIONS` 宣言は、`import.meta.env` 経由で読むコードが存在せず未使用となるため追加しなかった
+- `e2e-test.yml` の Playwright 実行ステップへの `VITE_ENABLE_SESSIONS` 設定は、`playwright.config.ts` の `webServer.env` で恒常有効化されるため冗長となり、追加しなかった（`vp build` ステップ側には設定済み）
+- 無効ビルド検証の grep パターンに `Sessions|sessionDatabase` を追加し、Sessions ページ関連の chunk も検証対象にした
+
+検証:
+
+- 無効ビルドで Sessions ボタン非表示、`/sessions` が default route で DevTools 表示、`dist/assets` に Sessions 関連アセットが無いことをブラウザ実機と grep で確認した
+- 有効ビルドで Sessions ボタン表示、`/sessions` ページ表示、関連 chunk 生成を確認した
+- unit test（有効・無効両モード）、component test、`vp check` が全て通過することを確認した

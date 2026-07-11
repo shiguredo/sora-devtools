@@ -48,7 +48,7 @@ import {
   updateConnectionEndedAt,
   updateSessionEndedAt,
   updateSessionIdAndConnectionId,
-} from "./../sessionDatabase.ts";
+} from "./../sessionDatabaseLoader.ts";
 import { normalizeWebrtcStats } from "./../webrtcStatsNormalizer.ts";
 import * as signals from "./signals.ts";
 

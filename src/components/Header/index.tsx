@@ -3,6 +3,7 @@ import { useRef } from "preact/hooks";
 
 import { connectionStatus, signalingUrlCandidates, sora, turnUrl } from "@/app/signals";
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarText, NavbarToggle } from "@/components/ui";
+import { SESSIONS_ENABLED } from "@/constants";
 
 import { CopyUrlButton } from "./CopyUrlButton.tsx";
 import { DebugButton } from "./DebugButton.tsx";
@@ -74,9 +75,11 @@ export function Header() {
               <NavbarText className="py-0 my-1 mx-1">
                 <DownloadReportButton />
               </NavbarText>
-              <NavbarText className="py-0 my-1 mx-1">
-                <SessionsButton />
-              </NavbarText>
+              {SESSIONS_ENABLED && (
+                <NavbarText className="py-0 my-1 mx-1">
+                  <SessionsButton />
+                </NavbarText>
+              )}
               <NavbarText className="py-0 my-1 ml-1">
                 <CopyUrlButton />
               </NavbarText>

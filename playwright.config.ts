@@ -40,5 +40,9 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     stdout: "pipe",
     stderr: "pipe",
+    // Sessions 機能を前提とする E2E が存在するため、dev server では常に有効化する
+    env: {
+      VITE_ENABLE_SESSIONS: "true",
+    },
   },
 });
