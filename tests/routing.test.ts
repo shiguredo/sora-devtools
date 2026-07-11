@@ -21,18 +21,19 @@ test("ルーティング: Sessions ボタンで /sessions に遷移する", asyn
   await page.goto(`${BASE_URL}/devtools/`);
 
   await page.getByRole("button", { name: "Sessions" }).click();
-  await page.getByRole("heading", { name: "Sessions" }).waitFor({ timeout: 5000 });
+  await page.getByRole("heading", { name: "Sessions", exact: true }).waitFor({ timeout: 5000 });
+  await page.getByTestId("sessions-privacy-notice").waitFor({ timeout: 5000 });
   const pathname = await page.evaluate(() => globalThis.location.pathname);
   if (pathname !== "/sessions") {
     throw new Error(`expected pathname "/sessions", got "${pathname}"`);
   }
 });
 
-test("ルーティング: /sessions 直アクセスで仮ページが表示される", async ({ page }) => {
+test("ルーティング: /sessions 直アクセスで Sessions ページが表示される", async ({ page }) => {
   await page.goto(`${BASE_URL}/sessions`);
-  await page.getByRole("heading", { name: "Sessions" }).waitFor({ timeout: 5000 });
+  await page.getByRole("heading", { name: "Sessions", exact: true }).waitFor({ timeout: 5000 });
+  await page.getByTestId("sessions-privacy-notice").waitFor({ timeout: 5000 });
 });
-
 test("ルーティング: 既存 query が / で復元される", async ({ page }) => {
   const devtools = new DevtoolsPage(page);
   const channelId = "routing-test-channel";
@@ -80,7 +81,7 @@ test("ルーティング: SPA 遷移中も Sora 接続が維持される", async
   }
 
   await page.getByRole("button", { name: "Sessions" }).click();
-  await page.getByRole("heading", { name: "Sessions" }).waitFor({ timeout: 5000 });
+  await page.getByRole("heading", { name: "Sessions", exact: true }).waitFor({ timeout: 5000 });
 
   const sessionsTurnLabel = await turnUrlLabel.textContent();
   if (sessionsTurnLabel === "TURN URL") {
