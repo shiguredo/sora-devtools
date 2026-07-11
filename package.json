@@ -34,7 +34,8 @@
     "apache-arrow": "17.0.0",
     "preact": "10.29.3",
     "preact-iso": "2.12.0",
-    "sora-js-sdk": "2026.1.0"
+    "sora-js-sdk": "2026.1.0",
+    "uplot": "1.6.32"
   },
   "devDependencies": {
     "@fast-check/vitest": "0.4.1",

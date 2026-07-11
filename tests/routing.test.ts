@@ -17,7 +17,9 @@ test("ルーティング: / /devtools/ /devtools で DevTools が表示される
   await page.locator(CONNECT_BUTTON_SELECTOR).waitFor({ timeout: 5000 });
 });
 
-test("ルーティング: Sessions ボタンで /sessions に遷移する", async ({ page }) => {
+test("ルーティング: Sessions ボタンで /sessions に遷移し、再クリックで / に戻る", async ({
+  page,
+}) => {
   await page.goto(`${BASE_URL}/devtools/`);
 
   await page.getByRole("button", { name: "Sessions" }).click();
@@ -27,6 +29,10 @@ test("ルーティング: Sessions ボタンで /sessions に遷移する", asyn
   if (pathname !== "/sessions") {
     throw new Error(`expected pathname "/sessions", got "${pathname}"`);
   }
+
+  await page.getByRole("button", { name: "Sessions" }).click();
+  await page.waitForURL((url) => url.pathname === "/", { timeout: 5000 });
+  await page.locator(CONNECT_BUTTON_SELECTOR).waitFor({ timeout: 5000 });
 });
 
 test("ルーティング: /sessions 直アクセスで Sessions ページが表示される", async ({ page }) => {

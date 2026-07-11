@@ -315,7 +315,7 @@ function foldBucketSamples(samples: StreamSample[]): {
   };
 }
 
-// 時系列サンプリング。intervalSec は呼び出し側で 10 または 60 に限定する
+// 時系列サンプリング。intervalSec は呼び出し側で 1 / 10 / 60 に限定する
 export function computeStatsTimeseries(
   rows: StatsSourceRow[],
   intervalSec: number,

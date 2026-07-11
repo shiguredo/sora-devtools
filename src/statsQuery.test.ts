@@ -167,6 +167,42 @@ test("computeStatsTimeseries は intervalSec でバケット化する", () => {
   assert.isDefined(second);
 });
 
+// 1 秒バケット: getStats 収集間隔に合わせた既定
+test("computeStatsTimeseries は 1 秒間隔でバケット化する", () => {
+  const rows: StatsSourceRow[] = [
+    row({
+      id: 1,
+      timestamp_ms: 0,
+      stats_type: "outbound-rtp",
+      stats_id: "out-a",
+      bytes_sent: 0,
+    }),
+    row({
+      id: 2,
+      timestamp_ms: 1000,
+      stats_type: "outbound-rtp",
+      stats_id: "out-a",
+      bytes_sent: 1000,
+    }),
+    row({
+      id: 3,
+      timestamp_ms: 2000,
+      stats_type: "outbound-rtp",
+      stats_id: "out-a",
+      bytes_sent: 2500,
+    }),
+  ];
+  const points = computeStatsTimeseries(rows, 1);
+  assert.equal(points.length, 3);
+  assert.equal(points[0]?.timestamp_ms, 0);
+  assert.equal(points[0]?.bitrate_send_bps, null);
+  assert.equal(points[1]?.timestamp_ms, 1000);
+  assert.equal(points[1]?.bitrate_send_bps, 8000);
+  assert.equal(points[2]?.timestamp_ms, 2000);
+  // (2500-1000)*8*1000/1000 = 12000
+  assert.equal(points[2]?.bitrate_send_bps, 12_000);
+});
+
 // 同一バケット内の複数サンプルは stats_id 単位 last のみ使い、全サンプル合算しない
 test("computeStatsTimeseries はバケット内で stats_id 単位の last を使う", () => {
   const rows: StatsSourceRow[] = [

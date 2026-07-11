@@ -9,89 +9,55 @@ import {
   GRID_STROKE,
   axisCompactNumberLabels,
   axisTimeLabelsJst,
-  formatBitrate,
   formatChartUnixSecJst,
-  formatRttMs,
 } from "@/components/Sessions/chartFormat";
 import styles from "@/components/Sessions/StatsChart.module.css";
-import type { StatsTimeseriesPoint } from "@/statsQuery";
 
-export interface StatsChartProps {
-  points: StatsTimeseriesPoint[];
-  metric: "bitrate_send_bps" | "bitrate_recv_bps" | "round_trip_time";
-  title: string;
+export interface MetricPoint {
+  timestamp_ms: number;
+  value: number | null;
 }
 
-interface MetricStyle {
+export interface MetricTimeSeriesChartProps {
+  points: MetricPoint[];
+  title: string;
+  unitLabel: string;
   stroke: string;
   fill: string;
-  unitLabel: string;
-  // 保存値から表示値へ（bps→表示用、RTT 秒→ms など）
-  toDisplay: (value: number) => number;
   formatValue: (value: number) => string;
+  // 保存値 → 表示値（RTT 秒→ms など）
+  toDisplay?: (value: number) => number;
+  testId?: string;
 }
 
-const METRIC_STYLES: Record<StatsChartProps["metric"], MetricStyle> = {
-  bitrate_send_bps: {
-    stroke: "#0d6efd",
-    fill: "rgba(13, 110, 253, 0.12)",
-    unitLabel: "kbps / Mbps",
-    toDisplay: (value) => value,
-    formatValue: formatBitrate,
-  },
-  bitrate_recv_bps: {
-    stroke: "#198754",
-    fill: "rgba(25, 135, 84, 0.12)",
-    unitLabel: "kbps / Mbps",
-    toDisplay: (value) => value,
-    formatValue: formatBitrate,
-  },
-  round_trip_time: {
-    stroke: "#fd7e14",
-    fill: "rgba(253, 126, 20, 0.12)",
-    unitLabel: "ms",
-    // WebRTC の roundTripTime は秒
-    toDisplay: (value) => value * 1000,
-    formatValue: formatRttMs,
-  },
-};
-
-function metricValue(
-  point: StatsTimeseriesPoint,
-  metric: StatsChartProps["metric"],
-): number | null {
-  if (metric === "bitrate_send_bps") {
-    return point.bitrate_send_bps;
-  }
-  if (metric === "bitrate_recv_bps") {
-    return point.bitrate_recv_bps;
-  }
-  return point.round_trip_time;
-}
-
-function hasPlottableValue(
-  points: StatsTimeseriesPoint[],
-  metric: StatsChartProps["metric"],
-): boolean {
+function hasPlottableValue(points: MetricPoint[]): boolean {
   for (const point of points) {
-    if (metricValue(point, metric) !== null) {
+    if (point.value !== null) {
       return true;
     }
   }
   return false;
 }
 
-// uPlot で時系列メトリクスを描画する（横軸は JST の実時刻）
-export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric, title }) => {
+// 単一系列の汎用時系列チャート（試行用）
+export const MetricTimeSeriesChart: FunctionComponent<MetricTimeSeriesChartProps> = ({
+  points,
+  title,
+  unitLabel,
+  stroke,
+  fill,
+  formatValue,
+  toDisplay,
+  testId,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const style = METRIC_STYLES[metric];
 
   useEffect(() => {
     const container = containerRef.current;
     if (container === null) {
       return;
     }
-    if (!hasPlottableValue(points, metric)) {
+    if (!hasPlottableValue(points)) {
       return;
     }
 
@@ -99,25 +65,16 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
     const values: Array<number | null> = [];
     for (const point of points) {
       timestampsSec.push(point.timestamp_ms / 1000);
-      const raw = metricValue(point, metric);
-      if (raw === null) {
+      if (point.value === null) {
         values.push(null);
+      } else if (toDisplay !== undefined) {
+        values.push(toDisplay(point.value));
       } else {
-        values.push(style.toDisplay(raw));
+        values.push(point.value);
       }
     }
 
     const width = Math.max(container.clientWidth, 320);
-    const yValues =
-      metric === "round_trip_time"
-        ? {
-            values: (_uPlot: UPlot, splits: number[]) =>
-              splits.map((value) => `${Math.round(value)}`),
-          }
-        : {
-            values: axisCompactNumberLabels,
-          };
-
     const plot = new UPlot(
       {
         width,
@@ -139,7 +96,6 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
             time: true,
           },
           y: {
-            // 下限を 0 に寄せて読みやすくする
             range: (_uPlot, _initMin, initMax) => {
               const paddedMax = !Number.isFinite(initMax) || initMax <= 0 ? 1 : initMax * 1.08;
               return [0, paddedMax];
@@ -171,7 +127,7 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
               stroke: GRID_STROKE,
             },
             size: 56,
-            ...yValues,
+            values: axisCompactNumberLabels,
           },
         ],
         series: [
@@ -186,8 +142,8 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
           },
           {
             label: title,
-            stroke: style.stroke,
-            fill: style.fill,
+            stroke,
+            fill,
             width: 2,
             spanGaps: false,
             points: {
@@ -197,7 +153,7 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
               if (!Number.isFinite(value)) {
                 return "—";
               }
-              return style.formatValue(value);
+              return formatValue(value);
             },
           },
         ],
@@ -218,17 +174,16 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
       resizeObserver.disconnect();
       plot.destroy();
     };
-  }, [points, metric, title, style]);
+  }, [points, title, stroke, fill, unitLabel, formatValue, toDisplay]);
 
-  if (!hasPlottableValue(points, metric)) {
+  const resolvedTestId = testId ?? "metric-timeseries-chart";
+
+  if (!hasPlottableValue(points)) {
     return (
-      <div
-        className="rounded border border-bs-light bg-white p-3"
-        data-testid={`stats-chart-${metric}`}
-      >
+      <div className="rounded border border-bs-light bg-white p-3" data-testid={resolvedTestId}>
         <div className="mb-1 flex items-baseline justify-between gap-2">
           <h4 className="text-sm font-semibold text-bs-body">{title}</h4>
-          <span className="text-xs text-bs-secondary">{style.unitLabel}</span>
+          <span className="text-xs text-bs-secondary">{unitLabel}</span>
         </div>
         <p className="text-sm text-bs-secondary">表示できる時系列データがありません</p>
       </div>
@@ -236,19 +191,16 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
   }
 
   return (
-    <div
-      className="rounded border border-bs-light bg-white p-3"
-      data-testid={`stats-chart-${metric}`}
-    >
+    <div className="rounded border border-bs-light bg-white p-3" data-testid={resolvedTestId}>
       <div className="mb-2 flex items-baseline justify-between gap-2">
         <h4 className="text-sm font-semibold text-bs-body">{title}</h4>
-        <span className="text-xs text-bs-secondary">{style.unitLabel}</span>
+        <span className="text-xs text-bs-secondary">{unitLabel}</span>
       </div>
       <div
         ref={containerRef}
         className={styles.chart}
         role="img"
-        aria-label={`${title}（単位: ${style.unitLabel}）`}
+        aria-label={`${title}（単位: ${unitLabel}）`}
       />
     </div>
   );
