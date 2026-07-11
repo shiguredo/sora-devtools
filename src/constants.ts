@@ -114,3 +114,9 @@ export const ROLES = ["sendrecv", "sendonly", "recvonly"] as const;
 export const FACING_MODES = ["", "front", "back"] as const;
 
 export const INSTRUCTIONS = instructionsJSON as Record<string, { description: string } | null>;
+
+// ビルド時に Vite の define で埋め込まれる Sessions 機能の有効フラグ
+// VITE_ENABLE_SESSIONS=true のビルドでのみ true になる
+// UI の表示切り替え専用。動的 import のガードには __SESSIONS_ENABLED__ を直接使うこと
+// （理由は sessionDatabaseLoader.ts 冒頭のコメントを参照）
+export const SESSIONS_ENABLED = __SESSIONS_ENABLED__;

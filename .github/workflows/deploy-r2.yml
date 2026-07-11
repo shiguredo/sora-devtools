@@ -20,7 +20,10 @@ jobs:
         with:
           node-version: "26"
       - run: vp install --frozen-lockfile
+      # デプロイするビルドでは Sessions 機能を有効化する
       - run: vp build
+        env:
+          VITE_ENABLE_SESSIONS: "true"
       # R2 へのアップロード
       - name: Configure AWS CLI for R2
         run: |

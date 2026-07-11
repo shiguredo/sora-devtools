@@ -20,8 +20,34 @@ jobs:
           node-version-file: ".node-version"
           run-install: true
       - run: vp check
+      # CI では Sessions 機能を有効化してビルド・テストする
       - run: vp build
+        env:
+          VITE_ENABLE_SESSIONS: "true"
       - run: vp test run
+        env:
+          VITE_ENABLE_SESSIONS: "true"
+      # Sessions 無効ビルドが成功し、DuckDB-Wasm / Apache Arrow / uPlot /
+      # Sessions ページ関連のアセットが含まれないことを検証する
+      - run: rm -rf dist && vp build
+        env:
+          VITE_ENABLE_SESSIONS: "false"
+      - run: |
+          if [ ! -d dist/assets ]; then
+            echo "dist/assets is missing"
+            exit 1
+          fi
+          forbidden=$(ls dist/assets | grep -Ei 'duckdb|apache-arrow|uplot|Sessions|sessionDatabase' || true)
+          if [ -n "$forbidden" ]; then
+            echo "Sessions-disabled build must not contain Sessions-related assets:"
+            echo "$forbidden"
+            exit 1
+          fi
+      # 無効モードでも unit test を実行し、ラッパーの no-op 契約を検証する
+      # （有効モードでは test.skipIf で該当テストが skip されるため）
+      - run: vp test run
+        env:
+          VITE_ENABLE_SESSIONS: "false"
 
   slack_notify:
     needs:

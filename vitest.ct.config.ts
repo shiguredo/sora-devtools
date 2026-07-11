@@ -8,6 +8,10 @@ const rootDir = import.meta.dirname;
 
 export default defineConfig({
   plugins: [preactPlugin(), tailwindcss()],
+  // ブラウザテストにもビルド時定数を埋め込む（既定は無効）
+  define: {
+    __SESSIONS_ENABLED__: JSON.stringify(process.env.VITE_ENABLE_SESSIONS === "true"),
+  },
   resolve: {
     alias: {
       "@": path.resolve(rootDir, "./src"),
