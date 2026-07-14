@@ -122,13 +122,16 @@ test.describe("sessions page UI", () => {
     await page.getByTestId(`session-row-${first.sessionDbId}`).waitFor({ timeout: 10_000 });
     await page.getByTestId(`session-row-${second.sessionDbId}`).waitFor({ timeout: 10_000 });
 
-    // キャンセルでは消えない
+    // キャンセルでは消えない（確認は一覧外パネル）
     await page.getByTestId(`session-delete-${first.sessionDbId}`).click();
+    await page.getByTestId("sessions-delete-confirm-panel").waitFor({ timeout: 5000 });
     await page.getByTestId(`session-delete-cancel-${first.sessionDbId}`).click();
+    await expect(page.getByTestId("sessions-delete-confirm-panel")).toHaveCount(0);
     await expect(page.getByTestId(`session-row-${first.sessionDbId}`)).toBeVisible();
 
     // 行削除
     await page.getByTestId(`session-delete-${first.sessionDbId}`).click();
+    await page.getByTestId("sessions-delete-confirm-panel").waitFor({ timeout: 5000 });
     await page.getByTestId(`session-delete-confirm-${first.sessionDbId}`).click();
     await expect(page.getByTestId(`session-row-${first.sessionDbId}`)).toHaveCount(0, {
       timeout: 10_000,
@@ -159,13 +162,16 @@ test.describe("sessions page UI", () => {
     await page.getByTestId("session-list").waitFor({ timeout: 10_000 });
     await page.getByTestId(`session-row-${persisted.sessionDbId}`).waitFor({ timeout: 10_000 });
 
-    // 履歴削除のキャンセル
+    // 履歴削除のキャンセル（確認は一覧外パネル）
     await page.getByTestId("sessions-reset-database").click();
+    await page.getByTestId("sessions-delete-confirm-panel").waitFor({ timeout: 5000 });
     await page.getByTestId("sessions-reset-cancel").click();
+    await expect(page.getByTestId("sessions-delete-confirm-panel")).toHaveCount(0);
     await expect(page.getByTestId(`session-row-${persisted.sessionDbId}`)).toBeVisible();
 
     // 履歴削除
     await page.getByTestId("sessions-reset-database").click();
+    await page.getByTestId("sessions-delete-confirm-panel").waitFor({ timeout: 5000 });
     await page.getByTestId("sessions-reset-confirm").click();
     await page.getByTestId("session-list-empty").waitFor({ timeout: 10_000 });
 

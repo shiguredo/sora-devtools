@@ -6,6 +6,7 @@ import { connectionStatus } from "@/app/signals";
 import { SessionDetail } from "@/components/Sessions/SessionDetail";
 import { SessionFilter } from "@/components/Sessions/SessionFilter";
 import { SessionList } from "@/components/Sessions/SessionList";
+import { SessionsDeleteConfirmPanel } from "@/components/Sessions/SessionsDeleteConfirmPanel";
 import {
   deleteSession,
   getCurrentSessionDbId,
@@ -19,6 +20,21 @@ import { buildSessionsPath, parseSessionsSearchParams } from "@/sessionsSearchPa
 import type { SessionsSearchParams } from "@/sessionsSearchParams";
 
 type SessionsErrorKind = "list" | "delete" | "reset";
+
+function findSessionById(
+  sessions: SessionListRow[],
+  sessionDbId: number | null,
+): SessionListRow | null {
+  if (sessionDbId === null) {
+    return null;
+  }
+  for (const session of sessions) {
+    if (session.id === sessionDbId) {
+      return session;
+    }
+  }
+  return null;
+}
 
 // 不正な QS が落ちたときだけ URL を正規化する（パラメータ順の差では置換しない）
 function shouldNormalizeSearch(search: string, parsed: SessionsSearchParams): boolean {
@@ -297,34 +313,7 @@ const Sessions: FunctionComponent = () => {
     );
   }
 
-  let resetConfirmUi = null;
-  if (confirmingReset) {
-    resetConfirmUi = (
-      <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-        <span className="text-bs-secondary">保存されたセッション履歴がすべて削除されます</span>
-        <button
-          type="button"
-          className="rounded border border-red-400 px-2 py-0.5 text-xs text-red-700"
-          data-testid="sessions-reset-confirm"
-          disabled={resetting || deleteActionsDisabled}
-          onClick={handleConfirmReset}
-        >
-          削除する
-        </button>
-        <button
-          type="button"
-          className="rounded border border-bs-secondary px-2 py-0.5 text-xs"
-          data-testid="sessions-reset-cancel"
-          disabled={resetting || deleteActionsDisabled}
-          onClick={() => {
-            setConfirmingReset(false);
-          }}
-        >
-          キャンセル
-        </button>
-      </div>
-    );
-  }
+  const confirmingSession = findSessionById(sessions, confirmingSessionDbId);
 
   let listBody = null;
   if (loading) {
@@ -345,6 +334,7 @@ const Sessions: FunctionComponent = () => {
         sessions={sessions}
         currentSessionDbId={currentSessionDbId}
         selectedSessionDbId={searchParams.sessionDbId}
+        confirmingSessionDbId={confirmingSessionDbId}
         onSelect={(sessionDbId) => {
           applySearchParams({ ...searchParams, sessionDbId });
         }}
@@ -352,12 +342,6 @@ const Sessions: FunctionComponent = () => {
           setConfirmingReset(false);
           setConfirmingSessionDbId(sessionDbId);
         }}
-        onConfirmDelete={handleConfirmDelete}
-        onCancelDelete={() => {
-          setConfirmingSessionDbId(null);
-        }}
-        confirmingSessionDbId={confirmingSessionDbId}
-        deletingSessionDbId={deletingSessionDbId}
         deleteActionsDisabled={deleteActionsDisabled}
       />
     );
@@ -393,11 +377,26 @@ const Sessions: FunctionComponent = () => {
       {errorAlert}
       <SessionFilter value={searchParams} onChange={applySearchParams} />
       <section className="mb-6">
-        <div className="mb-2 flex flex-wrap items-center gap-3">
+        <div className="mb-2 flex items-center gap-3">
           <h2 className="text-lg font-semibold">一覧</h2>
           {resetButton}
         </div>
-        {resetConfirmUi}
+        <SessionsDeleteConfirmPanel
+          confirmingReset={confirmingReset}
+          confirmingSessionDbId={confirmingSessionDbId}
+          confirmingSession={confirmingSession}
+          deleteActionsDisabled={deleteActionsDisabled}
+          resetting={resetting}
+          deletingSessionDbId={deletingSessionDbId}
+          onConfirmReset={handleConfirmReset}
+          onCancelReset={() => {
+            setConfirmingReset(false);
+          }}
+          onConfirmDelete={handleConfirmDelete}
+          onCancelDelete={() => {
+            setConfirmingSessionDbId(null);
+          }}
+        />
         {listBody}
       </section>
       <section>

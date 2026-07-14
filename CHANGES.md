@@ -13,6 +13,8 @@
 
 - [CHANGE] Sessions 機能をビルド時にデフォルト無効化し、環境変数で有効化できるようにする
   - @voluntas
+- [CHANGE] /sessions の削除確認 UI をレイアウトを動かさないオーバーレイにやり直す
+  - @voluntas
 - [ADD] /sessions にセッション行の削除と履歴削除（OPFS 再作成）を追加する
   - @voluntas
 - [ADD] /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
