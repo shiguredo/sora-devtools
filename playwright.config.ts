@@ -4,6 +4,8 @@ export default defineConfig({
   // 環境変数 .env.local が読み込まれる
   globalSetup: "./tests/global-setup.ts",
   testDir: "tests",
+  // 接続を複数回行う永続化 / Sessions UI テストは 30 秒では足りない
+  timeout: 60_000,
   // OPFS 上のセッション DB はオリジン共有のため、複数 worker だと永続化テストが競合する
   workers: 1,
   // fullyParallel: true,
