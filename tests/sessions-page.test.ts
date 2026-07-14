@@ -5,6 +5,8 @@ import { requireSoraConnectionEnv } from "./helpers/env.ts";
 import {
   awaitSessionDatabaseReady,
   cleanupSessionDatabase,
+  listConnectionRows,
+  listWebrtcStatsRows,
   waitForEndedAt,
   waitForWebrtcStats,
 } from "./helpers/sessionDatabase.ts";
@@ -106,5 +108,110 @@ test.describe("sessions page UI", () => {
     const hasAggregateValue = aggregatesText !== null && /\d/u.test(aggregatesText);
     const hasRawPanel = await rawPanel.isVisible().catch(() => false);
     expect(hasAggregateValue || hasRawPanel).toBe(true);
+  });
+
+  test("行削除の確認キャンセルでは消えず、確定でカスケード削除される", async ({ page }) => {
+    const env = requireSoraConnectionEnv();
+    const channelId = `${env.channelIdPrefix}sessions-page-row-delete`;
+
+    const first = await connectAndPersist(page, channelId);
+    const second = await connectAndPersist(page, channelId);
+
+    await page.goto(`${BASE_URL}/sessions`);
+    await page.getByTestId("session-list").waitFor({ timeout: 10_000 });
+    await page.getByTestId(`session-row-${first.sessionDbId}`).waitFor({ timeout: 10_000 });
+    await page.getByTestId(`session-row-${second.sessionDbId}`).waitFor({ timeout: 10_000 });
+
+    // キャンセルでは消えない
+    await page.getByTestId(`session-delete-${first.sessionDbId}`).click();
+    await page.getByTestId(`session-delete-cancel-${first.sessionDbId}`).click();
+    await expect(page.getByTestId(`session-row-${first.sessionDbId}`)).toBeVisible();
+
+    // 行削除
+    await page.getByTestId(`session-delete-${first.sessionDbId}`).click();
+    await page.getByTestId(`session-delete-confirm-${first.sessionDbId}`).click();
+    await expect(page.getByTestId(`session-row-${first.sessionDbId}`)).toHaveCount(0, {
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId(`session-row-${second.sessionDbId}`)).toBeVisible();
+
+    // カスケード確認はシナリオ末尾で helpers を使う
+    const connections = await listConnectionRows(page);
+    expect(connections.filter((row) => row.session_db_id === first.sessionDbId)).toHaveLength(0);
+    const stats = await listWebrtcStatsRows(page);
+    expect(stats.filter((row) => row.session_db_id === first.sessionDbId)).toHaveLength(0);
+
+    // helpers が close/reopen したあと DOM を再取得する
+    await page.goto(`${BASE_URL}/sessions`);
+    await page.getByTestId("session-list").waitFor({ timeout: 10_000 });
+    await expect(page.getByTestId(`session-row-${second.sessionDbId}`)).toBeVisible({
+      timeout: 10_000,
+    });
+  });
+
+  test("履歴削除の確認キャンセルでは消えず、確定後は再記録できる", async ({ page }) => {
+    const env = requireSoraConnectionEnv();
+    const channelId = `${env.channelIdPrefix}sessions-page-reset`;
+
+    const persisted = await connectAndPersist(page, channelId);
+
+    await page.goto(`${BASE_URL}/sessions`);
+    await page.getByTestId("session-list").waitFor({ timeout: 10_000 });
+    await page.getByTestId(`session-row-${persisted.sessionDbId}`).waitFor({ timeout: 10_000 });
+
+    // 履歴削除のキャンセル
+    await page.getByTestId("sessions-reset-database").click();
+    await page.getByTestId("sessions-reset-cancel").click();
+    await expect(page.getByTestId(`session-row-${persisted.sessionDbId}`)).toBeVisible();
+
+    // 履歴削除
+    await page.getByTestId("sessions-reset-database").click();
+    await page.getByTestId("sessions-reset-confirm").click();
+    await page.getByTestId("session-list-empty").waitFor({ timeout: 10_000 });
+
+    // 再接続で再記録
+    const again = await connectAndPersist(page, `${channelId}-again`);
+    await page.goto(`${BASE_URL}/sessions`);
+    await page.getByTestId(`session-row-${again.sessionDbId}`).waitFor({ timeout: 10_000 });
+  });
+
+  test("接続中は履歴削除が disabled で当該行の削除ボタンが無い", async ({ page }) => {
+    const env = requireSoraConnectionEnv();
+    const channelId = `${env.channelIdPrefix}sessions-page-live-delete`;
+
+    const past = await connectAndPersist(page, channelId);
+
+    const live = new DevtoolsPage(page);
+    await live.navigate({
+      role: "sendrecv",
+      channelId: `${channelId}-live`,
+      signalingUrlCandidates: [env.signalingUrl],
+      accessToken: env.accessToken,
+      videoCodecType: "VP9",
+    });
+    await awaitSessionDatabaseReady(page);
+    await live.connect();
+    await live.waitForConnection();
+
+    const currentId = await page.evaluate(async (moduleUrl) => {
+      const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+      const mod = loaded as { getCurrentSessionDbId: () => number | null };
+      return mod.getCurrentSessionDbId();
+    }, "/src/sessionDatabase.ts");
+    expect(currentId).not.toBeNull();
+
+    // フルリロードではなく SPA 遷移で接続状態を維持する
+    await page.getByRole("button", { name: "Sessions" }).click();
+    await page.getByRole("heading", { name: "Sessions", exact: true }).waitFor({ timeout: 10_000 });
+    await page.getByTestId("session-list").waitFor({ timeout: 10_000 });
+    await expect(page.getByTestId("sessions-reset-database")).toBeDisabled();
+    if (currentId !== null) {
+      await expect(page.getByTestId(`session-delete-${currentId}`)).toHaveCount(0);
+    }
+    await expect(page.getByTestId(`session-delete-${past.sessionDbId}`)).toBeVisible();
+
+    await page.getByRole("link", { name: "Sora DevTools" }).click();
+    await page.waitForURL((url) => url.pathname === "/", { timeout: 5000 });
+    await live.disconnect();
   });
 });

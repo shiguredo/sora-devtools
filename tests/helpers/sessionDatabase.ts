@@ -218,3 +218,39 @@ export async function waitForWebrtcStats(
       `sessionDbId=${String(options.sessionDbId)})`,
   );
 }
+
+// アプリ側 deleteSession を呼ぶ（UI ではなく API 直叩きの DB 層テスト用）
+export async function callDeleteSession(page: Page, sessionDbId: number): Promise<void> {
+  await page.evaluate(
+    async ({ moduleUrl, id }) => {
+      const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+      const mod = loaded as {
+        deleteSession: (sessionDbId: number) => Promise<void>;
+      };
+      await mod.deleteSession(id);
+    },
+    { moduleUrl: SESSION_DATABASE_MODULE_URL, id: sessionDbId },
+  );
+}
+
+// アプリ側 resetSessionDatabase を呼ぶ
+export async function callResetSessionDatabase(page: Page): Promise<void> {
+  await page.evaluate(async (moduleUrl) => {
+    const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+    const mod = loaded as {
+      resetSessionDatabase: () => Promise<void>;
+    };
+    await mod.resetSessionDatabase();
+  }, SESSION_DATABASE_MODULE_URL);
+}
+
+// アプリ側 getCurrentSessionDbId を読む
+export async function readCurrentSessionDbId(page: Page): Promise<number | null> {
+  return page.evaluate(async (moduleUrl) => {
+    const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+    const mod = loaded as {
+      getCurrentSessionDbId: () => number | null;
+    };
+    return mod.getCurrentSessionDbId();
+  }, SESSION_DATABASE_MODULE_URL);
+}

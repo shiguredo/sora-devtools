@@ -3,9 +3,14 @@ import { expect, test } from "@playwright/test";
 import { requireSoraConnectionEnv } from "./helpers/env.ts";
 import {
   awaitSessionDatabaseReady,
+  callDeleteSession,
+  callResetSessionDatabase,
   cleanupSessionDatabase,
+  listConnectionRows,
   listSessionRows,
+  listWebrtcStatsRows,
   waitForEndedAt,
+  waitForWebrtcStats,
 } from "./helpers/sessionDatabase.ts";
 import { DevtoolsPage } from "./pages/DevtoolsPage.ts";
 
@@ -194,5 +199,196 @@ test.describe("session database persistence", () => {
     const { session: latest } = await waitForEndedAt(page, { connectionId });
     expect(latest.channel_id).toBe(channelId);
     expect(latest.ended_at).toBeTruthy();
+  });
+
+  test("deleteSession は関連 connections / webrtc_stats を消し current は拒否する", async ({
+    page,
+  }) => {
+    const env = requireSoraConnectionEnv();
+    const channelId = `${env.channelIdPrefix}session-db-delete`;
+
+    const first = await (async () => {
+      const devtools = new DevtoolsPage(page);
+      await devtools.navigate({
+        role: "sendrecv",
+        channelId,
+        signalingUrlCandidates: [env.signalingUrl],
+        accessToken: env.accessToken,
+        videoCodecType: "VP9",
+      });
+      await awaitSessionDatabaseReady(page);
+      await devtools.connect();
+      await devtools.waitForConnection();
+      const connectionId = await devtools.getConnectionId();
+      expect(connectionId).toBeTruthy();
+      if (!connectionId) {
+        throw new Error("expected non-empty connection ID");
+      }
+      await page.waitForTimeout(1500);
+      await devtools.disconnect();
+      const ended = await waitForEndedAt(page, { connectionId });
+      await waitForWebrtcStats(page, {
+        connectionId,
+        sessionDbId: ended.session.id,
+        channelId,
+        minCount: 1,
+      });
+      return ended.session.id;
+    })();
+
+    const second = await (async () => {
+      const devtools = new DevtoolsPage(page);
+      await devtools.navigate({
+        role: "sendrecv",
+        channelId,
+        signalingUrlCandidates: [env.signalingUrl],
+        accessToken: env.accessToken,
+        videoCodecType: "VP9",
+      });
+      await awaitSessionDatabaseReady(page);
+      await devtools.connect();
+      await devtools.waitForConnection();
+      const connectionId = await devtools.getConnectionId();
+      expect(connectionId).toBeTruthy();
+      if (!connectionId) {
+        throw new Error("expected non-empty connection ID");
+      }
+      await page.waitForTimeout(1500);
+      await devtools.disconnect();
+      const ended = await waitForEndedAt(page, { connectionId });
+      await waitForWebrtcStats(page, {
+        connectionId,
+        sessionDbId: ended.session.id,
+        channelId,
+        minCount: 1,
+      });
+      return ended.session.id;
+    })();
+
+    expect(second).not.toBe(first);
+
+    await callDeleteSession(page, first);
+
+    const sessions = await listSessionRows(page);
+    expect(sessions.find((row) => row.id === first)).toBeUndefined();
+    expect(sessions.find((row) => row.id === second)).toBeTruthy();
+
+    const connections = await listConnectionRows(page);
+    expect(connections.filter((row) => row.session_db_id === first)).toHaveLength(0);
+
+    const stats = await listWebrtcStatsRows(page);
+    expect(stats.filter((row) => row.session_db_id === first)).toHaveLength(0);
+
+    // 接続中の current 拒否
+    const live = new DevtoolsPage(page);
+    await live.navigate({
+      role: "sendrecv",
+      channelId: `${channelId}-live`,
+      signalingUrlCandidates: [env.signalingUrl],
+      accessToken: env.accessToken,
+      videoCodecType: "VP9",
+    });
+    await awaitSessionDatabaseReady(page);
+    await live.connect();
+    await live.waitForConnection();
+    const liveConnectionId = await live.getConnectionId();
+    expect(liveConnectionId).toBeTruthy();
+
+    const currentId = await page.evaluate(async (moduleUrl) => {
+      const loaded: unknown = await import(/* @vite-ignore */ moduleUrl);
+      const mod = loaded as { getCurrentSessionDbId: () => number | null };
+      return mod.getCurrentSessionDbId();
+    }, "/src/sessionDatabase.ts");
+    expect(currentId).not.toBeNull();
+    if (currentId === null) {
+      throw new Error("expected current session id");
+    }
+
+    let rejected = false;
+    let deleteMessage = "";
+    try {
+      await callDeleteSession(page, currentId);
+    } catch (error) {
+      rejected = true;
+      if (error instanceof Error) {
+        deleteMessage = error.message;
+      }
+    }
+    expect(rejected).toBe(true);
+    expect(deleteMessage).toContain(
+      `Cannot delete session: sessionDbId ${currentId} is the current session`,
+    );
+
+    let resetRejected = false;
+    let resetMessage = "";
+    try {
+      await callResetSessionDatabase(page);
+    } catch (error) {
+      resetRejected = true;
+      if (error instanceof Error) {
+        resetMessage = error.message;
+      }
+    }
+    expect(resetRejected).toBe(true);
+    expect(resetMessage).toContain("Cannot reset session database: a session is in progress");
+
+    await live.disconnect();
+  });
+
+  test("resetSessionDatabase 後は空になり再接続で記録できる", async ({ page }) => {
+    const env = requireSoraConnectionEnv();
+    const channelId = `${env.channelIdPrefix}session-db-reset`;
+
+    const devtools = new DevtoolsPage(page);
+    await devtools.navigate({
+      role: "sendrecv",
+      channelId,
+      signalingUrlCandidates: [env.signalingUrl],
+      accessToken: env.accessToken,
+      videoCodecType: "VP9",
+    });
+    await awaitSessionDatabaseReady(page);
+    await devtools.connect();
+    await devtools.waitForConnection();
+    const connectionId = await devtools.getConnectionId();
+    expect(connectionId).toBeTruthy();
+    if (!connectionId) {
+      throw new Error("expected non-empty connection ID");
+    }
+    await page.waitForTimeout(1500);
+    await devtools.disconnect();
+    await waitForEndedAt(page, { connectionId });
+
+    const before = await listSessionRows(page);
+    expect(before.length).toBeGreaterThanOrEqual(1);
+
+    await callResetSessionDatabase(page);
+
+    const afterResetSessions = await listSessionRows(page);
+    expect(afterResetSessions).toHaveLength(0);
+    const afterResetConnections = await listConnectionRows(page);
+    expect(afterResetConnections).toHaveLength(0);
+    const afterResetStats = await listWebrtcStatsRows(page);
+    expect(afterResetStats).toHaveLength(0);
+
+    await devtools.navigate({
+      role: "sendrecv",
+      channelId: `${channelId}-again`,
+      signalingUrlCandidates: [env.signalingUrl],
+      accessToken: env.accessToken,
+      videoCodecType: "VP9",
+    });
+    await awaitSessionDatabaseReady(page);
+    await devtools.connect();
+    await devtools.waitForConnection();
+    const againConnectionId = await devtools.getConnectionId();
+    expect(againConnectionId).toBeTruthy();
+    if (!againConnectionId) {
+      throw new Error("expected non-empty connection ID");
+    }
+    await page.waitForTimeout(1000);
+    await devtools.disconnect();
+    const again = await waitForEndedAt(page, { connectionId: againConnectionId });
+    expect(again.session.id).toBeTruthy();
   });
 });
