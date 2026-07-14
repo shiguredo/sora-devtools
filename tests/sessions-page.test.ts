@@ -110,9 +110,9 @@ test.describe("sessions page UI", () => {
     expect(hasAggregateValue || hasRawPanel).toBe(true);
   });
 
-  test("行削除と履歴削除が動作し確認キャンセルでは消えない", async ({ page }) => {
+  test("行削除の確認キャンセルでは消えず、確定でカスケード削除される", async ({ page }) => {
     const env = requireSoraConnectionEnv();
-    const channelId = `${env.channelIdPrefix}sessions-page-delete`;
+    const channelId = `${env.channelIdPrefix}sessions-page-row-delete`;
 
     const first = await connectAndPersist(page, channelId);
     const second = await connectAndPersist(page, channelId);
@@ -147,11 +147,22 @@ test.describe("sessions page UI", () => {
     await expect(page.getByTestId(`session-row-${second.sessionDbId}`)).toBeVisible({
       timeout: 10_000,
     });
+  });
+
+  test("履歴削除の確認キャンセルでは消えず、確定後は再記録できる", async ({ page }) => {
+    const env = requireSoraConnectionEnv();
+    const channelId = `${env.channelIdPrefix}sessions-page-reset`;
+
+    const persisted = await connectAndPersist(page, channelId);
+
+    await page.goto(`${BASE_URL}/sessions`);
+    await page.getByTestId("session-list").waitFor({ timeout: 10_000 });
+    await page.getByTestId(`session-row-${persisted.sessionDbId}`).waitFor({ timeout: 10_000 });
 
     // 履歴削除のキャンセル
     await page.getByTestId("sessions-reset-database").click();
     await page.getByTestId("sessions-reset-cancel").click();
-    await expect(page.getByTestId(`session-row-${second.sessionDbId}`)).toBeVisible();
+    await expect(page.getByTestId(`session-row-${persisted.sessionDbId}`)).toBeVisible();
 
     // 履歴削除
     await page.getByTestId("sessions-reset-database").click();
