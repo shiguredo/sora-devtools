@@ -13,6 +13,8 @@
 
 - [CHANGE] Sessions 機能をビルド時にデフォルト無効化し、環境変数で有効化できるようにする
   - @voluntas
+- [ADD] /sessions にセッション行の削除と履歴削除（OPFS 再作成）を追加する
+  - @voluntas
 - [ADD] /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する
   - @voluntas
 - [ADD] uPlot を導入して Sessions の時系列チャートを 1 秒単位で描画する

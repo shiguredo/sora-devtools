@@ -8,6 +8,12 @@ export interface SessionListProps {
   currentSessionDbId: number | null;
   selectedSessionDbId: number | undefined;
   onSelect: (sessionDbId: number) => void;
+  onRequestDelete: (sessionDbId: number) => void;
+  onConfirmDelete: (sessionDbId: number) => void;
+  onCancelDelete: () => void;
+  confirmingSessionDbId: number | null;
+  deletingSessionDbId: number | null;
+  deleteActionsDisabled: boolean;
 }
 
 function displayOrDash(value: string | null): string {
@@ -23,6 +29,12 @@ export const SessionList: FunctionComponent<SessionListProps> = ({
   currentSessionDbId,
   selectedSessionDbId,
   onSelect,
+  onRequestDelete,
+  onConfirmDelete,
+  onCancelDelete,
+  confirmingSessionDbId,
+  deletingSessionDbId,
+  deleteActionsDisabled,
 }) => {
   if (sessions.length === 0) {
     return (
@@ -42,6 +54,7 @@ export const SessionList: FunctionComponent<SessionListProps> = ({
             <th className="px-2 py-1">started_at</th>
             <th className="px-2 py-1">ended_at</th>
             <th className="px-2 py-1">状態</th>
+            <th className="px-2 py-1">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -52,6 +65,69 @@ export const SessionList: FunctionComponent<SessionListProps> = ({
             if (selected) {
               rowClass = "border-b border-bs-light cursor-pointer bg-[#e7f1ff]";
             }
+            const confirming = confirmingSessionDbId === session.id;
+            const deleting = deletingSessionDbId === session.id;
+            const showDeleteButton = status !== "connected";
+
+            let actionCell = null;
+            if (showDeleteButton) {
+              if (confirming) {
+                actionCell = (
+                  <div
+                    className="flex flex-wrap items-center gap-1"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                    }}
+                  >
+                    <span className="text-xs text-bs-secondary">本当に削除しますか？</span>
+                    <button
+                      type="button"
+                      className="rounded border border-red-400 px-2 py-0.5 text-xs text-red-700"
+                      data-testid={`session-delete-confirm-${session.id}`}
+                      disabled={deleting || deleteActionsDisabled}
+                      onClick={() => {
+                        onConfirmDelete(session.id);
+                      }}
+                    >
+                      削除する
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded border border-bs-secondary px-2 py-0.5 text-xs"
+                      data-testid={`session-delete-cancel-${session.id}`}
+                      disabled={deleting || deleteActionsDisabled}
+                      onClick={() => {
+                        onCancelDelete();
+                      }}
+                    >
+                      キャンセル
+                    </button>
+                  </div>
+                );
+              } else {
+                actionCell = (
+                  <div
+                    className="flex flex-wrap items-center gap-1"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="rounded border border-bs-secondary px-2 py-0.5 text-xs"
+                      data-testid={`session-delete-${session.id}`}
+                      disabled={deleteActionsDisabled}
+                      onClick={() => {
+                        onRequestDelete(session.id);
+                      }}
+                    >
+                      削除
+                    </button>
+                  </div>
+                );
+              }
+            }
+
             return (
               <tr
                 key={session.id}
@@ -69,6 +145,7 @@ export const SessionList: FunctionComponent<SessionListProps> = ({
                 <td className="px-2 py-1" data-testid={`session-status-${session.id}`}>
                   {sessionStatusLabel(status)}
                 </td>
+                <td className="px-2 py-1">{actionCell}</td>
               </tr>
             );
           })}

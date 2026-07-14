@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-07-14
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-14
 - Model: Composer 2.5
 - Branch: feature/add-sessions-delete-ui
 - Polished: 2026-07-14
@@ -178,11 +178,10 @@ Medium。#0065 が第 1 段階の必須機能から意図的に外した「全�
 
 ## 解決方法
 
-1. 失敗する Playwright E2E（DB 層・UI 層）を先に追加する
-2. `src/sessionDatabase.ts` に `deleteSession` / `resetSessionDatabase`（`resetInProgress` 含む）を実装し、`flushOneStatsBuffer` の孤児 INSERT ガードを入れる
-3. `SessionList.tsx` に操作カラムと行確認帯、`Sessions.tsx` に履歴削除確認帯・`loadSessions`・`errorKind` 付きエラー表示を配線する
-4. `CHANGES.md` を更新する
-5. `vp check` / テストを通し、動作を確認する
+1. `src/sessionDatabase.ts` に `deleteSession` / `resetSessionDatabase` を追加し、`resetInProgress` 中は `insertSession` が DB へ書かないようにした。`flushOneStatsBuffer` では削除済み id の抽出済みバッチを INSERT しないガードを入れた
+2. `SessionList.tsx` に行削除ボタンと 2 段確認 UI を追加した。`Sessions.tsx` に履歴削除・`loadSessions`（世代キャンセル）・`errorKind` 付きエラー表示を配線した
+3. Playwright E2E でカスケード削除・current 拒否（行削除・履歴削除）・履歴削除後の再記録・接続中 disabled・確認キャンセルを検証した
+4. `CHANGES.md` の `## develop` に `[ADD]` を追記した
 
 ## 関連 issue
 

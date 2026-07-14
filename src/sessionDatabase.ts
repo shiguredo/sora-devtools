@@ -144,6 +144,8 @@ let checkpointTimerId: ReturnType<typeof setInterval> | null = null;
 let lastAlertMessage: string | null = null;
 let lastAlertAt = 0;
 let initStarted = false;
+// 履歴削除（OPFS 再作成）の実行中。この間 insertSession は DB へ書かない
+let resetInProgress = false;
 // AsyncDuckDBConnection は同一接続への並行 query を想定しないため、書き込みを直列化する
 let writeChain: Promise<void> = Promise.resolve();
 
@@ -579,7 +581,7 @@ export async function insertSession(
   // 初期化完了前の Connect で no-op にならないよう、書き込み前に初期化を待つ
   await whenReady();
   return enqueueWrite(async () => {
-    if (duckdbConnection === null) {
+    if (duckdbConnection === null || resetInProgress) {
       warnUnavailable("insertSession");
       return null;
     }
@@ -1036,12 +1038,12 @@ async function flushOneStatsBuffer(targetId: number, buffer: StatsBufferState): 
   buffer.rows = [];
   buffer.firstEnqueueAt = null;
   await enqueueWrite(async () => {
+    // 削除済み session の抽出済みバッチは INSERT しない（孤児行を残さない）
+    if (!statsBuffers.has(targetId)) {
+      return;
+    }
     if (duckdbConnection === null) {
       warnUnavailable("flushStatsBuffer");
-      // close 済みで map から外れている場合は orphan 復元しない
-      if (!statsBuffers.has(targetId)) {
-        return;
-      }
       buffer.rows = [...rows, ...buffer.rows];
       scheduleStatsFlush(targetId);
       return;
@@ -1160,6 +1162,53 @@ export async function querySessionDatabaseForE2e(
 // E2E ヘルパーから OPFS 上の DB ファイルを削除するために export する
 export async function deleteSessionDatabaseFiles(): Promise<void> {
   await deleteOpfsDatabaseFile();
+}
+
+// 当該 session_db_id の webrtc_stats / connections / sessions を削除する
+export async function deleteSession(sessionDbId: number): Promise<void> {
+  await whenReady();
+  if (sessionDbId === getCurrentSessionDbId()) {
+    throw new Error(`Cannot delete session: sessionDbId ${sessionDbId} is the current session`);
+  }
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      throw new Error("Cannot delete session: session database is unavailable");
+    }
+    clearStatsBuffers(sessionDbId);
+    const deleteStats = await duckdbConnection.prepare(
+      "DELETE FROM webrtc_stats WHERE session_db_id = ?",
+    );
+    await deleteStats.query(sessionDbId);
+    await deleteStats.close();
+    const deleteConnections = await duckdbConnection.prepare(
+      "DELETE FROM connections WHERE session_db_id = ?",
+    );
+    await deleteConnections.query(sessionDbId);
+    await deleteConnections.close();
+    const deleteSessions = await duckdbConnection.prepare("DELETE FROM sessions WHERE id = ?");
+    await deleteSessions.query(sessionDbId);
+    await deleteSessions.close();
+    await runCheckpointUnlocked();
+  });
+}
+
+// OPFS 上の DB を削除して空のデータベースを開き直す
+export async function resetSessionDatabase(): Promise<void> {
+  if (getCurrentSessionDbId() !== null) {
+    throw new Error("Cannot reset session database: a session is in progress");
+  }
+  resetInProgress = true;
+  try {
+    await close();
+    await deleteOpfsDatabaseFile();
+    await createSessionDatabase();
+    await whenReady();
+    if (!isSessionDatabaseAvailable()) {
+      throw new Error("Cannot reset session database: failed to reopen empty database");
+    }
+  } finally {
+    resetInProgress = false;
+  }
 }
 
 // --- 読み取り API（書き込みと同じ直列化キュー経由） ---
