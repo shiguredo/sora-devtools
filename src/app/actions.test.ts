@@ -105,7 +105,7 @@ test("handleTrackEvent は streams が空配列のとき例外を投げない", 
   } as unknown as RTCTrackEvent;
   // assert.doesNotThrow で「例外を投げない」契約を直接表現する
   assert.doesNotThrow(() => {
-    handleTrackEvent(emptyEvent);
+    handleTrackEvent(emptyEvent, null, null);
   });
 });
 
@@ -116,7 +116,7 @@ test("handleTrackEvent は streams が空配列のとき remoteClients を変更
     streams: [],
     track: { id: "t1", kind: "audio" },
   } as unknown as RTCTrackEvent;
-  handleTrackEvent(emptyEvent);
+  handleTrackEvent(emptyEvent, null, null);
   assert.equal(remoteClients.value.length, 0);
 });
 
@@ -128,7 +128,7 @@ test("handleTrackEvent は streams が空配列のとき event-on-track の time
     streams: [],
     track: { id: "t1", kind: "audio" },
   } as unknown as RTCTrackEvent;
-  handleTrackEvent(emptyEvent);
+  handleTrackEvent(emptyEvent, null, null);
   const after = timelineMessages.value.slice(beforeLength);
   // 差分 2 件: 冒頭の無条件 event-on-track と空配列ガード時の event-on-track (data 付き)
   assert.equal(after.length, 2);

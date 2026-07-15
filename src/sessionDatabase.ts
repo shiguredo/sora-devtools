@@ -12,7 +12,14 @@ import type {
   StatsStreamTimeseriesPoint,
   StreamSourceRow,
 } from "@/statsStreamQuery";
-import type { Json } from "@/types";
+import type {
+  Json,
+  LogMessage,
+  NotifyMessage,
+  PushMessage,
+  SignalingMessage,
+  TimelineMessage,
+} from "@/types";
 import { selectIdsToDeleteForSampling } from "@/webrtcStatsNormalizer";
 import type { NormalizedWebrtcStat } from "@/webrtcStatsNormalizer";
 
@@ -108,6 +115,87 @@ export type {
   StatsStreamTimeseriesPoint,
   StatsStreamType,
 } from "@/statsStreamQuery";
+
+// メッセージ種別。timeline / notify / signaling / log / push の 5 種
+export type MessageKind = "timeline" | "notify" | "signaling" | "log" | "push";
+
+export interface MessagePageOptions {
+  limit?: number;
+  offset?: number;
+}
+
+export interface TimelineMessagePageRow {
+  id: number;
+  session_db_id: number;
+  connection_id: string | null;
+  timestamp_ms: number;
+  type: string | null;
+  log_type: string | null;
+  payload_json: Json;
+}
+
+export interface TimelineMessagePageResult {
+  rows: TimelineMessagePageRow[];
+  totalCount: number;
+}
+
+export interface NotifyMessagePageRow {
+  id: number;
+  session_db_id: number;
+  connection_id: string | null;
+  timestamp_ms: number;
+  event_type: string | null;
+  transport_type: string | null;
+  payload_json: Json;
+}
+
+export interface NotifyMessagePageResult {
+  rows: NotifyMessagePageRow[];
+  totalCount: number;
+}
+
+export interface SignalingMessagePageRow {
+  id: number;
+  session_db_id: number;
+  connection_id: string | null;
+  timestamp_ms: number;
+  type: string | null;
+  transport_type: string | null;
+  payload_json: Json;
+}
+
+export interface SignalingMessagePageResult {
+  rows: SignalingMessagePageRow[];
+  totalCount: number;
+}
+
+export interface LogMessagePageRow {
+  id: number;
+  session_db_id: number;
+  connection_id: string | null;
+  timestamp_ms: number;
+  title: string | null;
+  payload_json: Json;
+}
+
+export interface LogMessagePageResult {
+  rows: LogMessagePageRow[];
+  totalCount: number;
+}
+
+export interface PushMessagePageRow {
+  id: number;
+  session_db_id: number;
+  connection_id: string | null;
+  timestamp_ms: number;
+  transport_type: string | null;
+  payload_json: Json;
+}
+
+export interface PushMessagePageResult {
+  rows: PushMessagePageRow[];
+  totalCount: number;
+}
 
 // OPFS 上の DuckDB データベースパス（signaling-url-candidates.json と衝突しない名前）
 const OPFS_DB_PATH = "opfs://sora-devtools-sessions.db";
@@ -242,6 +330,57 @@ export function normalizeNullableString(value: string): string | null {
     return null;
   }
   return value;
+}
+
+// LogMessage.message.description（stringify 済み JSON 文字列）をマスクする純粋関数
+// JSON.parse に失敗した場合（すでにプレーンな文字列の場合）はそのまま返す
+export function maskLogDescription(description: string): string {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(description);
+  } catch {
+    return description;
+  }
+  const masked = maskSensitiveMetadata(parsed);
+  return JSON.stringify(masked);
+}
+
+// 種別ごとにマスク済み payload_json を組み立てる純粋関数
+// timeline / notify / signaling / push はメッセージ全体をそのままマスクする
+// （data が文字列の場合、maskSensitiveMetadata は非機密キーの文字列値をそのまま返すため identity になる）
+// log は description が stringify 済み文字列のため maskLogDescription を個別に適用する
+export function buildMaskedMessagePayload(kind: "timeline", message: TimelineMessage): Json;
+export function buildMaskedMessagePayload(kind: "notify", message: NotifyMessage): Json;
+export function buildMaskedMessagePayload(kind: "signaling", message: SignalingMessage): Json;
+export function buildMaskedMessagePayload(kind: "log", message: LogMessage): Json;
+export function buildMaskedMessagePayload(kind: "push", message: PushMessage): Json;
+export function buildMaskedMessagePayload(
+  kind: MessageKind,
+  message: TimelineMessage | NotifyMessage | SignalingMessage | LogMessage | PushMessage,
+): Json {
+  if (kind === "log") {
+    const logMessage = message as LogMessage;
+    return {
+      title: logMessage.message.title,
+      description: maskLogDescription(logMessage.message.description),
+    };
+  }
+  return maskSensitiveMetadata(message);
+}
+
+// 容量上限超過分の削除対象 id を選ぶ純粋関数
+// sortedIdsOldestFirst は timestamp_ms 昇順（同値は id 昇順）で渡すこと
+// totalCount が limit 以下なら削除不要（空配列）、超過分は古い側から limit を超えた件数だけ返す
+export function selectMessageIdsToDelete(
+  sortedIdsOldestFirst: number[],
+  totalCount: number,
+  limit: number,
+): number[] {
+  if (totalCount <= limit) {
+    return [];
+  }
+  const deleteCount = totalCount - limit;
+  return sortedIdsOldestFirst.slice(0, deleteCount);
 }
 
 export function getCurrentSessionDbId(): number | null {
@@ -433,6 +572,94 @@ async function createSchema(connection: AsyncDuckDBConnection): Promise<void> {
   await connection.query(`
     CREATE INDEX IF NOT EXISTS idx_webrtc_stats_session_db_id
     ON webrtc_stats(session_db_id)
+  `);
+
+  await connection.query("CREATE SEQUENCE IF NOT EXISTS seq_timeline_messages_id");
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS timeline_messages (
+      id BIGINT PRIMARY KEY DEFAULT nextval('seq_timeline_messages_id'),
+      session_db_id INTEGER,
+      connection_id VARCHAR,
+      timestamp_ms DOUBLE,
+      type VARCHAR,
+      log_type VARCHAR,
+      payload_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await connection.query(`
+    CREATE INDEX IF NOT EXISTS idx_timeline_messages_session_db_id
+    ON timeline_messages(session_db_id)
+  `);
+
+  await connection.query("CREATE SEQUENCE IF NOT EXISTS seq_notify_messages_id");
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS notify_messages (
+      id BIGINT PRIMARY KEY DEFAULT nextval('seq_notify_messages_id'),
+      session_db_id INTEGER,
+      connection_id VARCHAR,
+      timestamp_ms DOUBLE,
+      event_type VARCHAR,
+      transport_type VARCHAR,
+      payload_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await connection.query(`
+    CREATE INDEX IF NOT EXISTS idx_notify_messages_session_db_id
+    ON notify_messages(session_db_id)
+  `);
+
+  await connection.query("CREATE SEQUENCE IF NOT EXISTS seq_signaling_messages_id");
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS signaling_messages (
+      id BIGINT PRIMARY KEY DEFAULT nextval('seq_signaling_messages_id'),
+      session_db_id INTEGER,
+      connection_id VARCHAR,
+      timestamp_ms DOUBLE,
+      type VARCHAR,
+      transport_type VARCHAR,
+      payload_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await connection.query(`
+    CREATE INDEX IF NOT EXISTS idx_signaling_messages_session_db_id
+    ON signaling_messages(session_db_id)
+  `);
+
+  await connection.query("CREATE SEQUENCE IF NOT EXISTS seq_log_messages_id");
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS log_messages (
+      id BIGINT PRIMARY KEY DEFAULT nextval('seq_log_messages_id'),
+      session_db_id INTEGER,
+      connection_id VARCHAR,
+      timestamp_ms DOUBLE,
+      title VARCHAR,
+      payload_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await connection.query(`
+    CREATE INDEX IF NOT EXISTS idx_log_messages_session_db_id
+    ON log_messages(session_db_id)
+  `);
+
+  await connection.query("CREATE SEQUENCE IF NOT EXISTS seq_push_messages_id");
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS push_messages (
+      id BIGINT PRIMARY KEY DEFAULT nextval('seq_push_messages_id'),
+      session_db_id INTEGER,
+      connection_id VARCHAR,
+      timestamp_ms DOUBLE,
+      transport_type VARCHAR,
+      payload_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await connection.query(`
+    CREATE INDEX IF NOT EXISTS idx_push_messages_session_db_id
+    ON push_messages(session_db_id)
   `);
 }
 
@@ -1102,6 +1329,273 @@ export function clearStatsBuffers(sessionDbId: number): void {
   statsBuffers.delete(sessionDbId);
 }
 
+// --- メッセージ永続化 API (timeline / notify / signaling / log / push) ---
+//
+// stats のようなバッファは持たず、都度 1 行 INSERT する（イベント頻度が stats より低いため）。
+// INSERT 成功直後に当該 session_db_id の件数を数え、上限超過分を古い側から削除する。
+// runCheckpointUnlocked は呼ばない（切断時の ended_at / stats flush とのキュー競合を避けるため）。
+
+// 種別ごとの上限件数（session_db_id 単位）
+const MESSAGE_LIMIT_PER_KIND = 1000;
+
+// notify メッセージから event_type を実行時に取り出す（無ければ null）
+function extractNotifyEventType(message: NotifyMessage["message"]): string | null {
+  const eventType = (message as unknown as Record<string, unknown>).event_type;
+  if (typeof eventType === "string") {
+    return eventType;
+  }
+  return null;
+}
+
+// 指定メッセージテーブルの当該 session_db_id 件数が上限を超えたら、古い側から超過分を削除する
+async function pruneMessageTableUnlocked(table: string, sessionDbId: number): Promise<void> {
+  if (duckdbConnection === null) {
+    return;
+  }
+  const countTable = await duckdbConnection.query(
+    `SELECT COUNT(*) AS count FROM ${table} WHERE session_db_id = ${sessionDbId}`,
+  );
+  const countColumn = countTable.getChildAt(0);
+  const rawCount: unknown = countColumn === null ? 0 : countColumn.get(0);
+  let totalCount = 0;
+  if (typeof rawCount === "bigint") {
+    totalCount = Number(rawCount);
+  } else if (typeof rawCount === "number") {
+    totalCount = rawCount;
+  }
+  if (totalCount <= MESSAGE_LIMIT_PER_KIND) {
+    return;
+  }
+  const idTable = await duckdbConnection.query(
+    `SELECT id FROM ${table} WHERE session_db_id = ${sessionDbId} ORDER BY timestamp_ms ASC, id ASC`,
+  );
+  const idColumn = idTable.getChildAt(0);
+  if (idColumn === null) {
+    return;
+  }
+  const sortedIds: number[] = [];
+  for (let index = 0; index < idColumn.length; index += 1) {
+    const rawId: unknown = idColumn.get(index);
+    if (typeof rawId === "bigint") {
+      sortedIds.push(Number(rawId));
+    } else if (typeof rawId === "number") {
+      sortedIds.push(rawId);
+    }
+  }
+  const toDelete = selectMessageIdsToDelete(sortedIds, totalCount, MESSAGE_LIMIT_PER_KIND);
+  if (toDelete.length === 0) {
+    return;
+  }
+  // id リストを分割して DELETE する（webrtc_stats のサンプリング削除と同方針）
+  const chunkSize = 500;
+  for (let offset = 0; offset < toDelete.length; offset += chunkSize) {
+    const chunk = toDelete.slice(offset, offset + chunkSize);
+    const list = chunk.join(",");
+    await duckdbConnection.query(`DELETE FROM ${table} WHERE id IN (${list})`);
+  }
+}
+
+function buildMessageInsertErrorMessage(action: string, error: unknown): string {
+  if (error instanceof Error) {
+    return `Failed to insert ${action}: ${error.message}`;
+  }
+  return `Failed to insert ${action}`;
+}
+
+export async function insertTimelineMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: TimelineMessage,
+): Promise<void> {
+  await whenReady();
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null || resetInProgress) {
+      warnUnavailable("insertTimelineMessage");
+      return;
+    }
+    try {
+      const payloadJson = JSON.stringify(buildMaskedMessagePayload("timeline", message));
+      const statement = await duckdbConnection.prepare(`
+        INSERT INTO timeline_messages (
+          session_db_id, connection_id, timestamp_ms, type, log_type, payload_json
+        ) VALUES (?, ?, ?, ?, ?, CAST(? AS JSON))
+      `);
+      try {
+        await statement.query(
+          sessionDbId,
+          connectionId,
+          message.timestamp,
+          message.type,
+          message.logType,
+          payloadJson,
+        );
+      } finally {
+        await statement.close();
+      }
+      await pruneMessageTableUnlocked("timeline_messages", sessionDbId);
+    } catch (error) {
+      const errorMessage = buildMessageInsertErrorMessage("timeline message", error);
+      console.warn(errorMessage);
+      notifyPersistenceError(errorMessage);
+    }
+  });
+}
+
+export async function insertNotifyMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: NotifyMessage,
+): Promise<void> {
+  await whenReady();
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null || resetInProgress) {
+      warnUnavailable("insertNotifyMessage");
+      return;
+    }
+    try {
+      const payloadJson = JSON.stringify(buildMaskedMessagePayload("notify", message));
+      const eventType = extractNotifyEventType(message.message);
+      const statement = await duckdbConnection.prepare(`
+        INSERT INTO notify_messages (
+          session_db_id, connection_id, timestamp_ms, event_type, transport_type, payload_json
+        ) VALUES (?, ?, ?, ?, ?, CAST(? AS JSON))
+      `);
+      try {
+        await statement.query(
+          sessionDbId,
+          connectionId,
+          message.timestamp,
+          eventType,
+          message.transportType,
+          payloadJson,
+        );
+      } finally {
+        await statement.close();
+      }
+      await pruneMessageTableUnlocked("notify_messages", sessionDbId);
+    } catch (error) {
+      const errorMessage = buildMessageInsertErrorMessage("notify message", error);
+      console.warn(errorMessage);
+      notifyPersistenceError(errorMessage);
+    }
+  });
+}
+
+export async function insertSignalingMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: SignalingMessage,
+): Promise<void> {
+  await whenReady();
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null || resetInProgress) {
+      warnUnavailable("insertSignalingMessage");
+      return;
+    }
+    try {
+      const payloadJson = JSON.stringify(buildMaskedMessagePayload("signaling", message));
+      const statement = await duckdbConnection.prepare(`
+        INSERT INTO signaling_messages (
+          session_db_id, connection_id, timestamp_ms, type, transport_type, payload_json
+        ) VALUES (?, ?, ?, ?, ?, CAST(? AS JSON))
+      `);
+      try {
+        await statement.query(
+          sessionDbId,
+          connectionId,
+          message.timestamp,
+          message.type,
+          message.transportType,
+          payloadJson,
+        );
+      } finally {
+        await statement.close();
+      }
+      await pruneMessageTableUnlocked("signaling_messages", sessionDbId);
+    } catch (error) {
+      const errorMessage = buildMessageInsertErrorMessage("signaling message", error);
+      console.warn(errorMessage);
+      notifyPersistenceError(errorMessage);
+    }
+  });
+}
+
+export async function insertLogMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: LogMessage,
+): Promise<void> {
+  await whenReady();
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null || resetInProgress) {
+      warnUnavailable("insertLogMessage");
+      return;
+    }
+    try {
+      const payloadJson = JSON.stringify(buildMaskedMessagePayload("log", message));
+      const statement = await duckdbConnection.prepare(`
+        INSERT INTO log_messages (
+          session_db_id, connection_id, timestamp_ms, title, payload_json
+        ) VALUES (?, ?, ?, ?, CAST(? AS JSON))
+      `);
+      try {
+        await statement.query(
+          sessionDbId,
+          connectionId,
+          message.timestamp,
+          message.message.title,
+          payloadJson,
+        );
+      } finally {
+        await statement.close();
+      }
+      await pruneMessageTableUnlocked("log_messages", sessionDbId);
+    } catch (error) {
+      const errorMessage = buildMessageInsertErrorMessage("log message", error);
+      console.warn(errorMessage);
+      notifyPersistenceError(errorMessage);
+    }
+  });
+}
+
+export async function insertPushMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: PushMessage,
+): Promise<void> {
+  await whenReady();
+  await enqueueWrite(async () => {
+    if (duckdbConnection === null || resetInProgress) {
+      warnUnavailable("insertPushMessage");
+      return;
+    }
+    try {
+      const payloadJson = JSON.stringify(buildMaskedMessagePayload("push", message));
+      const statement = await duckdbConnection.prepare(`
+        INSERT INTO push_messages (
+          session_db_id, connection_id, timestamp_ms, transport_type, payload_json
+        ) VALUES (?, ?, ?, ?, CAST(? AS JSON))
+      `);
+      try {
+        await statement.query(
+          sessionDbId,
+          connectionId,
+          message.timestamp,
+          message.transportType,
+          payloadJson,
+        );
+      } finally {
+        await statement.close();
+      }
+      await pruneMessageTableUnlocked("push_messages", sessionDbId);
+    } catch (error) {
+      const errorMessage = buildMessageInsertErrorMessage("push message", error);
+      console.warn(errorMessage);
+      notifyPersistenceError(errorMessage);
+    }
+  });
+}
+
 // E2E 専用: アプリ側 close 済み前提で OPFS DB を一時 open して SQL を実行する
 export async function querySessionDatabaseForE2e(
   sql: string,
@@ -1164,7 +1658,7 @@ export async function deleteSessionDatabaseFiles(): Promise<void> {
   await deleteOpfsDatabaseFile();
 }
 
-// 当該 session_db_id の webrtc_stats / connections / sessions を削除する
+// 当該 session_db_id のメッセージ 5 テーブル / webrtc_stats / connections / sessions を削除する
 export async function deleteSession(sessionDbId: number): Promise<void> {
   await whenReady();
   if (sessionDbId === getCurrentSessionDbId()) {
@@ -1175,6 +1669,21 @@ export async function deleteSession(sessionDbId: number): Promise<void> {
       throw new Error("Cannot delete session: session database is unavailable");
     }
     clearStatsBuffers(sessionDbId);
+    // メッセージ 5 テーブルは webrtc_stats より前に削除する（固定の削除順）
+    const messageTables = [
+      "timeline_messages",
+      "notify_messages",
+      "signaling_messages",
+      "log_messages",
+      "push_messages",
+    ];
+    for (const table of messageTables) {
+      const deleteMessages = await duckdbConnection.prepare(
+        `DELETE FROM ${table} WHERE session_db_id = ?`,
+      );
+      await deleteMessages.query(sessionDbId);
+      await deleteMessages.close();
+    }
     const deleteStats = await duckdbConnection.prepare(
       "DELETE FROM webrtc_stats WHERE session_db_id = ?",
     );
@@ -1790,5 +2299,253 @@ export async function queryStatsStreamTimeseries(
     }
     const rows = await loadStreamSourceRowsUnlocked(sessionDbId);
     return computeStreamTimeseriesForId(rows, statsId);
+  });
+}
+
+// --- メッセージ読み取り API (timeline / notify / signaling / log / push) ---
+//
+// 命名・契約は queryStatsPage / StatsPageRow に揃えるが、並びは
+// ORDER BY timestamp_ms DESC, id DESC（デバッグ閲覧は新しい順。queryStatsPage の ASC とは意図的に異なる）
+
+function validateMessagePageOptions(options: MessagePageOptions): {
+  limit: number;
+  offset: number;
+} {
+  const limit = options.limit ?? 50;
+  const offset = options.offset ?? 0;
+  if (!Number.isInteger(limit) || limit < 1 || limit > 200) {
+    throw new Error(`limit must be an integer in 1..200, got ${String(limit)}`);
+  }
+  if (!Number.isInteger(offset) || offset < 0) {
+    throw new Error(`offset must be a non-negative integer, got ${String(offset)}`);
+  }
+  return { limit, offset };
+}
+
+// payload_json を Json へ正規化する。文字列なら JSON.parse を試み、失敗時は文字列のまま返す
+function normalizePayloadJson(value: unknown): Json {
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value) as Json;
+    } catch {
+      return value;
+    }
+  }
+  if (value === null || value === undefined) {
+    return null;
+  }
+  return value as Json;
+}
+
+async function countMessagesUnlocked(table: string, sessionDbId: number): Promise<number> {
+  if (duckdbConnection === null) {
+    return 0;
+  }
+  const statement = await duckdbConnection.prepare(
+    `SELECT COUNT(*) AS total_count FROM ${table} WHERE session_db_id = ?`,
+  );
+  try {
+    const countTable = await statement.query(sessionDbId);
+    const records = arrowTableToRecords(countTable);
+    if (records.length === 0) {
+      return 0;
+    }
+    const [first] = records;
+    return requireNumber(first.total_count, `${table} total_count`);
+  } finally {
+    await statement.close();
+  }
+}
+
+// timeline_messages のページネーション付き読み取り。未初期化時は空
+export async function queryTimelineMessagesPage(
+  sessionDbId: number,
+  options: MessagePageOptions = {},
+): Promise<TimelineMessagePageResult> {
+  const { limit, offset } = validateMessagePageOptions(options);
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return { rows: [], totalCount: 0 };
+    }
+    const totalCount = await countMessagesUnlocked("timeline_messages", sessionDbId);
+    const statement = await duckdbConnection.prepare(`
+      SELECT id, session_db_id, connection_id, timestamp_ms, type, log_type, payload_json
+      FROM timeline_messages
+      WHERE session_db_id = ?
+      ORDER BY timestamp_ms DESC, id DESC
+      LIMIT ?
+      OFFSET ?
+    `);
+    try {
+      const pageTable = await statement.query(sessionDbId, limit, offset);
+      const rows = arrowTableToRecords(pageTable).map(
+        (record): TimelineMessagePageRow => ({
+          id: requireNumber(record.id, "timeline_messages.id"),
+          session_db_id: requireNumber(record.session_db_id, "timeline_messages.session_db_id"),
+          connection_id: toNullableString(record.connection_id),
+          timestamp_ms: requireNumber(record.timestamp_ms, "timeline_messages.timestamp_ms"),
+          type: toNullableString(record.type),
+          log_type: toNullableString(record.log_type),
+          payload_json: normalizePayloadJson(record.payload_json),
+        }),
+      );
+      return { rows, totalCount };
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// notify_messages のページネーション付き読み取り。未初期化時は空
+export async function queryNotifyMessagesPage(
+  sessionDbId: number,
+  options: MessagePageOptions = {},
+): Promise<NotifyMessagePageResult> {
+  const { limit, offset } = validateMessagePageOptions(options);
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return { rows: [], totalCount: 0 };
+    }
+    const totalCount = await countMessagesUnlocked("notify_messages", sessionDbId);
+    const statement = await duckdbConnection.prepare(`
+      SELECT id, session_db_id, connection_id, timestamp_ms, event_type, transport_type, payload_json
+      FROM notify_messages
+      WHERE session_db_id = ?
+      ORDER BY timestamp_ms DESC, id DESC
+      LIMIT ?
+      OFFSET ?
+    `);
+    try {
+      const pageTable = await statement.query(sessionDbId, limit, offset);
+      const rows = arrowTableToRecords(pageTable).map(
+        (record): NotifyMessagePageRow => ({
+          id: requireNumber(record.id, "notify_messages.id"),
+          session_db_id: requireNumber(record.session_db_id, "notify_messages.session_db_id"),
+          connection_id: toNullableString(record.connection_id),
+          timestamp_ms: requireNumber(record.timestamp_ms, "notify_messages.timestamp_ms"),
+          event_type: toNullableString(record.event_type),
+          transport_type: toNullableString(record.transport_type),
+          payload_json: normalizePayloadJson(record.payload_json),
+        }),
+      );
+      return { rows, totalCount };
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// signaling_messages のページネーション付き読み取り。未初期化時は空
+export async function querySignalingMessagesPage(
+  sessionDbId: number,
+  options: MessagePageOptions = {},
+): Promise<SignalingMessagePageResult> {
+  const { limit, offset } = validateMessagePageOptions(options);
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return { rows: [], totalCount: 0 };
+    }
+    const totalCount = await countMessagesUnlocked("signaling_messages", sessionDbId);
+    const statement = await duckdbConnection.prepare(`
+      SELECT id, session_db_id, connection_id, timestamp_ms, type, transport_type, payload_json
+      FROM signaling_messages
+      WHERE session_db_id = ?
+      ORDER BY timestamp_ms DESC, id DESC
+      LIMIT ?
+      OFFSET ?
+    `);
+    try {
+      const pageTable = await statement.query(sessionDbId, limit, offset);
+      const rows = arrowTableToRecords(pageTable).map(
+        (record): SignalingMessagePageRow => ({
+          id: requireNumber(record.id, "signaling_messages.id"),
+          session_db_id: requireNumber(record.session_db_id, "signaling_messages.session_db_id"),
+          connection_id: toNullableString(record.connection_id),
+          timestamp_ms: requireNumber(record.timestamp_ms, "signaling_messages.timestamp_ms"),
+          type: toNullableString(record.type),
+          transport_type: toNullableString(record.transport_type),
+          payload_json: normalizePayloadJson(record.payload_json),
+        }),
+      );
+      return { rows, totalCount };
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// log_messages のページネーション付き読み取り。未初期化時は空
+export async function queryLogMessagesPage(
+  sessionDbId: number,
+  options: MessagePageOptions = {},
+): Promise<LogMessagePageResult> {
+  const { limit, offset } = validateMessagePageOptions(options);
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return { rows: [], totalCount: 0 };
+    }
+    const totalCount = await countMessagesUnlocked("log_messages", sessionDbId);
+    const statement = await duckdbConnection.prepare(`
+      SELECT id, session_db_id, connection_id, timestamp_ms, title, payload_json
+      FROM log_messages
+      WHERE session_db_id = ?
+      ORDER BY timestamp_ms DESC, id DESC
+      LIMIT ?
+      OFFSET ?
+    `);
+    try {
+      const pageTable = await statement.query(sessionDbId, limit, offset);
+      const rows = arrowTableToRecords(pageTable).map(
+        (record): LogMessagePageRow => ({
+          id: requireNumber(record.id, "log_messages.id"),
+          session_db_id: requireNumber(record.session_db_id, "log_messages.session_db_id"),
+          connection_id: toNullableString(record.connection_id),
+          timestamp_ms: requireNumber(record.timestamp_ms, "log_messages.timestamp_ms"),
+          title: toNullableString(record.title),
+          payload_json: normalizePayloadJson(record.payload_json),
+        }),
+      );
+      return { rows, totalCount };
+    } finally {
+      await statement.close();
+    }
+  });
+}
+
+// push_messages のページネーション付き読み取り。未初期化時は空
+export async function queryPushMessagesPage(
+  sessionDbId: number,
+  options: MessagePageOptions = {},
+): Promise<PushMessagePageResult> {
+  const { limit, offset } = validateMessagePageOptions(options);
+  return enqueueWrite(async () => {
+    if (duckdbConnection === null) {
+      return { rows: [], totalCount: 0 };
+    }
+    const totalCount = await countMessagesUnlocked("push_messages", sessionDbId);
+    const statement = await duckdbConnection.prepare(`
+      SELECT id, session_db_id, connection_id, timestamp_ms, transport_type, payload_json
+      FROM push_messages
+      WHERE session_db_id = ?
+      ORDER BY timestamp_ms DESC, id DESC
+      LIMIT ?
+      OFFSET ?
+    `);
+    try {
+      const pageTable = await statement.query(sessionDbId, limit, offset);
+      const rows = arrowTableToRecords(pageTable).map(
+        (record): PushMessagePageRow => ({
+          id: requireNumber(record.id, "push_messages.id"),
+          session_db_id: requireNumber(record.session_db_id, "push_messages.session_db_id"),
+          connection_id: toNullableString(record.connection_id),
+          timestamp_ms: requireNumber(record.timestamp_ms, "push_messages.timestamp_ms"),
+          transport_type: toNullableString(record.transport_type),
+          payload_json: normalizePayloadJson(record.payload_json),
+        }),
+      );
+      return { rows, totalCount };
+    } finally {
+      await statement.close();
+    }
   });
 }

@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-07-14
-- Completed: YYYY-MM-DD
+- Completed: 2026-07-15
 - Model: Cursor Grok 4.5
 - Branch: feature/add-session-debug-message-persistence
 - Polished: 2026-07-14
@@ -357,13 +357,13 @@ waitForMessageRows(page: Page, table: MessageTableName, sessionDbId: number, min
 
 ## 解決方法
 
-1. 失敗する Vitest / E2E（マスク・容量超過 DELETE・メッセージ INSERT / ページ読み取り / `deleteSession` カスケード）を先に追加する
-2. `createSchema` に 5 テーブルと sequence / INDEX を追加する
-3. `sessionDatabase.ts` に INSERT・ページ読み取り・容量刈り込み・`deleteSession` 拡張を追加する（メッセージ経路は CHECKPOINT しない）
-4. `sessionDatabaseLoader.ts` に 5 書き込み API の非同期 no-op ラッパーを追加する
-5. `actions.ts` に persist ヘルパー（`sessionDbId` 必須引数）と `disconnectPersistence` を入れ、各 append 点から明示 ID で呼ぶ（INSERT 前除外・log timestamp・abend 並走分離に注意）
-6. `SessionDetail`（およびメッセージ用子コンポーネント）に種別タブ UI を追加する
-7. E2E ヘルパーと `tests/session-database.test.ts` / Sessions 系 E2E を更新し、CHANGES.md を更新する
+1. `src/sessionDatabase.ts` に `timeline_messages` / `notify_messages` / `signaling_messages` / `log_messages` / `push_messages` の SEQUENCE・TABLE・INDEX を追加した
+2. `maskLogDescription` / `buildMaskedMessagePayload` / `selectMessageIdsToDelete` と 5 種の `insert*Message` / `query*MessagesPage` を実装した（INSERT 経路は CHECKPOINT しない。種別上限 1000 で古い行を刈り込む）
+3. `deleteSession` でメッセージ 5 テーブルを `webrtc_stats` より前に DELETE するようにした
+4. `src/sessionDatabaseLoader.ts` に 5 書き込み API の非同期 no-op ラッパーを追加した
+5. `src/app/actions.ts` に `persist*Message` ヘルパーと `disconnectPersistence` を追加し、`setSoraCallbacks` / `createMediaStream` / `stopLocal*` / 切断・失敗パスから `sessionDbId` を明示渡しするようにした（`start-connection` / `start-reconnect` 等 INSERT 前は signal のみ）
+6. `SessionDebugMessages` を新設し `SessionDetail` に種別タブ・ページネーション UI を追加した
+7. Vitest（マスク・容量）と Playwright E2E（`tests/session-debug-messages.test.ts`、`deleteSession` カスケード拡張）を追加し、`CHANGES.md` の `## develop` に ADD エントリを追加した
 
 ## 関連 issue
 

@@ -6,6 +6,9 @@ import Sora from "sora-js-sdk";
 import type {
   ConnectionOptionsState,
   Json,
+  LogMessage,
+  NotifyMessage,
+  PushMessage,
   QueryStringParameters,
   RTCIceLocalCandidateStats,
   SignalingMessage,
@@ -44,7 +47,12 @@ import {
   getCurrentConnectionId,
   getCurrentSessionDbId,
   insertConnection,
+  insertLogMessage,
+  insertNotifyMessage,
+  insertPushMessage,
   insertSession,
+  insertSignalingMessage,
+  insertTimelineMessage,
   updateConnectionEndedAt,
   updateSessionEndedAt,
   updateSessionIdAndConnectionId,
@@ -64,6 +72,102 @@ interface SessionPersistenceState {
   sessionId: string | null;
   // disconnect が INSERT より先に来た connectionId を記録し、INSERT 完了後に ended_at を書く
   connectionEndedPendingIds: Set<string>;
+}
+
+// 切断シーケンス後半（cleanup / stopLocal*）用の session_db_id。
+// persistSessionEndedAt より前にセットし、cleanup 完了後に clear する。
+let disconnectPersistence: { sessionDbId: number; connectionId: string | null } | null = null;
+
+function setDisconnectPersistence(
+  sessionDbId: number | null | undefined,
+  connectionId: string | null,
+): void {
+  if (sessionDbId === null || sessionDbId === undefined) {
+    return;
+  }
+  disconnectPersistence = { sessionDbId, connectionId };
+}
+
+function clearDisconnectPersistence(): void {
+  disconnectPersistence = null;
+}
+
+// signal 更新と DuckDB 書き込みを対で行う。sessionDbId が null なら signal のみ。
+function persistTimelineMessage(
+  sessionDbId: number | null,
+  connectionId: string | null,
+  message: TimelineMessage,
+): void {
+  signals.setTimelineMessage(message);
+  if (sessionDbId === null) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await insertTimelineMessage(sessionDbId, connectionId, message);
+  });
+}
+
+function persistNotifyMessage(
+  sessionDbId: number | null,
+  connectionId: string | null,
+  message: NotifyMessage,
+): void {
+  signals.setNotifyMessages(message);
+  if (sessionDbId === null) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await insertNotifyMessage(sessionDbId, connectionId, message);
+  });
+}
+
+function persistSignalingMessage(
+  sessionDbId: number | null,
+  connectionId: string | null,
+  message: SignalingMessage,
+): void {
+  signals.setSignalingMessage(message);
+  if (sessionDbId === null) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await insertSignalingMessage(sessionDbId, connectionId, message);
+  });
+}
+
+function persistPushMessage(
+  sessionDbId: number | null,
+  connectionId: string | null,
+  message: PushMessage,
+): void {
+  signals.setPushMessages(message);
+  if (sessionDbId === null) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await insertPushMessage(sessionDbId, connectionId, message);
+  });
+}
+
+// log の timestamp は永続化用にここで確定し、signal 側は従来どおり setLogMessages に任せる
+function persistLogMessage(
+  sessionDbId: number | null,
+  connectionId: string | null,
+  title: string,
+  description: string,
+): void {
+  const timestamp = Date.now();
+  const logMessage: LogMessage = {
+    timestamp,
+    message: { title, description },
+  };
+  signals.setLogMessages({ title, description });
+  if (sessionDbId === null) {
+    return;
+  }
+  runPersistenceTask(async () => {
+    await insertLogMessage(sessionDbId, connectionId, logMessage);
+  });
 }
 
 // sessions.ended_at / connections.ended_at を fire-and-forget で更新する
@@ -743,6 +847,7 @@ function applyTrackSettings(mediaStream: MediaStream, state: createMediaStreamPi
 // getDisplayMedia を使用して MediaStream を生成する
 async function createDisplayMediaStream(
   state: createMediaStreamPickedState,
+  sessionDbId: number | null,
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   // cameraDevice はカメラ利用フラグなので getDisplayMedia とは無関係。video のみで判定する
@@ -770,19 +875,31 @@ async function createDisplayMediaStream(
       resizeMode: state.resizeMode,
     }),
   };
-  signals.setLogMessages({
-    title: LOG_TITLE,
-    description: JSON.stringify(mediaConstraints),
-  });
-  signals.setTimelineMessage(
+  persistLogMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    LOG_TITLE,
+    JSON.stringify(mediaConstraints),
+  );
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
     createSoraDevtoolsTimelineMessage("media-constraints", mediaConstraints),
   );
   const stream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
-  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-get-display-media"));
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    createSoraDevtoolsTimelineMessage("succeed-get-display-media"),
+  );
   for (const track of stream.getVideoTracks()) {
     setTrackContentHint(track, state.videoContentHint);
     track.enabled = state.videoTrack;
-    signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track));
+    persistTimelineMessage(
+      sessionDbId,
+      getCurrentConnectionId(),
+      createSoraDevtoolsMediaStreamTrackLog("start", track),
+    );
   }
   return [stream, null, null];
 }
@@ -790,6 +907,7 @@ async function createDisplayMediaStream(
 // フェイクメディアを使用して MediaStream を生成する
 function createFakeMediaStreamFromState(
   state: createMediaStreamPickedState,
+  sessionDbId: number | null,
 ): [MediaStream, GainNode | null, AudioContext | null] {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   const { worker } = state.fakeContents;
@@ -805,11 +923,12 @@ function createFakeMediaStreamFromState(
     aspectRatio: state.aspectRatio,
     resizeMode: state.resizeMode,
   });
-  signals.setLogMessages({
-    title: LOG_TITLE,
-    description: JSON.stringify(constraints),
-  });
-  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("media-constraints", constraints));
+  persistLogMessage(sessionDbId, getCurrentConnectionId(), LOG_TITLE, JSON.stringify(constraints));
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    createSoraDevtoolsTimelineMessage("media-constraints", constraints),
+  );
   // Chrome のハードウェアコンテキスト上限に到達しないよう、新規生成前に旧 AudioContext を close する
   // close は非同期だが Chrome は即座に上限から解放する
   signals.closeFakeContentsAudio();
@@ -834,12 +953,24 @@ function createFakeMediaStreamFromState(
   }
   applyTrackSettings(mediaStream, state);
   for (const track of mediaStream.getVideoTracks()) {
-    signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track));
+    persistTimelineMessage(
+      sessionDbId,
+      getCurrentConnectionId(),
+      createSoraDevtoolsMediaStreamTrackLog("start", track),
+    );
   }
   for (const track of mediaStream.getAudioTracks()) {
-    signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", track));
+    persistTimelineMessage(
+      sessionDbId,
+      getCurrentConnectionId(),
+      createSoraDevtoolsMediaStreamTrackLog("start", track),
+    );
   }
-  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-create-fake-media"));
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    createSoraDevtoolsTimelineMessage("succeed-create-fake-media"),
+  );
   return [mediaStream, gainNode, audioContext];
 }
 
@@ -848,8 +979,13 @@ async function processAudioTrack(
   audioTrack: MediaStreamTrack,
   state: createMediaStreamPickedState,
   noiseSuppressionProcessorEnabled: boolean,
+  sessionDbId: number | null,
 ): Promise<MediaStreamTrack> {
-  signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", audioTrack));
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    createSoraDevtoolsMediaStreamTrackLog("start", audioTrack),
+  );
   if (!noiseSuppressionProcessorEnabled) {
     return audioTrack;
   }
@@ -874,8 +1010,13 @@ async function processVideoTrack(
   videoTrack: MediaStreamTrack,
   state: createMediaStreamPickedState,
   virtualBackgroundProcessorEnabled: boolean,
+  sessionDbId: number | null,
 ): Promise<MediaStreamTrack> {
-  signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("start", videoTrack));
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    createSoraDevtoolsMediaStreamTrackLog("start", videoTrack),
+  );
   if (!virtualBackgroundProcessorEnabled) {
     return videoTrack;
   }
@@ -895,6 +1036,7 @@ async function processVideoTrack(
 // getUserMedia を使用して MediaStream を生成する
 async function createUserMediaStream(
   state: createMediaStreamPickedState,
+  sessionDbId: number | null,
 ): Promise<[MediaStream, null, null]> {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   const noiseSuppressionProcessorEnabled =
@@ -935,11 +1077,15 @@ async function createUserMediaStream(
   if (videoConstraints) {
     mediaStreamConstraints.video = videoConstraints;
   }
-  signals.setLogMessages({
-    title: LOG_TITLE,
-    description: JSON.stringify(mediaStreamConstraints),
-  });
-  signals.setTimelineMessage(
+  persistLogMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
+    LOG_TITLE,
+    JSON.stringify(mediaStreamConstraints),
+  );
+  persistTimelineMessage(
+    sessionDbId,
+    getCurrentConnectionId(),
     createSoraDevtoolsTimelineMessage("media-constraints", mediaStreamConstraints),
   );
   const gumMediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
@@ -952,8 +1098,13 @@ async function createUserMediaStream(
         audioTrack,
         state,
         noiseSuppressionProcessorEnabled,
+        sessionDbId,
       );
-      signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media"));
+      persistTimelineMessage(
+        sessionDbId,
+        getCurrentConnectionId(),
+        createSoraDevtoolsTimelineMessage("succeed-audio-get-user-media"),
+      );
       mediaStream.addTrack(processedTrack);
       audioTrackAdded = true;
     }
@@ -963,8 +1114,13 @@ async function createUserMediaStream(
         videoTrack,
         state,
         virtualBackgroundProcessorEnabled,
+        sessionDbId,
       );
-      signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("succeed-video-get-user-media"));
+      persistTimelineMessage(
+        sessionDbId,
+        getCurrentConnectionId(),
+        createSoraDevtoolsTimelineMessage("succeed-video-get-user-media"),
+      );
       mediaStream.addTrack(processedTrack);
       videoTrackAdded = true;
     }
@@ -989,12 +1145,13 @@ async function createUserMediaStream(
 // State に応じて MediaStream インスタンスを生成する
 async function createMediaStream(
   state: createMediaStreamPickedState,
+  sessionDbId: number | null = null,
 ): Promise<[MediaStream, GainNode | null, AudioContext | null]> {
   if (state.mediaType === "getDisplayMedia") {
-    return createDisplayMediaStream(state);
+    return createDisplayMediaStream(state, sessionDbId);
   }
   if (state.mediaType === "fakeMedia" && state.fakeContents.worker) {
-    return createFakeMediaStreamFromState(state);
+    return createFakeMediaStreamFromState(state, sessionDbId);
   }
   if (state.mediaType === "mp4Media") {
     if (state.mp4MediaStream === null) {
@@ -1004,7 +1161,7 @@ async function createMediaStream(
     // DevTools ではいったん常に繰り返し再生にしておく
     return [await state.mp4MediaStream.play({ repeat: true }), null, null];
   }
-  return createUserMediaStream(state);
+  return createUserMediaStream(state, sessionDbId);
 }
 
 // connection.destroyed の notify かを判定する型ガード
@@ -1171,7 +1328,19 @@ const clearRemoteMediaClients = (): void => {
 // Sora 切断時の完全なメディア掃除
 // リモート・ローカル両方のメディアリソースを解放する
 // 冪等（null・空で再呼び出ししても安全）
-export const cleanupSoraMediaState = async (): Promise<void> => {
+export const cleanupSoraMediaState = async (
+  sessionDbId: number | null = null,
+  connectionId: string | null = null,
+): Promise<void> => {
+  // 切断シーケンスでは呼び出し元が ID を渡す。未指定なら disconnectPersistence を使う
+  let resolvedSessionDbId = sessionDbId;
+  let resolvedConnectionId = connectionId;
+  if (resolvedSessionDbId === null && disconnectPersistence !== null) {
+    resolvedSessionDbId = disconnectPersistence.sessionDbId;
+  }
+  if (resolvedConnectionId === null && disconnectPersistence !== null) {
+    resolvedConnectionId = disconnectPersistence.connectionId;
+  }
   clearRemoteMediaClients();
   const localMediaStreamValue = signals.localMediaStream.value;
   const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
@@ -1190,20 +1359,34 @@ export const cleanupSoraMediaState = async (): Promise<void> => {
   // 後追いで video / audio track stop を並列に待つ
   // 旧コードでは audio 側の rejection を握り潰していたが Promise.allSettled で video / audio 双方の rejection をログに残す
   const [videoResult, audioResult] = await Promise.allSettled([
-    stopLocalVideoTrack(localMediaStreamValue, originalTrack),
-    stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue),
+    stopLocalVideoTrack(
+      localMediaStreamValue,
+      resolvedSessionDbId,
+      resolvedConnectionId,
+      originalTrack,
+    ),
+    stopLocalAudioTrack(
+      localMediaStreamValue,
+      noiseSuppressionProcessorValue,
+      resolvedSessionDbId,
+      resolvedConnectionId,
+    ),
   ]);
   if (videoResult.status === "rejected") {
-    signals.setLogMessages({
-      title: "STOP_LOCAL_VIDEO_TRACK",
-      description: getErrorMessage(videoResult.reason),
-    });
+    persistLogMessage(
+      resolvedSessionDbId,
+      resolvedConnectionId,
+      "STOP_LOCAL_VIDEO_TRACK",
+      getErrorMessage(videoResult.reason),
+    );
   }
   if (audioResult.status === "rejected") {
-    signals.setLogMessages({
-      title: "STOP_LOCAL_AUDIO_TRACK",
-      description: getErrorMessage(audioResult.reason),
-    });
+    persistLogMessage(
+      resolvedSessionDbId,
+      resolvedConnectionId,
+      "STOP_LOCAL_AUDIO_TRACK",
+      getErrorMessage(audioResult.reason),
+    );
   }
 };
 
@@ -1212,10 +1395,20 @@ export const cleanupSoraMediaState = async (): Promise<void> => {
 // event.streams が空配列の場合は remoteClients を変更せず timeline メッセージのみ追加して return する。
 // 現行 sora-js-sdk は publisher 系で明示ガードしており subscriber 系も TypeError 経由で空配列イベントが到達しない設計だが、
 // SDK の比較順や connectionId 判定が変わると即座に空配列イベントが到達しうるためアプリ層にも防御層を入れる。
-export const handleTrackEvent = (event: RTCTrackEvent): void => {
-  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-track"));
+export const handleTrackEvent = (
+  event: RTCTrackEvent,
+  sessionDbId: number | null,
+  connectionId: string | null,
+): void => {
+  persistTimelineMessage(
+    sessionDbId,
+    connectionId,
+    createSoraDevtoolsTimelineMessage("event-on-track"),
+  );
   if (event.streams.length === 0) {
-    signals.setTimelineMessage(
+    persistTimelineMessage(
+      sessionDbId,
+      connectionId,
       createSoraDevtoolsTimelineMessage("event-on-track", {
         emptyStreams: true,
         trackId: event.track.id,
@@ -1230,7 +1423,9 @@ export const handleTrackEvent = (event: RTCTrackEvent): void => {
   );
   if (!mediaStream) {
     for (const track of event.streams[0].getTracks()) {
-      signals.setTimelineMessage(
+      persistTimelineMessage(
+        sessionDbId,
+        connectionId,
         createSoraDevtoolsTimelineMessage(
           `remote-${track.kind}-mediastream-track`,
           getMediaStreamTrackProperties(track),
@@ -1259,14 +1454,21 @@ function setSoraCallbacks(
   // 「自分が現在の signals.sora.value か」を判定し、新セッションの state を破壊しうる
   // 処理を旧接続のリスナーからは skip する。
   const isCurrent = (): boolean => signals.sora.value === soraConnection;
+  const sessionDbIdForCallback = (): number | null =>
+    persistence === null ? null : persistence.sessionDbId;
+  const connectionIdForCallback = (): string | null =>
+    connectionIdFromPersistence(persistence) ?? getCurrentConnectionId();
+
   soraConnection.on("log", (title: string, description: Json) => {
     if (!isCurrent()) {
       return;
     }
-    signals.setLogMessages({
+    persistLogMessage(
+      sessionDbIdForCallback(),
+      connectionIdForCallback(),
       title,
-      description: JSON.stringify(description),
-    });
+      JSON.stringify(description),
+    );
   });
   soraConnection.on("notify", (message: SoraNotifyMessage, transportType: TransportType) => {
     // 旧接続からの notify が新セッションの remoteClients を破壊するのを防ぐ
@@ -1279,7 +1481,7 @@ function setSoraCallbacks(
     if (isConnectionDestroyedNotify(message)) {
       removeRemoteClientCleanup(message.connection_id);
     }
-    signals.setNotifyMessages({
+    persistNotifyMessage(sessionDbIdForCallback(), connectionIdForCallback(), {
       timestamp: Date.now(),
       message,
       transportType,
@@ -1289,7 +1491,7 @@ function setSoraCallbacks(
     if (!isCurrent()) {
       return;
     }
-    signals.setPushMessages({
+    persistPushMessage(sessionDbIdForCallback(), connectionIdForCallback(), {
       timestamp: Date.now(),
       message,
       transportType,
@@ -1301,11 +1503,15 @@ function setSoraCallbacks(
     if (!isCurrent()) {
       return;
     }
-    handleTrackEvent(event);
+    handleTrackEvent(event, sessionDbIdForCallback(), connectionIdForCallback());
   });
   soraConnection.on("removetrack", (event: MediaStreamTrackEvent) => {
     // SDK イベント発火そのものは古い接続でも timeline に残す（append-only で state 破壊なし）
-    signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-removetrack"));
+    persistTimelineMessage(
+      sessionDbIdForCallback(),
+      connectionIdForCallback(),
+      createSoraDevtoolsTimelineMessage("event-on-removetrack"),
+    );
     // remoteClients 書き換えは新セッションのみ
     if (!isCurrent()) {
       return;
@@ -1336,8 +1542,6 @@ function setSoraCallbacks(
     if (event.params !== undefined) {
       message.params = event.params;
     }
-    // 記録 1: SDK イベントの発火そのものを記録する。古い接続でも timeline に残す
-    signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-disconnect", message));
     // 永続化フックは isCurrent() ガードの前に置く。
     // SDK は本コールバックの Promise を待たないため、識別子を同期キャプチャしてから void で投げる。
     // SDK は callbacks.disconnect の前に initializeConnection() で connectionId を null 化するため、
@@ -1345,12 +1549,20 @@ function setSoraCallbacks(
     const connectionIdForPersistence =
       connectionIdFromPersistence(persistence) ?? getCurrentConnectionId();
     const sessionDbIdForPersistence = persistence?.sessionDbId ?? null;
+    // 記録 1: SDK イベントの発火そのものを記録する。古い接続でも timeline に残す
+    persistTimelineMessage(
+      sessionDbIdForPersistence,
+      connectionIdForPersistence,
+      createSoraDevtoolsTimelineMessage("event-on-disconnect", message),
+    );
     const current = isCurrent();
     const reconnecting = signals.reconnecting.value;
     // INSERT 未完了のレースに備え、当該 connectionId を pending に入れてから UPDATE を投げる
     if (persistence !== null && connectionIdForPersistence) {
       persistence.connectionEndedPendingIds.add(connectionIdForPersistence);
     }
+    // 切断後半の stopLocal* / cleanup 用 ID を ended_at より前にセットする
+    setDisconnectPersistence(sessionDbIdForPersistence, connectionIdForPersistence);
     persistConnectionEndedAt(connectionIdForPersistence);
     if (current && !reconnecting) {
       persistSessionEndedAt(sessionDbIdForPersistence);
@@ -1372,7 +1584,11 @@ function setSoraCallbacks(
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraInfoAlertMessage("disconnected Sora");
     // 記録 2: アプリ側の状態遷移として記録する。古い接続では skip 済みのためここには来ない
-    signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("disconnected"));
+    persistTimelineMessage(
+      sessionDbIdForPersistence,
+      connectionIdForPersistence,
+      createSoraDevtoolsTimelineMessage("disconnected"),
+    );
     if (event.type === "abend" && reconnectValue) {
       // 再接続処理開始フラグ
       signals.setSoraReconnecting(true);
@@ -1387,12 +1603,16 @@ function setSoraCallbacks(
     // SDK は本コールバックの戻り値 Promise を待たないため、cleanup は実質 fire-and-forget となる
     // cleanup が reject した場合は unhandled rejection を起こさないよう try / catch でログ化する
     try {
-      await cleanupSoraMediaState();
+      await cleanupSoraMediaState(sessionDbIdForPersistence, connectionIdForPersistence);
     } catch (error) {
-      signals.setLogMessages({
-        title: "CLEANUP_SORA_MEDIA_STATE",
-        description: getErrorMessage(error),
-      });
+      persistLogMessage(
+        sessionDbIdForPersistence,
+        connectionIdForPersistence,
+        "CLEANUP_SORA_MEDIA_STATE",
+        getErrorMessage(error),
+      );
+    } finally {
+      clearDisconnectPersistence();
     }
   });
   soraConnection.on("timeline", (event) => {
@@ -1407,9 +1627,11 @@ function setSoraCallbacks(
       dataChannelLabel: event.dataChannelLabel,
       logType: event.logType,
     };
-    signals.setTimelineMessage(message);
+    persistTimelineMessage(sessionDbIdForCallback(), connectionIdForCallback(), message);
     if (event.data && typeof event.data === "object" && "sdp" in event.data) {
-      signals.setTimelineMessage(
+      persistTimelineMessage(
+        sessionDbIdForCallback(),
+        connectionIdForCallback(),
         createSoraDevtoolsTimelineMessage(`${event.type}-sdp`, event.data.sdp),
       );
     }
@@ -1424,7 +1646,7 @@ function setSoraCallbacks(
       type: event.type,
       data: event.data as Record<string, unknown> | undefined,
     };
-    signals.setSignalingMessage(message);
+    persistSignalingMessage(sessionDbIdForCallback(), connectionIdForCallback(), message);
   });
   soraConnection.on("message", (event) => {
     if (!isCurrent()) {
@@ -1446,13 +1668,21 @@ function setSoraCallbacks(
     if (!isCurrent()) {
       return;
     }
-    signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-switched", message));
+    persistTimelineMessage(
+      sessionDbIdForCallback(),
+      connectionIdForCallback(),
+      createSoraDevtoolsTimelineMessage("event-on-switched", message),
+    );
   });
   soraConnection.on("connected", (message) => {
     if (!isCurrent()) {
       return;
     }
-    signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-on-connected", message));
+    persistTimelineMessage(
+      sessionDbIdForCallback(),
+      connectionIdForCallback(),
+      createSoraDevtoolsTimelineMessage("event-on-connected", message),
+    );
   });
 }
 
@@ -1574,7 +1804,7 @@ export const requestMedia = async (): Promise<void> => {
   let gainNode: undefined | GainNode | null;
   let audioContext: undefined | AudioContext | null;
   try {
-    [mediaStream, gainNode, audioContext] = await createMediaStream(state);
+    [mediaStream, gainNode, audioContext] = await createMediaStream(state, null);
   } catch (error) {
     if (error instanceof Error) {
       signals.setLogMessages({
@@ -1583,7 +1813,7 @@ export const requestMedia = async (): Promise<void> => {
       });
       signals.setAPIErrorAlertMessage(`failed to get user devices: ${error.message}`);
     }
-    await cleanupMediaStreamOnError(state, mediaStream);
+    await cleanupMediaStreamOnError(state, mediaStream, null, null);
     throw error;
   }
   signals.setFakeContentsAudio(audioContext, gainNode);
@@ -1603,16 +1833,29 @@ export const disposeMedia = async (): Promise<void> => {
   if (originalTrack !== undefined) {
     originalTrack.stop();
     localMediaStreamValue?.removeTrack(originalTrack);
-    signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+    persistTimelineMessage(
+      getCurrentSessionDbId(),
+      getCurrentConnectionId(),
+      createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack),
+    );
   } else if (localMediaStreamValue) {
     for (const track of localMediaStreamValue.getVideoTracks()) {
       track.stop();
       localMediaStreamValue.removeTrack(track);
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      persistTimelineMessage(
+        getCurrentSessionDbId(),
+        getCurrentConnectionId(),
+        createSoraDevtoolsMediaStreamTrackLog("stop", track),
+      );
     }
   }
 
-  await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+  await stopLocalAudioTrack(
+    localMediaStreamValue,
+    noiseSuppressionProcessorValue,
+    getCurrentSessionDbId(),
+    getCurrentConnectionId(),
+  );
   if (fakeContentsValue.worker) {
     fakeContentsValue.worker.postMessage({ type: "stop" });
   }
@@ -1678,6 +1921,8 @@ function prepareSignalingConnection(): {
 async function cleanupMediaStreamOnError(
   state: createMediaStreamPickedState,
   mediaStream: MediaStream | undefined,
+  sessionDbId: number | null,
+  connectionId: string | null,
 ): Promise<void> {
   let originalTrack: MediaStreamVideoTrack | undefined;
   if (state.virtualBackgroundProcessor?.isProcessing()) {
@@ -1686,16 +1931,29 @@ async function cleanupMediaStreamOnError(
   }
   if (originalTrack) {
     originalTrack.stop();
-    signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+    persistTimelineMessage(
+      sessionDbId,
+      connectionId,
+      createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack),
+    );
   }
   if (mediaStream) {
     for (const track of mediaStream.getVideoTracks()) {
       track.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      persistTimelineMessage(
+        sessionDbId,
+        connectionId,
+        createSoraDevtoolsMediaStreamTrackLog("stop", track),
+      );
     }
   }
 
-  await stopLocalAudioTrack(mediaStream ?? null, state.noiseSuppressionProcessor);
+  await stopLocalAudioTrack(
+    mediaStream ?? null,
+    state.noiseSuppressionProcessor,
+    sessionDbId,
+    connectionId,
+  );
 }
 
 // statsReport の定期更新タイマー
@@ -1777,7 +2035,7 @@ function abortConnectSoraResources(args: {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("event-connect-cancelled"));
 }
 
-// oxlint-disable-next-line eslint/max-statements -- 5 箇所のキャンセル検知ポイントとローカル変数の closure 捕捉のため外部関数化せず連結する
+// oxlint-disable-next-line eslint/max-statements, eslint/complexity -- 5 箇所のキャンセル検知ポイントとローカル変数の closure 捕捉のため外部関数化せず連結する
 export const connectSora = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-connection"));
   signals.setSoraConnectionStatus("preparing");
@@ -1858,14 +2116,15 @@ export const connectSora = async (): Promise<void> => {
       if (!forceCreateMediaStream && localMediaStreamValue) {
         mediaStream = localMediaStreamValue;
       } else {
-        [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
-          (error: unknown) => {
-            const message = getErrorMessage(error);
-            signals.setSoraErrorAlertMessage(message);
-            signals.setSoraConnectionStatus("disconnected");
-            throw error;
-          },
-        );
+        [mediaStream, gainNode, audioContext] = await createMediaStream(
+          state,
+          persistence?.sessionDbId ?? null,
+        ).catch((error: unknown) => {
+          const message = getErrorMessage(error);
+          signals.setSoraErrorAlertMessage(message);
+          signals.setSoraConnectionStatus("disconnected");
+          throw error;
+        });
       }
       // 検知ポイント 2: 新規取得パスと再利用パス両方の後で 1 回検知する
       if (abortIfCancelled()) {
@@ -1892,12 +2151,19 @@ export const connectSora = async (): Promise<void> => {
       signals.setSoraErrorAlertMessage(`failed to connect Sora: ${error.message}`);
     }
     // try/catch 失敗時は明示パスで ended_at を更新する
-    persistSessionEndedAt(persistence?.sessionDbId);
-    persistConnectionEndedAt(connectionIdFromPersistence(persistence));
-    persistStatsFlush(persistence?.sessionDbId);
-    await cleanupMediaStreamOnError(state, mediaStream);
+    const failedSessionDbId = persistence?.sessionDbId ?? null;
+    const failedConnectionId = connectionIdFromPersistence(persistence);
+    setDisconnectPersistence(failedSessionDbId, failedConnectionId);
+    persistSessionEndedAt(failedSessionDbId);
+    persistConnectionEndedAt(failedConnectionId);
+    persistStatsFlush(failedSessionDbId);
+    await cleanupMediaStreamOnError(state, mediaStream, failedSessionDbId, failedConnectionId);
     // 残留した remoteClients と localMediaStream を掃除し、接続失敗後も UI に映像が残らないようにする
-    await cleanupSoraMediaState();
+    try {
+      await cleanupSoraMediaState(failedSessionDbId, failedConnectionId);
+    } finally {
+      clearDisconnectPersistence();
+    }
     signals.setSoraConnectionStatus("disconnected");
     throw error;
   }
@@ -1917,7 +2183,11 @@ export const connectSora = async (): Promise<void> => {
     signals.setFakeContentsAudio(audioContext, gainNode ?? null);
   }
   signals.setSoraConnectionStatus("connected");
-  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected"));
+  persistTimelineMessage(
+    persistence?.sessionDbId ?? null,
+    connectionIdFromPersistence(persistence),
+    createSoraDevtoolsTimelineMessage("connected"),
+  );
 };
 
 // 再接続を最大 10 回試行し成功した SoraConnection を返す。失敗時は undefined。
@@ -1986,7 +2256,7 @@ async function attemptReconnection(
 }
 
 // reconnectSora の本体実装。in-flight ガードはこの関数の外側 wrapper で行う
-// oxlint-disable-next-line eslint/max-statements -- 永続化フックと createMediaStream / attemptReconnection 失敗パスを同一関数に保持する
+// oxlint-disable-next-line eslint/max-statements, eslint/complexity -- 永続化フックと createMediaStream / attemptReconnection 失敗パスを同一関数に保持する
 const reconnectSoraImpl = async (): Promise<void> => {
   signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("start-reconnect"));
   signals.setSoraConnectionStatus("connecting");
@@ -2020,16 +2290,26 @@ const reconnectSoraImpl = async (): Promise<void> => {
   const googCpuOveruseDetectionValue = signals.googCpuOveruseDetection.value;
   if (roleValue === "sendonly" || roleValue === "sendrecv") {
     try {
-      [mediaStream, gainNode, audioContext] = await createMediaStream(state);
+      [mediaStream, gainNode, audioContext] = await createMediaStream(
+        state,
+        persistence?.sessionDbId ?? null,
+      );
     } catch (error) {
       // createMediaStream の失敗時は再接続を中止し disconnected 状態に戻す
       if (error instanceof Error) {
         signals.setSoraErrorAlertMessage(error.message);
       }
-      persistSessionEndedAt(persistence?.sessionDbId);
-      persistConnectionEndedAt(connectionIdFromPersistence(persistence));
-      persistStatsFlush(persistence?.sessionDbId);
-      await cleanupSoraMediaState();
+      const failedSessionDbId = persistence?.sessionDbId ?? null;
+      const failedConnectionId = connectionIdFromPersistence(persistence);
+      setDisconnectPersistence(failedSessionDbId, failedConnectionId);
+      persistSessionEndedAt(failedSessionDbId);
+      persistConnectionEndedAt(failedConnectionId);
+      persistStatsFlush(failedSessionDbId);
+      try {
+        await cleanupSoraMediaState(failedSessionDbId, failedConnectionId);
+      } finally {
+        clearDisconnectPersistence();
+      }
       signals.setSoraConnectionStatus("disconnected");
       signals.setSoraReconnecting(false);
       return;
@@ -2050,11 +2330,17 @@ const reconnectSoraImpl = async (): Promise<void> => {
     // cleanupSoraMediaState では解放されない。ローカル変数として直接解放してリークを防ぐ。
     // キャンセル経路 (Reconnect Toast を閉じる) でも attemptReconnection は undefined を返すため
     // 本ブロックを通り、同じ解放処理でリソースが回収される。
+    const failedSessionDbId = persistence?.sessionDbId ?? null;
+    const failedConnectionId = connectionIdFromPersistence(persistence);
     if (mediaStream) {
       for (const track of mediaStream.getTracks()) {
         track.stop();
         // 失敗 / キャンセル時に停止した track もタイムラインに記録してデバッグ時に追えるようにする
-        signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+        persistTimelineMessage(
+          failedSessionDbId,
+          failedConnectionId,
+          createSoraDevtoolsMediaStreamTrackLog("stop", track),
+        );
       }
     }
     // audioContext は undefined / null / AudioContext の 3 状態。truthy チェックで一括捕捉する
@@ -2064,10 +2350,15 @@ const reconnectSoraImpl = async (): Promise<void> => {
     }
     signals.setSora(null);
     // 全リトライ枯渇 / reconnecting キャンセル時は明示パスで sessions.ended_at を更新する
-    persistSessionEndedAt(persistence?.sessionDbId);
-    persistConnectionEndedAt(connectionIdFromPersistence(persistence));
-    persistStatsFlush(persistence?.sessionDbId);
-    await cleanupSoraMediaState();
+    setDisconnectPersistence(failedSessionDbId, failedConnectionId);
+    persistSessionEndedAt(failedSessionDbId);
+    persistConnectionEndedAt(failedConnectionId);
+    persistStatsFlush(failedSessionDbId);
+    try {
+      await cleanupSoraMediaState(failedSessionDbId, failedConnectionId);
+    } finally {
+      clearDisconnectPersistence();
+    }
     signals.setSoraErrorAlertMessage("failed to reconnect Sora");
     signals.setSoraConnectionStatus("disconnected");
     signals.setSoraReconnecting(false);
@@ -2084,7 +2375,11 @@ const reconnectSoraImpl = async (): Promise<void> => {
     signals.setFakeContentsAudio(audioContext, gainNode ?? null);
   }
   signals.setSoraConnectionStatus("connected");
-  signals.setTimelineMessage(createSoraDevtoolsTimelineMessage("connected"));
+  persistTimelineMessage(
+    persistence?.sessionDbId ?? null,
+    connectionIdFromPersistence(persistence),
+    createSoraDevtoolsTimelineMessage("connected"),
+  );
   signals.setSoraReconnecting(false);
 };
 
@@ -2117,6 +2412,7 @@ export const disconnectSora = async (): Promise<void> => {
   //     connections は SDK が disconnect コールバック前に connectionId を消すため、明示パスでも書く
   const sessionDbIdToEnd = getCurrentSessionDbId();
   const connectionIdToEnd = getCurrentConnectionId();
+  setDisconnectPersistence(sessionDbIdToEnd, connectionIdToEnd);
   persistSessionEndedAt(sessionDbIdToEnd);
   persistConnectionEndedAt(connectionIdToEnd);
   // stats も先頭で flush する（beforeunload の fire-and-forget を空洞化しない）
@@ -2131,7 +2427,11 @@ export const disconnectSora = async (): Promise<void> => {
   // connected / connecting / preparing 時は SDK への切断通知前にローカル track を止めるが、UI を即座に消すための意図的な順序であり冪等で安全
   // sora-js-sdk の disconnect() は WebSocket / PeerConnection を close するだけでローカル track を停止しないため、切断通知前に止めても例外や ICE エラーは起きない
   // cleanup の完了 (track stop 含む) を待ってから SDK の disconnect 通知を呼ぶことで、切断完了通知前にローカル track stop が完了することを保証する
-  await cleanupSoraMediaState();
+  try {
+    await cleanupSoraMediaState(sessionDbIdToEnd, connectionIdToEnd);
+  } finally {
+    clearDisconnectPersistence();
+  }
   // statsReport タイマーは状態に関わらず即時停止する
   stopStatsReportTimer();
   // メディア掃除とタイマー停止は済んだので切断済みならここで抜ける
@@ -2201,26 +2501,40 @@ const updateMediaStreamImpl = async (): Promise<void> => {
     const originalTrack = virtualBackgroundProcessorValue.getOriginalTrack();
     if (originalTrack) {
       originalTrack.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+      persistTimelineMessage(
+        getCurrentSessionDbId(),
+        getCurrentConnectionId(),
+        createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack),
+      );
     }
     virtualBackgroundProcessorValue.stopProcessing();
     // 関数先頭の if (!localMediaStreamValue) return によりここでは localMediaStreamValue は non-null
   } else {
     for (const track of localMediaStreamValue.getVideoTracks()) {
       track.stop();
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      persistTimelineMessage(
+        getCurrentSessionDbId(),
+        getCurrentConnectionId(),
+        createSoraDevtoolsMediaStreamTrackLog("stop", track),
+      );
     }
   }
 
-  await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
-  const [mediaStream, gainNode, audioContext] = await createMediaStream(state).catch(
-    (error: unknown) => {
-      const message = getErrorMessage(error);
-      signals.setSoraErrorAlertMessage(message);
-      signals.setSoraConnectionStatus("disconnected");
-      throw error;
-    },
+  await stopLocalAudioTrack(
+    localMediaStreamValue,
+    noiseSuppressionProcessorValue,
+    getCurrentSessionDbId(),
+    getCurrentConnectionId(),
   );
+  const [mediaStream, gainNode, audioContext] = await createMediaStream(
+    state,
+    getCurrentSessionDbId(),
+  ).catch((error: unknown) => {
+    const message = getErrorMessage(error);
+    signals.setSoraErrorAlertMessage(message);
+    signals.setSoraConnectionStatus("disconnected");
+    throw error;
+  });
   // 全トラックの replaceTrack を Promise.allSettled で並列実行し、失敗をまとめて通知する
   const replaceResults = await Promise.allSettled(
     mediaStream.getTracks().map(async (track) => {
@@ -2261,7 +2575,11 @@ const updateMediaStreamImpl = async (): Promise<void> => {
     for (const track of mediaStream.getTracks()) {
       track.stop();
       // 中断時に破棄した track もタイムラインに記録してデバッグ時に追えるようにする
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      persistTimelineMessage(
+        getCurrentSessionDbId(),
+        getCurrentConnectionId(),
+        createSoraDevtoolsMediaStreamTrackLog("stop", track),
+      );
     }
     if (audioContext !== null) {
       // 既存の closeFakeContentsAudio と同じ void パターンで AudioContext を解放する
@@ -2334,13 +2652,14 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
       videoTrack: state.videoTrack,
       virtualBackgroundProcessor: state.virtualBackgroundProcessor,
     };
-    const [mediaStream, gainNode, audioContext] = await createMediaStream(pickedState).catch(
-      (error: unknown) => {
-        const message = getErrorMessage(error);
-        signals.setSoraErrorAlertMessage(message);
-        throw error;
-      },
-    );
+    const [mediaStream, gainNode, audioContext] = await createMediaStream(
+      pickedState,
+      getCurrentSessionDbId(),
+    ).catch((error: unknown) => {
+      const message = getErrorMessage(error);
+      signals.setSoraErrorAlertMessage(message);
+      throw error;
+    });
     if (mediaStream.getAudioTracks().length > 0) {
       if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
         // Sora 接続中の場合
@@ -2369,7 +2688,12 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
     }
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
-    await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    await stopLocalAudioTrack(
+      localMediaStreamValue,
+      noiseSuppressionProcessorValue,
+      getCurrentSessionDbId(),
+      getCurrentConnectionId(),
+    );
     signals.closeFakeContentsAudio();
     try {
       await soraValue.removeAudioTrack(localMediaStreamValue);
@@ -2382,7 +2706,12 @@ export const setMicDeviceAction = async (micDevice: boolean): Promise<void> => {
   } else if (localMediaStreamValue) {
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の AudioTrack を停止して MediaStream から Track を削除する
-    await stopLocalAudioTrack(localMediaStreamValue, noiseSuppressionProcessorValue);
+    await stopLocalAudioTrack(
+      localMediaStreamValue,
+      noiseSuppressionProcessorValue,
+      getCurrentSessionDbId(),
+      getCurrentConnectionId(),
+    );
     signals.closeFakeContentsAudio();
   }
   signals.setMicDevice(micDevice);
@@ -2428,13 +2757,14 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
       videoTrack: state.videoTrack,
       virtualBackgroundProcessor: state.virtualBackgroundProcessor,
     };
-    const [mediaStream, gainNode, audioContext] = await createMediaStream(pickedState).catch(
-      (error: unknown) => {
-        const message = getErrorMessage(error);
-        signals.setSoraErrorAlertMessage(message);
-        throw error;
-      },
-    );
+    const [mediaStream, gainNode, audioContext] = await createMediaStream(
+      pickedState,
+      getCurrentSessionDbId(),
+    ).catch((error: unknown) => {
+      const message = getErrorMessage(error);
+      signals.setSoraErrorAlertMessage(message);
+      throw error;
+    });
     if (mediaStream.getVideoTracks().length > 0) {
       if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
         // Sora 接続中の場合
@@ -2464,7 +2794,12 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
   } else if (soraValue && connectionStatusValue === "connected" && localMediaStreamValue) {
     // Sora 接続中の場合
     const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
-    await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
+    await stopLocalVideoTrack(
+      localMediaStreamValue,
+      getCurrentSessionDbId(),
+      getCurrentConnectionId(),
+      originalTrack,
+    );
     try {
       await soraValue.removeVideoTrack(localMediaStreamValue);
     } catch (error) {
@@ -2477,7 +2812,12 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     // Sora は未接続で media access での表示を行っている場合
     // localMediaStream の VideoTrack を停止して MediaStream から Track を削除する
     const originalTrack = stopVideoProcessors(virtualBackgroundProcessorValue);
-    await stopLocalVideoTrack(localMediaStreamValue, originalTrack);
+    await stopLocalVideoTrack(
+      localMediaStreamValue,
+      getCurrentSessionDbId(),
+      getCurrentConnectionId(),
+      originalTrack,
+    );
   }
   signals.setCameraDevice(cameraDevice);
 };
@@ -2504,6 +2844,8 @@ const stopVideoProcessors = (
  */
 const stopLocalVideoTrack = async (
   localMediaStreamValue: MediaStream | null,
+  sessionDbId: number | null,
+  connectionId: string | null,
   originalTrack?: MediaStreamTrack,
 ): Promise<void> => {
   if (originalTrack !== undefined) {
@@ -2515,7 +2857,11 @@ const stopLocalVideoTrack = async (
     });
     originalTrack.stop();
     localMediaStreamValue?.removeTrack(originalTrack);
-    signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+    persistTimelineMessage(
+      sessionDbId,
+      connectionId,
+      createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack),
+    );
   } else {
     if (!localMediaStreamValue) {
       return;
@@ -2533,7 +2879,11 @@ const stopLocalVideoTrack = async (
     for (const track of tracks) {
       track.stop();
       localMediaStreamValue.removeTrack(track);
-      signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+      persistTimelineMessage(
+        sessionDbId,
+        connectionId,
+        createSoraDevtoolsMediaStreamTrackLog("stop", track),
+      );
     }
   }
 };
@@ -2546,6 +2896,8 @@ const stopLocalVideoTrack = async (
 const stopLocalAudioTrack = async (
   localMediaStreamValue: MediaStream | null,
   noiseSuppressionProcessor: NoiseSuppressionProcessor | null,
+  sessionDbId: number | null,
+  connectionId: string | null,
 ): Promise<void> =>
   runWithNoiseSuppressionProcessorLock(async () => {
     if (noiseSuppressionProcessor?.isProcessing()) {
@@ -2553,7 +2905,11 @@ const stopLocalAudioTrack = async (
       if (originalTrack) {
         originalTrack.stop();
         localMediaStreamValue?.removeTrack(originalTrack);
-        signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack));
+        persistTimelineMessage(
+          sessionDbId,
+          connectionId,
+          createSoraDevtoolsMediaStreamTrackLog("stop", originalTrack),
+        );
       }
       noiseSuppressionProcessor.stopProcessing();
     }
@@ -2561,7 +2917,11 @@ const stopLocalAudioTrack = async (
       for (const track of localMediaStreamValue.getAudioTracks()) {
         track.stop();
         localMediaStreamValue.removeTrack(track);
-        signals.setTimelineMessage(createSoraDevtoolsMediaStreamTrackLog("stop", track));
+        persistTimelineMessage(
+          sessionDbId,
+          connectionId,
+          createSoraDevtoolsMediaStreamTrackLog("stop", track),
+        );
       }
     }
   });

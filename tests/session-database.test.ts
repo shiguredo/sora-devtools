@@ -6,6 +6,7 @@ import {
   callDeleteSession,
   callResetSessionDatabase,
   cleanupSessionDatabase,
+  countMessageRows,
   listConnectionRows,
   listSessionRows,
   listWebrtcStatsRows,
@@ -278,6 +279,13 @@ test.describe("session database persistence", () => {
 
     const stats = await listWebrtcStatsRows(page);
     expect(stats.filter((row) => row.session_db_id === first)).toHaveLength(0);
+
+    // メッセージテーブルも session_db_id 単位で消えていること
+    expect(await countMessageRows(page, "timeline_messages", first)).toBe(0);
+    expect(await countMessageRows(page, "notify_messages", first)).toBe(0);
+    expect(await countMessageRows(page, "signaling_messages", first)).toBe(0);
+    expect(await countMessageRows(page, "log_messages", first)).toBe(0);
+    expect(await countMessageRows(page, "push_messages", first)).toBe(0);
 
     // 接続中の current 拒否
     const live = new DevtoolsPage(page);

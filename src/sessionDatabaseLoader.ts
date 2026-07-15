@@ -12,7 +12,14 @@
 // という従来の createSessionDatabase の契約を維持するため。
 
 import type * as sessionDatabaseModule from "@/sessionDatabase";
-import type { Json } from "@/types";
+import type {
+  Json,
+  LogMessage,
+  NotifyMessage,
+  PushMessage,
+  SignalingMessage,
+  TimelineMessage,
+} from "@/types";
 import type { NormalizedWebrtcStat } from "@/webrtcStatsNormalizer";
 
 type SessionDatabaseModule = typeof sessionDatabaseModule;
@@ -152,6 +159,81 @@ export async function flushStatsBuffer(sessionDbId?: number): Promise<void> {
     return;
   }
   await sessionDatabase.flushStatsBuffer(sessionDbId);
+}
+
+export async function insertTimelineMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: TimelineMessage,
+): Promise<void> {
+  if (!__SESSIONS_ENABLED__) {
+    return;
+  }
+  const sessionDatabase = await loadSessionDatabase();
+  if (sessionDatabase === null) {
+    return;
+  }
+  await sessionDatabase.insertTimelineMessage(sessionDbId, connectionId, message);
+}
+
+export async function insertNotifyMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: NotifyMessage,
+): Promise<void> {
+  if (!__SESSIONS_ENABLED__) {
+    return;
+  }
+  const sessionDatabase = await loadSessionDatabase();
+  if (sessionDatabase === null) {
+    return;
+  }
+  await sessionDatabase.insertNotifyMessage(sessionDbId, connectionId, message);
+}
+
+export async function insertSignalingMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: SignalingMessage,
+): Promise<void> {
+  if (!__SESSIONS_ENABLED__) {
+    return;
+  }
+  const sessionDatabase = await loadSessionDatabase();
+  if (sessionDatabase === null) {
+    return;
+  }
+  await sessionDatabase.insertSignalingMessage(sessionDbId, connectionId, message);
+}
+
+export async function insertLogMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: LogMessage,
+): Promise<void> {
+  if (!__SESSIONS_ENABLED__) {
+    return;
+  }
+  const sessionDatabase = await loadSessionDatabase();
+  if (sessionDatabase === null) {
+    return;
+  }
+  await sessionDatabase.insertLogMessage(sessionDbId, connectionId, message);
+}
+
+export async function insertPushMessage(
+  sessionDbId: number,
+  connectionId: string | null,
+  message: PushMessage,
+): Promise<void> {
+  if (!__SESSIONS_ENABLED__) {
+    return;
+  }
+  const sessionDatabase = await loadSessionDatabase();
+  if (sessionDatabase === null) {
+    return;
+  }
+  await sessionDatabase.insertPushMessage(sessionDbId, connectionId, message);
 }
 
 // 同期 API。モジュール未ロード時は no-op とする
