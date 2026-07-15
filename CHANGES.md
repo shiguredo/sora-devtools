@@ -15,6 +15,8 @@
   - @voluntas
 - [CHANGE] /sessions の削除確認 UI をレイアウトを動かさないオーバーレイにやり直す
   - @voluntas
+- [ADD] timeline / notify / signaling / log / push を DuckDB-Wasm + OPFS に永続化し /sessions 詳細で確認できるようにする
+  - @voluntas
 - [ADD] /sessions にセッション行の削除と履歴削除（OPFS 再作成）を追加する
   - @voluntas
 - [ADD] /sessions ページに過去セッション一覧・詳細・フィルタ UI を実装する

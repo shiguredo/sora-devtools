@@ -1,6 +1,7 @@
 import type { FunctionComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
+import { SessionDebugMessages } from "@/components/Sessions/SessionDebugMessages";
 import { StatsChart } from "@/components/Sessions/StatsChart";
 import { StatsRawPanel } from "@/components/Sessions/StatsRawPanel";
 import {
@@ -262,6 +263,8 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
       </div>
 
       <StatsRawPanel sessionDbId={detail.session.id} />
+
+      <SessionDebugMessages sessionDbId={detail.session.id} />
     </div>
   );
 };

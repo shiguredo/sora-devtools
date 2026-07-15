@@ -233,6 +233,60 @@ export async function callDeleteSession(page: Page, sessionDbId: number): Promis
   );
 }
 
+// timeline / notify / signaling / log / push の 5 メッセージテーブル名
+export type MessageTableName =
+  | "timeline_messages"
+  | "notify_messages"
+  | "signaling_messages"
+  | "log_messages"
+  | "push_messages";
+
+// 指定メッセージテーブル・session_db_id の件数を取得する
+export async function countMessageRows(
+  page: Page,
+  table: MessageTableName,
+  sessionDbId: number,
+): Promise<number> {
+  // DuckDB の COUNT(*) は BIGINT で返るため、number | bigint の両方を受ける
+  const rows = await querySessionDatabase<{ count: number | bigint }>(
+    page,
+    `SELECT COUNT(*) AS count FROM ${table} WHERE session_db_id = ${String(sessionDbId)}`,
+  );
+  if (rows.length === 0) {
+    return 0;
+  }
+  const [first] = rows;
+  return Number(first.count);
+}
+
+// fire-and-forget のメッセージ INSERT が反映されるまで件数が minCount 以上になるのを待つ
+export async function waitForMessageRows(
+  page: Page,
+  table: MessageTableName,
+  sessionDbId: number,
+  minCount: number,
+  timeoutMs = 10_000,
+): Promise<number> {
+  if (timeoutMs > 10_000) {
+    throw new Error(`timeoutMs must be <= 10000, got ${String(timeoutMs)}`);
+  }
+  const deadline = Date.now() + timeoutMs;
+  let lastCount = 0;
+
+  while (Date.now() < deadline) {
+    lastCount = await countMessageRows(page, table, sessionDbId);
+    if (lastCount >= minCount) {
+      return lastCount;
+    }
+    await page.waitForTimeout(200);
+  }
+
+  throw new Error(
+    `${table} count was below ${String(minCount)} within ${String(timeoutMs)}ms ` +
+      `(got ${String(lastCount)} for sessionDbId=${String(sessionDbId)})`,
+  );
+}
+
 // アプリ側 resetSessionDatabase を呼ぶ
 export async function callResetSessionDatabase(page: Page): Promise<void> {
   await page.evaluate(async (moduleUrl) => {

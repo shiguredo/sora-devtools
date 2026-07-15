@@ -7,11 +7,23 @@ import {
   getCurrentConnectionId,
   getCurrentSessionDbId,
   insertConnection,
+  insertLogMessage,
+  insertNotifyMessage,
+  insertPushMessage,
   insertSession,
+  insertSignalingMessage,
+  insertTimelineMessage,
   updateConnectionEndedAt,
   updateSessionEndedAt,
   updateSessionIdAndConnectionId,
 } from "./sessionDatabaseLoader.ts";
+import type {
+  LogMessage,
+  NotifyMessage,
+  PushMessage,
+  SignalingMessage,
+  TimelineMessage,
+} from "./types.ts";
 
 // ラッパーの no-op 契約を検証するテスト
 // 無効ビルド（VITE_ENABLE_SESSIONS 未設定）では全 API が no-op になる。
@@ -71,4 +83,54 @@ test.skipIf(sessionsEnabled)("updateConnectionEndedAt は無効ビルドで no-o
 
 test.skipIf(sessionsEnabled)("flushStatsBuffer は無効ビルドで no-op になる", async () => {
   await flushStatsBuffer();
+});
+
+test.skipIf(sessionsEnabled)("insertTimelineMessage は無効ビルドで no-op になる", async () => {
+  const message: TimelineMessage = {
+    timestamp: Date.now(),
+    type: "connect",
+    logType: "sora-devtools",
+  };
+  await insertTimelineMessage(1, null, message);
+});
+
+test.skipIf(sessionsEnabled)("insertNotifyMessage は無効ビルドで no-op になる", async () => {
+  const message = {
+    timestamp: Date.now(),
+    message: {
+      type: "notify",
+      event_type: "connection.created",
+      role: "sendrecv",
+      minutes: 0,
+      channel_connections: 1,
+    },
+    transportType: "websocket",
+  } as unknown as NotifyMessage;
+  await insertNotifyMessage(1, null, message);
+});
+
+test.skipIf(sessionsEnabled)("insertSignalingMessage は無効ビルドで no-op になる", async () => {
+  const message: SignalingMessage = {
+    timestamp: Date.now(),
+    type: "offer",
+    transportType: "websocket",
+  };
+  await insertSignalingMessage(1, null, message);
+});
+
+test.skipIf(sessionsEnabled)("insertLogMessage は無効ビルドで no-op になる", async () => {
+  const message: LogMessage = {
+    timestamp: Date.now(),
+    message: { title: "title", description: "description" },
+  };
+  await insertLogMessage(1, null, message);
+});
+
+test.skipIf(sessionsEnabled)("insertPushMessage は無効ビルドで no-op になる", async () => {
+  const message: PushMessage = {
+    timestamp: Date.now(),
+    message: { type: "push", data: {} },
+    transportType: "datachannel",
+  };
+  await insertPushMessage(1, null, message);
 });
