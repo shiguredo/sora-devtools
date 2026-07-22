@@ -91,15 +91,7 @@ export type ConnectionParams = {
   videoCodecType?: VideoCodecType;
   debug?: "true" | "false";
   debugType?:
-    | "log"
-    | "notify"
-    | "push"
-    | "stats"
-    | "timeline"
-    | "signaling"
-    | "messaging"
-    | "rpc"
-    | "codec";
+    "log" | "notify" | "push" | "stats" | "timeline" | "signaling" | "messaging" | "rpc" | "codec";
 };
 
 // DebugPane のタブ key (本 issue では timeline / signaling / notify のみを扱う)

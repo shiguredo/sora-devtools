@@ -102,17 +102,17 @@ Medium。過去セッションを識別・検索するための基盤であり�
 
 `sessions` テーブル:
 
-| カラム        | 型                                                     | 説明                                                                                                              |
+| カラム | 型 | 説明 |
 | ------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| id            | INTEGER PRIMARY KEY DEFAULT nextval('seq_sessions_id') | 自動採番（接続試行単位の内部 ID。`session_db_id`）                                                                |
-| session_id    | VARCHAR                                                | Sora の session_id（`connection.created` 受信後に UPDATE。同一値で複数行があり得る）                              |
-| connection_id | VARCHAR                                                | Sora の connection_id（`connection.created` 受信後に UPDATE。last-only。行特定や一覧必須には使わない。NULL 許容） |
-| channel_id    | VARCHAR                                                | channelId                                                                                                         |
-| role          | VARCHAR                                                | role（sendonly / recvonly / sendrecv 等）                                                                         |
-| started_at    | TIMESTAMP                                              | 接続試行開始時刻。`channel_id` / `role` / `metadata` も同時に保存する                                             |
-| ended_at      | TIMESTAMP                                              | 接続試行全体の終了時刻（後述の更新ルールに従う）                                                                  |
-| metadata      | JSON                                                   | 接続時の metadata（`parseMetadata()` 済みの `Json                                                                 | undefined` をマスクして保存。`undefined` は SQL NULL） |
-| created_at    | TIMESTAMP DEFAULT CURRENT_TIMESTAMP                    | レコード作成時刻                                                                                                  |
+| id | INTEGER PRIMARY KEY DEFAULT nextval('seq_sessions_id') | 自動採番（接続試行単位の内部 ID。`session_db_id`） |
+| session_id | VARCHAR | Sora の session_id（`connection.created` 受信後に UPDATE。同一値で複数行があり得る） |
+| connection_id | VARCHAR | Sora の connection_id（`connection.created` 受信後に UPDATE。last-only。行特定や一覧必須には使わない。NULL 許容） |
+| channel_id | VARCHAR | channelId |
+| role | VARCHAR | role（sendonly / recvonly / sendrecv 等） |
+| started_at | TIMESTAMP | 接続試行開始時刻。`channel_id` / `role` / `metadata` も同時に保存する |
+| ended_at | TIMESTAMP | 接続試行全体の終了時刻（後述の更新ルールに従う） |
+| metadata | JSON | 接続時の metadata（`parseMetadata()` 済みの `Json                                                                 | undefined` をマスクして保存。`undefined` は SQL NULL） |
+| created_at | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | レコード作成時刻 |
 
 `connections` テーブル:
 
