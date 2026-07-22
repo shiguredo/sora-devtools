@@ -10,6 +10,10 @@ minimumReleaseAgeExclude:
   # Microsoft
   - typescript
   - "@typescript/*"
+  # Preact
+  - preact
+  - preact-iso
+  - "@preact/signals"
   # ビルドツールチェーン (Voidzero / Oxc)
   # vite-plus / vitest / oxfmt / oxlint は活発に更新されるため制限対象外とする
   - "@voidzero-dev/*"
