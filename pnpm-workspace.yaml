@@ -39,3 +39,9 @@ peerDependencyRules:
     vite: ">=0.1.0"
     vitest: ">=0.1.0"
     typescript: ">=7.0.0"
+
+# @duckdb/duckdb-wasm は 1.32.0 に固定する
+# 1.33.1-dev34.0 以降は OPFS 永続化が壊れる (duckdb/duckdb-wasm#2192)
+# 修正が npm latest に入るまで更新しないこと
+overrides:
+  "@duckdb/duckdb-wasm": "1.32.0"
