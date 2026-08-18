@@ -31,15 +31,17 @@ const DISPLAY_RESOLUTION_DATA_LIST = [
   { label: "2160p", value: "3840x2160" },
 ];
 
-const DisplayResolutionDropdownItem = ({ label, value }: DisplayResolutionData) => (
-  <DropdownItem
-    onClick={() => {
-      setDisplayResolution(value);
-    }}
-  >
-    {label} {value !== "" && `(${value})`}
-  </DropdownItem>
-);
+function DisplayResolutionDropdownItem({ label, value }: DisplayResolutionData) {
+  return (
+    <DropdownItem
+      onClick={() => {
+        setDisplayResolution(value);
+      }}
+    >
+      {label} {value !== "" && `(${value})`}
+    </DropdownItem>
+  );
+}
 
 export function DisplayResolutionForm() {
   const onChange = (event: Event): void => {

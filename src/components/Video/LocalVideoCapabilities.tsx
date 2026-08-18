@@ -100,7 +100,7 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
   return { trackStats, selected };
 };
 
-export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
+export function LocalVideoCapabilities({ stream }: { stream: MediaStream }) {
   const { trackStats, selected } = useLocalVideoTrackStats(stream);
   return (
     <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
@@ -175,4 +175,4 @@ export const LocalVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
       )}
     </div>
   );
-};
+}

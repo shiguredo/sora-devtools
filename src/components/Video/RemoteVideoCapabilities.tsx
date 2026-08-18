@@ -84,7 +84,7 @@ const useVideoTrackStats = (stream: MediaStream) => {
   };
 };
 
-export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => {
+export function RemoteVideoCapabilities({ stream }: { stream: MediaStream }) {
   const { trackStats } = useVideoTrackStats(stream);
   return (
     <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
@@ -131,4 +131,4 @@ export const RemoteVideoCapabilities = ({ stream }: { stream: MediaStream }) => 
       )}
     </div>
   );
-};
+}

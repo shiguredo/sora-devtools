@@ -2076,20 +2076,18 @@ export async function queryStatsPage(
     `);
     try {
       const pageTable = await pageStatement.query(...filterParams, limit, offset);
-      const rows = arrowTableToRecords(pageTable).map(
-        (record): StatsPageRow => ({
-          id: requireNumber(record.id, "webrtc_stats.id"),
-          timestamp_ms: requireNumber(record.timestamp_ms, "webrtc_stats.timestamp_ms"),
-          stats_type: toNullableString(record.stats_type),
-          stats_id: toNullableString(record.stats_id),
-          kind: toNullableString(record.kind),
-          packets_received: toFiniteNumber(record.packets_received),
-          packets_sent: toFiniteNumber(record.packets_sent),
-          bytes_received: toFiniteNumber(record.bytes_received),
-          bytes_sent: toFiniteNumber(record.bytes_sent),
-          round_trip_time: toFiniteNumber(record.round_trip_time),
-        }),
-      );
+      const rows = arrowTableToRecords(pageTable).map((record): StatsPageRow => ({
+        id: requireNumber(record.id, "webrtc_stats.id"),
+        timestamp_ms: requireNumber(record.timestamp_ms, "webrtc_stats.timestamp_ms"),
+        stats_type: toNullableString(record.stats_type),
+        stats_id: toNullableString(record.stats_id),
+        kind: toNullableString(record.kind),
+        packets_received: toFiniteNumber(record.packets_received),
+        packets_sent: toFiniteNumber(record.packets_sent),
+        bytes_received: toFiniteNumber(record.bytes_received),
+        bytes_sent: toFiniteNumber(record.bytes_sent),
+        round_trip_time: toFiniteNumber(record.round_trip_time),
+      }));
       return { rows, totalCount };
     } finally {
       await pageStatement.close();
@@ -2378,17 +2376,15 @@ export async function queryTimelineMessagesPage(
     `);
     try {
       const pageTable = await statement.query(sessionDbId, limit, offset);
-      const rows = arrowTableToRecords(pageTable).map(
-        (record): TimelineMessagePageRow => ({
-          id: requireNumber(record.id, "timeline_messages.id"),
-          session_db_id: requireNumber(record.session_db_id, "timeline_messages.session_db_id"),
-          connection_id: toNullableString(record.connection_id),
-          timestamp_ms: requireNumber(record.timestamp_ms, "timeline_messages.timestamp_ms"),
-          type: toNullableString(record.type),
-          log_type: toNullableString(record.log_type),
-          payload_json: normalizePayloadJson(record.payload_json),
-        }),
-      );
+      const rows = arrowTableToRecords(pageTable).map((record): TimelineMessagePageRow => ({
+        id: requireNumber(record.id, "timeline_messages.id"),
+        session_db_id: requireNumber(record.session_db_id, "timeline_messages.session_db_id"),
+        connection_id: toNullableString(record.connection_id),
+        timestamp_ms: requireNumber(record.timestamp_ms, "timeline_messages.timestamp_ms"),
+        type: toNullableString(record.type),
+        log_type: toNullableString(record.log_type),
+        payload_json: normalizePayloadJson(record.payload_json),
+      }));
       return { rows, totalCount };
     } finally {
       await statement.close();
@@ -2417,17 +2413,15 @@ export async function queryNotifyMessagesPage(
     `);
     try {
       const pageTable = await statement.query(sessionDbId, limit, offset);
-      const rows = arrowTableToRecords(pageTable).map(
-        (record): NotifyMessagePageRow => ({
-          id: requireNumber(record.id, "notify_messages.id"),
-          session_db_id: requireNumber(record.session_db_id, "notify_messages.session_db_id"),
-          connection_id: toNullableString(record.connection_id),
-          timestamp_ms: requireNumber(record.timestamp_ms, "notify_messages.timestamp_ms"),
-          event_type: toNullableString(record.event_type),
-          transport_type: toNullableString(record.transport_type),
-          payload_json: normalizePayloadJson(record.payload_json),
-        }),
-      );
+      const rows = arrowTableToRecords(pageTable).map((record): NotifyMessagePageRow => ({
+        id: requireNumber(record.id, "notify_messages.id"),
+        session_db_id: requireNumber(record.session_db_id, "notify_messages.session_db_id"),
+        connection_id: toNullableString(record.connection_id),
+        timestamp_ms: requireNumber(record.timestamp_ms, "notify_messages.timestamp_ms"),
+        event_type: toNullableString(record.event_type),
+        transport_type: toNullableString(record.transport_type),
+        payload_json: normalizePayloadJson(record.payload_json),
+      }));
       return { rows, totalCount };
     } finally {
       await statement.close();
@@ -2456,17 +2450,15 @@ export async function querySignalingMessagesPage(
     `);
     try {
       const pageTable = await statement.query(sessionDbId, limit, offset);
-      const rows = arrowTableToRecords(pageTable).map(
-        (record): SignalingMessagePageRow => ({
-          id: requireNumber(record.id, "signaling_messages.id"),
-          session_db_id: requireNumber(record.session_db_id, "signaling_messages.session_db_id"),
-          connection_id: toNullableString(record.connection_id),
-          timestamp_ms: requireNumber(record.timestamp_ms, "signaling_messages.timestamp_ms"),
-          type: toNullableString(record.type),
-          transport_type: toNullableString(record.transport_type),
-          payload_json: normalizePayloadJson(record.payload_json),
-        }),
-      );
+      const rows = arrowTableToRecords(pageTable).map((record): SignalingMessagePageRow => ({
+        id: requireNumber(record.id, "signaling_messages.id"),
+        session_db_id: requireNumber(record.session_db_id, "signaling_messages.session_db_id"),
+        connection_id: toNullableString(record.connection_id),
+        timestamp_ms: requireNumber(record.timestamp_ms, "signaling_messages.timestamp_ms"),
+        type: toNullableString(record.type),
+        transport_type: toNullableString(record.transport_type),
+        payload_json: normalizePayloadJson(record.payload_json),
+      }));
       return { rows, totalCount };
     } finally {
       await statement.close();
@@ -2495,16 +2487,14 @@ export async function queryLogMessagesPage(
     `);
     try {
       const pageTable = await statement.query(sessionDbId, limit, offset);
-      const rows = arrowTableToRecords(pageTable).map(
-        (record): LogMessagePageRow => ({
-          id: requireNumber(record.id, "log_messages.id"),
-          session_db_id: requireNumber(record.session_db_id, "log_messages.session_db_id"),
-          connection_id: toNullableString(record.connection_id),
-          timestamp_ms: requireNumber(record.timestamp_ms, "log_messages.timestamp_ms"),
-          title: toNullableString(record.title),
-          payload_json: normalizePayloadJson(record.payload_json),
-        }),
-      );
+      const rows = arrowTableToRecords(pageTable).map((record): LogMessagePageRow => ({
+        id: requireNumber(record.id, "log_messages.id"),
+        session_db_id: requireNumber(record.session_db_id, "log_messages.session_db_id"),
+        connection_id: toNullableString(record.connection_id),
+        timestamp_ms: requireNumber(record.timestamp_ms, "log_messages.timestamp_ms"),
+        title: toNullableString(record.title),
+        payload_json: normalizePayloadJson(record.payload_json),
+      }));
       return { rows, totalCount };
     } finally {
       await statement.close();
@@ -2533,16 +2523,14 @@ export async function queryPushMessagesPage(
     `);
     try {
       const pageTable = await statement.query(sessionDbId, limit, offset);
-      const rows = arrowTableToRecords(pageTable).map(
-        (record): PushMessagePageRow => ({
-          id: requireNumber(record.id, "push_messages.id"),
-          session_db_id: requireNumber(record.session_db_id, "push_messages.session_db_id"),
-          connection_id: toNullableString(record.connection_id),
-          timestamp_ms: requireNumber(record.timestamp_ms, "push_messages.timestamp_ms"),
-          transport_type: toNullableString(record.transport_type),
-          payload_json: normalizePayloadJson(record.payload_json),
-        }),
-      );
+      const rows = arrowTableToRecords(pageTable).map((record): PushMessagePageRow => ({
+        id: requireNumber(record.id, "push_messages.id"),
+        session_db_id: requireNumber(record.session_db_id, "push_messages.session_db_id"),
+        connection_id: toNullableString(record.connection_id),
+        timestamp_ms: requireNumber(record.timestamp_ms, "push_messages.timestamp_ms"),
+        transport_type: toNullableString(record.transport_type),
+        payload_json: normalizePayloadJson(record.payload_json),
+      }));
       return { rows, totalCount };
     } finally {
       await statement.close();

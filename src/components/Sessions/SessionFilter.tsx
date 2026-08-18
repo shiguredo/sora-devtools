@@ -1,5 +1,3 @@
-import type { FunctionComponent } from "preact";
-
 import type { SessionsSearchParams } from "@/sessionsSearchParams";
 
 export interface SessionFilterProps {
@@ -8,7 +6,7 @@ export interface SessionFilterProps {
 }
 
 // 一覧絞り込みフォーム。適用時に親へ SessionsSearchParams を渡す
-export const SessionFilter: FunctionComponent<SessionFilterProps> = ({ value, onChange }) => {
+export function SessionFilter({ value, onChange }: SessionFilterProps) {
   const handleSubmit = (event: Event): void => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -125,4 +123,4 @@ export const SessionFilter: FunctionComponent<SessionFilterProps> = ({ value, on
       </div>
     </form>
   );
-};
+}

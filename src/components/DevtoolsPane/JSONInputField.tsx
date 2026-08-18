@@ -27,7 +27,7 @@ interface JSONInputFieldProps {
   cols?: number;
 }
 
-export const JSONInputField = ({
+export function JSONInputField({
   value,
   controlId,
   placeholder,
@@ -36,7 +36,7 @@ export const JSONInputField = ({
   extraControls,
   rows,
   cols,
-}: JSONInputFieldProps) => {
+}: JSONInputFieldProps) {
   const invalidJsonString = useSignal(false);
   const onChangeText = (event: Event): void => {
     const target = event.target as HTMLInputElement;
@@ -84,4 +84,4 @@ export const JSONInputField = ({
       </div>
     </FormGroup>
   );
-};
+}

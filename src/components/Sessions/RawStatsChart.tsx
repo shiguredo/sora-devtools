@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 import UPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
@@ -57,7 +56,7 @@ function hasPlottablePoints(points: StatsRawSeriesPoint[]): boolean {
 }
 
 // 生データの stats_id 別時系列を uPlot で描画する
-export const RawStatsChart: FunctionComponent<RawStatsChartProps> = ({ points, metric, title }) => {
+export function RawStatsChart({ points, metric, title }: RawStatsChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const distinctIds = new Set(points.map((point) => point.stats_id)).size;
   const truncated = distinctIds > maxRawSeriesCount();
@@ -228,4 +227,4 @@ export const RawStatsChart: FunctionComponent<RawStatsChartProps> = ({ points, m
       />
     </div>
   );
-};
+}

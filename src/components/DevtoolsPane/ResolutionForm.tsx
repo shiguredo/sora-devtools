@@ -30,15 +30,17 @@ const RESOLUTION_DATA_LIST = [
   { label: "2160p", value: "3840x2160" },
 ];
 
-const ResolutionDropdownItem = ({ label, value }: ResolutionData) => (
-  <DropdownItem
-    onClick={() => {
-      setResolution(value);
-    }}
-  >
-    {label} {value !== "" && `(${value})`}
-  </DropdownItem>
-);
+function ResolutionDropdownItem({ label, value }: ResolutionData) {
+  return (
+    <DropdownItem
+      onClick={() => {
+        setResolution(value);
+      }}
+    >
+      {label} {value !== "" && `(${value})`}
+    </DropdownItem>
+  );
+}
 
 export function ResolutionForm() {
   const onChange = (event: Event): void => {

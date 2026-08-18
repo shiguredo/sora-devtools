@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { formatChartUnixSecJst } from "@/components/Sessions/chartFormat";
@@ -68,86 +67,74 @@ async function fetchDisplayPage(
 
   if (tab === "timeline") {
     const result = await queryTimelineMessagesPage(sessionDbId, options);
-    const rows = result.rows.map(
-      (row): DisplayRow => ({
-        id: row.id,
-        timestampMs: row.timestamp_ms,
-        connectionId: row.connection_id,
-        columns: [
-          { label: "type", value: displayOrDash(row.type) },
-          { label: "log_type", value: displayOrDash(row.log_type) },
-        ],
-        payloadJson: row.payload_json,
-      }),
-    );
+    const rows = result.rows.map((row): DisplayRow => ({
+      id: row.id,
+      timestampMs: row.timestamp_ms,
+      connectionId: row.connection_id,
+      columns: [
+        { label: "type", value: displayOrDash(row.type) },
+        { label: "log_type", value: displayOrDash(row.log_type) },
+      ],
+      payloadJson: row.payload_json,
+    }));
     return { rows, totalCount: result.totalCount };
   }
 
   if (tab === "notify") {
     const result = await queryNotifyMessagesPage(sessionDbId, options);
-    const rows = result.rows.map(
-      (row): DisplayRow => ({
-        id: row.id,
-        timestampMs: row.timestamp_ms,
-        connectionId: row.connection_id,
-        columns: [
-          { label: "event_type", value: displayOrDash(row.event_type) },
-          { label: "transport_type", value: displayOrDash(row.transport_type) },
-        ],
-        payloadJson: row.payload_json,
-      }),
-    );
+    const rows = result.rows.map((row): DisplayRow => ({
+      id: row.id,
+      timestampMs: row.timestamp_ms,
+      connectionId: row.connection_id,
+      columns: [
+        { label: "event_type", value: displayOrDash(row.event_type) },
+        { label: "transport_type", value: displayOrDash(row.transport_type) },
+      ],
+      payloadJson: row.payload_json,
+    }));
     return { rows, totalCount: result.totalCount };
   }
 
   if (tab === "signaling") {
     const result = await querySignalingMessagesPage(sessionDbId, options);
-    const rows = result.rows.map(
-      (row): DisplayRow => ({
-        id: row.id,
-        timestampMs: row.timestamp_ms,
-        connectionId: row.connection_id,
-        columns: [
-          { label: "type", value: displayOrDash(row.type) },
-          { label: "transport_type", value: displayOrDash(row.transport_type) },
-        ],
-        payloadJson: row.payload_json,
-      }),
-    );
+    const rows = result.rows.map((row): DisplayRow => ({
+      id: row.id,
+      timestampMs: row.timestamp_ms,
+      connectionId: row.connection_id,
+      columns: [
+        { label: "type", value: displayOrDash(row.type) },
+        { label: "transport_type", value: displayOrDash(row.transport_type) },
+      ],
+      payloadJson: row.payload_json,
+    }));
     return { rows, totalCount: result.totalCount };
   }
 
   if (tab === "log") {
     const result = await queryLogMessagesPage(sessionDbId, options);
-    const rows = result.rows.map(
-      (row): DisplayRow => ({
-        id: row.id,
-        timestampMs: row.timestamp_ms,
-        connectionId: row.connection_id,
-        columns: [{ label: "title", value: displayOrDash(row.title) }],
-        payloadJson: row.payload_json,
-      }),
-    );
+    const rows = result.rows.map((row): DisplayRow => ({
+      id: row.id,
+      timestampMs: row.timestamp_ms,
+      connectionId: row.connection_id,
+      columns: [{ label: "title", value: displayOrDash(row.title) }],
+      payloadJson: row.payload_json,
+    }));
     return { rows, totalCount: result.totalCount };
   }
 
   const result = await queryPushMessagesPage(sessionDbId, options);
-  const rows = result.rows.map(
-    (row): DisplayRow => ({
-      id: row.id,
-      timestampMs: row.timestamp_ms,
-      connectionId: row.connection_id,
-      columns: [{ label: "transport_type", value: displayOrDash(row.transport_type) }],
-      payloadJson: row.payload_json,
-    }),
-  );
+  const rows = result.rows.map((row): DisplayRow => ({
+    id: row.id,
+    timestampMs: row.timestamp_ms,
+    connectionId: row.connection_id,
+    columns: [{ label: "transport_type", value: displayOrDash(row.transport_type) }],
+    payloadJson: row.payload_json,
+  }));
   return { rows, totalCount: result.totalCount };
 }
 
 // DB 読み取り専用のデバッグメッセージ閲覧パネル（DebugPane とは独立の子コンポーネント）
-export const SessionDebugMessages: FunctionComponent<SessionDebugMessagesProps> = ({
-  sessionDbId,
-}) => {
+export function SessionDebugMessages({ sessionDbId }: SessionDebugMessagesProps) {
   const [activeTab, setActiveTab] = useState<MessageTab>("timeline");
   const [pageOffset, setPageOffset] = useState(0);
   const [rows, setRows] = useState<DisplayRow[]>([]);
@@ -274,59 +261,66 @@ export const SessionDebugMessages: FunctionComponent<SessionDebugMessagesProps> 
       </div>
     </section>
   );
-};
+}
 
-const SessionMessagesTable: FunctionComponent<{
+function SessionMessagesTable({
+  rows,
+  columnLabels,
+}: {
   rows: DisplayRow[];
   columnLabels: string[];
-}> = ({ rows, columnLabels }) => (
-  <div
-    className="max-h-96 overflow-auto rounded border border-bs-light"
-    data-testid="session-messages-list"
-  >
-    {rows.length === 0 && (
-      <p className="p-3 text-sm text-bs-secondary" data-testid="session-messages-empty">
-        メッセージはありません
-      </p>
-    )}
-    {rows.length > 0 && (
-      <table className="w-full border-collapse text-left text-xs">
-        <thead className="sticky top-0 bg-bs-light">
-          <tr className="border-b border-bs-secondary">
-            <th className="px-2 py-1.5 font-semibold">時刻 (JST)</th>
-            {columnLabels.map((label) => (
-              <th key={label} className="px-2 py-1.5 font-semibold">
-                {label}
-              </th>
-            ))}
-            <th className="px-2 py-1.5 font-semibold">connection_id</th>
-            <th className="px-2 py-1.5 font-semibold">payload</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id} className="border-b border-bs-light">
-              <td className="px-2 py-1 font-mono tabular-nums">
-                {formatChartUnixSecJst(row.timestampMs / 1000, true)}
-              </td>
-              {row.columns.map((column) => (
-                <td key={column.label} className="px-2 py-1">
-                  {column.value}
-                </td>
+}) {
+  return (
+    <div
+      className="max-h-96 overflow-auto rounded border border-bs-light"
+      data-testid="session-messages-list"
+    >
+      {rows.length === 0 && (
+        <p className="p-3 text-sm text-bs-secondary" data-testid="session-messages-empty">
+          メッセージはありません
+        </p>
+      )}
+      {rows.length > 0 && (
+        <table className="w-full border-collapse text-left text-xs">
+          <thead className="sticky top-0 bg-bs-light">
+            <tr className="border-b border-bs-secondary">
+              <th className="px-2 py-1.5 font-semibold">時刻 (JST)</th>
+              {columnLabels.map((label) => (
+                <th key={label} className="px-2 py-1.5 font-semibold">
+                  {label}
+                </th>
               ))}
-              <td className="px-2 py-1 font-mono text-[11px]">{displayOrDash(row.connectionId)}</td>
-              <td className="px-2 py-1">
-                <details>
-                  <summary className="cursor-pointer text-bs-secondary">表示</summary>
-                  <pre className="mt-1 max-w-md overflow-auto whitespace-pre-wrap break-all text-[11px]">
-                    {JSON.stringify(row.payloadJson, null, 2)}
-                  </pre>
-                </details>
-              </td>
+              <th className="px-2 py-1.5 font-semibold">connection_id</th>
+              <th className="px-2 py-1.5 font-semibold">payload</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
-  </div>
-);
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id} className="border-b border-bs-light">
+                <td className="px-2 py-1 font-mono tabular-nums">
+                  {formatChartUnixSecJst(row.timestampMs / 1000, true)}
+                </td>
+                {row.columns.map((column) => (
+                  <td key={column.label} className="px-2 py-1">
+                    {column.value}
+                  </td>
+                ))}
+                <td className="px-2 py-1 font-mono text-[11px]">
+                  {displayOrDash(row.connectionId)}
+                </td>
+                <td className="px-2 py-1">
+                  <details>
+                    <summary className="cursor-pointer text-bs-secondary">表示</summary>
+                    <pre className="mt-1 max-w-md overflow-auto whitespace-pre-wrap break-all text-[11px]">
+                      {JSON.stringify(row.payloadJson, null, 2)}
+                    </pre>
+                  </details>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}

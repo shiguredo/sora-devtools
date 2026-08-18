@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 import UPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
@@ -40,7 +39,7 @@ function hasPlottableValue(points: MetricPoint[]): boolean {
 }
 
 // 単一系列の汎用時系列チャート（試行用）
-export const MetricTimeSeriesChart: FunctionComponent<MetricTimeSeriesChartProps> = ({
+export function MetricTimeSeriesChart({
   points,
   title,
   unitLabel,
@@ -49,7 +48,7 @@ export const MetricTimeSeriesChart: FunctionComponent<MetricTimeSeriesChartProps
   formatValue,
   toDisplay,
   testId,
-}) => {
+}: MetricTimeSeriesChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -204,4 +203,4 @@ export const MetricTimeSeriesChart: FunctionComponent<MetricTimeSeriesChartProps
       />
     </div>
   );
-};
+}

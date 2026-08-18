@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { createPortal } from "preact/compat";
 import { useEffect } from "preact/hooks";
 
@@ -114,7 +113,7 @@ function ConfirmDialogBody({
 }
 
 // 削除確認は portal のオーバーレイで出す。一覧の列幅・縦位置を動かさない
-export const SessionsDeleteConfirmPanel: FunctionComponent<SessionsDeleteConfirmPanelProps> = ({
+export function SessionsDeleteConfirmPanel({
   confirmingReset,
   confirmingSessionDbId,
   confirmingSession,
@@ -125,7 +124,7 @@ export const SessionsDeleteConfirmPanel: FunctionComponent<SessionsDeleteConfirm
   onCancelReset,
   onConfirmDelete,
   onCancelDelete,
-}) => {
+}: SessionsDeleteConfirmPanelProps) {
   if (typeof document === "undefined") {
     return null;
   }
@@ -170,4 +169,4 @@ export const SessionsDeleteConfirmPanel: FunctionComponent<SessionsDeleteConfirm
     />,
     document.body,
   );
-};
+}

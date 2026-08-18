@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 
@@ -137,7 +136,7 @@ function PrivacyNotice() {
   );
 }
 
-const Sessions: FunctionComponent = () => {
+function Sessions() {
   const { url, route } = useLocation();
   const connectionStatusValue = connectionStatus.value;
   const [searchParams, setSearchParams] = useState<SessionsSearchParams>(() =>
@@ -404,6 +403,6 @@ const Sessions: FunctionComponent = () => {
       </section>
     </main>
   );
-};
+}
 
 export default Sessions;

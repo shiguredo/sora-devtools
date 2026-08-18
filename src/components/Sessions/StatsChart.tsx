@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 import UPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
@@ -82,7 +81,7 @@ function hasPlottableValue(
 }
 
 // uPlot で時系列メトリクスを描画する（横軸は JST の実時刻）
-export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric, title }) => {
+export function StatsChart({ points, metric, title }: StatsChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const style = METRIC_STYLES[metric];
 
@@ -252,4 +251,4 @@ export const StatsChart: FunctionComponent<StatsChartProps> = ({ points, metric,
       />
     </div>
   );
-};
+}

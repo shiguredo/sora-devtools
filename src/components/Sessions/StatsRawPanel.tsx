@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import {
@@ -95,7 +94,7 @@ function pickDefaultStream(streams: StatsStreamSummary[]): StatsStreamSummary | 
 }
 
 // ストリーム選択 → 差分メトリクスグラフ → 折りたたみ生テーブル（試行 UI）
-export const StatsRawPanel: FunctionComponent<StatsRawPanelProps> = ({ sessionDbId }) => {
+export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
   const [streams, setStreams] = useState<StatsStreamSummary[]>([]);
   const [selectedStatsId, setSelectedStatsId] = useState("");
   const [timeseries, setTimeseries] = useState<StatsStreamTimeseriesPoint[]>([]);
@@ -376,9 +375,9 @@ export const StatsRawPanel: FunctionComponent<StatsRawPanelProps> = ({ sessionDb
       </details>
     </section>
   );
-};
+}
 
-const StatsRawTable: FunctionComponent<{ page: StatsPageResult }> = ({ page }) => {
+function StatsRawTable({ page }: { page: StatsPageResult }) {
   if (page.rows.length === 0) {
     return (
       <p className="text-sm text-bs-secondary" data-testid="stats-raw-empty">
@@ -485,4 +484,4 @@ const StatsRawTable: FunctionComponent<{ page: StatsPageResult }> = ({ page }) =
       </table>
     </div>
   );
-};
+}

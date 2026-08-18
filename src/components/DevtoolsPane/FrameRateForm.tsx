@@ -29,15 +29,17 @@ const FRAME_RATE_DATA = [
   { label: "5", value: "5" },
 ];
 
-const FrameRateDropdownItem = ({ label, value }: FrameRateData) => (
-  <DropdownItem
-    onClick={() => {
-      setFrameRate(value);
-    }}
-  >
-    {label}
-  </DropdownItem>
-);
+function FrameRateDropdownItem({ label, value }: FrameRateData) {
+  return (
+    <DropdownItem
+      onClick={() => {
+        setFrameRate(value);
+      }}
+    >
+      {label}
+    </DropdownItem>
+  );
+}
 
 export function FrameRateForm() {
   const onChange = (event: Event): void => {

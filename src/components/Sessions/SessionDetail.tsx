@@ -1,4 +1,3 @@
-import type { FunctionComponent } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { SessionDebugMessages } from "@/components/Sessions/SessionDebugMessages";
@@ -38,7 +37,7 @@ function formatNullableNumber(value: number | null): string {
 }
 
 // 詳細パネル: メタデータ・connections・stats 集計 / 時系列 / 生データ
-export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDbId }) => {
+export function SessionDetail({ sessionDbId }: SessionDetailProps) {
   const [detail, setDetail] = useState<SessionDetailData | null>(null);
   const [aggregates, setAggregates] = useState<StatsAggregates | null>(null);
   const [timeseries, setTimeseries] = useState<StatsTimeseriesPoint[]>([]);
@@ -267,11 +266,9 @@ export const SessionDetail: FunctionComponent<SessionDetailProps> = ({ sessionDb
       <SessionDebugMessages sessionDbId={detail.session.id} />
     </div>
   );
-};
+}
 
-const ConnectionsTable: FunctionComponent<{ connections: ConnectionListRow[] }> = ({
-  connections,
-}) => {
+function ConnectionsTable({ connections }: { connections: ConnectionListRow[] }) {
   if (connections.length === 0) {
     return <p className="text-sm text-bs-secondary">connections はありません</p>;
   }
@@ -309,4 +306,4 @@ const ConnectionsTable: FunctionComponent<{ connections: ConnectionListRow[] }> 
       </table>
     </div>
   );
-};
+}

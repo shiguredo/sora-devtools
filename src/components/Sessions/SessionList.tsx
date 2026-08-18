@@ -1,5 +1,3 @@
-import type { FunctionComponent } from "preact";
-
 import type { SessionListRow } from "@/sessionDatabase";
 import { deriveSessionStatus, sessionStatusLabel } from "@/sessionStatus";
 
@@ -22,7 +20,7 @@ function displayOrDash(value: string | null): string {
 
 // セッション一覧テーブル（session 行単位。connectionId は出さない）
 // 削除確認はオーバーレイ側。ここは常に同じ列構成・同じセル内容でレイアウトを固定する
-export const SessionList: FunctionComponent<SessionListProps> = ({
+export function SessionList({
   sessions,
   currentSessionDbId,
   selectedSessionDbId,
@@ -30,7 +28,7 @@ export const SessionList: FunctionComponent<SessionListProps> = ({
   onSelect,
   onRequestDelete,
   deleteActionsDisabled,
-}) => {
+}: SessionListProps) {
   if (sessions.length === 0) {
     return (
       <p className="text-bs-secondary" data-testid="session-list-empty">
@@ -123,4 +121,4 @@ export const SessionList: FunctionComponent<SessionListProps> = ({
       </table>
     </div>
   );
-};
+}
