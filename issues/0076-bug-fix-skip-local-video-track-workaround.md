@@ -51,6 +51,14 @@ LocalVideo の表示処理が送信に使用している映像トラックを一
 
 既存の `tests/sendrecv.test.ts`、`tests/sendonly.test.ts`、`tests/recvonly.test.ts` は接続後に待機して切断するテストであり、現在は VP9 接続を使用している。H.265 HWA のフレームカウンターと `track.enabled` の確認はこれらの既存テストでは直接検証しないため、上記のブラウザー確認を必須とする。E2E の環境変数は `tests/helpers/env.ts` の定義に従い、`E2E_TEST_SORA_SIGNALING_URL` のみ必須で、他 2 つは未設定時に空文字となる。
 
+### 検証結果
+
+- 実施日: 2026-08-26
+- 環境: Windows Chrome 152.0.7977.54、H.265 NVIDIA HEVC Encoder MFT
+- 接続条件: `role=sendrecv`、`videoCodecType=H265`
+- `framesEncoded` と `framesSent` が継続して増加することを確認した
+- 他の接続中の devtools で映像が受信できることを 10 回確認した
+
 ## 関連 issue
 
 - 0043: `audioOutput` 変更時の stream 設定 effect 再実行と `setSinkId` エラー処理を扱う。LocalVideo の H.265 HWA 送信停止とは目的が異なるが、同じ `VideoElement` の effect を変更するため、実装時は本 issue の `props.localVideo` ガードと依存配列を維持する
