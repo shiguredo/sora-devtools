@@ -1,7 +1,7 @@
 # LocalVideo に映像トラックの無効化ワークアラウンドを適用しない
 
 - Created: 2026-08-25
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-08-27
 - Branch: feature/fix-skip-local-video-track-workaround
 - Polished: 2026-08-26
 
@@ -58,6 +58,7 @@ LocalVideo の表示処理が送信に使用している映像トラックを一
 - 接続条件: `role=sendrecv`、`videoCodecType=H265`
 - `framesEncoded` と `framesSent` が継続して増加することを確認した
 - 他の接続中の devtools で映像が受信できることを 10 回確認した
+- PR #707 を `develop` にマージした
 
 ## 関連 issue
 
