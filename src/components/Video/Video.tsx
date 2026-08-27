@@ -49,14 +49,7 @@ function VideoElement(props: VideoProps) {
       return;
     }
 
-    // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
-    // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
-    // 参照: https://bugs.chromium.org/p/chromium/issues/detail?id=403710
     let originalEnabled: boolean | undefined;
-    for (const track of stream.getVideoTracks()) {
-      originalEnabled = track.enabled;
-      track.enabled = false;
-    }
     const onLoadedMetadata = (): void => {
       for (const track of stream.getVideoTracks()) {
         if (originalEnabled !== undefined) {
@@ -64,7 +57,16 @@ function VideoElement(props: VideoProps) {
         }
       }
     };
-    videoElement.addEventListener("loadedmetadata", onLoadedMetadata);
+    if (!props.localVideo) {
+      // Chrome で first video frame まで音声が出力されない現象のワークアラウンド
+      // 一旦 video tracks を disabled にしておき、 loadedmetadata イベントで有効にする
+      // 参照: https://bugs.chromium.org/p/chromium/issues/detail?id=403710
+      for (const track of stream.getVideoTracks()) {
+        originalEnabled = track.enabled;
+        track.enabled = false;
+      }
+      videoElement.addEventListener("loadedmetadata", onLoadedMetadata);
+    }
 
     videoElement.srcObject = stream;
     // 音声出力先の指定は srcObject 設定後のこの useEffect に集約する
@@ -74,15 +76,17 @@ function VideoElement(props: VideoProps) {
 
     // stream 変更時にリスナーが蓄積するのを防ぐため cleanup で removeEventListener する
     return () => {
-      videoElement.removeEventListener("loadedmetadata", onLoadedMetadata);
-      // onloadedmetadata が呼ばれない場合にアンマウントされた場合は track.enabled をオリジナルの状態に戻す
-      for (const track of stream.getVideoTracks()) {
-        if (originalEnabled !== undefined) {
-          track.enabled = originalEnabled;
+      if (!props.localVideo) {
+        videoElement.removeEventListener("loadedmetadata", onLoadedMetadata);
+        // onloadedmetadata が呼ばれない場合にアンマウントされた場合は track.enabled をオリジナルの状態に戻す
+        for (const track of stream.getVideoTracks()) {
+          if (originalEnabled !== undefined) {
+            track.enabled = originalEnabled;
+          }
         }
       }
     };
-  }, [stream, audioOutput]);
+  }, [stream, audioOutput, props.localVideo]);
 
   return (
     <video

@@ -37,6 +37,9 @@
   - @voluntas
 - [FIX] DuckDB 初期化完了前の接続でセッションが永続化されない競合を修正する
   - @voluntas
+- [FIX] LocalVideo に映像トラックの無効化ワークアラウンドを適用しないようにする
+  - Windows Chrome で NVIDIA を利用した H.265 の映像送信が止まるケースがある問題についての対応
+  - @miosakuma
 
 ### misc
 
