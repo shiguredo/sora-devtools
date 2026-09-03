@@ -15,7 +15,7 @@ export function MicDeviceForm() {
       try {
         await setMicDeviceAction(target.checked);
       } catch {
-        // setMicDeviceAction が設定したアラートを表示し、未処理 rejection を防ぐ
+        // アラートは setMicDeviceAction 内で表示済みのため、ここでは reject のみ処理する
       }
       return;
     }
