@@ -40,6 +40,9 @@
 - [FIX] LocalVideo に映像トラックの無効化ワークアラウンドを適用しないようにする
   - Windows Chrome で NVIDIA を利用した H.265 の映像送信が止まるケースがある問題についての対応
   - @miosakuma
+- [FIX] `Enable mic device` のトグルが接続中の音声トラックを停止しない問題を修正する
+  - `getUserMedia` / `fakeMedia` でトグル変更時に音声トラックを停止・削除する
+  - @miosakuma
 
 ### misc
 

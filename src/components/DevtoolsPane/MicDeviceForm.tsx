@@ -1,6 +1,7 @@
 import { FormGroup } from "@/components/ui";
 
-import { audio, connectionStatus, micDevice, setMicDevice, sora } from "@/app/signals";
+import { setMicDeviceAction } from "@/app/actions";
+import { audio, connectionStatus, mediaType, micDevice, setMicDevice, sora } from "@/app/signals";
 
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
@@ -8,8 +9,16 @@ export function MicDeviceForm() {
   const disabled = !(sora.value && connectionStatus.value === "connected"
     ? sora.value.audio
     : audio.value);
-  const onChange = (event: Event): void => {
+  const onChange = async (event: Event): Promise<void> => {
     const target = event.target as HTMLInputElement;
+    if (mediaType.value === "getUserMedia" || mediaType.value === "fakeMedia") {
+      try {
+        await setMicDeviceAction(target.checked);
+      } catch {
+        // アラートは setMicDeviceAction 内で表示済みのため、ここでは reject のみ処理する
+      }
+      return;
+    }
     setMicDevice(target.checked);
   };
   return (
