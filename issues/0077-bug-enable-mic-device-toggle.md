@@ -1,7 +1,7 @@
 # Enable mic device のトグルでマイクを停止できない問題を修正する
 
 - Created: 2026-09-02
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-09-03
 - Branch: feature/fix-enable-mic-device-toggle
 - Polished: 2026-09-02
 
@@ -48,14 +48,15 @@
 - `fakeMedia` で `Enable mic device` を `on` にすると、Fake Media の音声トラックが再生成・再設定される
 - 接続前に `off` にした場合、`getUserMedia` と `fakeMedia` で音声トラックを作成しない既存の動作が維持される
 - 音声トラックの生成に失敗した場合、既存のアラートを表示し、`micDevice` の状態を変更せず、未処理 rejection を発生させない
-- 関連するテストが追加または修正され、テストが成功する
+- 一時的な component テストを作成・実行し、音声トラック生成失敗時にトグル操作から Promise が未処理のまま残らないことを確認済み（テストファイルはコミットせず削除済み）
+- 実機で `getUserMedia` と `fakeMedia` の `Enable mic device` を切り替え、音声トラックと Sora の送信状態が期待どおりに更新されることを確認済み
 
 ## 解決方法
 
-- `src/components/DevtoolsPane/MicDeviceForm.tsx` が `getUserMedia` または `fakeMedia` のときに `setMicDeviceAction` を呼び出すように修正する
-- `setMicDeviceAction` の成功時に状態を更新し、音声トラックの生成に失敗した場合は既存の状態を維持することを確認するテストを追加または修正する
-- `Enable mic device` の切り替えによって、ローカル MediaStream と Sora の音声トラックが期待どおりに更新されることを確認する
-- 非同期処理の失敗時に、トグル操作から Promise が未処理のまま残らないことを確認する
+- `src/components/DevtoolsPane/MicDeviceForm.tsx` が `getUserMedia` または `fakeMedia` のときに `setMicDeviceAction` を呼び出すように修正した
+- `setMicDeviceAction` の成功時に状態を更新し、音声トラックの生成に失敗した場合は既存の状態を維持する実装を確認した
+- `Enable mic device` の切り替えによって、ローカル MediaStream と Sora の音声トラックが期待どおりに更新されることを実機で確認した
+- 一時的な component テストを作成・実行し、音声トラックの生成失敗時にトグル操作から Promise が未処理のまま残らないことを確認した。確認後、テストファイルは削除した
 
 ## 関連
 
