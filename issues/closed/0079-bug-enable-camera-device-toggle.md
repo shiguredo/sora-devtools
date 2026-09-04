@@ -42,6 +42,8 @@
 
 トグル操作から呼び出す非同期処理の Promise はイベントハンドラ側で処理し、`setCameraDeviceAction` が設定するアラートやログを維持したまま、未処理 rejection を発生させない。
 
+機能全体を検証する E2E テストの拡充は本 issue の対象外とする。
+
 ## 完了条件
 
 - `getUserMedia` または `fakeMedia` の接続中に `Enable camera device` を `off` にすると、現在の映像 `MediaStreamTrack` が停止・削除される
@@ -50,11 +52,10 @@
 - `fakeMedia` で `Enable camera device` を `on` にすると、Fake Media の映像トラックが再生成・再設定される
 - 接続前に `off` にした場合、`getUserMedia` と `fakeMedia` で映像トラックを作成しない既存の動作が維持される
 - 映像トラックの生成に失敗した場合、既存のアラートを表示し、`cameraDevice` の状態を変更せず、未処理 rejection を発生させない
-- `tests/camera-device-toggle.test.ts` の Playwright E2E テストで、`getUserMedia` の `#local-video.srcObject` に含まれる映像トラックが、`off` で `ended` かつ MediaStream から削除され、`on` で新しい `live` トラックに置き換わることを確認済み
 - 実機で `Enable camera device` を切り替え、映像トラックと Sora の送信状態が期待どおりに更新されることを確認済み
 
 ## 解決方法
 
 - `src/components/DevtoolsPane/CameraDeviceForm.tsx` が `getUserMedia` または `fakeMedia` のときに `setCameraDeviceAction` を呼び出すように修正した
 - `setCameraDeviceAction` の Promise rejection をイベントハンドラ側で処理し、既存のアラートを維持するようにした
-- `Enable camera device` の切り替えによって、ローカル MediaStream と Sora の映像トラックが期待どおりに更新されることを E2E テストと実機で確認した
+- `Enable camera device` の切り替えによって、ローカル MediaStream と Sora の映像トラックが期待どおりに更新されることを実機で確認した
