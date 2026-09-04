@@ -43,6 +43,9 @@
 - [FIX] `Enable mic device` のトグルが接続中の音声トラックを停止しない問題を修正する
   - `getUserMedia` / `fakeMedia` でトグル変更時に音声トラックを停止・削除する
   - @miosakuma
+- [FIX] `Enable camera device` のトグルが接続中の映像トラックを停止しない問題を修正する
+  - `getUserMedia` / `fakeMedia` でトグル変更時に映像トラックを停止・削除する
+  - @miosakuma
 
 ### misc
 
