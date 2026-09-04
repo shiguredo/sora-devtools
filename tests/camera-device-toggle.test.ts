@@ -26,7 +26,7 @@ async function getVideoTrackStates(page: Page) {
 test("getUserMedia のカメラデバイスを切り替えると映像トラックを停止・再取得する", async ({
   page,
 }) => {
-  await page.goto(`${DEVTOOLS_URL}?mediaType=getUserMedia&audio=false&video=true`);
+  await page.goto(DEVTOOLS_URL);
   await page.getByRole("button", { name: "request media" }).click();
 
   const localVideo = page.locator("#local-video");
