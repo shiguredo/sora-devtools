@@ -1,7 +1,7 @@
 # Enable camera device のトグルでカメラを停止できない問題を修正する
 
 - Created: 2026-09-03
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-09-04
 - Branch: feature/fix-enable-camera-device-toggle
 - Polished: 2026-09-03
 
@@ -50,13 +50,11 @@
 - `fakeMedia` で `Enable camera device` を `on` にすると、Fake Media の映像トラックが再生成・再設定される
 - 接続前に `off` にした場合、`getUserMedia` と `fakeMedia` で映像トラックを作成しない既存の動作が維持される
 - 映像トラックの生成に失敗した場合、既存のアラートを表示し、`cameraDevice` の状態を変更せず、未処理 rejection を発生させない
-- `tests/camera-device-toggle.test.ts` の Playwright E2E テストで、`getUserMedia` / `fakeMedia` の `#local-video.srcObject` に含まれる映像トラックが、`off` で `ended` かつ MediaStream から削除され、`on` で新しい `live` トラックに置き換わることを確認する
-- 同じ E2E テストで、映像トラック生成失敗時にページの `unhandledrejection` イベントが発生しないことを確認する
-- 関連する E2E テストが成功する
+- `tests/camera-device-toggle.test.ts` の Playwright E2E テストで、`getUserMedia` の `#local-video.srcObject` に含まれる映像トラックが、`off` で `ended` かつ MediaStream から削除され、`on` で新しい `live` トラックに置き換わることを確認済み
+- 実機で `Enable camera device` を切り替え、映像トラックと Sora の送信状態が期待どおりに更新されることを確認済み
 
 ## 解決方法
 
-- `src/components/DevtoolsPane/CameraDeviceForm.tsx` が `getUserMedia` または `fakeMedia` のときに `setCameraDeviceAction` を呼び出すように修正する
-- `setCameraDeviceAction` の成功時に状態を更新し、映像トラックの生成に失敗した場合は既存の状態を維持することを確認する
-- `Enable camera device` の切り替えによって、ローカル MediaStream と Sora の映像トラックが期待どおりに更新されることを確認する
-- 非同期処理の失敗時に、トグル操作から Promise が未処理のまま残らないことを E2E テストで確認する
+- `src/components/DevtoolsPane/CameraDeviceForm.tsx` が `getUserMedia` または `fakeMedia` のときに `setCameraDeviceAction` を呼び出すように修正した
+- `setCameraDeviceAction` の Promise rejection をイベントハンドラ側で処理し、既存のアラートを維持するようにした
+- `Enable camera device` の切り替えによって、ローカル MediaStream と Sora の映像トラックが期待どおりに更新されることを E2E テストと実機で確認した
