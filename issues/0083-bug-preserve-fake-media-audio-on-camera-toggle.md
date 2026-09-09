@@ -3,7 +3,7 @@
 - Created: 2026-09-03
 - Completed: {YYYY-MM-DD}
 - Branch: feature/fix-preserve-fake-media-audio-on-camera-toggle
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-09-09
 
 ## 目的
 
@@ -14,10 +14,12 @@
 以下の手順で問題が再現する。
 
 1. `mediaType` を `fakeMedia` にする
-2. 音声と映像を有効にして Fake Media を開始する
+2. `Enable audio` と `Enable mic device` を有効にし、`fakeVolume` を 0 より大きい値にして、音声と映像を含む Fake Media を開始する
 3. `Enable camera device` を `off` にする
 4. `Enable camera device` を `on` にする
 5. カメラ映像は復元されるが、Fake Media の音声出力が停止する
+
+`fakeVolume` の既定値は `0` のため、音声信号の有無を観測できる値（例: `0.5`）に変更してから再現する。
 
 `src/app/actions.ts` の `setCameraDeviceAction` は、カメラだけを再生成するために `audio: false` の状態で `createMediaStream` を呼び出している。
 
@@ -31,17 +33,19 @@
 
 一方、音声を含む通常の Fake Media 再生成では、既存の `AudioContext` を解放してから新しい音声状態を設定する既存の動作を維持する。
 
+`getUserMedia` のカメラ on は音声トラックを再取得しない既存の挙動（`audio: false`）を維持し、この issue では変更しない。
+
 ## 完了条件
 
 - `fakeMedia` で `Enable camera device` を `off` にしても、既存の音声出力が維持される
 - `fakeMedia` で `Enable camera device` を `on` にしても、既存の音声トラックと音声出力が維持される
-- `fakeVolume` を有効にした状態で、カメラ切り替え前後の音声信号を取得できる
+- `fakeVolume` を 0 より大きい値にした状態で、カメラ切り替え前後に Fake Media の音声トラックから音声信号が継続して取得できる
 - 通常の Fake Media 再生成時に、不要な古い `AudioContext` が残らない
-- Playwright の E2E テストで上記の動作を確認する
+- 新規の Playwright E2E テストで上記の動作を確認する
 - 関連する E2E テストが成功する
 
 ## 解決方法
 
 - `src/app/actions.ts` の `setCameraDeviceAction` と Fake Media 生成処理を修正し、カメラだけを更新する場合は既存の音声状態を維持する
 - 音声を含む通常の Fake Media 再生成時の `AudioContext` 解放は維持する
-- `tests/fake-media-camera-audio-toggle.test.ts` の Playwright E2E テストで、`fakeVolume` を有効にしたカメラ切り替え前後の音声信号を確認する
+- 新規に `tests/fake-media-camera-audio-toggle.test.ts` を追加し、`fakeVolume` を 0 より大きい値にしたカメラ切り替え前後の音声信号を確認する
