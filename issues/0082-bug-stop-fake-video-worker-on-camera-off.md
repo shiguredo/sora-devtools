@@ -3,7 +3,7 @@
 - Created: 2026-09-08
 - Completed: {YYYY-MM-DD}
 - Branch: feature/fix-stop-fake-video-worker-on-camera-off
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-09-09
 
 ## 目的
 
@@ -29,8 +29,8 @@ Worker を停止する処理は `disposeMedia`、切断時の cleanup、Fake Med
 2. 映像を有効にして `request media` を実行する
 3. Fake Video Worker が描画している状態で `Enable camera device` を off にする
 4. Chrome Task Manager（`Shift` + `Esc`）または DevTools の Performance で、カメラ off 前後の CPU 使用量を比較する
-5. DevTools の Performance の記録で、カメラ off 後に `fakeVideo.worker.ts` の `animate` / `drawFrame` が継続して呼ばれていないことを確認する
-6. `src/workers/fakeVideo.worker.ts` の `stop` ハンドラーでタイマーが解除され、`canvas` / `ctx` が `null` に設定されることを確認する
+5. DevTools の Performance の記録を見て、カメラ off 後も `fakeVideo.worker.ts` の `animate` / `drawFrame` が呼ばれ続けることを確認する
+6. `src/app/actions.ts` の `setCameraDeviceAction` のカメラ off 経路に Worker への `stop` 送信が無いことをソースコードで確認する。そのため `src/workers/fakeVideo.worker.ts` の `stop` ハンドラーは呼ばれず、タイマーは解除されない
 
 期待結果は、カメラ off の完了後に Fake Video Worker の描画処理が停止し、CPU 使用量が通常の待機状態まで低下することだが、現状は Worker のタイマーが残り続ける。
 
