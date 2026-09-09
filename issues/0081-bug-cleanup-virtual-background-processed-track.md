@@ -3,7 +3,7 @@
 - Created: 2026-09-08
 - Completed: {YYYY-MM-DD}
 - Branch: feature/fix-cleanup-virtual-background-track
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-09-09
 
 ## 目的
 
@@ -24,6 +24,10 @@ Virtual Background を有効にした `getUserMedia` の preview で `Enable cam
 `stopLocalVideoTrack` は original track が渡された場合、その track だけを停止・削除して処理を終了する。Virtual Background の processed track は `localMediaStream` に入っているが、original track は `localMediaStream` に入っていないため、processed track が停止・削除されない。
 
 その結果、Virtual Background を使用した preview でカメラを off にしても、`localMediaStream.getVideoTracks()` に processed track が残る可能性がある。
+
+同様の残留は、Sora 接続中の off 経路（`soraValue.removeVideoTrack` を呼ぶ分岐）でも発生する。この経路でも `stopLocalVideoTrack` に original track だけを渡しているため、processed track は `localMediaStream` に残ったままになる。
+
+なお、`stopProcessing` 後の processed track の状態はブラウザで異なる。Chromium（MediaStreamTrackGenerator を使用する経路）では `stopProcessing` が内部の TransformStream を abort するため track は ended になるが MediaStream からは削除されない。Safari（`requestVideoFrameCallback` を使用する経路）では canvas の `captureStream` 由来の track を停止しないため live のまま残る。
 
 ### マイクとの違い
 
@@ -63,7 +67,9 @@ Noise Suppression の音声処理では、`stopLocalAudioTrack` が processor �
 
 ## 解決方法
 
-- `src/app/actions.ts` の `stopVideoProcessors` と `stopLocalVideoTrack` の責務を確認し、Virtual Background の original / processed track を停止・削除できるように修正する
-- processed track を `localMediaStream` から削除してから、必要な待機と `stop()` を行う
-- stop 対象の track をタイムラインへ記録する既存方針を維持する
-- Virtual Background を有効にした preview で camera off 後の MediaStream と track 状態を実ブラウザで確認する
+- `src/app/actions.ts` の `stopVideoProcessors` は、`stopProcessing()` の実行前に `getOriginalTrack()` と `getProcessedTrack()` の両方を取得して返すようにする
+- `stopLocalVideoTrack` は、original / processed の各 track に対して既存と同じ手順（`enabled = false` → 100ms の待機 → `stop()` → `localMediaStream` からの `removeTrack` → タイムライン記録）を適用する
+  - 待機は配信されていた processed track にも適用する。配信されるのは processed track であるため、待機を original track だけに当てる現行構成では、配信先の最終コマ残り対策（`enabled = false` → 待機 → `stop()`）がそもそも効かない
+  - processed track が `localMediaStream` に存在しない場合も `stop()` は実行し、`removeTrack` は存在する場合のみ行う
+- `getVideoTracks()` は live collection を返すため、走査対象は先に配列へ固定してから停止・削除する
+- Virtual Background を有効にした preview で camera off 後の MediaStream と track 状態を実ブラウザ（Chromium と Safari）で確認する
