@@ -1,7 +1,7 @@
 # main と footer の間に隙間ができる問題を修正する
 
 - Created: 2026-09-14
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-09-14
 - Branch: feature/fix-footer-main-gap
 - Polished: 2026-09-14
 - Reporter: @tnamao
@@ -35,12 +35,15 @@
 
 ## 解決方法
 
-- `src/App.tsx` のルート要素を縦フレックス（`min-height: 100vh`）で構成し、`Router` のコンテンツ領域を `flex: 1`、`Footer` を通常フローで最後に配置する
-- `src/components/Footer/index.tsx` の Navbar から `fixed="bottom"` を外す
-- `src/App.css` の `body` の `padding-bottom` を削除する（`padding-top` は維持する）
-- `src/components/DebugPane/DebugPane.module.css` と `src/components/DevtoolsPane/DevtoolsPane.module.css` の `.container` の高さ計算からフッター分の 56px を撤廃する
-- `src/components/ui/Navbar.tsx` のパディング競合を一元化する
-- フッターのレイアウトのテストを追加する
+- `src/App.css` の `body` を `height: 100vh` の縦フレックスにし、`padding-bottom: 56px` を撤廃する（ヘッダー分の `padding-top: 56px` は維持）。`#root` を `flex: 1` + `min-height: 0` の縦フレックスにして、フッターを通常フローで配置しても画面下端に収まるようにする
+  - `body` の高さを固定するのはコンテンツ領域を内部スクロールにし、ページ全体のスクロールを発生させないため（`min-height` のみだとコンテンツの高さでページ自体が伸びる）
+- `src/components/Footer/index.tsx` の Navbar から `fixed="bottom"` を外し、フッターを通常フローで #root の縦フレックスの末尾に配置する
+- `src/DevTools.tsx` の main / `.container` / `.row` を `flex-1 min-h-0`（`.row` は `flex-nowrap`）にして、ペインをコンテンツ領域いっぱいにフィルする
+- `src/components/DebugPane/DebugPane.module.css` と `src/components/DevtoolsPane/DevtoolsPane.module.css` の `.container` の高さ計算（`calc(100vh - 56px - 56px)` とモバイル幅の 10px 見積もり）を撤廃し、`height: 100%` + `min-height: 0` にする
+- `src/components/ui/Navbar.tsx` の基底クラスのパディング（`py-2 px-0`）を撤廃し、呼び出し側の `className` で明示する（Header は `py-2`、Footer は `py-2 px-3`）。フッターの高さを一意に定める
+- `src/routes/Sessions.tsx` の main を `flex-1 min-h-0 overflow-y-auto` にして内部スクロール化する（#root を `min-height: 0` で固定するため、省略するとコンテンツがフッターの裏に入り込む）
+- `src/components/ui/Tabs.tsx` のタブヘッダーに `overflow-x-auto` を追加し、デバッグペインのタブ列が横幅を超えたときにページ全体の横スクロールバーを発生させないようにする
+- `tests/footer-layout.test.ts` にフッターレイアウトの e2e テストを追加する（通常表示 / デバッグペイン表示 / セッションズページで、footer が固定配置でないこと・高さを持つこと・画面下端に収まること・ページの縦横スクロールが発生しないこと・main と footer の間に隙間がないことを検証）
 
 ## 関連
 
