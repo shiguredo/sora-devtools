@@ -64,8 +64,10 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
 
   return (
     <div className={`flex flex-col flex-1 h-full ${className}`}>
-      {/* タブヘッダー */}
-      <div className="flex border-b border-gray-600" role="tablist">
+      {/* タブヘッダー
+          タブ数が多い場合に横幅が親を超えるため、ペイン内で横スクロールさせる
+          （ページ全体の横スクロールバーを出さない） */}
+      <div className="flex overflow-x-auto border-b border-gray-600" role="tablist">
         {tabs.map((tab) => {
           const { eventKey, title } = tab;
           const isActive = eventKey === activeKey;

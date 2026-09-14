@@ -29,9 +29,11 @@ function GitHubLink({ repo, version }: GitHubLinkProps) {
 }
 
 export function Footer() {
+  // フッターは通常フローで配置する（#root の縦フレックスの末尾に置かれ、
+  // コンテンツ領域 (main) が flex: 1 で残りの高さを占有する）
   return (
     <footer>
-      <Navbar variant="dark" bg="sora" expand="md" fixed="bottom" className="py-0.5 px-3">
+      <Navbar variant="dark" bg="sora" expand="md" className="py-2 px-3">
         <div className="mr-auto" />
         <div className="flex items-center">
           <NavbarCollapse>

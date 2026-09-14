@@ -46,6 +46,9 @@
 - [FIX] `Enable camera device` のトグルが接続中の映像トラックを停止しない問題を修正する
   - `getUserMedia` / `fakeMedia` でトグル変更時に映像トラックを停止・削除する
   - @miosakuma
+- [FIX] main と footer の間に隙間ができる問題を修正する
+  - フッターを通常フロー配置にし、ルートを縦フレックスで構成してフッターの高さを余白計算から排除する
+  - @tnamao
 
 ### misc
 

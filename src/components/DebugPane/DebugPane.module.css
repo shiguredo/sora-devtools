@@ -1,8 +1,9 @@
+/* 高さは親 (.row) の高さいっぱい。ビューポート固定の高さ計算はしない */
 .container {
   padding: 10px;
   background-color: #222222;
-  height: calc(100vh - 56px - 56px);
-  min-height: calc(100vh - 56px - 56px);
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -43,6 +44,5 @@
 @media (max-width: 768px) {
   .container {
     width: 100%;
-    height: calc(100vh - 56px - 10px);
   }
 }

@@ -369,8 +369,13 @@ function Sessions() {
     detailKey = String(searchParams.sessionDbId);
   }
 
+  // DevTools と同様にコンテンツ領域いっぱいに広げて内部スクロールさせる。
+  // 省略するとコンテンツが #root の min-height: 0 を超えて footer の裏に入り込む
   return (
-    <main className="mx-auto max-w-6xl px-4 py-4" data-testid="sessions-page">
+    <main
+      className="mx-auto max-w-6xl px-4 py-4 flex-1 min-h-0 overflow-y-auto"
+      data-testid="sessions-page"
+    >
       <h1 className="mb-3 text-2xl font-semibold">Sessions</h1>
       <PrivacyNotice />
       {errorAlert}
