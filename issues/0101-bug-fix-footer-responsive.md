@@ -3,7 +3,7 @@
 - Created: 2026-09-14
 - Completed: {YYYY-MM-DD}
 - Branch: feature/fix-footer-responsive
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-09-14
 - Reporter: @tnamao
 
 ## 目的
@@ -19,25 +19,24 @@
 
 ## 設計方針
 
-- フッターの折りたたみはヘッダーと独立に扱い、1024px 未満でも GitHub リンクが表示されるようにする（フッター用 `NavbarToggle` の追加、常時表示、`expand` prop の実装のいずれかで実装時に確定する）
-- `Navbar` の `expand` prop が未実装のまま Footer で `expand="md"` を使っている事実を解消する（prop を実装するか、Footer から削除する）
-- モバイル幅のフッター高さの見積もり（10px）をフッターの実高さに合わせる
+- フッターの GitHub リンクは常時表示にし、`NavbarCollapse` の折りたたみ境界（`hidden lg:block`）に依存しない。フッター用 `NavbarToggle` は追加しない（開閉操作なしで常時表示するため不要）
+- `Navbar` の `expand` prop の実装は 0101 では行わず、Footer から `expand="md"` を削除することで事実を解消する（`Navbar` 側のレスポンシブ対応は 0093 のスコープ）
+- モバイル幅のフッター高さの見積もり（10px）の撤廃は 0100 のフッター通常フロー化に委ね、0101 では扱わない
 
 ## 完了条件
 
 - ブラウザ幅を 768〜1023px にしてもフッターの GitHub リンクが表示される
-- 768px 未満でもフッターの GitHub リンクが表示され、コンテンツがフッターに隠れない
+- 768px 未満でもフッターの GitHub リンクが表示される
 - Chrome / Safari / Firefox の実ブラウザで確認する
 - 新しいテストを追加する
 - 既存の単体テスト、型チェック、lint、ビルドが成功する
 
 ## 解決方法
 
-- `src/components/Footer/index.tsx` の Navbar の折りたたみ境界と開閉手段を修正する
-- `src/components/ui/Navbar.tsx` の `expand` prop を実装するか、Footer から削除する
-- `src/components/DebugPane/DebugPane.module.css` のモバイル幅の高さ計算をフッターの実高さに合わせる
-- フッターの表示条件のテストを追加する
+- `src/components/Footer/index.tsx` の Navbar から `expand="md"` を削除し、`NavbarCollapse` を外して GitHub リンクを常時表示する
+- フッターの GitHub リンクが 768px 未満と 768〜1023px で表示されるテストを追加する
 
 ## 関連
 
-- 0093 ヘッダーのレスポンシブメニューと右下 Debug ボタンの修正: `NavbarCollapse` の表示条件を変更する予定のため、フッター側の対処を切り分けて衝突を避ける
+- 0093 ヘッダーのレスポンシブメニューと右下 Debug ボタンの修正: `NavbarCollapse` の表示条件を変更する予定のため、フッター側は `NavbarCollapse` に依存しない常時表示として対処し、衝突を避ける
+- 0100 main と footer の間に隙間ができる問題を修正する: 0100 のフッター通常フロー化で `DebugPane.module.css` のモバイル幅の高さ計算からフッター分（10px 見積もり）を撤廃する方針のため、「コンテンツがフッターに隠れない」状態は 0100 が担保する。変更対象ファイル（`src/components/Footer/index.tsx`・`src/components/ui/Navbar.tsx`・`src/components/DebugPane/DebugPane.module.css`）が重なるため、**0100 を先に実装し、0101 は 0100 実装後の状態を前提とする**
