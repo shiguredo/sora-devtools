@@ -125,6 +125,20 @@ async function expectSessionsInternalScroll(page: Page): Promise<void> {
   }
 }
 
+// footer 内の GitHub リンクが表示されていることを検証する
+// （0101 で NavbarCollapse を外して常時表示にしている。
+// それ以前は 1024px 未満で折りたたみ境界 (lg) により非表示だった）
+async function expectFooterLinksVisible(page: Page): Promise<void> {
+  const links = page.locator('footer a[href^="https://github.com/"]');
+  const linkCount = await links.count();
+  if (linkCount !== 2) {
+    throw new Error(`expected 2 footer GitHub links, got ${linkCount}`);
+  }
+  for (let i = 0; i < linkCount; i++) {
+    await links.nth(i).waitFor({ state: "visible", timeout: 5000 });
+  }
+}
+
 test("フッター: デスクトップ表示で main と footer の間に隙間がなく footer が画面下端に収まる", async ({
   page,
 }) => {
@@ -133,6 +147,7 @@ test("フッター: デスクトップ表示で main と footer の間に隙間�
 
   await expectFooterLayout(page);
   await expectDevtoolsPaneInternalScroll(page);
+  await expectFooterLinksVisible(page);
 });
 
 test("フッター: デバッグペイン表示時も main と footer の間に隙間がない", async ({ page }) => {
@@ -143,6 +158,7 @@ test("フッター: デバッグペイン表示時も main と footer の間に�
 
   await expectFooterLayout(page);
   await expectDevtoolsPaneInternalScroll(page);
+  await expectFooterLinksVisible(page);
 
   // デバッグペインのタブコンテンツが内部スクロールすること
   const tabContentOverflowY = await page
@@ -159,11 +175,10 @@ test("フッター: セッションズページでも main と footer の間に�
 
   await expectFooterLayout(page);
   await expectSessionsInternalScroll(page);
+  await expectFooterLinksVisible(page);
 });
 
-// 0100 のレイアウトスケルトンがモバイル幅で破綻していないことを確認する
-// （1024px 未満で GitHub リンクが非表示になる問題は 0101 のスコープであり、
-// ここでは footer の位置・スクロール・通常フロー配置のみを検証する）
+// footer のレイアウトと GitHub リンク表示が幅を変えても破綻していないことを確認する
 async function openAtWidth(page: Page, width: number): Promise<void> {
   await page.setViewportSize({ width, height: 720 });
   await page.goto(`${BASE_URL}/`);
@@ -173,19 +188,23 @@ async function openAtWidth(page: Page, width: number): Promise<void> {
 test("フッター: 幅 375px でも footer が画面下端に収まる", async ({ page }) => {
   await openAtWidth(page, 375);
   await expectFooterLayout(page);
+  await expectFooterLinksVisible(page);
 });
 
 test("フッター: 幅 768px でも footer が画面下端に収まる", async ({ page }) => {
   await openAtWidth(page, 768);
   await expectFooterLayout(page);
+  await expectFooterLinksVisible(page);
 });
 
 test("フッター: 幅 800px でも footer が画面下端に収まる", async ({ page }) => {
   await openAtWidth(page, 800);
   await expectFooterLayout(page);
+  await expectFooterLinksVisible(page);
 });
 
 test("フッター: 幅 1024px でも footer が画面下端に収まる", async ({ page }) => {
   await openAtWidth(page, 1024);
   await expectFooterLayout(page);
+  await expectFooterLinksVisible(page);
 });
