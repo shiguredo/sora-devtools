@@ -1,7 +1,7 @@
 # ブラウザ幅を狭めたときにフッターの GitHub リンクが表示されなくなる問題を修正する
 
 - Created: 2026-09-14
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-09-14
 - Branch: feature/fix-footer-responsive
 - Polished: 2026-09-14
 - Reporter: @tnamao
@@ -34,7 +34,9 @@
 ## 解決方法
 
 - `src/components/Footer/index.tsx` の Navbar から `expand="md"` を削除し、`NavbarCollapse` を外して GitHub リンクを常時表示する
-- フッターの GitHub リンクが 768px 未満と 768〜1023px で表示されるテストを追加する
+  - フッターには `NavbarToggle` が無く、折りたたみ境界 (lg = 1024px) 未満ではリンクが非表示になり開く手段もないため
+- `tests/footer-layout.test.ts` にフッターの GitHub リンクの表示検証（`expectFooterLinksVisible`）を追加し、既存の幅別テスト（375 / 768 / 800 / 1024px）とデスクトップ・デバッグペイン・セッションズページの各テストでリンク表示を検証する
+- 0100 の実装後に着手した。issue 本文の「現状」欄のうち `DebugPane.module.css` のモバイル幅の高さ計算 (10px 見積もり) は 0100 で撤廃済みのため、0101 では変更していない
 
 ## 関連
 
