@@ -74,9 +74,31 @@
   border-radius: 0.375rem;
 }
 
+/*
+ * アプリ全体の縦フレックススケルトン
+ *
+ * body は height: 100vh の縦フレックスとし、padding-top (56px) は
+ * fixed のヘッダーの高さ分（Tailwind preflight の box-sizing: border-box により
+ * height に含まれるため、合計はちょうど 100vh になる）
+ * 高さを固定するのは #root の高さを確定させ、コンテンツ領域を
+ * 内部スクロールにするため（min-height のみだとコンテンツの高さで
+ * ページ自体が伸びてしまい、フッターが画面下端に収まらない）
+ * フッターは通常フローで配置し、フッターの高さを余白計算に持ち込まない
+ */
 body {
   padding-top: 56px;
-  padding-bottom: 56px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* アプリのマウント要素。body の縦フレックス内で残りの高さを全て受け持ち、
+   内部で main を flex: 1 で広げてフッターを画面下端に固定する */
+#root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
@@ -174,10 +196,4 @@ video {
 
 .form-row .w-500 {
   width: 500px;
-}
-
-@media (max-width: 768px) {
-  body {
-    padding-bottom: 0;
-  }
 }

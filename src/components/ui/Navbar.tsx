@@ -72,7 +72,10 @@ function getFixedStyles(fixed: "top" | "bottom" | undefined): string {
  * Bootstrap navbar スタイル:
  * - display: flex, flex-wrap: wrap
  * - align-items: center
- * - padding: 0.5rem 1rem
+ *
+ * パディングは基底クラスに持たせない。基底クラスと className で渡す
+ * パディングが競合すると、どちらが有効になるかは Tailwind のユーティリティ
+ * 生成順に依存してしまうため、呼び出し側の className で明示する
  */
 export function Navbar({
   variant = "light",
@@ -108,7 +111,7 @@ export function Navbar({
   return (
     <nav
       className={`
-        flex flex-nowrap items-center justify-start py-2 px-0
+        flex flex-nowrap items-center justify-start
         ${variantStyles} ${bgStyles} ${fixedStyles} ${className}
       `}
       data-expanded={isExpanded.value}

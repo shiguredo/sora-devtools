@@ -1,8 +1,10 @@
+/* 高さは親 (.row) の高さいっぱい。ビューポート固定の高さ計算はしない */
 .container {
   padding: 1rem 0.75rem 0;
   overflow-x: auto;
-  height: calc(100vh - 56px - 56px);
   overflow-y: scroll;
+  height: 100%;
+  min-height: 0;
 }
 
 @media (max-width: 768px) {

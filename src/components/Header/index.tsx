@@ -38,9 +38,11 @@ export function Header() {
     showModal.value = true;
   };
 
+  // ヘッダー高さ 56px は py-2 (上下 8px ずつ) と NavbarBrand (40px) の合計。
+  // 基底クラスにパディングを持たせず className で明示する
   return (
     <header>
-      <Navbar variant="dark" bg="sora" expand="lg" fixed="top">
+      <Navbar variant="dark" bg="sora" expand="lg" fixed="top" className="py-2">
         <div className="container flex items-center flex-nowrap justify-between px-3">
           <NavbarBrand href="/">Sora DevTools</NavbarBrand>
           <NavbarToggle />
