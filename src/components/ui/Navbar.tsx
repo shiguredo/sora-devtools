@@ -7,7 +7,7 @@ interface NavbarProps {
   variant?: "light" | "dark";
   bg?: string;
   expand?: "sm" | "md" | "lg" | "xl" | boolean;
-  fixed?: "top" | "bottom";
+  fixed?: "top";
   className?: string;
   children: ComponentChildren;
 }
@@ -55,12 +55,9 @@ function getBgStyles(bg: string | undefined): string {
 }
 
 // fixed プロパティに応じた固定位置スタイルを返す
-function getFixedStyles(fixed: "top" | "bottom" | undefined): string {
+function getFixedStyles(fixed: "top" | undefined): string {
   if (fixed === "top") {
     return "fixed top-0 left-0 right-0 z-50";
-  }
-  if (fixed === "bottom") {
-    return "fixed bottom-0 left-0 right-0 z-50";
   }
   return "";
 }

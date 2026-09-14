@@ -8,10 +8,9 @@ function Devtools() {
   return (
     <main className="flex flex-col flex-1 min-h-0">
       <div className="container flex flex-col flex-1 min-h-0">
-        {/* ペインは col-6 + col-6 または col-12 の 1 行配置。
-             wrap にするとフレックスラインの高さが内容で決まり、
-             .container の高さにストレッチされないため flex-nowrap にする */}
-        <div className="row flex-1 min-h-0 flex-nowrap">
+        {/* ペインは col-6 + col-6 または col-12 で常に 1 行に収まる
+            （50% + 50% でちょうど 100%。App.css の .row の flex-wrap: wrap のままでよい） */}
+        <div className="row flex-1 min-h-0">
           <DevtoolsPane />
           <DebugPane />
         </div>
