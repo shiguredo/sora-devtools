@@ -905,9 +905,12 @@ async function createDisplayMediaStream(
 }
 
 // フェイクメディアを使用して MediaStream を生成する
+// preserveAudio が true の場合、既存の音声トラックと音声出力 (AudioContext / GainNode) を
+// close したり上書きしたりしない (カメラだけを再生成する経路で使用)
 function createFakeMediaStreamFromState(
   state: createMediaStreamPickedState,
   sessionDbId: number | null,
+  preserveAudio = false,
 ): [MediaStream, GainNode | null, AudioContext | null] {
   const LOG_TITLE = "MEDIA_CONSTRAINTS";
   const { worker } = state.fakeContents;
@@ -931,7 +934,10 @@ function createFakeMediaStreamFromState(
   );
   // Chrome のハードウェアコンテキスト上限に到達しないよう、新規生成前に旧 AudioContext を close する
   // close は非同期だが Chrome は即座に上限から解放する
-  signals.closeFakeContentsAudio();
+  // カメラだけを再生成する経路では既存の音声出力を維持するため close しない
+  if (!preserveAudio) {
+    signals.closeFakeContentsAudio();
+  }
   const { offscreenCanvas, mediaStream, gainNode, audioContext, frameRate } =
     createFakeMediaStream(constraints);
   if (offscreenCanvas !== null) {
@@ -1143,15 +1149,18 @@ async function createUserMediaStream(
 }
 
 // State に応じて MediaStream インスタンスを生成する
+// fakeMediaPreserveAudio は fakeMedia でカメラだけを再生成するときに true を渡す。
+// 既存の音声トラックと音声出力を維持するためのオプション (createFakeMediaStreamFromState 参照)
 async function createMediaStream(
   state: createMediaStreamPickedState,
   sessionDbId: number | null = null,
+  fakeMediaPreserveAudio = false,
 ): Promise<[MediaStream, GainNode | null, AudioContext | null]> {
   if (state.mediaType === "getDisplayMedia") {
     return createDisplayMediaStream(state, sessionDbId);
   }
   if (state.mediaType === "fakeMedia" && state.fakeContents.worker) {
-    return createFakeMediaStreamFromState(state, sessionDbId);
+    return createFakeMediaStreamFromState(state, sessionDbId, fakeMediaPreserveAudio);
   }
   if (state.mediaType === "mp4Media") {
     if (state.mp4MediaStream === null) {
@@ -2728,6 +2737,9 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     return;
   }
   if (cameraDevice) {
+    // カメラだけを再生成するため audio: false で生成する
+    // fakeMedia の場合は音声を含む通常の再生成と異なり、既存の音声トラックと音声出力を維持する
+    const preserveFakeMediaAudio = state.mediaType === "fakeMedia";
     const pickedState = {
       aspectRatio: state.aspectRatio,
       audio: false,
@@ -2760,6 +2772,7 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
     const [mediaStream, gainNode, audioContext] = await createMediaStream(
       pickedState,
       getCurrentSessionDbId(),
+      preserveFakeMediaAudio,
     ).catch((error: unknown) => {
       const message = getErrorMessage(error);
       signals.setSoraErrorAlertMessage(message);
@@ -2786,7 +2799,11 @@ export const setCameraDeviceAction = async (cameraDevice: boolean): Promise<void
         }
         localMediaStreamValue.addTrack(mediaStream.getVideoTracks()[0]);
       }
-      signals.setFakeContentsAudio(audioContext, gainNode);
+      // fakeMedia のカメラだけの再生成では音声状態を上書きしない
+      // audio: false のため audioContext / gainNode は null で、上書きすると既存の音声出力が失われる
+      if (!preserveFakeMediaAudio) {
+        signals.setFakeContentsAudio(audioContext, gainNode);
+      }
     } else if (audioContext) {
       // トラックが生成されなかった場合は AudioContext を close してリークを防ぐ
       void audioContext.close();

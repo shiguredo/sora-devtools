@@ -47,5 +47,10 @@
 ## 解決方法
 
 - `src/app/actions.ts` の `setCameraDeviceAction` と Fake Media 生成処理を修正し、カメラだけを更新する場合は既存の音声状態を維持する
-- 音声を含む通常の Fake Media 再生成時の `AudioContext` 解放は維持する
-- 新規に `tests/fake-media-camera-audio-toggle.test.ts` を追加し、`fakeVolume` を 0 より大きい値にしたカメラ切り替え前後の音声信号を確認する
+  - `createMediaStream` / `createFakeMediaStreamFromState` に `preserveAudio` オプションを追加し、カメラだけを再生成する経路では `closeFakeContentsAudio` を呼ばず、`setFakeContentsAudio` による上書きもしない
+  - 音声を含む通常の Fake Media 再生成時の `AudioContext` 解放は維持する
+- 新規に `tests/fake-media-camera-audio-toggle.test.ts` を追加する
+  - `fakeVolume` を 0 より大きい値にしたカメラ切り替え前後の音声信号を AnalyserNode の RMS で確認する
+  - カメラ切り替え前後で音声トラックが同一トラックとして維持される (トラック ID と信号レベルの両方) ことを確認する
+  - dispose 後の再取得による通常の再生成でも新たな `AudioContext` で音声トラックが動くことを確認する
+- 手動確認: `fakeMedia` で `fakeVolume` を 0.5 にして音声と映像を開始し、`Enable camera device` の off / on を実施しても音声出力が継続することを確認する

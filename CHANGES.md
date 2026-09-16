@@ -52,6 +52,9 @@
 - [FIX] ブラウザ幅を狭めるとフッターの GitHub リンクが表示されなくなる問題を修正する
   - フッターの Navbar から折りたたみ境界を外し、GitHub リンクをどの幅でも常時表示する
   - @tnamao
+- [FIX] fakeMedia のカメラ切り替えで音声出力が停止する問題を修正する
+  - `Enable camera device` の切り替え時は既存の AudioContext / GainNode を維持する
+  - @miosakuma
 
 ### misc
 
