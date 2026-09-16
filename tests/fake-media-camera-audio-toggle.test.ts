@@ -221,7 +221,10 @@ test("fakeMedia: 通常の再生成後も新しい AudioContext で音声トラ�
 
   // 通常の Fake Media 再生成 (音声を含む再生成) では、既存実装で AudioContext を
   // close して新しく生成するため、音声トラックは別物に置き換わり音声信号は継続する。
-  // プレビュー状態では update-mediastream は素通りするため、dispose 後の再取得で検証する:
+  // しかしプレビュー状態 (Sora 未接続・connectionStatus が "disconnected" のまま) では、
+  // updateMediaStreamImpl の末尾の中断ガードが新規生成したトラックを停止して AudioContext を
+  // close し return するため、update-mediastream では音声トラックの更新が発生せず検証できない。
+  // そのため dispose 後の request media (解放からの通常再生成) で検証する:
   // dispose media で AudioContext を含むメディアを解放し、再生成したときに
   // 新しい AudioContext で音声トラックと音声出力が動くことを確認する
   await page.getByRole("button", { name: "dispose media" }).click();
