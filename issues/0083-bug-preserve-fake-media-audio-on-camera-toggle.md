@@ -1,7 +1,7 @@
 # Fake Media のカメラ切り替えで音声が停止する問題を修正する
 
 - Created: 2026-09-03
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-09-16
 - Branch: feature/fix-preserve-fake-media-audio-on-camera-toggle
 - Polished: 2026-09-09
 
@@ -53,4 +53,4 @@
   - `fakeVolume` を 0 より大きい値にしたカメラ切り替え前後の音声信号を AnalyserNode の RMS で確認する
   - カメラ切り替え前後で音声トラックが同一トラックとして維持される (トラック ID と信号レベルの両方) ことを確認する
   - dispose 後の再取得による通常の再生成でも新たな `AudioContext` で音声トラックが動くことを確認する
-- 手動確認: `fakeMedia` で `fakeVolume` を 0.5 にして音声と映像を開始し、`Enable camera device` の off / on を実施しても音声信号が継続することを確認する
+- 手動確認: `fakeMedia` で `fakeVolume` を 0.5 にして音声と映像を開始し、`Enable camera device` の off / on を実施しても音声信号が継続することを確認した
