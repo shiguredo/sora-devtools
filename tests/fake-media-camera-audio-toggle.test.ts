@@ -17,24 +17,17 @@ interface AudioTrackAnalysis {
   rms: number;
 }
 
-// fakeVolume の range 入力は Playwright の fill が効かないため、
-// JS で値を設定して input イベントを dispatch する (Preact の onChange は input イベントを検知する)
+// fakeVolume の range 入力を設定する
 // FakeVolumeForm の input には id 属性がないため、FormGroup の data-control-id から特定する
 async function setFakeVolume(page: Page, value: string): Promise<void> {
-  await page
-    .locator('[data-control-id="fakeVolume"] input[type="range"]')
-    .evaluate((element, volume) => {
-      const input = element as HTMLInputElement;
-      input.value = volume;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    }, value);
+  await page.locator('[data-control-id="fakeVolume"] input[type="range"]').fill(value);
 }
 
 // ページのセットアップ:
 // - mediaType を fakeMedia にする
 // - audio / micDevice を有効化し、fakeVolume を 0.5 にする
 // - request media で音声と映像を含む Fake Media を開始する
-// メディアが開始できるまで（音声トラックと映像トラックが srcObject に載るまで）待ってから返る
+// メディアが開始できるまで (音声トラックと映像トラックが srcObject に載るまで) 待ってから返る
 async function startFakeMediaWithAudio(page: Page): Promise<void> {
   await page.goto(DEVTOOLS_URL);
   await page.locator('button[name="connect"]').waitFor({ timeout: 5000 });
@@ -117,6 +110,9 @@ async function getAudioTrackAnalysis(page: Page): Promise<AudioTrackAnalysis> {
 // 映像トラックが期待する状態になるまで待つ。
 // setCameraDeviceAction は既存の video track を removeTrack してから addTrack するため、
 // DOM のチェックが終わっても track の付け替えが完了していないことがある
+// "live" はトラックが live かつ映像フレームが描画されている (videoWidth > 0) ことを意味する。
+// canvas captureStream のトラックは OffscreenCanvas の描画と独立に live になるため、
+// videoWidth で実フレームの到着を確認する
 // expected には "absent" (トラックなし) または "live" (トラックあり) を渡す
 async function waitForVideoTrackState(page: Page, expected: "absent" | "live"): Promise<void> {
   await page.waitForFunction(
@@ -133,7 +129,11 @@ async function waitForVideoTrackState(page: Page, expected: "absent" | "live"): 
       if (expectedState === "absent") {
         return videoTracks.length === 0;
       }
-      return videoTracks.length > 0 && videoTracks[0].readyState === "live";
+      return (
+        videoTracks.length > 0 &&
+        videoTracks[0].readyState === "live" &&
+        (videoElement as HTMLVideoElement).videoWidth > 0
+      );
     },
     expected,
     { timeout: 5000 },
@@ -160,7 +160,19 @@ function expectLiveAudio(step: string, analysis: AudioTrackAnalysis): void {
 }
 
 // 音声信号が静音になっていることを検証して失敗時は throw する
+// トラック消失を静音と誤判定しないよう、トラックの存在と状態も確認する
 function expectSilentAudio(step: string, analysis: AudioTrackAnalysis): void {
+  if (!analysis.hasAudioTrack) {
+    throw new Error(`${step}: expected audio track, got none`);
+  }
+  if (analysis.readyState !== "live") {
+    throw new Error(
+      `${step}: expected audio track readyState "live", got "${analysis.readyState}"`,
+    );
+  }
+  if (analysis.muted) {
+    throw new Error(`${step}: expected audio track not muted`);
+  }
   if (analysis.rms > SILENCE_RMS_THRESHOLD) {
     throw new Error(`${step}: expected audio rms <= ${SILENCE_RMS_THRESHOLD}, got ${analysis.rms}`);
   }
@@ -179,28 +191,34 @@ function expectSameAudioTrack(
   }
 }
 
-test("fakeMedia: カメラ切り替え前後で音声トラックと音声出力が維持される", async ({ page }) => {
+test("fakeMedia: カメラ切り替え前後で音声トラックとフェイク音声の AudioContext が維持される", async ({
+  page,
+}) => {
   await startFakeMediaWithAudio(page);
 
   // request media 直後の音声信号から開始状態を記録する
   const initialAudio = await getAudioTrackAnalysis(page);
   expectLiveAudio("initial state", initialAudio);
 
-  // カメラを off にする: 映像トラックは停止・削除されるが、音声トラックと音声出力は維持される
+  // カメラを off にする: 映像トラックは停止・削除されるが、音声トラックとフェイク音声の
+  // AudioContext / GainNode は維持される
   await page.locator("#cameraDevice").uncheck();
   await waitForVideoTrackState(page, "absent");
   const cameraOffAudio = await getAudioTrackAnalysis(page);
   expectLiveAudio("after camera off", cameraOffAudio);
+  // カメラ切り替えで音声トラックが置き換えられていないことを確認する。
+  // 音声停止の検出は RMS が担い、track id の一致はトラックの入れ替えがないことの確認
   expectSameAudioTrack("after camera off", initialAudio.trackId, cameraOffAudio);
 
-  // カメラを on にする: 映像トラックが復元され、音声トラックと音声出力が維持される
+  // カメラを on にする: 映像トラックが復元され、音声トラックとフェイク音声の
+  // AudioContext / GainNode が維持される
   await page.locator("#cameraDevice").check();
   await waitForVideoTrackState(page, "live");
   const cameraOnAudio = await getAudioTrackAnalysis(page);
   expectLiveAudio("after camera on", cameraOnAudio);
   expectSameAudioTrack("after camera on", initialAudio.trackId, cameraOnAudio);
 
-  // 音声出力 (GainNode) が維持されていること: fakeVolume を 0 にすると静音、
+  // GainNode が維持されていること: fakeVolume を 0 にすると静音、
   // 0.5 に戻すと音声信号が復帰する (GainNode が null に上書きされていると音量は動かない)
   await setFakeVolume(page, "0");
   const volumeZeroAudio = await getAudioTrackAnalysis(page);
@@ -211,9 +229,7 @@ test("fakeMedia: カメラ切り替え前後で音声トラックと音声出力
   expectSameAudioTrack("after changing fakeVolume", initialAudio.trackId, volumeHalfAudio);
 });
 
-test("fakeMedia: 通常の再生成後も新しい AudioContext で音声トラックと音声出力が動く", async ({
-  page,
-}) => {
+test("fakeMedia: 通常の再生成後も新しい AudioContext で音声トラックが動く", async ({ page }) => {
   await startFakeMediaWithAudio(page);
 
   const initialAudio = await getAudioTrackAnalysis(page);
@@ -226,7 +242,7 @@ test("fakeMedia: 通常の再生成後も新しい AudioContext で音声トラ�
   // close し return するため、update-mediastream では音声トラックの更新が発生せず検証できない。
   // そのため dispose 後の request media (解放からの通常再生成) で検証する:
   // dispose media で AudioContext を含むメディアを解放し、再生成したときに
-  // 新しい AudioContext で音声トラックと音声出力が動くことを確認する
+  // 新しい AudioContext で音声トラックが動くことを確認する
   await page.getByRole("button", { name: "dispose media" }).click();
   await page.waitForFunction(
     () => {
