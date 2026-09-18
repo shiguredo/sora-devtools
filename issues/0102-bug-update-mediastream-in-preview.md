@@ -3,7 +3,7 @@
 - Created: 2026-09-18
 - Completed: {YYYY-MM-DD}
 - Branch: feature/fix-preview-update-mediastream
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-09-18
 
 ## 目的
 
