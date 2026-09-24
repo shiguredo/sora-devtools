@@ -217,6 +217,8 @@ const baseConfig = defineConfig({
       "no-param-reassign": "error",
       // this を使用しないメソッドを検出
       "class-methods-use-this": "error",
+      // 1 文 1 変数宣言を強制する (宣言の結合を禁止)
+      "one-var": ["error", "never"],
 
       // ===== typescript: 非同期処理 =====
       // 非 Promise の await を禁止
@@ -867,6 +869,12 @@ const baseConfig = defineConfig({
       "react/jsx-max-depth": "off",
       // props スプレッドは Preact コンポーネントで便利
       "react/jsx-props-no-spreading": "off",
+      // Preact の signal は .value への代入で状態更新する設計であり、
+      // React Compiler の immutability 解析は Preact に適用できないため無効化
+      "react/immutability": "off",
+      // レンダー中の ref.current 代入による最新値参照は Preact で一般的なパターンであり、
+      // React Compiler の refs 解析は Preact に適用できないため無効化
+      "react/refs": "off",
 
       // ===== eslint: プロジェクトのスタイルに合わない制限ルール =====
       // named export は Preact コンポーネントで標準的
