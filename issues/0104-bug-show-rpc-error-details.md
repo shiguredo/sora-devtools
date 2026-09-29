@@ -3,7 +3,7 @@
 - Created: 2026-09-29
 - Completed: {YYYY-MM-DD}
 - Branch: feature/fix-rpc-error-details
-- Polished: {YYYY-MM-DD}
+- Polished: 2026-09-29
 
 ## 目的
 
@@ -50,4 +50,4 @@ RPC タブでサーバーが返したエラーの `code` / `message` / `data` �
 - サーバーがエラーを返す経路のテストが追加されている (jsdom には `RTCDataChannel` がないため、`vitest.ct.config.ts` の browser テストで実 `RTCPeerConnection` の `rpc` DataChannel を使い、サーバー役に JSON-RPC エラーを返させる)
 - `sora-js-sdk` のバージョンが修正を含むものになっている
 - `pnpm check` / `pnpm test` / `pnpm test:ct` が通る
-- `CHANGES.md` の `## develop` に `[FIX]` を追記する (sora-js-sdk のバージョン更新は misc の `[UPDATE]`)
+- `CHANGES.md` の `## develop` に `[FIX]` を追記し、sora-js-sdk のバージョン更新は `[UPDATE]` として追記する
