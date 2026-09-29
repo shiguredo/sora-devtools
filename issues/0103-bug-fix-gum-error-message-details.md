@@ -33,6 +33,22 @@ Chrome で実際に発生させて確認した値は以下のとおり。
 | `JSON.stringify(error)`             | `"{}"`                                                       |
 | `Object.getOwnPropertyNames(error)` | `[]` (`name` と `constraint` はプロトタイプ上のゲッター)     |
 
+同じ `OverconstrainedError` でも `MediaStreamTrack.applyConstraints` は `message` に `"Cannot satisfy constraints"` を設定する。`getUserMedia` だけが `message` を空のまま投げる。Chrome 115 でも `getUserMedia` の `message` は空であることを確認済みで、Chrome の更新によって空になったわけではない。
+
+### Safari が投げる OverconstrainedError の実体
+
+WebKit 26.6 で同じ条件を実行して確認した値は以下のとおり。Chrome と異なり `message` が入る。
+
+| プロパティ              | 実際の値                                                |
+| ----------------------- | ------------------------------------------------------- |
+| `name`                  | `"OverconstrainedError"`                                |
+| `message`               | `"Invalid constraint"`                                  |
+| `constraint`            | `"width"` / `"deviceId"` (満たせなかった constraint 名) |
+| `constraintValue`       | `undefined` (WebKit も設定しない)                       |
+| `JSON.stringify(error)` | `"{}"`                                                  |
+
+同じ `OverconstrainedError` でもブラウザによって `message` の有無が異なるため、表示用の文字列生成は「`message` があればそれを主たる情報にし、無ければ `name` と `constraint` で補う」形にする必要がある。
+
 ### 詳細が失われている箇所
 
 - `getErrorMessage` (`src/utils.ts`) は `error instanceof Error ? error.message : String(error)` を返す。`DOMException` は `Error` の派生なので `message` の空文字列が返り、`name` と `constraint` は捨てられる
@@ -46,6 +62,8 @@ Chrome で実際に発生させて確認した値は以下のとおり。
 
 - 表示用の文字列生成の責務を `getErrorMessage` に集約し、`message` に情報が無い場合でも `name` と `constraint` が残るようにする
 - `message` がある場合は従来どおり `message` を主たる情報として表示し、`name` と `constraint` を補助情報として付ける
+  - Chrome は `message` が空なので `name` と `constraint` が本文の情報源になる
+  - Safari は `message` (`Invalid constraint`) があるため、それを残しつつ `constraint` を補う
 - `getErrorMessage` の変更だけで完結させ、`AlertMessage` (`src/types.ts`) の型・ポップアップの描画 (`src/components/AlertMessages.tsx`)・Debug ペインのログ形式は変更しない
   - `setAlertMessagesAndLogMessages` (`src/app/signals.ts`) は `alertMessage.message` をそのまま表示とログに使うため、`getErrorMessage` の出力を変えれば両方に反映される
 - エラーメッセージの表記は「英語・末尾ピリオドなし・`name=...` `message=...` のように期待値と実際の値を示す」という既存規約に合わせる (`issues/pending/0043-bug-fix-video-effect-audio-output-dep.md` の `setSinkId` 失敗通知と同じ形式)
@@ -56,7 +74,8 @@ Chrome で実際に発生させて確認した値は以下のとおり。
 
 ## 完了条件
 
-- 同じ Chrome 内でカメラが使用中の場合に、ポップアップに `OverconstrainedError` と満たせなかった constraint 名 (`deviceId` など) が表示される
+- Chrome でカメラが使用中の場合に、ポップアップに `OverconstrainedError` と満たせなかった constraint 名 (`deviceId` / `width` など) が表示される
+- Safari では従来どおり `Invalid constraint` が表示され、あわせて constraint 名が表示される
 - `message` に情報があるエラーは、従来どおり `message` の内容が表示される
 - Debug ペインのログ (`ALERT MESSAGE ...`) にも同じ情報が残る
 - 既存の単体テスト、型チェック、lint、ビルドが成功する
@@ -67,12 +86,14 @@ Chrome で実際に発生させて確認した値は以下のとおり。
   - `Error` の場合は `message` を主たる情報とし、`name` が `Error` 以外なら `name=...` を付ける
   - `message` が空の場合は `name` のみを返す
   - `DOMException` の `constraint` (`OverconstrainedError` の場合のみ設定される) が `undefined` でなければ `constraint=...` を付ける
-  - 例: `OverconstrainedError: name=OverconstrainedError constraint=deviceId`
+  - Chrome の例: `OverconstrainedError: name=OverconstrainedError constraint=deviceId`
+  - Safari の例: `OverconstrainedError: Invalid constraint, name=OverconstrainedError constraint=width`
 - 既存の呼び出し側 (`src/app/actions.ts` の `connectSora` / `updateMediaStream` / `setMicDeviceAction` / `setCameraDeviceAction` など) は `getErrorMessage` を通しているため変更しない
 - `src/utils.test.ts` に `getErrorMessage` のテストを追加する
   - 通常の `Error` では `message` のみを返すこと
   - `message` が空で `name` があるエラーでは `name` を返すこと
   - `name=OverconstrainedError` と `constraint` を持つオブジェクトでは `constraint` 名を含む文字列を返すこと
+  - `message="Invalid constraint"` と `constraint="width"` を持つ Safari 相当のオブジェクトでは、`message` と `constraint` の両方を含む文字列を返すこと
 - `CHANGES.md` の `## develop` の `[FIX]` セクションにエントリを追加する (issue 番号は書かない)
 
 ## 関連
