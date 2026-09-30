@@ -60,6 +60,21 @@ WebKit 26.6 で同じ条件を実行して確認した値は以下のとおり�
 
 `reconnectSoraImpl` の `createMediaStream` 失敗時と `requestMedia` (`src/app/actions.ts`) は `error.message` を直接使うため、`getErrorMessage` を拡張するだけではこの 2 経路も空のままになる (`requestMedia` は `failed to get user devices: ` の後に空文字列が続き、`REQUEST_MEDIA` ログにも詳細が残らない)
 
+### 2025.2.0 から詳細が表示されなくなった経緯
+
+2025.2.0 では `setSoraErrorAlertMessage(error.toString())` を使う経路が 6 箇所あり、`OverconstrainedError` では `toString()` がエラー名 (`OverconstrainedError`) を返すため、ポップアップにエラー名が表示されていた (Chrome 実機でも `String(error)` は `"OverconstrainedError"`、`message` は空文字列であることを確認済み)。
+
+`b75072f4` (`#661`) で lint / 型エラーを解消する際にこれらが `error.message` を使う形へ置き換えられ、現在は `error.toString()` の呼び出しが 1 つも残っていない。この置き換えでエラー名が表示されなくなった。
+
+2025.2.0 のリリースコミットをビルドして、`frameRate` の `exact` 指定で `getUserMedia` を失敗させたときの実機の表示は以下のとおり。
+
+| 操作          | 2025.2.0                                            | develop                                 |
+| ------------- | --------------------------------------------------- | --------------------------------------- |
+| Connect       | `Failed to connect Sora. ` / `OverconstrainedError` | `failed to connect Sora: ` / (本文が空) |
+| Request media | `Failed to get user devices. `                      | `failed to get user devices: `          |
+
+Connect の外側 catch (`failed to connect Sora`) と `requestMedia` は 2025.2.0 でも `error.message` を使っており、1 件目のアラートは当時から空である。カメラ / マイク切替 (`setCameraDeviceAction` / `setMicDeviceAction`)、`updateMediaStream`、再接続のアラートが `toString()` から `getErrorMessage` に変わったことで空になった。
+
 ## 設計方針
 
 - 表示用の文字列生成の責務を `getErrorMessage` に集約し、`message` に情報が無い場合でも `name` と `constraint` が残るようにする
