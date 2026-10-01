@@ -55,6 +55,10 @@
 - [FIX] fakeMedia のカメラ切り替えで音声が停止する問題を修正する
   - `Enable camera device` を off から on に戻してカメラ映像だけを再生成するときは、フェイク音声の AudioContext / GainNode を維持する
   - @miosakuma
+- [FIX] プレビュー状態で update-mediastream を押すとローカルメディアが消える問題を修正する
+  - Sora 接続前のプレビュー状態では切断競合の中断ガードを発動させず、音声・映像を新しいメディアに置き換える
+  - プレビュー状態の update-mediastream と audioInput / videoInput 切替を検証する e2e テストを追加する
+  - @miosakuma
 
 ### misc
 
