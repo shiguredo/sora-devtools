@@ -1,0 +1,39 @@
+/* ラベルを内容幅に収めるラッパー */
+.wrapper {
+  display: inline-block;
+}
+
+/* ツールチップ対象のラベルに点線の下線を付ける */
+.label {
+  border-bottom: 1px dotted var(--color-bs-secondary);
+}
+
+/* 説明ツールチップ。fixed 配置で親要素の overflow の影響を受けないようにする */
+.tooltip {
+  position: fixed;
+  z-index: 1070;
+  max-width: 350px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-bs-dark);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-sora);
+  border-radius: 0.375rem;
+  box-shadow:
+    0 10px 15px -3px var(--color-shadow),
+    0 4px 6px -4px var(--color-shadow);
+  white-space: pre-wrap;
+}
+
+/* ツールチップ下端に付ける下向き矢印。枠線だけで三角形を作る */
+.arrow {
+  position: absolute;
+  top: 100%;
+  left: 1rem;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--color-sora);
+}

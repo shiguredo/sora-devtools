@@ -11,7 +11,7 @@ export function AudioOutputForm() {
     setAudioOutput(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="audioOutput">
+    <FormGroup controlId="audioOutput">
       <TooltipFormLabel kind="audioOutput">audioOutput:</TooltipFormLabel>
       <FormSelect
         name="audioOutput"

@@ -1,0 +1,52 @@
+/*
+ * トースト通知
+ *
+ * 画面右上 (ヘッダーの下) への配置と、トースト内のテキストスタイル
+ */
+
+/* 通知を重ねて表示するコンテナ */
+.container {
+  position: absolute;
+  top: 50px;
+  right: 1.25rem;
+  z-index: 1001;
+}
+
+/* 再接続トーストのヘッダー (黄色) */
+.reconnectHeader {
+  color: var(--color-bs-dark);
+  background-color: var(--color-bs-yellow);
+}
+
+/* 通知ヘッダー共通の文字色 */
+.alertHeader {
+  color: var(--color-white);
+}
+
+/* エラー通知のヘッダー (赤) */
+.errorHeader {
+  background-color: var(--color-bs-red);
+}
+
+/* 通常通知のヘッダー (青) */
+.infoHeader {
+  background-color: var(--color-bs-primary);
+}
+
+/* ヘッダー内のタイトル。閉じるボタンを右端へ寄せる */
+.title {
+  margin-inline-end: auto;
+}
+
+/* 本文。長いメッセージは折り返す */
+.message {
+  margin-bottom: 0;
+  overflow-wrap: break-word;
+}
+
+/* 通知の受信時刻 */
+.timestamp {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  opacity: 0.8;
+}

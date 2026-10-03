@@ -11,7 +11,7 @@ export function AudioForm() {
     setAudio(target.checked);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="audio">
+    <FormGroup controlId="audio">
       <TooltipFormCheck
         kind="audio"
         checked={audio.value}

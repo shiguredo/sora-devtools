@@ -31,7 +31,7 @@ export function SelectForm<T extends readonly string[]>({
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId={kind}>
+    <FormGroup controlId={kind}>
       <TooltipFormLabel kind={kind}>{label}</TooltipFormLabel>
       <FormSelect name={kind} value={value} onChange={handleChange} disabled={disabled}>
         {options.map((v) => (

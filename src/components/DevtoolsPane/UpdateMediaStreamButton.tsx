@@ -2,6 +2,8 @@ import { updateMediaStream } from "@/app/actions";
 import { connectionStatus, localMediaStream } from "@/app/signals";
 import { Button } from "@/components/ui";
 
+import styles from "./UpdateMediaStreamButton.module.css";
+
 export function UpdateMediaStreamButton() {
   const onClick = (): void => {
     void updateMediaStream();
@@ -16,7 +18,7 @@ export function UpdateMediaStreamButton() {
     status === "connecting" ||
     status === "disconnecting";
   return (
-    <div className="col-auto mb-1">
+    <div className={`col-auto ${styles.root}`}>
       <Button variant="outline-secondary" onClick={onClick} disabled={disabled}>
         update-mediastream
       </Button>

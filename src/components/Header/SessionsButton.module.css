@@ -1,0 +1,38 @@
+/*
+ * Sessions ボタン
+ *
+ * Sessions ページ表示中かどうかで色だけを差し替える。
+ * 寸法・枠線・トランジションは基底クラスで共通化する
+ */
+
+/* 全状態共通の基底スタイル (寸法とトランジションはヘッダー共通) */
+.button {
+  composes: button from "./HeaderButton.module.css";
+  width: 85px;
+}
+
+/* Sessions ページ表示中: 緑の塗りつぶし */
+.active {
+  color: var(--color-white);
+  background-color: #20c997;
+  border-color: #20c997;
+}
+
+@media (hover: hover) {
+  .active:hover {
+    background-color: #1aa179;
+    border-color: #1aa179;
+  }
+}
+
+/* DevTools 表示中: 明るい背景 */
+.idle {
+  composes: idle from "./HeaderButton.module.css";
+}
+
+@media (hover: hover) {
+  .idle:hover {
+    background-color: var(--color-bs-light-hover);
+    border-color: var(--color-bs-light-hover-border);
+  }
+}

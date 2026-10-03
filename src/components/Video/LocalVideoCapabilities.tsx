@@ -4,6 +4,8 @@ import { useEffect } from "preact/hooks";
 import { statsReport } from "@/app/signals";
 import type { RTCStatsCodec } from "@/types";
 
+import styles from "./LocalVideoCapabilities.module.css";
+
 // RTCOutboundRtpStreamStats に encoderImplementation を追加した拡張型
 type ExtendedOutboundRtpStats = RTCOutboundRtpStreamStats & {
   encoderImplementation?: string;
@@ -103,19 +105,19 @@ const useLocalVideoTrackStats = (stream: MediaStream) => {
 export function LocalVideoCapabilities({ stream }: { stream: MediaStream }) {
   const { trackStats, selected } = useLocalVideoTrackStats(stream);
   return (
-    <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
+    <div className={styles.root}>
       {trackStats.value.length === 0 ? (
         <p>loading...</p>
       ) : (
         <>
           {trackStats.value.length > 1 && (
-            <div className="flex gap-2">
+            <div className={styles.trackList}>
               {trackStats.value.map((trackStat) => (
                 <div
                   key={trackStat.outboundRtpStats.rid}
-                  className={`cursor-pointer ${
+                  className={`${styles.track} ${
                     trackStat.outboundRtpStats.rid === selected.value?.outboundRtpStats.rid
-                      ? "font-bold"
+                      ? styles.selected
                       : ""
                   }`}
                   onClick={() => {
@@ -131,30 +133,30 @@ export function LocalVideoCapabilities({ stream }: { stream: MediaStream }) {
             </div>
           )}
           {selected.value && (
-            <table className="text-sm">
+            <table className={styles.table}>
               <tbody>
                 <tr>
-                  <th className="text-left pr-3 py-0.5">mimeType</th>
-                  <td className="py-0.5">{selected.value.codec?.mimeType}</td>
+                  <th className={styles.headerCell}>mimeType</th>
+                  <td className={styles.cell}>{selected.value.codec?.mimeType}</td>
                 </tr>
                 <tr>
-                  <th className="text-left pr-3 py-0.5">payloadType</th>
-                  <td className="py-0.5">{selected.value.codec?.payloadType}</td>
+                  <th className={styles.headerCell}>payloadType</th>
+                  <td className={styles.cell}>{selected.value.codec?.payloadType}</td>
                 </tr>
                 <tr>
-                  <th className="text-left pr-3 py-0.5">sdpFmtpLine</th>
-                  <td className="py-0.5">{selected.value.codec?.sdpFmtpLine}</td>
+                  <th className={styles.headerCell}>sdpFmtpLine</th>
+                  <td className={styles.cell}>{selected.value.codec?.sdpFmtpLine}</td>
                 </tr>
                 <tr>
-                  <th className="text-left pr-3 py-0.5">resolution</th>
-                  <td className="py-0.5">
+                  <th className={styles.headerCell}>resolution</th>
+                  <td className={styles.cell}>
                     {selected.value.outboundRtpStats.frameWidth}x
                     {selected.value.outboundRtpStats.frameHeight}
                   </td>
                 </tr>
                 <tr>
-                  <th className="text-left pr-3 py-0.5">fps</th>
-                  <td className="py-0.5">
+                  <th className={styles.headerCell}>fps</th>
+                  <td className={styles.cell}>
                     {selected.value.outboundRtpStats.framesPerSecond !== undefined
                       ? Math.floor(selected.value.outboundRtpStats.framesPerSecond)
                       : undefined}
@@ -162,8 +164,8 @@ export function LocalVideoCapabilities({ stream }: { stream: MediaStream }) {
                 </tr>
                 {selected.value.outboundRtpStats.encoderImplementation && (
                   <tr>
-                    <th className="text-left pr-3 py-0.5">encoder</th>
-                    <td className="py-0.5">
+                    <th className={styles.headerCell}>encoder</th>
+                    <td className={styles.cell}>
                       {selected.value.outboundRtpStats.encoderImplementation}
                     </td>
                   </tr>

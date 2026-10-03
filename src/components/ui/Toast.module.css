@@ -1,0 +1,63 @@
+/* トースト本体。モバイルでは画面幅の 9 割、768px 以上では 450px 固定 */
+.toast {
+  width: 90vw;
+  margin-top: 0.625rem;
+  cursor: pointer;
+  background-color: color-mix(in srgb, var(--color-white) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-black) 10%, transparent);
+  border-radius: 0.375rem;
+  box-shadow:
+    0 10px 15px -3px var(--color-shadow),
+    0 4px 6px -4px var(--color-shadow);
+}
+
+@media (width >= 48rem) {
+  .toast {
+    width: 450px;
+  }
+}
+
+/* ヘッダー。上側の角だけ丸め、下に薄い区切り線を引く */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgb(0 0 0 / 0.05);
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+}
+
+/* ヘッダー内のタイトル領域 */
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 閉じるボタン。ホバーで不透明に戻す */
+.closeButton {
+  margin-left: 0.5rem;
+  padding: 0;
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+@media (hover: hover) {
+  .closeButton:hover {
+    opacity: 1;
+  }
+}
+
+/* 閉じるボタンのアイコン */
+.closeIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* 本文 */
+.body {
+  padding: 0.5rem 0.75rem;
+}

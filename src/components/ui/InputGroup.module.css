@@ -1,0 +1,19 @@
+/* 入力欄グループ。子要素を隙間なく連結して表示する */
+.group {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+/* 先頭以外は左側の角丸をなくし、境界線を 1px 重ねる */
+.group > :not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+
+/* 末尾以外は右側の角丸をなくす */
+.group > :not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}

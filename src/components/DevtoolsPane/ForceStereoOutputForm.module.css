@@ -1,0 +1,11 @@
+/* チェックボックスの行。内容幅で折り返しつつ 0.5rem 間隔で並べる */
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* チェックボックスを内容幅に収める */
+.autoWidth {
+  width: auto;
+}

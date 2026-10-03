@@ -4,6 +4,8 @@ import { Button } from "@/components/ui";
 import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
+import styles from "./RequestSimulcastRidButton.module.css";
+
 type SimulcastRequestRid = "none" | SimulcastRid;
 
 interface Props {
@@ -36,7 +38,7 @@ export function RequestSimulcastRidButton(props: Props) {
   };
 
   return (
-    <Button variant="secondary" size="sm" className="mx-1" onClick={onClick}>
+    <Button variant="secondary" size="sm" className={styles.button} onClick={onClick}>
       {props.rid}
     </Button>
   );

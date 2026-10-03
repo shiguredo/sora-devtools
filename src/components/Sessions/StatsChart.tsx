@@ -221,27 +221,21 @@ export function StatsChart({ points, metric, title }: StatsChartProps) {
 
   if (!hasPlottableValue(points, metric)) {
     return (
-      <div
-        className="rounded border border-bs-light bg-white p-3"
-        data-testid={`stats-chart-${metric}`}
-      >
-        <div className="mb-1 flex items-baseline justify-between gap-2">
-          <h4 className="text-sm font-semibold text-bs-body">{title}</h4>
-          <span className="text-xs text-bs-secondary">{style.unitLabel}</span>
+      <div className={styles.card} data-testid={`stats-chart-${metric}`}>
+        <div className={`${styles.header} ${styles.headerEmpty}`}>
+          <h4 className={styles.title}>{title}</h4>
+          <span className={styles.unit}>{style.unitLabel}</span>
         </div>
-        <p className="text-sm text-bs-secondary">表示できる時系列データがありません</p>
+        <p className={styles.emptyMessage}>表示できる時系列データがありません</p>
       </div>
     );
   }
 
   return (
-    <div
-      className="rounded border border-bs-light bg-white p-3"
-      data-testid={`stats-chart-${metric}`}
-    >
-      <div className="mb-2 flex items-baseline justify-between gap-2">
-        <h4 className="text-sm font-semibold text-bs-body">{title}</h4>
-        <span className="text-xs text-bs-secondary">{style.unitLabel}</span>
+    <div className={styles.card} data-testid={`stats-chart-${metric}`}>
+      <div className={`${styles.header} ${styles.headerChart}`}>
+        <h4 className={styles.title}>{title}</h4>
+        <span className={styles.unit}>{style.unitLabel}</span>
       </div>
       <div
         ref={containerRef}

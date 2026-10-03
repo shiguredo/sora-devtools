@@ -1,0 +1,169 @@
+/*
+ * セッションのデバッグメッセージ閲覧パネル。
+ * 種別タブ、メッセージテーブル、ページ送りで構成する
+ */
+
+/* パネル全体。直前の要素との間に余白を空ける */
+.root {
+  margin-top: 1rem;
+}
+
+/* 見出し「デバッグメッセージ」 */
+.title {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+}
+
+/* 種別タブの並び。下線で本文と区切る */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-bs-light);
+}
+
+/* 種別タブの共通部分 */
+.tab {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-bottom: 2px solid transparent;
+}
+
+/* 未選択の種別タブ */
+.tabInactive {
+  color: var(--color-bs-secondary);
+}
+
+/* 選択中の種別タブ */
+.tabActive {
+  font-weight: 600;
+  border-bottom-color: var(--color-bs-primary);
+}
+
+/* 読み取り失敗時のエラー表示 */
+.error {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-red-800);
+  background-color: var(--color-red-50);
+  border: 1px solid var(--color-red-400);
+  border-radius: 0.25rem;
+}
+
+/* 読み込み中を示す文 */
+.loading {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-bs-secondary);
+}
+
+/* メッセージテーブルのスクロール領域 */
+.tableWrapper {
+  max-height: 24rem;
+  overflow: auto;
+  border: 1px solid var(--color-bs-light);
+  border-radius: 0.25rem;
+}
+
+/* メッセージがないときの案内文 */
+.empty {
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-bs-secondary);
+}
+
+/* メッセージテーブル */
+.table {
+  composes: table from "./Table.module.css";
+}
+
+/* ヘッダー行。スクロール時も上に固定する */
+.tableHead {
+  composes: tableHead from "./Table.module.css";
+}
+
+/* ヘッダー行の下線 */
+.headRow {
+  composes: headRow from "./Table.module.css";
+}
+
+/* ヘッダーセル */
+.headCell {
+  composes: headCell from "./Table.module.css";
+}
+
+/* 本文行 */
+.bodyRow {
+  border-bottom: 1px solid var(--color-bs-light);
+}
+
+/* 本文セル */
+.bodyCell {
+  composes: bodyCell from "./Table.module.css";
+}
+
+/* 時刻セル。等幅フォントと等幅数字を使う */
+.timeCell {
+  composes: timeCell from "./Table.module.css";
+}
+
+/* connection_id セル。等幅フォントで小さく表示する */
+.connectionCell {
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* payload の開閉見出し「表示」 */
+.payloadSummary {
+  cursor: pointer;
+  color: var(--color-bs-secondary);
+}
+
+/* payload の JSON 表示。折り返して全体を表示する */
+.payloadPre {
+  margin-top: 0.25rem;
+  max-width: 28rem;
+  overflow: auto;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* 件数とページ切替ボタンを横に並べる行 */
+.tableToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* 件数の表示 */
+.count {
+  composes: count from "./Table.module.css";
+}
+
+/* ページ切替ボタンの並び */
+.pageActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 前へ / 次へ ボタン */
+.pageButton {
+  composes: pageButton from "./Table.module.css";
+}
+
+/* ページ端では押せないことを示す */
+.pageButton:disabled {
+  opacity: 0.5;
+}

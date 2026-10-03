@@ -1,5 +1,7 @@
 import type { ComponentChildren } from "preact";
 
+import styles from "./FormLabel.module.css";
+
 interface FormLabelProps {
   htmlFor?: string;
   className?: string;
@@ -12,7 +14,7 @@ interface FormLabelProps {
  */
 export function FormLabel({ htmlFor, className = "", children }: FormLabelProps) {
   return (
-    <label htmlFor={htmlFor} className={`me-2 ${className}`}>
+    <label htmlFor={htmlFor} className={`${styles.label} ${className}`}>
       {children}
     </label>
   );

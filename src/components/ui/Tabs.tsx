@@ -1,6 +1,8 @@
 import type { ComponentChildren, VNode } from "preact";
 import { toChildArray } from "preact";
 
+import styles from "./Tabs.module.css";
+
 interface TabsProps {
   activeKey: string;
   onSelect?: (key: string | null) => void;
@@ -41,11 +43,9 @@ function getTabInfo(child: VNode): TabInfo | null {
  * タブコンテナコンポーネント
  * react-bootstrap の Tabs 互換
  *
- * Bootstrap nav-tabs スタイル:
- * - display: flex
- * - border-bottom: 1px solid
- * - .nav-link: padding, border-radius (top corners)
- * - .nav-link.active: background-color, border-color
+ * 見た目は Tabs.module.css で定義する:
+ * - タブ見出しは下線付きで、選択中は白文字 + 濃い背景 + 白下線
+ * - タブ本文は DebugPane の :global セレクタが参照するグローバル名 .tab-content / .tab-pane と併用する
  */
 export function Tabs({ activeKey, onSelect, className = "", children }: TabsProps) {
   const tabs: TabInfo[] = [];
@@ -63,18 +63,16 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
   };
 
   return (
-    <div className={`flex flex-col flex-1 h-full ${className}`}>
+    <div className={`${styles.tabs} ${className}`}>
       {/* タブヘッダー
           タブ数が多い場合に横幅が親を超えるため、ペイン内で横スクロールさせる
           （ページ全体の横スクロールバーを出さない） */}
-      <div className="flex overflow-x-auto border-b border-gray-600" role="tablist">
+      <div className={styles.tabList} role="tablist">
         {tabs.map((tab) => {
           const { eventKey, title } = tab;
           const isActive = eventKey === activeKey;
 
-          const activeStyles = isActive
-            ? "text-white border-white bg-gray-700"
-            : "text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500";
+          const activeClassName = isActive ? styles.tabActive : styles.tabInactive;
 
           return (
             <button
@@ -85,11 +83,7 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
               onClick={() => {
                 handleSelect(eventKey);
               }}
-              className={`
-                px-4 py-2 text-sm font-medium
-                border-b-2 -mb-px transition-colors duration-150
-                ${activeStyles}
-              `}
+              className={`${styles.tab} ${activeClassName}`}
             >
               {title}
             </button>
@@ -98,7 +92,7 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
       </div>
 
       {/* タブコンテンツ */}
-      <div className="tab-content pt-2">
+      <div className={`tab-content ${styles.tabContent}`}>
         {tabs.map((tab) => {
           const { eventKey, children: tabChildren } = tab;
           const isActive = eventKey === activeKey;
@@ -107,7 +101,7 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
             <div
               key={eventKey}
               role="tabpanel"
-              className={`tab-pane ${isActive ? "active" : "hidden"}`}
+              className={`tab-pane ${isActive ? "active" : styles.paneHidden}`}
             >
               {tabChildren}
             </div>

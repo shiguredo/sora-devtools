@@ -1,0 +1,4 @@
+/* ボタンの下に余白を確保する。グローバルクラス col-auto と併用する */
+.root {
+  margin-bottom: 0.25rem;
+}

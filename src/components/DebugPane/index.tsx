@@ -58,7 +58,7 @@ export function DebugPane() {
           <SignalingMessages />
         </Tab>
         <Tab eventKey="notify" title="Notify">
-          <div className="flex items-center gap-4">
+          <div className={styles.notifyHeader}>
             <DebugFilter />
             <NotifyMaxMessages />
           </div>

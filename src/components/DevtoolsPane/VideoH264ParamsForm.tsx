@@ -15,7 +15,7 @@ export function VideoH264ParamsForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledVideoH264Params">
+          <FormGroup controlId="enabledVideoH264Params">
             <TooltipFormCheck
               kind="videoH264Params"
               checked={enabledVideoH264Params.value}
@@ -32,7 +32,7 @@ export function VideoH264ParamsForm() {
           <div className="col-auto">
             <JSONInputField
               controlId="videoH264Params"
-              placeholder="videoH264Paramsを指定"
+              placeholder="videoH264Params を指定"
               value={videoH264Params.value}
               setValue={(value) => {
                 setVideoH264Params(value);

@@ -1,0 +1,4 @@
+/* プッシュメッセージ一覧。親の高さいっぱいに広げて縦スクロールさせる */
+.messages {
+  composes: messages from "./messages.module.css";
+}

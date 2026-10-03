@@ -1,0 +1,87 @@
+/* メッセージ送信フォームの行 */
+.row {
+  display: flex;
+  margin-top: 0.5rem;
+}
+
+/* 送信先データチャンネルの選択欄 */
+.labelColumn {
+  margin-right: 0.25rem;
+}
+
+/* 送信メッセージ入力欄。残り幅を占有する */
+.inputColumn {
+  flex-grow: 1;
+  margin-right: 0.25rem;
+}
+
+/* データチャンネル選択のセレクト */
+.select {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 2rem 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--color-gray-900);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-300);
+  border-radius: 0.375rem;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline-style: none;
+  border-color: var(--color-blue-400);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-blue-400) 25%, transparent);
+}
+
+/* 送信メッセージの入力欄。文字色と背景色はデバッグペインのコンテナが指定する */
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 0.375rem;
+}
+
+.input:focus {
+  outline-style: none;
+  border-color: var(--color-blue-400);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-blue-400) 25%, transparent);
+}
+
+/* 送信ボタン */
+.sendButton {
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--color-white);
+  background-color: var(--color-gray-600);
+  border: 1px solid var(--color-gray-600);
+  border-radius: 0.375rem;
+}
+
+@media (hover: hover) {
+  .sendButton:hover {
+    background-color: var(--color-gray-700);
+  }
+}
+
+.sendButton:disabled {
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
+/* データチャンネル一覧のプレビュー */
+.preview {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  min-height: 250px;
+  max-height: 250px;
+  color: var(--color-white);
+  background-color: var(--color-debug-input-bg);
+  border-radius: 0.375rem;
+}

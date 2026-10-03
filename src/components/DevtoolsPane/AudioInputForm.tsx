@@ -12,7 +12,7 @@ export function AudioInputForm() {
     void updateMediaStream();
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="audioInput">
+    <FormGroup controlId="audioInput">
       <TooltipFormLabel kind="audioInput">audioInput:</TooltipFormLabel>
       <FormSelect
         name="audioInput"

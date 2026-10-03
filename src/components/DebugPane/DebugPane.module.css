@@ -1,7 +1,7 @@
 /* 高さは親 (.row) の高さいっぱい。ビューポート固定の高さ計算はしない */
 .container {
   padding: 10px;
-  background-color: #222222;
+  background-color: var(--color-debug-input-bg);
   height: 100%;
   min-height: 0;
   display: flex;
@@ -27,22 +27,24 @@
 }
 
 .container input {
-  background-color: #222222;
-  color: #ffffff;
-}
-
-.container input:focus {
-  background-color: #222222;
-  color: #ffffff;
+  background-color: var(--color-debug-input-bg);
+  color: var(--color-white);
 }
 
 .container input:disabled {
   background-color: #666666;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
-@media (max-width: 768px) {
+@media (width <= 48rem) {
   .container {
     width: 100%;
   }
+}
+
+/* Notify タブのヘッダー。フィルターと最大件数の選択を横並びにする */
+.notifyHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }

@@ -3,6 +3,8 @@ import type { ComponentChild } from "preact";
 import { debugFilterText, timelineMessages } from "@/app/signals";
 import type { TimelineMessage } from "@/types";
 
+import styles from "./TimelineMessages.module.css";
+
 import { Message } from "./Message.tsx";
 
 const DATA_CHANNEL_COLORS: Record<string, string> = {
@@ -13,35 +15,19 @@ const DATA_CHANNEL_COLORS: Record<string, string> = {
 };
 
 function WebSocketLabel() {
-  return (
-    <span className="me-1" style={{ color: "#00ff00" }}>
-      [websocket]
-    </span>
-  );
+  return <span className={styles.websocketLabel}>[websocket]</span>;
 }
 
 function PeerConnectionLabel() {
-  return (
-    <span className="me-1" style={{ color: "#ff8c00" }}>
-      [peerconnection]
-    </span>
-  );
+  return <span className={styles.peerConnectionLabel}>[peerconnection]</span>;
 }
 
 function SoraLabel() {
-  return (
-    <span className="me-1" style={{ color: "#bce2e8" }}>
-      [sora]
-    </span>
-  );
+  return <span className={styles.soraLabel}>[sora]</span>;
 }
 
 function SoraDevtoolsLabel() {
-  return (
-    <span className="me-1" style={{ color: "#73b8e2" }}>
-      [sora-devtools]
-    </span>
-  );
+  return <span className={styles.soraDevtoolsLabel}>[sora-devtools]</span>;
 }
 
 interface DataChannelLabelProps {
@@ -55,7 +41,7 @@ function DataChannelLabel(props: DataChannelLabelProps) {
       ? DATA_CHANNEL_COLORS[label]
       : undefined;
   return (
-    <span className="me-1" style={color ? { color } : {}}>
+    <span className={styles.label} style={color ? { color } : {}}>
       [datachannel]{label ? `[${label}]` : ""}
       {typeof id === "number" ? `[${id}]` : ""}
     </span>
@@ -109,7 +95,7 @@ export function TimelineMessages() {
     }),
   );
   return (
-    <div className="overflow-y-auto h-full">
+    <div className={styles.messages}>
       {filteredMessages.map((message) => {
         let key = `${message.timestamp}-${message.type}`;
         // datachannel onopen が同時刻に発火することがあるため key に datachannel label を追加する

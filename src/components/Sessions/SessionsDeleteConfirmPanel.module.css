@@ -1,0 +1,84 @@
+/*
+ * セッション削除確認ダイアログ
+ *
+ * portal で body 直下に描画する全画面オーバーレイと、その中央のダイアログ本体
+ */
+
+/* 画面全体を覆う半透明のオーバーレイ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
+}
+
+/* 中央のダイアログ本体 */
+.dialog {
+  width: 100%;
+  max-width: 28rem;
+  padding: 1rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+  box-shadow:
+    0 10px 15px -3px var(--color-shadow),
+    0 4px 6px -4px var(--color-shadow);
+}
+
+/* ダイアログの見出し */
+.dialogTitle {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: var(--color-red-800);
+}
+
+/* 削除対象の詳細。長い場合は 1 行で省略する */
+.detail {
+  margin-bottom: 1rem;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-bs-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* キャンセル・削除するボタンの並び */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* キャンセルボタン */
+.cancelButton {
+  width: 6rem;
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+}
+
+/* 削除するボタン。危険操作なので赤系で示す */
+.confirmButton {
+  width: 5rem;
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-red-700);
+  background-color: var(--color-red-50);
+  border: 1px solid var(--color-red-400);
+  border-radius: 0.25rem;
+}

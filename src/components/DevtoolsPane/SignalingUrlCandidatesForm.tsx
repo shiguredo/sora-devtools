@@ -18,7 +18,7 @@ export function SignalingUrlCandidatesForm() {
     const target = event.target as HTMLInputElement;
     setSignalingUrlCandidates(target.value.split("\n"));
   };
-  const textareaPlaceholder = `signalingUrlCandidatesを指定
+  const textareaPlaceholder = `signalingUrlCandidates を指定
 (例)
 wss://sora0.example.com/signaling
 wss://sora1.example.com/signaling
@@ -27,7 +27,7 @@ wss://sora1.example.com/signaling
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledSignalingUrlCandidates">
+          <FormGroup controlId="enabledSignalingUrlCandidates">
             <TooltipFormCheck
               kind="signalingUrlCandidates"
               checked={enabledSignalingUrlCandidates.value}
@@ -42,9 +42,8 @@ wss://sora1.example.com/signaling
       {enabledSignalingUrlCandidates.value ? (
         <div className="form-row">
           <div className="col-auto">
-            <FormGroup className="flex items-center gap-2" controlId="signalingNotifyMetadata">
+            <FormGroup controlId="signalingNotifyMetadata">
               <FormTextarea
-                className="flex-fill"
                 placeholder={textareaPlaceholder}
                 value={signalingUrlCandidates.value.join("\n")}
                 onChange={onChangeText}

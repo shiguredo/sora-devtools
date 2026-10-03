@@ -1,0 +1,45 @@
+/*
+ * コピー URL ボタン
+ *
+ * 通常時とコピー完了時で色だけを差し替える。
+ * 寸法・枠線・トランジションは基底クラスで共通化する
+ */
+
+/* 全状態共通の基底スタイル (寸法とトランジションはヘッダー共通) */
+.button {
+  composes: button from "./HeaderButton.module.css";
+  width: 85px;
+}
+
+/* コピー完了時: 緑の塗りつぶし */
+.copied {
+  color: var(--color-white);
+  background-color: var(--color-bs-success);
+  border-color: var(--color-bs-success);
+}
+
+@media (hover: hover) {
+  .copied:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+}
+
+/* 通常時: 明るい背景 */
+.idle {
+  composes: idle from "./HeaderButton.module.css";
+}
+
+/* コピー完了表示の内容 (チェックアイコン付き) */
+.copiedContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+/* コピー完了表示のチェックアイコン */
+.checkIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+}

@@ -1,0 +1,127 @@
+/*
+ * セッション一覧テーブル
+ *
+ * 列幅を固定して行のレイアウトを安定させ、長い値は省略表示する。
+ * 行の選択状態と削除確認状態は背景色で示す
+ */
+
+/* セッションが 1 件もない場合の案内文 */
+.empty {
+  color: var(--color-bs-secondary);
+}
+
+/* テーブルの横スクロール領域 */
+.scrollArea {
+  overflow-x: auto;
+}
+
+/* 一覧テーブル本体。列幅は colgroup 側で指定する */
+.table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* 列幅: channelId */
+.colChannelId {
+  width: 18%;
+}
+
+/* 列幅: session_id */
+.colSessionId {
+  width: 24%;
+}
+
+/* 列幅: started_at */
+.colStartedAt {
+  width: 20%;
+}
+
+/* 列幅: ended_at */
+.colEndedAt {
+  width: 20%;
+}
+
+/* 列幅: 状態 */
+.colStatus {
+  width: 10%;
+}
+
+/* 列幅: 操作 */
+.colActions {
+  width: 8%;
+}
+
+/* ヘッダー行の下境界線 */
+.headerRow {
+  border-bottom: 1px solid var(--color-bs-secondary);
+}
+
+/* セル共通の余白 (ヘッダー・本文の両方で使う) */
+.cell {
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+}
+
+/* はみ出す値を省略記号で切るセル */
+.truncatedCell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* session_id / started_at / ended_at 用の等幅フォントセル */
+.monoCell {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+/* 操作セル。ボタンやプレースホルダーを中央に置く */
+.centerCell {
+  text-align: center;
+}
+
+/* セッション行。クリックで選択できることをカーソルで示す */
+.row {
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-bs-light);
+}
+
+/* 通常行のホバー。選択中・削除確認中の行には適用しない (Tailwind 版と同じ) */
+@media (hover: hover) {
+  .rowHover:hover {
+    background-color: var(--color-bs-light);
+  }
+}
+
+/* 削除確認中の行 */
+.rowConfirming {
+  background-color: var(--color-red-50);
+}
+
+/* 選択中の行 */
+.rowSelected {
+  background-color: var(--color-bs-info-bg);
+}
+
+/* 削除できない行で操作列の幅を保つための透明プレースホルダー */
+.actionPlaceholder {
+  display: inline-block;
+  width: 3.5rem;
+  height: 1.5rem;
+}
+
+/* 削除ボタン。プレースホルダーと同じ大きさに揃える */
+.deleteButton {
+  display: inline-block;
+  width: 3.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+}

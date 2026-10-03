@@ -1,0 +1,44 @@
+/* チェックボックス / ラジオボタン本体 */
+.input {
+  appearance: none;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.input:focus {
+  outline-style: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-bs-primary) 25%, transparent);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* チェックボックスの角丸 */
+.inputCheckbox {
+  border-radius: 0.25rem;
+}
+
+/* ラジオボタンは正円 */
+.inputRadio {
+  border-radius: calc(infinity * 1px);
+}
+
+/* ラベル付きの場合の行 */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 操作可能なラベル */
+.labelEnabled {
+  cursor: pointer;
+}
+
+/* 無効なラベル */
+.labelDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

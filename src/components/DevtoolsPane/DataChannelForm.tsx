@@ -14,6 +14,8 @@ import {
 import { DATA_CHANNEL_SIGNALING, IGNORE_DISCONNECT_WEBSOCKET } from "@/constants";
 import { checkFormValue } from "@/utils";
 
+import styles from "./DataChannelForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 function IgnoreDisconnectWebSocketForm(props: { disabled: boolean }) {
@@ -24,7 +26,7 @@ function IgnoreDisconnectWebSocketForm(props: { disabled: boolean }) {
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="ignoreDisconnectWebSocket">
+    <FormGroup controlId="ignoreDisconnectWebSocket">
       <TooltipFormLabel kind="ignoreDisconnectWebSocket">
         ignoreDisconnectWebSocket:
       </TooltipFormLabel>
@@ -52,7 +54,7 @@ function DataChannelSignalingForm(props: { disabled: boolean }) {
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="dataChannelSignaling">
+    <FormGroup controlId="dataChannelSignaling">
       <TooltipFormLabel kind="dataChannelSignaling">dataChannelSignaling:</TooltipFormLabel>
       <FormSelect
         name="dataChannelSignaling"
@@ -78,9 +80,9 @@ export function DataChannelForm() {
   };
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        <div className="w-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledDataChannel">
+      <div className={styles.row}>
+        <div className={styles.autoWidth}>
+          <FormGroup controlId="enabledDataChannel">
             <FormSwitch
               id="enabledDataChannel"
               name="enabledDataChannel"
@@ -88,16 +90,16 @@ export function DataChannelForm() {
               onChange={onChangeSwitch}
               disabled={disabled}
             />
-            <label htmlFor="enabledDataChannel" className="cursor-pointer select-none">
+            <label htmlFor="enabledDataChannel" className={styles.label}>
               dataChannel
             </label>
           </FormGroup>
         </div>
       </div>
       {enabledDataChannel.value ? (
-        <div className="flex flex-wrap gap-2">
-          <div className="w-auto">
-            <div className="flex flex-wrap gap-4">
+        <div className={styles.row}>
+          <div className={styles.autoWidth}>
+            <div className={styles.optionsRow}>
               <div>
                 <DataChannelSignalingForm disabled={disabled} />
               </div>

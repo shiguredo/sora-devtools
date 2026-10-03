@@ -1,6 +1,5 @@
 import path from "node:path";
 import preactPlugin from "@preact/preset-vite";
-import tailwindcss from "@tailwindcss/vite";
 import { createLogger, defineConfig, loadEnv } from "vite-plus";
 
 const rootDir = import.meta.dirname;
@@ -23,7 +22,7 @@ logger.warnOnce = (msg, options) => {
 
 const baseConfig = defineConfig({
   customLogger: logger,
-  plugins: [preactPlugin(), tailwindcss()],
+  plugins: [preactPlugin()],
   build: {
     minify: "oxc",
     target: "esnext",

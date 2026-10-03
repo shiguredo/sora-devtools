@@ -7,18 +7,20 @@ import { setEnabledSignalingUrlCandidates, setSignalingUrlCandidates } from "@/a
 import { loadUrlEntries, purgeUrlEntriesFromOPFS, saveUrlEntriesToOPFS } from "@/opfs";
 import type { UrlEntry } from "@/opfs";
 
+import styles from "./SignalingUrlModal.module.css";
+
 // URL が wss:// または ws:// で始まるかチェック
 const isValidUrl = (url: string): boolean => url.startsWith("wss://") || url.startsWith("ws://");
 
-// エントリの背景色を決定する
-function getEntryBackgroundColor(isDragOver: boolean, isEnabled: boolean): string {
+// エントリの背景色クラスを決定する
+function getEntryBackgroundClassName(isDragOver: boolean, isEnabled: boolean): string {
   if (isDragOver) {
-    return "#e9ecef";
+    return styles.entryDragOver;
   }
   if (isEnabled) {
-    return "transparent";
+    return "";
   }
-  return "#f8f9fa";
+  return styles.entryDisabled;
 }
 
 interface SignalingUrlModalProps {
@@ -65,7 +67,7 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
     }
   }, [show, buttonRef, modalTop, modalLeft]);
 
-  // ESCキーでモーダルを閉じる
+  // ESC キーでモーダルを閉じる
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && show) {
@@ -196,7 +198,7 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
     <>
       {/* オーバーレイ */}
       <div
-        className="fixed inset-0 bg-black/50 z-998"
+        className={styles.overlay}
         onClick={onClose}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
@@ -207,7 +209,7 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
       {/* モーダル */}
       <div
         ref={modalRef}
-        className="fixed w-175 bg-white border border-gray-300 rounded-md z-1000 shadow-lg p-6"
+        className={styles.modal}
         style={{
           top: `${modalTop.value}px`,
           left: `${modalLeft.value}px`,
@@ -216,17 +218,15 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
           e.stopPropagation();
         }}
       >
-        <div className="mb-3">
+        <div className={styles.heading}>
           <strong>signalingUrlCandidates</strong>
         </div>
 
         {/* URL 追加フォーム */}
-        <div className="flex gap-2 mb-3">
+        <div className={styles.formRow}>
           <input
             type="text"
-            className={`flex-1 px-3 py-1.5 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              error.value ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`${styles.input} ${error.value ? styles.inputError : styles.inputNormal}`}
             placeholder="wss://example.com/signaling"
             value={newUrl.value}
             onInput={handleInputChange}
@@ -235,19 +235,19 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
           />
           <button
             type="button"
-            className="px-3 py-1.5 text-sm text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={styles.primaryButton}
             onClick={handleAddUrl}
             disabled={error.value !== "" || newUrl.value.trim() === ""}
           >
             追加
           </button>
         </div>
-        {error.value && <small className="text-red-500 mb-2 block">{error.value}</small>}
+        {error.value && <small className={styles.error}>{error.value}</small>}
 
         {/* URL リスト */}
         <div
-          className={`max-h-50 overflow-y-auto rounded-md ${
-            urlEntries.value.length > 0 ? "border border-gray-300" : ""
+          className={`${styles.urlList} ${
+            urlEntries.value.length > 0 ? styles.urlListBordered : ""
           }`}
         >
           {urlEntries.value.map((entry, index) => (
@@ -265,38 +265,31 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
                 handleDrop(index);
               }}
               onDragEnd={handleDragEnd}
-              className={`flex items-center gap-2 p-2 ${
-                index < urlEntries.value.length - 1 ? "border-b border-gray-300" : ""
-              }`}
+              className={`${styles.entry} ${
+                index < urlEntries.value.length - 1 ? styles.entryDivided : ""
+              } ${getEntryBackgroundClassName(dragOverIndex.value === index, entry.enabled)}`}
               style={{
-                backgroundColor: getEntryBackgroundColor(
-                  dragOverIndex.value === index,
-                  entry.enabled,
-                ),
                 opacity: draggedIndex.value === index ? 0.5 : 1,
-                cursor: "grab",
               }}
             >
-              <span className="text-gray-500 cursor-grab select-none">&#x2630;</span>
+              <span className={styles.dragHandle}>&#x2630;</span>
               <input
                 type="checkbox"
                 checked={entry.enabled}
                 onChange={() => {
                   handleToggleEnabled(index);
                 }}
-                className="cursor-pointer"
+                className={styles.checkbox}
               />
               <span
-                className={`flex-1 overflow-hidden text-ellipsis whitespace-nowrap ${
-                  entry.enabled ? "text-gray-900" : "text-gray-500 line-through"
-                }`}
+                className={`${styles.url} ${entry.enabled ? styles.urlEnabled : styles.urlDisabled}`}
                 title={entry.url}
               >
                 {entry.url}
               </span>
               <button
                 type="button"
-                className="px-1.5 py-0.5 text-sm text-red-600 border border-red-600 rounded hover:bg-red-50"
+                className={`${styles.dangerButton} ${styles.deleteButton}`}
                 onClick={() => {
                   handleDeleteUrl(index);
                 }}
@@ -308,31 +301,23 @@ export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModa
         </div>
 
         {urlEntries.value.length === 0 && (
-          <div className="text-gray-500 text-center py-3">URL が追加されていません</div>
+          <div className={styles.empty}>URL が追加されていません</div>
         )}
 
-        <small className="text-gray-500 mt-2 block">設定は OPFS に保存されます</small>
-        <div className="flex justify-between mt-3">
+        <small className={styles.note}>設定は OPFS に保存されます</small>
+        <div className={styles.footer}>
           <button
             type="button"
-            className="px-3 py-1.5 text-sm text-red-600 border border-red-600 rounded-md hover:bg-red-50"
+            className={`${styles.dangerButton} ${styles.purgeButton}`}
             onClick={handlePurge}
           >
             Purge
           </button>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="px-3 py-1.5 text-sm text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300"
-              onClick={onClose}
-            >
+          <div className={styles.footerActions}>
+            <button type="button" className={styles.secondaryButton} onClick={onClose}>
               Cancel
             </button>
-            <button
-              type="button"
-              className="px-3 py-1.5 text-sm text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700"
-              onClick={handleSave}
-            >
+            <button type="button" className={styles.primaryButton} onClick={handleSave}>
               Save
             </button>
           </div>

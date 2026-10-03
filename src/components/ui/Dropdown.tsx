@@ -3,6 +3,8 @@ import type { ComponentChildren } from "preact";
 import { createContext } from "preact";
 import { useCallback, useContext, useEffect, useMemo, useRef } from "preact/hooks";
 
+import styles from "./Dropdown.module.css";
+
 interface DropdownProps {
   className?: string;
   children: ComponentChildren;
@@ -69,7 +71,7 @@ export function Dropdown({ className = "", children }: DropdownProps) {
   );
 
   return (
-    <div ref={containerRef} className={`inline-flex self-stretch ${className}`}>
+    <div ref={containerRef} className={`${styles.dropdown} ${className}`}>
       <DropdownContext.Provider value={contextValue}>{children}</DropdownContext.Provider>
     </div>
   );
@@ -88,6 +90,13 @@ const DropdownContext = createContext<DropdownContextType>({
   close: () => {},
 });
 
+// variant の値と CSS Modules のクラス名を対応付ける
+const variantClassNames = {
+  primary: styles.primary,
+  secondary: styles.secondary,
+  "outline-secondary": styles.outlineSecondary,
+} as const;
+
 /**
  * ドロップダウントグルボタン
  */
@@ -100,15 +109,9 @@ export function DropdownToggle({
 }: DropdownToggleProps) {
   const { toggle } = useContext(DropdownContext);
 
-  const variantStyles = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 border-blue-600",
-    secondary: "bg-gray-600 text-white hover:bg-gray-700 border-gray-600",
-    "outline-secondary": "bg-white text-gray-700 hover:bg-gray-50 border-gray-300",
-  };
-
   // children がない場合は InputGroup 内のドロップダウンボタンとしてコンパクトに
   const isCompact = !children;
-  const sizeStyles = isCompact ? "px-2 self-stretch rounded-l-none" : "px-3 py-1.5 gap-1";
+  const sizeClassName = isCompact ? styles.toggleCompact : styles.toggleNormal;
 
   const handleClick = () => {
     toggle();
@@ -120,25 +123,11 @@ export function DropdownToggle({
       type="button"
       disabled={disabled}
       onClick={handleClick}
-      className={`
-        inline-flex items-center justify-center
-        ${sizeStyles}
-        text-base leading-normal border rounded-md cursor-pointer
-        transition-colors duration-150
-        ${variantStyles[variant]}
-        focus:outline-none focus:ring-2 focus:ring-blue-400/25
-        disabled:opacity-65 disabled:cursor-not-allowed disabled:bg-[#e9ecef]
-        ${className}
-      `}
+      className={`${styles.toggle} ${sizeClassName} ${variantClassNames[variant]} ${className}`}
     >
       {children}
       {/* ドロップダウン矢印（FormSelect と同じデザイン） */}
-      <svg
-        className={isCompact ? "w-4 h-3" : "w-4 h-3"}
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 16 16"
-      >
+      <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 16 16">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m2 5 6 6 6-6" />
       </svg>
     </button>
@@ -156,19 +145,7 @@ export function DropdownMenu({ show, className = "", children }: DropdownMenuPro
     return null;
   }
 
-  return (
-    <div
-      className={`
-        absolute z-50 top-full right-0
-        min-w-40 max-h-[300px] overflow-y-auto
-        mt-1 py-1 bg-white
-        border border-gray-200 rounded-md shadow-lg
-        ${className}
-      `}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`${styles.menu} ${className}`}>{children}</div>;
 }
 
 /**
@@ -183,8 +160,8 @@ export function DropdownItem({
 }: DropdownItemProps) {
   const { close } = useContext(DropdownContext);
 
-  const activeStyles = active ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100";
-  const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
+  const activeClassName = active ? styles.itemActive : styles.itemInactive;
+  const disabledClassName = disabled ? styles.itemDisabled : styles.itemEnabled;
 
   const handleClick = () => {
     if (!disabled) {
@@ -198,12 +175,7 @@ export function DropdownItem({
       type="button"
       disabled={disabled}
       onClick={handleClick}
-      className={`
-        block w-full px-4 py-2
-        text-left text-sm transition-colors duration-150
-        ${activeStyles} ${disabledStyles}
-        ${className}
-      `}
+      className={`${styles.item} ${activeClassName} ${disabledClassName} ${className}`}
     >
       {children}
     </button>

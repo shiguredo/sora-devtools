@@ -1,0 +1,11 @@
+/* 最大件数の設定行。上下に余白を取る (横並びと gap は FormGroup の基底が持つ) */
+.group {
+  margin-block: 0.5rem;
+}
+
+/* ラベル */
+.label {
+  color: var(--color-white);
+}
+
+/* 最大件数のセレクト。幅は FormSelect 側の width: 100% に従う */

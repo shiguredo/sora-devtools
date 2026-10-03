@@ -1,0 +1,9 @@
+/* クリアボタンを配置する行の上下余白 */
+.toolbar {
+  padding-block: 0.25rem;
+}
+
+/* メッセージ一覧。親の高さいっぱいに広げて縦スクロールさせる */
+.messages {
+  composes: messages from "./messages.module.css";
+}

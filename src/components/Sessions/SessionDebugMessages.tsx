@@ -10,6 +10,8 @@ import {
 } from "@/sessionDatabase";
 import type { Json } from "@/types";
 
+import styles from "./SessionDebugMessages.module.css";
+
 export interface SessionDebugMessagesProps {
   sessionDbId: number;
 }
@@ -184,15 +186,13 @@ export function SessionDebugMessages({ sessionDbId }: SessionDebugMessagesProps)
   }
 
   return (
-    <section className="mt-4" data-testid="session-messages-panel">
-      <h3 className="mb-2 text-base font-semibold">デバッグメッセージ</h3>
-      <div className="mb-3 flex gap-1 border-b border-bs-light" role="tablist">
+    <section className={styles.root} data-testid="session-messages-panel">
+      <h3 className={styles.title}>デバッグメッセージ</h3>
+      <div className={styles.tabs} role="tablist">
         {MESSAGE_TABS.map((tab) => {
-          let buttonClass =
-            "border-b-2 border-transparent px-3 py-2 text-sm text-bs-secondary hover:text-bs-body";
+          let buttonClass = `${styles.tab} ${styles.tabInactive}`;
           if (tab === activeTab) {
-            buttonClass =
-              "border-b-2 border-bs-primary px-3 py-2 text-sm font-semibold text-bs-body";
+            buttonClass = `${styles.tab} ${styles.tabActive}`;
           }
           return (
             <button
@@ -214,30 +214,26 @@ export function SessionDebugMessages({ sessionDbId }: SessionDebugMessagesProps)
       </div>
 
       {errorMessage !== null && (
-        <div
-          className="mb-2 rounded border border-red-400 bg-red-50 p-2 text-sm text-red-800"
-          data-testid="session-messages-error"
-          role="alert"
-        >
+        <div className={styles.error} data-testid="session-messages-error" role="alert">
           読み取りに失敗しました: {errorMessage}
         </div>
       )}
       {loading && (
-        <p className="mb-2 text-sm text-bs-secondary" data-testid="session-messages-loading">
+        <p className={styles.loading} data-testid="session-messages-loading">
           読み込み中…
         </p>
       )}
 
       <SessionMessagesTable rows={rows} columnLabels={columnLabels} />
 
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-bs-secondary" data-testid="session-messages-count">
+      <div className={styles.tableToolbar}>
+        <p className={styles.count} data-testid="session-messages-count">
           {countLabel}
         </p>
-        <div className="flex gap-2">
+        <div className={styles.pageActions}>
           <button
             type="button"
-            className="rounded border border-bs-secondary px-2 py-1 text-sm disabled:opacity-50"
+            className={styles.pageButton}
             disabled={pageOffset <= 0}
             data-testid="session-messages-page-prev"
             onClick={() => {
@@ -248,7 +244,7 @@ export function SessionDebugMessages({ sessionDbId }: SessionDebugMessagesProps)
           </button>
           <button
             type="button"
-            className="rounded border border-bs-secondary px-2 py-1 text-sm disabled:opacity-50"
+            className={styles.pageButton}
             disabled={pageOffset >= maxOffset}
             data-testid="session-messages-page-next"
             onClick={() => {
@@ -271,47 +267,42 @@ function SessionMessagesTable({
   columnLabels: string[];
 }) {
   return (
-    <div
-      className="max-h-96 overflow-auto rounded border border-bs-light"
-      data-testid="session-messages-list"
-    >
+    <div className={styles.tableWrapper} data-testid="session-messages-list">
       {rows.length === 0 && (
-        <p className="p-3 text-sm text-bs-secondary" data-testid="session-messages-empty">
+        <p className={styles.empty} data-testid="session-messages-empty">
           メッセージはありません
         </p>
       )}
       {rows.length > 0 && (
-        <table className="w-full border-collapse text-left text-xs">
-          <thead className="sticky top-0 bg-bs-light">
-            <tr className="border-b border-bs-secondary">
-              <th className="px-2 py-1.5 font-semibold">時刻 (JST)</th>
+        <table className={styles.table}>
+          <thead className={styles.tableHead}>
+            <tr className={styles.headRow}>
+              <th className={styles.headCell}>時刻 (JST)</th>
               {columnLabels.map((label) => (
-                <th key={label} className="px-2 py-1.5 font-semibold">
+                <th key={label} className={styles.headCell}>
                   {label}
                 </th>
               ))}
-              <th className="px-2 py-1.5 font-semibold">connection_id</th>
-              <th className="px-2 py-1.5 font-semibold">payload</th>
+              <th className={styles.headCell}>connection_id</th>
+              <th className={styles.headCell}>payload</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.id} className="border-b border-bs-light">
-                <td className="px-2 py-1 font-mono tabular-nums">
+              <tr key={row.id} className={styles.bodyRow}>
+                <td className={styles.timeCell}>
                   {formatChartUnixSecJst(row.timestampMs / 1000, true)}
                 </td>
                 {row.columns.map((column) => (
-                  <td key={column.label} className="px-2 py-1">
+                  <td key={column.label} className={styles.bodyCell}>
                     {column.value}
                   </td>
                 ))}
-                <td className="px-2 py-1 font-mono text-[11px]">
-                  {displayOrDash(row.connectionId)}
-                </td>
-                <td className="px-2 py-1">
+                <td className={styles.connectionCell}>{displayOrDash(row.connectionId)}</td>
+                <td className={styles.bodyCell}>
                   <details>
-                    <summary className="cursor-pointer text-bs-secondary">表示</summary>
-                    <pre className="mt-1 max-w-md overflow-auto whitespace-pre-wrap break-all text-[11px]">
+                    <summary className={styles.payloadSummary}>表示</summary>
+                    <pre className={styles.payloadPre}>
                       {JSON.stringify(row.payloadJson, null, 2)}
                     </pre>
                   </details>

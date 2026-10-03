@@ -2,6 +2,8 @@ import { FormGroup } from "@/components/ui";
 
 import { forceStereoOutput, isFormDisabled, setForceStereoOutput } from "@/app/signals";
 
+import styles from "./ForceStereoOutputForm.module.css";
+
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export function ForceStereoOutputForm() {
@@ -11,9 +13,9 @@ export function ForceStereoOutputForm() {
     setForceStereoOutput(target.checked);
   };
   return (
-    <div className="flex flex-wrap gap-2">
-      <div className="w-auto">
-        <FormGroup className="flex items-center gap-2" controlId="forceStereoOutput">
+    <div className={styles.root}>
+      <div className={styles.autoWidth}>
+        <FormGroup controlId="forceStereoOutput">
           <TooltipFormCheck
             kind="forceStereoOutput"
             checked={forceStereoOutput.value}

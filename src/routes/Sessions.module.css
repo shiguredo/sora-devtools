@@ -1,0 +1,93 @@
+/*
+ * Sessions ページ
+ *
+ * DevTools と同様にコンテンツ領域いっぱいに広げて内部スクロールさせる
+ * (省略するとコンテンツが #root の min-height: 0 を超えて footer の裏に入り込む)
+ */
+
+/* ページ全体 */
+.main {
+  flex: 1;
+  min-height: 0;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* ページ見出し */
+.title {
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+}
+
+/* プライバシー文言の枠 */
+.privacyNotice {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-color: var(--color-bs-light);
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+}
+
+/* プライバシー文言の箇条書き */
+.privacyList {
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+/* 箇条書きの項目間隔 */
+.privacyList > :not(:last-child) {
+  margin-block-start: 0;
+  margin-block-end: 0.25rem;
+}
+
+/* エラー表示。赤系の枠と背景で目立たせる */
+.pageError {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-red-800);
+  background-color: var(--color-red-50);
+  border: 1px solid var(--color-red-400);
+  border-radius: 0.25rem;
+}
+
+/* 読み込み中などの補助テキスト */
+.muted {
+  color: var(--color-bs-secondary);
+}
+
+/* 履歴削除ボタン */
+.resetButton {
+  padding: 0.125rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+}
+
+/* 一覧セクションの下余白 */
+.section {
+  margin-bottom: 1.5rem;
+}
+
+/* 一覧ヘッダー (見出し + 操作ボタン) */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 一覧見出し */
+.sectionTitle {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}

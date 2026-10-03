@@ -15,6 +15,8 @@ import {
 } from "@/app/signals";
 import type { RTCMediaStreamTrackStats, RemoteClient } from "@/types";
 
+import styles from "./RemoteVideos.module.css";
+
 import { ConnectionStatusBar } from "./ConnectionStatusBar.tsx";
 import { JitterButter } from "./JitterBuffer.tsx";
 import { RemoteVideoCapabilities } from "./RemoteVideoCapabilities.tsx";
@@ -72,7 +74,7 @@ function MediaStreamStatsReport({ stream }: { stream: MediaStream }) {
         }
         return (
           <div key={s.id}>
-            <ul className="list-none p-4">
+            <ul className={styles.statsList}>
               {Object.entries(s).map(([key, value]) => (
                 <li key={key}>
                   <strong>{key}:</strong> {value}
@@ -94,18 +96,16 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
   const { mediaStream, connectionId, clientId } = client;
   const height = useSignal<number>(0);
   const focused = connectionId && focusedSpotlightConnectionIds.value[connectionId];
-  const wrapperClasses = focused
-    ? "border-[5px] border-bs-primary rounded-[5px]"
-    : "border-[5px] border-black/10 rounded-[5px]";
+  const wrapperClasses = focused ? styles.focused : styles.unfocused;
   return (
     <div className="col-auto">
-      <div className="flex flex-col top-0 left-0 whitespace-nowrap">
-        <div className="flex items-center mb-1 first:*:ml-0">
+      <div className={styles.statusList}>
+        <div className={styles.statusRow}>
           <ConnectionStatusBar connectionId={connectionId} clientId={clientId} />
           <JitterButter type="audio" stream={mediaStream} />
           <JitterButter type="video" stream={mediaStream} />
         </div>
-        <div className="flex items-center mb-1 first:*:ml-0">
+        <div className={styles.statusRow}>
           {spotlight.value !== "true" && simulcast.value === "true" ? (
             <>
               <RequestSimulcastRidButton rid="none" sendConnectionId={connectionId} />
@@ -122,9 +122,9 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
           ) : null}
         </div>
       </div>
-      <div className="flex flex-wrap items-start overflow-y-hidden">
+      <div className={styles.streamArea}>
         {/* オーバーレイするため position-relative を付けておくこと */}
-        <div className={`relative flex flex-nowrap items-start ${wrapperClasses}`}>
+        <div className={`${styles.videoWrapper} ${wrapperClasses}`}>
           {mediaStats.value && mediaStream.getVideoTracks().length > 0 && (
             <RemoteVideoCapabilities stream={mediaStream} />
           )}
@@ -147,7 +147,7 @@ function RemoteVideo({ client }: { client: RemoteClient }) {
 
 export function RemoteVideos() {
   return (
-    <div className="row my-2">
+    <div className={`row ${styles.root}`}>
       {remoteClients.value.map((client) => (
         <RemoteVideo key={client.connectionId} client={client} />
       ))}

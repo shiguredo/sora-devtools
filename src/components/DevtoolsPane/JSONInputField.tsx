@@ -4,6 +4,8 @@ import { useEffect } from "preact/hooks";
 
 import { Button, FormGroup, FormTextarea } from "@/components/ui";
 
+import styles from "./JSONInputField.module.css";
+
 const prettyFormat = (jsonString: string, setValue: (value: string) => void): void => {
   if (jsonString === "") {
     return;
@@ -55,11 +57,11 @@ export function JSONInputField({
     }
   }, [value, invalidJsonString]);
   const invalidStyles = invalidJsonString.value
-    ? "flex-1 border-bs-red border-2 focus:border-bs-red"
-    : "flex-1";
+    ? `${styles.textarea} ${styles.textareaInvalid}`
+    : styles.textarea;
 
   return (
-    <FormGroup className="flex items-center gap-2 relative" controlId={controlId}>
+    <FormGroup className={styles.group} controlId={controlId}>
       <FormTextarea
         className={invalidStyles}
         placeholder={placeholder}
@@ -69,7 +71,7 @@ export function JSONInputField({
         cols={cols ?? 100}
         disabled={disabled}
       />
-      <div className="absolute top-2.5 right-3 flex gap-2">
+      <div className={styles.actions}>
         {extraControls}
         <Button
           variant="light"

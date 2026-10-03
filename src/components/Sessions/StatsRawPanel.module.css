@@ -1,0 +1,273 @@
+/*
+ * ストリーム詳細パネル。ストリーム一覧、差分メトリクスのチャート、
+ * 生データテーブルを縦に並べる
+ */
+
+/* パネル全体。直前の要素との間に余白を空ける */
+.root {
+  margin-top: 1rem;
+}
+
+/* 見出しと説明文のまとまり */
+.header {
+  margin-bottom: 0.75rem;
+}
+
+/* 見出し「ストリーム詳細」 */
+.title {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+}
+
+/* 見出しの下に添える補足説明 */
+.description {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-bs-secondary);
+}
+
+/* 読み込み失敗時のエラー文 */
+.error {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-red-700);
+}
+
+/* 読み込み中を示す文 */
+.loading {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-bs-secondary);
+}
+
+/* データがないときや選択を促すときの文 */
+.empty {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-bs-secondary);
+}
+
+/* ストリーム一覧と詳細の 2 カラム。lg 以上で一覧の幅を 240-320px に固定する */
+.layout {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (width >= 64rem) {
+  .layout {
+    grid-template-columns: minmax(240px, 320px) 1fr;
+  }
+}
+
+/* ストリーム一覧のスクロール領域 */
+.streamList {
+  max-height: 24rem;
+  overflow: auto;
+  border: 1px solid var(--color-bs-light);
+  border-radius: 0.25rem;
+}
+
+/* ストリーム一覧の項目。最後の項目以外に区切り線を引く */
+.streamItems > :not(:last-child) {
+  border-bottom: 1px solid var(--color-bs-light);
+}
+
+/* ストリーム選択ボタンの共通部分 */
+.streamButton {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  background-color: var(--color-white);
+}
+
+/* 未選択のストリームにマウスが乗ったとき */
+@media (hover: hover) {
+  .streamButtonInactive:hover {
+    background-color: var(--color-bs-light);
+  }
+}
+
+/* 選択中のストリーム */
+.streamButtonActive {
+  background-color: var(--color-bs-info-bg);
+}
+
+/* ストリーム種別バッジと stats_id を横に並べる */
+.streamItemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 送信 / 受信 / RTT を表す種別バッジ */
+.streamType {
+  padding: 0.125rem 0.375rem;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: var(--color-bs-secondary);
+  text-transform: uppercase;
+  background-color: var(--color-bs-light);
+  border-radius: 0.25rem;
+}
+
+/* stats_id。長い場合は末尾を省略して 1 行に収める */
+.streamId {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ストリームの概要行（種別・ビットレート・samples 数など） */
+.meta {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-bs-secondary);
+}
+
+/* 選択ストリームの詳細カラム */
+.detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+/* 枠付きの白背景カード（選択中情報と生データテーブル） */
+.card {
+  composes: card from "./Table.module.css";
+}
+
+/* カード内の小さなラベル（「選択中」） */
+.cardLabel {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-bs-secondary);
+}
+
+/* 選択中ストリームの stats_id。折り返して全体を表示する */
+.selectedStreamId {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  word-break: break-all;
+}
+
+/* 生データテーブルの開閉見出し */
+.tableSummary {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 生データテーブルの内容 */
+.tableContent {
+  margin-top: 0.75rem;
+}
+
+/* ページ件数とページ切替ボタンを横に並べる行 */
+.tableToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ページ件数の表示 */
+.count {
+  composes: count from "./Table.module.css";
+}
+
+/* ページ切替ボタンの並び */
+.pageActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 前へ / 次へ ボタン */
+.pageButton {
+  composes: pageButton from "./Table.module.css";
+}
+
+/* ページ端では押せないことを示す */
+.pageButton:disabled {
+  opacity: 0.5;
+}
+
+/* 生データテーブルのスクロール領域 */
+.tableWrapper {
+  max-height: 20rem;
+  overflow: auto;
+  border: 1px solid var(--color-bs-light);
+  border-radius: 0.25rem;
+}
+
+/* 生データテーブル */
+.table {
+  composes: table from "./Table.module.css";
+}
+
+/* ヘッダー行。スクロール時も上に固定する */
+.tableHead {
+  composes: tableHead from "./Table.module.css";
+}
+
+/* ヘッダー行の下線 */
+.headRow {
+  composes: headRow from "./Table.module.css";
+}
+
+/* ヘッダーセル */
+.headCell {
+  composes: headCell from "./Table.module.css";
+}
+
+/* 右寄せのヘッダーセル（数値列） */
+.headCellRight {
+  padding: 0.375rem 0.5rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* 背景色が白の行 */
+.rowEven {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-bs-light);
+}
+
+/* 背景色が薄灰の行（縞模様） */
+.rowOdd {
+  background-color: var(--color-bs-light);
+  border-bottom: 1px solid var(--color-bs-light);
+}
+
+/* 本文セル */
+.bodyCell {
+  composes: bodyCell from "./Table.module.css";
+}
+
+/* 時刻セル。等幅フォントと等幅数字を使う */
+.timeCell {
+  composes: timeCell from "./Table.module.css";
+}
+
+/* 数値セル。右寄せ + 等幅フォント + 等幅数字 */
+.numberCell {
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}

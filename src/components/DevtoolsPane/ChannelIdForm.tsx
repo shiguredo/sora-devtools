@@ -11,11 +11,11 @@ export function ChannelIdForm() {
     setChannelId(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="channelId">
+    <FormGroup controlId="channelId">
       <TooltipFormLabel kind="channelId">channelId:</TooltipFormLabel>
       <FormInput
         type="text"
-        placeholder="ChannelIdを指定"
+        placeholder="ChannelId を指定"
         value={channelId.value}
         onChange={onChange}
         disabled={isFormDisabled.value}

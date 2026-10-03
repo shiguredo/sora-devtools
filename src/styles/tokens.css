@@ -1,0 +1,84 @@
+/*
+ * デザイントークン
+ *
+ * Sora ブランド色、Bootstrap 由来の色、Tailwind パレット由来の色、
+ * デバッグ用の色、フォントスタックを CSS カスタムプロパティとして定義する。
+ */
+
+:root {
+  /* Sora ブランドカラー */
+  --color-sora: #0071bc;
+
+  /* Bootstrap 由来のカラー定義 */
+  --color-bs-primary: #0d6efd;
+  --color-bs-secondary: #6c757d;
+  --color-bs-dark: #212529;
+  --color-bs-light: #f8f9fa;
+  --color-bs-yellow: #ffc107;
+  --color-bs-orange: #fd7e14;
+  --color-bs-red: #dc3545;
+
+  /* Bootstrap 由来の状態色 (ボタンの hover など) */
+  --color-bs-light-hover: #e2e6ea;
+  --color-bs-light-hover-border: #dae0e5;
+  --color-bs-success: #28a745;
+  --color-bs-disabled: #e9ecef;
+  --color-bs-dark-hover: #1c1f23;
+  --color-bs-dark-hover-border: #1a1e21;
+  --color-bs-info-bg: #e7f1ff;
+  --color-bs-input-border: #ced4da;
+  --color-bs-input-focus: #86b7fe;
+
+  /* デバッグボタンの状態色 */
+  --color-debug: #ff4c93;
+  --color-debug-hover: #ff1a6f;
+
+  /* デバッグペインの色 */
+  --color-debug-item-bg: #1a1a1a;
+  --color-debug-surface: #333;
+  --color-debug-input-bg: #222222;
+  --color-debug-text-muted: #ccc;
+  --color-debug-text-dim: #aaa;
+
+  /* 汎用色 */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-shadow: rgb(0 0 0 / 0.1);
+
+  /* Tailwind パレット由来のカラー (移行前の見た目を維持するために使用) */
+  --color-gray-50: oklch(98.5% 0.002 247.839);
+  --color-gray-100: oklch(96.7% 0.003 264.542);
+  --color-gray-200: oklch(92.8% 0.006 264.531);
+  --color-gray-300: oklch(87.2% 0.01 258.338);
+  --color-gray-400: oklch(70.7% 0.022 261.325);
+  --color-gray-500: oklch(55.1% 0.027 264.364);
+  --color-gray-600: oklch(44.6% 0.03 256.802);
+  --color-gray-700: oklch(37.3% 0.034 259.733);
+  --color-gray-900: oklch(21% 0.034 264.665);
+  --color-blue-400: oklch(70.7% 0.165 254.624);
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-blue-600: oklch(54.6% 0.245 262.881);
+  --color-blue-700: oklch(48.8% 0.243 264.376);
+  --color-red-50: oklch(97.1% 0.013 17.38);
+  --color-red-400: oklch(70.4% 0.191 22.216);
+  --color-red-500: oklch(63.7% 0.237 25.331);
+  --color-red-600: oklch(57.7% 0.245 27.325);
+  --color-red-700: oklch(50.5% 0.213 27.518);
+  --color-red-800: oklch(44.4% 0.177 26.899);
+
+  /* フォントスタック (Tailwind 既定値と同一) */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+
+  /* transition-colors 相当のトランジション (Tailwind 版と同一の対象プロパティ) */
+  --transition-colors:
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    outline-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    fill 150ms cubic-bezier(0.4, 0, 0.2, 1), stroke 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}

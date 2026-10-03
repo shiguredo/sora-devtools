@@ -22,7 +22,7 @@ export function MicDeviceForm() {
     setMicDevice(target.checked);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="micDevice">
+    <FormGroup controlId="micDevice">
       <TooltipFormCheck
         kind="micDevice"
         checked={micDevice.value}

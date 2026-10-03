@@ -15,7 +15,7 @@ export function EchoCancellationForm() {
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="echoCancellation">
+    <FormGroup controlId="echoCancellation">
       <TooltipFormLabel kind="echoCancellation">echoCancellation:</TooltipFormLabel>
       <FormSelect name="echoCancellation" value={echoCancellation.value} onChange={onChange}>
         {ECHO_CANCELLATIONS.map((value) => (

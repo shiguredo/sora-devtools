@@ -1,5 +1,7 @@
 import type { ComponentChildren } from "preact";
 
+import styles from "./FormGroup.module.css";
+
 interface FormGroupProps {
   controlId?: string;
   className?: string;
@@ -12,7 +14,7 @@ interface FormGroupProps {
  */
 export function FormGroup({ controlId, className = "", children }: FormGroupProps) {
   return (
-    <div className={`flex items-center min-h-10 ${className}`} data-control-id={controlId}>
+    <div className={`${styles.group} ${className}`} data-control-id={controlId}>
       {children}
     </div>
   );

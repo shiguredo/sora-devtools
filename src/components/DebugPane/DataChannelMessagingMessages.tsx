@@ -3,6 +3,8 @@ import { dataChannelMessages } from "@/app/signals";
 import { Button } from "@/components/ui";
 import type { DataChannelMessage } from "@/types";
 
+import styles from "./DataChannelMessagingMessages.module.css";
+
 import { Message } from "./Message.tsx";
 
 function ButtonClear() {
@@ -19,7 +21,7 @@ function ButtonClear() {
 function Collapse(props: DataChannelMessage) {
   const { data, label, timestamp } = props;
   if (!data) {
-    return <Message title={label} timestamp={timestamp} description="" defaultShow wordBreak />;
+    return <Message title={label} timestamp={timestamp} description="" defaultShow />;
   }
   const headText = new TextDecoder().decode(data.slice(0, 6));
   if (headText === "ZAKURO") {
@@ -35,15 +37,12 @@ function Collapse(props: DataChannelMessage) {
         timestamp={timestamp}
         description={description}
         defaultShow
-        wordBreak
       />
     );
   }
   const uint8array = new Uint8Array(data);
   const description = `${uint8array.toString()}\n(${new TextDecoder().decode(data)})`;
-  return (
-    <Message title={label} timestamp={timestamp} description={description} defaultShow wordBreak />
-  );
+  return <Message title={label} timestamp={timestamp} description={description} defaultShow />;
 }
 
 function Log(props: DataChannelMessage) {
@@ -54,10 +53,10 @@ export function DataChannelMessagingMessages() {
   const dataChannelMessagesValue = dataChannelMessages.value;
   return (
     <>
-      <div className="py-1">
+      <div className={styles.toolbar}>
         <ButtonClear />
       </div>
-      <div className="overflow-y-auto h-full">
+      <div className={styles.messages}>
         {dataChannelMessagesValue.map((message) => {
           const key = message.label + message.timestamp;
           return <Log key={key} {...message} />;

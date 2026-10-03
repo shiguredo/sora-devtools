@@ -1,6 +1,8 @@
 import { debugFilterText, signalingMessages } from "@/app/signals";
 import type { SignalingMessage } from "@/types";
 
+import styles from "./SignalingMessages.module.css";
+
 import { Message } from "./Message.tsx";
 
 const SIGNALING_COLORS: Record<string, string> = {
@@ -11,7 +13,7 @@ const SIGNALING_COLORS: Record<string, string> = {
 function Label({ text }: { text: string }) {
   const color = Object.keys(SIGNALING_COLORS).includes(text) ? SIGNALING_COLORS[text] : undefined;
   return (
-    <span className="me-1" style={color ? { color } : {}}>
+    <span className={styles.label} style={color ? { color } : {}}>
       [{text}]
     </span>
   );
@@ -40,7 +42,7 @@ export function SignalingMessages() {
     }),
   );
   return (
-    <div className="overflow-y-auto h-full">
+    <div className={styles.messages}>
       {filteredMessages.map((message) => {
         const key = message.type + message.timestamp;
         return <Log key={key} {...message} />;

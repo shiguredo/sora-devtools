@@ -5,6 +5,8 @@ import { connectionStatus, signalingUrlCandidates, sora, turnUrl } from "@/app/s
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarText, NavbarToggle } from "@/components/ui";
 import { SESSIONS_ENABLED } from "@/constants";
 
+import styles from "./Header.module.css";
+
 import { CopyUrlButton } from "./CopyUrlButton.tsx";
 import { DebugButton } from "./DebugButton.tsx";
 import { DownloadReportButton } from "./DownloadReportButton.tsx";
@@ -38,22 +40,22 @@ export function Header() {
     showModal.value = true;
   };
 
-  // ヘッダー高さ 56px は py-2 (上下 8px ずつ) と NavbarBrand (40px) の合計。
+  // ヘッダー高さ 56px はナビゲーションバーの上下パディング (各 8px) と NavbarBrand (40px) の合計。
   // 基底クラスにパディングを持たせず className で明示する
   return (
     <header>
-      <Navbar variant="dark" bg="sora" expand="lg" fixed="top" className="py-2">
-        <div className="container flex items-center flex-nowrap justify-between px-3">
+      <Navbar variant="dark" bg="sora" expand="lg" fixed="top" className={styles.nav}>
+        <div className={`container ${styles.inner}`}>
           <NavbarBrand href="/">Sora DevTools</NavbarBrand>
           <NavbarToggle />
           <NavbarCollapse>
-            <div className="mr-auto" />
-            <div className="flex items-center flex-wrap">
-              <NavbarText className="py-0 my-1 mx-1">
+            <div className={styles.spacer} />
+            <div className={styles.items}>
+              <NavbarText className={styles.navText}>
                 <button
                   ref={signalingUrlRef}
                   type="button"
-                  className="min-w-[250px] text-sm px-2 py-1 m-0 whitespace-nowrap border border-white/50 rounded text-left text-white bg-transparent hover:bg-white/10 transition-colors"
+                  className={styles.signalingButton}
                   onClick={handleSignalingUrlClick}
                 >
                   {signalingUrlLabel}
@@ -66,23 +68,21 @@ export function Header() {
                 }}
                 buttonRef={signalingUrlRef}
               />
-              <NavbarText className="py-0 my-1 mx-1">
-                <p className="min-w-[250px] text-sm px-2 py-1 m-0 whitespace-nowrap border rounded">
-                  {turnUrlLabel}
-                </p>
+              <NavbarText className={styles.navText}>
+                <p className={styles.turnUrl}>{turnUrlLabel}</p>
               </NavbarText>
-              <NavbarText className="py-0 my-1 mx-1">
+              <NavbarText className={styles.navText}>
                 <DebugButton />
               </NavbarText>
-              <NavbarText className="py-0 my-1 mx-1">
+              <NavbarText className={styles.navText}>
                 <DownloadReportButton />
               </NavbarText>
               {SESSIONS_ENABLED && (
-                <NavbarText className="py-0 my-1 mx-1">
+                <NavbarText className={styles.navText}>
                   <SessionsButton />
                 </NavbarText>
               )}
-              <NavbarText className="py-0 my-1 ml-1">
+              <NavbarText className={styles.navTextLast}>
                 <CopyUrlButton />
               </NavbarText>
             </div>

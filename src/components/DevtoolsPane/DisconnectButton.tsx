@@ -2,6 +2,8 @@ import { disconnectSora } from "@/app/actions";
 import { connectionStatus } from "@/app/signals";
 import { Button } from "@/components/ui";
 
+import styles from "./DisconnectButton.module.css";
+
 export function DisconnectButton() {
   const disconnect = (): void => {
     void disconnectSora();
@@ -12,7 +14,7 @@ export function DisconnectButton() {
     connectionStatus.value === "initializing";
 
   return (
-    <div className="col-auto mb-1">
+    <div className={`col-auto ${styles.root}`}>
       <Button variant="secondary" name="disconnect" onClick={disconnect} disabled={disabled}>
         disconnect
       </Button>

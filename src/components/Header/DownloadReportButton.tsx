@@ -84,6 +84,8 @@ import {
 } from "@/app/signals";
 import type { DownloadReport, DownloadReportParameters } from "@/types";
 
+import styles from "./DownloadReportButton.module.css";
+
 function createDownloadReport(): DownloadReport {
   const parameters: DownloadReportParameters = {
     aspectRatio: aspectRatio.value,
@@ -214,7 +216,7 @@ export function DownloadReportButton() {
   );
   return (
     <>
-      <Button variant="light" size="sm" className="ml-1" onClick={onClick}>
+      <Button variant="light" size="sm" className={styles.downloadButton} onClick={onClick}>
         Download report
       </Button>
       {/* プログラムからファイルダウンロードを行うための非表示アンカー */}

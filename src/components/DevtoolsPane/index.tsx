@@ -135,12 +135,12 @@ import { VideoVP9ParamsForm } from "./VideoVP9ParamsForm.tsx";
 function RowChannelOptions() {
   return (
     <>
-      <div className="form-row flex flex-wrap">
-        <div className="max-w-[802px] pb-2 w-full">
+      <div className="form-row">
+        <div className={styles.channelIdColumn}>
           <ChannelIdForm />
         </div>
       </div>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <RoleForm />
         </div>
@@ -171,7 +171,7 @@ function RowGetUserMediaConstraints() {
   const showCodecForms = role.value !== "recvonly";
   return (
     <>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <AudioForm />
         </div>
@@ -192,7 +192,7 @@ function RowGetUserMediaConstraints() {
           </>
         )}
       </div>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <VideoForm />
         </div>
@@ -223,7 +223,7 @@ function RowSimulcastOptions() {
     return null;
   }
   return (
-    <div className="form-row flex flex-wrap gap-2">
+    <div className={`form-row ${styles.controlsRowGap}`}>
       <div>
         <SelectForm
           kind="simulcastRequestRid"
@@ -251,7 +251,7 @@ function RowSpotlightOptions() {
     return null;
   }
   return (
-    <div className="form-row flex flex-wrap gap-2">
+    <div className={`form-row ${styles.controlsRowGap}`}>
       <div>
         <SelectForm
           kind="spotlightNumber"
@@ -378,18 +378,18 @@ function RowAdvancedSignalingOptions() {
 export function RowMediaType() {
   return (
     <>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <MediaTypeForm />
         </div>
       </div>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <FakeVolumeForm />
         </div>
         <FakeVideoInfoForm />
       </div>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <Mp4FileForm />
         </div>
@@ -427,7 +427,7 @@ function RowMediaOptions() {
       </div>
       <Collapse in={!collapsed.value}>
         <div>
-          <div className="form-row flex flex-wrap gap-2">
+          <div className={`form-row ${styles.controlsRowGap}`}>
             <div className="col-auto">
               <SelectForm
                 kind="audioContentHint"
@@ -461,7 +461,7 @@ function RowMediaOptions() {
               <MediaProcessorsNoiseSuppressionForm />
             </div>
           </div>
-          <div className="form-row flex flex-wrap gap-2">
+          <div className={`form-row ${styles.controlsRowGap}`}>
             <div className="col-auto">
               <SelectForm
                 kind="videoContentHint"
@@ -522,7 +522,7 @@ function RowMediaOptions() {
 function RowDevices() {
   return (
     <>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         {/**
          * role が recvonly 以外で mediaType が getUserMedia の場合のみ、Audio / Video InputForm を表示する
          */}
@@ -537,7 +537,7 @@ function RowDevices() {
           </>
         ) : null}
       </div>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         {role.value !== "sendonly" ? (
           <div>
             <AudioOutputForm />
@@ -558,7 +558,7 @@ function RowDevices() {
 export function RowMediaDevices() {
   return (
     <>
-      <div className="form-row flex flex-wrap gap-2">
+      <div className={`form-row ${styles.controlsRowGap}`}>
         <div>
           <DisplayResolutionForm />
         </div>
@@ -567,7 +567,7 @@ export function RowMediaDevices() {
         </div>
       </div>
       {role.value !== "recvonly" && (
-        <div className="form-row flex flex-wrap gap-2">
+        <div className={`form-row ${styles.controlsRowGap}`}>
           <div>
             <MicDeviceForm />
           </div>

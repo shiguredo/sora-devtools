@@ -19,7 +19,7 @@ export function ClientIdForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledClientId">
+          <FormGroup controlId="enabledClientId">
             <TooltipFormCheck
               kind="clientId"
               checked={enabledClientId.value}
@@ -34,11 +34,11 @@ export function ClientIdForm() {
       {enabledClientId.value ? (
         <div className="form-row">
           <div className="col-auto">
-            <FormGroup className="flex items-center gap-2" controlId="clientId">
+            <FormGroup controlId="clientId">
               <FormInput
-                className="flex-fill w-500"
+                className="input-wide"
                 type="text"
-                placeholder="ClientIdを指定"
+                placeholder="ClientId を指定"
                 value={clientId.value}
                 onChange={onChangeText}
                 disabled={disabled}

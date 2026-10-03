@@ -1,6 +1,8 @@
 import { debugFilterText, logMessages } from "@/app/signals";
 import type { LogMessage } from "@/types";
 
+import styles from "./LogMessages.module.css";
+
 import { Message } from "./Message.tsx";
 import { parseLogDescription } from "./parseLogDescription.ts";
 import type { LogDescription } from "./parseLogDescription.ts";
@@ -28,7 +30,7 @@ export function LogMessages() {
     }),
   );
   return (
-    <div className="overflow-y-auto h-full">
+    <div className={styles.messages}>
       {filteredMessages.map((log) => (
         <Log key={`${log.timestamp}-${log.message.title}-${log.message.description}`} {...log} />
       ))}

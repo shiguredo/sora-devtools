@@ -18,6 +18,8 @@ import type { RpcObject } from "@/types";
 import { JSONInputField } from "@/components/DevtoolsPane/JSONInputField.tsx";
 import { getErrorMessage } from "@/utils";
 
+import styles from "./Rpc.module.css";
+
 import { JsonTree } from "./JsonTree.tsx";
 
 function ClearButton() {
@@ -99,10 +101,10 @@ function RpcForm() {
   };
 
   return (
-    <div className="mt-2">
-      <div className="mb-2 flex gap-2">
-        <div style={{ width: "600px" }}>
-          <div className="mb-1" style={{ color: "#fff" }}>
+    <div className={styles.form}>
+      <div className={styles.formRow}>
+        <div className={styles.methodColumn}>
+          <div className={styles.fieldLabel}>
             <strong>method:</strong>
           </div>
           <InputGroup>
@@ -114,11 +116,12 @@ function RpcForm() {
               onChange={(e) => {
                 method.value = (e.target as HTMLInputElement).value;
               }}
-              className="block w-full px-3 py-1.5 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
+              className={styles.input}
             />
             <Dropdown>
               <DropdownToggle variant="outline-secondary" />
-              <DropdownMenu className="right-0 max-h-80 overflow-y-auto">
+              {/* メニューの高さは DropdownMenu 側の max-height に従う */}
+              <DropdownMenu>
                 {RPC_TEMPLATES.map((template) => {
                   const isAvailable = rpcMethods.includes(template.method);
                   return (
@@ -133,7 +136,7 @@ function RpcForm() {
                           params.value = JSON.stringify(template.params, null, 2);
                         }
                       }}
-                      className={isAvailable ? "!text-blue-600 !font-bold" : ""}
+                      className={isAvailable ? styles.templateAvailable : ""}
                     >
                       {template.method}
                     </DropdownItem>
@@ -144,13 +147,12 @@ function RpcForm() {
           </InputGroup>
         </div>
 
-        <div style={{ width: "250px" }}>
-          <div className="mb-1" style={{ color: "#fff" }}>
+        <div className={styles.notificationColumn}>
+          <div className={styles.fieldLabel}>
             <strong>notification:</strong>
           </div>
-          <div className="form-check" style={{ paddingTop: "0.5rem" }}>
+          <div className={styles.notificationBody}>
             <input
-              className="form-check-input"
               type="checkbox"
               id="rpcNotificationCheck"
               checked={notification.value}
@@ -158,18 +160,14 @@ function RpcForm() {
                 notification.value = (e.target as HTMLInputElement).checked;
               }}
             />
-            <label
-              className="form-check-label"
-              htmlFor="rpcNotificationCheck"
-              style={{ color: "#fff" }}
-            >
+            <label htmlFor="rpcNotificationCheck" className={styles.checkLabel}>
               送信のみ (レスポンス不要)
             </label>
           </div>
         </div>
 
-        <div style={{ width: "150px" }}>
-          <div className="mb-1" style={{ color: "#fff" }}>
+        <div className={styles.timeoutColumn}>
+          <div className={styles.fieldLabel}>
             <strong>timeout (ms):</strong>
           </div>
           <input
@@ -177,13 +175,13 @@ function RpcForm() {
             placeholder="5000"
             defaultValue="5000"
             ref={timeoutRef}
-            className="block w-full px-3 py-1.5 text-base leading-normal text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25"
+            className={styles.input}
           />
         </div>
       </div>
 
-      <div className="mb-2">
-        <div className="mb-1" style={{ color: "#fff" }}>
+      <div className={styles.paramsField}>
+        <div className={styles.fieldLabel}>
           <strong>params:</strong>
         </div>
         <JSONInputField
@@ -199,12 +197,12 @@ function RpcForm() {
         />
       </div>
 
-      <div className="flex justify-end mb-2">
+      <div className={styles.actions}>
         <button
           type="button"
           onClick={handleCallRpc}
           disabled={connectionStatusValue !== "connected" || paramsHasError.value}
-          className="px-8 py-3 text-xl font-bold bg-gray-600 text-white border border-gray-600 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={styles.callButton}
         >
           Call
         </button>
@@ -225,31 +223,27 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
   const fullTimeString = `[${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}]`;
 
   return (
-    <div className="mb-3 p-3 border rounded" style={{ backgroundColor: "#1a1a1a", color: "#fff" }}>
-      <div className="mb-3 flex justify-between" style={{ color: "#ccc" }}>
+    <div className={styles.item}>
+      <div className={styles.itemHeader}>
         <small>{fullTimeString}</small>
         {rpcObject.duration !== undefined && <small>{rpcObject.duration.toFixed(2)} ms</small>}
       </div>
 
       {/* リクエスト */}
-      <div className="mb-3">
-        <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>
           <strong>Request:</strong>
         </div>
-        <div className="pl-3">
-          <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
-            method
-          </div>
-          <div className="mb-2 ps-3" style={{ fontSize: "0.95rem" }}>
+        <div className={styles.indent}>
+          <div className={`${styles.fieldLabel} ${styles.fieldLabelSmall}`}>method</div>
+          <div className={`${styles.value} ${styles.valueCompact}`}>
             <strong>{rpcObject.method}</strong>
           </div>
           {rpcObject.params !== undefined && (
             <>
-              <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
-                params
-              </div>
-              <div className="mb-2 ps-3">
-                <div className="p-2 rounded" style={{ backgroundColor: "#333" }}>
+              <div className={`${styles.fieldLabel} ${styles.fieldLabelSmall}`}>params</div>
+              <div className={styles.value}>
+                <div className={styles.valueBox}>
                   <JsonTree data={rpcObject.params} />
                 </div>
               </div>
@@ -257,7 +251,7 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
           )}
         </div>
         {rpcObject.options !== undefined && (
-          <div className="pl-3" style={{ color: "#aaa", fontSize: "0.85rem" }}>
+          <div className={`${styles.indent} ${styles.optionsNote}`}>
             {rpcObject.options.timeout && `timeout: ${rpcObject.options.timeout} ms`}
             {rpcObject.options.timeout && rpcObject.options.notification && ", "}
             {rpcObject.options.notification && "notification: true"}
@@ -268,15 +262,13 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
       {/* レスポンス */}
       {rpcObject.result !== undefined && (
         <div>
-          <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
+          <div className={styles.sectionTitle}>
             <strong>Response:</strong>
           </div>
-          <div className="pl-3">
-            <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
-              result
-            </div>
-            <div className="pl-3">
-              <div className="p-2 rounded" style={{ backgroundColor: "#333", fontSize: "0.95rem" }}>
+          <div className={styles.indent}>
+            <div className={`${styles.fieldLabel} ${styles.fieldLabelSmall}`}>result</div>
+            <div className={styles.indent}>
+              <div className={`${styles.valueBox} ${styles.valueBoxCompact}`}>
                 <JsonTree data={rpcObject.result} />
               </div>
             </div>
@@ -285,18 +277,13 @@ function RpcObjectItem({ rpcObject }: { rpcObject: RpcObject }) {
       )}
       {rpcObject.error !== undefined && (
         <div>
-          <div className="mb-2" style={{ color: "#fff", fontSize: "0.9rem" }}>
+          <div className={styles.sectionTitle}>
             <strong>Error:</strong>
           </div>
-          <div className="pl-3">
-            <div className="mb-1" style={{ color: "#fff", fontSize: "0.85rem" }}>
-              error
-            </div>
-            <div className="pl-3">
-              <div
-                className="p-2 rounded text-danger"
-                style={{ backgroundColor: "#333", fontSize: "0.95rem" }}
-              >
+          <div className={styles.indent}>
+            <div className={`${styles.fieldLabel} ${styles.fieldLabelSmall}`}>error</div>
+            <div className={styles.indent}>
+              <div className={`${styles.valueBox} ${styles.valueBoxCompact} text-danger`}>
                 <JsonTree data={rpcObject.error} />
               </div>
             </div>
@@ -315,11 +302,9 @@ export function Rpc() {
       <RpcForm />
       {rpcObjectsValue.length > 0 && (
         <>
-          <div className="py-1 mt-3">
+          <div className={styles.resultsHeader}>
             <h5>RPC Results</h5>
-            <div className="mb-2" style={{ color: "#aaa", fontSize: "0.85rem" }}>
-              {rpcObjectsValue.length} 件を表示
-            </div>
+            <div className={styles.resultsCount}>{rpcObjectsValue.length} 件を表示</div>
             <ClearButton />
           </div>
           <div>

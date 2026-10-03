@@ -1,0 +1,37 @@
+/* 折りたたみリンク。ボタンの既定の見た目を消してリンク風にする */
+.link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--color-bs-dark);
+  text-decoration-line: underline;
+  cursor: pointer;
+  background-color: transparent;
+  border-style: solid;
+  border-width: 0;
+  border-radius: 0;
+}
+
+/* enabled のときは太字にする */
+.linkEnabled {
+  font-weight: 700;
+}
+
+/* 折りたたみ状態を示す矢印 */
+.arrow {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 0.625rem;
+  transition-property: transform, translate, scale, rotate;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* 展開時は矢印を 180 度回転させる */
+.arrowExpanded {
+  rotate: 180deg;
+}

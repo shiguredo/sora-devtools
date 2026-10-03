@@ -19,7 +19,7 @@ export function SignalingNotifyMetadataForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledSignalingNotifyMetadata">
+          <FormGroup controlId="enabledSignalingNotifyMetadata">
             <TooltipFormCheck
               kind="signalingNotifyMetadata"
               checked={enabledSignalingNotifyMetadata.value}
@@ -36,7 +36,7 @@ export function SignalingNotifyMetadataForm() {
           <div className="col-auto">
             <JSONInputField
               controlId="signalingNotifyMetadata"
-              placeholder="signalingNotifyMetadataを指定"
+              placeholder="signalingNotifyMetadata を指定"
               value={signalingNotifyMetadata.value}
               setValue={(value) => {
                 setSignalingNotifyMetadata(value);

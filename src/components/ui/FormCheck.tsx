@@ -1,5 +1,7 @@
 import type { CSSProperties, ComponentChildren } from "preact";
 
+import styles from "./FormCheck.module.css";
+
 interface FormCheckProps {
   id?: string;
   name?: string;
@@ -15,11 +17,9 @@ interface FormCheckProps {
  * チェックボックス/ラジオボタンコンポーネント
  * react-bootstrap の FormCheck 互換
  *
- * Bootstrap form-check スタイル:
- * - width/height: 16px
- * - border: 1px solid #dee2e6
- * - border-radius: 0.25em (checkbox) / 50% (radio)
- * - checked: background-color: primary, チェックマーク表示
+ * サイズ・枠線・チェック状態の色とマークはインラインスタイルで指定する。
+ * 角丸 (checkbox は 0.25rem、radio は正円)、フォーカスリング、無効時の
+ * 半透明表示は FormCheck.module.css で定義する。
  */
 // Bootstrap の SVG 背景画像
 const CHECKBOX_CHECK_SVG =
@@ -37,18 +37,12 @@ export function FormCheck({
   label,
   className = "",
 }: FormCheckProps) {
-  const borderRadius = type === "checkbox" ? "rounded" : "rounded-full";
+  const borderRadiusClassName = type === "checkbox" ? styles.inputCheckbox : styles.inputRadio;
 
-  // Bootstrap form-check-input スタイル (Tailwind クラス)
-  const inputClassName = `
-    appearance-none cursor-pointer
-    transition-colors duration-150
-    ${borderRadius}
-    focus:outline-none focus:ring-2 focus:ring-bs-primary/25
-    disabled:opacity-50 disabled:cursor-not-allowed
-  `;
+  // Bootstrap form-check-input 相当のスタイル
+  const inputClassName = `${styles.input} ${borderRadiusClassName}`;
 
-  // インラインスタイルで正確な値を指定 (Tailwind v4 のスケーリングを回避)
+  // チェック状態に応じた背景色とチェックマークをインラインスタイルで指定する
   const checkMarkSvg = type === "checkbox" ? CHECKBOX_CHECK_SVG : RADIO_CHECK_SVG;
   const inputStyle: CSSProperties = {
     width: "16px",
@@ -61,11 +55,11 @@ export function FormCheck({
     backgroundSize: "contain",
   };
 
-  const labelStyles = disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer";
+  const labelClassName = disabled ? styles.labelDisabled : styles.labelEnabled;
 
   if (label) {
     return (
-      <label className={`inline-flex items-center gap-2 ${labelStyles} ${className}`}>
+      <label className={`${styles.label} ${labelClassName} ${className}`}>
         <input
           type={type}
           id={id}

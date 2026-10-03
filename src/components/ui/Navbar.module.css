@@ -1,0 +1,101 @@
+/*
+ * ナビゲーションバー。Bootstrap の navbar 相当の見た目を再現する
+ *
+ * パディングは基底クラスに持たせない。基底クラスと className で渡す
+ * パディングが競合すると、どちらが有効になるかが CSS の読み込み順に
+ * 依存してしまうため、呼び出し側の className で明示する
+ */
+
+/* 基底: 横並びで折り返さない */
+.root {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* 明るい背景向けの文字色 (variant="light") */
+.variantLight {
+  color: var(--color-gray-900);
+}
+
+/* 暗い背景向けの文字色 (variant="dark") */
+.variantDark {
+  color: var(--color-white);
+}
+
+/* Sora ブランドカラーの背景 (bg="sora") */
+.backgroundSora {
+  background-color: var(--color-sora);
+}
+
+/* 画面上部への固定配置 (fixed="top") */
+.fixedTop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* ブランド表記。Bootstrap .navbar-brand 相当 */
+.brand {
+  padding-block: 5px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 30px;
+  white-space: nowrap;
+}
+
+/* ナビゲーションバー内のテキスト */
+.text {
+  display: inline-block;
+}
+
+/* 折りたたみ領域。モバイルでは全幅 */
+.collapse {
+  width: 100%;
+}
+
+/* トグルで展開した状態 */
+.collapseOpen {
+  display: block;
+}
+
+/* 未展開の状態。モバイルでは非表示 */
+.collapseClosed {
+  display: none;
+}
+
+@media (width >= 64rem) {
+  /* 1024px 以上では常に横並びで表示する */
+  .collapse {
+    display: flex;
+    width: auto;
+    align-items: center;
+  }
+}
+
+/* モバイル用ハンバーガーボタン。1024px 以上では非表示 */
+.toggle {
+  padding: 0.5rem;
+  color: var(--color-gray-500);
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    color: var(--color-gray-700);
+  }
+}
+
+@media (width >= 64rem) {
+  .toggle {
+    display: none;
+  }
+}
+
+/* ハンバーガーアイコン */
+.toggleIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}

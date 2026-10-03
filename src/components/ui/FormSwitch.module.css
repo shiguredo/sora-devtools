@@ -1,0 +1,18 @@
+/* トグルスイッチ本体 */
+.switch {
+  appearance: none;
+  cursor: pointer;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.switch:focus {
+  outline-style: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-bs-primary) 25%, transparent);
+}
+
+.switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

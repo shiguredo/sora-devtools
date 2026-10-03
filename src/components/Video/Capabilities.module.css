@@ -1,0 +1,36 @@
+/*
+ * 映像ケイパビリティの共通スタイル
+ *
+ * LocalVideoCapabilities と RemoteVideoCapabilities が composes で共有する
+ */
+
+/* 映像ケイパビリティのオーバーレイ。映像の左上に重ねる */
+.root {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 999;
+  max-width: max-content;
+  padding: 0.5rem;
+  color: var(--color-white);
+  background-color: color-mix(in srgb, var(--color-black) 30%, transparent);
+  border-radius: 0.5rem;
+}
+
+/* ケイパビリティの表 */
+.table {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* 表の見出しセル */
+.headerCell {
+  padding-block: 0.125rem;
+  padding-right: 0.75rem;
+  text-align: left;
+}
+
+/* 表の値セル */
+.cell {
+  padding-block: 0.125rem;
+}

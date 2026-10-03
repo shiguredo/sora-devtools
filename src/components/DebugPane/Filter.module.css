@@ -1,0 +1,33 @@
+/* フィルター行。残りの幅いっぱいに広げ、上下に余白を取る (横並びと gap は FormGroup の基底が持つ) */
+.group {
+  flex: 1;
+  margin-block: 0.5rem;
+}
+
+/* 全開/全閉を切り替えるトグルボタン */
+.toggleButton {
+  padding-inline: 0.5rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: color-mix(in srgb, var(--color-white) 80%, transparent);
+  background-color: transparent;
+  cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--color-white) 50%, transparent);
+  border-radius: 0.25rem;
+}
+
+@media (hover: hover) {
+  .toggleButton:hover {
+    color: var(--color-white);
+  }
+}
+
+/* フィルターのラベル */
+.label {
+  color: var(--color-white);
+}
+
+/* フィルター入力。行の残り幅を占有する */
+.input {
+  flex: 1;
+}

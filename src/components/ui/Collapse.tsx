@@ -1,5 +1,7 @@
 import type { ComponentChildren } from "preact";
 
+import styles from "./Collapse.module.css";
+
 interface CollapseProps {
   in: boolean;
   className?: string;
@@ -15,13 +17,7 @@ interface CollapseProps {
  * - height transition
  */
 export function Collapse({ in: isOpen, className = "", children }: CollapseProps) {
-  const visibilityStyles = isOpen
-    ? "overflow-visible max-h-[5000px] opacity-100"
-    : "overflow-hidden max-h-0 opacity-0";
+  const visibilityClassName = isOpen ? styles.collapseOpen : styles.collapseClosed;
 
-  return (
-    <div className={`transition-all duration-300 ease-in-out ${visibilityStyles} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`${styles.collapse} ${visibilityClassName} ${className}`}>{children}</div>;
 }

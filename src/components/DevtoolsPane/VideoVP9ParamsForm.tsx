@@ -15,7 +15,7 @@ export function VideoVP9ParamsForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledVideoVP9Params">
+          <FormGroup controlId="enabledVideoVP9Params">
             <TooltipFormCheck
               kind="videoVP9Params"
               checked={enabledVideoVP9Params.value}
@@ -32,7 +32,7 @@ export function VideoVP9ParamsForm() {
           <div className="col-auto">
             <JSONInputField
               controlId="videoVP9Params"
-              placeholder="videoVP9Paramsを指定"
+              placeholder="videoVP9Params を指定"
               value={videoVP9Params.value}
               setValue={(value) => {
                 setVideoVP9Params(value);

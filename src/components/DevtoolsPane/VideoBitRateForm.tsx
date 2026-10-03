@@ -12,6 +12,8 @@ import { setVideoBitRate } from "@/app/actions";
 import { isFormDisabled, videoBitRate } from "@/app/signals";
 import { VIDEO_BIT_RATES } from "@/constants";
 
+import styles from "./VideoBitRateForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 // 15000 を超える場合にサポート外であることを表示するためのカスタム
@@ -32,11 +34,11 @@ export function VideoBitRateForm() {
     setVideoBitRate(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="videoBitRate">
+    <FormGroup controlId="videoBitRate">
       <TooltipFormLabel kind="videoBitRate">videoBitRate:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="max-w-[130px]"
+          className={styles.input}
           type="text"
           value={videoBitRate.value}
           onChange={onChange}

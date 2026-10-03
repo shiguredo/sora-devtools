@@ -2,6 +2,8 @@ import { setMaxNotifyMessages } from "@/app/actions";
 import { maxNotifyMessages } from "@/app/signals";
 import { FormGroup, FormLabel, FormSelect } from "@/components/ui";
 
+import styles from "./NotifyMaxMessages.module.css";
+
 const OPTIONS = [100, 500, 1000, 5000] as const;
 
 export function NotifyMaxMessages() {
@@ -13,9 +15,9 @@ export function NotifyMaxMessages() {
   };
 
   return (
-    <FormGroup className="flex items-center gap-2 my-2" controlId="maxNotifyMessages">
-      <FormLabel className="text-white">Max:</FormLabel>
-      <FormSelect value={String(currentMax)} onChange={onChange} className="w-24">
+    <FormGroup className={styles.group} controlId="maxNotifyMessages">
+      <FormLabel className={styles.label}>Max:</FormLabel>
+      <FormSelect value={String(currentMax)} onChange={onChange}>
         {OPTIONS.map((opt) => (
           <option key={opt} value={opt}>
             {opt}

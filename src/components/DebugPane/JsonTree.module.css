@@ -1,0 +1,14 @@
+/* null / undefined をイタリックで表示する */
+.italic {
+  font-style: italic;
+}
+
+/* ネストした要素のインデント */
+.indent {
+  margin-left: 1.25rem;
+}
+
+/* 長い文字列がはみ出さないように折り返す */
+.breakAll {
+  word-break: break-all;
+}

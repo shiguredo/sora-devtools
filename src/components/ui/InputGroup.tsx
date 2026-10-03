@@ -1,5 +1,7 @@
 import type { ComponentChildren } from "preact";
 
+import styles from "./InputGroup.module.css";
+
 interface InputGroupProps {
   className?: string;
   children: ComponentChildren;
@@ -14,17 +16,5 @@ interface InputGroupProps {
  * - 子要素の border-radius を調整して連結表示
  */
 export function InputGroup({ className = "", children }: InputGroupProps) {
-  return (
-    <div
-      className={`
-        relative flex items-stretch
-        [&>*:not(:first-child)]:rounded-l-none
-        [&>*:not(:last-child)]:rounded-r-none
-        [&>*:not(:first-child)]:-ml-px
-        ${className}
-      `}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`${styles.group} ${className}`}>{children}</div>;
 }

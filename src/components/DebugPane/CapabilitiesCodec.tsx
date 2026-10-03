@@ -49,7 +49,7 @@ export function CapabilitiesCodec() {
     "video",
   );
   return (
-    <div className="capabilities-codec">
+    <div>
       <Log
         title="Audio RTCRtpSender CapabilitiesCodec"
         codecs={

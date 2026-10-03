@@ -32,7 +32,7 @@ export function Mp4FileForm() {
     return null;
   }
   return (
-    <FormGroup className="flex items-center gap-2" controlId="mp4File">
+    <FormGroup controlId="mp4File">
       <TooltipFormLabel kind="mp4File">mp4File:</TooltipFormLabel>
       <FormInput type="file" accept="video/mp4" disabled={disabled} onChange={onChange} />
     </FormGroup>

@@ -1,6 +1,8 @@
 import { debugFilterText, pushMessages } from "@/app/signals";
 import type { PushMessage } from "@/types";
 
+import styles from "./PushMessages.module.css";
+
 import { Message } from "./Message.tsx";
 
 const SIGNALING_COLORS: Record<string, string> = {
@@ -48,7 +50,7 @@ export function PushMessages() {
     }),
   );
   return (
-    <div className="overflow-y-auto h-full">
+    <div className={styles.messages}>
       {filteredMessages.map((pushMessage, index) => {
         const key = `${pushMessage.timestamp}-${index}`;
         return <Log key={key} ariaControls={key} push={pushMessage} />;

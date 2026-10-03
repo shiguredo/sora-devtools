@@ -1,6 +1,8 @@
 import { prevStatsReport, statsReport } from "@/app/signals";
 import type { RTCInboundRtpStreamStats } from "@/types";
 
+import styles from "./JitterBuffer.module.css";
+
 function mediaStreamStatsReportFilter(
   statsReport: RTCStats[],
   mediaStream: MediaStream | null,
@@ -80,22 +82,18 @@ export function JitterButter(props: Props) {
   const currentJitterBufferDelay = Math.floor(
     (jitterBufferDelay / jitterBufferEmittedCount) * 1000,
   );
-  // Tailwind classes for jitter buffer status
-  const baseClasses = `
-    inline-block font-normal leading-normal text-center
-    px-2 py-1 text-sm rounded-md mx-1
-    min-w-[90px] border-2 cursor-default
-  `;
-  let statusClasses = "border-bs-dark";
+  // jitter buffer の遅延値バッジに使うスタイル
+  const baseClassName = styles.base;
+  let statusClassName = styles.normal;
   if (currentJitterBufferDelay > 500) {
-    statusClasses = "border-bs-red bg-bs-red text-bs-light";
+    statusClassName = styles.danger;
   } else if (currentJitterBufferDelay > 300) {
-    statusClasses = "border-bs-orange bg-bs-orange text-bs-light";
+    statusClassName = styles.warning;
   } else if (currentJitterBufferDelay > 100) {
-    statusClasses = "border-bs-yellow";
+    statusClassName = styles.caution;
   }
   return (
-    <div className={`${baseClasses} ${statusClasses}`}>
+    <div className={`${baseClassName} ${statusClassName}`}>
       <span>
         {props.type}: {currentJitterBufferDelay}
       </span>

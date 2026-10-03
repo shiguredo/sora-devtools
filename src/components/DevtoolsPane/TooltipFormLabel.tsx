@@ -5,6 +5,8 @@ import { useRef } from "preact/hooks";
 import { FormLabel } from "@/components/ui";
 import { INSTRUCTIONS } from "@/constants";
 
+import styles from "./TooltipFormLabel.module.css";
+
 interface Props {
   kind: string;
   children: ComponentChildren;
@@ -47,20 +49,14 @@ export function TooltipFormLabel({ kind, children }: Props) {
   return (
     <div
       ref={labelRef}
-      className="inline-block"
+      className={styles.wrapper}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <FormLabel className="border-b border-dotted border-bs-secondary">{children}</FormLabel>
+      <FormLabel className={styles.label}>{children}</FormLabel>
       {tooltipPos.value && (
         <div
-          className={`
-            fixed z-[1070]
-            max-w-[350px] py-2 px-3
-            text-base text-bs-dark bg-white
-            border border-sora rounded-md shadow-lg
-            whitespace-pre-wrap
-          `}
+          className={styles.tooltip}
           style={{
             top: `${tooltipPos.value.top - 8}px`,
             left: `${tooltipPos.value.left}px`,
@@ -69,7 +65,7 @@ export function TooltipFormLabel({ kind, children }: Props) {
         >
           {instruction.description}
           {/* 下向き矢印 */}
-          <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-sora" />
+          <div className={styles.arrow} />
         </div>
       )}
     </div>

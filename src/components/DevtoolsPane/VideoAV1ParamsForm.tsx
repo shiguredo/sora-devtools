@@ -15,7 +15,7 @@ export function VideoAV1ParamsForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledVideoAV1Params">
+          <FormGroup controlId="enabledVideoAV1Params">
             <TooltipFormCheck
               kind="videoAV1Params"
               checked={enabledVideoAV1Params.value}
@@ -32,7 +32,7 @@ export function VideoAV1ParamsForm() {
           <div className="col-auto">
             <JSONInputField
               controlId="videoAV1Params"
-              placeholder="videoAV1Paramsを指定"
+              placeholder="videoAV1Params を指定"
               value={videoAV1Params.value}
               setValue={(value) => {
                 setVideoAV1Params(value);

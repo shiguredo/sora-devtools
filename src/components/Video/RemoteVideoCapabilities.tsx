@@ -4,6 +4,8 @@ import { useEffect } from "preact/hooks";
 import { sora, statsReport } from "@/app/signals";
 import type { RTCStatsCodec } from "@/types";
 
+import styles from "./Capabilities.module.css";
+
 const useVideoTrackStats = (stream: MediaStream) => {
   const currentStatsReport = statsReport.value;
   const currentSora = sora.value;
@@ -87,27 +89,27 @@ const useVideoTrackStats = (stream: MediaStream) => {
 export function RemoteVideoCapabilities({ stream }: { stream: MediaStream }) {
   const { trackStats } = useVideoTrackStats(stream);
   return (
-    <div className="absolute p-2 top-2 left-2 bg-black/30 rounded-lg text-white z-[999] max-w-max">
+    <div className={styles.root}>
       {trackStats.value === null ? (
         <p>loading...</p>
       ) : (
-        <table className="text-sm">
+        <table className={styles.table}>
           <tbody>
             <tr>
-              <th className="text-left pr-3 py-0.5">mimeType</th>
-              <td className="py-0.5">{trackStats.value.codec.mimeType}</td>
+              <th className={styles.headerCell}>mimeType</th>
+              <td className={styles.cell}>{trackStats.value.codec.mimeType}</td>
             </tr>
             <tr>
-              <th className="text-left pr-3 py-0.5">payloadType</th>
-              <td className="py-0.5">{trackStats.value.codec.payloadType}</td>
+              <th className={styles.headerCell}>payloadType</th>
+              <td className={styles.cell}>{trackStats.value.codec.payloadType}</td>
             </tr>
             <tr>
-              <th className="text-left pr-3 py-0.5">sdpFmtpLine</th>
-              <td className="py-0.5">{trackStats.value.codec.sdpFmtpLine}</td>
+              <th className={styles.headerCell}>sdpFmtpLine</th>
+              <td className={styles.cell}>{trackStats.value.codec.sdpFmtpLine}</td>
             </tr>
             <tr>
-              <th className="text-left pr-3 py-0.5">resolution</th>
-              <td className="py-0.5">
+              <th className={styles.headerCell}>resolution</th>
+              <td className={styles.cell}>
                 {trackStats.value.videoTrackStats.width === undefined ||
                 trackStats.value.videoTrackStats.height === undefined
                   ? "undefined"
@@ -115,15 +117,17 @@ export function RemoteVideoCapabilities({ stream }: { stream: MediaStream }) {
               </td>
             </tr>
             <tr>
-              <th className="text-left pr-3 py-0.5">fps</th>
-              <td className="py-0.5">
+              <th className={styles.headerCell}>fps</th>
+              <td className={styles.cell}>
                 {trackStats.value.videoTrackStats.frameRate ?? "undefined"}
               </td>
             </tr>
             {trackStats.value.videoTrackStats.decoderImplementation && (
               <tr>
-                <th className="text-left pr-3 py-0.5">decoder</th>
-                <td className="py-0.5">{trackStats.value.videoTrackStats.decoderImplementation}</td>
+                <th className={styles.headerCell}>decoder</th>
+                <td className={styles.cell}>
+                  {trackStats.value.videoTrackStats.decoderImplementation}
+                </td>
               </tr>
             )}
           </tbody>

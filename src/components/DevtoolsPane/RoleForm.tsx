@@ -16,7 +16,7 @@ export function RoleForm() {
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="role">
+    <FormGroup controlId="role">
       <TooltipFormLabel kind="role">role:</TooltipFormLabel>
       <FormSelect name="role" value={role.value} onChange={onChange} disabled={disabled}>
         {ROLES.map((value) => (

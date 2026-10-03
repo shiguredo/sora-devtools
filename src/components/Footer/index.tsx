@@ -3,6 +3,8 @@ import Sora from "sora-js-sdk";
 import { version } from "@/app/signals";
 import { Navbar } from "@/components/ui";
 
+import styles from "./Footer.module.css";
+
 import { DebugButton } from "./DebugButton.tsx";
 
 interface GitHubLinkProps {
@@ -12,17 +14,7 @@ interface GitHubLinkProps {
 
 function GitHubLink({ repo, version }: GitHubLinkProps) {
   return (
-    <a
-      href={`https://github.com/${repo}`}
-      className={`
-        inline-block text-xs font-normal leading-tight text-center no-underline align-middle
-        cursor-pointer select-none border border-bs-light rounded
-        px-1.5 py-0.5 mx-1
-        text-bs-light bg-transparent
-        hover:text-bs-dark hover:bg-bs-light
-        transition-colors duration-150
-      `}
-    >
+    <a href={`https://github.com/${repo}`} className={styles.githubLink}>
       {repo}: {version}
     </a>
   );
@@ -38,9 +30,9 @@ export function Footer() {
   // （ヘッダー側のレスポンシブ対応は別スコープのため触らない）
   return (
     <footer>
-      <Navbar variant="dark" bg="sora" className="py-2 px-3">
-        <div className="mr-auto" />
-        <div className="flex items-center">
+      <Navbar variant="dark" bg="sora" className={styles.nav}>
+        <div className={styles.spacer} />
+        <div className={styles.links}>
           <GitHubLink repo="shiguredo/sora-devtools" version={version.value} />
           <GitHubLink repo="shiguredo/sora-js-sdk" version={Sora.version()} />
         </div>

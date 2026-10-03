@@ -29,7 +29,7 @@ export function CameraDeviceForm() {
     setCameraDevice(target.checked);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="cameraDevice">
+    <FormGroup controlId="cameraDevice">
       <TooltipFormCheck
         kind="cameraDevice"
         checked={cameraDevice.value}

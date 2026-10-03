@@ -1,0 +1,78 @@
+/*
+ * セッション絞り込みフォーム
+ *
+ * 既定は 1 列、md (768px) 以上で 3 列、lg (1024px) 以上で 6 列に並べる
+ */
+
+/* フォーム全体のグリッド */
+.form {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* md 以上では 3 列 */
+@media (width >= 48rem) {
+  .form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* lg 以上では 6 列 */
+@media (width >= 64rem) {
+  .form {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* 入力欄と項目名を縦に並べる */
+.field {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* 入力欄の項目名 */
+.fieldLabel {
+  margin-bottom: 0.25rem;
+  color: var(--color-bs-secondary);
+}
+
+/* テキスト・日付入力欄 */
+.input {
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+}
+
+/* 絞り込み・クリアボタンの並び */
+.actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+/* 絞り込みボタン。主要操作なのでプライマリ色で塗る */
+.submitButton {
+  padding-inline: 0.75rem;
+  padding-block: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-white);
+  background-color: var(--color-bs-primary);
+  border: 1px solid var(--color-bs-primary);
+  border-radius: 0.25rem;
+}
+
+/* クリアボタン。枠線のみの副次操作 */
+.clearButton {
+  padding-inline: 0.75rem;
+  padding-block: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border: 1px solid var(--color-bs-secondary);
+  border-radius: 0.25rem;
+}

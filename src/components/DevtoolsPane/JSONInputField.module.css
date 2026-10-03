@@ -1,0 +1,28 @@
+/* 操作ボタン配置の基準位置にする */
+.group {
+  position: relative;
+}
+
+/* テキストエリア。FormGroup 内で残りの幅を占有する */
+.textarea {
+  flex: 1;
+}
+
+/* 不正な JSON の場合は枠を 2px に太くする。枠色は基本スタイルのままにし、フォーカス時のみ赤枠にする */
+.textarea.textareaInvalid {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.textarea.textareaInvalid:focus {
+  border-color: var(--color-bs-red);
+}
+
+/* pretty format ボタンなどの操作をテキストエリア右上に重ねる */
+.actions {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+}

@@ -1,0 +1,9 @@
+/* 通知元ラベル。タイトルとの間隔を確保する */
+.label {
+  margin-inline-end: 0.25rem;
+}
+
+/* シグナリングメッセージ一覧。親の高さいっぱいに広げて縦スクロールさせる */
+.messages {
+  composes: messages from "./messages.module.css";
+}

@@ -3,6 +3,8 @@ import { FormGroup } from "@/components/ui";
 import { setReconnect } from "@/app/actions";
 import { isFormDisabled, reconnect } from "@/app/signals";
 
+import styles from "./ReconnectForm.module.css";
+
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export function ReconnectForm() {
@@ -12,9 +14,9 @@ export function ReconnectForm() {
     setReconnect(target.checked);
   };
   return (
-    <div className="flex flex-wrap gap-2">
-      <div className="w-auto">
-        <FormGroup className="flex items-center gap-2" controlId="reconnect">
+    <div className={styles.row}>
+      <div>
+        <FormGroup controlId="reconnect">
           <TooltipFormCheck
             kind="reconnect"
             checked={reconnect.value}

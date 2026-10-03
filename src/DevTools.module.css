@@ -1,0 +1,29 @@
+/*
+ * DevTools 画面のレイアウト
+ *
+ * main は #root の縦フレックス内で flex: 1 によりコンテンツ領域いっぱいに広がる。
+ * ペインは .row の高さにストレッチされ、内部スクロールでコンテンツを表示する
+ * (ビューポート固定の高さ計算は行わず、フッターの高さを余白計算に持ち込まない)
+ */
+
+/* メイン領域。縦フレックスでペインを並べる */
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* コンテナ。メイン領域と同じく縦フレックスで高さいっぱいに広げる */
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ペインの行。横幅いっぱいに広げて内部スクロールの高さを確定させる */
+.paneRow {
+  flex: 1;
+  min-height: 0;
+}

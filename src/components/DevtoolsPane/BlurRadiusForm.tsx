@@ -15,7 +15,7 @@ export function BlurRadiusForm() {
   };
   const disabled = mediaType.value !== "getUserMedia";
   return (
-    <FormGroup className="flex items-center gap-2" controlId="blurRadius">
+    <FormGroup controlId="blurRadius">
       <TooltipFormLabel kind="blurRadius">blurRadius:</TooltipFormLabel>
       <FormSelect value={blurRadius.value} onChange={onChange} disabled={disabled}>
         {BLUR_RADIUS.map((value) => (

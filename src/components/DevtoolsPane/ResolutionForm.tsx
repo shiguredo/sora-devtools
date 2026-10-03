@@ -10,6 +10,9 @@ import {
 
 import { setResolution } from "@/app/actions";
 import { resolution } from "@/app/signals";
+
+import styles from "./ResolutionForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 interface ResolutionData {
@@ -48,22 +51,19 @@ export function ResolutionForm() {
     setResolution(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="resolution">
+    <FormGroup controlId="resolution">
       <TooltipFormLabel kind="resolution">resolution:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="max-w-[130px]"
+          className={styles.input}
           type="text"
           value={resolution.value}
           onChange={onChange}
           placeholder="未指定"
         />
         <Dropdown>
-          <DropdownToggle
-            variant="outline-secondary"
-            className="border border-[rgb(222,226,230)]"
-          />
-          <DropdownMenu className="right-0">
+          <DropdownToggle variant="outline-secondary" />
+          <DropdownMenu>
             {RESOLUTION_DATA_LIST.map(({ label, value }) => (
               <ResolutionDropdownItem key={value} label={label} value={value} />
             ))}

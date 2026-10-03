@@ -24,5 +24,66 @@
 .chart :global(.u-legend .u-value) {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
-  color: #212529;
+  color: var(--color-bs-dark);
+}
+
+/*
+ * 以下は StatsChart / RawStatsChart / MetricTimeSeriesChart で共有するカードと見出しのスタイル
+ */
+
+/* チャートを載せるカード */
+.card {
+  composes: card from "./Table.module.css";
+}
+
+/* 見出し行。タイトルと単位表示を左右に配置する */
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+/* データなし表示の見出し行は下余白を控えめにする */
+.headerEmpty {
+  margin-bottom: 0.25rem;
+}
+
+/* チャート表示の見出し行は下余白を広めに取る */
+.headerChart {
+  margin-bottom: 0.5rem;
+}
+
+/* RawStatsChart の見出し行。系列が多くても折り返せるようにする */
+.headerWrap {
+  flex-wrap: wrap;
+}
+
+/* 見出しのタイトル */
+.title {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+}
+
+/* 単位表示 */
+.unit {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-bs-secondary);
+}
+
+/* データがない場合の案内文 */
+.emptyMessage {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-bs-secondary);
+}
+
+/* 系列数が上限を超えた場合の注記 */
+.truncationNotice {
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-bs-secondary);
 }

@@ -15,7 +15,7 @@ export function MediaProcessorsNoiseSuppressionForm() {
   };
   const disabled = mediaType.value !== "getUserMedia";
   return (
-    <FormGroup className="flex items-center gap-2" controlId="mediaProcessorsNoiseSuppression">
+    <FormGroup controlId="mediaProcessorsNoiseSuppression">
       <TooltipFormCheck
         kind="mediaProcessorsNoiseSuppression"
         checked={mediaProcessorsNoiseSuppression.value}

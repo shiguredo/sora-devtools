@@ -198,24 +198,24 @@ export function RawStatsChart({ points, metric, title }: RawStatsChartProps) {
 
   if (!hasPlottablePoints(points)) {
     return (
-      <div className="rounded border border-bs-light bg-white p-3" data-testid="raw-stats-chart">
-        <div className="mb-1 flex items-baseline justify-between gap-2">
-          <h4 className="text-sm font-semibold text-bs-body">{title}</h4>
-          <span className="text-xs text-bs-secondary">{unitLabel(metric)}</span>
+      <div className={styles.card} data-testid="raw-stats-chart">
+        <div className={`${styles.header} ${styles.headerEmpty}`}>
+          <h4 className={styles.title}>{title}</h4>
+          <span className={styles.unit}>{unitLabel(metric)}</span>
         </div>
-        <p className="text-sm text-bs-secondary">表示できる生データ時系列がありません</p>
+        <p className={styles.emptyMessage}>表示できる生データ時系列がありません</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded border border-bs-light bg-white p-3" data-testid="raw-stats-chart">
-      <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-        <h4 className="text-sm font-semibold text-bs-body">{title}</h4>
-        <span className="text-xs text-bs-secondary">{unitLabel(metric)}</span>
+    <div className={styles.card} data-testid="raw-stats-chart">
+      <div className={`${styles.header} ${styles.headerChart} ${styles.headerWrap}`}>
+        <h4 className={styles.title}>{title}</h4>
+        <span className={styles.unit}>{unitLabel(metric)}</span>
       </div>
       {truncated ? (
-        <p className="mb-2 text-xs text-bs-secondary">
+        <p className={styles.truncationNotice}>
           stats_id が多いため上位 {String(maxRawSeriesCount())} 系列のみ表示しています
         </p>
       ) : null}

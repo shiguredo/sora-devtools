@@ -1,5 +1,7 @@
 import type { ComponentChildren, Ref } from "preact";
 
+import styles from "./FormSelect.module.css";
+
 interface FormSelectProps {
   name?: string;
   id?: string;
@@ -36,16 +38,7 @@ export function FormSelect({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className={`
-        block w-full py-1.5 pr-9 pl-3
-        text-base font-normal leading-normal text-bs-dark
-        bg-white bg-no-repeat bg-position-[right_0.75rem_center] bg-size-[16px_12px]
-        border border-[#ced4da] rounded-md appearance-none
-        transition-[border-color,box-shadow] duration-150
-        focus:border-[#86b7fe] focus:outline-none focus:ring-4 focus:ring-bs-primary/25
-        disabled:bg-[#e9ecef] disabled:opacity-65
-        ${className}
-      `}
+      className={`${styles.select} ${className}`}
       style={{ backgroundImage: dropdownArrow }}
     >
       {children}

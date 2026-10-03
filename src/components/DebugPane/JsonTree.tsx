@@ -1,6 +1,8 @@
 import { useSignal } from "@preact/signals";
 import { useEffect, useMemo, useRef } from "preact/hooks";
 
+import styles from "./JsonTree.module.css";
+
 interface JsonTreeProps {
   data: unknown;
   prevData?: unknown;
@@ -18,7 +20,7 @@ interface JsonTreeProps {
  *   - 文字列化のオーバーヘッドなし
  *
  * WebRTC stats に最適:
- * - ネストが浅い（3-4レベル）
+ * - ネストが浅い（3-4 レベル）
  * - 変化するプロパティは一部のみ（bytesReceived など）
  * - 固定プロパティ（id, type）は早期スキップ
  */
@@ -140,21 +142,21 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
   const renderPrimitive = (value: unknown) => {
     if (value === null) {
       return (
-        <span className="italic" style={highlightStyle}>
+        <span className={styles.italic} style={highlightStyle}>
           null
         </span>
       );
     }
     if (value === undefined) {
       return (
-        <span className="italic" style={highlightStyle}>
+        <span className={styles.italic} style={highlightStyle}>
           undefined
         </span>
       );
     }
     if (typeof value === "string") {
       return (
-        <span className="break-all" style={highlightStyle}>
+        <span className={styles.breakAll} style={highlightStyle}>
           &quot;{value}&quot;
         </span>
       );
@@ -205,7 +207,7 @@ export function JsonTree({ data, prevData, name, isLast = true, level = 0 }: Jso
         )}
         <span>{bracketOpen}</span>
       </div>
-      <div style={{ marginLeft: "1.25rem" }}>
+      <div className={styles.indent}>
         {entries.map((entry, index) => {
           let prevValue: unknown;
           if (isArray(prevData)) {

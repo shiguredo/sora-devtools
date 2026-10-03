@@ -15,7 +15,7 @@ export function ForwardingFiltersForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledForwardingFilters">
+          <FormGroup controlId="enabledForwardingFilters">
             <TooltipFormCheck
               kind="forwardingFilters"
               checked={enabledForwardingFilters.value}
@@ -32,7 +32,7 @@ export function ForwardingFiltersForm() {
           <div className="col-auto">
             <JSONInputField
               controlId="forwardingFilters"
-              placeholder="forwardingFiltersを指定"
+              placeholder="forwardingFilters を指定"
               value={forwardingFilters.value}
               setValue={(value) => {
                 setForwardingFilters(value);

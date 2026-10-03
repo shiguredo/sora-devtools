@@ -1,0 +1,58 @@
+/* リモート映像セクションのルート。上下に余白を確保する */
+.root {
+  margin-block: 0.5rem;
+}
+
+/* クライアントごとの統計リスト */
+.statsList {
+  padding: 1rem;
+  list-style-type: none;
+}
+
+/* ステータス行を縦に並べる */
+.statusList {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+/* ステータス 1 行分 */
+.statusRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+/* 行が最初の要素のとき、子要素の左マージンを無効化する */
+.statusRow:first-child > * {
+  margin-left: 0;
+}
+
+/* 映像と統計を折り返して並べる領域 */
+.streamArea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow-y: hidden;
+}
+
+/* 映像とケイパビリティ表示を重ねる枠 */
+.videoWrapper {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  border-style: solid;
+  border-width: 5px;
+  border-radius: 5px;
+}
+
+/* スポットライト対象の映像枠 */
+.focused {
+  border-color: var(--color-bs-primary);
+}
+
+/* 通常の映像枠 */
+.unfocused {
+  border-color: color-mix(in srgb, var(--color-black) 10%, transparent);
+}

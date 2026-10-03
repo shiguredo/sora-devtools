@@ -19,7 +19,7 @@ export function BundleIdForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledBundleId">
+          <FormGroup controlId="enabledBundleId">
             <TooltipFormCheck
               kind="bundleId"
               checked={enabledBundleId.value}
@@ -34,11 +34,11 @@ export function BundleIdForm() {
       {enabledBundleId.value ? (
         <div className="form-row">
           <div className="col-auto">
-            <FormGroup className="flex items-center gap-2" controlId="bundleId">
+            <FormGroup controlId="bundleId">
               <FormInput
-                className="flex-fill w-500"
+                className="input-wide"
                 type="text"
-                placeholder="bundleIdを指定"
+                placeholder="bundleId を指定"
                 value={bundleId.value}
                 onChange={onChangeText}
                 disabled={disabled}

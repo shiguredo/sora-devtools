@@ -1,0 +1,25 @@
+/* フォーム項目を折り返し可能な横並びにし、項目間に 0.5rem の間隔を空ける行 */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* 内容幅に合わせて縮む列 */
+.autoWidth {
+  width: auto;
+}
+
+/* dataChannel のチェックボックスに付けるラベル */
+.label {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 有効時の詳細設定を並べる行。項目間に 1rem の間隔を空ける */
+.optionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

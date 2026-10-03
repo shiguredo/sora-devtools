@@ -1,0 +1,40 @@
+/* jitter buffer 遅延値のバッジ。状態に応じて色を変える */
+.base {
+  display: inline-block;
+  min-width: 90px;
+  margin-inline: 0.25rem;
+  padding-block: 0.25rem;
+  padding-inline: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  cursor: default;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 0.375rem;
+}
+
+/* 正常: 遅延 100ms 以下 */
+.normal {
+  border-color: var(--color-bs-dark);
+}
+
+/* 注意: 遅延 100ms 超 300ms 以下 */
+.caution {
+  border-color: var(--color-bs-yellow);
+}
+
+/* 警告: 遅延 300ms 超 500ms 以下 */
+.warning {
+  border-color: var(--color-bs-orange);
+  background-color: var(--color-bs-orange);
+  color: var(--color-bs-light);
+}
+
+/* 危険: 遅延 500ms 超 */
+.danger {
+  border-color: var(--color-bs-red);
+  background-color: var(--color-bs-red);
+  color: var(--color-bs-light);
+}

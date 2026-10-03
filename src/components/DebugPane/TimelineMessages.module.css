@@ -1,0 +1,33 @@
+/* 通知元ラベル。タイトルとの間隔を確保する */
+.label {
+  margin-inline-end: 0.25rem;
+}
+
+/* websocket メッセージのラベル色 */
+.websocketLabel {
+  composes: label;
+  color: #00ff00;
+}
+
+/* peerconnection メッセージのラベル色 */
+.peerConnectionLabel {
+  composes: label;
+  color: #ff8c00;
+}
+
+/* sora メッセージのラベル色 */
+.soraLabel {
+  composes: label;
+  color: #bce2e8;
+}
+
+/* sora-devtools メッセージのラベル色 */
+.soraDevtoolsLabel {
+  composes: label;
+  color: #73b8e2;
+}
+
+/* タイムラインの一覧。親の高さいっぱいに広げて縦スクロールさせる */
+.messages {
+  composes: messages from "./messages.module.css";
+}

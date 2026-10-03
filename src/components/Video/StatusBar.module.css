@@ -1,0 +1,27 @@
+/*
+ * ステータスバー共通スタイル
+ *
+ * ConnectionStatusBar と SessionStatusBar が共有する
+ */
+
+/* 接続情報を表示する行。ラベルと値を横並びにする */
+.root {
+  display: flex;
+  align-items: center;
+}
+
+/* 枠線付きの値表示ボックス。値テキストとコピーボタンを横並びにする */
+.box {
+  display: flex;
+  align-items: center;
+  margin-inline: 0.25rem;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 0.25rem;
+}
+
+/* コピー対象の値テキスト */
+.text {
+  margin-inline: 0.5rem;
+  padding: 0.25rem;
+}

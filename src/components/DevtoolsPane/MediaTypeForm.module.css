@@ -1,0 +1,4 @@
+/* 幅が足りない場合は折り返す (横並びと gap は FormGroup の基底が持つ) */
+.group {
+  flex-wrap: wrap;
+}

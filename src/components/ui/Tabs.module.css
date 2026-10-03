@@ -1,0 +1,56 @@
+/* タブ全体。縦に並べて親の高さいっぱいに広げる */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+/* タブ見出しの並び。横幅が足りない場合は横スクロールさせる */
+.tabList {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--color-gray-600);
+}
+
+/* タブ見出し */
+.tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  margin-bottom: -1px;
+  transition: var(--transition-colors);
+}
+
+/* 選択中のタブ見出し */
+.tabActive {
+  color: var(--color-white);
+  border-color: var(--color-white);
+  background-color: var(--color-gray-700);
+}
+
+/* 未選択のタブ見出し */
+.tabInactive {
+  color: var(--color-gray-400);
+  border-color: transparent;
+}
+
+@media (hover: hover) {
+  .tabInactive:hover {
+    color: var(--color-gray-200);
+    border-color: var(--color-gray-500);
+  }
+}
+
+/* タブ本文。DebugPane の :global セレクタが参照するグローバル名 .tab-content と併用する */
+.tabContent {
+  padding-top: 0.5rem;
+}
+
+/* 非表示のタブ本文 */
+.paneHidden {
+  display: none;
+}

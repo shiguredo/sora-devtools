@@ -1,0 +1,12 @@
+/*
+ * デバッグペインのメッセージ一覧共通スタイル
+ *
+ * Log / Push / Notify / Signaling / Stats / Timeline / DataChannelMessaging の
+ * メッセージ一覧が composes で共有する
+ */
+
+/* 親の高さいっぱいに広げて内部スクロールさせる */
+.messages {
+  overflow-y: auto;
+  height: 100%;
+}

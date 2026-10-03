@@ -2,6 +2,8 @@ import { disposeMedia } from "@/app/actions";
 import { isFormDisabled, localMediaStream, role, sora } from "@/app/signals";
 import { Button } from "@/components/ui";
 
+import styles from "./DisposeMediaButton.module.css";
+
 export function DisposeMediaButton() {
   const onClick = (): void => {
     void disposeMedia();
@@ -16,7 +18,7 @@ export function DisposeMediaButton() {
     localMediaStream.value === null ||
     isFormDisabled.value;
   return (
-    <div className="col-auto mb-1">
+    <div className={`col-auto ${styles.root}`}>
       <Button variant="outline-secondary" onClick={onClick} disabled={disabled}>
         dispose media
       </Button>

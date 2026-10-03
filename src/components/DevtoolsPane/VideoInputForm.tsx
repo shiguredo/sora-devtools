@@ -12,7 +12,7 @@ export function VideoInputForm() {
     void updateMediaStream();
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="videoInput">
+    <FormGroup controlId="videoInput">
       <TooltipFormLabel kind="videoInput">videoInput:</TooltipFormLabel>
       <FormSelect
         name="videoInput"

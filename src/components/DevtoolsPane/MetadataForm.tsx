@@ -15,7 +15,7 @@ export function MetadataForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledMetadata">
+          <FormGroup controlId="enabledMetadata">
             <TooltipFormCheck
               kind="metadata"
               checked={enabledMetadata.value}
@@ -32,7 +32,7 @@ export function MetadataForm() {
           <div className="col-auto">
             <JSONInputField
               controlId="metadata"
-              placeholder="Metadataを指定"
+              placeholder="Metadata を指定"
               value={metadata.value}
               setValue={(value) => {
                 setMetadata(value);

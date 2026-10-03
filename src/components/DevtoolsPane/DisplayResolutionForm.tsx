@@ -11,6 +11,8 @@ import {
 import { setDisplayResolution } from "@/app/actions";
 import { displayResolution } from "@/app/signals";
 
+import styles from "./DisplayResolutionForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 interface DisplayResolutionData {
@@ -49,11 +51,11 @@ export function DisplayResolutionForm() {
     setDisplayResolution(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="displayResolution">
+    <FormGroup controlId="displayResolution">
       <TooltipFormLabel kind="displayResolution">displayResolution:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="max-w-[130px]"
+          className={styles.input}
           type="text"
           value={displayResolution.value}
           onChange={onChange}
@@ -61,7 +63,7 @@ export function DisplayResolutionForm() {
         />
         <Dropdown>
           <DropdownToggle variant="outline-secondary" />
-          <DropdownMenu className="right-0">
+          <DropdownMenu>
             {DISPLAY_RESOLUTION_DATA_LIST.map(({ label, value }) => (
               <DisplayResolutionDropdownItem key={value} label={label} value={value} />
             ))}

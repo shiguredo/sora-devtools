@@ -1,3 +1,5 @@
+import styles from "./FormInput.module.css";
+
 interface FormInputProps {
   type?: string;
   name?: string;
@@ -16,14 +18,12 @@ interface FormInputProps {
  * テキスト入力コンポーネント
  * react-bootstrap の FormControl (type="text") 互換
  *
- * Bootstrap form-control スタイル:
- * - display: block, width: 100%
- * - padding: 0.375rem 0.75rem
+ * スタイルは FormInput.module.css で定義する:
+ * - display: block, width: 100%, padding: 0.375rem 0.75rem
  * - font-size: 1rem, line-height: 1.5
- * - border: 1px solid #dee2e6
- * - border-radius: 0.375rem
- * - focus: border-color: #86b7fe, box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25)
- * - disabled: background-color: #e9ecef
+ * - border: 1px solid var(--color-gray-300), border-radius: 0.375rem
+ * - focus: border-color: var(--color-blue-400), 2px のフォーカスリング
+ * - disabled: background-color: var(--color-bs-disabled), opacity: 0.65
  */
 export function FormInput({
   type = "text",
@@ -50,15 +50,7 @@ export function FormInput({
       disabled={disabled}
       readOnly={readOnly}
       accept={accept}
-      className={`
-        block w-full px-3 py-1.5
-        text-base leading-normal text-gray-900 bg-white
-        border border-gray-300 rounded-md appearance-none
-        transition-colors duration-150
-        focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25
-        disabled:bg-[#e9ecef] disabled:opacity-65 disabled:cursor-not-allowed
-        ${className}
-      `}
+      className={`${styles.input} ${className}`}
     />
   );
 }

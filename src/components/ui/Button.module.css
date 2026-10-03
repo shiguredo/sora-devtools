@@ -1,0 +1,120 @@
+/*
+ * ボタン。Bootstrap の btn 相当の見た目を再現する
+ *
+ * バリアント (色) とサイズ (sm) を別クラスに分け、
+ * Button コンポーネントが variant / size に応じて合成する
+ */
+
+/* 全バリアント共通の基底スタイル */
+.button {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  transition: var(--transition-colors);
+}
+
+/* 無効時は半透明にし、操作を受け付けない */
+.button:disabled {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* 小さめサイズ (size="sm")。行の高さは基底の line-height を維持する */
+.small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+}
+
+/* primary: 主要操作 */
+.primary {
+  color: var(--color-white);
+  background-color: var(--color-bs-primary);
+  border-color: var(--color-bs-primary);
+}
+
+@media (hover: hover) {
+  .primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+  }
+}
+
+/* secondary: 既定の操作 */
+.secondary {
+  color: var(--color-white);
+  background-color: var(--color-bs-secondary);
+  border-color: var(--color-bs-secondary);
+}
+
+@media (hover: hover) {
+  .secondary:hover {
+    background-color: #5c636a;
+    border-color: #565e64;
+  }
+}
+
+/* light: 明るい背景の操作 */
+.light {
+  color: var(--color-black);
+  background-color: var(--color-bs-light);
+  border-color: var(--color-bs-light);
+}
+
+@media (hover: hover) {
+  .light:hover {
+    background-color: var(--color-bs-light-hover);
+    border-color: var(--color-bs-light-hover-border);
+  }
+}
+
+/* dark: 暗い背景の操作 */
+.dark {
+  color: var(--color-white);
+  background-color: var(--color-bs-dark);
+  border-color: var(--color-bs-dark);
+}
+
+@media (hover: hover) {
+  .dark:hover {
+    background-color: var(--color-bs-dark-hover);
+    border-color: var(--color-bs-dark-hover-border);
+  }
+}
+
+/* outline-secondary: 枠線のみの secondary */
+.outlineSecondary {
+  color: var(--color-bs-secondary);
+  background-color: transparent;
+  border-color: var(--color-bs-secondary);
+}
+
+@media (hover: hover) {
+  .outlineSecondary:hover {
+    color: var(--color-white);
+    background-color: var(--color-bs-secondary);
+  }
+}
+
+/* outline-light: 枠線のみの light */
+.outlineLight {
+  color: var(--color-bs-light);
+  background-color: transparent;
+  border-color: var(--color-bs-light);
+}
+
+@media (hover: hover) {
+  .outlineLight:hover {
+    color: var(--color-black);
+    background-color: var(--color-bs-light);
+  }
+}

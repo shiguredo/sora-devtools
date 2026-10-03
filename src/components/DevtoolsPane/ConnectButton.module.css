@@ -1,0 +1,5 @@
+/* 接続ボタンの外側余白。下 0.25rem、右 0.5rem を空けて隣の要素と間隔を取る */
+.root {
+  margin-bottom: 0.25rem;
+  margin-right: 0.5rem;
+}

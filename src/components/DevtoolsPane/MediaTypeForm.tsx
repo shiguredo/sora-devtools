@@ -9,6 +9,9 @@ import { MEDIA_TYPES } from "@/constants";
 import { checkFormValue } from "@/utils";
 
 import { isMp4MediaStreamSupported } from "@/mp4MediaStream";
+
+import styles from "./MediaTypeForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 interface FormRadioProps {
@@ -55,7 +58,7 @@ export function MediaTypeForm() {
     mountClient.value = true;
   }, [mountClient]);
   return (
-    <FormGroup className="flex items-center gap-2 flex-wrap">
+    <FormGroup className={styles.group}>
       <TooltipFormLabel kind="mediaType">mediaType:</TooltipFormLabel>
       <FormRadio
         label="getUserMedia"

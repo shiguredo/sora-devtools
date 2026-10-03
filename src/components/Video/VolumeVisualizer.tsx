@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "preact/hooks";
 
+import styles from "./VolumeVisualizer.module.css";
+
 const CANVAS_WIDTH = 25 as const;
 const MARGIN = 2.5 as const;
 const BAR_HEIGHT = 10 as const;
@@ -101,7 +103,7 @@ function Visualizer(props: VisualizerProps) {
     };
   }, [props.stream]);
   return (
-    <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
+    <canvas width={CANVAS_WIDTH} height={props.height} className={styles.canvas} ref={canvasRef} />
   );
 }
 
@@ -128,7 +130,7 @@ function MutedVisualizer(props: MutedVisualizerProps) {
     ctx.restore();
   }, [props.height]);
   return (
-    <canvas width={CANVAS_WIDTH} height={props.height} className="bg-[#eeeeee]" ref={canvasRef} />
+    <canvas width={CANVAS_WIDTH} height={props.height} className={styles.canvas} ref={canvasRef} />
   );
 }
 

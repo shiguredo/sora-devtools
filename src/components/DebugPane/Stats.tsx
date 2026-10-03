@@ -2,6 +2,8 @@ import { useMemo } from "preact/hooks";
 
 import { debugFilterText, prevStatsReport, statsReport } from "@/app/signals";
 
+import styles from "./Stats.module.css";
+
 import { Message } from "./Message.tsx";
 
 type RTCStatsWithIndexSignature = Record<string, unknown>;
@@ -46,7 +48,7 @@ export function Stats() {
     }),
   );
   return (
-    <div className="overflow-y-auto h-full">
+    <div className={styles.messages}>
       {filteredMessages.map((stats) => {
         // O(1) で前回の同じ id の stats を取得
         const prevStats = prevStatsMap.get(stats.id);

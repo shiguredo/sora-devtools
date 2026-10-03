@@ -2,6 +2,8 @@ import { Button } from "@/components/ui";
 import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
+import styles from "./ResetSpotlightRidButton.module.css";
+
 export function ResetSpotlightRidButton() {
   const conn = sora.value;
 
@@ -19,7 +21,7 @@ export function ResetSpotlightRidButton() {
   };
 
   return (
-    <div className="mx-1">
+    <div className={styles.root}>
       <Button variant="secondary" onClick={onClick}>
         resetSpotlightRid
       </Button>

@@ -5,6 +5,8 @@ import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copyToClipboard } from "@/utils";
 import * as signals from "@/app/signals";
 
+import styles from "./CopyLogButton.module.css";
+
 interface Props {
   text: string;
 }
@@ -52,18 +54,12 @@ export function CopyLogButton(props: Props) {
     }, 2000);
   };
 
-  const baseClasses = `
-    px-2 py-1 text-sm rounded
-    font-normal leading-normal text-center
-    cursor-pointer select-none border
-    transition-colors duration-150
-  `;
-  const stateClasses = copied.value
-    ? "text-white bg-[#28a745] border-[#28a745]"
-    : "text-white bg-bs-dark border-bs-dark hover:bg-[#1c1f23] hover:border-[#1a1e21]";
-
   return (
-    <button type="button" className={`${baseClasses} ${stateClasses}`} onClick={onClick}>
+    <button
+      type="button"
+      className={`${styles.button} ${copied.value ? styles.copied : styles.idle}`}
+      onClick={onClick}
+    >
       {copied.value ? <ClipboardCheckIcon /> : <ClipboardIcon />}
     </button>
   );

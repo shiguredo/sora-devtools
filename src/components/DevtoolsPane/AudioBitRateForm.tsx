@@ -12,6 +12,8 @@ import { setAudioBitRate } from "@/app/actions";
 import { audioBitRate, isFormDisabled } from "@/app/signals";
 import { AUDIO_BIT_RATES } from "@/constants";
 
+import styles from "./AudioBitRateForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export function AudioBitRateForm() {
@@ -21,11 +23,11 @@ export function AudioBitRateForm() {
     setAudioBitRate(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="audioBitRate">
+    <FormGroup controlId="audioBitRate">
       <TooltipFormLabel kind="audioBitRate">audioBitRate:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="max-w-[130px]"
+          className={styles.input}
           type="text"
           value={audioBitRate.value}
           onChange={onChange}

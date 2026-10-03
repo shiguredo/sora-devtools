@@ -1,3 +1,5 @@
+import styles from "./FormTextarea.module.css";
+
 interface FormTextareaProps {
   name?: string;
   id?: string;
@@ -16,7 +18,7 @@ interface FormTextareaProps {
  * テキストエリアコンポーネント
  * react-bootstrap の FormControl (as="textarea") 互換
  *
- * Bootstrap form-control スタイルを適用
+ * スタイルは FormTextarea.module.css で定義する (FormInput と同等 + 複数行対応)
  */
 export function FormTextarea({
   name,
@@ -43,15 +45,7 @@ export function FormTextarea({
       readOnly={readOnly}
       rows={rows}
       cols={cols}
-      className={`
-        block w-full px-3 py-1.5
-        text-base leading-normal text-gray-900 bg-white
-        border border-gray-300 rounded-md appearance-none resize-y
-        transition-colors duration-150
-        focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25
-        disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
-        ${className}
-      `}
+      className={`${styles.textarea} ${className}`}
     />
   );
 }

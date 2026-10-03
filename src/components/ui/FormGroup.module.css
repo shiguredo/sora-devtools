@@ -1,0 +1,7 @@
+/* フォーム要素のグループ。最低高さと項目間の余白を揃えて横並びにする */
+.group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}

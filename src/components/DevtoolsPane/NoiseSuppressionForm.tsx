@@ -15,7 +15,7 @@ export function NoiseSuppressionForm() {
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="noiseSuppression">
+    <FormGroup controlId="noiseSuppression">
       <TooltipFormLabel kind="noiseSuppression">noiseSuppression:</TooltipFormLabel>
       <FormSelect name="noiseSuppression" value={noiseSuppression.value} onChange={onChange}>
         {NOISE_SUPPRESSIONS.map((value) => (

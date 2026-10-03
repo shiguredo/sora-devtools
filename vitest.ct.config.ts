@@ -1,13 +1,12 @@
 import path from "node:path";
 import preactPlugin from "@preact/preset-vite";
-import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "vite-plus/test/browser/providers/playwright";
 import { defineConfig } from "vite-plus/test/config";
 
 const rootDir = import.meta.dirname;
 
 export default defineConfig({
-  plugins: [preactPlugin(), tailwindcss()],
+  plugins: [preactPlugin()],
   // ブラウザテストにもビルド時定数を埋め込む（既定は無効）
   define: {
     __SESSIONS_ENABLED__: JSON.stringify(process.env.VITE_ENABLE_SESSIONS === "true"),

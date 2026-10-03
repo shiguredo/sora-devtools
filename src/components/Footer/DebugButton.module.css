@@ -1,0 +1,41 @@
+/* デバッグ切替ボタン。768px 未満でのみ表示する */
+.button {
+  display: none;
+  width: 65px;
+  height: 65px;
+  border-radius: calc(infinity * 1px);
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  color: var(--color-white);
+  opacity: 0.9;
+  transition: var(--transition-colors);
+}
+
+@media (width < 48rem) {
+  .button {
+    display: block;
+  }
+}
+
+/* デバッグ ON 時の色 */
+.debugOn {
+  background-color: var(--color-debug);
+}
+
+@media (hover: hover) {
+  .debugOn:hover {
+    background-color: #ff0066;
+  }
+}
+
+/* デバッグ OFF 時の色 */
+.debugOff {
+  background-color: var(--color-bs-secondary);
+}
+
+@media (hover: hover) {
+  .debugOff:hover {
+    background-color: #5a6268;
+  }
+}

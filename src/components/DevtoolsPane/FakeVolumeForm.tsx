@@ -2,6 +2,8 @@ import { FormGroup } from "@/components/ui";
 
 import { fakeVolume, mediaType, setFakeVolume } from "@/app/signals";
 
+import styles from "./FakeVolumeForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 export function FakeVolumeForm() {
@@ -13,7 +15,7 @@ export function FakeVolumeForm() {
     return null;
   }
   return (
-    <FormGroup className="flex items-center gap-2" controlId="fakeVolume">
+    <FormGroup controlId="fakeVolume">
       <TooltipFormLabel kind="fakeVolume">fakeVolume:</TooltipFormLabel>
       <input
         type="range"
@@ -22,7 +24,7 @@ export function FakeVolumeForm() {
         step="0.25"
         value={fakeVolume.value}
         onChange={onChange}
-        className="w-32"
+        className={styles.range}
       />
     </FormGroup>
   );

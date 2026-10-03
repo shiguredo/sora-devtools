@@ -1,0 +1,80 @@
+/*
+ * ヘッダー
+ *
+ * 高さ 56px はナビゲーションバーの上下パディング (各 8px) と
+ * NavbarBrand (40px) の合計で構成する
+ */
+
+/* ナビゲーションバー。上下 0.5rem のパディングを明示する */
+.nav {
+  padding-block: 0.5rem;
+}
+
+/* ブランド・トグル・メニューを 1 行に並べるコンテナ */
+.inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding-inline: 0.75rem;
+}
+
+/* メニューを右端へ寄せるためのスペーサー */
+.spacer {
+  margin-right: auto;
+}
+
+/* ヘッダー内のボタン群 */
+.items {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ナビゲーションバー内の各項目。縦パディングを消して小さな余白だけを取る */
+.navText {
+  padding-block: 0;
+  margin-block: 0.25rem;
+  margin-inline: 0.25rem;
+}
+
+/* 最後の項目 (Copy URL) は左側にだけ余白を取る */
+.navTextLast {
+  padding-block: 0;
+  margin-block: 0.25rem;
+  margin-left: 0.25rem;
+}
+
+/* Signaling URL ボタン。接続先 URL を最小幅 250px で 1 行表示する */
+.signalingButton {
+  min-width: 250px;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--color-white);
+  background-color: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-white) 50%, transparent);
+  border-radius: 0.25rem;
+  transition: var(--transition-colors);
+}
+
+@media (hover: hover) {
+  .signalingButton:hover {
+    background-color: color-mix(in srgb, var(--color-white) 10%, transparent);
+  }
+}
+
+/* TURN URL 表示。Signaling URL と同じ幅・枠線で表示する */
+.turnUrl {
+  min-width: 250px;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  border: 1px solid;
+  border-radius: 0.25rem;
+}

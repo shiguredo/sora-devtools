@@ -11,7 +11,7 @@ export function VideoForm() {
     setVideo(target.checked);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="video">
+    <FormGroup controlId="video">
       <TooltipFormCheck
         kind="video"
         checked={video.value}

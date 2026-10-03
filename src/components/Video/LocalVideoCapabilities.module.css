@@ -1,0 +1,35 @@
+/* 映像ケイパビリティのオーバーレイ。映像の左上に重ねる */
+.root {
+  composes: root from "./Capabilities.module.css";
+}
+
+/* rid を切り替えるタブの並び */
+.trackList {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* rid タブ。クリックで表示対象を切り替える */
+.track {
+  cursor: pointer;
+}
+
+/* 選択中の rid タブ */
+.selected {
+  font-weight: 700;
+}
+
+/* ケイパビリティの表 */
+.table {
+  composes: table from "./Capabilities.module.css";
+}
+
+/* 表の見出しセル */
+.headerCell {
+  composes: headerCell from "./Capabilities.module.css";
+}
+
+/* 表の値セル */
+.cell {
+  composes: cell from "./Capabilities.module.css";
+}

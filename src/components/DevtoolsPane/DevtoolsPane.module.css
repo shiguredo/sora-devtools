@@ -7,7 +7,7 @@
   min-height: 0;
 }
 
-@media (max-width: 768px) {
+@media (width <= 48rem) {
   .container {
     flex: none;
     max-width: none;
@@ -16,4 +16,15 @@
   .container:global(.col-6) {
     display: none;
   }
+}
+
+/* フォーム行。form-row と併用し、項目間を 0.5rem 空けて折り返し可能な横並びにする */
+.controlsRowGap {
+  gap: 0.5rem;
+}
+
+/* チャンネル ID フォームの欄。幅いっぱいに広げつつ最大幅を制限する */
+.channelIdColumn {
+  max-width: 802px;
+  width: 100%;
 }

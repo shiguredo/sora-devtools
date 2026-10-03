@@ -2,6 +2,8 @@ import { connectSora } from "@/app/actions";
 import { connectionStatus } from "@/app/signals";
 import { Button } from "@/components/ui";
 
+import styles from "./ConnectButton.module.css";
+
 export function ConnectButton() {
   const connect = (): void => {
     void connectSora();
@@ -13,7 +15,7 @@ export function ConnectButton() {
     connectionStatus.value === "preparing";
 
   return (
-    <div className="col-auto mb-1 mr-2">
+    <div className={`col-auto ${styles.root}`}>
       <Button variant="secondary" name="connect" onClick={connect} disabled={disabled}>
         connect
       </Button>

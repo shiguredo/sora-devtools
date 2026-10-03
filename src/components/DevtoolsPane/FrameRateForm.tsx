@@ -11,6 +11,8 @@ import {
 import { setFrameRate } from "@/app/actions";
 import { frameRate } from "@/app/signals";
 
+import styles from "./FrameRateForm.module.css";
+
 import { TooltipFormLabel } from "./TooltipFormLabel.tsx";
 
 interface FrameRateData {
@@ -47,11 +49,11 @@ export function FrameRateForm() {
     setFrameRate(target.value);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="frameRate">
+    <FormGroup controlId="frameRate">
       <TooltipFormLabel kind="frameRate">frameRate:</TooltipFormLabel>
       <InputGroup>
         <FormInput
-          className="max-w-[100px]"
+          className={styles.input}
           type="text"
           value={frameRate.value}
           onChange={onChange}

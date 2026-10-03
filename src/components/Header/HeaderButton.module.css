@@ -1,0 +1,40 @@
+/*
+ * ヘッダーのボタン共通スタイル
+ *
+ * Copy URL / Sessions / debug ボタンが composes で共有する。
+ * 各ボタンは状態に応じた色だけを自分のモジュールで定義する
+ */
+
+/* 全状態共通の基底スタイル */
+.button {
+  display: inline-block;
+  margin-left: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 0.25rem;
+  transition: var(--transition-colors);
+}
+
+/* 通常時: 明るい背景 */
+.idle {
+  color: var(--color-black);
+  background-color: var(--color-bs-light);
+  border-color: var(--color-bs-light);
+}
+
+@media (hover: hover) {
+  .idle:hover {
+    background-color: var(--color-bs-light-hover);
+    border-color: var(--color-bs-light-hover-border);
+  }
+}

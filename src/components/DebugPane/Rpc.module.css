@@ -1,0 +1,182 @@
+/* RPC フォーム全体の上余白 */
+.form {
+  margin-top: 0.5rem;
+}
+
+/* method / notification / timeout を並べる行 */
+.formRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 各入力欄の見出し */
+.fieldLabel {
+  margin-bottom: 0.25rem;
+  color: var(--color-white);
+}
+
+/* RPC 結果内の見出し。少し小さく表示する */
+.fieldLabelSmall {
+  font-size: 0.85rem;
+}
+
+/* method 入力欄の欄。ドロップダウンを並べるため幅を固定する */
+.methodColumn {
+  width: 600px;
+}
+
+/* notification 欄 */
+.notificationColumn {
+  width: 250px;
+}
+
+/* notification のチェックボックス行 */
+.notificationBody {
+  padding-top: 0.5rem;
+}
+
+/* notification のチェックボックスラベル */
+.checkLabel {
+  color: var(--color-white);
+}
+
+/* timeout 欄 */
+.timeoutColumn {
+  width: 150px;
+}
+
+/* テキスト入力と数値入力の共通スタイル。文字色と背景色はデバッグペインのコンテナが指定する */
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 0.375rem;
+}
+
+.input:focus {
+  outline-style: none;
+  border-color: var(--color-blue-400);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-blue-400) 25%, transparent);
+}
+
+/* RPC 実行可能なメソッド候補。ドロップダウンの既定色より優先する */
+.templateAvailable {
+  color: var(--color-blue-600) !important;
+  font-weight: 700 !important;
+}
+
+/* params 入力欄のブロック */
+.paramsField {
+  margin-bottom: 0.5rem;
+}
+
+/* Call ボタンを右寄せにする行 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+/* RPC を実行するボタン */
+.callButton {
+  padding: 0.75rem 2rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: var(--color-white);
+  background-color: var(--color-gray-600);
+  border: 1px solid var(--color-gray-600);
+  border-radius: 0.375rem;
+}
+
+@media (hover: hover) {
+  .callButton:hover {
+    background-color: var(--color-gray-700);
+  }
+}
+
+.callButton:disabled {
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
+/* RPC 結果 1 件分の枠 */
+.item {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  color: var(--color-white);
+  background-color: var(--color-debug-item-bg);
+  border: 1px solid;
+  border-radius: 0.25rem;
+}
+
+/* 結果のヘッダー。日時と所要時間を左右に分ける */
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  color: var(--color-debug-text-muted);
+}
+
+/* Request セクション */
+.section {
+  margin-bottom: 0.75rem;
+}
+
+/* Request / Response / Error の見出し */
+.sectionTitle {
+  margin-bottom: 0.5rem;
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+/* options の補足表示 */
+.optionsNote {
+  color: var(--color-debug-text-dim);
+  font-size: 0.85rem;
+}
+
+/* セクション配下のインデント */
+.indent {
+  padding-left: 0.75rem;
+}
+
+/* method / result / error の値。ラベルの下にインデントして表示する */
+.value {
+  margin-bottom: 0.5rem;
+  padding-inline-start: 0.75rem;
+}
+
+/* 少し小さく表示する値 */
+.valueCompact {
+  font-size: 0.95rem;
+}
+
+/* JSON を表示するボックス */
+.valueBox {
+  padding: 0.5rem;
+  background-color: var(--color-debug-surface);
+  border-radius: 0.25rem;
+}
+
+/* 少し小さく表示する JSON ボックス */
+.valueBoxCompact {
+  font-size: 0.95rem;
+}
+
+/* RPC Results 見出し行 */
+.resultsHeader {
+  margin-top: 0.75rem;
+  padding-block: 0.25rem;
+}
+
+/* 表示件数 */
+.resultsCount {
+  margin-bottom: 0.5rem;
+  color: var(--color-debug-text-dim);
+  font-size: 0.85rem;
+}

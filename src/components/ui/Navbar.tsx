@@ -3,9 +3,11 @@ import type { ComponentChildren } from "preact";
 import { createContext } from "preact";
 import { useContext, useMemo } from "preact/hooks";
 
+import styles from "./Navbar.module.css";
+
 interface NavbarProps {
   variant?: "light" | "dark";
-  bg?: string;
+  bg?: "sora";
   expand?: "sm" | "md" | "lg" | "xl" | boolean;
   fixed?: "top";
   className?: string;
@@ -43,21 +45,19 @@ const NavbarContext = createContext<NavbarContextType>({
   toggle: () => {},
 });
 
-// bg プロパティに応じた背景スタイルを返す
-function getBgStyles(bg: string | undefined): string {
+// bg プロパティに応じた背景クラスを返す
+// 動的なクラス生成は行わないため、既知の "sora" のみ対応する
+function getBackgroundClassName(bg: "sora" | undefined): string {
   if (bg === "sora") {
-    return "bg-[#0071bc]";
-  }
-  if (bg) {
-    return `bg-${bg}`;
+    return styles.backgroundSora;
   }
   return "";
 }
 
-// fixed プロパティに応じた固定位置スタイルを返す
-function getFixedStyles(fixed: "top" | undefined): string {
+// fixed プロパティに応じた固定位置クラスを返す
+function getFixedPositionClassName(fixed: "top" | undefined): string {
   if (fixed === "top") {
-    return "fixed top-0 left-0 right-0 z-50";
+    return styles.fixedTop;
   }
   return "";
 }
@@ -67,12 +67,12 @@ function getFixedStyles(fixed: "top" | undefined): string {
  * react-bootstrap の Navbar 互換
  *
  * Bootstrap navbar スタイル:
- * - display: flex, flex-wrap: wrap
+ * - display: flex, flex-wrap: nowrap
  * - align-items: center
  *
  * パディングは基底クラスに持たせない。基底クラスと className で渡す
- * パディングが競合すると、どちらが有効になるかは Tailwind のユーティリティ
- * 生成順に依存してしまうため、呼び出し側の className で明示する
+ * パディングが競合すると、どちらが有効になるかは CSS の読み込み順に
+ * 依存してしまうため、呼び出し側の className で明示する
  */
 export function Navbar({
   variant = "light",
@@ -84,12 +84,12 @@ export function Navbar({
 }: NavbarProps) {
   const isExpanded = useSignal(false);
 
-  const variantStyles = variant === "dark" ? "text-white" : "text-gray-900";
+  const variantClassName = variant === "dark" ? styles.variantDark : styles.variantLight;
 
   // bg が "sora" の場合は Sora ブランドカラーを使用
-  const bgStyles = getBgStyles(bg);
+  const backgroundClassName = getBackgroundClassName(bg);
 
-  const fixedStyles = getFixedStyles(fixed);
+  const fixedPositionClassName = getFixedPositionClassName(fixed);
 
   // expand は現在未使用（常に flex-nowrap）
   void expand;
@@ -107,10 +107,7 @@ export function Navbar({
 
   return (
     <nav
-      className={`
-        flex flex-nowrap items-center justify-start
-        ${variantStyles} ${bgStyles} ${fixedStyles} ${className}
-      `}
+      className={`${styles.root} ${variantClassName} ${backgroundClassName} ${fixedPositionClassName} ${className}`}
       data-expanded={isExpanded.value}
     >
       <NavbarContext.Provider value={contextValue}>{children}</NavbarContext.Provider>
@@ -123,24 +120,24 @@ export function Navbar({
  */
 export function NavbarBrand({ href, className = "", children }: NavbarBrandProps) {
   // Bootstrap .navbar-brand: font-size: 1.25rem, line-height: inherit (30px), padding: 5px 0
-  const baseStyles = "text-xl font-semibold whitespace-nowrap py-[5px] leading-[30px]";
+  const baseClassName = styles.brand;
 
   if (href) {
     return (
-      <a href={href} className={`${baseStyles} ${className}`}>
+      <a href={href} className={`${baseClassName} ${className}`}>
         {children}
       </a>
     );
   }
 
-  return <span className={`${baseStyles} ${className}`}>{children}</span>;
+  return <span className={`${baseClassName} ${className}`}>{children}</span>;
 }
 
 /**
  * ナビゲーションバーテキスト
  */
 export function NavbarText({ className = "", children }: NavbarTextProps) {
-  return <span className={`inline-block ${className}`}>{children}</span>;
+  return <span className={`${styles.text} ${className}`}>{children}</span>;
 }
 
 /**
@@ -148,13 +145,9 @@ export function NavbarText({ className = "", children }: NavbarTextProps) {
  */
 export function NavbarCollapse({ className = "", children }: NavbarCollapseProps) {
   const { isExpanded } = useContext(NavbarContext);
-  const visibilityStyles = isExpanded ? "block" : "hidden lg:block";
+  const visibilityClassName = isExpanded ? styles.collapseOpen : styles.collapseClosed;
 
-  return (
-    <div className={`w-full lg:flex lg:w-auto lg:items-center ${visibilityStyles} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`${styles.collapse} ${visibilityClassName} ${className}`}>{children}</div>;
 }
 
 /**
@@ -172,10 +165,10 @@ export function NavbarToggle({ className = "", onClick }: NavbarToggleProps) {
     <button
       type="button"
       onClick={handleClick}
-      className={`lg:hidden p-2 text-gray-500 hover:text-gray-700 ${className}`}
+      className={`${styles.toggle} ${className}`}
       aria-label="Toggle navigation"
     >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className={styles.toggleIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"

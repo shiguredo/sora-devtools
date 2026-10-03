@@ -1,0 +1,20 @@
+/* 折りたたみ。開閉に合わせて高さと透明度をアニメーションさせる */
+.collapse {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* 展開状態 */
+.collapseOpen {
+  overflow: visible;
+  max-height: 5000px;
+  opacity: 1;
+}
+
+/* 折りたたみ状態 */
+.collapseClosed {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+}

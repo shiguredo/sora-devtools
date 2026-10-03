@@ -7,6 +7,8 @@ import { connectionStatus, sora } from "@/app/signals";
 import { SPOTLIGHT_FOCUS_RIDS } from "@/constants";
 import { rpc } from "@/rpc";
 
+import styles from "./RequestSpotlightRidBySendConnectionIdButton.module.css";
+
 interface Props {
   sendConnectionId: string;
 }
@@ -42,8 +44,8 @@ export function RequestSpotlightRidBySendConnectionIdButton(props: Props) {
   }
 
   return (
-    <div className="mx-1">
-      <FormGroup className="flex items-center gap-2">
+    <div className={styles.root}>
+      <FormGroup>
         <FormSelect ref={focusRidRef}>
           {SPOTLIGHT_FOCUS_RIDS.map((value) => {
             if (value === "") {

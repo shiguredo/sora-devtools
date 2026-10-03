@@ -8,6 +8,8 @@ import {
   setEnabledAudioStreamingLanguageCode,
 } from "@/app/signals";
 
+import styles from "./AudioStreamingLanguageCodeForm.module.css";
+
 import { TooltipFormCheck } from "./TooltipFormCheck.tsx";
 
 export function AudioStreamingLanguageCodeForm() {
@@ -22,12 +24,9 @@ export function AudioStreamingLanguageCodeForm() {
   };
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        <div className="w-auto">
-          <FormGroup
-            className="flex items-center gap-2"
-            controlId="enabledAudioStreamingLanguageCode"
-          >
+      <div className={styles.row}>
+        <div className={styles.autoWidth}>
+          <FormGroup controlId="enabledAudioStreamingLanguageCode">
             <TooltipFormCheck
               kind="audioStreamingLanguageCode"
               checked={enabledAudioStreamingLanguageCode.value}
@@ -40,13 +39,13 @@ export function AudioStreamingLanguageCodeForm() {
         </div>
       </div>
       {enabledAudioStreamingLanguageCode.value ? (
-        <div className="flex flex-wrap gap-2">
-          <div className="w-auto">
-            <FormGroup className="flex items-center gap-2" controlId="audioStreamingLanguageCode">
+        <div className={styles.row}>
+          <div className={styles.autoWidth}>
+            <FormGroup controlId="audioStreamingLanguageCode">
               <FormInput
-                className="flex-1 w-[500px]"
+                className={styles.input}
                 type="text"
-                placeholder="audioStreamingLanguageCodeを指定"
+                placeholder="audioStreamingLanguageCode を指定"
                 value={audioStreamingLanguageCode.value}
                 onChange={onChangeText}
                 disabled={disabled}

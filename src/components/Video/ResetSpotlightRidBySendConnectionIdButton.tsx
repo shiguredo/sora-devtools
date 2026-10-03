@@ -2,6 +2,8 @@ import { Button } from "@/components/ui";
 import { connectionStatus, sora } from "@/app/signals";
 import { rpc } from "@/rpc";
 
+import styles from "./ResetSpotlightRidBySendConnectionIdButton.module.css";
+
 interface Props {
   sendConnectionId: string;
 }
@@ -24,7 +26,7 @@ export function ResetSpotlightRidBySendConnectionIdButton(props: Props) {
   };
 
   return (
-    <Button variant="secondary" className="mx-1" onClick={onClick}>
+    <Button variant="secondary" className={styles.button} onClick={onClick}>
       resetSpotlightRid
     </Button>
   );

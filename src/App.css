@@ -1,18 +1,5 @@
-@import "tailwindcss";
-
-@theme {
-  /* Sora ブランドカラー */
-  --color-sora: #0071bc;
-
-  /* カラー定義 */
-  --color-bs-primary: #0d6efd;
-  --color-bs-secondary: #6c757d;
-  --color-bs-dark: #212529;
-  --color-bs-light: #f8f9fa;
-  --color-bs-yellow: #ffc107;
-  --color-bs-orange: #fd7e14;
-  --color-bs-red: #dc3545;
-}
+@import "./styles/tokens.css";
+@import "./styles/reset.css";
 
 /* アプリ固有のユーティリティクラス */
 .border-left {
@@ -20,7 +7,7 @@
 }
 
 .border-secondary {
-  border-color: var(--color-bs-secondary) !important;
+  border-color: var(--color-bs-secondary);
 }
 
 .bg-dark {
@@ -51,34 +38,11 @@
   flex-wrap: wrap;
 }
 
-.col {
-  flex: 1 0 0%;
-  padding-bottom: 0.5rem;
-}
-
-.row-cols-auto > * {
-  flex: 0 0 auto;
-  width: auto;
-}
-
-.badge {
-  display: inline-block;
-  padding: 0.35em 0.65em;
-  font-size: 0.75em;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: 0.375rem;
-}
-
 /*
  * アプリ全体の縦フレックススケルトン
  *
  * body は height: 100vh の縦フレックスとし、padding-top (56px) は
- * fixed のヘッダーの高さ分（Tailwind preflight の box-sizing: border-box により
+ * fixed のヘッダーの高さ分（リセット CSS の box-sizing: border-box により
  * height に含まれるため、合計はちょうど 100vh になる）
  * 高さを固定するのは #root の高さを確定させ、コンテンツ領域を
  * 内部スクロールにするため（min-height のみだとコンテンツの高さで
@@ -99,10 +63,6 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-}
-
-label {
-  margin-bottom: 0;
 }
 
 input[type="range"] {
@@ -142,39 +102,8 @@ video {
 }
 
 .container {
-  max-width: none;
-}
-
-/* フォームスタイル */
-.form-control {
-  display: block;
   width: 100%;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  appearance: none;
-  border-radius: 0.375rem;
-  transition:
-    border-color 0.15s ease-in-out,
-    box-shadow 0.15s ease-in-out;
-}
-
-.form-control:focus {
-  color: #212529;
-  background-color: #fff;
-  border-color: #86b7fe;
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-.form-control:disabled {
-  background-color: #e9ecef;
-  opacity: 0.65;
+  max-width: none;
 }
 
 .form-row {
@@ -190,10 +119,6 @@ video {
   padding-bottom: 0.5rem;
 }
 
-.form-row .col {
-  display: flex;
-}
-
-.form-row .w-500 {
+.form-row .input-wide {
   width: 500px;
 }

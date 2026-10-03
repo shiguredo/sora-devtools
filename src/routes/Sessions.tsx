@@ -18,6 +18,8 @@ import type { SessionListFilter, SessionListRow } from "@/sessionDatabase";
 import { buildSessionsPath, parseSessionsSearchParams } from "@/sessionsSearchParams";
 import type { SessionsSearchParams } from "@/sessionsSearchParams";
 
+import styles from "./Sessions.module.css";
+
 type SessionsErrorKind = "list" | "delete" | "reset";
 
 function findSessionById(
@@ -123,11 +125,8 @@ function isHistoryResetDisabled(
 // プライバシー文言（端末内 OPFS・端末情報・複数タブ注意）
 function PrivacyNotice() {
   return (
-    <aside
-      className="mb-4 rounded border border-bs-secondary bg-bs-light p-3 text-sm"
-      data-testid="sessions-privacy-notice"
-    >
-      <ul className="list-disc space-y-1 pl-5">
+    <aside className={styles.privacyNotice} data-testid="sessions-privacy-notice">
+      <ul className={styles.privacyList}>
         <li>データは端末内の OPFS に保存され、外部サーバーには送信されません</li>
         <li>接続記録に端末情報（IP アドレス等）が含まれることがあります</li>
         <li>複数タブで同時に開くとデータ破損のリスクがあります。1 つのタブだけを使ってください</li>
@@ -301,11 +300,7 @@ function Sessions() {
   let errorAlert = null;
   if (errorMessage !== null) {
     errorAlert = (
-      <div
-        className="mb-4 rounded border border-red-400 bg-red-50 p-3 text-sm text-red-800"
-        data-testid="sessions-page-error"
-        role="alert"
-      >
+      <div className={styles.pageError} data-testid="sessions-page-error" role="alert">
         {errorPrefix(errorKind)}
         {errorMessage}
       </div>
@@ -317,13 +312,13 @@ function Sessions() {
   let listBody = null;
   if (loading) {
     listBody = (
-      <p className="text-bs-secondary" data-testid="session-list-loading">
+      <p className={styles.muted} data-testid="session-list-loading">
         読み込み中…
       </p>
     );
   } else if (!databaseAvailable) {
     listBody = (
-      <p className="text-bs-secondary" data-testid="session-database-unavailable">
+      <p className={styles.muted} data-testid="session-database-unavailable">
         セッション永続化が利用できません（OPFS 非対応、またはデータベース初期化に失敗しています）
       </p>
     );
@@ -351,7 +346,7 @@ function Sessions() {
     resetButton = (
       <button
         type="button"
-        className="rounded border border-bs-secondary px-2 py-0.5 text-sm"
+        className={styles.resetButton}
         data-testid="sessions-reset-database"
         disabled={resetDisabled}
         onClick={() => {
@@ -372,17 +367,14 @@ function Sessions() {
   // DevTools と同様にコンテンツ領域いっぱいに広げて内部スクロールさせる。
   // 省略するとコンテンツが #root の min-height: 0 を超えて footer の裏に入り込む
   return (
-    <main
-      className="mx-auto max-w-6xl px-4 py-4 flex-1 min-h-0 overflow-y-auto"
-      data-testid="sessions-page"
-    >
-      <h1 className="mb-3 text-2xl font-semibold">Sessions</h1>
+    <main className={styles.main} data-testid="sessions-page">
+      <h1 className={styles.title}>Sessions</h1>
       <PrivacyNotice />
       {errorAlert}
       <SessionFilter value={searchParams} onChange={applySearchParams} />
-      <section className="mb-6">
-        <div className="mb-2 flex items-center gap-3">
-          <h2 className="text-lg font-semibold">一覧</h2>
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>一覧</h2>
           {resetButton}
         </div>
         <SessionsDeleteConfirmPanel

@@ -1,5 +1,7 @@
 import type { CSSProperties } from "preact";
 
+import styles from "./FormSwitch.module.css";
+
 interface FormSwitchProps {
   id?: string;
   name?: string;
@@ -55,13 +57,7 @@ export function FormSwitch({
       checked={checked}
       onChange={onChange}
       disabled={disabled}
-      className={`
-        appearance-none cursor-pointer
-        transition-all duration-150
-        focus:outline-none focus:ring-2 focus:ring-bs-primary/25
-        disabled:opacity-50 disabled:cursor-not-allowed
-        ${className}
-      `}
+      className={`${styles.switch} ${className}`}
       style={inputStyle}
     />
   );

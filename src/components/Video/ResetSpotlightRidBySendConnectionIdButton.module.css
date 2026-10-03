@@ -1,0 +1,4 @@
+/* 他のボタンとの左右間隔 */
+.button {
+  margin-inline: 0.25rem;
+}

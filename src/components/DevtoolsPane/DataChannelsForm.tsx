@@ -20,7 +20,7 @@ export function DataChannelsForm() {
     null,
     2,
   );
-  const textareaPlaceholder = `dataChannelsを指定\n(例)\n${exampleJsonString}`;
+  const textareaPlaceholder = `dataChannels を指定\n(例)\n${exampleJsonString}`;
   const onChangeSwitch = (event: Event): void => {
     const target = event.target as HTMLInputElement;
     setEnabledDataChannels(target.checked);
@@ -29,7 +29,7 @@ export function DataChannelsForm() {
     <>
       <div className="form-row">
         <div className="col-auto">
-          <FormGroup className="flex items-center gap-2" controlId="enabledDataChannels">
+          <FormGroup controlId="enabledDataChannels">
             <TooltipFormCheck
               kind="dataChannels"
               checked={enabledDataChannels.value}

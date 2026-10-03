@@ -15,6 +15,8 @@ import type {
   StatsStreamTimeseriesPoint,
 } from "@/sessionDatabase";
 
+import styles from "./StatsRawPanel.module.css";
+
 export interface StatsRawPanelProps {
   sessionDbId: number;
 }
@@ -185,37 +187,34 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
   const showRtt = selected?.stats_type === "candidate-pair";
 
   return (
-    <section className="mt-4" data-testid="stats-raw-panel">
-      <div className="mb-3">
-        <h3 className="text-base font-semibold">ストリーム詳細</h3>
-        <p className="mt-0.5 text-xs text-bs-secondary">
+    <section className={styles.root} data-testid="stats-raw-panel">
+      <div className={styles.header}>
+        <h3 className={styles.title}>ストリーム詳細</h3>
+        <p className={styles.description}>
           stats_id を選ぶと、累積値ではなく差分から求めたビットレート / パケットレート / RTT
           を表示します（試行中）
         </p>
       </div>
 
       {errorMessage !== null ? (
-        <p className="mb-2 text-sm text-red-700" data-testid="raw-stats-error">
+        <p className={styles.error} data-testid="raw-stats-error">
           {errorMessage}
         </p>
       ) : null}
       {loading ? (
-        <p className="mb-2 text-sm text-bs-secondary" data-testid="raw-stats-loading">
+        <p className={styles.loading} data-testid="raw-stats-loading">
           読み込み中…
         </p>
       ) : null}
 
       {streams.length === 0 && !loading ? (
-        <p className="text-sm text-bs-secondary" data-testid="stats-streams-empty">
+        <p className={styles.empty} data-testid="stats-streams-empty">
           表示できるストリームがありません
         </p>
       ) : (
-        <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(240px,320px)_1fr]">
-          <div
-            className="max-h-96 overflow-auto rounded border border-bs-light"
-            data-testid="stats-stream-list"
-          >
-            <ul className="divide-y divide-bs-light">
+        <div className={styles.layout}>
+          <div className={styles.streamList} data-testid="stats-stream-list">
+            <ul className={styles.streamItems}>
               {streams.map((stream) => {
                 const active = stream.stats_id === selectedStatsId;
                 const summaryParts: string[] = [];
@@ -238,8 +237,8 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
                       type="button"
                       className={
                         active
-                          ? "w-full bg-[#e7f1ff] px-3 py-2 text-left"
-                          : "w-full bg-white px-3 py-2 text-left hover:bg-[#f8f9fa]"
+                          ? `${styles.streamButton} ${styles.streamButtonActive}`
+                          : `${styles.streamButton} ${styles.streamButtonInactive}`
                       }
                       data-testid="stats-stream-item"
                       data-stats-id={stream.stats_id}
@@ -249,18 +248,15 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
                         setPageOffset(0);
                       }}
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="rounded bg-bs-light px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-bs-secondary uppercase">
+                      <div className={styles.streamItemHeader}>
+                        <span className={styles.streamType}>
                           {streamTypeLabel(stream.stats_type)}
                         </span>
-                        <span
-                          className="truncate font-mono text-xs text-bs-body"
-                          title={stream.stats_id}
-                        >
+                        <span className={styles.streamId} title={stream.stats_id}>
                           {shortStatsId(stream.stats_id)}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs text-bs-secondary">{summaryParts.join(" · ")}</p>
+                      <p className={styles.meta}>{summaryParts.join(" · ")}</p>
                     </button>
                   </li>
                 );
@@ -268,15 +264,15 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
             </ul>
           </div>
 
-          <div className="flex min-w-0 flex-col gap-3" data-testid="stats-stream-detail">
+          <div className={styles.detail} data-testid="stats-stream-detail">
             {selected === null ? (
-              <p className="text-sm text-bs-secondary">ストリームを選択してください</p>
+              <p className={styles.empty}>ストリームを選択してください</p>
             ) : (
               <>
-                <div className="rounded border border-bs-light bg-white p-3">
-                  <p className="text-xs text-bs-secondary">選択中</p>
-                  <p className="font-mono text-sm break-all">{selected.stats_id}</p>
-                  <p className="mt-1 text-xs text-bs-secondary">
+                <div className={styles.card}>
+                  <p className={styles.cardLabel}>選択中</p>
+                  <p className={styles.selectedStreamId}>{selected.stats_id}</p>
+                  <p className={styles.meta}>
                     {streamTypeLabel(selected.stats_type)}
                     {selected.kind !== null ? ` / ${selected.kind}` : ""}
                     {` / ${String(selected.sample_count)} samples`}
@@ -331,24 +327,19 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
         </div>
       )}
 
-      <details
-        className="rounded border border-bs-light bg-white p-3"
-        data-testid="stats-raw-details"
-      >
-        <summary className="cursor-pointer text-sm font-semibold text-bs-body">
-          生データテーブル（デバッグ用）
-        </summary>
-        <div className="mt-3">
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm text-bs-secondary" data-testid="stats-page-count">
+      <details className={styles.card} data-testid="stats-raw-details">
+        <summary className={styles.tableSummary}>生データテーブル（デバッグ用）</summary>
+        <div className={styles.tableContent}>
+          <div className={styles.tableToolbar}>
+            <p className={styles.count} data-testid="stats-page-count">
               {selectedStatsId === ""
                 ? "0 件"
                 : `全 ${String(page.totalCount)} 件（${String(pageOffset + 1)}–${String(Math.min(pageOffset + page.rows.length, page.totalCount))} 件目）`}
             </p>
-            <div className="flex gap-2">
+            <div className={styles.pageActions}>
               <button
                 type="button"
-                className="rounded border border-bs-secondary px-2 py-1 text-sm disabled:opacity-50"
+                className={styles.pageButton}
                 disabled={pageOffset <= 0}
                 data-testid="stats-page-prev"
                 onClick={() => {
@@ -359,7 +350,7 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
               </button>
               <button
                 type="button"
-                className="rounded border border-bs-secondary px-2 py-1 text-sm disabled:opacity-50"
+                className={styles.pageButton}
                 disabled={pageOffset >= maxOffset}
                 data-testid="stats-page-next"
                 onClick={() => {
@@ -380,7 +371,7 @@ export function StatsRawPanel({ sessionDbId }: StatsRawPanelProps) {
 function StatsRawTable({ page }: { page: StatsPageResult }) {
   if (page.rows.length === 0) {
     return (
-      <p className="text-sm text-bs-secondary" data-testid="stats-raw-empty">
+      <p className={styles.empty} data-testid="stats-raw-empty">
         生データはありません
       </p>
     );
@@ -414,68 +405,44 @@ function StatsRawTable({ page }: { page: StatsPageResult }) {
   }
 
   return (
-    <div
-      className="max-h-80 overflow-auto rounded border border-bs-light"
-      data-testid="stats-raw-table"
-    >
-      <table className="w-full border-collapse text-left text-xs">
-        <thead className="sticky top-0 bg-bs-light">
-          <tr className="border-b border-bs-secondary">
-            <th className="px-2 py-1.5 font-semibold">時刻 (JST)</th>
-            <th className="px-2 py-1.5 font-semibold">stats_type</th>
-            {showKind ? <th className="px-2 py-1.5 font-semibold">kind</th> : null}
-            {showPacketsReceived ? (
-              <th className="px-2 py-1.5 text-right font-semibold">pkt recv</th>
-            ) : null}
-            {showPacketsSent ? (
-              <th className="px-2 py-1.5 text-right font-semibold">pkt sent</th>
-            ) : null}
-            {showBytesReceived ? (
-              <th className="px-2 py-1.5 text-right font-semibold">bytes recv</th>
-            ) : null}
-            {showBytesSent ? (
-              <th className="px-2 py-1.5 text-right font-semibold">bytes sent</th>
-            ) : null}
-            {showRtt ? <th className="px-2 py-1.5 text-right font-semibold">RTT</th> : null}
+    <div className={styles.tableWrapper} data-testid="stats-raw-table">
+      <table className={styles.table}>
+        <thead className={styles.tableHead}>
+          <tr className={styles.headRow}>
+            <th className={styles.headCell}>時刻 (JST)</th>
+            <th className={styles.headCell}>stats_type</th>
+            {showKind ? <th className={styles.headCell}>kind</th> : null}
+            {showPacketsReceived ? <th className={styles.headCellRight}>pkt recv</th> : null}
+            {showPacketsSent ? <th className={styles.headCellRight}>pkt sent</th> : null}
+            {showBytesReceived ? <th className={styles.headCellRight}>bytes recv</th> : null}
+            {showBytesSent ? <th className={styles.headCellRight}>bytes sent</th> : null}
+            {showRtt ? <th className={styles.headCellRight}>RTT</th> : null}
           </tr>
         </thead>
         <tbody>
           {page.rows.map((row, index) => {
-            const rowClass =
-              index % 2 === 0
-                ? "border-b border-bs-light bg-white"
-                : "border-b border-bs-light bg-[#f8f9fa]";
+            const rowClass = index % 2 === 0 ? styles.rowEven : styles.rowOdd;
             return (
               <tr key={row.id} className={rowClass}>
-                <td className="px-2 py-1 font-mono tabular-nums">
+                <td className={styles.timeCell}>
                   {formatChartUnixSecJst(row.timestamp_ms / 1000, true)}
                 </td>
-                <td className="px-2 py-1">{displayOrDash(row.stats_type)}</td>
-                {showKind ? <td className="px-2 py-1">{displayOrDash(row.kind)}</td> : null}
+                <td className={styles.bodyCell}>{displayOrDash(row.stats_type)}</td>
+                {showKind ? <td className={styles.bodyCell}>{displayOrDash(row.kind)}</td> : null}
                 {showPacketsReceived ? (
-                  <td className="px-2 py-1 text-right font-mono tabular-nums">
-                    {formatTableNumber(row.packets_received)}
-                  </td>
+                  <td className={styles.numberCell}>{formatTableNumber(row.packets_received)}</td>
                 ) : null}
                 {showPacketsSent ? (
-                  <td className="px-2 py-1 text-right font-mono tabular-nums">
-                    {formatTableNumber(row.packets_sent)}
-                  </td>
+                  <td className={styles.numberCell}>{formatTableNumber(row.packets_sent)}</td>
                 ) : null}
                 {showBytesReceived ? (
-                  <td className="px-2 py-1 text-right font-mono tabular-nums">
-                    {formatTableBytes(row.bytes_received)}
-                  </td>
+                  <td className={styles.numberCell}>{formatTableBytes(row.bytes_received)}</td>
                 ) : null}
                 {showBytesSent ? (
-                  <td className="px-2 py-1 text-right font-mono tabular-nums">
-                    {formatTableBytes(row.bytes_sent)}
-                  </td>
+                  <td className={styles.numberCell}>{formatTableBytes(row.bytes_sent)}</td>
                 ) : null}
                 {showRtt ? (
-                  <td className="px-2 py-1 text-right font-mono tabular-nums">
-                    {formatTableRtt(row.round_trip_time)}
-                  </td>
+                  <td className={styles.numberCell}>{formatTableRtt(row.round_trip_time)}</td>
                 ) : null}
               </tr>
             );

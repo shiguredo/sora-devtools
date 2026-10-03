@@ -3,6 +3,8 @@ import { useEffect } from "preact/hooks";
 
 import type { SessionListRow } from "@/sessionDatabase";
 
+import styles from "./SessionsDeleteConfirmPanel.module.css";
+
 export interface SessionsDeleteConfirmPanelProps {
   confirmingReset: boolean;
   confirmingSessionDbId: number | null;
@@ -58,7 +60,7 @@ function ConfirmDialogBody({
   let detailParagraph = null;
   if (detail !== null) {
     detailParagraph = (
-      <p className="mb-4 truncate font-mono text-xs text-bs-secondary" title={detail}>
+      <p className={styles.detail} title={detail}>
         {detail}
       </p>
     );
@@ -66,13 +68,13 @@ function ConfirmDialogBody({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      className={styles.overlay}
       data-testid="sessions-delete-confirm-panel"
       role="presentation"
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-md rounded border border-bs-secondary bg-white p-4 shadow-lg"
+        className={styles.dialog}
         role="dialog"
         aria-modal="true"
         aria-labelledby="sessions-delete-confirm-title"
@@ -80,17 +82,14 @@ function ConfirmDialogBody({
           event.stopPropagation();
         }}
       >
-        <h3
-          id="sessions-delete-confirm-title"
-          className="mb-2 text-base font-semibold text-red-800"
-        >
+        <h3 id="sessions-delete-confirm-title" className={styles.dialogTitle}>
           {title}
         </h3>
         {detailParagraph}
-        <div className="flex items-center justify-end gap-2">
+        <div className={styles.actions}>
           <button
             type="button"
-            className="w-24 rounded border border-bs-secondary bg-white px-2 py-1 text-sm"
+            className={styles.cancelButton}
             data-testid={cancelTestId}
             disabled={confirmDisabled}
             onClick={onCancel}
@@ -99,7 +98,7 @@ function ConfirmDialogBody({
           </button>
           <button
             type="button"
-            className="w-20 rounded border border-red-400 bg-red-50 px-2 py-1 text-sm text-red-700"
+            className={styles.confirmButton}
             data-testid={confirmTestId}
             disabled={confirmDisabled}
             onClick={onConfirm}

@@ -2,6 +2,8 @@ import { requestMedia } from "@/app/actions";
 import { isFormDisabled, localMediaStream, role, sora } from "@/app/signals";
 import { Button } from "@/components/ui";
 
+import styles from "./RequestMediaButton.module.css";
+
 export function RequestMediaButton() {
   const onClick = (): void => {
     void requestMedia();
@@ -16,7 +18,7 @@ export function RequestMediaButton() {
     localMediaStream.value !== null ||
     isFormDisabled.value;
   return (
-    <div className="col-auto mb-1">
+    <div className={`col-auto ${styles.root}`}>
       <Button variant="outline-secondary" onClick={onClick} disabled={disabled}>
         request media
       </Button>

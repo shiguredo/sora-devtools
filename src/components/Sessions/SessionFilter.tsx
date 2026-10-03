@@ -1,5 +1,7 @@
 import type { SessionsSearchParams } from "@/sessionsSearchParams";
 
+import styles from "./SessionFilter.module.css";
+
 export interface SessionFilterProps {
   value: SessionsSearchParams;
   onChange: (next: SessionsSearchParams) => void;
@@ -51,73 +53,62 @@ export function SessionFilter({ value, onChange }: SessionFilterProps) {
   };
 
   return (
-    <form
-      className="mb-4 grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-6"
-      onSubmit={handleSubmit}
-      data-testid="session-filter"
-    >
-      <label className="flex flex-col text-sm">
-        <span className="mb-1 text-bs-secondary">channelId</span>
+    <form className={styles.form} onSubmit={handleSubmit} data-testid="session-filter">
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>channelId</span>
         <input
           name="channelId"
           type="text"
-          className="rounded border border-bs-secondary px-2 py-1"
+          className={styles.input}
           defaultValue={value.channelId ?? ""}
           key={`channelId-${value.channelId ?? ""}`}
         />
       </label>
-      <label className="flex flex-col text-sm">
-        <span className="mb-1 text-bs-secondary">sessionId</span>
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>sessionId</span>
         <input
           name="sessionId"
           type="text"
-          className="rounded border border-bs-secondary px-2 py-1"
+          className={styles.input}
           defaultValue={value.sessionId ?? ""}
           key={`sessionId-${value.sessionId ?? ""}`}
         />
       </label>
-      <label className="flex flex-col text-sm">
-        <span className="mb-1 text-bs-secondary">connectionId</span>
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>connectionId</span>
         <input
           name="connectionId"
           type="text"
-          className="rounded border border-bs-secondary px-2 py-1"
+          className={styles.input}
           defaultValue={value.connectionId ?? ""}
           key={`connectionId-${value.connectionId ?? ""}`}
         />
       </label>
-      <label className="flex flex-col text-sm">
-        <span className="mb-1 text-bs-secondary">from (UTC)</span>
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>from (UTC)</span>
         <input
           name="from"
           type="date"
-          className="rounded border border-bs-secondary px-2 py-1"
+          className={styles.input}
           defaultValue={value.from ?? ""}
           key={`from-${value.from ?? ""}`}
         />
       </label>
-      <label className="flex flex-col text-sm">
-        <span className="mb-1 text-bs-secondary">to (UTC)</span>
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>to (UTC)</span>
         <input
           name="to"
           type="date"
-          className="rounded border border-bs-secondary px-2 py-1"
+          className={styles.input}
           defaultValue={value.to ?? ""}
           key={`to-${value.to ?? ""}`}
         />
       </label>
-      <div className="flex items-end gap-2">
-        <button
-          type="submit"
-          className="rounded border border-bs-primary bg-bs-primary px-3 py-1 text-sm text-white"
-        >
+      <div className={styles.actions}>
+        <button type="submit" className={styles.submitButton}>
           絞り込み
         </button>
-        <button
-          type="button"
-          className="rounded border border-bs-secondary px-3 py-1 text-sm"
-          onClick={handleClear}
-        >
+        <button type="button" className={styles.clearButton} onClick={handleClear}>
           クリア
         </button>
       </div>

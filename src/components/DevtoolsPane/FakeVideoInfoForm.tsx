@@ -13,7 +13,7 @@ export function FakeVideoInfoForm() {
     return null;
   }
   return (
-    <FormGroup className="flex items-center gap-2" controlId="fakeVideoShowChannelId">
+    <FormGroup controlId="fakeVideoShowChannelId">
       <TooltipFormCheck
         kind="fakeVideoShowChannelId"
         checked={fakeVideoShowChannelId.value}

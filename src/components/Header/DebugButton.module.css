@@ -1,0 +1,37 @@
+/*
+ * debug ボタン
+ *
+ * debug の有効/無効で色だけを差し替える。
+ * 寸法・枠線・トランジションは基底クラスで共通化する
+ */
+
+/* 全状態共通の基底スタイル */
+.button {
+  composes: button from "./HeaderButton.module.css";
+}
+
+/* debug 有効時: ピンクの塗りつぶし */
+.enabled {
+  color: var(--color-white);
+  background-color: var(--color-debug);
+  border-color: var(--color-debug);
+}
+
+@media (hover: hover) {
+  .enabled:hover {
+    background-color: var(--color-debug-hover);
+    border-color: var(--color-debug-hover);
+  }
+}
+
+/* debug 無効時: 明るい背景 */
+.idle {
+  composes: idle from "./HeaderButton.module.css";
+}
+
+@media (hover: hover) {
+  .idle:hover {
+    background-color: var(--color-bs-light-hover);
+    border-color: var(--color-bs-light-hover-border);
+  }
+}

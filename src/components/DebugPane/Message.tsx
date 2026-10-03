@@ -6,13 +6,14 @@ import { Collapse } from "@/components/ui";
 
 import { formatUnixtime } from "@/utils";
 
+import styles from "./Message.module.css";
+
 import { CopyLogButton } from "./CopyLogButton.tsx";
 import { JsonTree } from "./JsonTree.tsx";
 
 interface DescriptionProps {
   description: string | number | Record<string, unknown> | unknown[] | undefined;
   prevDescription?: unknown;
-  wordBreak?: boolean;
 }
 
 function Description(props: DescriptionProps) {
@@ -22,11 +23,9 @@ function Description(props: DescriptionProps) {
   }
   if (typeof description !== "object") {
     return (
-      <div className="text-white">
-        <div className="py-1 px-4">
-          <pre className="text-base text-white m-0 whitespace-pre-wrap break-all">
-            {description}
-          </pre>
+      <div className={styles.description}>
+        <div className={styles.descriptionBody}>
+          <pre className={styles.pre}>{description}</pre>
         </div>
       </div>
     );
@@ -34,8 +33,8 @@ function Description(props: DescriptionProps) {
   // prevDescription が渡されている場合は JsonTree を使用（差分更新あり）
   if (prevDescription !== undefined) {
     return (
-      <div className="text-white">
-        <div className="py-1 px-4">
+      <div className={styles.description}>
+        <div className={styles.descriptionBody}>
           <JsonTree data={description} prevData={prevDescription} />
         </div>
       </div>
@@ -43,11 +42,9 @@ function Description(props: DescriptionProps) {
   }
   // prevDescription がない場合は従来通り JSON.stringify
   return (
-    <div className="text-white">
-      <div className="py-1 px-4">
-        <pre className="text-base text-white m-0 whitespace-pre-wrap break-all">
-          {JSON.stringify(description, null, 2)}
-        </pre>
+    <div className={styles.description}>
+      <div className={styles.descriptionBody}>
+        <pre className={styles.pre}>{JSON.stringify(description, null, 2)}</pre>
       </div>
     </div>
   );
@@ -60,15 +57,13 @@ interface Props {
   prevDescription?: unknown;
   defaultShow?: boolean;
   label?: ComponentChild;
-  wordBreak?: boolean;
 }
 
 // 矢印アイコン（折りたたみ状態用）
 function ArrowIcon({ expanded }: { expanded: boolean }) {
-  const rotation = expanded ? "rotate-90" : "";
   return (
     <svg
-      className={`inline-block w-2.5 h-2.5 mx-1.5 transition-transform ${rotation}`}
+      className={`${styles.arrow} ${expanded ? styles.arrowExpanded : ""}`}
       fill="none"
       stroke="white"
       strokeWidth="2"
@@ -91,14 +86,11 @@ export function Message(props: Props) {
     }
   });
   return (
-    <div className="border border-light rounded mb-1 bg-dark" data-title={title}>
-      <div className="flex justify-between items-center break-words">
+    <div className={`${styles.root} bg-dark`} data-title={title}>
+      <div className={styles.header}>
         <button
           type="button"
-          className="
-            cursor-pointer text-white w-full no-underline
-            bg-transparent border-0 p-0 text-left font-inherit block
-          "
+          className={styles.titleButton}
           onClick={() => {
             show.value = !show.value;
           }}
@@ -107,7 +99,7 @@ export function Message(props: Props) {
         >
           <ArrowIcon expanded={show.value} />
           {timestamp ? (
-            <span className="text-white/50 mr-1">[{formatUnixtime(timestamp)}]</span>
+            <span className={styles.timestamp}>[{formatUnixtime(timestamp)}]</span>
           ) : null}
           {label}
           <span>{title}</span>
@@ -121,12 +113,8 @@ export function Message(props: Props) {
         </div>
       </div>
       <Collapse in={show.value}>
-        <div className="border-top">
-          <Description
-            description={description}
-            prevDescription={prevDescription}
-            wordBreak={props.wordBreak}
-          />
+        <div>
+          <Description description={description} prevDescription={prevDescription} />
         </div>
       </Collapse>
     </div>

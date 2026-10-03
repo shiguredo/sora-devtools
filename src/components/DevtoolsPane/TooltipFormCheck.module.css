@@ -1,0 +1,50 @@
+/* スイッチに添えるラベル。クリック可能にし、テキスト選択を無効化する */
+.label {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ツールチップ対象のラベルに点線の下線を付ける */
+.dottedLabel {
+  border-bottom: 1px dotted var(--color-bs-secondary);
+}
+
+/* ラベルとツールチップをまとめる。ツールチップの位置指定の基準になる */
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* 説明ツールチップ。通常は非表示で、ラッパーのホバー時に表示する */
+.tooltip {
+  position: absolute;
+  z-index: 50;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 0.5rem;
+  min-width: 200px;
+  max-width: 300px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-bs-dark);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-sora);
+  border-radius: 0.375rem;
+  box-shadow:
+    0 10px 15px -3px var(--color-shadow),
+    0 4px 6px -4px var(--color-shadow);
+  white-space: pre-wrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ラッパーのホバーでツールチップを表示する */
+@media (hover: hover) {
+  .wrapper:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+}

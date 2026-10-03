@@ -1,0 +1,6 @@
+/* フォーム行。折り返し可能な横並びにして 0.5rem 間隔で配置する */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

@@ -15,7 +15,7 @@ export function AutoGainControlForm() {
     }
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="autoGainControl">
+    <FormGroup controlId="autoGainControl">
       <TooltipFormLabel kind="autoGainControl">autoGainControl:</TooltipFormLabel>
       <FormSelect name="autoGainControl" value={autoGainControl.value} onChange={onChange}>
         {AUTO_GAIN_CONTROLS.map((value) => (

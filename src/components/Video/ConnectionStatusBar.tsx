@@ -5,6 +5,8 @@ import { ClipboardIcon } from "@/components/ClipboardIcon";
 import { copyToClipboard } from "@/utils";
 import * as signals from "@/app/signals";
 
+import styles from "./StatusBar.module.css";
+
 interface TextBoxProps {
   id?: string;
   label?: string;
@@ -19,10 +21,10 @@ function TextBox(props: TextBoxProps) {
     }
   };
   return (
-    <div className="flex items-center">
+    <div className={styles.root}>
       {props.label ? <p>{props.label}</p> : null}
-      <div className="flex items-center border border-secondary rounded mx-1">
-        <p id={props.id} className="mx-2 p-1">
+      <div className={`${styles.box} border-secondary`}>
+        <p id={props.id} className={styles.text}>
           {props.text}
         </p>
         <div className="border-left border-secondary">

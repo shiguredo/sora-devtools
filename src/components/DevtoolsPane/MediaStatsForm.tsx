@@ -10,7 +10,7 @@ export function MediaStatsForm() {
     setMediaStats(target.checked);
   };
   return (
-    <FormGroup className="flex items-center gap-2" controlId="mediaStats">
+    <FormGroup controlId="mediaStats">
       <TooltipFormCheck
         kind="mediaStats"
         checked={mediaStats.value}

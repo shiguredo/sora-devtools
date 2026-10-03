@@ -2,6 +2,8 @@ import { setDebugFilterText } from "@/app/actions";
 import { debugFilterText, timelineExpandAll } from "@/app/signals";
 import { FormGroup, FormInput, FormLabel } from "@/components/ui";
 
+import styles from "./Filter.module.css";
+
 export function DebugFilter() {
   const debugFilterTextValue = debugFilterText.value;
   const isExpanded = timelineExpandAll.value === true;
@@ -16,21 +18,17 @@ export function DebugFilter() {
   };
 
   return (
-    <FormGroup className="flex items-center gap-2 my-2 flex-1" controlId="channelId">
-      <button
-        type="button"
-        className="text-white/80 hover:text-white text-2xl cursor-pointer bg-transparent border border-white/50 rounded px-2"
-        onClick={handleToggle}
-      >
+    <FormGroup className={styles.group} controlId="channelId">
+      <button type="button" className={styles.toggleButton} onClick={handleToggle}>
         {isExpanded ? "▼" : "▶"}
       </button>
-      <FormLabel className="text-white">Filter:</FormLabel>
+      <FormLabel className={styles.label}>Filter:</FormLabel>
       <FormInput
         type="text"
         placeholder="Filter"
         value={debugFilterTextValue}
         onChange={onChange}
-        className="flex-1"
+        className={styles.input}
       />
     </FormGroup>
   );
