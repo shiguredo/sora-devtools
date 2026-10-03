@@ -51,7 +51,8 @@ test("ルーティング: 既存 query が / で復元される", async ({ page 
     accessToken: "test-token",
   });
 
-  const channelIdInput = page.getByRole("textbox", { name: "ChannelIdを指定" });
+  // ラベルと紐づかないため、placeholder の文言ではなく安定した data 属性で特定する
+  const channelIdInput = page.locator('[data-control-id="channelId"] input');
   await channelIdInput.waitFor({ timeout: 10_000 });
   const value = await channelIdInput.inputValue();
   if (value !== channelId) {
