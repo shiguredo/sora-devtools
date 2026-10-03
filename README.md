@@ -44,7 +44,6 @@ Sora の配信、視聴機能が一通り確認できるようになっていま
   - [Rolldown](https://rolldown.rs/)
   - [Vitest](https://vitest.dev/)
   - [Oxc](https://oxc.rs/)
-- [Tailwind CSS](https://tailwindcss.com/)
 - [Playwright](https://playwright.dev/)
 - [Media Processors](https://github.com/shiguredo/media-processors)
   - [@shiguredo/virtual\-background \- npm](https://www.npmjs.com/package/@shiguredo/virtual-background)
