@@ -27,7 +27,7 @@
 
 ## テスト
 
-- モックやスタブは絶対にりようしないこと
+- モックやスタブは絶対に利用しないこと
 - Vitest の Chai API である test / assert を利用すること
 - Jest API は利用しないこと
   - it / describe / expect は利用しないこと
@@ -40,12 +40,16 @@
 
 ### Components
 
-- Tailwind CSS v4 を利用すること
+- CSS Modules を利用すること
 - グローバルな CSS（App.css など）にコンポーネント固有のスタイルを書かないこと
-- スタイルの適用方法 (優先順):
-  1. Tailwind のユーティリティクラス
-  2. Arbitrary Values `[値]` や Arbitrary Properties `[プロパティ:値]`
-     - CSS 変数は `(--変数名)` の省略記法も可
-  3. 複雑な場合は CSS Modules (`ComponentName.module.css`)
-- カスタムユーティリティを追加する場合は `@utility` を使用する
+- スタイルの適用方法:
+  1. コンポーネントと同じディレクトリに `ComponentName.module.css` を作成し、意味的なクラス名で定義する
+  2. 色・フォントは `src/styles/tokens.css` の CSS カスタムプロパティを利用する
+     - Tailwind パレット由来の色は `--color-gray-*` / `--color-blue-*` / `--color-red-*` を使う
+     - 汎用色は `--color-white` / `--color-black` / `--color-shadow` を使う
+     - ブランド色は `--color-bs-*` / `--color-sora` を使う
+     - 特定コンポーネント専用の状態色や単独で使う固有値は直接記述してよい
+  3. 複数コンポーネントで共有するレイアウト（row / col-auto / col-6 / col-12 / form-row など）は `src/App.css` のクラスを利用する
+- ユーティリティクラス（Tailwind 由来の px-2 / flex など）を新規に追加しないこと
+- hover スタイルは `@media (hover: hover)` の中に書くこと（タッチデバイスでの張り付きを防ぐ）
 - ボタンのテキストが状態によって変わる場合（例: "copy URL" → "copied!"）、ボタンの幅を固定して変わらないようにすること
