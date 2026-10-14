@@ -47,7 +47,10 @@ RPC タブでサーバーが返したエラーの `code` / `message` / `data` �
 - Video ペインの Spotlight / Simulcast ボタンから呼んだ場合も、サーバーエラー時にアラートが表示される
 - クライアント側のエラー (DataChannel 未接続、リクエストタイムアウト、notification 送信失敗) は従来どおりアラートのみで、RPC Results には記録されない
 - 成功時は従来どおり `result` が RPC Results に表示される
-- サーバーがエラーを返す経路のテストが追加されている (jsdom には `RTCDataChannel` がないため、`vitest.ct.config.ts` の browser テストで実 `RTCPeerConnection` の `rpc` DataChannel を使い、サーバー役に JSON-RPC エラーを返させる)
+- サーバーがエラーを返す経路は自動テストで再現できないため、手動で確認する
+  - devtools の e2e は `tests/pages/DevtoolsPage.ts` の `navigate` が `access_token` を metadata に載せるだけなので、認証ウェブフックに `rpc_methods` を払い出させる JWT のパラメータを付与できない (sora-js-sdk の e2e テストは private claims を設定した JWT を生成して払い出させている)
+  - `vitest.ct.config.ts` の browser テストで実 `RTCPeerConnection` を接続する方法は、headless Chromium が host candidate を mDNS (`*.local`) に変換するため `--disable-features=WebRtcHideLocalIpsWithMdns` の追加が必要になり、共有のテスト設定を変更することになる
+  - 確認手順: Sora Labo の JWT に `rpc_methods: ["2025.2.0/RequestSimulcastRid"]` を設定して devtools から接続し、RPC タブで不要な項目を含む params (`{"invalid_param": "invalid", "rid": "r0"}`) で Call する。RPC Results の Error 欄に `code` / `message` / `data` が表示され、アラートがサーバーが返した message (sora-js-sdk の e2e テストでは `JSON-RPC-INVALID-PARAMS`) になることを確認する
 - `sora-js-sdk` のバージョンが修正を含むものになっている
 - `pnpm check` / `pnpm test` / `pnpm test:ct` が通る
 - `CHANGES.md` の `## develop` に `[FIX]` を追記し、sora-js-sdk のバージョン更新は `[UPDATE]` として追記する
