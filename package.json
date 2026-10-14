@@ -34,7 +34,7 @@
     "apache-arrow": "21.2.0",
     "preact": "10.29.8",
     "preact-iso": "2.12.2",
-    "sora-js-sdk": "2026.1.0",
+    "sora-js-sdk": "2026.2.0-canary.0",
     "uplot": "1.6.32"
   },
   "devDependencies": {
