@@ -1,7 +1,7 @@
 # RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
 
 - Created: 2026-09-29
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-10-14
 - Branch: feature/fix-rpc-error-details
 - Polished: 2026-09-29
 
@@ -47,7 +47,22 @@ RPC タブでサーバーが返したエラーの `code` / `message` / `data` �
 - Video ペインの Spotlight / Simulcast ボタンから呼んだ場合も、サーバーエラー時にアラートが表示される
 - クライアント側のエラー (DataChannel 未接続、リクエストタイムアウト、notification 送信失敗) は従来どおりアラートのみで、RPC Results には記録されない
 - 成功時は従来どおり `result` が RPC Results に表示される
-- サーバーがエラーを返す経路のテストが追加されている (jsdom には `RTCDataChannel` がないため、`vitest.ct.config.ts` の browser テストで実 `RTCPeerConnection` の `rpc` DataChannel を使い、サーバー役に JSON-RPC エラーを返させる)
+- 自動テストは追加せず、サーバーがエラーを返す経路とクライアント側エラー経路を手動で確認する
+  - e2e では再現できない。`tests/pages/DevtoolsPage.ts` の `navigate` が `access_token` を metadata に載せるだけなので、認証ウェブフックに `rpc_methods` を払い出させる JWT のパラメータを付与できない (sora-js-sdk の e2e テストは private claims を設定した JWT を生成して払い出させている)
+  - browser テストでは再現できるが採用しない。共有のテスト設定 (`vitest.ct.config.ts`) に `--disable-features=WebRtcHideLocalIpsWithMdns` を追加したうえで、SDK の private メンバー (`signalingOfferMessageDataChannels` / `onDataChannel`) に実 DataChannel を差し込む必要がある
+  - サーバーエラーの cause 契約は実 DataChannel がないと検証できず、一部だけを単体テストで残しても恒久的な回帰網にならないため、判定 (`isServerError`) とクライアント側エラー経路の単体テストは残さない
+  - 確認手順 (サーバーエラー): Sora Labo の JWT に `rpc_methods: ["2025.2.0/RequestSimulcastRid"]` を設定して devtools から接続し、RPC タブで不要な項目を含む params (`{"invalid_param": "invalid", "rid": "r0"}`) で Call する。RPC Results の Error 欄に `code` / `message` / `data` が表示され、アラートがサーバーが返した message (sora-js-sdk の e2e テストでは `JSON-RPC-INVALID-PARAMS`) になることを確認する
+  - 確認手順 (クライアント側エラー): 切断した状態で RPC タブから Call し、RPC Results には記録されずアラートのみで通知されることを確認する
 - `sora-js-sdk` のバージョンが修正を含むものになっている
 - `pnpm check` / `pnpm test` / `pnpm test:ct` が通る
 - `CHANGES.md` の `## develop` に `[FIX]` を追記し、sora-js-sdk のバージョン更新は `[UPDATE]` として追記する
+
+## 解決方法
+
+- `sora-js-sdk` を 2026.2.0-canary.0 に上げる
+  - 2026.1.0 では reject される値が常に `Error` になり、サーバーが返した JSON-RPC エラーの内容が失われるため
+- `src/rpc.ts` の `rpc` の catch で、`Error` の `cause` がオブジェクトのときはサーバーが返したエラーとみなし、失敗したリクエスト (method / params / options) と `cause` を RPC Results に記録する
+  - アラートには `Error` の `message` を渡し、`[object Object]` ではなくサーバーが返した `message` を表示する
+  - 判定は `isServerError` に切り出し、SDK の片方向の契約 (cause が設定されていればサーバーが返したエラー) と、cause が無いことがクライアント側のエラーを意味するわけではないことをコメントに明記する
+- サーバーがエラーを返す経路は自動テストで再現できないため手動で確認した。Sora Labo の JWT に `rpc_methods: ["2025.2.0/RequestSimulcastRid"]` を設定して接続し、不要な項目を含む params で Call したところ、RPC Results の Error 欄に `code` / `message` / `data` が表示され、アラートがサーバーが返した `message` になった
+- クライアント側のエラー経路は分岐の判定のみを変更しており、挙動は変えていない。未接続の `Connection` を渡して実 SDK が返すエラーで確かめ、アラートのみで RPC Results には記録されないことを確認した (恒久的なテストとしては追加していない)
