@@ -35,6 +35,8 @@
   - @voluntas
 - [UPDATE] Sessions ボタンをトグルにして /sessions と DevTools を往復できるようにする
   - @voluntas
+- [UPDATE] sora-js-sdk のバージョンを 2026.2.0-canary.0 に上げる
+  - @miosakuma
 - [FIX] DuckDB 初期化完了前の接続でセッションが永続化されない競合を修正する
   - @voluntas
 - [FIX] LocalVideo に映像トラックの無効化ワークアラウンドを適用しないようにする
@@ -54,6 +56,9 @@
   - @tnamao
 - [FIX] fakeMedia のカメラ切り替えで音声が停止する問題を修正する
   - `Enable camera device` を off から on に戻してカメラ映像だけを再生成するときは、フェイク音声の AudioContext / GainNode を維持する
+  - @miosakuma
+- [FIX] RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
+  - sora-js-sdk が Error の cause に設定した JSON-RPC エラーを RPC Results に記録し、サーバーの message をアラートに表示する
   - @miosakuma
 
 ### misc
