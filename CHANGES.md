@@ -60,6 +60,9 @@
 - [FIX] RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
   - sora-js-sdk が Error の cause に設定した JSON-RPC エラーを RPC Results に記録し、サーバーの message をアラートに表示する
   - @miosakuma
+- [FIX] getUserMedia が OverconstrainedError で失敗したときアラートに失敗理由が表示されない問題を修正する
+  - `name` が `Error` 以外のエラーは message が空文字列でも name と constraint を補助情報として残し、再接続と `request media` のアラート・ログにも反映する
+  - @miosakuma
 
 ### misc
 

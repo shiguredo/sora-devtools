@@ -46,9 +46,44 @@ export function formatUnixtime(time: number): string {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
+// name と message を string で持つ値かを判定する。
+// DOMException はブラウザでは Error を継承するが、jsdom は DOMException を実装した
+// レルムとテストを実行するレルムが分かれるため `instanceof Error` が偽になる。
+// 型で判定して DOMException の詳細を取りこぼさないようにする
+function hasStringNameAndMessage(value: unknown): value is { name: string; message: string } {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  if (!("name" in value) || !("message" in value)) {
+    return false;
+  }
+  return typeof value.name === "string" && typeof value.message === "string";
+}
+
 // catch で受け取った unknown 値からエラーメッセージを取り出す
+// アラートとログに表示する文字列の組み立てを担う
 export function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  if (!hasStringNameAndMessage(error)) {
+    return String(error);
+  }
+  // 通常の Error は name が "Error" で補う情報を持たないため message のみを返す
+  if (error.name === "Error") {
+    return error.message;
+  }
+  // message がある場合でも name を補助情報として残す
+  const details = [`name=${error.name}`];
+  // OverconstrainedError は満たせなかった constraint 名を constraint プロパティにのみ持つ。
+  // message はブラウザによって空文字列になるため、constraint を補わないと失敗理由が残らない。
+  // OverconstrainedError グローバルは jsdom に存在しないため、プロパティの存在と型で判定する。
+  // constraint は Media Capture and Streams (W3C) の OverconstrainedError が DOMString と定義するため、
+  // 文字列のみを表示対象にする。同仕様は変更される可能性がある
+  // 参照: https://w3c.github.io/mediacapture-main/#dom-overconstrainederror-constraint
+  if ("constraint" in error && typeof error.constraint === "string") {
+    details.push(`constraint=${error.constraint}`);
+  }
+  // message が空文字列のときは補助部との間に区切りを入れない
+  const separator = error.message === "" ? "" : ", ";
+  return `${error.name}: ${error.message}${separator}${details.join(" ")}`;
 }
 
 // OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す

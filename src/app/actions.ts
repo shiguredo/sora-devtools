@@ -1815,13 +1815,14 @@ export const requestMedia = async (): Promise<void> => {
   try {
     [mediaStream, gainNode, audioContext] = await createMediaStream(state, null);
   } catch (error) {
-    if (error instanceof Error) {
-      signals.setLogMessages({
-        title: LOG_TITLE,
-        description: JSON.stringify(error.message),
-      });
-      signals.setAPIErrorAlertMessage(`failed to get user devices: ${error.message}`);
-    }
+    // Error の name / constraint が失われてもログとアラートに残るようにするため、
+    // ここでは error の型を問わず getErrorMessage を通す
+    const message = getErrorMessage(error);
+    signals.setLogMessages({
+      title: LOG_TITLE,
+      description: JSON.stringify(message),
+    });
+    signals.setAPIErrorAlertMessage(`failed to get user devices: ${message}`);
     await cleanupMediaStreamOnError(state, mediaStream, null, null);
     throw error;
   }
@@ -2305,9 +2306,9 @@ const reconnectSoraImpl = async (): Promise<void> => {
       );
     } catch (error) {
       // createMediaStream の失敗時は再接続を中止し disconnected 状態に戻す
-      if (error instanceof Error) {
-        signals.setSoraErrorAlertMessage(error.message);
-      }
+      // Error の name / constraint が失われてもアラートに残るようにするため、
+      // ここでは error の型を問わず getErrorMessage を通す
+      signals.setSoraErrorAlertMessage(getErrorMessage(error));
       const failedSessionDbId = persistence?.sessionDbId ?? null;
       const failedConnectionId = connectionIdFromPersistence(persistence);
       setDisconnectPersistence(failedSessionDbId, failedConnectionId);
