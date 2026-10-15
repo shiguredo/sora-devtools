@@ -1,7 +1,7 @@
 # getUserMedia のエラーポップアップに OverconstrainedError の詳細を表示する
 
 - Created: 2026-09-18
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-10-15
 - Branch: feature/fix-gum-error-message-details
 - Polished: 2026-09-29
 - Reporter: @miosakuma
@@ -116,6 +116,20 @@ Connect の外側 catch (`failed to connect Sora`) と `requestMedia` は 2025.2
   - `message="Invalid constraint"` と `constraint="width"` を持つ Safari 相当のオブジェクトでは `message` と `constraint` の両方を含むこと (`"OverconstrainedError: Invalid constraint, name=OverconstrainedError constraint=width"`)
   - jsdom には `OverconstrainedError` が無いため、`constraint` は `DOMException` インスタンスへプロパティとして追加して再現する
 - `CHANGES.md` の `## develop` の `[FIX]` セクションにエントリを追加する (issue 番号は書かない)
+
+### 実装結果
+
+- `src/utils.ts` の `getErrorMessage` を上記の出力形式に拡張した
+  - `Error` 相当の判定は `instanceof Error` ではなく、`name` と `message` を string で持つ値かを判定する `hasStringNameAndMessage` を追加して行う
+    - ブラウザでは `DOMException` が `Error` を継承するが、jsdom は `DOMException` を実装したレルムとテストを実行するレルムが分かれるため `instanceof Error` が偽になり、上記のテストが成立しないため
+  - `constraint` は `typeof error.constraint === "string"` のときにだけ補助部に追加する
+    - `undefined` 以外を条件にすると、`constraint` に文字列以外の値が入ったときに値の無い `constraint=` が表示に混入するため
+- `src/app/actions.ts` の `reconnectSoraImpl` の `createMediaStream` 失敗時と `requestMedia` を `getErrorMessage(error)` に置き換えた
+  - あわせてこの 2 箇所の `if (error instanceof Error)` ガードを外し、`Error` 以外の値でも失敗理由をアラートとログに残すようにした
+- `src/utils.test.ts` に `getErrorMessage` のテストを追加した (上記 4 ケースに加え、`name` / `message` が string でない値、`constraint` が string でない `OverconstrainedError`、`null` の `String` 変換経路)
+- `CHANGES.md` の `## develop` の `[FIX]` セクションにエントリを追加した
+- 検証: `vp check` / `vp test run` (302 件) / `vp build` が `VITE_ENABLE_SESSIONS` の `true` / `false` の両方で成功した
+  - 実機の `getUserMedia` 失敗と Debug ペインの表示はこの環境では再現できないため、設計方針どおり `getErrorMessage` の単体テストで検証した
 
 ## 関連
 
