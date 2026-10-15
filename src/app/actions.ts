@@ -2501,6 +2501,10 @@ const updateMediaStreamImpl = async (): Promise<void> => {
   const state = getStateForMediaStream();
   const localMediaStreamValue = signals.localMediaStream.value;
   const soraValue = signals.sora.value;
+  // 処理開始時に Sora 接続があったかどうか。
+  // connectionStatus はページ起動時 (setInitialParameter) に "disconnected" になるため、
+  // プレビュー状態でも切断済みの判定になってしまう。切断競合の判定は接続ありのときだけ有効にする
+  const startedWithSoraConnection = soraValue !== null;
   const virtualBackgroundProcessorValue = signals.virtualBackgroundProcessor.value;
   const noiseSuppressionProcessorValue = signals.noiseSuppressionProcessor.value;
   if (!localMediaStreamValue) {
@@ -2570,16 +2574,16 @@ const updateMediaStreamImpl = async (): Promise<void> => {
   // 関数内の await を跨いだ後に切断が走ると、ここで signal を上書きして UI に新規メディアが復活し
   // AudioContext がどこからも参照されないままリークする。末尾の signal 更新前に状態を検査し、
   // 中断と判定できる場合はローカル変数として持っている新規リソースを直接解放して return する。
-  // requestMedia プレビュー後 connect 前の経路では soraValue / signals.sora.value がともに null で
-  // 参照比較が false になり、preview 中の updateMediaStream は素通りする。
+  // プレビューの切断競合は localMediaStream === null 条件が捕捉し、connectionStatus 条件は接続オブジェクトがあるときだけ意味を持つ。
   if (
     // 関数開始時の sora と現在の sora が異なる場合は切断後の再接続で新セッションに移行している
     signals.sora.value !== soraValue ||
     // disconnectSora 内の await cleanupSoraMediaState() を跨いだ時間窓を捕捉する
     signals.localMediaStream.value === null ||
     // ユーザー操作の disconnect が走行中 / 完了済みの過渡状態を捕捉する
-    signals.connectionStatus.value === "disconnecting" ||
-    signals.connectionStatus.value === "disconnected"
+    (startedWithSoraConnection &&
+      (signals.connectionStatus.value === "disconnecting" ||
+        signals.connectionStatus.value === "disconnected"))
   ) {
     for (const track of mediaStream.getTracks()) {
       track.stop();

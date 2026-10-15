@@ -1,7 +1,7 @@
 # プレビュー状態で update-mediastream を押すとローカルメディアが消える問題を修正する
 
 - Created: 2026-09-18
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-10-13
 - Branch: feature/fix-preview-update-mediastream
 - Polished: 2026-09-18
 
@@ -58,5 +58,8 @@
 
 ## 解決方法
 
-- `src/app/actions.ts` の `updateMediaStreamImpl` の中断ガード条件を修正し、処理開始時に Sora 接続が存在しない場合は発動しないようにする
+- `src/app/actions.ts` の `updateMediaStreamImpl` の中断ガード条件を修正し、処理開始時に Sora 接続が存在しない場合は発動しないようにする。プレビュー中の切断 (`disconnectSora` → `cleanupSoraMediaState`) は `localMediaStream === null` 条件が捕捉するため、`connectionStatus` 条件は接続オブジェクトがあるときだけ意味を持つ
 - `tests/fake-media-camera-audio-toggle.test.ts` に追記するか新規の E2E テストで、プレビュー状態で update-mediastream を押してもメディアが消えずに再生成が実効化されることを確認する (音声信号の RMS とトラック ID の変化、映像トラックの `readyState` の live 維持)
+- 修正後の実ブラウザ (Chromium) で、プレビュー状態の update-mediastream と `audioInput` / `videoInput` のデバイス切替を手動操作し、ローカルメディアが消えずに音声・映像が再生成されることを確認した
+- `tests/preview-update-mediastream.test.ts` の E2E テスト 3 件と、関連する `tests/fake-media-camera-audio-toggle.test.ts` の 2 件が成功することを確認した
+- 本修正でプレビュー中のメディア更新が commit されるようになるため、プレビューでも last-writer-wins の競合が到達可能になる (接続中では変更前から到達可能だった)。`getUserMedia` 経路では `updateMediaStreamImpl` が `await` を跨ぐ窓で `setMicDeviceAction` / `setCameraDeviceAction` の off、`setAudioTrack` / `setVideoTrack`、`audio` / `video` フラグの変更が走ると、後続の処理が signal とトラックを更新した後に、処理開始時の state で生成した MediaStream が commit され、デバイス off やトラック無効化が確定しているのに生きたトラックが `localMediaStream` に残る。そのまま connect すると `connectSora` が残存トラックを再利用して送信され得る (生成が同期の `fakeMedia` は対象外)。この競合の修正は本 issue の完了条件には含めず、メディア操作の直列化を扱う 0080 に委ねる

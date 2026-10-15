@@ -60,6 +60,10 @@
 - [FIX] RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
   - sora-js-sdk が Error の cause に設定した JSON-RPC エラーを RPC Results に記録し、サーバーの message をアラートに表示する
   - @miosakuma
+- [FIX] プレビュー状態で update-mediastream を押すとローカルメディアが消える問題を修正する
+  - Sora 接続前のプレビュー状態では切断競合の中断ガードを発動させず、音声・映像を新しいメディアに置き換える
+  - プレビュー状態の update-mediastream と audioInput / videoInput 切替を検証する e2e テストを追加する
+  - @miosakuma
 
 ### misc
 
