@@ -2,7 +2,7 @@
 
 - Priority: Medium
 - Created: 2026-08-06
-- Completed: YYYY-MM-DD
+- Completed: 2026-10-18
 - Model: DeepSeek V4 Flash
 - Branch: feature/change-upgrade-preact-11
 - Polished: YYYY-MM-DD
@@ -56,13 +56,15 @@ Medium。依存ライブラリのメジャーアップデートであり、正�
 
 ## 解決方法
 
-1. package.json の preact を 11.0.0-beta.2 に更新し、関連ライブラリ (@preact/signals / @preact/preset-vite / @preact/signals-agent-vite) も最新版に更新する
-2. `pnpm install` を実行し、peer dependency の警告を確認する (vitest-browser-preact の `preact: ^10.0.0`)
-3. `pnpm check` で型チェック・lint を確認する
-4. `pnpm test` / `pnpm test:ct` / `pnpm test:e2e` でテストを実行し、breaking changes の影響がないか確認する
-5. `pnpm build` でビルドが成功することを確認する
-6. 問題があればソースコードを修正する (現時点の調査では修正不要と予想される)
-7. CHANGES.md を更新する (shiguredo-changelog スキル参照)
+- issue 作成時点では 11.0.0 の RC 公開待ちだったが、2026-09-30 に 11.0.0、2026-10-08 に 11.0.1 が正式リリースされたため 11.0.1 へ直接更新する
+- package.json の preact を 10.29.8 から 11.0.1 に更新する
+- @preact/signals を 2.11.2 から 2.11.3 に更新する
+  - preact-iso 2.12.2 / @preact/preset-vite 2.10.6 / @preact/signals-agent-vite 0.1.3 / vitest-browser-preact 1.1.0 は既に最新のため変更しない
+- preact 11 では input 要素の属性型が type ごとの判別共用体になったため、src/components/ui/FormInput.tsx の type を "text" | "file" に限定し、src/components/ui/FormCheck.tsx では type をリテラルで指定して input 要素を組み立てるようにする
+- preact 11 では useRef<HTMLButtonElement>(null) の戻り値が RefObject<HTMLButtonElement | null> になったため、src/components/Header/SignalingUrlModal.tsx の buttonRef の型を合わせる
+- vitest-browser-preact 1.1.0 の peerDependencies は preact: ^10.0.0 のままでインストール時に peer 警告が出るが、コンポーネントテストは preact 11.0.1 で成功することを確認する
+- vp check / vp test run / vp test run --config vitest.ct.config.ts / vp exec playwright test --project=chromium / vp build がすべて成功することを確認する
+- CHANGES.md の develop に Preact を 11.0.1 に更新する旨を追記する
 
 ## テスト方針
 
