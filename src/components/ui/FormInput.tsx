@@ -1,5 +1,6 @@
 interface FormInputProps {
-  type?: string;
+  // preact 11 の input 属性型は type ごとの判別共用体のため、対応する type を限定する
+  type?: "text" | "file";
   name?: string;
   id?: string;
   placeholder?: string;
@@ -38,19 +39,17 @@ export function FormInput({
   accept,
   className = "",
 }: FormInputProps) {
-  return (
-    <input
-      type={type}
-      name={name}
-      id={id}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      disabled={disabled}
-      readOnly={readOnly}
-      accept={accept}
-      className={`
+  const inputProps = {
+    name,
+    id,
+    placeholder,
+    value,
+    onChange,
+    onBlur,
+    disabled,
+    readOnly,
+    accept,
+    className: `
         block w-full px-3 py-1.5
         text-base leading-normal text-gray-900 bg-white
         border border-gray-300 rounded-md appearance-none
@@ -58,7 +57,13 @@ export function FormInput({
         focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25
         disabled:bg-[#e9ecef] disabled:opacity-65 disabled:cursor-not-allowed
         ${className}
-      `}
-    />
-  );
+      `,
+  };
+
+  // preact 11 の input 属性型は type ごとの判別共用体のため、type をリテラルで指定する
+  if (type === "file") {
+    return <input type="file" {...inputProps} />;
+  }
+
+  return <input type="text" {...inputProps} />;
 }

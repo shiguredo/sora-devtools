@@ -24,7 +24,7 @@ function getEntryBackgroundColor(isDragOver: boolean, isEnabled: boolean): strin
 interface SignalingUrlModalProps {
   show: boolean;
   onClose: () => void;
-  buttonRef: RefObject<HTMLButtonElement>;
+  buttonRef: RefObject<HTMLButtonElement | null>;
 }
 
 export function SignalingUrlModal({ show, onClose, buttonRef }: SignalingUrlModalProps) {
