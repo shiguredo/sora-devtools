@@ -37,6 +37,9 @@
   - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2026.2.0-canary.0 に上げる
   - @miosakuma
+- [UPDATE] Preact を 11.0.1 に更新する
+  - `@preact/signals` を 2.11.3 に更新する
+  - @voluntas
 - [FIX] DuckDB 初期化完了前の接続でセッションが永続化されない競合を修正する
   - @voluntas
 - [FIX] LocalVideo に映像トラックの無効化ワークアラウンドを適用しないようにする

@@ -63,34 +63,35 @@ export function FormCheck({
 
   const labelStyles = disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer";
 
-  if (label) {
+  // ラベルがある場合は label 要素が className を持つため input には引き継がない
+  const hasLabel = Boolean(label);
+  const inputProps = {
+    id,
+    name,
+    checked,
+    onChange,
+    disabled,
+    className: hasLabel ? inputClassName : `${inputClassName} ${className}`,
+    style: inputStyle,
+  };
+
+  // preact 11 の input 属性型は type ごとの判別共用体のため、共用体の type を
+  // そのまま渡すと型が通らない。type をリテラルで指定して要素を組み立てる
+  const inputElement =
+    type === "checkbox" ? (
+      <input type="checkbox" {...inputProps} />
+    ) : (
+      <input type="radio" {...inputProps} />
+    );
+
+  if (hasLabel) {
     return (
       <label className={`inline-flex items-center gap-2 ${labelStyles} ${className}`}>
-        <input
-          type={type}
-          id={id}
-          name={name}
-          checked={checked}
-          onChange={onChange}
-          disabled={disabled}
-          className={inputClassName}
-          style={inputStyle}
-        />
+        {inputElement}
         <span>{label}</span>
       </label>
     );
   }
 
-  return (
-    <input
-      type={type}
-      id={id}
-      name={name}
-      checked={checked}
-      onChange={onChange}
-      disabled={disabled}
-      className={`${inputClassName} ${className}`}
-      style={inputStyle}
-    />
-  );
+  return inputElement;
 }
