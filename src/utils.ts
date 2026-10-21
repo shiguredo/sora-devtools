@@ -46,26 +46,12 @@ export function formatUnixtime(time: number): string {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
 }
 
-// name と message を string で持つ値かを判定する。
-// DOMException はブラウザでは Error を継承するが、jsdom は DOMException を実装した
-// レルムとテストを実行するレルムが分かれるため `instanceof Error` が偽になる。
-// 型で判定して DOMException の詳細を取りこぼさないようにする
-function hasStringNameAndMessage(value: unknown): value is { name: string; message: string } {
-  if (typeof value !== "object" || value === null) {
-    return false;
-  }
-  if (!("name" in value) || !("message" in value)) {
-    return false;
-  }
-  return typeof value.name === "string" && typeof value.message === "string";
-}
-
 // catch で受け取った unknown 値からエラーメッセージを取り出す
 // アラートとログに表示する文字列の組み立てを担う
-// 表示には Error / DOMException が持つ name と message だけを使い、
-// OverconstrainedError の constraint のようなエラー種別ごとの拡張属性には依存しない
+// 表示には Error が持つ name と message だけを使い、エラー種別ごとの拡張属性には依存しない
+// DOMException はブラウザでは Error を継承するため instanceof Error で判定できる
 export function getErrorMessage(error: unknown): string {
-  if (!hasStringNameAndMessage(error)) {
+  if (!(error instanceof Error)) {
     return String(error);
   }
   // 通常の Error は name が "Error" で名前を表示する意味がないため message のみを返す
