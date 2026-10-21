@@ -75,6 +75,7 @@ off 処理が既存トラックを固定して停止待ちしている間に on 
 - 競合で破棄された MediaStreamTrack と `AudioContext` が残留せず、Fake Video Worker の描画と Media Processor の処理が継続しない
 - メディア生成や切り替えが失敗した場合、signal を誤って成功状態へ更新せず、ユーザーへ既存のエラー通知を行う
 - `getDisplayMedia` / `mp4Media` の既存動作が変わらない
+- プレビュー状態 (Sora 未接続) でも、`getUserMedia` / `createMediaStream` の `await` 中にカメラ・マイクの off、`Enable audio track` / `Enable video track`、`audio` / `video` フラグの変更が走った場合に、処理開始時の state で生成した MediaStream が後から commit されて signal と `localMediaStream` のトラックが不一致にならない。プレビューでは `MicDeviceForm` / `CameraDeviceForm` の disabled 条件が off 操作を防がないため、接続中とは別の経路として到達可能である
 - 既存の単体テスト、型チェック、lint、ビルド、E2E テストが成功する
 - 体系的なメディア切り替え E2E テストの拡充は本 issue の対象外とし、必要なケースは別 issue で扱う
 
