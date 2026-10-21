@@ -90,7 +90,7 @@ Connect の外側 catch (`failed to connect Sora`) と `requestMedia` は 2025.2
   - `setAlertMessagesAndLogMessages` (`src/app/signals.ts`) は `alertMessage.message` をそのまま表示とログに使うため、`getErrorMessage` の出力を変えれば両方に反映される
 - 失敗理由の表示形式は `getErrorMessage` に閉じるため、呼び出し側のアラート文言 (`failed to connect Sora` などの prefix) は変更しない
 - 実機のカメラ使用中や機材の抜去は自動テストで再現できないため、検証は `getErrorMessage` の単体テストと Playwright での手動確認で行う
-  - jsdom の `DOMException` は `name` と `message` を再現するため、Chrome / Safari の値を `DOMException` で再現して検証する
+  - jsdom の `DOMException` はテストのレルムとは別のレルムの `Error` を継承するため `instanceof Error` が偽になる。単体テストでは実 `Error` に `name` を設定して Chrome / Safari の値を再現する
   - 専用の E2E は追加しない。`request media` の失敗経路は Chrome 内蔵の fake device で再現できるが、本 issue の変更範囲は `getErrorMessage` の出力に閉じており、単体テストと手動確認で足りるため
 
 ## 完了条件
@@ -114,20 +114,25 @@ Connect の外側 catch (`failed to connect Sora`) と `requestMedia` は 2025.2
 - その他の呼び出し側 (`connectSora` の内側 `.catch` / `updateMediaStream` / `setMicDeviceAction` / `setCameraDeviceAction`) は既に `getErrorMessage` を通しているため変更しない。アラート文言の prefix も変更しない
 - `src/utils.test.ts` に `getErrorMessage` のテストを追加する
   - 通常の `Error` では `message` のみを返すこと (`new Error("boom")` が `"boom"`)
-  - `message` が空の `DOMException` では `name` を返すこと (`new DOMException("", "OverconstrainedError")` が `"OverconstrainedError"`)
-  - `message` を持つ `DOMException` では `name` と `message` を返すこと (`new DOMException("Invalid constraint", "OverconstrainedError")` が `"OverconstrainedError: Invalid constraint"`)
+  - `name` が `Error` 以外で `message` が空の `Error` では `name` を返すこと (Chrome 相当)
+  - `name` が `Error` 以外で `message` がある `Error` では `name: message` を返すこと (Safari 相当)
+  - 空文字列の `message` は lint の制約で直接生成できないため、生成後に `message` を書き換えて再現する
+- `Error` 相当の判定は `instanceof Error` で行う。ブラウザでは `DOMException` が `Error` を継承し、実入力は必ず `Error` の派生になるため、`name` と `message` を持つかという構造判定は不要
 - `CHANGES.md` の `## develop` の `[FIX]` セクションにエントリを追加する (issue 番号は書かない)
 
 ### 実装結果
 
 - `src/utils.ts` の `getErrorMessage` を上記の出力形式に変更した
-  - `Error` 相当の判定は `instanceof Error` ではなく、`name` と `message` を string で持つ値かを判定する `hasStringNameAndMessage` を使う
-    - ブラウザでは `DOMException` が `Error` を継承するが、jsdom は `DOMException` を実装したレルムとテストを実行するレルムが分かれるため `instanceof Error` が偽になり、上記のテストが成立しないため
+  - `Error` 相当の判定は `instanceof Error` で行う
+    - ブラウザでは `DOMException` が `Error` を継承するため、これで実入力の失敗理由を取りこぼさない
+    - jsdom の `DOMException` はテストのレルムの都合で `instanceof Error` が偽になるため、単体テストは実 `Error` に `name` を設定して検証する
   - `constraint` の参照は実装から削除した
     - 実機 Safari で `constraint` が空文字列になり、値の無い `constraint=` がアラートとログに表示されることを確認したため
 - `src/app/actions.ts` の `reconnectSoraImpl` の `createMediaStream` 失敗時と `requestMedia` を `getErrorMessage(error)` に置き換えた
   - あわせてこの 2 箇所の `if (error instanceof Error)` ガードを外し、`Error` 以外の値でも失敗理由をアラートとログに残すようにした
-- `src/utils.test.ts` の `getErrorMessage` のテストを上記 3 ケースに合わせて更新した (あわせて `name` / `message` が string でない値、`null` の `String` 変換経路も維持)
+- `src/utils.test.ts` の `getErrorMessage` のテストを上記 3 ケースに合わせて更新した (あわせて `null` の `String` 変換経路も維持)
+  - 追加した 2 件は実 `Error` の `name` を `OverconstrainedError` に上書きし、`message` を空文字列 / `Invalid constraint` にして実ブラウザと同じ形で検証する
+  - `message` のみを返す旧実装に差し替えると、この 2 件が `""` / `Invalid constraint` になって失敗することを確認済み
 - `CHANGES.md` の `## develop` の `[FIX]` セクションにエントリを追加した
 - 検証:
   - `vp check` / `vp test run` / `vp build` が成功した
