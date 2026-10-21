@@ -47,8 +47,20 @@ export function formatUnixtime(time: number): string {
 }
 
 // catch で受け取った unknown 値からエラーメッセージを取り出す
+// アラートとログに表示する文字列の組み立てを担う
+// 表示には Error が持つ name と message だけを使い、エラー種別ごとの拡張属性には依存しない
+// DOMException はブラウザでは Error を継承するため instanceof Error で判定できる
 export function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  if (!(error instanceof Error)) {
+    return String(error);
+  }
+  // 通常の Error は name が "Error" で名前を表示する意味がないため message のみを返す
+  if (error.name === "Error") {
+    return error.message;
+  }
+  // DOMException などは message が空文字列でも name に失敗理由が残る。
+  // message がある場合は DOMException.prototype.toString と同じ "name: message" 形式にする
+  return error.message === "" ? error.name : `${error.name}: ${error.message}`;
 }
 
 // OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す

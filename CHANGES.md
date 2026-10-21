@@ -67,6 +67,9 @@
   - Sora 接続前のプレビュー状態では切断競合の中断ガードを発動させず、音声・映像を新しいメディアに置き換える
   - プレビュー状態の update-mediastream と audioInput / videoInput 切替を検証する e2e テストを追加する
   - @miosakuma
+- [FIX] getUserMedia が OverconstrainedError で失敗したときアラートに失敗理由が表示されない問題を修正する
+  - `name` が `Error` 以外のエラーは message が空文字列でも name を表示し、再接続と `request media` のアラート・ログにも反映する
+  - @miosakuma
 
 ### misc
 

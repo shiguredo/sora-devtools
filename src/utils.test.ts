@@ -26,6 +26,7 @@ import type { ConnectionOptionsState } from "./types.ts";
 import {
   createConnectOptions,
   createFakeMediaConstraints,
+  getErrorMessage,
   getValueByAspectRatio,
   parseMetadata,
   parseQueryString,
@@ -331,6 +332,46 @@ test("すべての特定の文字列リストからの値を解析する", () =>
   const searchParams = createSearchParams(params);
   const result = parseQueryString(searchParams);
   assert.deepEqual(result, params);
+});
+
+// getErrorMessage のテスト
+// getUserMedia が OverconstrainedError で失敗すると message が空文字列になる。
+// 表示用の文字列生成が name を捨てないことと、message がある場合はそれを残すことを確認する。
+//
+// ブラウザでは DOMException が Error を継承するが、jsdom の DOMException は
+// テストのレルムとは別のレルムの Error を継承するため `instanceof Error` が偽になる。
+// そのため実ブラウザと同じ形として、実 Error の name を OverconstrainedError に上書きし、
+// message を実ブラウザと同じ値に設定して再現する。
+test("getErrorMessage: 通常の Error は message のみを返す", () => {
+  // name が "Error" のときは name を表示しないこと
+  assert.equal(getErrorMessage(new Error("boom")), "boom");
+});
+
+test("getErrorMessage: Error 以外の値は String 変換した文字列を返す", () => {
+  // throw された値が Error でなくても表示できること
+  assert.equal(getErrorMessage("boom"), "boom");
+  // string を持たない値でも String 変換に落ちて例外にならないこと
+  assert.equal(getErrorMessage(null), "null");
+});
+
+test("getErrorMessage: name が Error 以外で message が空の Error は name を返す", () => {
+  // Chrome の getUserMedia は message が空文字列の OverconstrainedError を返す。
+  // 空文字列の message を持つ Error は lint の制約で直接生成できないため、生成後に実ブラウザと同じ形にする。
+  // message のみを返す実装では空文字列になり、このテストが失敗する
+  const error = new Error("placeholder");
+  error.name = "OverconstrainedError";
+  error.message = "";
+  assert.equal(getErrorMessage(error), "OverconstrainedError");
+});
+
+test("getErrorMessage: name が Error 以外で message がある Error は name と message を返す", () => {
+  // Safari の getUserMedia は message に "Invalid constraint" を設定する。
+  // 実ブラウザと同じ形にして、message だけでなく name も残ることを確認する。
+  // message のみを返す実装では name が落ちて、このテストが失敗する
+  const error = new Error("placeholder");
+  error.name = "OverconstrainedError";
+  error.message = "Invalid constraint";
+  assert.equal(getErrorMessage(error), "OverconstrainedError: Invalid constraint");
 });
 
 // getValueByAspectRatio のテスト
