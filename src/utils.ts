@@ -62,28 +62,19 @@ function hasStringNameAndMessage(value: unknown): value is { name: string; messa
 
 // catch で受け取った unknown 値からエラーメッセージを取り出す
 // アラートとログに表示する文字列の組み立てを担う
+// 表示には Error / DOMException が持つ name と message だけを使い、
+// OverconstrainedError の constraint のようなエラー種別ごとの拡張属性には依存しない
 export function getErrorMessage(error: unknown): string {
   if (!hasStringNameAndMessage(error)) {
     return String(error);
   }
-  // 通常の Error は name が "Error" で補う情報を持たないため message のみを返す
+  // 通常の Error は name が "Error" で名前を表示する意味がないため message のみを返す
   if (error.name === "Error") {
     return error.message;
   }
-  // message がある場合でも name を補助情報として残す
-  const details = [`name=${error.name}`];
-  // OverconstrainedError は満たせなかった constraint 名を constraint プロパティにのみ持つ。
-  // message はブラウザによって空文字列になるため、constraint を補わないと失敗理由が残らない。
-  // OverconstrainedError グローバルは jsdom に存在しないため、プロパティの存在と型で判定する。
-  // constraint は Media Capture and Streams (W3C) の OverconstrainedError が DOMString と定義するため、
-  // 文字列のみを表示対象にする。同仕様は変更される可能性がある
-  // 参照: https://w3c.github.io/mediacapture-main/#dom-overconstrainederror-constraint
-  if ("constraint" in error && typeof error.constraint === "string") {
-    details.push(`constraint=${error.constraint}`);
-  }
-  // message が空文字列のときは補助部との間に区切りを入れない
-  const separator = error.message === "" ? "" : ", ";
-  return `${error.name}: ${error.message}${separator}${details.join(" ")}`;
+  // DOMException などは message が空文字列でも name に失敗理由が残る。
+  // message がある場合は DOMException.prototype.toString と同じ "name: message" 形式にする
+  return error.message === "" ? error.name : `${error.name}: ${error.message}`;
 }
 
 // OS の Clipboard にテキストを書き込む。成功時 true、失敗時 false を返す

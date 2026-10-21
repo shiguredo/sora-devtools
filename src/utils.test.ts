@@ -335,11 +335,10 @@ test("すべての特定の文字列リストからの値を解析する", () =>
 });
 
 // getErrorMessage のテスト
-// getUserMedia が OverconstrainedError で失敗すると message が空文字列になり、
-// 満たせなかった constraint 名は constraint プロパティにのみ入る。
-// 表示用の文字列生成が name と constraint を捨てないことを確認する。
+// getUserMedia が OverconstrainedError で失敗すると message が空文字列になる。
+// 表示用の文字列生成が name を捨てないことと、message がある場合はそれを残すことを確認する。
 test("getErrorMessage: 通常の Error は message のみを返す", () => {
-  // name が "Error" のときは補助情報を付けないこと
+  // name が "Error" のときは name を表示しないこと
   assert.equal(getErrorMessage(new Error("boom")), "boom");
 });
 
@@ -363,41 +362,21 @@ test("getErrorMessage: name / message が string でない値は Error 相当と
   assert.equal(getErrorMessage({ name: "OverconstrainedError", message: 2 }), "[object Object]");
 });
 
-test("getErrorMessage: constraint が string でない OverconstrainedError は constraint を補わない", () => {
-  // constraint は Media Capture and Streams が DOMString と定義するため、文字列以外は表示対象にしないこと
-  const error = new DOMException("", "OverconstrainedError");
-  Object.defineProperty(error, "constraint", { value: 5 });
-  assert.equal(getErrorMessage(error), "OverconstrainedError: name=OverconstrainedError");
-});
-
-test("getErrorMessage: message が空の DOMException は name を補って返す", () => {
-  // jsdom の DOMException は constraint を持たず、テストのレルムとは別のレルムの
-  // Error を継承するため `instanceof Error` が偽になる。name / message を持つ値を
-  // Error 相当として扱えることと、name を補うことを確認する
+test("getErrorMessage: message が空の DOMException は name を返す", () => {
+  // jsdom の DOMException はテストのレルムとは別のレルムの Error を継承するため
+  // `instanceof Error` が偽になる。name / message を持つ値を Error 相当として扱えることと、
+  // message が空文字列でも name が残ることを確認する
   assert.equal(
     getErrorMessage(new DOMException("", "OverconstrainedError")),
-    "OverconstrainedError: name=OverconstrainedError",
+    "OverconstrainedError",
   );
 });
 
-test("getErrorMessage: constraint を持つ OverconstrainedError は constraint 名を補って返す", () => {
-  // jsdom には OverconstrainedError グローバルがないため、DOMException に constraint を追加して再現する
-  const error = new DOMException("", "OverconstrainedError");
-  Object.defineProperty(error, "constraint", { value: "deviceId" });
+test("getErrorMessage: message を持つ DOMException は name と message を返す", () => {
+  // Safari の getUserMedia は message に "Invalid constraint" を設定するため、message を残すこと
   assert.equal(
-    getErrorMessage(error),
-    "OverconstrainedError: name=OverconstrainedError constraint=deviceId",
-  );
-});
-
-test("getErrorMessage: message と constraint の両方を持つ OverconstrainedError は両方を返す", () => {
-  // Safari の getUserMedia は message に "Invalid constraint" を設定するため、
-  // message を主たる情報として残しつつ constraint 名を補うこと
-  const error = new DOMException("Invalid constraint", "OverconstrainedError");
-  Object.defineProperty(error, "constraint", { value: "width" });
-  assert.equal(
-    getErrorMessage(error),
-    "OverconstrainedError: Invalid constraint, name=OverconstrainedError constraint=width",
+    getErrorMessage(new DOMException("Invalid constraint", "OverconstrainedError")),
+    "OverconstrainedError: Invalid constraint",
   );
 });
 
