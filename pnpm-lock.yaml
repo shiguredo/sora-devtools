@@ -236,8 +236,8 @@ importers:
         specifier: 2.12.2
         version: 2.12.2(preact-render-to-string@6.8.1)(preact@11.1.0)
       sora-js-sdk:
-        specifier: 2026.2.0-canary.0
-        version: 2026.2.0-canary.0
+        specifier: 2026.2.0-canary.1
+        version: 2026.2.0-canary.1
       uplot:
         specifier: 1.6.32
         version: 1.6.32
@@ -1918,8 +1918,8 @@ packages:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
 
-  sora-js-sdk@2026.2.0-canary.0:
-    resolution: {integrity: sha512-ga+w/Qj8iVJhH53WwRg9LwLZaQ4KLS3EL7jk3dkL/OeJ1CPrxzhYMeOOu0xUR5sm7rrYd7K8C8U7hJGOcW2hZw==}
+  sora-js-sdk@2026.2.0-canary.1:
+    resolution: {integrity: sha512-FGzo0pMSbkQoWPLLrKOPYn1zdyrNUssrdsCKSJcuUVFv/1HQ+NFiyxmNwDf1uUODFeJkNC79IEkcPe+oMKrU8Q==}
     engines: {node: '>=22.18.0', pnpm: '>=11'}
 
   source-map-js@1.2.2:
@@ -3447,7 +3447,7 @@ snapshots:
       mrmime: 2.0.1
       totalist: 3.0.1
 
-  sora-js-sdk@2026.2.0-canary.0: {}
+  sora-js-sdk@2026.2.0-canary.1: {}
 
   source-map-js@1.2.2: {}
 

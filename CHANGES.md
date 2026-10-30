@@ -35,7 +35,7 @@
   - @voluntas
 - [UPDATE] Sessions ボタンをトグルにして /sessions と DevTools を往復できるようにする
   - @voluntas
-- [UPDATE] sora-js-sdk のバージョンを 2026.2.0-canary.0 に上げる
+- [UPDATE] sora-js-sdk のバージョンを 2026.2.0-canary.1 に上げる
   - @miosakuma
 - [UPDATE] Preact を 11.1.0 に更新する
   - `@preact/signals` を 2.11.4 に更新する
