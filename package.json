@@ -26,7 +26,7 @@
     "cleanup": "git clean -ffdx --exclude .env"
   },
   "dependencies": {
-    "@duckdb/duckdb-wasm": "1.33.1-dev110.0",
+    "@duckdb/duckdb-wasm": "1.32.0",
     "@preact/signals": "2.11.4",
     "@shiguredo/mp4-media-stream": "2024.3.0",
     "@shiguredo/noise-suppression": "2025.1.0",

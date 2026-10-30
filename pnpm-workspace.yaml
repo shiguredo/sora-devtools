@@ -46,12 +46,12 @@ peerDependencyRules:
     - vite
     - vitest
 
-# @duckdb/duckdb-wasm は npm next の 1.33.1-dev110.0 に固定する
-# npm latest の 1.33.1-dev57.0 は OPFS 永続化が壊れている (duckdb/duckdb-wasm#2192)
-# #2192 の修正は 1.33.1-dev61.0 以降。latest がそこへ進むまで next を使う
-# 1 MB 超の OPFS moveFile 破損 (duckdb/duckdb-wasm#2248) は未修正
+# @duckdb/duckdb-wasm は 1.32.0 に固定する
+# 1.33.1-dev34.0 以降は OPFS 永続化が壊れる (duckdb/duckdb-wasm#2192)
+# npm next の 1.33.1-dev110.0 でも再 open で sessions が消える
+# 修正が npm latest に入り e2e が通るまで更新しないこと
 overrides:
-  "@duckdb/duckdb-wasm": "1.33.1-dev110.0"
+  "@duckdb/duckdb-wasm": "1.32.0"
   vite@*: "catalog:"
   vitest@*: "catalog:"
 catalog:

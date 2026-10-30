@@ -676,28 +676,21 @@ async function openDatabase(db: AsyncDuckDB): Promise<AsyncDuckDBConnection> {
 }
 
 async function loadDuckDBBundleUrls(): Promise<{
-  baseWasm: string;
-  baseWorker: string;
-  threadsWasm: string;
-  threadsWorker: string;
-  pthreadWorker: string;
+  mvpWasm: string;
+  mvpWorker: string;
+  ehWasm: string;
+  ehWorker: string;
 }> {
-  // 1.33 系は mvp / eh を廃止し、base（単スレッド）と threads（COI 時）になった
   // Vite では WASM / Worker を ?url import で URL 文字列として渡す
-  const baseWasmModule = await import("@duckdb/duckdb-wasm/dist/duckdb-base.wasm?url");
-  const baseWorkerModule =
-    await import("@duckdb/duckdb-wasm/dist/duckdb-browser-base.worker.js?url");
-  const threadsWasmModule = await import("@duckdb/duckdb-wasm/dist/duckdb-threads.wasm?url");
-  const threadsWorkerModule =
-    await import("@duckdb/duckdb-wasm/dist/duckdb-browser-threads.worker.js?url");
-  const pthreadWorkerModule =
-    await import("@duckdb/duckdb-wasm/dist/duckdb-browser-threads.pthread.worker.js?url");
+  const mvpWasmModule = await import("@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url");
+  const mvpWorkerModule = await import("@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url");
+  const ehWasmModule = await import("@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url");
+  const ehWorkerModule = await import("@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url");
   return {
-    baseWasm: baseWasmModule.default,
-    baseWorker: baseWorkerModule.default,
-    threadsWasm: threadsWasmModule.default,
-    threadsWorker: threadsWorkerModule.default,
-    pthreadWorker: pthreadWorkerModule.default,
+    mvpWasm: mvpWasmModule.default,
+    mvpWorker: mvpWorkerModule.default,
+    ehWasm: ehWasmModule.default,
+    ehWorker: ehWorkerModule.default,
   };
 }
 
@@ -705,16 +698,14 @@ async function instantiateDuckDB(): Promise<AsyncDuckDB> {
   const duckdb = await import("@duckdb/duckdb-wasm");
   const urls = await loadDuckDBBundleUrls();
 
-  // selectBundle が実行環境に合う方を選ぶ。threads は cross-origin isolation が必要
   const bundle = await duckdb.selectBundle({
-    base: {
-      mainModule: urls.baseWasm,
-      mainWorker: urls.baseWorker,
+    mvp: {
+      mainModule: urls.mvpWasm,
+      mainWorker: urls.mvpWorker,
     },
-    threads: {
-      mainModule: urls.threadsWasm,
-      mainWorker: urls.threadsWorker,
-      pthreadWorker: urls.pthreadWorker,
+    eh: {
+      mainModule: urls.ehWasm,
+      mainWorker: urls.ehWorker,
     },
   });
 
