@@ -15,12 +15,11 @@
 
 ### `@duckdb/duckdb-wasm`
 
-- バージョンは npm `next` の `1.33.1-dev110.0` に固定すること
-- バンドルは `mvp` / `eh` ではなく `base` と `threads`。`?url` import は `dist/duckdb-base.wasm` と `dist/duckdb-threads.wasm` を使うこと
-- npm `latest` の `1.33.1-dev57.0` は `opfs://` への書き込みがメモリ上だけで終わり、再 open でテーブルが消える
-- 原因は duckdb/duckdb-wasm#2192。修正は `1.33.1-dev61.0` 以降に入っている。`latest` がそこへ進むまで `next` を使うこと
-- `pnpm-workspace.yaml` の `overrides` でも `1.33.1-dev110.0` を強制している。`package.json` だけ上げても lock は変わらない
-- 1 MB を超える OPFS ファイルの `moveFile` は破損する (duckdb/duckdb-wasm#2248)。修正 PR #2249 は未マージ
+- バージョンは `1.32.0` に固定すること
+- `1.33.1-dev34.0` 以降は `opfs://` への書き込みがメモリ上だけで終わり、再 open でテーブルが消える
+- npm `next` の `1.33.1-dev110.0` でも e2e の再 open で `sessions` が消える
+- 原因は duckdb/duckdb-wasm#2192。修正が npm の `latest` に入り e2e が通るまで更新しないこと
+- `pnpm-workspace.yaml` の `overrides` でも `1.32.0` を強制している。`package.json` だけ上げても lock は変わらない
 
 ## デバッグについて
 
