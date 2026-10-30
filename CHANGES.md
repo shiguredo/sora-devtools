@@ -37,8 +37,18 @@
   - @voluntas
 - [UPDATE] sora-js-sdk のバージョンを 2026.2.0-canary.0 に上げる
   - @miosakuma
-- [UPDATE] Preact を 11.0.1 に更新する
-  - `@preact/signals` を 2.11.3 に更新する
+- [UPDATE] Preact を 11.1.0 に更新する
+  - `@preact/signals` を 2.11.4 に更新する
+  - @voluntas
+- [UPDATE] `@duckdb/duckdb-wasm` を 1.33.1-dev110.0 に更新する
+  - npm latest の 1.33.1-dev57.0 は OPFS 永続化が壊れているため next を使う
+  - バンドル構成が mvp / eh から base / threads に変わったため初期化の読み込み先を合わせる
+  - @voluntas
+- [UPDATE] vite-plus を 1.4.0 に更新する
+  - vitest を 5.0.5、pnpm を 12.15.0 に更新する
+  - Playwright を 1.64.1、jsdom を 30.1.3、fast-check を 4.10.2 に更新する
+  - pnpm 12 の lockfile は複数 YAML 文書なので check-yaml の対象から外す
+  - oxlint の prefer-type-error に合わせ、e2e の型判定失敗を TypeError にする
   - @voluntas
 - [FIX] DuckDB 初期化完了前の接続でセッションが永続化されない競合を修正する
   - @voluntas

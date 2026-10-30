@@ -67,7 +67,7 @@ async function getAudioTrackAnalysis(page: Page): Promise<AudioTrackAnalysis> {
     }
     const stream = videoElement.srcObject;
     if (!(stream instanceof MediaStream)) {
-      throw new Error("expected #local-video srcObject to be MediaStream");
+      throw new TypeError("expected #local-video srcObject to be MediaStream");
     }
     const audioTracks = stream.getAudioTracks();
     if (audioTracks.length === 0) {

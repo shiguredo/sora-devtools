@@ -13,10 +13,9 @@ hooks = [
   { id = "detect-private-key", priority = 0 },
   { id = "check-added-large-files", priority = 0 },
   { id = "check-toml", priority = 0 },
-  { id = "check-yaml", priority = 0 },
-  { id = "check-json5", priority = 0, types = [
-    "file",
-  ], files = "\\.(json|json5|jsonc)$" },
+  # pnpm 12 の lockfile はパッケージマネージャ定義と本体の 2 文書になる
+  { id = "check-yaml", priority = 0, exclude = "^pnpm-lock\\.yaml$" },
+  { id = "check-json5", priority = 0, types = ["file"], files = "\\.(json|json5|jsonc)$" },
 ]
 
 [[repos]]
