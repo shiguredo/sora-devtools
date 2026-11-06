@@ -11,6 +11,14 @@
 
 ## develop
 
+## 2026.1.1
+
+**リリース日**: 2026-11-06
+
+- [FIX] RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
+  - sora-js-sdk を 2026.1.1 に上げ、Error の cause に設定された JSON-RPC エラーを RPC Results に記録し、サーバーの message をアラートに表示する
+  - @miosakuma
+
 ## 2026.1.0
 
 **リリース日**: 2026-06-18

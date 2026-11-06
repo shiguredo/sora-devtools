@@ -24,8 +24,8 @@ importers:
         specifier: 10.29.2
         version: 10.29.2
       sora-js-sdk:
-        specifier: 2026.1.0
-        version: 2026.1.0
+        specifier: 2026.1.1
+        version: 2026.1.1
     devDependencies:
       '@fast-check/vitest':
         specifier: 0.4.1
@@ -1329,8 +1329,8 @@ packages:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
 
-  sora-js-sdk@2026.1.0:
-    resolution: {integrity: sha512-ENXE2+0cJLOSOQJhUw6tgo/h+5bHbD/2QYKc7DJgsbAmHc39IjLwLU701fs04Zh/ovSxz0+z6wZWuMTX7jut4A==}
+  sora-js-sdk@2026.1.1:
+    resolution: {integrity: sha512-9AH2ULJkSgzB2bLCLWWBt1tgmeSoRN9qCoBl3/LR9Bwt2U5bVzoX40C9Kw5N7hf1xIczUVc0WkKwQe9oQSXRGQ==}
     engines: {node: '>=22.18.0', pnpm: '>=11'}
 
   source-map-js@1.2.1:
@@ -2553,7 +2553,7 @@ snapshots:
       mrmime: 2.0.1
       totalist: 3.0.1
 
-  sora-js-sdk@2026.1.0: {}
+  sora-js-sdk@2026.1.1: {}
 
   source-map-js@1.2.1: {}
 
