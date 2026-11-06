@@ -60,9 +60,6 @@
 - [FIX] fakeMedia のカメラ切り替えで音声が停止する問題を修正する
   - `Enable camera device` を off から on に戻してカメラ映像だけを再生成するときは、フェイク音声の AudioContext / GainNode を維持する
   - @miosakuma
-- [FIX] RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
-  - sora-js-sdk が Error の cause に設定した JSON-RPC エラーを RPC Results に記録し、サーバーの message をアラートに表示する
-  - @miosakuma
 - [FIX] プレビュー状態で update-mediastream を押すとローカルメディアが消える問題を修正する
   - Sora 接続前のプレビュー状態では切断競合の中断ガードを発動させず、音声・映像を新しいメディアに置き換える
   - プレビュー状態の update-mediastream と audioInput / videoInput 切替を検証する e2e テストを追加する
@@ -77,6 +74,14 @@
   - @voluntas
 - [ADD] e2e テストで E2E_TEST_SORA_SIGNALING_URL 未設定時に即座に失敗させる requireSoraConnectionEnv を追加する
   - @voluntas
+
+## 2026.1.1
+
+**リリース日**: 2026-11-06
+
+- [FIX] RPC タブでサーバーが返したエラーの code / message / data を表示できない問題を修正する
+  - sora-js-sdk を 2026.1.1 に上げ、Error の cause に設定された JSON-RPC エラーを RPC Results に記録し、サーバーの message をアラートに表示する
+  - @miosakuma
 
 ## 2026.1.0
 
