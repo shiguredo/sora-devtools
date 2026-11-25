@@ -34,7 +34,7 @@ test("DebugPane: タブ切替後に LocationProvider の url に debugType が�
   setDebugType("timeline");
   globalThis.history.replaceState(null, "", "/?debug=true");
 
-  const screen = render(<DebugPaneHarness />);
+  const screen = await render(<DebugPaneHarness />);
 
   await screen.getByRole("tab", { name: "Signaling" }).click();
 
