@@ -32,7 +32,7 @@ afterEach(() => {
 });
 
 test("SessionsButton: クリックで /sessions に遷移し Sessions ページを表示する", async () => {
-  const screen = render(<RoutingHarness />);
+  const screen = await render(<RoutingHarness />);
 
   await screen.getByRole("button", { name: "Sessions" }).click();
 
@@ -53,7 +53,7 @@ test("SessionsButton: クリックで /sessions に遷移し Sessions ページ�
 
 test("SessionsButton: /sessions 上でもう一度クリックすると / に戻る", async () => {
   globalThis.history.replaceState(null, "", "/sessions");
-  const screen = render(<RoutingHarness />);
+  const screen = await render(<RoutingHarness />);
 
   await vi.waitFor(
     () => {

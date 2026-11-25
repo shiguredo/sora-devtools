@@ -33,7 +33,7 @@ test("CopyUrlButton: コピー成功後に LocationProvider の url が address 
   setChannelId("test-channel");
   globalThis.history.replaceState(null, "", "/");
 
-  const screen = render(<CopyUrlHarness />);
+  const screen = await render(<CopyUrlHarness />);
 
   await screen.getByRole("button", { name: "Copy URL" }).click();
 

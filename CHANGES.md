@@ -74,6 +74,20 @@
   - @voluntas
 - [ADD] e2e テストで E2E_TEST_SORA_SIGNALING_URL 未設定時に即座に失敗させる requireSoraConnectionEnv を追加する
   - @voluntas
+- [UPDATE] package を更新する
+  - vite (vite-plus-core): 1.4.0 -> 8.3.8000
+  - vite-plus: 1.4.0 -> 1.7.0
+  - vitest: 5.0.5 -> 5.1.0
+  - @vitest/browser-playwright: 5.0.5 -> 5.1.0
+  - vitest-browser-preact: 1.1.0 -> 2.0.0
+  - preact: 11.1.0 -> 11.2.0
+  - @playwright/test: 1.64.1 -> 1.65.1
+  - jsdom: 30.1.3 -> 31.0.1
+  - tailwindcss: 4.3.3 -> 4.3.5
+  - @tailwindcss/vite: 4.3.3 -> 4.3.5
+  - @types/node: 26.6.5 -> 26.6.6
+  - @preact/signals-agent-vite: 0.1.3 -> 0.1.4
+  - @miosakuma
 
 ## 2026.1.1
 
