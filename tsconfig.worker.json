@@ -1,0 +1,20 @@
+{
+  // Web Worker の型チェック設定
+  // 共通設定は tsconfig.json から継承し、lib だけを worker 向けに上書きする
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // コンパイルに含める標準ライブラリの型定義を指定する
+    // webworker を指定することで self / globalThis が WorkerGlobalScope として解決される
+    // webworker.iterable は TypeScript 7 では空のファイルで効果を持たないため指定しない
+    "lib": ["webworker", "esnext"],
+    // グローバルに取り込む型定義の指定を共通設定の値ごと上書きする
+    // 共通設定の vite-plus/test/globals を継承すると worker で test / expect が使えてしまうため、
+    // worker にはテスト用のグローバルを取り込まない
+    "types": []
+  },
+  // コンパイル対象から除外するパスを指定する
+  "exclude": ["node_modules"],
+  // コンパイル対象に含めるパスを指定する
+  // global.d.ts は AudioContext / Element などの DOM 型を参照するため worker では含めない
+  "include": ["src/workers/**/*.ts"]
+}

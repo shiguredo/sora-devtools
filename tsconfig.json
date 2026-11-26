@@ -1,4 +1,10 @@
 {
+  // solution 構成のルート tsconfig
+  // app (window 上で動くアプリ本体) と worker (Web Worker) を別プロジェクトに分け、
+  // それぞれが適切な lib で型チェックされるようにする
+  // 型チェックは参照先の各プロジェクトに対して行うため、このファイル自体は対象を持たない
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.worker.json" }],
   "compilerOptions": {
     // import 文で .ts / .tsx 拡張子を明示できるようにする
     "allowImportingTsExtensions": true,
@@ -47,13 +53,7 @@
       // @/ で始まる import を ./src/ に解決する
       "@/*": ["./src/*"]
     },
-    // コンパイルに含める標準ライブラリの型定義を指定する
-    "lib": ["dom", "dom.iterable", "esnext"],
     // 前回のビルド情報を再利用するインクリメンタルビルドを有効にする
     "incremental": true
-  },
-  // コンパイル対象から除外するパスを指定する
-  "exclude": ["node_modules"],
-  // コンパイル対象に含めるパスを指定する
-  "include": ["global.d.ts", "**/*.ts", "**/*.tsx", "vitest.config.ts"]
+  }
 }

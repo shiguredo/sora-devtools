@@ -1,0 +1,15 @@
+{
+  // window 上で動くアプリ本体の型チェック設定
+  // 共通設定は tsconfig.json から継承し、lib だけを window 向けに上書きする
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // コンパイルに含める標準ライブラリの型定義を指定する
+    // dom.iterable は TypeScript 7 では空のファイルで効果を持たないため指定しない
+    "lib": ["dom", "esnext"]
+  },
+  // コンパイル対象から除外するパスを指定する
+  // Web Worker は tsconfig.worker.json で別プロジェクトとして型チェックする
+  "exclude": ["node_modules", "src/workers/**"],
+  // コンパイル対象に含めるパスを指定する
+  "include": ["global.d.ts", "**/*.ts", "**/*.tsx", "vitest.config.ts"]
+}

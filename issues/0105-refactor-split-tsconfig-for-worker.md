@@ -36,9 +36,10 @@ Web Worker のコードを Worker 用の型定義で型チェックできるよ�
 
 `tsconfig.json` を solution 構成 (`files` を空にし、`references` で各プロジェクトを参照する構成) にし、アプリ本体と worker の 2 つのプロジェクトに分割する。
 
-- `tsconfig.json` は共通の `compilerOptions` を持ち、`files` を空にして `references` で `tsconfig.app.json` と `tsconfig.worker.json` を参照する。共通設定 (`lib` 以外の `compilerOptions`) はこのファイルに残す。
+- `tsconfig.json` は共通の `compilerOptions` を持ち、`files` を空にして `references` で `tsconfig.app.json` と `tsconfig.worker.json` を参照する。共通設定はこのファイルに残し、各プロジェクトで必要な `compilerOptions` (`lib` / `types`) だけを上書きする。
 - `tsconfig.app.json` は `tsconfig.json` を `extends` し、`compilerOptions.lib` を `["dom", "esnext"]` に設定する。`include` は `["global.d.ts", "**/*.ts", "**/*.tsx"]`、`exclude` は `["node_modules", "src/workers/**"]` にする。`src/app/signals.ts` は `fakeVideo.worker.ts?worker` という Vite の仮想モジュール経由で import しているため、worker ファイルは app プログラムに含まれない。
 - `tsconfig.worker.json` は `tsconfig.json` を `extends` し、`compilerOptions.lib` を `["webworker", "esnext"]` に設定する。`include` は `["src/workers/**/*.ts"]`、`exclude` は `["node_modules"]` にする。`extends` 元の `include` / `exclude` を継承しないよう、両方を明示する。
+- `tsconfig.worker.json` は `compilerOptions.types` を `[]` にする。共通設定の `types: ["vite-plus/test/globals"]` を継承すると worker にも `test` / `expect` のグローバル型が入り、テスト用 API が worker のコードで型チェックを通ってしまうため。
 - `tsconfig.worker.json` には `global.d.ts` を含めない。`global.d.ts` は `AudioContext` / `Element` など DOM 型を参照しており、`skipLibCheck` を無効にすると worker の lib では解決できないため。
 - `tsconfig.app.json` と `tsconfig.worker.json` の `lib` には `dom.iterable` / `webworker.iterable` を指定しない。TypeScript 7 の `lib.dom.iterable.d.ts` と `lib.webworker.iterable.d.ts` は中身が空で、反復可能の宣言はそれぞれ `lib.dom.d.ts` / `lib.webworker.d.ts` に取り込まれているため、これらの指定は効果を持たない。
 
@@ -46,7 +47,9 @@ Web Worker のコードを Worker 用の型定義で型チェックできるよ�
 
 `vp check` の type-aware lint は `tsconfig.json` の `references` をたどってファイルごとに tsconfig を解決する。`tsconfig.json` を solution 構成にしないと worker ファイルが app 側の `tsconfig` にマップされ、dom lib のまま型チェックされるため、`references` の設定は必須である。分割後は `src/workers/fakeVideo.worker.ts` が `tsconfig.worker.json` のプログラムとして型チェックされることを確認する。
 
-CI と `prek` は現在 `tsc` を実行していない (CI は `vp check` のみ、`prek` は `vp check` と `vp test run`)。`tsc` は引数なしでは `tsconfig.json` しか読まず、solution 構成では `files` が空のため何も型チェックしない。CI と `prek` に `vp exec tsc --noEmit -p tsconfig.app.json` と `vp exec tsc --noEmit -p tsconfig.worker.json` を追加し、両方の設定をプログラム全体で型チェックする。
+ただし `vp check` にパスを指定すると、指定したファイルしか型チェックしない。また `exclude` は import による取り込みを防がないため、app 側から worker 本体を直接 import すると worker が app プログラムに巻き込まれ、dom lib のまま型チェックされる。app 側からは `?worker` の仮想モジュール経由でのみ worker を参照し、worker と型を共有する場合は実装を含まない共通ファイルへ切り出して双方から import する。この境界は `src/app/signals.ts` の import 付近のコメントにも残す。
+
+CI と `prek` に型チェックのコマンドは追加しない。引数なしの `vp check` が設定に属するファイルをすべて型チェックし、分割後は worker も `tsconfig.worker.json` のプログラムとして解決されることを確認済みで、`tsc -b` を足すと `vp check` と検出範囲が重複して CI だけが長くなるため。`tsc` は引数なしでは `tsconfig.json` しか読まず solution 構成では何も型チェックしないが、`vp check` がその役割を果たしている限り追加は不要と判断する。`prek` は `pass_filenames = false` で引数なしのため現状は問題ないが、この値を変更してパスを渡すようにした場合は型チェックの範囲が狭まるため、その時点で `vp exec tsc -b` などの追加が必要かを判断する。
 
 ## 完了条件
 
@@ -55,7 +58,8 @@ CI と `prek` は現在 `tsc` を実行していない (CI は `vp check` のみ
 - `vite.config.ts` の `unicorn/prefer-global-this` が `error` に戻っている
 - `vp check`、`vp build`、`vp test run`、`vp test run --config vitest.ct.config.ts` がすべて通る
 - `vp check` が `src/workers/fakeVideo.worker.ts` を `tsconfig.worker.json` のプログラムとして型チェックしている
-- CI と `prek` の検証が `tsconfig.app.json` と `tsconfig.worker.json` の両方を対象にしている
+- `tsconfig.worker.json` の `types` が `[]` で、worker のコードから `test` / `expect` などのテスト用グローバルが参照できない
+- `vp check` が `tsconfig.app.json` と `tsconfig.worker.json` の両方を対象に型チェックしている
 - `tsconfig.app.json` の `lib` に `dom.iterable` が含まれず、`tsconfig.worker.json` の `lib` に `webworker.iterable` が含まれていない
 
 ## 解決方法
