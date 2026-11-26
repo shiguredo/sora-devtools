@@ -66,8 +66,16 @@ export function Tabs({ activeKey, onSelect, className = "", children }: TabsProp
     <div className={`flex flex-col flex-1 h-full ${className}`}>
       {/* タブヘッダー
           タブ数が多い場合に横幅が親を超えるため、ペイン内で横スクロールさせる
-          （ページ全体の横スクロールバーを出さない） */}
-      <div className="flex overflow-x-auto border-b border-gray-600" role="tablist">
+          （ページ全体の横スクロールバーを出さない）
+          overflow-y-hidden は、タブボタンの `-mb-px` で内容の高さが枠線の分だけ
+          リストの内容ボックスを超え、 overflow-x-auto と併用すると縦にも
+          スクロールバーが出るのを防ぐためのもの。 visible にすると
+          「片軸が visible・他軸が auto」の指定になり auto のままになるため、
+          hidden で打ち消す。はみ出しは枠線の位置に収まるので見た目は変わらない */}
+      <div
+        className="flex overflow-x-auto overflow-y-hidden border-b border-gray-600"
+        role="tablist"
+      >
         {tabs.map((tab) => {
           const { eventKey, title } = tab;
           const isActive = eventKey === activeKey;

@@ -96,13 +96,14 @@ async function expectFooterLayout(page: Page): Promise<void> {
 }
 
 // DevtoolsPane が内部スクロールコンテナとして機能していることを検証する
-// overflow-y が無効化されるとページ全体のスクロールに退化し、
+// overflow-y が visible / clip になるとページ全体のスクロールに退化し、
 // footer が画面下端に収まらなくなるため
+// auto でもコンテンツが溢れていれば内部スクロールになるため、 auto を許容する
 async function expectDevtoolsPaneInternalScroll(page: Page): Promise<void> {
   const pane = page.locator("main .row > div").first();
   const overflowY = await pane.evaluate((element) => getComputedStyle(element).overflowY);
-  if (overflowY !== "scroll") {
-    throw new Error(`expected devtools pane overflow-y "scroll", got "${overflowY}"`);
+  if (overflowY !== "auto" && overflowY !== "scroll") {
+    throw new Error(`expected devtools pane overflow-y "auto" or "scroll", got "${overflowY}"`);
   }
   // コンテンツがペイン高さを超えていること（はみ出しを内部スクロールで吸収する）
   const paneScroll = await pane.evaluate((element) => ({

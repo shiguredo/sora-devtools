@@ -53,16 +53,21 @@ function Log(props: DataChannelMessage) {
 export function DataChannelMessagingMessages() {
   const dataChannelMessagesValue = dataChannelMessages.value;
   return (
-    <>
+    <div className="flex flex-col flex-1 min-h-0">
+      {/* 送信フォーム (メッセージ定義の表示) の下に clear ボタンを並べ、
+          その下の残りの高さいっぱいにメッセージ一覧を置く。
+          縦 flex にすることで、一覧が伸びても clear ボタンは自分の位置に留まる */}
       <div className="py-1">
         <ButtonClear />
       </div>
-      <div className="overflow-y-auto h-full">
+      {/* min-h-0 を外すと一覧が内容の高さまで伸びてペイン全体が縦スクロールになり、
+          clear ボタンが押し出される。一覧のスクロールを有効にするため必須 */}
+      <div className="overflow-y-auto flex-1 min-h-0">
         {dataChannelMessagesValue.map((message) => {
           const key = message.label + message.timestamp;
           return <Log key={key} {...message} />;
         })}
       </div>
-    </>
+    </div>
   );
 }
