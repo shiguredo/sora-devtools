@@ -36,14 +36,15 @@ Web Worker のコードを Worker 用の型定義で型チェックできるよ�
 
 `tsconfig.json` を solution 構成 (`files` を空にし、`references` で各プロジェクトを参照する構成) にし、アプリ本体と worker の 2 つのプロジェクトに分割する。
 
-- `tsconfig.json` は共通の `compilerOptions` を持ち、`files` を空にして `references` で `tsconfig.app.json` と `tsconfig.worker.json` を参照する。共通設定はこのファイルに残し、各プロジェクトで必要な `compilerOptions` (`lib` / `types`) だけを上書きする。
+- `tsconfig.json` は共通の `compilerOptions` を持ち、`files` を空にして `references` で `tsconfig.app.json` と `tsconfig.worker.json` を参照する。共通設定はこのファイルに残し、各プロジェクトで必要な `compilerOptions` (`lib` / `types`) と `include` / `exclude` を各ファイルで指定し直す。
 - `tsconfig.app.json` は `tsconfig.json` を `extends` し、`compilerOptions.lib` を `["dom", "esnext"]` に設定する。`include` は `["global.d.ts", "**/*.ts", "**/*.tsx"]`、`exclude` は `["node_modules", "src/workers/**"]` にする。`src/app/signals.ts` は `fakeVideo.worker.ts?worker` という Vite の仮想モジュール経由で import しているため、worker ファイルは app プログラムに含まれない。
-- `tsconfig.worker.json` は `tsconfig.json` を `extends` し、`compilerOptions.lib` を `["webworker", "esnext"]` に設定する。`include` は `["src/workers/**/*.ts"]`、`exclude` は `["node_modules"]` にする。`extends` 元の `include` / `exclude` を継承しないよう、両方を明示する。
-- `tsconfig.worker.json` は `compilerOptions.types` を `[]` にする。共通設定の `types: ["vite-plus/test/globals"]` を継承すると worker にも `test` / `expect` のグローバル型が入り、テスト用 API が worker のコードで型チェックを通ってしまうため。
-- `tsconfig.worker.json` には `global.d.ts` を含めない。`global.d.ts` は `AudioContext` / `Element` など DOM 型を参照しており、`skipLibCheck` を無効にすると worker の lib では解決できないため。
+- `tsconfig.worker.json` は `tsconfig.json` を `extends` し、`compilerOptions.lib` を `["webworker", "esnext"]` に設定する。`include` は `["src/workers/**/*.ts"]`、`exclude` は `["node_modules"]` にする。`extends` 元の `include` は継承されないため明示する。`exclude` は継承されるが、除外対象を読み取れるよう明示する。
+- `tsconfig.worker.json` は `compilerOptions.types` を `[]` にする。共通設定の `types: ["vite-plus/test/globals"]` を継承すると worker にもテスト用のグローバル型が入るため。`types: []` で暗黙的な `@types/*` の取り込みを防ぐ方針にも合う。
+- `tsconfig.worker.json` には `global.d.ts` を含めない。`global.d.ts` の `Window` 拡張と `AudioContext` / `Element` は `webworker` の型定義に存在せず、worker の型チェックで解決できないため。
+- `tsconfig.worker.json` は `compilerOptions.paths` を上書きしない。共通設定の `@/*` は `src/` 全体に解決されるため、worker から `@/` で app 側のファイルを引くと、dom に依存した型エラーが worker の型チェックで発生する。worker からは `@/` を使わず、型を共有するときは実装を含まない共通ファイルを相対 import で参照する。誤用を防ぐ説明は `tsconfig.worker.json` のコメントに残す。
 - `tsconfig.app.json` と `tsconfig.worker.json` の `lib` には `dom.iterable` / `webworker.iterable` を指定しない。TypeScript 7 の `lib.dom.iterable.d.ts` と `lib.webworker.iterable.d.ts` は中身が空で、反復可能の宣言はそれぞれ `lib.dom.d.ts` / `lib.webworker.d.ts` に取り込まれているため、これらの指定は効果を持たない。
 
-分割後は `unicorn/prefer-global-this` を `error` に戻す。worker の `self` は `globalThis` に置き換える。`lib.webworker` により `globalThis.postMessage` / `globalThis.addEventListener` は worker のグローバル型として解決される。`globalThis.setTimeout` は worker の lib では `number` を返すため、既存の `as unknown as number` は不要になり削除する。`vite.config.ts` の `lint.rules` のコメントも、分割後の前提に合わせて更新する。
+分割後は `unicorn/prefer-global-this` を `error` に戻す。worker の `self` は `globalThis` に置き換える。`lib.webworker` により `globalThis.postMessage` / `globalThis.addEventListener` は worker のグローバル型として解決される。既存の `as unknown as number` は不要になり削除する。`vite.config.ts` の `lint.rules` のコメントも、分割後の前提に合わせて更新する。
 
 `vp check` の type-aware lint は `tsconfig.json` の `references` をたどってファイルごとに tsconfig を解決する。`tsconfig.json` を solution 構成にしないと worker ファイルが app 側の `tsconfig` にマップされ、dom lib のまま型チェックされるため、`references` の設定は必須である。分割後は `src/workers/fakeVideo.worker.ts` が `tsconfig.worker.json` のプログラムとして型チェックされることを確認する。
 

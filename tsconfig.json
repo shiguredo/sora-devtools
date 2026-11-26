@@ -1,7 +1,7 @@
 {
   // solution 構成のルート tsconfig
   // app (window 上で動くアプリ本体) と worker (Web Worker) を別プロジェクトに分け、
-  // それぞれが適切な lib で型チェックされるようにする
+  // それぞれが適切な lib と types で型チェックされるようにする
   // 型チェックは参照先の各プロジェクトに対して行うため、このファイル自体は対象を持たない
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.worker.json" }],

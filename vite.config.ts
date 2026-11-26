@@ -583,7 +583,7 @@ const baseConfig = defineConfig({
       "unicorn/prefer-default-parameters": "error",
       // globalThis を推奨
       // tsconfig を app / worker に分割し、 Web Worker は tsconfig.worker.json の
-      // lib.webworker で型チェックされるため、 worker の globalThis は WorkerGlobalScope として解決される
+      // lib.webworker で型チェックされるため、 worker の globalThis は worker のグローバル型として解決される
       "unicorn/prefer-global-this": "error",
       // 論理演算子を三項演算子より推奨
       "unicorn/prefer-logical-operator-over-ternary": "error",

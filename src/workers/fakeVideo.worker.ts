@@ -89,7 +89,6 @@ function drawFrame(): void {
 function animate(): void {
   drawFrame();
   // Worker 内では setTimeout を使用（requestAnimationFrame は使えない）
-  // worker の lib では setTimeout が number を返すため、animationId にそのまま代入できる
   const interval = Math.floor(1000 / frameRate);
   animationId = globalThis.setTimeout(() => {
     animate();
