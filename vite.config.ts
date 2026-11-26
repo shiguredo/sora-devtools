@@ -582,10 +582,9 @@ const baseConfig = defineConfig({
       // デフォルトパラメータを推奨
       "unicorn/prefer-default-parameters": "error",
       // globalThis を推奨
-      // tsconfig の lib が dom のみで WorkerGlobalScope 型を提供しないため、Web Worker では
-      // globalThis 経由だと postMessage / addEventListener の意味が Window のままになる
-      // lib を app / worker で分離する対応までは無効化しておく
-      "unicorn/prefer-global-this": "off",
+      // tsconfig を app / worker に分割し、 Web Worker は tsconfig.worker.json の
+      // lib.webworker で型チェックされるため、 worker の globalThis は worker のグローバル型として解決される
+      "unicorn/prefer-global-this": "error",
       // 論理演算子を三項演算子より推奨
       "unicorn/prefer-logical-operator-over-ternary": "error",
       // Math.min/max を推奨

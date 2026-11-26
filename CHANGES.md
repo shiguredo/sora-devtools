@@ -88,6 +88,10 @@
   - @types/node: 26.6.5 -> 26.6.6
   - @preact/signals-agent-vite: 0.1.3 -> 0.1.4
   - @miosakuma
+- [UPDATE] tsconfig を app と worker に分割し、 Web Worker を `lib.webworker` で型チェックする
+  - `tsconfig.json` を solution 構成にし、 `tsconfig.app.json` と `tsconfig.worker.json` で lib と types を分ける
+  - `unicorn/prefer-global-this` を `error` に戻し、 fakeVideo worker の `self` を `globalThis` に置き換える
+  - @miosakuma
 
 ## 2026.1.1
 

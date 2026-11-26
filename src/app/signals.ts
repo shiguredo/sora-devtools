@@ -10,6 +10,10 @@ import type {
 } from "sora-js-sdk";
 
 import packageJSON from "../../package.json";
+// worker 本体は `?worker` の仮想モジュール経由でしか参照しないこと
+// worker 本体を直接 import すると tsconfig.app.json の exclude をすり抜けて
+// dom lib のまま app プロジェクトに取り込まれ、worker の型チェックが壊れる
+// worker と型を共有する場合は、実装を含まない共通ファイルへ切り出してから双方から import する
 // oxlint-disable-next-line import/default -- vite の `?worker` は default export を提供する仮想モジュールで解釈できない
 import FakeVideoWorker from "../workers/fakeVideo.worker.ts?worker";
 import type {

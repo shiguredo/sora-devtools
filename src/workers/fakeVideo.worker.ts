@@ -92,7 +92,7 @@ function animate(): void {
   const interval = Math.floor(1000 / frameRate);
   animationId = globalThis.setTimeout(() => {
     animate();
-  }, interval) as unknown as number;
+  }, interval);
 }
 
 // host から worker へ送るリクエスト型
@@ -117,7 +117,7 @@ type FakeVideoWorkerRequest =
     };
 
 // メッセージハンドラー
-self.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) => {
+globalThis.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) => {
   const message = event.data;
 
   switch (message.type) {
@@ -128,7 +128,7 @@ self.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) =
       ctx = canvas.getContext("2d", { alpha: false });
 
       if (!ctx) {
-        self.postMessage({ type: "error", error: "failed to get 2D context" });
+        globalThis.postMessage({ type: "error", error: "failed to get 2D context" });
         return;
       }
 
@@ -168,7 +168,7 @@ self.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) =
       // アニメーション開始
       animate();
 
-      self.postMessage({ type: "started" });
+      globalThis.postMessage({ type: "started" });
       break;
     }
 
@@ -187,7 +187,7 @@ self.addEventListener("message", (event: MessageEvent<FakeVideoWorkerRequest>) =
       connectionId = null;
       startDateTime = "";
 
-      self.postMessage({ type: "stopped" });
+      globalThis.postMessage({ type: "stopped" });
       break;
     }
 
