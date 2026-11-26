@@ -1,7 +1,7 @@
 # tsconfig を app と worker で分割し worker に lib.webworker を適用する
 
 - Created: 2026-11-25
-- Completed: {YYYY-MM-DD}
+- Completed: 2026-11-26
 - Branch: feature/refactor-split-tsconfig-for-worker
 - Polished: 2026-11-25
 
@@ -65,4 +65,22 @@ CI と `prek` に型チェックのコマンドは追加しない。引数なし
 
 ## 解決方法
 
-未着手。
+`tsconfig.json` を solution 構成にし、型チェックの対象を app と worker の 2 プロジェクトに分割した。
+
+- `tsconfig.json` は `files` を空にし、`references` で `tsconfig.app.json` と `tsconfig.worker.json` を参照する。`lib` / `include` / `exclude` は各プロジェクトへ移し、共通の `compilerOptions` だけを残した。
+- `tsconfig.app.json` を追加し、`lib` を `["dom", "esnext"]`、`include` を `["global.d.ts", "**/*.ts", "**/*.tsx"]`、`exclude` を `["node_modules", "src/workers/**"]` にした。`include` にあった `vitest.config.ts` は存在しないファイルだったため削除した。
+- `tsconfig.worker.json` を追加し、`lib` を `["webworker", "esnext"]`、`include` を `["src/workers/**/*.ts"]`、`exclude` を `["node_modules"]`、`types` を `[]` にした。`global.d.ts` は含めず、`paths` は上書きせずに worker から `@/` を使わない旨をコメントで残した。
+- `src/workers/fakeVideo.worker.ts` の `self` を `globalThis` に置き換え、`globalThis.setTimeout` の `as unknown as number` を削除した。
+- `vite.config.ts` の `unicorn/prefer-global-this` を `error` に戻し、コメントを分割後の前提に合わせて更新した。
+- `src/app/signals.ts` の `?worker` import 付近に、worker 本体を直接 import しない境界をコメントで残した。
+- CI と `prek` には型チェックのコマンドを追加していない。引数なしの `vp check` が両プロジェクトを型チェックすることを実測で確認しており、`tsc -b` を足すと検出範囲が重複するため。
+
+次の点は検証で確認した。
+
+- `tsc --showConfig -p tsconfig.worker.json` の `lib` は `["webworker", "esnext"]`、`types` は `[]`、`--listFilesOnly` のプログラムは `src/workers/fakeVideo.worker.ts` のみ
+- `tsc --showConfig -p tsconfig.app.json` の `lib` は `["dom", "esnext"]` で `dom.iterable` を含まない
+- `vp check` が `src/workers/fakeVideo.worker.ts` の型エラーを検出し、`vp check` にパスを指定すると対象が狭まることを確認した
+- `vp check`、`vp build`、`vp test run`、`vp test run --config vitest.ct.config.ts` がすべて通る
+- `self` を `globalThis` に置き換えたビルド成果物に `self.` が残らず、`globalThis.postMessage` / `globalThis.addEventListener` / `globalThis.setTimeout` になっている
+
+レビューで、`setTimeout` の戻り値の説明が dom lib と webworker lib で同じ `number` であることと食い違っていたため削除し、`types` の効果について「参照できない」と断定していた記述は「テスト用のグローバルが入る」に改めた。
