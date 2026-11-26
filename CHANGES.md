@@ -67,6 +67,11 @@
 - [FIX] getUserMedia が OverconstrainedError で失敗したときアラートに失敗理由が表示されない問題を修正する
   - `name` が `Error` 以外のエラーは message が空文字列でも name を表示し、再接続と `request media` のアラート・ログにも反映する
   - @miosakuma
+- [FIX] Messaging タブの clear ボタンがメッセージ定義の表示と重なる問題を修正する
+  - メッセージ定義の表示の下に clear ボタンを並べ、定義の JSON は枠内でスクロールさせる
+  - 定義の枠の高さは画面の高さに合わせて縮め、ペインが低くても clear ボタンが画面外に出ないようにする
+  - タブヘッダーと Debug ペイン右端に出ていた不要な縦スクロールバーを表示しないようにする
+  - @miosakuma
 
 ### misc
 

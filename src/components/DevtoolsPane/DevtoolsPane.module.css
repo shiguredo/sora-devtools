@@ -2,7 +2,8 @@
 .container {
   padding: 1rem 0.75rem 0;
   overflow-x: auto;
-  overflow-y: scroll;
+  /* 内容が収まっているときはバーを出さない。 scroll だと常に表示される */
+  overflow-y: auto;
   height: 100%;
   min-height: 0;
 }

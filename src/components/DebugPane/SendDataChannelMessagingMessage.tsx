@@ -17,6 +17,10 @@ export function SendDataChannelMessagingMessage() {
       void soraValue.sendMessage(label, new TextEncoder().encode(textareaRef.current.value));
     }
   };
+  // メッセージ定義の表示は、定義が少ないときは中身に合わせて枠が縮み、
+  // 枠が高さの上限を超えると pre の中でスクロールさせる。 overflow を指定しないと
+  // 文字が枠の外に漏れる。上限は定義の表示に必要な 270px を基本とし、ペインが
+  // 低いときは下に並ぶ clear ボタンが画面外に出ないよう画面の高さに合わせて抑える
   return (
     <>
       <div className="flex mt-2">
@@ -52,12 +56,10 @@ export function SendDataChannelMessagingMessage() {
       </div>
       {dataChannelsValue.length > 0 ? (
         <pre
-          className="mt-2 p-3 rounded-md"
+          className="mt-2 p-3 rounded-md overflow-y-auto max-h-[min(270px,calc(100vh-300px))]"
           style={{
             color: "#fff",
             backgroundColor: "#222222",
-            maxHeight: "250px",
-            minHeight: "250px",
           }}
         >
           {JSON.stringify(dataChannelsValue, null, 2)}
